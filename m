@@ -1,130 +1,227 @@
-Received: from out28-53.mail.aliyun.com (out28-53.mail.aliyun.com [115.124.28.53])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9FD444D01F;
-	Mon,  7 Sep 2026 14:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8468C4CA29E;
+	Mon,  7 Sep 2026 15:04:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788793029; cv=none; b=ArJAmXJxQUGeUjw60XVMI0bDhQvi2i+rTCA67q0DS7GZGxF/34/BUHbaTYgKVCCpZtqFm8/9oVAECiN9xhHx0VLoNnWY5d4tB3HSvuBcEFI0eQ2Jwmo6kFv5vFdPiNo87Ask8DwvCeDUccl7g0hsPT2q1hOay+hq9ptwnTkkMKg=
+	t=1788793472; cv=none; b=qKKWV2WZTo/IybN3VfaFDfaq789VMpxMXl7Ltz1W5Zm84fI83SWYRD5U3fHalOLHjFaVBnHaP46oq4VqTA4/ghxgKavP6ZaYkDfFlZSWT7LQHNC7KVyJHvj7euvyc6ig0CMiu7o3U0qBfdhsLKIjVhQIgQ7FRwIBl8tJ1JjxESo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788793029; c=relaxed/simple;
-	bh=8sSEO5KFxU3nzE/P3FVIVGqT93El+9a/o2uSrXsV4OE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jrpdOBauDq1ZNQn/fDjclJreRhMk2CVEkWASJN/pz+0syhZL8iFZCHQBCswuN6rFWKC0O8rSHM/EYjZSSRni6anGO0CqAd2mlrkmgbvGUNbQ/do2jnlnxY7dhPr2ET2IEbg0Oo1hVVOr+r9h9njieKQ6vJzjnvr9IcDfLDwp+Bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xiaopeng.com; spf=pass smtp.mailfrom=xiaopeng.com; dkim=pass (1024-bit key) header.d=xiaopeng.com header.i=@xiaopeng.com header.b=vSfg4LRe; arc=none smtp.client-ip=115.124.28.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=xiaopeng.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xiaopeng.com
+	s=arc-20240116; t=1788793472; c=relaxed/simple;
+	bh=MqRp+yAXUOJBT54SRxW8JHPpLhcjeyiIOt3B8BsJOFI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jrl7kpOje/UAWYqq59Bhk0LY22gpuQKaEF2YYOPA6OgwprjNduZkm6HLGGN6hTY6EXP/A1aTP57dm/GqOIfJEsOx/QN/rU0a8PcZ3AmESmRd8VF7XzsH/t51RwcDZj1zWgp1yaUHJLbCyLVtxBFm53Y5LWUlS/3ZZ1DtpO5vKf4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=inQopaW4; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=xiaopeng.com header.i=@xiaopeng.com header.b="vSfg4LRe"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=xiaopeng.com; s=default;
-	t=1788793018; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=/aI+qVOhEOvgrbm26woGel0noT1B6NJwZUDW1xq5WII=;
-	b=vSfg4LRez0ZoHArxnWc8fqma02fqgvrhTeySOSpSHENsGY5YVAHMrkptjVpaDLzAqTYApIRuDuC7/dqlQGqHvsTUuiDiLpKQyk6O5BYy1W7bd8XAwHQpl5wPPMCIMDcTcHkcSPl6cgkxeRvnPn8fGG8tqxziRijPAfnePu6qjPI=
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07439715|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.0992727-0.00469584-0.896032;FP=14468796828864806579|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033037071049;MF=liuc63@xiaopeng.com;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.j7vgS.1_1788793015;
-Received: from localhost(mailfrom:liuc63@xiaopeng.com fp:SMTPD_---.j7vgS.1_1788793015 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Mon, 07 Sep 2026 22:56:57 +0800
-From: Liu Chao <liuc63@xiaopeng.com>
-To: Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: kernel@pengutronix.de,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="inQopaW4"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1788793466; x=1789398266; i=wahrenst@gmx.net;
+	bh=xQ+f5XAMDAG+ZbBglr/uBEDXOEuEIpNsBndq8fnp9Ck=;
+	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
+	 MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=inQopaW4yPYFpEj8pstPEEoHD6atFnx0cYa1+fJNkII28d3aNA2r5jsl6t4VqH9P
+	 HotlSbRhBqOkM8VftXYoBi2BWsQ4keBsafCh6/ekDc/ryMhz/1bYVa8q4HL2x5x1g
+	 i5aMfMB4GcEJjvHZmMtvQ7nFGku0U1cchbA07jsOKhABw2wZd0cjd3rGGnzhQmtVp
+	 kTJMgb/oj6EU+F7wlZMquZvaprgrB2wUwYXQ30TVMecLy3f7rjBY1q9Oz5pGeWcF7
+	 ocVV1hm9VqCJfaUoj0qk/uC1sJe/Id6c/XJnZS5VbVbTwyHyq7KiFWZRP1ZSD+mr0
+	 dC2pw0usLTBD70DkXQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MaJ3n-1xOilj2BHx-00YR0s; Mon, 07
+ Sep 2026 17:04:26 +0200
+From: Stefan Wahren <wahrenst@gmx.net>
+To: Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Frank Li <Frank.Li@nxp.com>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	Aswath Govindraju <a-govindraju@ti.com>
+Cc: Christoph Stoidner <c.stoidner@phytec.de>,
 	linux-kernel@vger.kernel.org,
-	stable@kernel.org,
-	Liu Chao <liuc63@xiaopeng.com>
-Subject: [PATCH 2/2] can: j1939: check received packet count before completing session
-Date: Mon,  7 Sep 2026 22:56:39 +0800
-Message-ID: <20260907145640.1106170-3-liuc63@xiaopeng.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <20260907145640.1106170-1-liuc63@xiaopeng.com>
-References: <20260907145640.1106170-1-liuc63@xiaopeng.com>
+	devicetree@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org,
+	imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	Stefan Wahren <wahrenst@gmx.net>
+Subject: [PATCH V5 0/4] arm64: dts: freescale: Add chargebyte Charge Control Y
+Date: Mon,  7 Sep 2026 17:04:16 +0200
+Message-ID: <20260907150420.18787-1-wahrenst@gmx.net>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:DnsIFneolBsP5731lClCrVtY43lVIlNwNDBv3/CEI+EIiRYKuY+
+ 1J8n/O1o3KFqo9dwoEqvbb3GUseOMFux9qdhaHAhXmTkHnVSSm4UGzCRkLFNtKhPtszgJhH
+ u0Ghqok6pGivobBG5WQgniEyfk1cNRIss03LQNMd2aafmKEBK8saoOHwv3Np1K7/sck3HWN
+ fOrz2/WgMKhmSO1aHpEYw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:ZZ5Pglu5rR4=;x3Gw7OCdcXuCYFEj659isD+JtmM
+ 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
+ rzDHRdB+Hpo/vdfGk1BQVPybqIoUsAU3kGA==
 
-j1939_xtp_rx_eoma_one() marks a session complete as soon as it sees
-an EOMA without verifying that all data packets arrived.  Add a pkt.rx
-check so a session with missing packets gets aborted instead of
-delivering a short message to userspace.
+This series adds support for the chargebyte Charge Control Y, which is
+an Electrical Vehicle Supply Equipment (EVSE) for MCS (Megawatt
+Charging System) charging stations.
 
-Also tighten the existing EOMA size-mismatch warning to actually abort
-for receive sessions instead of just logging.
+sashiko reported in the first version of the series [1] that X_nRST_LAN
+is available via GPIO line names, but there is no reset mechanismn in the
+device tree. This finding is valid. Since the reset line feature isn't
+implemented for LAN8651 driver yet, I like to proceed with the current
+version. The LAN8651 handles reset via SPI commands and in rare cases
+we still have the possibility to control the reset from userspace.
+Btw the pin has a pull resistor in hardware, so it's not floating.
 
-Only unicast receive sessions are gated:
+sashiko complained in the fourth version of the series [2] about the
+reset polarity of ethphy2 and the different drive strength across the
+data lines. Both is intended.
 
- - Transmitter sessions track pkt.rx via loopback confirmations which
-   may legitimately lag behind the real transmit count, so the check
-   would cause false aborts on the tx path.
+[1] - https://lore.kernel.org/linux-devicetree/20260818093147.E556C1F000E9=
+@smtp.kernel.org/
+[2] - https://lore.kernel.org/linux-devicetree/20260903082122.A777C1F000E9=
+@smtp.kernel.org/
 
- - BAM (broadcast) sessions never go through EOMA -- they complete via
-   the final flag in j1939_xtp_rx_dat_one() when pkt.rx reaches
-   pkt.total directly.
+Changes in V5:
+- fix delete-node for pinctrl_leds (reported by sashiko)
+- add Krzysztof's Reviewed-by
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: stable@kernel.org
-Signed-off-by: Liu Chao <liuc63@xiaopeng.com>
----
- net/can/j1939/transport.c | 22 ++++++++++++++++++++--
- 1 file changed, 20 insertions(+), 2 deletions(-)
+Changes in V4:
+- prepend constrains fix for ti,tcan104x-can binding (reported by sashiko)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fdce5792..2ecce49ad 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1397,6 +1397,7 @@ j1939_xtp_rx_eoma_one(struct j1939_session *session, struct sk_buff *skb)
- {
- 	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
- 	const u8 *dat;
-+	unsigned int expected_total;
- 	int len;
- 
- 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
-@@ -1409,11 +1410,23 @@ j1939_xtp_rx_eoma_one(struct j1939_session *session, struct sk_buff *skb)
- 	else
- 		len = j1939_tp_ctl_to_size(dat);
- 
--	if (session->total_message_size != len) {
-+	if (!session->transmission && session->total_message_size != len) {
- 		netdev_warn_once(session->priv->ndev,
--				 "%s: 0x%p: Incorrect size. Expected: %i; got: %i.\n",
-+				 "%s: 0x%p: EOMA size mismatch, expected %i got %i\n",
- 				 __func__, session, session->total_message_size,
- 				 len);
-+		goto out_session_cancel;
-+	}
-+
-+	if (!session->transmission) {
-+		expected_total = (session->total_message_size + 6) / 7;
-+		if (session->pkt.rx < expected_total) {
-+			netdev_warn(session->priv->ndev,
-+				    "%s: 0x%p: EOMA but only %u/%u data packets rx'd\n",
-+				    __func__, session,
-+				    session->pkt.rx, expected_total);
-+			goto out_session_cancel;
-+		}
- 	}
- 
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
-@@ -1422,6 +1435,11 @@ j1939_xtp_rx_eoma_one(struct j1939_session *session, struct sk_buff *skb)
- 	j1939_session_timers_cancel(session);
- 	/* transmitted without problems */
- 	j1939_session_completed(session);
-+	return;
-+
-+out_session_cancel:
-+	j1939_session_timers_cancel(session);
-+	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
- }
- 
- static void
--- 
-2.50.1
+Changes in V3:
+- add Acked-by's from Conor
+- add missing SD2_VSELECT to default pinctrl of SD interface (reported by =
+sashiko)
+- clarify LAN8651 GPIO usage in device tree (suggested by Frank Li)
+- move X_nRST_LAN into dedicated pinctrl group to make it more self-explai=
+ning
+
+Changes in V2:
+- drop phy-can-transceiver changes and make MCP2542 compatible to TI TCAN1=
+042
+  as suggested by Marc Kleine-Budde & Frank Li
+- implemented SD2_nRESET as vmmc supply for SD card interface
+  (reported by sashiko)
+- add UHS support for SD card interface
+- dropped downstream property ti,leds-polarity (reported by sashiko)
+- fix GPIO line name of X_LAN_nCS (reported by sashiko)
+- drop unconnected pins (X_TDI, X_TMS_SWDIO, X_TDO) from GPIO line names=
+=20
+
+Stefan Wahren (4):
+  dt-bindings: phy: ti,tcan104x-can: Fix property constrains
+  dt-bindings: arm: fsl: Add chargebyte Charge Control Y
+  dt-bindings: phy: ti,tcan104x-can: Document Microchip MCP2542
+  arm64: dts: freescale: Add chargebyte Charge Control Y
+
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ .../bindings/phy/ti,tcan104x-can.yaml         |  10 +-
+ arch/arm64/boot/dts/freescale/Makefile        |   1 +
+ .../dts/freescale/imx93-charge-control-y.dts  | 438 ++++++++++++++++++
+ .../boot/dts/freescale/imx93-phycore-som.dtsi |   2 +-
+ 5 files changed, 447 insertions(+), 5 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/freescale/imx93-charge-control-y.d=
+ts
+
+=2D-=20
+2.43.0
 
