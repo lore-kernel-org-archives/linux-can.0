@@ -1,230 +1,431 @@
-Received: from mx0b-0002e601.pphosted.com (mx0b-0002e601.pphosted.com [148.163.154.28])
+Received: from DB3PR0202CU003.outbound.protection.outlook.com (mail-northeuropeazon11010021.outbound.protection.outlook.com [52.101.84.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8572F231A23;
-	Mon,  7 Sep 2026 04:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.154.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98A8044212E;
+	Mon,  7 Sep 2026 08:15:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.84.21
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788755371; cv=fail; b=CJVoA71icXhNDZ3Jq3aeCn8s0BCqvpPaP+3yXOqHerLK2tdnGwqLx23XBv0bPbqy5qXNB80ZCyDN+ZBjgw/ck4ur+o2C56e1LsWUZTf+aRSJg5VI7heMjm8PcJ5hWHdo3j98n6WMAKEjWC6vzU42VrUDIqb3iPReyOECOSQeX+U=
+	t=1788768949; cv=fail; b=Rq7Zi50g8QircT3hmpPobTxPInRKyRj4j/9zOf5djg0EoL++Ft2+DFQf7qGpuB4bazjVsfyf9ki60TUvfbVThzDJEXkGGQsFYNiajiWoT6jcmtcCxlo0VWSogDpYbnkvOAbz4429GbtMeveuF0nfC62U49Qsc3BGVVZr9Bme3mY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788755371; c=relaxed/simple;
-	bh=5HHiNiC8/qXzjvSvMYqepKU73PTSKvKbXIDhxxpDG7k=;
-	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Bm8Xdwyb1wgEh22u0tb23GYUU4coY1ATdKWLxLJ0qvl24B8mGW/UvdVKCHZG68Jd8fDv5dSKf68Gp1ic2GgJFr2KvtIBLhw7WXznfPHAf0INFGhV5rWXSA8mp3yMRNSDJfFo/YbfTSHHfPNB+VA2JbnpXOJyXBv1gJI9NNkHkh4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (2048-bit key) header.d=ti.com header.i=@ti.com header.b=Ogsdskiv; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=WTntPemq; arc=fail smtp.client-ip=148.163.154.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+	s=arc-20240116; t=1788768949; c=relaxed/simple;
+	bh=0lNMtSqIso2fp2AyclVKIE95G2Ei+VC59Q/R4Q1sfZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=tcxmlpq8Qbe5iDdA5lSt+sbOjrc/Pw3PnFoZr0XcyQ7+Ya+aJ5chXTFyHOBSC6FAicXMh1FJgcLYn+Y77bzB1m7XVpV5VCPTClGWKW9jKtBm5Xn1A2OYAdhobeTrfG0aL5D+XF2xRnKO/m7WhqkaKbFmQNqPKsKnFem8tMjnnvs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=XAfnuEqp; arc=fail smtp.client-ip=52.101.84.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ti.com header.i=@ti.com header.b="Ogsdskiv";
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="WTntPemq"
-Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
-	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6873iojQ2399040;
-	Sun, 6 Sep 2026 23:29:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=
-	proofpoint-05-2026; bh=WoMXnesFiBhxVVGYGwr881/Ity3rVNq/N5suxTghJ
-	jw=; b=OgsdskivdrmfqksJB1HR1BzBfmytTQfbebBRKiVAXFJcivmhH4mec2bJs
-	pioUnQAqUnrSeBlPIOeq6skygtKtP3k0hlAh8AD9T+AVB/WR6nLRXs2KbcpUKNsT
-	bYVhkh8/3yX18BlYCbUqz+WCogI4zhGMAkGsxR8cuH8cl9R7P0UIiU8hNxczKV+V
-	stAdG2ImL2RFmWmHpc6Ko5vCAllPnaa4vzwIKP4GmHo/3iJLRh1ABWzhoS+S2U0N
-	Hlt4n63XLlQCTN0P3d5SzvnsNFjFWF2RRTrHubMmVG7nRThAIBg7GpBINjjCn7vD
-	CkxvtWjQORHevXeIYNn2CDEPaBbuQ==
-Received: from byapr05cu005.outbound.protection.outlook.com (mail-westusazon11010012.outbound.protection.outlook.com [52.101.85.12])
-	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4gh2f6bmhb-1
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-	Sun, 06 Sep 2026 23:29:28 -0500 (CDT)
+	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="XAfnuEqp"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Rw9UTiPVylWdnVnXbxiVa4h2j0tBkuXTP5pGDD6eP687k+XwAt/7JtklVQHfPDgv0wRFvtaDOEEnVa0MgCl7m+EFuDUlbq1qhRhinWacIO9922FFDnu5CaR1ze+lZnsjF2FHig/DgufhGuoWq5nHIsMt9+jiLKmpphRQEd3NlrAwomNjE01IT3wjK+Js2u1/oCNn8Q61cF+OwFty+8HqhkUTdMpzL+7782jQcniIN9xKm/n+NUaAeX+qblfvJaoR/HSkZ1v/nvK8Z0/mlk/vqwb5IApmd8WqoTyvEqERG87ehSyB/UNo9aAlMMb0/62dPcITnXjNR6JAGf/BFI0CkA==
+ b=bQv0oOZeMFCDnE5XDlrUDRjaplpG+JXM2a9DCzT9Gqqsgd9UBAmJs/vLHoUN+qiDYIQqXhAL1NNZK3n39Og34UoCja3SCYGOzVc5IHzHUbeDXoaUOSQ73hwF+IH3iwgLFuUdSEJbDEBaBgFmOy9K7bTd4rRT5b35y2BFw3C3ERYH/5CrEpIwXej8nLyi1EWCIlsxNg0zxPYw/GMhAXC+b7DsgnGLQBG6KyAvFdogRV3qMYUr8I9ux2AHeXI+k22CvP03P8Gnc+XKCtw/lkXwj3+i/jNx333R/WTPoUR/VrdHt0JiTo2sb0AlPir0gDYIfxnTA2+YsAKFjUk2uR99hw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WoMXnesFiBhxVVGYGwr881/Ity3rVNq/N5suxTghJjw=;
- b=HWqgTQG3XVWEoXjzk0U6pDGSPQVJ/gz+AYigr2hQC8M9QEGp7N9KZMY6Yibh1AyeD8aQNHREhNf9klnRwzrh1+RaTCiemwna2Zqh/cTZdUt/Uss5FFV/4dh5oLpG1ymUsKe6mohm2+SOWess7oT36fWeQi4U9V0kozOOM6KeVgJoeQkN9YpXdEWmc9cYa4mt3DHr0ocN1cUNpo60ETLu4rA4MaQ59sO1jZ/ddn2nJngFHC3PM9W8kqhe2Ezps3xIFCmj/IhFeoTXOqM5pMkjZ4XaDYaE/zs+as+pNpT3Od2uByeLD8lZbzLFMTnHPcU+32iDlGDz2bcOoQrx52pdxA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 198.47.21.194) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=ti.com;
- dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; s=selector1;
+ bh=66NirmErgYN4Jex0VD/LhDbDWC97x8tuT1RPf2KnrAc=;
+ b=IdcGYOxhYhbLQ+d0uDK5EQ4DOEoUgc+OhvpMTAwuMJCKuWPXwczq044qLBDGcmDhmYmLoUCurvjmLsQ7pdCzcI6Xjj4RjcETPSm1jV+IlOOgZ/qSLD6onUnTV3X5aODejqtpPq9kA8usFzBTvSNaxvWwS9tnf9oqxRBoT2Jp9e2QvoLURSfXIMnH/yDLT8ZOAlgM7rO5ANFx5yMx5h2U867fijDoSsNlCTBYkWAecvXNoPohsLxPt6/dw3FnrlZPqGzQmD/XndrTqjgagzDYzAlqr2m7CD6uAqnaribrx4dyxH4pIHmIfIOh9GG76qRdq12NDgMhO6+ijFpQNDFwtQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WoMXnesFiBhxVVGYGwr881/Ity3rVNq/N5suxTghJjw=;
- b=WTntPemqYJvF76CzaL9r+guuy9hj7d5agpe5DkcT8OSKAKIrk6ev85twpO4p8fEYgVHA3k2L1kzNQm1wVxryitvU4m5MtsRXTGCHI4L8qvrmSwPDjAdPuyv593rQCpye9XRkLkWS33p4iQCsOLPW0f8FEKH/+gvV5nh3XPyfDo8=
-Received: from BN0PR07CA0004.namprd07.prod.outlook.com (2603:10b6:408:141::22)
- by SA1PR10MB6296.namprd10.prod.outlook.com (2603:10b6:806:253::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.4; Mon, 7 Sep 2026
- 04:29:23 +0000
-Received: from BN1PEPF00006001.namprd05.prod.outlook.com
- (2603:10b6:408:141:cafe::21) by BN0PR07CA0004.outlook.office365.com
- (2603:10b6:408:141::22) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.21.382.15 via Frontend Transport; Mon, 7
- Sep 2026 04:29:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 198.47.21.194)
- smtp.mailfrom=ti.com; dkim=none (message not signed) header.d=none;dmarc=pass
- action=none header.from=ti.com;
-Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
- 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
- client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
-Received: from flwvzet200.ext.ti.com (198.47.21.194) by
- BN1PEPF00006001.mail.protection.outlook.com (10.167.243.233) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.21.406.5 via Frontend Transport; Mon, 7 Sep 2026 04:29:22 +0000
-Received: from DFLE204.ent.ti.com (10.64.6.62) by flwvzet200.ext.ti.com
- (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Sun, 6 Sep
- 2026 23:28:48 -0500
-Received: from DFLE207.ent.ti.com (10.64.6.65) by DFLE204.ent.ti.com
- (10.64.6.62) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Sun, 6 Sep
- 2026 23:28:48 -0500
-Received: from lelvem-mr05.itg.ti.com (10.180.75.9) by DFLE207.ent.ti.com
- (10.64.6.65) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
- Transport; Sun, 6 Sep 2026 23:28:48 -0500
-Received: from [10.24.68.110] (uda0492258.dhcp.ti.com [10.24.68.110])
-	by lelvem-mr05.itg.ti.com (8.18.1/8.18.1) with ESMTP id 6874SYxU781882;
-	Sun, 6 Sep 2026 23:28:34 -0500
-Message-ID: <f28b21f1-046c-45a7-b542-8398d5e63335@ti.com>
-Date: Mon, 7 Sep 2026 10:02:15 +0530
+ bh=66NirmErgYN4Jex0VD/LhDbDWC97x8tuT1RPf2KnrAc=;
+ b=XAfnuEqpqrpBWjpvEmmtmRTUPx7PBJ/Gp5hNV54Cfl8x5DQCAEGGvqC8ECFPyqkBifo13xh2Y2tscl7Vm51ywPlFcHpm7IIywGY9c37U2hIbyY69TwezT62nGi5hlFps5wU6vkZR05OPIR9RBTkjjDoEOEPpZqIluxsVWJpFD1VZ9zt6lQqfLcSSQsKhf9Rva/D5r+5W/y0NCse8A9qq/oS9qIEBrBWPU0bCJlx2aqjGIW82jD0vQUpRXZJLsSsktdvB5IdRNOaHXYYeQs44OnFdyi8k9mY4At4VO6XZPHzCsgwSfaTim2xR3BfIu0ioyNdkZX+9G82mC3sLqMpl4Q==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from PA6PR04MB11909.eurprd04.prod.outlook.com
+ (2603:10a6:102:51c::22) by PAXPR04MB9229.eurprd04.prod.outlook.com
+ (2603:10a6:102:2bd::16) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.382.10; Mon, 7 Sep
+ 2026 08:15:43 +0000
+Received: from PA6PR04MB11909.eurprd04.prod.outlook.com
+ ([fe80::a4b:fa4e:7fe7:e6a2]) by PA6PR04MB11909.eurprd04.prod.outlook.com
+ ([fe80::a4b:fa4e:7fe7:e6a2%7]) with mapi id 15.21.0382.014; Mon, 7 Sep 2026
+ 08:15:43 +0000
+Date: Mon, 7 Sep 2026 16:19:54 +0800
+From: Bough Chen <haibo.chen@oss.nxp.com>
+To: Ciprian Costea <ciprianmarian.costea@oss.nxp.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>,
+	linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-kernel@vger.kernel.org, imx@lists.linux.dev, s32@nxp.com
+Subject: Re: [PATCH v4 1/3] can: rx-offload: make skb_irq_queue per-CPU
+Message-ID: <20260907081954.h73o7vzgr3obpqyr@shlinux89>
+References: <20260901114848.500591-1-ciprianmarian.costea@oss.nxp.com>
+ <20260901114848.500591-2-ciprianmarian.costea@oss.nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260901114848.500591-2-ciprianmarian.costea@oss.nxp.com>
+X-ClientProxiedBy: SG2PR01CA0182.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:189::20) To PA6PR04MB11909.eurprd04.prod.outlook.com
+ (2603:10a6:102:51c::22)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-CC: <dario.binacchi@amarulasolutions.com>, <mkl@pengutronix.de>,
-        <mailhol@kernel.org>, <msp@baylibre.com>,
-        <florian.fainelli@broadcom.com>, <jonas.gorski@gmail.com>,
-        <andrew@lunn.ch>, <olteanv@gmail.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <pabeni@redhat.com>, <kurt@linutronix.de>,
-        <hauke@hauke-m.de>, <chester.a.unal@arinc9.com>,
-        <daniel@makrotopia.org>, <matthias.bgg@gmail.com>,
-        <angelogioacchino.delregno@collabora.com>, <ansuelsmth@gmail.com>,
-        <linusw@kernel.org>, <luizluca@gmail.com>, <alvin.sipraga@analog.com>,
-        <clement.leger@bootlin.com>, <justin.chen@broadcom.com>,
-        <dlan@kernel.org>, <rogerq@kernel.org>, <hkallweit1@gmail.com>,
-        <linux@armlinux.org.uk>, <rjui@broadcom.com>, <sbranden@broadcom.com>,
-        <bcm-kernel-feedback-list@broadcom.com>, <opendmb@gmail.com>,
-        <andrei.botila@oss.nxp.com>, <wangruikang@iscas.ac.cn>,
-        <amadeus@jmu.edu.cn>, <kees@kernel.org>, <tmshlvck@gmail.com>,
-        <c-vankar@ti.com>, <horms@kernel.org>, <vadim.fedorenko@linux.dev>,
-        <daniel.zahka@gmail.com>, <nora.schiffer@ew.tq-group.com>,
-        <v-singh1@ti.com>, <oss@vassilevski.com>, <haokexin@gmail.com>,
-        <alex@sverdlin.org>, <aleksandr.loktionov@intel.com>,
-        <lgs201920130244@gmail.com>, <linux-can@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-renesas-soc@vger.kernel.org>, <linux-riscv@lists.infradead.org>,
-        <spacemit@lists.linux.dev>, <linux-omap@vger.kernel.org>,
-        <s-vadapalli@ti.com>
-Subject: Re: [PATCH net-next 00/33] Remove comma after sentinel entries in
- match table
-To: Jakub Kicinski <kuba@kernel.org>
-References: <20260904043724.2955444-1-s-vadapalli@ti.com>
- <20260904085811.7e2c2db6@kernel.org>
- <cc1f9d12-e853-4000-8236-9e7f5a9ed314@ti.com>
- <20260905110300.2b4825d5@kernel.org>
-Content-Language: en-US
-From: Siddharth Vadapalli <s-vadapalli@ti.com>
-In-Reply-To: <20260905110300.2b4825d5@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN1PEPF00006001:EE_|SA1PR10MB6296:EE_
-X-MS-Office365-Filtering-Correlation-Id: 243db8a4-64ea-4733-3d5c-08df0c989748
+X-MS-TrafficTypeDiagnostic: PA6PR04MB11909:EE_|PAXPR04MB9229:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef8ef551-6688-42d2-b168-08df0cb835d9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700016|376014|23010399003|7416014|82310400026|1800799024|56012099006|4143699003|10067099003|22082099003|18002099003;
+	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|23010399003|19092799006|10067099003|4143699003|56012099006|11063799006|22082099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	kev/CobYf6esPThUcNkoIJW3MnGLpQ9NfOAi2bAp/v+wr2Dg42v4I1LqaljXShlKDxwmEeIps39cHMB+vprH76Z9jeEn+106d768BzKG+V/oXp8DT/LqSqswiIO48PM5Qtpu8/d3I5fp2PDwZe9rkdfmfQzAVvpgF8Eqwa8X4z/uoBMOladsZdSnVa8JxUOlRNDu3YgiflDqGRaLzXpIlPcOl4epvwdpY3K5nIcYbb3aP+hAQfsGJfaGmUe8JiMjne5evPrupHLNq627nKfZIa7uOrVjLi4dOObLxlBT1VpfAEDI3/RX7mQcNQU9CEHokPAzteN/y7j8sgk14nRQ24fQtRk+WkRKGjfK1s2qEAptNF1mgdRFirxH2XLI+r/rWA8AW1kRG6gEHToI5W/59qWG93okiCyEOJpT3iAyO0+RuE4A67TczxicXG47bwMUm80/DQVktO0wDmIk2KJBwp+XX2E1w5GR/0NOzme98gzDh4PfurnPq8JzUqqxXhuOkkQ6yiAeuM/5ZB/yY6CX9TwmBffwTH282Sj1d9EROLTvlonhWQwTMam/6ZaFenuoAK/dgRuSiuYAmEptsFFy9YoghgiVGyx86Ppm3tSoyuhaKAn9dDWEWetiBda464GhYK+2EUtXzyM4mPEXolieFADOmBzUPqOiFF6/+93AaXDGw5fm9mHAIO7pdqR9orFTdRY8QZSbGSPUr38dkonxpQ==
+	1Hf9MD1Yh5pY62fYGaSsmQGy14xf/BbUpunfPh3xzrkfTal1ofPJI3Ek9m9bfLoDNykJAdFGr+n3jmvBQr1spwPiV+x0FXWU+0CzFYQTDqp2qtuIAlaRo60V8DRPordrIsNgzvfqatwDUNkOnvHx5Dbja0dLplQP+Qw7z1an8QZTYyM11y7i6C85trd4i3eDpeizGvxjpegTrysWSDXAJygtiSpBopswSRcnKFst85Bp71Mei1TdyAi0/JXXmbxD843o9vYFBX9FU99kHNLFMO7kFt7MYzfUEsaI0gv9YOSr/Rwyf1oVZ/KJB88PSTbmRW45PI4u1gJ8jEmkcWB3pkX4AdXFlbjw90K6v/NjvK5UiI/m370VKKU3e4e3/tgvkFfI+bnEn5/McprSkfk6fDbEG0kwqSO8h2lhbdBKrJ9N1hUiaFRX7ZFI0uzRjLs/K7MvLbZl0ku7dAljFmIKNScGLqANp76V0qeBBXdDPG3CFONfrPBTamROUOQftX1LxmuedsCf2yBNPebOIO1/IyXlJTqEOg60OanaGbLvcAbfstXKP9HdLJ2o+KWXfAmq8QxWgk9OushR0UW/KUib7ZhRTABeYqU0t/10ZbU4D75aYxAcKDlSm4rENLl79WAGO8lkJLCxXXkSaY4Ln3XQHUJn2n7TdGpxlWPzzklo7Tc=
 X-Forefront-Antispam-Report:
-	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(36860700016)(376014)(23010399003)(7416014)(82310400026)(1800799024)(56012099006)(4143699003)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA6PR04MB11909.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(23010399003)(19092799006)(10067099003)(4143699003)(56012099006)(11063799006)(22082099003)(18002099003);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	ts7IvxCSY2KxMs5RhbAYYd5+3EiKlUq27xpul/Eq6l2Dvgb7eg67m+Vvae+Jil47YXljUcnDk3ogVeXoVaS9AGjP/kFWuSeaG764Me65hZ7ZSpyMqS0rjxusHgYf2U5D4tcCk8UHsxBHgo4vY22fFm9gkmehgfsey+UQXutndox9XYPkJI2nysMzwUUcoMpxGkXFoiwymjhu8KVQAiLpHhw8Sciyj9flE54B+HMtad/rzLzVAeoy5WegSq6URVQQvyZbp1YIYPXilhuckN0ZxiZ36+y4mRuNu7ekd0g00H3pj+ynhDOBlaivHjJcg3kvW2klUnq3+vfhCAzzhP3YNAJhNGoCyAlUYer5+6LVcQ7G7I6caPCEflzP79EE1jSC2tSmHUSv2dbNHwYRI8jmDcPHUQzHpZIaZINJO7GZXfQOCImONH0+7FIMGBvP9jy/
-X-Exchange-RoutingPolicyChecked:
-	x3RycQ3T49l2DDf2z7uxEJNFwrRIOMw2wnFzOGZyNSU3njptWC3bz9mx4gbe4bPqbkqGvGzhXQXR+ILjKXix0LqiiU1jHAxKd5fo7jS/psxi3Kr0+zayaKpzZ8v8URU6Yyz4x/5CnuXcC4GZlZ/Z/bU1KuNA4UrnaDzjynIIBoSIJhsxz9Zb+FAfnd9uUzDgBzQ970oZXi9wSvC73C7MlNenp5Ii0QeKZXFUC25XN84t3slJbZTtZIqc0f3KMafyfM3kBq0KogIHRD5Z4ylvolx4a0pERG3aUAwUSzUiV1uEGcebddR5yter+hjYkod47hSTZglugjoB7XUa/49cEg==
-X-OriginatorOrg: ti.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2026 04:29:22.1759
+	=?us-ascii?Q?RWUMxA04RWjiXus+I4HLOGU9D8nDq/1yrfGbOb5HFiNIscCZyjoDb03qPBVZ?=
+ =?us-ascii?Q?m5oZLOxYUtI6AgWRD61730y6LG0vHIJR3Bu/m9t6ZQu3VQXcjv2pYUnMPfeC?=
+ =?us-ascii?Q?MaT5hp/bAZ2aXGfsYbBRbJHn1QsLGx18R9rAaQt6q+e4obgkvh3/RXO7BJWT?=
+ =?us-ascii?Q?lxo/P/YhIpu4T5yLBp7ljRCHMXJrPtDKjxv/v3+HwcC7MKjhWrpS65fHRdeB?=
+ =?us-ascii?Q?KrHwH3aiML1PVDI2kAXi1Qz8oIgxVCCLQJTbQgY7OrrcKgUVE9EdZ2TI3ejQ?=
+ =?us-ascii?Q?058+18aAqQUhgY4Dt4s83KKEUe2XSWjsM5/DX5bj6dhH2ng0Y/m8uRzAqbqO?=
+ =?us-ascii?Q?rm/YQsMOFhnazNqDQZTqxclA/qYSlPNoDBVOjqo1a+NvdSxsWriFTLHd05+2?=
+ =?us-ascii?Q?9lEwFqXCCsaVhAM3rAgjImKtTU76aggpDhFDNKWKqi5r0U2jQZEfbgp1RIRw?=
+ =?us-ascii?Q?hF6kUm+m3zZJxDx7wOXDtwjJEkS13AbxDP5DdzNNf9JZdLooMi8GCW/w3wuj?=
+ =?us-ascii?Q?1tiCzGmZ/bvHXtq/HUM3TpQ0+VJvTCteryNBvwLRY3C7IbDdBMFKIuWghOic?=
+ =?us-ascii?Q?T/ilLlnhx9jkSAXRmXYlUmUhysZUU0TdgU6znL3WLoglIFcO6Re8cmjEMmOl?=
+ =?us-ascii?Q?H6QqXZF7gHkDCBxPsxJNcxO4EtthLuq5rXSdY6pHT25+79fE0DQsH1ZP4z9y?=
+ =?us-ascii?Q?VMUnTAH08tEtcaN04bHJF+WtdK1XBAxea825snr0wCvRmaQravB+0r8d7Fmn?=
+ =?us-ascii?Q?kFSFYHM3B+t1rpDqh8Szs6p+Mr7oCZteGjcPjk9GaPFkhp7d1LoKVEjwtA1H?=
+ =?us-ascii?Q?gtSoySWFuakLd+8MOr+nUs/qtCxjXYUP6c8R0sdYlDVHdrVhz15j71tuYSdz?=
+ =?us-ascii?Q?lBsvv1AQLd7xlqkutc87FKSSTmyl0bnosE5+6oZaMn3atERWTySywjYD0Rqd?=
+ =?us-ascii?Q?ni0ByOc3uYB+au/VNSly/izGBgmAFUHvWEI3Ubv0OzcubHeAjmGkqldbXefe?=
+ =?us-ascii?Q?u0HCMSiD2dCRSWfY1FieIScR2Nm57YXpcLWOV3+mhuPykmIKqQXsodTe7wPa?=
+ =?us-ascii?Q?WCdFEJWqMZIrhjf+dk+OjimHckZbEeM+PTWzQro6D8ecoRKQnT4rzcvB4O2d?=
+ =?us-ascii?Q?TGUbhL4aPdMHHny1Bdc4BVYspu/PdKBB3k+cmIkatpA6Wp1UOaX95YmgsV0H?=
+ =?us-ascii?Q?Ypy8xk7BGkWucAZd5KZsaGM6/Uu6qeHY+ZGdNi4IN1Nl01BLaVrLGrFrRqhj?=
+ =?us-ascii?Q?vvDP4DqisGIPWVwDgRkds2dHQ3lK+2uncC1elu8c7BDDPQVyZ9vdpvl1v9Zw?=
+ =?us-ascii?Q?URNYSSpzwDKvUhFc9Puvpu0HjI4mHlfF03mn2WNnH8uR5hKoZ7dsmJUxUaCw?=
+ =?us-ascii?Q?cbSR+V6E/Lm0duL9QIy9DQGNJh/HBJhpzQrlXs4G2aY5ZAUv4dFO3B8cG82z?=
+ =?us-ascii?Q?PEWO0Gup6btG0FTeUY5tpvLyXvzg/tqysOFm07EdkzU9YHX/JJ6ugrsBTGxK?=
+ =?us-ascii?Q?6MFSzgZ7zjyqanIB6GhBGj3UkyTHRJ26hwOzWB3ImUB3TET5WKgyr08p77Kc?=
+ =?us-ascii?Q?jg3CLznBu3tIig81joiIFZzEP3sf0IRBEeDssQjjZuySu72sNb3u4RD0OHYU?=
+ =?us-ascii?Q?o8ZWJVbubDE3wWeqW3ka7NQIP33LxltBTKx2NJiqPjQmyTZfL0UY9J9YRQXo?=
+ =?us-ascii?Q?ERTOYIQAF9WDG6N/Y+VzP8Cw7EmgXPzSCqUM8uzgm5UVE1q7HjofyK3Jlaj1?=
+ =?us-ascii?Q?7PrZfyRG0VPA0mSf7lcpQdW9M5jNOb8d+ndIb2fpR9UolBnPi8Ru?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef8ef551-6688-42d2-b168-08df0cb835d9
+X-MS-Exchange-CrossTenant-AuthSource: PA6PR04MB11909.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Sep 2026 08:15:43.0303
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 243db8a4-64ea-4733-3d5c-08df0c989748
-X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	BN1PEPF00006001.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB6296
-X-Proofpoint-GUID: TcIj0pVKLjqkCcPg5GohwvIHdEwPC0Kd
-X-Authority-Analysis: v=2.4 cv=Wqkb99fv c=1 sm=1 tr=0 ts=6a9e3da8 cx=c_pps
- a=cX17BFbqy3c2X70AxBoB8A==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=VdqzKS8jKosA:10
- a=V5UXEbMT0ywA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
- a=fPAWb5peG099m5CrUpKH:22 a=3HQJJnglLaSNX05as70A:9 a=3ZKOabzyN94A:10
- a=QEXdDO2ut3YA:10
-X-Proofpoint-ORIG-GUID: TcIj0pVKLjqkCcPg5GohwvIHdEwPC0Kd
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTA3MDA0NSBTYWx0ZWRfX5pdAEjPz8xi0
- WsWw3vjC2upIKrTndSc2o7BQnaW/LzjBmhUSVqzDgzL85PSJlvlM8BzpXZUq+UWn70rEVdddwvh
- TZK5+NHR1QmsQx8W0vqe+aDLA+G7YgQfRpWaNcFtquNt5INt4f15DF2whwrmbX2mYDGPNRiwOnc
- kleVvYcNU69bc5cJpehoYIOUnX/TeZQBoE11WV9wKqcy0GaF9zSVUGfRpsKDxlpEICdUzFZDjKL
- h6o2rY0CUGCUJcSOnQxWQRx1Qs9uGv9PR6uBMeN5GapB/jDDXgLQkpL3JPDgyOEZVQiQvfRZmZp
- Mf+jwWXFcvyPgm/EqkKKzEsCuNfqpElffXd15XwBr7POTh052ShD/C3w3rat8X1M1hVVKYoYDqS
- c7ijz+CCVHo4IUEVf9Q7ritm7tFA2SgTiO26jlEd01fRwQBCQF4vEbkMQ5HZAMuojYfYicdn+U/
- HNKYqK8CPxWshraaiqg==
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTA3MDA0NSBTYWx0ZWRfX8NWGrkFcSxXE
- Fsc9qijGcDDH3GpnYshfu5SOBPhr/6Pdtl1r3StQDdRdKZMoflTUVb20HG0Jbx9G0WciL3ivi2/
- ag33ThHL3XkwSHo55MVi5W4HGvwwtHA=
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-07_01,2026-09-03_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- impostorscore=0 bulkscore=0 adultscore=0 malwarescore=0 spamscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1015 suspectscore=0
- priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2606150000
- definitions=main-2609070045
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 22KmRoT34kqiHPhInuETiBXFCvSbjawTAGyTV4FxT8Va29EvKLsg+iowEg1xq6GqP35OYHiNS9vPVPN2pEWXlkfpbUoT1dgodRzimUVcM+Bs5rX2I6lpgtXqgSpyUpkT
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB9229
 
-On 05/09/26 23:33, Jakub Kicinski wrote:
-> On Sat, 5 Sep 2026 11:09:54 +0530 Siddharth Vadapalli wrote:
->>> You failed to specify why this "cleanup" makes a difference.
->>> have you ever seen the sentinel not be the last entry?
->>
->> The 'cleanup' in a way 'guarantees'/'enforces' sentinel being the last
->> entry, by catching 'copy-paste' errors at compile-time rather than being
->> a silent bug that shows up at runtime. If a new entry were to be
->> accidentally added after the sentinel entry in the current drivers, it
->> will not cause any compile-time error, but will fail silently at
->> runtime. This series 'cleans up' the drivers by making it a compile-time
->> error going forward (adding a new entry below sentinel will cause a
->> build error with the comma removed after the sentinel entry). I do not
->> doubt the review process on the mailing lists where such errors will
->> certainly be caught, but isn't it better if they are caught at
->> build-time instead, thereby saving reviewers the trouble of pointing out
->> such trivial mistakes?
+On Tue, Sep 01, 2026 at 01:48:46PM +0200, Ciprian Costea wrote:
+> From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
 > 
-> Is it polite to answer a question with a question? 🧐️
-
-I apologize if it came across as an impolite response. That isn't my 
-intent. The 'question' was meant to be more of a "It's better to do so, 
-right?" kind of 'question' which is actually a statement, but I posed it as 
-a question to make it sound polite. Writing the same as a statement of fact 
-appeared to be impolite to me, but I realize now that posing it as a 
-question could also be taken as an impolite response.
-
-I should have omitted the closing remark entirely and will keep this in 
-mind during future interactions.
-
+> skb_irq_queue is filled by the IRQ handlers using the lockless
+> __skb_queue_add_sort() / __skb_queue_tail() helpers and later spliced
+> into skb_queue under skb_queue.lock by can_rx_offload_irq_finish() and
+> can_rx_offload_threaded_irq_finish().
 > 
-> Please be mindful of maintainer's time going forward.
+> This is only safe while a single context fills skb_irq_queue. FlexCAN
+> on NXP S32G2 (FLEXCAN_QUIRK_SECONDARY_MB_IRQ) uses two mailbox IRQ
+> lines, one for MB0-7 and one for MB8-63; MCF5441X similarly splits its
+> mailbox interrupt. When these lines are affined to different CPUs both
+> handlers can run at the same time and enqueue into the same sk_buff_head
+> concurrently, corrupting its list.
 > 
->> Trailing commas are an indication of 'scope-for-extension' in the
->> future, which holds true for 'enums' or other structures where newer
->> entires are added towards the end rather than being inserted in the
->> middle. Since that isn't the case here, this series makes it clear by
->> removing the trailing comma.
+> Allocate skb_irq_queue per-CPU so the handlers no longer share a list,
+> keeping the enqueue path lock-free. Access the per-CPU queue via
+> get_cpu_ptr()/put_cpu_ptr() in the enqueue helpers: this disables
+> preemption around the lockless __skb_queue_*() operation.
 > 
+> can_rx_offload_irq_finish() runs in the same context as its enqueues and
+> splices this_cpu_ptr(). can_rx_offload_threaded_irq_finish() may have
+> been migrated after its enqueues, so it splices every possible CPU's
+> queue; this is safe because each per-CPU queue has a single producer and
+> that producer runs with preemption disabled, so it cannot race the
+> splice.
+> 
+> Cross-line frames are now sorted by timestamp only within a CPU's queue
+> and appended across CPUs on splice; each skb keeps its own timestamp.
+> 
+> Fixes: c757096ea103 ("can: rx-offload: add skb queue for use during ISR")
+> Signed-off-by: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
+> ---
+>  drivers/net/can/dev/rx-offload.c | 83 ++++++++++++++++++++++++++------
+>  include/linux/can/rx-offload.h   |  2 +-
+>  2 files changed, 70 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
+> index 46e7b6db4a1e..649bfda08b65 100644
+> --- a/drivers/net/can/dev/rx-offload.c
+> +++ b/drivers/net/can/dev/rx-offload.c
+> @@ -7,6 +7,7 @@
+>  
+>  #include <linux/can/dev.h>
+>  #include <linux/can/rx-offload.h>
+> +#include <linux/percpu.h>
+>  
+>  struct can_rx_offload_cb {
+>  	u32 timestamp;
+> @@ -175,9 +176,18 @@ can_rx_offload_offload_one(struct can_rx_offload *offload, unsigned int n)
+>  int can_rx_offload_irq_offload_timestamp(struct can_rx_offload *offload,
+>  					 u64 pending)
+>  {
+> +	struct sk_buff_head *irq_queue;
+>  	unsigned int i;
+>  	int received = 0;
+>  
+> +	/*
+> +	 * get_cpu_ptr() disables preemption so that the lockless
+> +	 * __skb_queue_*() below operate on the current CPU's queue without
+> +	 * racing a migration. This also keeps this_cpu_ptr() valid when a
+> +	 * driver enqueues from a preemptible (threaded IRQ) context.
+> +	 */
+> +	irq_queue = get_cpu_ptr(offload->skb_irq_queue);
+> +
+>  	for (i = offload->mb_first;
+>  	     can_rx_offload_le(offload, i, offload->mb_last);
+>  	     can_rx_offload_inc(offload, &i)) {
+> @@ -190,20 +200,25 @@ int can_rx_offload_irq_offload_timestamp(struct can_rx_offload *offload,
+>  		if (IS_ERR_OR_NULL(skb))
+>  			continue;
+>  
+> -		__skb_queue_add_sort(&offload->skb_irq_queue, skb,
+> +		__skb_queue_add_sort(irq_queue, skb,
+>  				     can_rx_offload_compare);
+>  		received++;
+>  	}
+>  
+> +	put_cpu_ptr(offload->skb_irq_queue);
+> +
+>  	return received;
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_timestamp);
+>  
+>  int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload)
+>  {
+> +	struct sk_buff_head *irq_queue;
+>  	struct sk_buff *skb;
+>  	int received = 0;
+>  
+> +	irq_queue = get_cpu_ptr(offload->skb_irq_queue);
+> +
+>  	while (1) {
+>  		skb = can_rx_offload_offload_one(offload, 0);
+>  		if (IS_ERR(skb))
+> @@ -211,10 +226,12 @@ int can_rx_offload_irq_offload_fifo(struct can_rx_offload *offload)
+>  		if (!skb)
+>  			break;
+>  
+> -		__skb_queue_tail(&offload->skb_irq_queue, skb);
+> +		__skb_queue_tail(irq_queue, skb);
+>  		received++;
+>  	}
+>  
+> +	put_cpu_ptr(offload->skb_irq_queue);
+> +
+>  	return received;
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_fifo);
+> @@ -222,6 +239,7 @@ EXPORT_SYMBOL_GPL(can_rx_offload_irq_offload_fifo);
+>  int can_rx_offload_queue_timestamp(struct can_rx_offload *offload,
+>  				   struct sk_buff *skb, u32 timestamp)
+>  {
+> +	struct sk_buff_head *irq_queue;
+>  	struct can_rx_offload_cb *cb;
+>  
+>  	if (skb_queue_len(&offload->skb_queue) >
+> @@ -233,8 +251,9 @@ int can_rx_offload_queue_timestamp(struct can_rx_offload *offload,
+>  	cb = can_rx_offload_get_cb(skb);
+>  	cb->timestamp = timestamp;
+>  
+> -	__skb_queue_add_sort(&offload->skb_irq_queue, skb,
+> -			     can_rx_offload_compare);
+> +	irq_queue = get_cpu_ptr(offload->skb_irq_queue);
+> +	__skb_queue_add_sort(irq_queue, skb, can_rx_offload_compare);
+> +	put_cpu_ptr(offload->skb_irq_queue);
+>  
+>  	return 0;
+>  }
+> @@ -268,13 +287,17 @@ EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb_queue_timestamp);
+>  int can_rx_offload_queue_tail(struct can_rx_offload *offload,
+>  			      struct sk_buff *skb)
+>  {
+> +	struct sk_buff_head *irq_queue;
+> +
+>  	if (skb_queue_len(&offload->skb_queue) >
+>  	    offload->skb_queue_len_max) {
+>  		dev_kfree_skb_any(skb);
+>  		return -ENOBUFS;
+>  	}
+>  
+> -	__skb_queue_tail(&offload->skb_irq_queue, skb);
+> +	irq_queue = get_cpu_ptr(offload->skb_irq_queue);
+> +	__skb_queue_tail(irq_queue, skb);
+> +	put_cpu_ptr(offload->skb_irq_queue);
+>  
+>  	return 0;
+>  }
+> @@ -307,14 +330,15 @@ EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb_queue_tail);
+>  
+>  void can_rx_offload_irq_finish(struct can_rx_offload *offload)
+>  {
+> +	struct sk_buff_head *irq_queue = this_cpu_ptr(offload->skb_irq_queue);
+>  	unsigned long flags;
+>  	int queue_len;
+>  
+> -	if (skb_queue_empty_lockless(&offload->skb_irq_queue))
+> +	if (skb_queue_empty_lockless(irq_queue))
+>  		return;
+>  
+>  	spin_lock_irqsave(&offload->skb_queue.lock, flags);
+> -	skb_queue_splice_tail_init(&offload->skb_irq_queue, &offload->skb_queue);
+> +	skb_queue_splice_tail_init(irq_queue, &offload->skb_queue);
+>  	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
+>  
+>  	queue_len = skb_queue_len(&offload->skb_queue);
+> @@ -330,15 +354,29 @@ void can_rx_offload_threaded_irq_finish(struct can_rx_offload *offload)
+>  {
+>  	unsigned long flags;
+>  	int queue_len;
+> -
+> -	if (skb_queue_empty_lockless(&offload->skb_irq_queue))
+> -		return;
+> -
+> +	int cpu;
+> +
+> +	/*
+> +	 * Splice every CPU's queue: unlike the non-threaded
+> +	 * can_rx_offload_irq_finish(), a threaded handler may be migrated
+> +	 * between the enqueue and this splice, so the frames may sit on a
+> +	 * different CPU's queue. This is only safe because a given per-CPU
+> +	 * queue has a single producer (the enqueue on that CPU is
+> +	 * non-preemptible), so no producer can race this splice.
+> +	 */
+>  	spin_lock_irqsave(&offload->skb_queue.lock, flags);
+> -	skb_queue_splice_tail_init(&offload->skb_irq_queue, &offload->skb_queue);
+> +	for_each_possible_cpu(cpu) {
+> +		struct sk_buff_head *irq_queue;
+> +
+> +		irq_queue = per_cpu_ptr(offload->skb_irq_queue, cpu);
+> +		skb_queue_splice_tail_init(irq_queue, &offload->skb_queue);
+> +	}
+>  	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
+>  
+Hi Ciprian,
+The fix looks correct to me. I checked all rx-offload users in
+drivers/net/can/ and the change is safe for every current driver.
 
+One suggestion:
+the cross-CPU splice in can_rx_offload_threaded_irq_finish() is safe
+only as long as there is a single threaded handler context per offload
+instance, so each per-CPU queue has exactly one producer.
+This isn't new (the old shared skb_irq_queue relied on the same
+"single context fills the queue" assumption), and for the current
+threaded users it's actually enforced by genirq:
+they all use request_threaded_irq(irq, NULL, handler, ...),
+which mandates IRQF_ONESHOT, so the handler can't re-enter.
+
+Only the threaded finish path cares about this, and all three such
+drivers request the IRQ with IRQF_ONESHOT:
+  - m_can (peripheral)
+  - mcp251xfd
+  - nct6694_canfd
+They all use the manual enqueue path (queue_timestamp/queue_tail), not
+irq_offload_*(). Everyone else uses the non-threaded irq_finish()
+(this_cpu_ptr only) and is safe by construction.
+
+Could you spell out this assumption in the comment above the
+for_each_possible_cpu() loop? e.g.:
+
+This assumes a single threaded handler context per offload instance
+(IRQ requested with IRQF_ONESHOT / handler non-reentrant), so each
+per-CPU queue has exactly one producer. If that changes, this
+cross-CPU splice of lockless queues would need additional locking.
+
+Minor, non-blocking: get_cpu_ptr() only wraps a single enqueue, so a
+handler that drains several frames per IRQ (e.g. mcp251xfd) can migrate
+mid-batch and split a burst across CPU queues, losing intra-batch
+timestamp order after the splice. Just as the Sashiko reveiw in your
+V2. I think it is harmless, and SocketCAN doesn't guarantee delivery
+order anyway, so I'm fine with it as-is.
+Point it out just in case other people may have comment on it.
+
+With the comment clarification:
+
+Reviewed-by: Haibo Chen <haibo.chen@nxp.com>
+
+Regards
+Haibo Chen
+
+>  	queue_len = skb_queue_len(&offload->skb_queue);
+> +	if (!queue_len)
+> +		return;
+> +
+>  	if (queue_len > offload->skb_queue_len_max / 8)
+>  		netdev_dbg(offload->dev, "%s: queue_len=%d\n",
+>  			   __func__, queue_len);
+> @@ -353,13 +391,21 @@ static int can_rx_offload_init_queue(struct net_device *dev,
+>  				     struct can_rx_offload *offload,
+>  				     unsigned int weight)
+>  {
+> +	int cpu;
+> +
+>  	offload->dev = dev;
+>  
+>  	/* Limit queue len to 4x the weight (rounded to next power of two) */
+>  	offload->skb_queue_len_max = 2 << fls(weight);
+>  	offload->skb_queue_len_max *= 4;
+>  	skb_queue_head_init(&offload->skb_queue);
+> -	__skb_queue_head_init(&offload->skb_irq_queue);
+> +
+> +	offload->skb_irq_queue = alloc_percpu(struct sk_buff_head);
+> +	if (!offload->skb_irq_queue)
+> +		return -ENOMEM;
+> +
+> +	for_each_possible_cpu(cpu)
+> +		__skb_queue_head_init(per_cpu_ptr(offload->skb_irq_queue, cpu));
+>  
+>  	netif_napi_add_weight(dev, &offload->napi, can_rx_offload_napi_poll,
+>  			      weight);
+> @@ -420,8 +466,17 @@ EXPORT_SYMBOL_GPL(can_rx_offload_enable);
+>  
+>  void can_rx_offload_del(struct can_rx_offload *offload)
+>  {
+> +	int cpu;
+> +
+>  	netif_napi_del(&offload->napi);
+>  	skb_queue_purge(&offload->skb_queue);
+> -	__skb_queue_purge(&offload->skb_irq_queue);
+> +
+> +	if (!offload->skb_irq_queue)
+> +		return;
+> +
+> +	for_each_possible_cpu(cpu)
+> +		__skb_queue_purge(per_cpu_ptr(offload->skb_irq_queue, cpu));
+> +
+> +	free_percpu(offload->skb_irq_queue);
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_del);
+> diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
+> index d29bb4521947..1b9e2a8ab39a 100644
+> --- a/include/linux/can/rx-offload.h
+> +++ b/include/linux/can/rx-offload.h
+> @@ -20,7 +20,7 @@ struct can_rx_offload {
+>  					bool drop);
+>  
+>  	struct sk_buff_head skb_queue;
+> -	struct sk_buff_head skb_irq_queue;
+> +	struct sk_buff_head __percpu *skb_irq_queue;
+>  	u32 skb_queue_len_max;
+>  
+>  	unsigned int mb_first;
+> -- 
+> 2.43.0
+> 
