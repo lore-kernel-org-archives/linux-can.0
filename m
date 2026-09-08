@@ -1,45 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C8E654DACD;
-	Tue,  8 Sep 2026 13:43:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6B0550DD8
+	for <linux-can@vger.kernel.org>; Tue,  8 Sep 2026 14:57:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788875047; cv=none; b=jnGx+g0xKRTE1gjUSGBgpHRI2pK4pULteqGxZ2yWqihFKJvSpG2Go0/gIYpf86Ge5stgyJ06k24rEW8zHY32RnRI2GfWnHIVugNFEKiufQ7MTC5JaBBJfs4z1Q9kTIwe4fAVhwKXZ7fdTM0XeTrXNxjRBINaYclOI1Toz2KQ4qc=
+	t=1788879445; cv=none; b=ab31D1QKHRKbAdBvc1FfIWWUG1VCMB1jUrCpJr4AP9BG/oDqvY+0ewKLnSnyDdKt2sIJ16ZCK5hlaLhnZv2aFPzCPwAuMFTYLi/4FeBPEmrzsuV+GewXC922+R476yCiMgXqCKrCWqKVU+IhuJl6nvkRoEDSMGNBoP7Jem8kqEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788875047; c=relaxed/simple;
-	bh=M3iJjEEtf9fI+g/dFLOt5v/zy66B6/8cwJsAFpvW0VA=;
+	s=arc-20240116; t=1788879445; c=relaxed/simple;
+	bh=kPU/eNFvsC3OA5QSA7pfIZ3GMdbFmua4udhZO4ymyqY=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=qzzAMoe/ftX7ccf6YdeubmP9OdD4D/wBXJkZvKCG9q0dyHFySBB4S3X1ggvlr9L08ovWKwD81Zhe/xHunyuxkGOI58Fh4qDJCM7MYSAQdWJ6HMCARkONGilFI4s6x65QOnTYi281FtOTvWYU5NdZ0hN77x0+LcUxhxuoRLMXT34=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KBAeR1JY; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=F29fVPwSLnwG7dLqu3A07TtwXtnEA0LUj9jGbH2zGDDspDrf6wqTgK7icIOrZc5WwaTA+h7iTU3CJ6xFK/1HuAO3HRPTf/saiqmJTzDybixxTFU7KqVl9Ym2gszHReAlpN0Hiu/COxIzUEzAxiODa9oEGpCQzPrw9uVV2UG8iLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8NOFaCY; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KBAeR1JY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D96EC1F00A3F;
-	Tue,  8 Sep 2026 13:43:47 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8NOFaCY"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D70BD1F00A3D;
+	Tue,  8 Sep 2026 14:57:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788875028;
-	bh=Zv6WbMVhYeFVEFyh1I9UEp+UrZtJ1cxZOXvhybkKYt8=;
+	s=k20260515; t=1788879436;
+	bh=AxRrqRNXClmgTqkdDhj6BHGLHtJ+zwh5/Sllm5lPW+M=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=KBAeR1JY57rNG6ynl0OYhX+2ZsK41hAELarfGyxD/bNdDxffaTLOGtlqNt2lLG6tB
-	 n8S1x+E9p71RlBIX6jX7u53oGOEiFyQ+bl/WY6nHFSSnF+UWw/k3/8EIYdyAyin7HJ
-	 ksHJmc1BiR/dlfpONosioGWUE2rNs9/FROyrckcBvjsx32uLhFRlmY0CRr8udt4c5Q
-	 JWOp6Tp2bymVLtUv85U7glegZDZG4NbUN4IiG5L42R1+aPUrxxRSsb/5XrLosgecEN
-	 ElEcRvr7sEkD4sS531c1CiVeLai0XMZWn98BPSraP8AcCzRd7fPw6k+6tBCakrqKls
-	 kUvKVwWYNmJew==
+	b=X8NOFaCYqetPQGAryAiQlAxvRrxuBtjdhPjFp+0m8LTauqw8VGt5oenrYByg1KvOH
+	 SSrb5ac2DhDFpzN0nC5MnZHVr4/t9K5aiFQgfr+JDHXccxbLJZd5gRuBLJB93pctj6
+	 SLTICDkEUfiwLUkgtIVelJMV+DJSEHuxpIjI/WrfKP4DEvOOCLQWrmVaCO49DZis78
+	 28uljoXfVLUhkThhT6i0WPSS0IuImkA2Vtq3zkgGGqdixZYrJNCfXoFxzECE9UKw+v
+	 oB83WJGxIc7olldcyLhD7MvnOr8EcVNhvVShoH18TmCmAxEvOsbsof/yHIGPsjW05q
+	 7lDlVgQ2L8n8g==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCHv3 3/3] m68k: coldfire: fix non-standard readX()/writeX()
- functions
+Subject: Re: [PATCH 2/2] can: j1939: check received packet count before
+ completing session
 Reply-To: sashiko-reviews@lists.linux.dev
-To: "Greg Ungerer" <gerg@linux-m68k.org>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, Frank.Li@kernel.org, imx@lists.linux.dev, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>
-In-Reply-To: <20260907134037.1855408-4-gerg@linux-m68k.org>
-References: <20260907134037.1855408-1-gerg@linux-m68k.org>
- <20260907134037.1855408-4-gerg@linux-m68k.org>
+To: "Liu Chao" <liuc63@xiaopeng.com>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260907145640.1106170-3-liuc63@xiaopeng.com>
+References: <20260907145640.1106170-1-liuc63@xiaopeng.com>
+ <20260907145640.1106170-3-liuc63@xiaopeng.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 08 Sep 2026 13:43:47 +0000
-Message-Id: <20260908134347.D96EC1F00A3F@smtp.kernel.org>
+Date: Tue, 08 Sep 2026 14:57:15 +0000
+Message-Id: <20260908145715.D70BD1F00A3D@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,119 +51,113 @@ Thank you for your contribution! Sashiko AI review found 3 potential issue(=
 s) to consider:
 
 New issues:
-- [High] Replacing ColdFire's non-standard I/O accessors breaks eDMA descri=
-ptor loading by exposing a hidden endianness bug in `fsl-edma-common.h`, wr=
-iting little-endian data to big-endian hardware.
+- [High] Canceling session timers during an already-aborting session perman=
+ently leaks the session and blocks the address.
+- [Medium] The patch inadvertently suppresses the pre-existing diagnostic w=
+arning for EOMA size mismatches on transmitter sessions.
 
 Pre-existing issues:
-- [High] The eDMA error interrupt handler silently ignores upper channel er=
-rors if no lower channel errors are present, and returns IRQ_NONE after suc=
-cessfully handling lower channel errors if no upper channel errors are pres=
-ent.
-- [High] Using 32-bit `BIT()` macro with a shift count up to 63 causes unde=
-fined behavior, breaking interrupt handling for channels 32-63.
+- [High] AB-BA deadlock between `active_session_list_lock` and the `rxtimer=
+` hrtimer callback.
 --
 
-commit 90504ddd291ad9040d7cc40def38400a2da51323
-Author: Greg Ungerer <gerg@linux-m68k.org>
+commit 66292f8eec0fad08cd8484aafc6afd0d99105fbf
+Author: Liu Chao <liuc63@xiaopeng.com>
 
-m68k: coldfire: fix non-standard readX()/writeX() functions
+can: j1939: check received packet count before completing session
 
-This patch removes the local ColdFire definitions of read/write I/O
-access functions and uses the asm-generic versions instead. It also
-updates several drivers that previously relied on the non-standard
-behavior to use the correct endian-specific accessors or quirks.
+This commit adds a packet receive count check in j1939_xtp_rx_eoma_one() to
+abort sessions with missing data packets instead of delivering short messag=
+es.
+It also tightens the EOMA size mismatch warning to abort receive sessions.
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fdce57924042..2ecce49ada40a 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1409,11 +1410,23 @@ j1939_xtp_rx_eoma_one(struct j1939_session *sessi=
+on, struct sk_buff *skb)
+>  	else
+>  		len =3D j1939_tp_ctl_to_size(dat);
+> =20
+> -	if (session->total_message_size !=3D len) {
+> +	if (!session->transmission && session->total_message_size !=3D len) {
+
+[Severity: Medium]
+Does this inadvertently suppress the diagnostic warning for EOMA size
+mismatches on transmitter sessions? By adding the !session->transmission
+condition here, protocol violations (a receiver sending an EOMA with an
+incorrect size) are now silently ignored on the transmitter instead of
+logging a warning. Could we keep the warning for transmitters but only
+bypass the newly-added abort?
+
+> +		netdev_warn_once(session->priv->ndev,
+> +				 "%s: 0x%p: EOMA size mismatch, expected %i got %i\n",
+> +				 __func__, session, session->total_message_size,
+> +				 len);
+> +		goto out_session_cancel;
+> +	}
 
 [ ... ]
 
-> diff --git a/drivers/dma/mcf-edma-main.c b/drivers/dma/mcf-edma-main.c
-> index 9e1c6400c77be..4ed0ce644e37e 100644
-> --- a/drivers/dma/mcf-edma-main.c
-> +++ b/drivers/dma/mcf-edma-main.c
-> @@ -21,9 +21,9 @@ static irqreturn_t mcf_edma_tx_handler(int irq, void *d=
-ev_id)
->  	unsigned int ch;
->  	u64 intmap;
-> =20
-> -	intmap =3D ioread32(regs->inth);
-> +	intmap =3D ioread32be(regs->inth);
->  	intmap <<=3D 32;
-> -	intmap |=3D ioread32(regs->intl);
-> +	intmap |=3D ioread32be(regs->intl);
->  	if (!intmap)
->  		return IRQ_NONE;
+>  	j1939_session_timers_cancel(session);
+>  	/* transmitted without problems */
+>  	j1939_session_completed(session);
+> +	return;
+> +
+> +out_session_cancel:
+> +	j1939_session_timers_cancel(session);
+> +	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
+>  }
 
 [Severity: High]
-This is a pre-existing issue, but does using the 32-bit BIT() macro just
-below this block cause undefined behavior for channels 32-63?
+Could this error path cause a permanent leak of the session structure
+and permanently block the SA/DA address pair?
 
-In mcf_edma_tx_handler():
-	for (ch =3D 0; ch < mcf_edma->n_chans; ch++) {
-		if (intmap & BIT(ch)) {
-			iowrite8(EDMA_MASK_CH(ch), regs->cint);
+If a receive session times out or is aborted, it enters the
+J1939_SESSION_WAITING_ABORT state with a timer scheduled to eventually
+deactivate it. If a malformed EOMA arrives while waiting, this path will
+call j1939_session_timers_cancel() (which cancels the deactivation timer).
 
-On 32-bit platforms, BIT(ch) evaluates modulo 32. When checking completions
-for upper channels (e.g., ch=3D32), BIT(32) will evaluate to bit 0 instead
-of bit 32.
+Then, j1939_session_cancel() is called:
 
-If the wrong bit is checked, the interrupt for channels 32-63 won't be
-cleared, leading to an interrupt storm. Should this use BIT_ULL(ch)
-since intmap is a u64?
+j1939_session_cancel() {
+    ...
+    if (session->state >=3D J1939_SESSION_ACTIVE &&
+        session->state < J1939_SESSION_WAITING_ABORT) {
+        j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+    ...
+}
 
-> @@ -43,7 +43,7 @@ static irqreturn_t mcf_edma_err_handler(int irq, void *=
-dev_id)
->  	struct edma_regs *regs =3D &mcf_edma->regs;
->  	unsigned int err, ch;
-> =20
-> -	err =3D ioread32(regs->errl);
-> +	err =3D ioread32be(regs->errl);
->  	if (!err)
->  		return IRQ_NONE;
+Because the session is already in J1939_SESSION_WAITING_ABORT, the
+condition fails and the deactivation timer is never restarted. The session
+remains in the active_session_list indefinitely.
+
 
 [Severity: High]
-This isn't a bug introduced by this patch, but does this error handler=20
-incorrectly short-circuit if lower channels are error-free?
+This is a pre-existing issue, but looking at j1939_session_cancel() exposed
+by this path, could it trigger an AB-BA deadlock?
 
-If a DMA error occurs on channels 32-63 (regs->errh), but not on 0-31
-(regs->errl), the handler will hit this first if (!err) check and return
-IRQ_NONE.
+j1939_session_cancel() takes the list lock, then cancels the rx timer:
 
-If it returns IRQ_NONE, the error is never cleared, leaving the IRQ
-line asserted. Will this result in an interrupt storm that hangs the
-CPU until the kernel permanently disables the IRQ?
+j1939_session_cancel() {
+    j1939_session_list_lock(session->priv);
+    ...
+    j1939_tp_set_rxtimeout(session, ...); // internally calls hrtimer_cancel
+}
 
-[ ... ]
+Meanwhile, the timer callback attempts to acquire the same list lock:
 
-> @@ -203,8 +203,8 @@ static int mcf_edma_probe(struct platform_device *pde=
-v)
->  		edma_write_tcdreg(mcf_chan, cpu_to_le32(0), csr);
->  	}
-> =20
-> -	iowrite32(~0, regs->inth);
-> -	iowrite32(~0, regs->intl);
-> +	iowrite32be(~0, regs->inth);
-> +	iowrite32be(~0, regs->intl);
+j1939_tp_rxtimer() {
+    ...
+    j1939_session_list_lock(session->priv);
+}
 
-[Severity: High]
-Does removing the non-standard read/write behaviors expose a hidden
-endianness bug in how fsl-edma-common.h programs the eDMA descriptors?
-
-The mcf-edma probe function writes TCD registers via edma_write_tcdreg()
-in this hunk:
-        edma_write_tcdreg(mcf_chan, cpu_to_le32(0), csr);
-
-Under the hood in fsl-edma-common.h, edma_write_tcdreg_c() casts this
-little-endian value directly to a native u32 before passing it to
-edma_writel() (which maps to iowrite32be on ColdFire).
-
-Previously, the non-standard ColdFire I/O macros lacked byte-swapping,
-so the driver's use of iowrite32be() implicitly double-swapped the
-incorrectly cast u32 value back to a native Big-Endian value.
-
-Now that the generic writel() corrects this and byte-swaps properly, will
-the eDMA controller read garbled (byte-swapped) descriptors and corrupt
-memory when DMA transfers are submitted?
+If j1939_session_cancel() is called exactly when the session's receive
+timeout expires, the CPU executing j1939_session_cancel() would spin
+waiting for the timer to finish, while the CPU executing j1939_tp_rxtimer()
+spins waiting for the list lock, resulting in a deadlock.
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260907134037.1855=
-408-4-gerg@linux-m68k.org?part=3D1
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260907145640.1106=
+170-1-liuc63@xiaopeng.com?part=3D2
