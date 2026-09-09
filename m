@@ -1,163 +1,124 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6B0550DD8
-	for <linux-can@vger.kernel.org>; Tue,  8 Sep 2026 14:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788879445; cv=none; b=ab31D1QKHRKbAdBvc1FfIWWUG1VCMB1jUrCpJr4AP9BG/oDqvY+0ewKLnSnyDdKt2sIJ16ZCK5hlaLhnZv2aFPzCPwAuMFTYLi/4FeBPEmrzsuV+GewXC922+R476yCiMgXqCKrCWqKVU+IhuJl6nvkRoEDSMGNBoP7Jem8kqEk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788879445; c=relaxed/simple;
-	bh=kPU/eNFvsC3OA5QSA7pfIZ3GMdbFmua4udhZO4ymyqY=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=F29fVPwSLnwG7dLqu3A07TtwXtnEA0LUj9jGbH2zGDDspDrf6wqTgK7icIOrZc5WwaTA+h7iTU3CJ6xFK/1HuAO3HRPTf/saiqmJTzDybixxTFU7KqVl9Ym2gszHReAlpN0Hiu/COxIzUEzAxiODa9oEGpCQzPrw9uVV2UG8iLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8NOFaCY; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEFD1397
+	for <linux-can@vger.kernel.org>; Wed,  9 Sep 2026 08:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.216
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788941748; cv=pass; b=GZzRTQbOMkvuyBTpkI7EMSLi2215uE+yZA1iPeDyKvu23W451NKKEksOypsnHHp+IfoVaFpAIMoLyMdu1P+bXfTLvWUiRYWQoyAYZXDKEQTWbpWcghYqywPtfqYZviaXR8G3V1QRVmMmSYq/G2dkjuit3tjMiMSkY2BLqVqZe2I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788941748; c=relaxed/simple;
+	bh=OF2cPH8oxB+FDimnFcIx0XT1rTzcoJdbswlVGCbj/T0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c16h7dcIN094eSwekXB5F0LNJ8g41nJ0CZGnE0BMae6dDBcd4rQLzehbP1k6InP7gY09opZlKsGkcwh/HCAvkNIFlUTjfc1tCX4SAUBB3LIj0ImuM6mKcFlOQSGdaZTMU2a9sRQDiAta8tnj0W+Irp3uuD+FOl7NtOhXD3/WGnU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=UaSVv5N2; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=90GqyN2w; arc=pass smtp.client-ip=81.169.146.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8NOFaCY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D70BD1F00A3D;
-	Tue,  8 Sep 2026 14:57:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1788879436;
-	bh=AxRrqRNXClmgTqkdDhj6BHGLHtJ+zwh5/Sllm5lPW+M=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=X8NOFaCYqetPQGAryAiQlAxvRrxuBtjdhPjFp+0m8LTauqw8VGt5oenrYByg1KvOH
-	 SSrb5ac2DhDFpzN0nC5MnZHVr4/t9K5aiFQgfr+JDHXccxbLJZd5gRuBLJB93pctj6
-	 SLTICDkEUfiwLUkgtIVelJMV+DJSEHuxpIjI/WrfKP4DEvOOCLQWrmVaCO49DZis78
-	 28uljoXfVLUhkThhT6i0WPSS0IuImkA2Vtq3zkgGGqdixZYrJNCfXoFxzECE9UKw+v
-	 oB83WJGxIc7olldcyLhD7MvnOr8EcVNhvVShoH18TmCmAxEvOsbsof/yHIGPsjW05q
-	 7lDlVgQ2L8n8g==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 2/2] can: j1939: check received packet count before
- completing session
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Liu Chao" <liuc63@xiaopeng.com>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260907145640.1106170-3-liuc63@xiaopeng.com>
-References: <20260907145640.1106170-1-liuc63@xiaopeng.com>
- <20260907145640.1106170-3-liuc63@xiaopeng.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 08 Sep 2026 14:57:15 +0000
-Message-Id: <20260908145715.D70BD1F00A3D@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="UaSVv5N2";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="90GqyN2w"
+ARC-Seal: i=1; a=rsa-sha256; t=1788941553; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=TB2nr+SQ33N+vVu6o8krD2ovfgum0ZDc9kx8nyGiCCj6T6skdCT+ioFqukyRKC4b3C
+    HnlVEdSoy1KvGGAt9rhRPQ/Tc+eip9I0Vq2SBH3HrpSPNBeu3nDHOH6l2RjUz2iKlwKZ
+    1SY9UnHs0KhT8HVsewIWyt66q+aYz0JsyM1hk7O5GEx7zWoLCZt3EPOnXe3R7XTMfscd
+    wldh3cC28d9Wgk9RLEHy+nulq/SuNGqagCL7O7JQuAK5ImJ3XDtmhs6DoDk+595BZLgO
+    vFk9Pv9bYGm9h2yVEVxcv6BB90mj7kT0jQHHqbUvNQhN7IrvL17YUdayBHIBojNQFffU
+    h4MA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1788941553;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=WrlYYNUVTSEkb6TuZmObXZAAHQusRS7WIaXbXIg6onc=;
+    b=PKp8W6HwtswAeehIt3Eoa+IqdYPs4747xwKea96+6v/J6yb7NLSI/ItiKep/Fzii0s
+    e6/PCvYSVtEuMf/8CxW+mWptFp0IlIodZOBS+K1qTygdPemX82FGyVcZPMeh9Gk5g6Vf
+    Ux67Pe9qY4dTCrzqu6s4kICtYPQM+QQ0U6TWhH+N2YVs17WYnMbKqaka9f7brqKa8YIL
+    S2qiX8LjjPOMHu8CElGCID28HJ7YijCbVRGOPM1HJ+oLXwxFEQbz+5HXpJHdwUzDD3MF
+    U5avSv6mBSSv1cA6CMwXPAjGfSVyfJqs1AgpuarVkPEtA6nwH1zOjyhFyEHLOPyU3xvO
+    ZwAQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1788941553;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=WrlYYNUVTSEkb6TuZmObXZAAHQusRS7WIaXbXIg6onc=;
+    b=UaSVv5N2Sb0R/1dZtSUMJAYALUEDDy2ZcnqFwuSxD7vGVOR23fXmQmj3onMU6nxtjB
+    EbgHK/22wGPzCHm5cryA5/Q5p2DC6323kZ32Yb2duE4VjIYaG/ogF/LJYcOsM3pIG+bf
+    vZmRG8h7nwk4MJ9ZhuvmSCNuHkjjn2KdA4kA4rPV2epYMLyZCx21xqQMTtMOIOed1vF+
+    kSsOo4bdYwcPY1LvOzWzjnVg33Ks+IybuxLuF/kocqyEcWDb2XxBdGZo6QpSslWocUF5
+    QMYxfqV+eAEDUKYszT7PYUD3RyCegVVrfnidKdSnOaWXy+7dHFyE6DnCu5MvP7/A1KWH
+    7kXg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1788941553;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=WrlYYNUVTSEkb6TuZmObXZAAHQusRS7WIaXbXIg6onc=;
+    b=90GqyN2wpbZOnDcqnJMQEt7seYDBC43qJJgbVTA3rhGi4UiePs0hqLFkHFhS4mac7r
+    G/uh7HsHwJw2AnYXdKBw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTRsLs5JjOm80i8vvX3XM"
+Received: from [192.168.1.20]
+    by smtp.strato.de (RZmta 55.6.2 DYNA|AUTH)
+    with ESMTPSA id K171b72898CXghn
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 9 Sep 2026 10:12:33 +0200 (CEST)
+Message-ID: <a2f6d5b9-8fb1-40e0-aec1-5f9acce1e0a8@hartkopp.net>
+Date: Wed, 9 Sep 2026 10:12:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
-s) to consider:
-
-New issues:
-- [High] Canceling session timers during an already-aborting session perman=
-ently leaks the session and blocks the address.
-- [Medium] The patch inadvertently suppresses the pre-existing diagnostic w=
-arning for EOMA size mismatches on transmitter sessions.
-
-Pre-existing issues:
-- [High] AB-BA deadlock between `active_session_list_lock` and the `rxtimer=
-` hrtimer callback.
---
-
-commit 66292f8eec0fad08cd8484aafc6afd0d99105fbf
-Author: Liu Chao <liuc63@xiaopeng.com>
-
-can: j1939: check received packet count before completing session
-
-This commit adds a packet receive count check in j1939_xtp_rx_eoma_one() to
-abort sessions with missing data packets instead of delivering short messag=
-es.
-It also tightens the EOMA size mismatch warning to abort receive sessions.
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fdce57924042..2ecce49ada40a 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1409,11 +1410,23 @@ j1939_xtp_rx_eoma_one(struct j1939_session *sessi=
-on, struct sk_buff *skb)
->  	else
->  		len =3D j1939_tp_ctl_to_size(dat);
-> =20
-> -	if (session->total_message_size !=3D len) {
-> +	if (!session->transmission && session->total_message_size !=3D len) {
-
-[Severity: Medium]
-Does this inadvertently suppress the diagnostic warning for EOMA size
-mismatches on transmitter sessions? By adding the !session->transmission
-condition here, protocol violations (a receiver sending an EOMA with an
-incorrect size) are now silently ignored on the transmitter instead of
-logging a warning. Could we keep the warning for transmitters but only
-bypass the newly-added abort?
-
-> +		netdev_warn_once(session->priv->ndev,
-> +				 "%s: 0x%p: EOMA size mismatch, expected %i got %i\n",
-> +				 __func__, session, session->total_message_size,
-> +				 len);
-> +		goto out_session_cancel;
-> +	}
-
-[ ... ]
-
->  	j1939_session_timers_cancel(session);
->  	/* transmitted without problems */
->  	j1939_session_completed(session);
-> +	return;
-> +
-> +out_session_cancel:
-> +	j1939_session_timers_cancel(session);
-> +	j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
->  }
-
-[Severity: High]
-Could this error path cause a permanent leak of the session structure
-and permanently block the SA/DA address pair?
-
-If a receive session times out or is aborted, it enters the
-J1939_SESSION_WAITING_ABORT state with a timer scheduled to eventually
-deactivate it. If a malformed EOMA arrives while waiting, this path will
-call j1939_session_timers_cancel() (which cancels the deactivation timer).
-
-Then, j1939_session_cancel() is called:
-
-j1939_session_cancel() {
-    ...
-    if (session->state >=3D J1939_SESSION_ACTIVE &&
-        session->state < J1939_SESSION_WAITING_ABORT) {
-        j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
-    ...
-}
-
-Because the session is already in J1939_SESSION_WAITING_ABORT, the
-condition fails and the deactivation timer is never restarted. The session
-remains in the active_session_list indefinitely.
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] can: remove CAN filters independent from namespace
+To: Norbert Szetei <norbert@doyensec.com>
+Cc: linux-can@vger.kernel.org
+References: <20260903065947.7718-1-socketcan@hartkopp.net>
+ <D4EEFE9E-284F-45F0-BF4E-39CFF7134E52@doyensec.com>
+ <AE7A6380-97F7-46EE-9A45-026B60293DE0@doyensec.com>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <AE7A6380-97F7-46EE-9A45-026B60293DE0@doyensec.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
 
-[Severity: High]
-This is a pre-existing issue, but looking at j1939_session_cancel() exposed
-by this path, could it trigger an AB-BA deadlock?
 
-j1939_session_cancel() takes the list lock, then cancels the rx timer:
+On 08.09.26 13:41, Norbert Szetei wrote:
+> Sorry, my mail client turned the address into a link and mangled the tag.
+> It should read:
+> 
+> Tested-by: Norbert Szetei <norbert@doyensec.com>
+> 
 
-j1939_session_cancel() {
-    j1939_session_list_lock(session->priv);
-    ...
-    j1939_tp_set_rxtimeout(session, ...); // internally calls hrtimer_cancel
-}
+Thanks Norbert for your valuable testing - especially also for the bcm!
 
-Meanwhile, the timer callback attempts to acquire the same list lock:
+Best regards,
+Oliver
 
-j1939_tp_rxtimer() {
-    ...
-    j1939_session_list_lock(session->priv);
-}
+> N.
+> 
+>> On Sep 8, 2026, at 1:34 PM, Norbert Szetei <norbert@doyensec.com> wrote:
+>>
+>> Hi Oliver,
+>>
+>> many thanks for v2. I ran it on 7.3-rc2 with vcan and my reproducer no longer
+>> triggers. The ifindex case is gone too, from another namespace I can no longer
+>> touch a bound BCM socket.
+>>
+>> Tested-by: Norbert Szetei <norbert@doyensec.com <mailto:norbert@doyensec.com>>
+>>
+>> Thanks,
+>> Norbert
+>>
+>>> On Sep 3, 2026, at 8:59 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
+>>>
+>>> When the devices namespace is changed the socket namespace and the device
+>>> namespace might differ. The net_eq(dev_net(dev), sock_net(sk)) check in
+>>> the CAN protocols netdev notifiers therefore led to skipping the required
+>>> removal of the CAN filters from the (namespace changed) CAN devices.
 
-If j1939_session_cancel() is called exactly when the session's receive
-timeout expires, the CPU executing j1939_session_cancel() would spin
-waiting for the timer to finish, while the CPU executing j1939_tp_rxtimer()
-spins waiting for the list lock, resulting in a deadlock.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260907145640.1106=
-170-1-liuc63@xiaopeng.com?part=3D2
