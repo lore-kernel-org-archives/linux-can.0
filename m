@@ -1,124 +1,186 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.216])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AEFD1397
-	for <linux-can@vger.kernel.org>; Wed,  9 Sep 2026 08:15:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.216
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1788941748; cv=pass; b=GZzRTQbOMkvuyBTpkI7EMSLi2215uE+yZA1iPeDyKvu23W451NKKEksOypsnHHp+IfoVaFpAIMoLyMdu1P+bXfTLvWUiRYWQoyAYZXDKEQTWbpWcghYqywPtfqYZviaXR8G3V1QRVmMmSYq/G2dkjuit3tjMiMSkY2BLqVqZe2I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1788941748; c=relaxed/simple;
-	bh=OF2cPH8oxB+FDimnFcIx0XT1rTzcoJdbswlVGCbj/T0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=c16h7dcIN094eSwekXB5F0LNJ8g41nJ0CZGnE0BMae6dDBcd4rQLzehbP1k6InP7gY09opZlKsGkcwh/HCAvkNIFlUTjfc1tCX4SAUBB3LIj0ImuM6mKcFlOQSGdaZTMU2a9sRQDiAta8tnj0W+Irp3uuD+FOl7NtOhXD3/WGnU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=UaSVv5N2; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=90GqyN2w; arc=pass smtp.client-ip=81.169.146.216
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E059445198F;
+	Wed,  9 Sep 2026 08:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1788942264; cv=none; b=hpHeYvjFZi4PdV7iEqAmOXJcNp1f69p4Fjp7Y/nO+uu1x623Q76GRVp5DrMdSKB3M1giDiWOaScZ6J5Dlw5ulR9e0Kc0JCy3bD0TuSsLL/N5k4BOlIPSeRcQu+Emnn4CkWb9I2KrMSBj8zoAOP2kINkCfxMsaxJej8xCVCNi+xI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1788942264; c=relaxed/simple;
+	bh=mR91vloxV6Hp66WTXzqOaUNBRbGtfUkKENJ2XwBeD1w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=a5GQsoBWzmPhNnl4sbuEjn53AIaPybcYWGopQmXGmBAwjV949DfOwQ+ByAef+3xap2CaWQUICmPX8tSpvax/V+7ZkhkxkloMYD8yc9WxtPNoZ/G+FHI2TLR889bdWyzDAppu0lyoTQlv0/XH49IVzjh9xx6UC+1EAzeAV3PiuGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NordMoUk; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="UaSVv5N2";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="90GqyN2w"
-ARC-Seal: i=1; a=rsa-sha256; t=1788941553; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=TB2nr+SQ33N+vVu6o8krD2ovfgum0ZDc9kx8nyGiCCj6T6skdCT+ioFqukyRKC4b3C
-    HnlVEdSoy1KvGGAt9rhRPQ/Tc+eip9I0Vq2SBH3HrpSPNBeu3nDHOH6l2RjUz2iKlwKZ
-    1SY9UnHs0KhT8HVsewIWyt66q+aYz0JsyM1hk7O5GEx7zWoLCZt3EPOnXe3R7XTMfscd
-    wldh3cC28d9Wgk9RLEHy+nulq/SuNGqagCL7O7JQuAK5ImJ3XDtmhs6DoDk+595BZLgO
-    vFk9Pv9bYGm9h2yVEVxcv6BB90mj7kT0jQHHqbUvNQhN7IrvL17YUdayBHIBojNQFffU
-    h4MA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1788941553;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=WrlYYNUVTSEkb6TuZmObXZAAHQusRS7WIaXbXIg6onc=;
-    b=PKp8W6HwtswAeehIt3Eoa+IqdYPs4747xwKea96+6v/J6yb7NLSI/ItiKep/Fzii0s
-    e6/PCvYSVtEuMf/8CxW+mWptFp0IlIodZOBS+K1qTygdPemX82FGyVcZPMeh9Gk5g6Vf
-    Ux67Pe9qY4dTCrzqu6s4kICtYPQM+QQ0U6TWhH+N2YVs17WYnMbKqaka9f7brqKa8YIL
-    S2qiX8LjjPOMHu8CElGCID28HJ7YijCbVRGOPM1HJ+oLXwxFEQbz+5HXpJHdwUzDD3MF
-    U5avSv6mBSSv1cA6CMwXPAjGfSVyfJqs1AgpuarVkPEtA6nwH1zOjyhFyEHLOPyU3xvO
-    ZwAQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1788941553;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=WrlYYNUVTSEkb6TuZmObXZAAHQusRS7WIaXbXIg6onc=;
-    b=UaSVv5N2Sb0R/1dZtSUMJAYALUEDDy2ZcnqFwuSxD7vGVOR23fXmQmj3onMU6nxtjB
-    EbgHK/22wGPzCHm5cryA5/Q5p2DC6323kZ32Yb2duE4VjIYaG/ogF/LJYcOsM3pIG+bf
-    vZmRG8h7nwk4MJ9ZhuvmSCNuHkjjn2KdA4kA4rPV2epYMLyZCx21xqQMTtMOIOed1vF+
-    kSsOo4bdYwcPY1LvOzWzjnVg33Ks+IybuxLuF/kocqyEcWDb2XxBdGZo6QpSslWocUF5
-    QMYxfqV+eAEDUKYszT7PYUD3RyCegVVrfnidKdSnOaWXy+7dHFyE6DnCu5MvP7/A1KWH
-    7kXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1788941553;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=WrlYYNUVTSEkb6TuZmObXZAAHQusRS7WIaXbXIg6onc=;
-    b=90GqyN2wpbZOnDcqnJMQEt7seYDBC43qJJgbVTA3rhGi4UiePs0hqLFkHFhS4mac7r
-    G/uh7HsHwJw2AnYXdKBw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTRsLs5JjOm80i8vvX3XM"
-Received: from [192.168.1.20]
-    by smtp.strato.de (RZmta 55.6.2 DYNA|AUTH)
-    with ESMTPSA id K171b72898CXghn
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 9 Sep 2026 10:12:33 +0200 (CEST)
-Message-ID: <a2f6d5b9-8fb1-40e0-aec1-5f9acce1e0a8@hartkopp.net>
-Date: Wed, 9 Sep 2026 10:12:28 +0200
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NordMoUk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B4A41F00A3A;
+	Wed,  9 Sep 2026 08:24:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1788942262;
+	bh=0mroZzVdGpauTVtWMXSdkV71fbKcgK+KZHBfEpQg5Wo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=NordMoUk9DXgi2iqJT+k1El9CrYoWpfiHN8+oyuPmhrqdaD9LWcEDlJ5ZFlFl3r0w
+	 Y3N2MK/+i/CswtnxS+PcRPYMYoamTbSgkor6RnXOM/hh0adSdAOHyW0qp6gOeAByeA
+	 IO9DS0V3eGb96fJkxVfBtIJnM1XHfDHVlIYUrjuTps5L7DnMnUPZ+0OTd1XwvIZbiU
+	 9OyCarX+e428UV8lYdgaGK0I46vquuhkVHGswXeZo3BsDfraIiuE76b33cL9EqDTx7
+	 BhoBBRu+jdzlnKYYuF+RfInm2o2XpA8H8pvvpsfOf/Kjfza6fh+SpTLjJA2z6CqdWM
+	 sC59myHTrlQhg==
+Date: Wed, 9 Sep 2026 10:24:13 +0200
+From: Manivannan Sadhasivam <mani@kernel.org>
+To: "Thomas Richard (TI)" <thomas.richard@bootlin.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+	Vincent Mailhol <mailhol@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
+	Neil Armstrong <neil.armstrong@linaro.org>, Thomas Petazzoni <thomas.petazzoni@bootlin.com>, 
+	Gregory CLEMENT <gregory.clement@bootlin.com>, richard.genoud@bootlin.com, Udit Kumar <u-kumar1@ti.com>, 
+	Abhash Kumar <a-kumar2@ti.com>, linux-can@vger.kernel.org, linux-phy@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] phy: phy-can-transceiver: Add suspend operation for
+ tcan1043
+Message-ID: <3tmfs4ou7hrw6y35to6ugnwz5445h5bjapfhyfwoviqrgk3jy2@47imiewocfaz>
+References: <20260630-phy-can-transceiver-suspend-resume-support-v1-1-6842c2d697e4@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] can: remove CAN filters independent from namespace
-To: Norbert Szetei <norbert@doyensec.com>
-Cc: linux-can@vger.kernel.org
-References: <20260903065947.7718-1-socketcan@hartkopp.net>
- <D4EEFE9E-284F-45F0-BF4E-39CFF7134E52@doyensec.com>
- <AE7A6380-97F7-46EE-9A45-026B60293DE0@doyensec.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <AE7A6380-97F7-46EE-9A45-026B60293DE0@doyensec.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260630-phy-can-transceiver-suspend-resume-support-v1-1-6842c2d697e4@bootlin.com>
 
-
-
-On 08.09.26 13:41, Norbert Szetei wrote:
-> Sorry, my mail client turned the address into a link and mangled the tag.
-> It should read:
+On Tue, Jun 30, 2026 at 02:28:46PM +0200, Thomas Richard (TI) wrote:
+> Add suspend operation for tcan1043. It switches the PHY in Sleep mode, the
+> lowest power mode of the device. If a bus wake-up pattern or a local
+> wake-up event occurs, the PHY transitions to Standby mode, set its internal
+> WAKERQ flag and set the INH output high. In Sleep mode INH is floating.
 > 
-> Tested-by: Norbert Szetei <norbert@doyensec.com>
+> The WAKERQ flag prevents transition to Go-to-Sleep mode. The only way to
+> clear it is to switch to Normal mode. So to reach Sleep mode, we firstly
+> switch to Normal mode, then to Go-to-Sleep mode.
 > 
-
-Thanks Norbert for your valuable testing - especially also for the bcm!
-
-Best regards,
-Oliver
-
-> N.
+> Suspend sequence (PHY is off):
 > 
->> On Sep 8, 2026, at 1:34 PM, Norbert Szetei <norbert@doyensec.com> wrote:
->>
->> Hi Oliver,
->>
->> many thanks for v2. I ran it on 7.3-rc2 with vcan and my reproducer no longer
->> triggers. The ifindex case is gone too, from another namespace I can no longer
->> touch a bound BCM socket.
->>
->> Tested-by: Norbert Szetei <norbert@doyensec.com <mailto:norbert@doyensec.com>>
->>
->> Thanks,
->> Norbert
->>
->>> On Sep 3, 2026, at 8:59 AM, Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>>
->>> When the devices namespace is changed the socket namespace and the device
->>> namespace might differ. The net_eq(dev_net(dev), sock_net(sk)) check in
->>> the CAN protocols netdev notifiers therefore led to skipping the required
->>> removal of the CAN filters from the (namespace changed) CAN devices.
+>     Standby -> Normal -> Go-to-Sleep -> Sleep
+> 
+> Suspend sequence (PHY is on):
+> 
+>     Normal -> Go-to-Sleep -> Sleep
+> 
+> Signed-off-by: Thomas Richard (TI) <thomas.richard@bootlin.com>
+> ---
+>  drivers/phy/phy-can-transceiver.c | 56 ++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 49 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/phy/phy-can-transceiver.c b/drivers/phy/phy-can-transceiver.c
+> index 75dc49e75ca0..2bca1a173fcc 100644
+> --- a/drivers/phy/phy-can-transceiver.c
+> +++ b/drivers/phy/phy-can-transceiver.c
+> @@ -5,6 +5,7 @@
+>   * Copyright (C) 2021 Texas Instruments Incorporated - https://www.ti.com
+>   *
+>   */
+> +#include <linux/delay.h>
+>  #include <linux/gpio/consumer.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/platform_device.h>
+> @@ -12,25 +13,28 @@
+>  #include <linux/module.h>
+>  #include <linux/mux/consumer.h>
+>  
+> +struct can_transceiver_phy {
+> +	struct phy *generic_phy;
+> +	struct gpio_desc *silent_gpio;
+> +	struct gpio_desc *standby_gpio;
+> +	struct gpio_desc *enable_gpio;
+> +	struct can_transceiver_priv *priv;
+> +};
+> +
+>  struct can_transceiver_data {
+>  	u32 flags;
+>  #define CAN_TRANSCEIVER_STB_PRESENT	BIT(0)
+>  #define CAN_TRANSCEIVER_EN_PRESENT	BIT(1)
+>  #define CAN_TRANSCEIVER_DUAL_CH		BIT(2)
+>  #define CAN_TRANSCEIVER_SILENT_PRESENT	BIT(3)
+> +	int	(*suspend)(struct can_transceiver_phy *phy);
+>  };
+>  
+> -struct can_transceiver_phy {
+> -	struct phy *generic_phy;
+> -	struct gpio_desc *silent_gpio;
+> -	struct gpio_desc *standby_gpio;
+> -	struct gpio_desc *enable_gpio;
+> -	struct can_transceiver_priv *priv;
+> -};
+>  
+>  struct can_transceiver_priv {
+>  	struct mux_state *mux_state;
+>  	int num_ch;
+> +	const struct can_transceiver_data *data;
+>  	struct can_transceiver_phy can_transceiver_phy[] __counted_by(num_ch);
+>  };
+>  
+> @@ -76,12 +80,28 @@ static const struct phy_ops can_transceiver_phy_ops = {
+>  	.owner		= THIS_MODULE,
+>  };
+>  
+> +static int tcan1043_suspend(struct can_transceiver_phy *phy)
+> +{
+> +	/* Switch to Normal mode, it clears WAKERQ */
+> +	gpiod_set_value_cansleep(phy->standby_gpio, 0);
+> +	gpiod_set_value_cansleep(phy->enable_gpio, 1);
+> +
+> +	/* Switch to Go-to-Sleep mode */
+> +	gpiod_set_value_cansleep(phy->standby_gpio, 1);
+> +
+> +	/* Wait transition to Sleep mode */
+> +	fsleep(5);
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct can_transceiver_data tcan1042_drvdata = {
+>  	.flags = CAN_TRANSCEIVER_STB_PRESENT,
+>  };
+>  
+>  static const struct can_transceiver_data tcan1043_drvdata = {
+>  	.flags = CAN_TRANSCEIVER_STB_PRESENT | CAN_TRANSCEIVER_EN_PRESENT,
+> +	.suspend = tcan1043_suspend,
+>  };
+>  
+>  static const struct can_transceiver_data tja1048_drvdata = {
+> @@ -115,6 +135,26 @@ static struct phy *can_transceiver_phy_xlate(struct device *dev,
+>  	return priv->can_transceiver_phy[idx].generic_phy;
+>  }
+>  
+> +static int can_transceiver_phy_suspend(struct device *dev)
+> +{
+> +	struct can_transceiver_priv *priv = dev_get_drvdata(dev);
+> +	const struct can_transceiver_data *data = priv->data;
+> +	int ret, i;
+> +
+> +	for (i = 0; i < priv->num_ch; i++) {
+> +		if (data->suspend) {
+> +			ret = data->suspend(&priv->can_transceiver_phy[i]);
+> +			if (ret)
+> +				return ret;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static DEFINE_SIMPLE_DEV_PM_OPS(can_transceiver_phy_pm_ops,
+> +				can_transceiver_phy_suspend, NULL);
 
+I believe you didn't add resume() callback here based on the assumption that the
+CAN transceiver driver will call phy_power_off() during suspend and
+phy_power_on() during resume. But that implicit assumption is wrong since the
+PHY driver should act on its own and not rely on the consumer's behavior. In
+that sense, resume() callback should be present and it should undo suspend().
+
+- Mani
+
+-- 
+மணிவண்ணன் சதாசிவம்
