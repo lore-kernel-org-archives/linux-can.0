@@ -1,45 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8CD933064D;
-	Mon, 14 Sep 2026 03:09:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB811A7264;
+	Mon, 14 Sep 2026 03:12:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789355400; cv=none; b=l4f4/cYtdTnpAql3IoVt+dl8jt3iDknLUATlElNJnFYjpy0U8iadZMIJZm6COyXNV8NRD7i85EkB7rNyH9O438NL7Bg7fLpMPwaRdc1PcXEbvZQNeUPYkBqsq2G0h3zC9COUXadBfRh3WA7qVXw698SKcnOdLQwyWk8GR/1BNu8=
+	t=1789355532; cv=none; b=LLQuFJzEEt6g0X4KnA8kgwZ60N4FW/GqAZiWapTz2ylrE5q+ZN+9kSPaHhnPdpmxwhwebOTaybZquOP8mzZA+nwbZwnu23ZnF/msbLqHOQRvs2kfvXEvERIvoHlD8NWu1oPcXLOlSWJ1zL7aSYnJZtnO+CDSXVv5sk89dM+mrj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789355400; c=relaxed/simple;
-	bh=E38+ONzJA8KOp82T4Sk9BxAyKUep766g0CU1bnHUkSE=;
+	s=arc-20240116; t=1789355532; c=relaxed/simple;
+	bh=JCpbPNJ4ufS+L3iuwQQs6flsB885qiGEXXWatxPYBIg=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=aLKNQdTNJNO+NE3yMCGbkpA8hZSC86eCbFJjvsB+4wO0/wEDqOa1FOU3BWeaZv7f/iF8LYwb6kssmrdPcPQ0hdxYeSX7uDf6O7T6QlHBtQ0xPh9IDjOLVZqWiTUbA8l6OdWZIxhT83WOkRm4dn982nV6zCTzDtMlMC91jauSkr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oiZkXQGH; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=j0jbjvrP+OS1F2OKBsvS2MlaYqxtKnIsWHTNhD4Qokj+XlR50jeF3uTb6TuoPV8yfp6uZlkHlBaZPs1uMy3XT8vjevjEHa/3JWc7U99prE3yjHV5NDBNQ11LrROmK7TKoSG2CBVwGy3Ql72afEPQpkuAlp4R1S2zAfhxUo6vsfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ok+JEHKR; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oiZkXQGH"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85EF31F000FF;
-	Mon, 14 Sep 2026 03:09:54 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ok+JEHKR"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DDF1F000FF;
+	Mon, 14 Sep 2026 03:12:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789355395;
-	bh=atyCgMvkkfN3Z1WAqVD6F5klWeSOeqjOXh5bSjoVR0c=;
+	s=k20260515; t=1789355531;
+	bh=j71IVeff/17cjyhcRu1Mr3KhWr+2RABFaR4FavkQJ7w=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=oiZkXQGHOyLiwHphFiWEDrMRDtxLu+Nb/6Y8Rjn/S2wFOgM+ua8biWRMeWQj+Tc4f
-	 pqlnLCFo5K0UcdlNMl9sRzWnx374bT/qEFj0rz1C+K8FeTXivUM4ch1SM7YH4/psBw
-	 jZ49SVQbOGm/eTyRb0tqZiswJjfU+IZ1YQqK4vSXT1+LXpDZhQusTj61MBABLCt2rw
-	 HoNpTbQsLESolheCYJHacCAnS/pP+mrdxIpJaTLmRP0zKq5Gmi3UV2q0GK5UGgMo2E
-	 YMKTyKwnt2Oyp2bXhoDm7aTCNagOCIhXO1h8EjZvFHPssUWm1+wZ6mZ2tGefxAMFQs
-	 mC0pdy3sb8/+Q==
+	b=Ok+JEHKRQlJXVvP5UUywAUze0/8Qkk+FP4iy1dp2EaZicO1tRBOzJM1wH0/QuApkj
+	 xDt1ZgEzYO2uGYV4xn8ubUkCzGif+MCBDYZzYeZAk7fdmBQocjv4MVfzIG+xyTOwyS
+	 Pg+2HmtDNEIo7qoIHYuvqEhsJIoFhllrUiGhm+gG3kejJbwe+P2khPKj4WLympIcI3
+	 S6kBwLscUPacKl7rMDgPBKR8yGXDXwqXRLkJGqUpeZrDVE8fbUAeHdFJggCuJM7dKQ
+	 qgHqgbdNypv2j8cdd1jgJkt4PARYlIbTv8cIqRvFRBprzMmXEcR2vYNQKuw7WxQ15X
+	 RYxMBN4jCZyJQ==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] dt-bindings: net: can: bosch,cc770: Convert to DT
+Subject: Re: [PATCH] dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to DT
  schema
 Reply-To: sashiko-reviews@lists.linux.dev
 To: Quchaosheng <quchaosheng000406@163.com>
-Cc: conor+dt@kernel.org, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, devicetree@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, robh@kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-In-Reply-To: <20260914030215.437602-1-quchaosheng000406@163.com>
+Cc: devicetree@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, robh@kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, conor+dt@kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+In-Reply-To: <20260914030215.437602-4-quchaosheng000406@163.com>
 References: <20260914030215.437602-1-quchaosheng000406@163.com>
+ <20260914030215.437602-4-quchaosheng000406@163.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 14 Sep 2026 03:09:54 +0000
-Message-Id: <20260914030954.85EF31F000FF@smtp.kernel.org>
+Date: Mon, 14 Sep 2026 03:12:10 +0000
+Message-Id: <20260914031210.B9DDF1F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -48,86 +49,120 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
-
-Pre-existing issues:
-- [High] platform_get_irq() error code is shadowed.
-- [High] Incorrect check of uninitialized field priv->cpu_interface instead=
- of pdata->cir.
+- [Medium] The schema omits the `fsl,mpc5200b-mscan` fallback compatible st=
+ring used in existing device trees, causing schema validation failures.
+- [Medium] The schema is missing conditional `if-then` blocks, globally all=
+owing properties that are invalid for MPC5200, and failing to mandate requi=
+red properties for MPC5121.
 --
 
-commit 534a229fcad73012a922f469773dd3f6d658bb9e
+commit dee9e6a0d172cc57e05eeda41cfef5b093d00d22
 Author: Quchaosheng <quchaosheng000406@163.com>
 
-dt-bindings: net: can: bosch,cc770: Convert to DT schema
+dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to DT schema
 
-This commit converts the Bosch CC770 and Intel AN82527 controller binding f=
-rom
-free-form text to DT schema. It also references the common can-controller.y=
-aml
-schema and documents additional properties used by the driver.
+Converts the Freescale MPC5xxx MSCAN controller binding from free-form text
+to DT schema. It specifies compatible strings, clocks, clock names, and
+mscan clock properties.
 
-> diff --git a/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml b=
-/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
+> diff --git a/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.=
+yaml b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
 > new file mode 100644
-> index 0000000000000..448d5b4f74b57
+> index 0000000000000..108f225f91963
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
-> @@ -0,0 +1,109 @@
+> +++ b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
+> @@ -0,0 +1,87 @@
 [ ... ]
 > +properties:
 > +  compatible:
 > +    enum:
-> +      - bosch,cc770
-> +      - intc,82527
+> +      - fsl,mpc5200-mscan
+> +      - fsl,mpc5121-mscan
 
-[Severity: High]
-This is a pre-existing issue, but while looking at the platform data
-initialization for this controller, I noticed that the clock divider logic
-seems to check an uninitialized field.
+[Severity: Medium]
+Will this strict enum cause validation failures for existing device trees?
 
-In drivers/net/can/cc770/cc770_platform.c:cc770_get_platform_data():
+Existing device trees, such as arch/powerpc/boot/dts/mpc5200b.dtsi, use a
+fallback array pattern:
 
-	priv->can.clock.freq =3D pdata->osc_freq;
-	if (priv->cpu_interface & CPUIF_DSC)
-		priv->can.clock.freq /=3D 2;
-	priv->clkout =3D pdata->cor;
-	priv->bus_config =3D pdata->bcr;
-	priv->cpu_interface =3D pdata->cir;
+    compatible =3D "fsl,mpc5200b-mscan", "fsl,mpc5200-mscan";
 
-Since priv->cpu_interface is assigned pdata->cir after the check, is
-priv->cpu_interface unconditionally 0 here due to the zero-initialization
-during allocation? If so, will this prevent the frequency from being correc=
-tly
-halved when CPUIF_DSC is set in the platform data?
+Should the schema allow fsl,mpc5200b-mscan as well, perhaps using an items
+list to support the fallback?
 
 [ ... ]
-> +  reg:
+> +  fsl,mscan-clock-source:
 > +    description:
-> +      Register window of the controller. On a PowerPC system the control=
-ler
-> +      sits on the local bus and the property describes the chip select, =
-the
-> +      address offset and the size, the size usually being 0x80.
-> +    maxItems: 1
+> +      Clock source used for the controller. Valid values are "ip" for th=
+e IP
+> +      bus clock, "ref" for the reference clock (XTAL) and "sys" for the
+> +      system clock. "sys" is only available on MPC5121. When the propert=
+y is
+> +      absent, an optimal clock source based on the system clock is selec=
+ted,
+> +      falling back to the reference clock.
+> +    enum: [ip, ref, sys]
+
+[Severity: Medium]
+Should the sys value be restricted to the MPC5121 variant?
+
+The schema currently allows sys globally, even though it is invalid for
+the MPC5200. An if-then block could be used to restrict this.
+
 > +
-> +  interrupts:
-> +    maxItems: 1
+> +  fsl,mscan-clock-divider:
+> +    description:
+> +      Additional clock divider for the reference and system clock source=
+s.
+> +      Defaults to 1 when not specified.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    default: 1
 
-[Severity: High]
-This isn't a bug introduced by this patch, but while reviewing the interrupt
-handling property, I noticed the driver shadows the error code during probe.
+[Severity: Medium]
+Does this allow the fsl,mscan-clock-divider property on the MPC5200 variant
+where it does not exist?
 
-In drivers/net/can/cc770/cc770_platform.c:cc770_platform_probe():
+An if-then conditional block could also restrict this property to the MPC51=
+21
+variant to prevent it from silently passing validation on MPC5200 nodes.
 
-	irq =3D platform_get_irq(pdev, 0);
-	if (!mem || irq <=3D 0)
-		return -ENODEV;
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
 
-If platform_get_irq() returns a negative error code such as -EPROBE_DEFER,
-the function unconditionally returns -ENODEV instead of the actual error.
-Could this permanently prevent the device from probing if its interrupt
-controller is initialized after the CC770 driver?
+[Severity: Medium]
+Should clocks and clock-names be required for the MPC5121 variant?
+
+The driver probe requires these clocks for MPC5121. Without an if-then block
+requiring them, incomplete nodes will silently pass schema validation but f=
+ail
+at runtime.
+
+> +
+> +unevaluatedProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    can@1300 {
+> +        compatible =3D "fsl,mpc5121-mscan";
+> +        reg =3D <0x1300 0x80>;
+> +        interrupts =3D <12 IRQ_TYPE_LEVEL_LOW>;
+> +        interrupt-parent =3D <&ipic>;
+> +    };
+
+[Severity: Medium]
+Since the clocks and clock-names properties are strictly required by the
+driver for MPC5121, does this example represent a functionally broken
+configuration?
+
+Because the schema does not strictly require the clock properties, this
+example passes validation, which demonstrates that the schema accepts
+invalid configurations.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914030215.4376=
-02-1-quchaosheng000406@163.com?part=3D1
+02-4-quchaosheng000406@163.com?part=3D1
