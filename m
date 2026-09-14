@@ -1,46 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB811A7264;
-	Mon, 14 Sep 2026 03:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94583334C05;
+	Mon, 14 Sep 2026 03:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789355532; cv=none; b=LLQuFJzEEt6g0X4KnA8kgwZ60N4FW/GqAZiWapTz2ylrE5q+ZN+9kSPaHhnPdpmxwhwebOTaybZquOP8mzZA+nwbZwnu23ZnF/msbLqHOQRvs2kfvXEvERIvoHlD8NWu1oPcXLOlSWJ1zL7aSYnJZtnO+CDSXVv5sk89dM+mrj8=
+	t=1789355585; cv=none; b=A4vuVbkaYnd18nNRp95OxWeZ+pmewNfdNjrICj8C3M5VgVAw2p9BGg5mM1JqkFXfGb4bf7AZ1/Tmb+H6p5DcJuNbFGKW/OJB8mpPejdxc5BPQSK7hWTJiKda9bc0HRnyoLw03o7rcrzLOGu46+TDHnRpuS4DtDd+WnevVvlghs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789355532; c=relaxed/simple;
-	bh=JCpbPNJ4ufS+L3iuwQQs6flsB885qiGEXXWatxPYBIg=;
+	s=arc-20240116; t=1789355585; c=relaxed/simple;
+	bh=Ojfo/geujUkZvfa2rPnctIFifUQhCYPHlrdkA9xooRg=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=j0jbjvrP+OS1F2OKBsvS2MlaYqxtKnIsWHTNhD4Qokj+XlR50jeF3uTb6TuoPV8yfp6uZlkHlBaZPs1uMy3XT8vjevjEHa/3JWc7U99prE3yjHV5NDBNQ11LrROmK7TKoSG2CBVwGy3Ql72afEPQpkuAlp4R1S2zAfhxUo6vsfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ok+JEHKR; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=lVIzeDcfHyKt6OgXiGm3i3+UGNCDdid+YDkl1tiyu3fvoIz+i/MuW6s1eox3AjiD7p/7dwZbmc9SEUpO2kAvmjCfswqN5dftthHVmO1QeZPGF2ZDaHyXdYlq3cskeuw0SNEJ6J9lSwaRnFVRsMRLlBm9wXg9Kj1Ll7enJPjJJI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fPNwEBrc; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ok+JEHKR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9DDF1F000FF;
-	Mon, 14 Sep 2026 03:12:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fPNwEBrc"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E501F000FF;
+	Mon, 14 Sep 2026 03:12:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789355531;
-	bh=j71IVeff/17cjyhcRu1Mr3KhWr+2RABFaR4FavkQJ7w=;
+	s=k20260515; t=1789355577;
+	bh=MbMjd3J+22HTtf4Aljh/JcNDWkAGF+sCL9UYeHltunY=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Ok+JEHKRQlJXVvP5UUywAUze0/8Qkk+FP4iy1dp2EaZicO1tRBOzJM1wH0/QuApkj
-	 xDt1ZgEzYO2uGYV4xn8ubUkCzGif+MCBDYZzYeZAk7fdmBQocjv4MVfzIG+xyTOwyS
-	 Pg+2HmtDNEIo7qoIHYuvqEhsJIoFhllrUiGhm+gG3kejJbwe+P2khPKj4WLympIcI3
-	 S6kBwLscUPacKl7rMDgPBKR8yGXDXwqXRLkJGqUpeZrDVE8fbUAeHdFJggCuJM7dKQ
-	 qgHqgbdNypv2j8cdd1jgJkt4PARYlIbTv8cIqRvFRBprzMmXEcR2vYNQKuw7WxQ15X
-	 RYxMBN4jCZyJQ==
+	b=fPNwEBrcsAUdVMwlb7DxCcGZ0THoHH/mrEZa52qsOkpIJz3UFtupTla0kT3ronfX4
+	 7g0QEp7I+QzDugiDhGEeiRKtLIpckX8i8ppxLA6yvC071Nzn90ksCGyPH3FOqXCFUk
+	 3MU/d5BeRYUYtQ4VCWazB8Vt5/H9d43f7hkD2dPXboavRsBPH4vNXICF4lfti4dRiq
+	 Ev78yIfiOEw2FOqlwMaCN9NG5S/+gzgR/oCg9foTGj0xWH7QxTip29adXkjtbJmAhf
+	 Fysw4wHuasZdv0a3M7o1CzHadalBm9h0XJRv14/FeXwcHbR/aQ8xTCZ7L2geseHJ3n
+	 tebvKs/ZcHoVA==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to DT
+Subject: Re: [PATCH] dt-bindings: net: can: holt,hi3110: Convert to DT
  schema
 Reply-To: sashiko-reviews@lists.linux.dev
 To: Quchaosheng <quchaosheng000406@163.com>
-Cc: devicetree@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, robh@kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, conor+dt@kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-In-Reply-To: <20260914030215.437602-4-quchaosheng000406@163.com>
+Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, conor+dt@kernel.org, devicetree@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, robh@kernel.org
+In-Reply-To: <20260914030215.437602-3-quchaosheng000406@163.com>
 References: <20260914030215.437602-1-quchaosheng000406@163.com>
- <20260914030215.437602-4-quchaosheng000406@163.com>
+ <20260914030215.437602-3-quchaosheng000406@163.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 14 Sep 2026 03:12:10 +0000
-Message-Id: <20260914031210.B9DDF1F000FF@smtp.kernel.org>
+Date: Mon, 14 Sep 2026 03:12:56 +0000
+Message-Id: <20260914031256.D4E501F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,120 +49,71 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
-- [Medium] The schema omits the `fsl,mpc5200b-mscan` fallback compatible st=
-ring used in existing device trees, causing schema validation failures.
-- [Medium] The schema is missing conditional `if-then` blocks, globally all=
-owing properties that are invalid for MPC5200, and failing to mandate requi=
-red properties for MPC5121.
+- [Low] The schema omits a reference to the standard SPI peripheral propert=
+ies schema, which will cause valid standard SPI properties (like `spi-max-f=
+requency`) to be falsely rejected.
+- [Low] The maximum supported clock frequency is documented in the schema t=
+ext but not formally enforced as a JSON Schema constraint.
 --
 
-commit dee9e6a0d172cc57e05eeda41cfef5b093d00d22
+commit 708f7e5cdeffdf3f0881283fe507970525fe6ae2
 Author: Quchaosheng <quchaosheng000406@163.com>
 
-dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to DT schema
+dt-bindings: net: can: holt,hi3110: Convert to DT schema
 
-Converts the Freescale MPC5xxx MSCAN controller binding from free-form text
-to DT schema. It specifies compatible strings, clocks, clock names, and
-mscan clock properties.
+This commit converts the Holt HI-311X stand-alone CAN controller binding fr=
+om
+free-form text to a DT schema. It references the common can-controller sche=
+ma
+and explicitly models the alternative between a provided clock and a clock
+frequency fallback.
 
-> diff --git a/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.=
-yaml b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
+> diff --git a/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml b=
+/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
 > new file mode 100644
-> index 0000000000000..108f225f91963
+> index 0000000000000..8c433fcac4a5a
 > --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
-> @@ -0,0 +1,87 @@
+> +++ b/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
+> @@ -0,0 +1,80 @@
 [ ... ]
+> +description:
+> +  The Holt HI-3110 is a stand-alone CAN controller with an SPI interface.
+> +
+> +allOf:
+> +  - $ref: can-controller.yaml#
+
+[Severity: Low]
+Does this schema need a reference to /schemas/spi/spi-peripheral-props.yaml=
+#?
+
+Because unevaluatedProperties is set to false at the bottom of the schema,=
+=20
+and the SPI peripheral properties are not pulled in by can-controller.yaml,
+valid SPI properties like spi-max-frequency will be treated as undocumented
+and falsely rejected by dtbs_check.
+
+> +
 > +properties:
 > +  compatible:
-> +    enum:
-> +      - fsl,mpc5200-mscan
-> +      - fsl,mpc5121-mscan
+> +    const: holt,hi3110
+[ ... ]
+> +  clock-frequency:
+> +    description:
+> +      Frequency of the clock feeding the CAN controller, in Hz. Used when
+> +      no clocks property is provided. The maximum supported frequency is
+> +      40000000.
+> +    $ref: /schemas/types.yaml#/definitions/uint32
 
-[Severity: Medium]
-Will this strict enum cause validation failures for existing device trees?
+[Severity: Low]
+Should this property include a formal maximum: 40000000 constraint?
 
-Existing device trees, such as arch/powerpc/boot/dts/mpc5200b.dtsi, use a
-fallback array pattern:
-
-    compatible =3D "fsl,mpc5200b-mscan", "fsl,mpc5200-mscan";
-
-Should the schema allow fsl,mpc5200b-mscan as well, perhaps using an items
-list to support the fallback?
+The description mentions the 40 MHz limit, but without the JSON Schema=20
+constraint, device trees configuring a higher frequency will silently pass=
+=20
+schema validation even though the driver enforces the limit at runtime.
 
 [ ... ]
-> +  fsl,mscan-clock-source:
-> +    description:
-> +      Clock source used for the controller. Valid values are "ip" for th=
-e IP
-> +      bus clock, "ref" for the reference clock (XTAL) and "sys" for the
-> +      system clock. "sys" is only available on MPC5121. When the propert=
-y is
-> +      absent, an optimal clock source based on the system clock is selec=
-ted,
-> +      falling back to the reference clock.
-> +    enum: [ip, ref, sys]
-
-[Severity: Medium]
-Should the sys value be restricted to the MPC5121 variant?
-
-The schema currently allows sys globally, even though it is invalid for
-the MPC5200. An if-then block could be used to restrict this.
-
-> +
-> +  fsl,mscan-clock-divider:
-> +    description:
-> +      Additional clock divider for the reference and system clock source=
-s.
-> +      Defaults to 1 when not specified.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    default: 1
-
-[Severity: Medium]
-Does this allow the fsl,mscan-clock-divider property on the MPC5200 variant
-where it does not exist?
-
-An if-then conditional block could also restrict this property to the MPC51=
-21
-variant to prevent it from silently passing validation on MPC5200 nodes.
-
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-
-[Severity: Medium]
-Should clocks and clock-names be required for the MPC5121 variant?
-
-The driver probe requires these clocks for MPC5121. Without an if-then block
-requiring them, incomplete nodes will silently pass schema validation but f=
-ail
-at runtime.
-
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +
-> +    can@1300 {
-> +        compatible =3D "fsl,mpc5121-mscan";
-> +        reg =3D <0x1300 0x80>;
-> +        interrupts =3D <12 IRQ_TYPE_LEVEL_LOW>;
-> +        interrupt-parent =3D <&ipic>;
-> +    };
-
-[Severity: Medium]
-Since the clocks and clock-names properties are strictly required by the
-driver for MPC5121, does this example represent a functionally broken
-configuration?
-
-Because the schema does not strictly require the clock properties, this
-example passes validation, which demonstrates that the schema accepts
-invalid configurations.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914030215.4376=
-02-4-quchaosheng000406@163.com?part=3D1
+02-3-quchaosheng000406@163.com?part=3D1
