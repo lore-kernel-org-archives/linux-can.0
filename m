@@ -1,29 +1,29 @@
 Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E54B3093DB;
-	Mon, 14 Sep 2026 02:22:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1832E888C;
+	Mon, 14 Sep 2026 03:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789352525; cv=none; b=dJZTHnpGRF0zlO51lGzzaPk34u+9g8hcjT+0WMusUn3OKQDf6g7FPt0qalxHc+e6ek+kj6ruXwzfdjWZOviX0g8veHvliZ0C7B3OMl5sVI/t/6W/g0XKb5oQfku8z76YDBhpUOcmGGGIMzkZ2d8Eu1FoADbSUjEINkHzm+IxL8w=
+	t=1789354900; cv=none; b=dgj9hGLO6xvYFeVdLu8pzrCKK3PfSWsUufC8EGYKsWiafeH5YO8C8mpuW8Itm8d3O4alK8TqQwBAiWFLV2j4E4VJdAqCSgz5nIeyd00474AvrpRqrSPzLwUwvhAEczAbUb9wskV62EiFA9PCI2NXbZRKrlnFD5pDAXIqUg+O7Dc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789352525; c=relaxed/simple;
-	bh=FoRbvjJYUht6kbLmSlFPEjYXMLGqkLxTElouKEcRFVA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lY8pjlkb32TFJY81Pj3jaSIkPf3pk04Msvx8qmw6MHODHSifl4Buu/RYMWn9saE8zhheZkY2HXRPnDrReowNR9V4x4zHdUyt4tkM4EvSZHEEO9X12XwiQWFhCz7PyR0p6+jvsdTFMoQfkCfGIE1Vde5ZprlK9eNYKTs9Dkzzncs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ppatkF5q; arc=none smtp.client-ip=117.135.210.4
+	s=arc-20240116; t=1789354900; c=relaxed/simple;
+	bh=HVA3NWrT/wQga/eiKqTcToZeQeq0wzt46cH0Rpm5AhQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Ark54FPTKu2PojYUlIKNjvJpfA6qGrak0H+RnQz+7jczArUgeB8sYfy5z09VxvwdE8+Tv6/XM/RVGuILWKhd3KLLXJkfRXDNRbRMzt4BZnhvh/3ABTCPJSoBQt3p9Fe+5nnTeBEgdP3S+MSI/LhQ4yBJw8znFjQloUcgfEZo2Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=R4vWLwDA; arc=none smtp.client-ip=117.135.210.4
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ppatkF5q"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="R4vWLwDA"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=iJ
-	kFKZ6xXmC9IcVlt3Hy4pHoy2vpFDSR+26IXi0a6rk=; b=ppatkF5q62irxTAzNH
-	LEAJ359zHvhwag2kcKmPNh0ac8Lyw89ss4qKgnZvAtu9R5h0ecgzthxkAMewQn5x
-	F5RNZYaSBXti2fPBkgmXms0Q206I5q95LFV15yqwaAfCGChAqvzLW8e3MWO/O3Sb
-	hO9igqjRrfPP2bA8doVkYEtPU=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=1v
+	5b+fRL9NAYhSdoLEcKC3YciDkKADtaABnc4lssut4=; b=R4vWLwDAeCUlc1oG99
+	6hOB/8ePLSDiDYE0jRNi2E0F0gQ+76N50DFkH2PKjXtJisdMcyiWD9qOI7L5nj85
+	yMOGWRcFz8Jvn6vGgydMXao+ncygxhZSyh5Hp9sceG7KnsfSqqZKVDltGL22e4zJ
+	u3u3vel/8WtaTpcdnZ6QHb7xI=
 Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzsmtp3 (Coremail) with SMTP id PigvCgDH9QQ5WqdqYjVKSg--.17020S2;
-	Mon, 14 Sep 2026 10:21:45 +0800 (CST)
+	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wAHyGd8Y6dqsoVfAg--.21450S2;
+	Mon, 14 Sep 2026 11:01:18 +0800 (CST)
 From: Quchaosheng <quchaosheng000406@163.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol@kernel.org>,
@@ -33,9 +33,9 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc: linux-can@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	quchaosheng000406@163.com
-Subject: [PATCH v5] dt-bindings: net: can: convert ifi_canfd to DT schema
-Date: Mon, 14 Sep 2026 10:21:45 +0800
-Message-ID: <20260914022145.408976-1-quchaosheng000406@163.com>
+Subject: [PATCH v5] dt-bindings: net: can: ifi,canfd-1.0: Convert to DT schema
+Date: Mon, 14 Sep 2026 11:01:16 +0800
+Message-ID: <20260914030116.437424-1-quchaosheng000406@163.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -44,12 +44,12 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PigvCgDH9QQ5WqdqYjVKSg--.17020S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4DJrWDKF1kGr1rXw1UZFb_yoWrGry5pF
-	W3CrnrJFs2qF43Gw4xK3W8Cw13ZFn5AF15Kr9rZw10ya90gFy5tw4akas5ZFyYgrZ2vFyx
-	XF1Fga15J3W7uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRmYLkUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5BopnmqnWjos7AAA3k
+X-CM-TRANSID:_____wAHyGd8Y6dqsoVfAg--.21450S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4DJrWDKF1kGr1rXw1UZFb_yoWrGryUpF
+	W3CrnrJFs2qF43Gws7K3W8Cw13ZFs5AF15Gr9rZw18Aas0gFy5tw4akas5ZFyYgrZ2vFyx
+	XF4Fga15J3W7uaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pR9Z2xUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5B588WqnY34SpgAA3T
 
 Convert the IFI CAN-FD controller binding from free-form text to DT
 schema, and reference the common can-controller.yaml schema.
@@ -63,6 +63,7 @@ numbers from the original text, which keeps the values unchanged
 node name is changed from "canfd" to "can" so that it matches the
 $nodename pattern required by can-controller.yaml.
 
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
 ---
 v2:
  - Correct the description: this is a soft IP block typically synthesised
@@ -83,8 +84,6 @@ v5:
  - Re-send the patch on its own. The v4 posting accidentally included
    unrelated changes to the xilinx-xadc binding and did not remove
    ifi_canfd.txt. Only the intended change is present now.
-
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
 ---
  .../bindings/net/can/ifi,canfd.yaml           | 46 +++++++++++++++++++
  .../devicetree/bindings/net/can/ifi_canfd.txt | 15 ------
@@ -94,7 +93,7 @@ Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
 
 diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
 new file mode 100644
-index 000000000..63f982e73
+index 000000000..c8c3105c7
 --- /dev/null
 +++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
 @@ -0,0 +1,46 @@
@@ -107,7 +106,7 @@ index 000000000..63f982e73
 +title: IFI CAN-FD Controller
 +
 +maintainers:
-+  - Quchaosheng <quchaosheng000406@163.com>
++  - Marc Kleine-Budde <mkl@pengutronix.de>
 +
 +description:
 +  The I/F/I CAN-FD soft IP block connected to the platform bus. It is most
