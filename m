@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3299C3ACEEA;
-	Mon, 14 Sep 2026 07:24:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A143E5ED5;
+	Mon, 14 Sep 2026 07:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789370643; cv=none; b=MwNIde3RPi5TPCPsqDmwjGD1JLLNFAEAKjgSQ/xErYgyyyRVYX7BdrNlxdM9OOxG/lCgErs2vpLy9FLnykcEy9pmY/ljFJu4cqEISvI7kbNRuJg1LRI4LXXKrIgrEDNQtjV1mILfWTRjimQKDcnm52TABgMQz0PaunqBosbq3L8=
+	t=1789371071; cv=none; b=UdkT64ohmilpUEwUxJYZhUFKim5dzUKbbRdh2Plt/71b2Cv3o1c8Pdszs63jfkokbaNfd4e+XteYskVvDtQJKs786H4fMsF0kKrrhomlv089Cx2nzIE66VY1YEPKXwDbPNbZ/QGgcKK4Q1/G4FoJfViZ4c7IH2kKv3XHgsJX1vY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789370643; c=relaxed/simple;
-	bh=g+38FgOC9ZNKh6fCvn7Jb2t1Ja9Frdbw3eNYbL4oaoA=;
+	s=arc-20240116; t=1789371071; c=relaxed/simple;
+	bh=BjvEe1YBdzr2i0Dxaw2qXEbQK6Tc2HC8232HQJKLjf8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nm1gBHgBXzDJA+07XHVsVsrhYbwTIGekSwTb2RWO+0Zsiyo17AMMnbDXaoi8npfATgtD3Xr/u0U+qxXogzHHxTggpWObImPdDpBs4xlqiER3Kz/F6mj4xy1v7bdBT9zt46kRPQdLHu77CUWnMs3u1w69d+xFfSFqzZJykNUT+1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H3gysuNk; arc=none smtp.client-ip=100.103.45.18
+	 In-Reply-To:Content-Type; b=tBGqp0atMTdraJov7MES8flw4pb3a/OBvVaqQNjX6J/yL1ZFm/7M4xpsyQT9KDV2c9upEUIrenxbCLWNliHttXT8elppK4FxMe/XTOYweDju99bsZWsR7RiJt7A7keYyHCUGw2WUclHY1JcfpptLfcpvawdeGbdu3ZMPIkOiHLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d0LoDufG; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H3gysuNk"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57AD01F000FF;
-	Mon, 14 Sep 2026 07:23:58 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d0LoDufG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3521F000FF;
+	Mon, 14 Sep 2026 07:31:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789370641;
-	bh=pZcpAcr+/zzbC+AJSoK5adn1YRsesqqRQr6hReF8Wug=;
+	s=k20260515; t=1789371069;
+	bh=tDfLP5ZYMnqhabXjlAgRwX5Uwn+wmPzYfYsv4JL74Uk=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=H3gysuNk8zdh7URFf7FLGlilz9hCA4zjYeK5IzjcfURn2IrXKQtKPpJz4Fhky0yXd
-	 WpoSEdb0Exip+c22bwx7Usf6yratEwco1cclfU5O39eBSRyUVsaYDFOQWz0h6HDJJX
-	 K/gwyEkYWguB/zyrv8OPVZo/PQ1nlpfAN7hd/LGW6B1lj1zoqi3WtRRFR25+HS2sSQ
-	 n+SsCP1KOltDH+jnJjW9hweUPa9xfKWt4U3zk9rpqMFKuUVYzxC1mVPWErYkF+CiJF
-	 72w+yuoxtmArigyL0mz1Jrqq2Th6eBwyvM4kadoLRRIt5lnPaXbMFMm9uue0nZznfe
-	 sLgL5kaqQPFtw==
-Message-ID: <63126241-b217-46c6-8ec3-071283e86d69@kernel.org>
-Date: Mon, 14 Sep 2026 09:23:55 +0200
+	b=d0LoDufGfOS9YxHrgsw7PqLrYNDpcma90QWnN386Y5ORvykRmmYF08ls2Weu/QrNf
+	 sP8z2POL29qfbnS2yjTeZ4g/tgFczDrS9dPxhArP15In5YOF83+6kmNG+OrGCgEraj
+	 UmjgAn7Y5emC4DeSKpckdLbWSoDX3UbT/1tvMu96sw6d484jwoKzzkF3TF6FBVDiOl
+	 A+ZfmN4+K0iiEocW9u2N8/IL9TPNPL3pY0U4UlgDz6YOckLWwExpHfDYI6i10nI+2Q
+	 h/BKSzJSeBn/fZkya2sihk9tvl4C/y1/L97PWjtzux+LxPTOE+s4KHA5Yw15+NmwT5
+	 b3XF3EYlu7Rcw==
+Message-ID: <a3d4cb8f-3550-48de-a275-914c4aef2923@kernel.org>
+Date: Mon, 14 Sep 2026 09:31:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -35,14 +35,15 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] dt-bindings: net: can: holt,hi3110: Convert to DT
- schema
+Subject: Re: [PATCH v2] dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to
+ DT schema
 To: Quchaosheng <quchaosheng000406@163.com>,
  Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
  <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
 Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org
 References: <20260914055608.495084-1-quchaosheng000406@163.com>
+ <20260914055608.495084-2-quchaosheng000406@163.com>
 From: Krzysztof Kozlowski <krzk@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
@@ -88,136 +89,45 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  K9bCVaboTA2T77QYkRcRJYSsO1alGX0ome/hMLD1daXlkrNUp1HWa3K4iytLRXjCSIorWiGs
  n+q3krnpXu3TFkA8qtOFZMdnIiFuiq1yLT8hptsV5xh1TA2nsVvSYiaCr3q4s4BKjS/KrLDb
  qoxzw8ISjdUp4pA85vb6YLCmb39NgidD+7PmAr65lBNveIFynTgsja1rRQ4=
-In-Reply-To: <20260914055608.495084-1-quchaosheng000406@163.com>
+In-Reply-To: <20260914055608.495084-2-quchaosheng000406@163.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 14/09/2026 07:56, Quchaosheng wrote:
-> Convert the Holt HI-311X stand-alone CAN controller binding from
-> free-form text to DT schema, and reference the common can-controller.yaml
-> schema.
+> Convert the Freescale MPC5xxx MSCAN controller binding from free-form
+> text to DT schema, and reference the common can-controller.yaml schema.
 > 
+> The original text described the two compatible strings and their clock
+> source properties in separate sections. "fsl,mpc5200b-mscan" is added as
+> a fallback of "fsl,mpc5200-mscan", the way existing device trees such as
+> mpc5200b.dtsi use it. The allowed values of fsl,mscan-clock-source are
+> constrained to the strings the driver accepts: the driver compares
+> against "ip", "sys" and "ref" and rejects anything else.
+> 
+> The clocks and clock-names properties are documented as well. The driver
+
+Don't paste here LLM output.
+
+> looks up the "ipg", "ips", "sys", "ref" and "mclk" clocks by name, and
+> the existing MPC5121 device trees provide exactly those. They were not
+> described by the old text.
+
+You write complicated paragraphs and complicated sentences in some
+passive voice. Please look at other commits how the commit msg is written.
+
+> 
+> The note that the MPC5121 Rev. 1 processor is not supported is kept from
+> the original text.
+> 
+> unevaluatedProperties is used rather than additionalProperties so that
+> properties provided by can-controller.yaml remain usable.
+
+Same problems.
 
 Do not attach (thread) your patchsets to some other threads (unrelated
 or older versions). This buries them deep in the mailbox and might
 interfere with applying entire sets. See also:
 https://elixir.bootlin.com/linux/v6.16-rc2/source/Documentation/process/submitting-patches.rst#L830
-
-
-> The controller is connected over SPI, so reference
-> spi-peripheral-props.yaml as well, otherwise the standard SPI properties
-> such as spi-max-frequency would be rejected by unevaluatedProperties.
-
-Redundant, drop.
-
-> 
-> The old text listed clocks as required, but the driver obtains the clock
-> with devm_clk_get_optional() and falls back to the "clock-frequency"
-
-No, read the git log history. It's only for ACPI. You cannot add ABI
-post factum on the basis of "but someone added it to the driver code".
-
-> property when no clock is provided, so either one of the two must be
-> present and neither is required on its own. This is expressed with an
-> anyOf block, and clock-frequency is documented, as it was previously
-> undocumented. The maximum supported clock frequency of 40000000 is
-> enforced, as that is the limit the driver applies.
-> 
-> unevaluatedProperties is used rather than additionalProperties so that
-> properties provided by can-controller.yaml remain usable.
-
-All this is redundant. You just paste here LLM explanations, so let me
-stop you right here - do not ever paste us LLM text. It's pointless.
-
-Explain the changes done to the binding ONLY.
-
-> 
-> Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
-> ---
-> v2:
->  - Reference spi-peripheral-props.yaml. Without it, unevaluatedProperties
->    rejected the standard SPI properties, spi-max-frequency among them.
->    Reported by Sashiko.
-> 
->  - Add a maximum of 40000000 to clock-frequency. The description stated
->    the limit but did not enforce it. Reported by Sashiko.
-> ---
->  .../bindings/net/can/holt,hi311x.yaml         | 81 +++++++++++++++++++
->  .../bindings/net/can/holt_hi311x.txt          | 23 ------
->  2 files changed, 81 insertions(+), 23 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/holt_hi311x.txt
-> 
-> diff --git a/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml b/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
-> new file mode 100644
-> index 000000000..36497b114
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
-> @@ -0,0 +1,81 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/net/can/holt,hi311x.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Holt HI-311X stand-alone CAN controller
-> +
-> +maintainers:
-> +  - Marc Kleine-Budde <mkl@pengutronix.de>
-> +
-> +description:
-> +  The Holt HI-3110 is a stand-alone CAN controller with an SPI interface.
-> +
-> +allOf:
-> +  - $ref: can-controller.yaml#
-> +  - $ref: /schemas/spi/spi-peripheral-props.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: holt,hi3110
-> +
-> +  reg:
-> +    description: SPI chip select.
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    description:
-> +      The clock feeding the CAN controller. If this property is not present
-> +      clock-frequency must be specified instead.
-> +    maxItems: 1
-> +
-> +  clock-frequency:
-> +    description:
-> +      Frequency of the clock feeding the CAN controller, in Hz. Used when
-> +      no clocks property is provided.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    maximum: 40000000
-
-No
-
-> +
-> +  interrupts:
-> +    description: IRQ line for the CAN controller.
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Regulator that powers the CAN controller.
-> +
-> +  xceiver-supply:
-> +    description: Regulator that powers the CAN transceiver.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +anyOf:
-> +  - required:
-> +      - clocks
-> +  - required:
-> +      - clock-frequency
-
-No
 
 
 Best regards,
