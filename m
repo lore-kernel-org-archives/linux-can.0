@@ -1,273 +1,101 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87C95411FBE;
-	Mon, 14 Sep 2026 09:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C9641D638;
+	Mon, 14 Sep 2026 09:15:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789376704; cv=none; b=lUg20uW+8xbWyWVSON/RxDgl0NZPpY2JEZPB8fuWyJKRBmDJSfpYJmS8Hbx7KLF4hxUiamC2N4vbwuqbqtrZH15/BwY3vLuBsSPtiT+rD1uxya7TO/Nuvxr/Gv0qIRZszWHLrl1k1epZFVdsYZm2Czz/0Nl1okOF59UVxbEYTpE=
+	t=1789377356; cv=none; b=Nmv2KHwJjGX5BUjNjc21VIbgInpfyS5hn9rGskXr2VvWOvVd/h5XuHgVYLdaOCmfk7q3p8PZJ7Fqj43NdRMl24CzsdmiWxTqRDSp9pd5T5u1TUx2WHqCb914HohW74M8kYM3nZ4PS+DSRzpCdXf9KfLGwpmDXctFW6Dem1ihZQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789376704; c=relaxed/simple;
-	bh=N+Dci2a7Ab5X7+brGWlSyLFeIFzyA3nuBctD8Wtl/3Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MJUKqEXmqwFPDSr0nsLa/+LSfgdGBzhKL7Txuk1FXYxWLCaWYYjzxZvEpTfmdQvp9A4tS/FZGhcw0LYEiyyRwdkdQa7uYwCZVgL3S45KbcHCjF3whKyuJVkgMLcyLtkVYIiOQleoC3OArCWsZV1rTxaARmAd7sqDxTMqYj0x5o0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=fC2lNdTf; arc=none smtp.client-ip=117.135.210.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1789377356; c=relaxed/simple;
+	bh=3/7GKMq7Ffdymv55nF8gv1UWfbh97fBRIE6jQOLW8wo=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=SX1UkY/IwC76rvF5ehTkzYRHUrCaHL8kSpksKYNu4tu17Cu2exVLtPhsOtOVeXTqQMCWv+aWfdFza2tDhgpPPtXmJYKrJxAbUXQKPqQihHUWiLGxPJt1e5g1O6gWsy3PA+oayghb+2oud30KCJxsUhoLoz2r+sJD02W0tYxnnb8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YsosOKkk; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="fC2lNdTf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Sn
-	zKIwpnbdSTjunN7bp4Seo7tgEM5ocAcd+x3hw2RQc=; b=fC2lNdTfpkrKyDp6/X
-	wk2HHRb04IhSALfLsOJeWsbV8eSMbWaU36b9Hwk+Zqo1qK83hl7ybq8dUvmNl8LX
-	gq+r/8TtnlOHNBmkoPA0hHe5qgCzlJauOeQMvgsj3FiaTJuUP9aL9TcJ0xjLtpvW
-	HCrVRKV0dO8yCnxCEflZxT8RM=
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzga-smtp-mtada-g1-2 (Coremail) with SMTP id _____wCHbKSouKdqEj5qAg--.11583S3;
-	Mon, 14 Sep 2026 17:04:43 +0800 (CST)
-From: Quchaosheng <quchaosheng000406@163.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	quchaosheng000406@163.com
-Subject: [PATCH v3 2/2] dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to DT schema
-Date: Mon, 14 Sep 2026 17:04:40 +0800
-Message-ID: <20260914090440.552884-2-quchaosheng000406@163.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YsosOKkk"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D8ED91F000FF;
+	Mon, 14 Sep 2026 09:15:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789377354;
+	bh=NwcMwKRRkkYemv2BkawzfM9Z8f4KUTQ+iOJ5B5DQHDw=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=YsosOKkkACWgHmLGooGZU2Iu/XKmv8IqHtvqiVWKja1e+CrXncdgG95nxAuaqamYr
+	 WRIj3eY5bMyQrs/SSDdkDLsptDcrqQ9qTTjj+vcIHJkv1gCPPdN5VQLaKl0AgCTDnr
+	 dYCQtKl3gKZTUenV/9b5srtYpB6kKuLlMn6o4jbuK6ruLX1voZs5RxEZn4F1HtEO6S
+	 cYgMzzZSBkPBv+QPC1cNbewwWudGhqn6dALRImvvEZ+w2Ltz0AkiI0YxGV9OQmXXI+
+	 tq/tHJVl7uDvdKVtCev9iQA5PNPjjklQ22XtV8Xl8eefM4GCB5I6S3cWARyqJz+SGP
+	 Yc4JKWsUgmV1w==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v3 2/2] dt-bindings: net: can: fsl,mpc5xxx-mscan:
+ Convert to DT schema
+Reply-To: sashiko-reviews@lists.linux.dev
+To: Quchaosheng <quchaosheng000406@163.com>
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, conor+dt@kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, devicetree@vger.kernel.org, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, robh@kernel.org
+In-Reply-To: <20260914090440.552884-2-quchaosheng000406@163.com>
+References: <20260914090440.552884-2-quchaosheng000406@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 14 Sep 2026 09:15:53 +0000
+Message-Id: <20260914091553.D8ED91F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCHbKSouKdqEj5qAg--.11583S3
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKr4UJrWxCry5uFyDWFWruFg_yoWxGFy7pa
-	y3Cay7JF9FqF15Z3yvgF48Cw1fJanYyF45Grn7Z34fK3y5CF18tF4SkF9YvFy5Gr97Za9F
-	g3W0vr1UJF1q9w7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pEK0PhUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5AvcUmqnuKtQygAA3l
 
-Convert the Freescale MPC5xxx MSCAN binding from free-form text to DT
-schema.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [Low] Missing `$ref` type definition for vendor property `fsl,mscan-clock=
+-source`.
+--
 
-Describe fsl,mpc5200-mscan and fsl,mpc5121-mscan in separate sections, as
-the original text does. fsl,mpc5200-mscan accepts "ip" and "ref" for
-fsl,mscan-clock-source, fsl,mpc5121-mscan also accepts "sys". Enforce both
-with an if/then block on the compatible string.
+commit 0f4e0331aedb88733ad8480e58d0cb6aed274e62
+Author: Quchaosheng <quchaosheng000406@163.com>
 
-Add "fsl,mpc5200b-mscan" as a fallback of "fsl,mpc5200-mscan", as
-mpc5200b.dtsi uses it.
+dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to DT schema
 
-Document clocks and clock-names. The MPC5121 driver looks up the "ipg",
-"ips", "sys", "ref" and "mclk" clocks by name, and mpc5121.dtsi provides
-all five. The original text did not describe them.
+This commit converts the Freescale MPC5xxx MSCAN binding from free-form
+text to DT schema format. It describes multiple controller variants, sets
+up clock definitions, and introduces conditional properties for different
+compatible strings.
 
-Keep the note about MPC5121 Rev. 1.
+> diff --git a/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.=
+yaml b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
+> new file mode 100644
+> index 0000000000000..277e78ca21f11
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
 
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
----
-v2:
- - Add "fsl,mpc5200b-mscan" as a fallback compatible.
+[ ... ]
 
- - Document clocks and clock-names.
+> +  clock-names:
+> +    items:
+> +      - const: ipg
+> +      - const: ips
+> +      - const: sys
+> +      - const: ref
+> +      - const: mclk
+> +
+> +  fsl,mscan-clock-source:
+> +    description:
+> +      Clock source used for the controller.
+> +    enum: [ip, ref, sys]
 
-v3:
- - Split fsl,mscan-clock-source by compatible string, following the
-   separate sections in the original text. "sys" applies to
-   fsl,mpc5121-mscan only.
+[Severity: Low]
+Does this custom property need an explicit type definition?
 
- - Rewrite the commit message in imperative mood.
----
----
- .../bindings/net/can/fsl,mpc5xxx-mscan.yaml   | 114 ++++++++++++++++++
- .../bindings/net/can/mpc5xxx-mscan.txt        |  53 --------
- 2 files changed, 114 insertions(+), 53 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/mpc5xxx-mscan.txt
+Vendor-specific custom properties without a standard type suffix typically
+require an explicit type reference to pass dt-schema validation when running
+make dt_binding_check.
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
-new file mode 100644
-index 000000000..277e78ca2
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
-@@ -0,0 +1,114 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/fsl,mpc5xxx-mscan.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Freescale MPC5xxx MSCAN controller
-+
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
-+
-+description:
-+  The MSCAN controller found on the Freescale MPC5200 and MPC5121 SoCs. The
-+  MPC5121 Rev. 1 processor is not supported.
-+
-+properties:
-+  compatible:
-+    oneOf:
-+      - items:
-+          - enum:
-+              - fsl,mpc5200b-mscan
-+          - const: fsl,mpc5200-mscan
-+      - enum:
-+          - fsl,mpc5200-mscan
-+          - fsl,mpc5121-mscan
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    description:
-+      Clocks feeding the controller. On MPC5121 the driver looks up the
-+      "ipg", "ips", "sys", "ref" and "mclk" clocks by name.
-+    maxItems: 5
-+
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: ips
-+      - const: sys
-+      - const: ref
-+      - const: mclk
-+
-+  fsl,mscan-clock-source:
-+    description:
-+      Clock source used for the controller.
-+    enum: [ip, ref, sys]
-+
-+  fsl,mscan-clock-divider:
-+    description: Additional clock divider for the reference and system clocks.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,mpc5200-mscan
-+    then:
-+      properties:
-+        fsl,mscan-clock-source:
-+          description:
-+            Clock source used for the controller. "ref" is the default when
-+            the property is not present.
-+          enum: [ip, ref]
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: fsl,mpc5121-mscan
-+    then:
-+      properties:
-+        fsl,mscan-clock-source:
-+          description:
-+            Clock source used for the controller. When the property is not
-+            present, an optimal clock source and frequency based on the
-+            system clock is selected. If this is not possible, the reference
-+            clock is used.
-+          enum: [ip, ref, sys]
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    can@1300 {
-+        compatible = "fsl,mpc5121-mscan";
-+        reg = <0x1300 0x80>;
-+        interrupts = <12 IRQ_TYPE_LEVEL_LOW>;
-+        interrupt-parent = <&ipic>;
-+    };
-+
-+    can@1380 {
-+        compatible = "fsl,mpc5121-mscan";
-+        reg = <0x1380 0x80>;
-+        interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
-+        interrupt-parent = <&ipic>;
-+        fsl,mscan-clock-source = "ref";
-+        fsl,mscan-clock-divider = <3>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/net/can/mpc5xxx-mscan.txt b/Documentation/devicetree/bindings/net/can/mpc5xxx-mscan.txt
-deleted file mode 100644
-index 2fa4fcd38..000000000
---- a/Documentation/devicetree/bindings/net/can/mpc5xxx-mscan.txt
-+++ /dev/null
-@@ -1,53 +0,0 @@
--CAN Device Tree Bindings
--------------------------
--
--(c) 2006-2009 Secret Lab Technologies Ltd
--Grant Likely <grant.likely@secretlab.ca>
--
--fsl,mpc5200-mscan nodes
-------------------------
--In addition to the required compatible-, reg- and interrupt-properties, you can
--also specify which clock source shall be used for the controller:
--
--- fsl,mscan-clock-source : a string describing the clock source. Valid values
--			   are:	"ip" for ip bus clock
--				 "ref" for reference clock (XTAL)
--			   "ref" is default in case this property is not
--			   present.
--
--fsl,mpc5121-mscan nodes
-------------------------
--In addition to the required compatible-, reg- and interrupt-properties, you can
--also specify which clock source and divider shall be used for the controller:
--
--- fsl,mscan-clock-source : a string describing the clock source. Valid values
--			   are:	"ip" for ip bus clock
--				"ref" for reference clock
--				"sys" for system clock
--			   If this property is not present, an optimal CAN
--			   clock source and frequency based on the system
--			   clock will be selected. If this is not possible,
--			   the reference clock will be used.
--
--- fsl,mscan-clock-divider: for the reference and system clock, an additional
--			   clock divider can be specified. By default, a
--			   value of 1 is used.
--
--Note that the MPC5121 Rev. 1 processor is not supported.
--
--Examples:
--	can@1300 {
--		compatible = "fsl,mpc5121-mscan";
--		interrupts = <12 0x8>;
--		interrupt-parent = <&ipic>;
--		reg = <0x1300 0x80>;
--	};
--
--	can@1380 {
--		compatible = "fsl,mpc5121-mscan";
--		interrupts = <13 0x8>;
--		interrupt-parent = <&ipic>;
--		reg = <0x1380 0x80>;
--		fsl,mscan-clock-source = "ref";
--		fsl,mscan-clock-divider = <3>;
--	};
--- 
-2.43.0
+Even though the allowed values are defined via an enum, a base type referen=
+ce
+such as `$ref: /schemas/types.yaml#/definitions/string` is usually required
+to prevent build-time tooling failures.
 
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914090440.5528=
+84-1-quchaosheng000406@163.com?part=3D2
