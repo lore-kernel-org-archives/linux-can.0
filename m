@@ -1,66 +1,141 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EC533176EE;
-	Sun, 13 Sep 2026 07:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA6D1B6D08;
+	Mon, 14 Sep 2026 01:32:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789286081; cv=none; b=gfGyiRkh9M9YlYeAdWlTc7EfFOu8fQSqfzWUBlBTB1a4GAl3W+cQC3/yQn764FsyZ46gsMsi1sRST3jRU/gFGjo7olsqL/AC2Q5jsV/+0WUZPjBcpL/iiUZaUPjGYjc9LHDTJiR6mKWBY4EGxL0yg8BHanHd4e+9G8uCbMwvrAc=
+	t=1789349528; cv=none; b=fcyx8LFM4bcOrgUjl5gVzsozif/JzN5/L+yqvv65VZTokE1EmlwtEJAkcZ4geuLzfyQ4qtCGjD8hXAXDGFU1QOOfI2G1/8OpT/GGa3e2mOF1ByPsKC0b5sOLGuun4SQ6bm8q8aGTjAOwwL4HgIx9Db3xbRrxuKHxl6ykJV3TSD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789286081; c=relaxed/simple;
-	bh=FvKWKtMXNN2ocZifIUXCkIe8hmUzO1nGxVB/Hc9xzaE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LP06iJiGZEOhU1XDlbmYpWyERhN8Y+BgiKW90x+B71em7hzacRGHC/GtwiwzUvZzt/djqXKRKEXjAj4XAcXhEoESjsyoZRuyustZvkNbiA/MAW9dJT5VTgSAjZZxKBqLao3GQWd4BMpUbgZ9Lzz7It45uaNJI3u/S/FgbaxT9kw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nmI+7y3x; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789349528; c=relaxed/simple;
+	bh=fF2nuq3kQYsJt2TWbvwHKoCLJCJrAJvPw/QqZaRKGoc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sTn8phyka6bcR0QYmLt7Af8Kffl0sHxn1b+yYGCTASAYn91zioUeIw3qanbhdgHuVRqprxXfKBxp/YS8dXOVVKVqMZRj85zKz8L1KyXm3KrDio9LvQWByI71KPhn6W6Pa/SeFSACHkRD8pmpbZM6cejoExTdRxSGKyPQAAXABd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=p8mMgtBH; arc=none smtp.client-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nmI+7y3x"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80AE61F000FF;
-	Sun, 13 Sep 2026 07:54:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789286069;
-	bh=3gPYzscr6PY1tKGOo8MOmKv2rjqzGwQxJJrk9mxvNMs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=nmI+7y3xQ2zFNM/diqsyran6e4Ki8q1cl4tGFSIX+w4nSWyvXzMhZJKyo37BOS24K
-	 zSk2OEGPwn9j3W4WzMlIS4yR16EJKeA/HKAGVMqlmcxqS6WVR7P8UhZEIwMqe959Pr
-	 kLow/euUAi+0keusVP+LUAV89LgTof694TeWtyooiflFalBVBxr/D8WJL3If9vgDly
-	 GcjgPIVAe9tiAXoHSX8Yh6tN5tA5d2PafUedjN0ualeP4kEz8+g/amkao0GMYxHbtD
-	 RpguoPb3O3YMQXJ28sIGb4ZUE4uayznzOS11tX1nCbuQTY89EjusEg1/TqaQqXuh12
-	 911CNewGDleAw==
-Date: Sun, 13 Sep 2026 09:54:25 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Kendall Willis <k-willis@ti.com>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
-	s-kochidanadu@ti.com, a-kaur@ti.com, s-tripathi1@ti.com, vishalm@ti.com, 
-	linux-can@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 1/2] dt-bindings: can: m_can: add ti,am62-mcan
- compatible
-Message-ID: <20260913-impartial-mongrel-of-speed-662ea0@quoll>
-References: <20260912-temp-v5-0-2e3201c02109@ti.com>
- <20260912-temp-v5-1-2e3201c02109@ti.com>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="p8mMgtBH"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Ux
+	K2MWPoDVuf9Q62xs0Mp51oj2Iuc6GkP4TJSe+QWaA=; b=p8mMgtBHMjPFaembhJ
+	ie2b9wJ8lxYtljq7zIaQxYiP0myipVO8feS6eEpsZ7UkHuGmKOsWru2q+3P1z9rZ
+	+7k7fbqfzl9Hg3oMRmGg1aqr9aCw4z49z3EFK5GFEIr9usRIpHlGaVDzHQ8Lm27z
+	N0mE9Jqj0dhlWhq97p17A7lzw=
+Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wBHsQp8TqdqrTwhAg--.12080S2;
+	Mon, 14 Sep 2026 09:31:40 +0800 (CST)
+From: Quchaosheng <quchaosheng000406@163.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	quchaosheng000406@163.com
+Subject: [PATCH] dt-bindings: net: can: convert ifi_canfd to DT schema
+Date: Mon, 14 Sep 2026 09:31:38 +0800
+Message-ID: <20260914013138.392969-1-quchaosheng000406@163.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260912-temp-v5-1-2e3201c02109@ti.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wBHsQp8TqdqrTwhAg--.12080S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4DJF18uFykCw13uw4UArb_yoW5Jw4rpa
+	43CFnrXa1IqF43Gws3K3W8Aw13XFn5ZF15Gr9Fvw18AF98CFy5Kw4aka48Za4jgrZ2yFyx
+	XF1Fga15ta18GaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRk9NcUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAB43rGqnTn6RJAAA3N
 
-On Sat, Sep 12, 2026 at 04:26:55PM -0500, Kendall Willis wrote:
-> Add "ti,am62-mcan" device. Device is fully compatible with Bosch.
-> The device supports out-of-band wakeup capability.
-> 
-> Signed-off-by: Kendall Willis <k-willis@ti.com>
-> ---
->  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+Convert the IFI CAN-FD controller binding from free-form text to DT
+schema, and reference the common can-controller.yaml schema.
 
-Fails checks.
+The driver matches on the "ifi,canfd-1.0" compatible and obtains its
+interrupt through platform_get_irq(), so interrupts is required and no
+additional properties are used.
 
-Best regards,
-Krzysztof
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+---
+ .../bindings/net/can/ifi,canfd.yaml           | 43 +++++++++++++++++++
+ .../devicetree/bindings/net/can/ifi_canfd.txt | 15 -------
+ 2 files changed, 43 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/ifi_canfd.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+new file mode 100644
+index 000000000..72f2b934c
+--- /dev/null
++++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+@@ -0,0 +1,43 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/net/can/ifi,canfd.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: IFI CAN-FD Controller
++
++maintainers:
++  - Quchaosheng <quchaosheng000406@163.com>
++
++description:
++  The IFI CAN-FD controller is a CAN-FD capable controller found on
++  Renesas SoCs.
++
++allOf:
++  - $ref: can-controller.yaml#
++
++properties:
++  compatible:
++    const: ifi,canfd-1.0
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++additionalProperties: false
++
++examples:
++  - |
++    canfd0: can@ff220000 {
++        compatible = "ifi,canfd-1.0";
++        reg = <0xff220000 0x1000>;
++        interrupts = <0 43 0>;
++    };
++...
+diff --git a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt b/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
+deleted file mode 100644
+index 20ea5c70a..000000000
+--- a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
++++ /dev/null
+@@ -1,15 +0,0 @@
+-IFI CANFD controller
+---------------------
+-
+-Required properties:
+-  - compatible: Should be "ifi,canfd-1.0"
+-  - reg: Should contain CAN controller registers location and length
+-  - interrupts: Should contain IRQ line for the CAN controller
+-
+-Example:
+-
+-	canfd0: canfd@ff220000 {
+-		compatible = "ifi,canfd-1.0";
+-		reg = <0xff220000 0x00001000>;
+-		interrupts = <0 43 0>;
+-	};
+-- 
+2.43.0
 
