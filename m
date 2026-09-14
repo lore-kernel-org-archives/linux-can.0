@@ -1,145 +1,109 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F973242D88;
-	Mon, 14 Sep 2026 01:38:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AB62D7DEA;
+	Mon, 14 Sep 2026 01:39:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789349885; cv=none; b=TO9LnidTd71NmD63AOr1RX+FuwUivn6JlWbs/9y1x0GnOMRMdvriI9UsIuTYzPL1Ew7n8SCLU5QlWgUg3IdHNvlor0WkctrNPxvXDkKZIndV+lyAF5SblrxqQnYVKuUlup8t5630cYSm/OyBB0G4n5jq45QW5YNGF4ThLDzHjcc=
+	t=1789349985; cv=none; b=ozCBxLvTxp9Y3SRh0uVy9oAkCvpFl+w+Vzwlx4rBOlIGx13ryv4V7Hba2tS34yzQr2bA8HErXBeqVFUIxlc71svRjcLCvkVFaT48nrsR1X5Fw0p+Xc1TNpCzL3A1IPTVH8alZlk4lWSm+xOrXS6c2KshDXn8ogKjA1D8RgdPKQc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789349885; c=relaxed/simple;
-	bh=vePd4yZt8iuLmxcyu7sjbR5z7DgGXrZ/AxilR0qgHqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MqKbZ+HT32n4VSkrGi31/StmUeIyabFMwOeWuRDKAjyR87n371KWPHpSr3ub19h+KH0lRQbDmsnQSKAFZL/1KXRPgTKh3D15lIrIV9VD3QzlVE2aF4Mf3Iyi5P34CYpuWZ5O9RG3vR88yKXB5Ov5CX+CA2YpJrmYlwCPwhUB0zw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=HeM/fc3U; arc=none smtp.client-ip=117.135.210.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1789349985; c=relaxed/simple;
+	bh=6VJ+vJST6YIAIEzImd/v7GKX92KtVouyHF5m4Gg78HI=;
+	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-Id; b=X5DdBulvJTKyCWjBsyrLeNJOa2aeyxVeBRtwhF80pNKRJXEAqGx+GL1LABtsinLerPeNfHQi+qF6GVzW1Ri79NotuJkIVW6yDqLdnrB3rwjA090ruiZuxEYLv/piE3hJAGLkIOdRj7By226Pk7XHYhgw76UyCg3HMohUodfgmSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B2veLJnh; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="HeM/fc3U"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Rq
-	G9RdNKN3Nr6uK8PDLsfF1CErLrBq2F6byxqpeNQTg=; b=HeM/fc3UID3pZdZzyl
-	bqKjTFllJEHH5yNg8vjH6hRoioYe6u/nsS5YkPAl5B01UQWtIdrobZSP1R5RjcRQ
-	1DTxhitJJMIgeJ8KDLpWUQi7NwUj7yCofD1UTv3TXZj0lXx7tOsT/xKfi0HI13iB
-	xw7iDwlbW79ohkmNuwYAjnaaQ=
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wCHNmXpT6dqXr9QAg--.20080S2;
-	Mon, 14 Sep 2026 09:37:46 +0800 (CST)
-From: Quchaosheng <quchaosheng000406@163.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>
-Cc: linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	quchaosheng000406@163.com
-Subject: [PATCH v2] dt-bindings: net: can: convert ifi_canfd to DT schema
-Date: Mon, 14 Sep 2026 09:37:45 +0800
-Message-ID: <20260914013745.394514-1-quchaosheng000406@163.com>
-X-Mailer: git-send-email 2.43.0
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B2veLJnh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAFD81F000FF;
+	Mon, 14 Sep 2026 01:39:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789349984;
+	bh=xjA7VHxfZ5Xgosn1zN+pG4Gpue9lni7K182In4vQe6s=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=B2veLJnhtqKMwOElmZvN1LQD6m7bGl4QqgKPKiestOD8mmZ3386yC64h/Wb0xCNxn
+	 mIFdq1zB/Ccr46kbjpi/DJYcE7u2D372Y9OMW/PucpG5hi0uH1YW8sBD/yu0cmOW+S
+	 Ee1kz/Zu1jue2B7/RUtmCdJ7pszubFZbyqO62n5HP1SrUQOVC2PYXYBbXJlJpLjv7f
+	 P3pP/cvJ60aR601Thy9zIRnHPT0w8FqVe1v3MoQdqNGlKIUghSskbsGN/sJI6csx6v
+	 fr+/5JLnrXBVwY0QoOEkxsvEQybBoAnyJmfSdrUo5EZ9E7pwyCCONsIzj09oZr870q
+	 IRI8APIF8T82A==
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] dt-bindings: net: can: convert ifi_canfd to DT schema
+Reply-To: sashiko-reviews@lists.linux.dev
+To: Quchaosheng <quchaosheng000406@163.com>
+Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, robh@kernel.org, devicetree@vger.kernel.org, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, conor+dt@kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20260914013138.392969-1-quchaosheng000406@163.com>
+References: <20260914013138.392969-1-quchaosheng000406@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 14 Sep 2026 01:39:43 +0000
+Message-Id: <20260914013943.EAFD81F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wCHNmXpT6dqXr9QAg--.20080S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCF4DJF18uw4ruF1UWrWkXrb_yoW5XFW3pa
-	43CrnrXF4IqF43GwsxK3W8Aw13Zr95ZF15Kr9rZw18AF90kFy5Kw4ak34rZa4jgrZ2yFWx
-	XF1Fga15ta1xuaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRpT5kUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5AqSCGqnT+op2gAA3v
 
-Convert the IFI CAN-FD controller binding from free-form text to DT
-schema, and reference the common can-controller.yaml schema.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [Low] Incorrect use of `additionalProperties: false` with an `allOf` `$re=
+f` breaks schema inheritance from `can-controller.yaml`.
+--
 
-The driver matches on the "ifi,canfd-1.0" compatible and obtains its
-interrupt through platform_get_irq(), so interrupts is required and no
-additional properties are used.
+commit fca96562b6a6638d3bb9a003f449b39969264629
+Author: Quchaosheng <quchaosheng000406@163.com>
 
----
-v2:
- - Correct the description: this is a soft IP block typically synthesised
-   into an FPGA or CPLD, not a controller found on Renesas SoCs.
-   Wording now follows the driver's Kconfig entry.
+dt-bindings: net: can: convert ifi_canfd to DT schema
 
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
----
- .../bindings/net/can/ifi,canfd.yaml           | 43 +++++++++++++++++++
- .../devicetree/bindings/net/can/ifi_canfd.txt | 15 -------
- 2 files changed, 43 insertions(+), 15 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/ifi_canfd.txt
+This commit converts the IFI CAN-FD controller binding from a free-form text
+file to a YAML device tree schema and references the common
+can-controller.yaml schema.
 
-diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
-new file mode 100644
-index 000000000..63ddc879c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
-@@ -0,0 +1,43 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/ifi,canfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: IFI CAN-FD Controller
-+
-+maintainers:
-+  - Quchaosheng <quchaosheng000406@163.com>
-+
-+description:
-+  The I/F/I CAN-FD soft IP block connected to the platform bus. It is most
-+  often synthesised into an FPGA or CPLD.
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    const: ifi,canfd-1.0
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    canfd0: can@ff220000 {
-+        compatible = "ifi,canfd-1.0";
-+        reg = <0xff220000 0x1000>;
-+        interrupts = <0 43 0>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt b/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
-deleted file mode 100644
-index 20ea5c70a..000000000
---- a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--IFI CANFD controller
----------------------
--
--Required properties:
--  - compatible: Should be "ifi,canfd-1.0"
--  - reg: Should contain CAN controller registers location and length
--  - interrupts: Should contain IRQ line for the CAN controller
--
--Example:
--
--	canfd0: canfd@ff220000 {
--		compatible = "ifi,canfd-1.0";
--		reg = <0xff220000 0x00001000>;
--		interrupts = <0 43 0>;
--	};
--- 
-2.43.0
+> diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/D=
+ocumentation/devicetree/bindings/net/can/ifi,canfd.yaml
+> new file mode 100644
+> index 0000000000000..72f2b934c727b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
 
+[ ... ]
+
+> +allOf:
+> +  - $ref: can-controller.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    const: ifi,canfd-1.0
+
+[ ... ]
+
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+
+[Severity: Low]
+Does using additionalProperties: false here break the schema inheritance fr=
+om
+can-controller.yaml?
+
+Under JSON schema rules, additionalProperties: false only evaluates
+properties explicitly defined in the local schema file. It ignores those
+evaluated via an allOf reference, meaning any standard CAN properties
+inherited from can-controller.yaml will cause device tree validation to fai=
+l.
+
+Should this be unevaluatedProperties: false instead?
+
+> +
+> +examples:
+> +  - |
+
+[ ... ]
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914013138.3929=
+69-1-quchaosheng000406@163.com?part=3D1
