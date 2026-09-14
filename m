@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A143E5ED5;
-	Mon, 14 Sep 2026 07:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CBB414418;
+	Mon, 14 Sep 2026 08:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789371071; cv=none; b=UdkT64ohmilpUEwUxJYZhUFKim5dzUKbbRdh2Plt/71b2Cv3o1c8Pdszs63jfkokbaNfd4e+XteYskVvDtQJKs786H4fMsF0kKrrhomlv089Cx2nzIE66VY1YEPKXwDbPNbZ/QGgcKK4Q1/G4FoJfViZ4c7IH2kKv3XHgsJX1vY=
+	t=1789375785; cv=none; b=Llxba1cX7IqOjaz8KZsi2ldLQJm4oHCJIJvG+tkmKdPL0i6P/2El02Ycf4YuB6vadbX7PRDFiVB9uJjeoJxkQthOhNx8ILEv9+TavM9RMmlWk3PzfewlyQrONblqo9xRwOSfPFcnblb0t1SiLeziXr6g8XGyZV6PNqWqvs+UcHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789371071; c=relaxed/simple;
-	bh=BjvEe1YBdzr2i0Dxaw2qXEbQK6Tc2HC8232HQJKLjf8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tBGqp0atMTdraJov7MES8flw4pb3a/OBvVaqQNjX6J/yL1ZFm/7M4xpsyQT9KDV2c9upEUIrenxbCLWNliHttXT8elppK4FxMe/XTOYweDju99bsZWsR7RiJt7A7keYyHCUGw2WUclHY1JcfpptLfcpvawdeGbdu3ZMPIkOiHLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=d0LoDufG; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789375785; c=relaxed/simple;
+	bh=ZNKb6Bfr6dN91prZr3gOlBcn1dAneXmqFSvRYY045cw=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=g2m8nBzWrbeNYnwWFRYiusrnFbskJtZgMQ7IkreBd2r0iJbYSFIP9GlGq2OiR87+n69YNzlgxwsjakfKL4ZDuVGKekkGL+gKwWWMQ8BxVD1fBJfKYSlMQwum8MRcbr8RbIel5fE26cjOvDm6+CHl2gUiFy5A1jfc7o5TY5qHsFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ANEkIZCV; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="d0LoDufG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E3521F000FF;
-	Mon, 14 Sep 2026 07:31:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ANEkIZCV"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B72431F000FF;
+	Mon, 14 Sep 2026 08:49:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789371069;
-	bh=tDfLP5ZYMnqhabXjlAgRwX5Uwn+wmPzYfYsv4JL74Uk=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=d0LoDufGfOS9YxHrgsw7PqLrYNDpcma90QWnN386Y5ORvykRmmYF08ls2Weu/QrNf
-	 sP8z2POL29qfbnS2yjTeZ4g/tgFczDrS9dPxhArP15In5YOF83+6kmNG+OrGCgEraj
-	 UmjgAn7Y5emC4DeSKpckdLbWSoDX3UbT/1tvMu96sw6d484jwoKzzkF3TF6FBVDiOl
-	 A+ZfmN4+K0iiEocW9u2N8/IL9TPNPL3pY0U4UlgDz6YOckLWwExpHfDYI6i10nI+2Q
-	 h/BKSzJSeBn/fZkya2sihk9tvl4C/y1/L97PWjtzux+LxPTOE+s4KHA5Yw15+NmwT5
-	 b3XF3EYlu7Rcw==
-Message-ID: <a3d4cb8f-3550-48de-a275-914c4aef2923@kernel.org>
-Date: Mon, 14 Sep 2026 09:31:04 +0200
+	s=k20260515; t=1789375783;
+	bh=rcaxHOdZ3xOGPj8wMwDKY7K3IAoqQJUNiULgWMU18Z4=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To;
+	b=ANEkIZCVDzN1sECFUoL8rbUFeFsNwpWedQvAW4HdQVzCddYcH7762K0sRskW2JBoQ
+	 JVVtgH63puZf0lPUzPcHyxy5ckVmVfRjkGdRBitX92WIs4vAVzj7+XizpNq26WM4lT
+	 AAqjfX4cByfF+729twf0eDyz+bs1b2koZQu9Ytk3vdLC1YtPLBpIcxHLGyQ7StWVPi
+	 6SzLJK3ox3nyX9O556a8lLUgRgxPpI0KS4iE3uY0jH0kHiMZ7gnCBijoCrkAAAHfkd
+	 LHof+tqKmeePm3CnKsNfWmTnCe1pSlvG5HdzKMswA2hopG7+OvN9jaag10NGS6Pj0t
+	 rYnTHiaP3TgPw==
+Message-ID: <284b3be8-319a-4abc-9628-f96209bbe467@kernel.org>
+Date: Mon, 14 Sep 2026 10:49:38 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -37,6 +37,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert to
  DT schema
+From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Quchaosheng <quchaosheng000406@163.com>,
  Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
  <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
@@ -44,7 +45,7 @@ To: Quchaosheng <quchaosheng000406@163.com>,
 Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org
 References: <20260914055608.495084-1-quchaosheng000406@163.com>
  <20260914055608.495084-2-quchaosheng000406@163.com>
-From: Krzysztof Kozlowski <krzk@kernel.org>
+ <a3d4cb8f-3550-48de-a275-914c4aef2923@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=krzk@kernel.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -89,46 +90,39 @@ Autocrypt: addr=krzk@kernel.org; keydata=
  K9bCVaboTA2T77QYkRcRJYSsO1alGX0ome/hMLD1daXlkrNUp1HWa3K4iytLRXjCSIorWiGs
  n+q3krnpXu3TFkA8qtOFZMdnIiFuiq1yLT8hptsV5xh1TA2nsVvSYiaCr3q4s4BKjS/KrLDb
  qoxzw8ISjdUp4pA85vb6YLCmb39NgidD+7PmAr65lBNveIFynTgsja1rRQ4=
-In-Reply-To: <20260914055608.495084-2-quchaosheng000406@163.com>
+In-Reply-To: <a3d4cb8f-3550-48de-a275-914c4aef2923@kernel.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 14/09/2026 07:56, Quchaosheng wrote:
-> Convert the Freescale MPC5xxx MSCAN controller binding from free-form
-> text to DT schema, and reference the common can-controller.yaml schema.
+On 14/09/2026 09:31, Krzysztof Kozlowski wrote:
+> On 14/09/2026 07:56, Quchaosheng wrote:
+>> Convert the Freescale MPC5xxx MSCAN controller binding from free-form
+>> text to DT schema, and reference the common can-controller.yaml schema.
+>>
+>> The original text described the two compatible strings and their clock
+>> source properties in separate sections. "fsl,mpc5200b-mscan" is added as
+>> a fallback of "fsl,mpc5200-mscan", the way existing device trees such as
+>> mpc5200b.dtsi use it. The allowed values of fsl,mscan-clock-source are
+>> constrained to the strings the driver accepts: the driver compares
+>> against "ip", "sys" and "ref" and rejects anything else.
+>>
+>> The clocks and clock-names properties are documented as well. The driver
 > 
-> The original text described the two compatible strings and their clock
-> source properties in separate sections. "fsl,mpc5200b-mscan" is added as
-> a fallback of "fsl,mpc5200-mscan", the way existing device trees such as
-> mpc5200b.dtsi use it. The allowed values of fsl,mscan-clock-source are
-> constrained to the strings the driver accepts: the driver compares
-> against "ip", "sys" and "ref" and rejects anything else.
+> Don't paste here LLM output.
 > 
-> The clocks and clock-names properties are documented as well. The driver
-
-Don't paste here LLM output.
-
-> looks up the "ipg", "ips", "sys", "ref" and "mclk" clocks by name, and
-> the existing MPC5121 device trees provide exactly those. They were not
-> described by the old text.
-
-You write complicated paragraphs and complicated sentences in some
-passive voice. Please look at other commits how the commit msg is written.
-
+>> looks up the "ipg", "ips", "sys", "ref" and "mclk" clocks by name, and
+>> the existing MPC5121 device trees provide exactly those. They were not
+>> described by the old text.
 > 
-> The note that the MPC5121 Rev. 1 processor is not supported is kept from
-> the original text.
-> 
-> unevaluatedProperties is used rather than additionalProperties so that
-> properties provided by can-controller.yaml remain usable.
+> You write complicated paragraphs and complicated sentences in some
+> passive voice. Please look at other commits how the commit msg is written.
 
-Same problems.
 
-Do not attach (thread) your patchsets to some other threads (unrelated
-or older versions). This buries them deep in the mailbox and might
-interfere with applying entire sets. See also:
-https://elixir.bootlin.com/linux/v6.16-rc2/source/Documentation/process/submitting-patches.rst#L830
+Also, submitting patches gives some advice, which you used in the first
+paragraph but then stopped completely in the rest.
 
+See longer explanation here:
+https://elixir.bootlin.com/linux/v6.16/source/Documentation/process/submitting-patches.rst#L94
 
 Best regards,
 Krzysztof
