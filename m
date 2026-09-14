@@ -1,119 +1,88 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94583334C05;
-	Mon, 14 Sep 2026 03:12:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF0C38645E
+	for <linux-can@vger.kernel.org>; Mon, 14 Sep 2026 05:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789355585; cv=none; b=A4vuVbkaYnd18nNRp95OxWeZ+pmewNfdNjrICj8C3M5VgVAw2p9BGg5mM1JqkFXfGb4bf7AZ1/Tmb+H6p5DcJuNbFGKW/OJB8mpPejdxc5BPQSK7hWTJiKda9bc0HRnyoLw03o7rcrzLOGu46+TDHnRpuS4DtDd+WnevVvlghs8=
+	t=1789365396; cv=none; b=BNmsABKhHeLbOk8ZX01ZfsJc5NbV4ahq5/+IYFJhBVUdtdnQ9PwHi+JK08UrxAdcmh8lk8A92fk8s3QJGg1wT4uO7Of1JOd0v7l29Hu3lwzYDGems8Q2I1DZKF4TuJHdwXfYTpVBSarF2g26EkroM1R97zJUujqrkzrkXLzxwNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789355585; c=relaxed/simple;
-	bh=Ojfo/geujUkZvfa2rPnctIFifUQhCYPHlrdkA9xooRg=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=lVIzeDcfHyKt6OgXiGm3i3+UGNCDdid+YDkl1tiyu3fvoIz+i/MuW6s1eox3AjiD7p/7dwZbmc9SEUpO2kAvmjCfswqN5dftthHVmO1QeZPGF2ZDaHyXdYlq3cskeuw0SNEJ6J9lSwaRnFVRsMRLlBm9wXg9Kj1Ll7enJPjJJI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fPNwEBrc; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789365396; c=relaxed/simple;
+	bh=DR0sqauHnTt47czj4jMTH++EpUUjEQoKnRzBOc3YxPY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Qrfp9rtXHuZOyrg5LajTur5oFib6PZtHCwyVLJEO3O2RWzDJWUdyyDqIYfh3rz9UnHc1yQPTi5psEdjmi3UcmNNkMi+A0RtKdpcFJ4KaCpRWqSHZ8BJUyVr8m9QR8I2pRg1sCyX2+Djm4yvt4gQ0h7kMmQJYz8QccjsgGzVefv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=J8lHneYl; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fPNwEBrc"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4E501F000FF;
-	Mon, 14 Sep 2026 03:12:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789355577;
-	bh=MbMjd3J+22HTtf4Aljh/JcNDWkAGF+sCL9UYeHltunY=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=fPNwEBrcsAUdVMwlb7DxCcGZ0THoHH/mrEZa52qsOkpIJz3UFtupTla0kT3ronfX4
-	 7g0QEp7I+QzDugiDhGEeiRKtLIpckX8i8ppxLA6yvC071Nzn90ksCGyPH3FOqXCFUk
-	 3MU/d5BeRYUYtQ4VCWazB8Vt5/H9d43f7hkD2dPXboavRsBPH4vNXICF4lfti4dRiq
-	 Ev78yIfiOEw2FOqlwMaCN9NG5S/+gzgR/oCg9foTGj0xWH7QxTip29adXkjtbJmAhf
-	 Fysw4wHuasZdv0a3M7o1CzHadalBm9h0XJRv14/FeXwcHbR/aQ8xTCZ7L2geseHJ3n
-	 tebvKs/ZcHoVA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] dt-bindings: net: can: holt,hi3110: Convert to DT
- schema
-Reply-To: sashiko-reviews@lists.linux.dev
-To: Quchaosheng <quchaosheng000406@163.com>
-Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, conor+dt@kernel.org, devicetree@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, robh@kernel.org
-In-Reply-To: <20260914030215.437602-3-quchaosheng000406@163.com>
-References: <20260914030215.437602-1-quchaosheng000406@163.com>
- <20260914030215.437602-3-quchaosheng000406@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 14 Sep 2026 03:12:56 +0000
-Message-Id: <20260914031256.D4E501F000FF@smtp.kernel.org>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="J8lHneYl"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=IF
+	F5VvLdk/Jh4RhTSeIEzd3eJ6synOHhmSIWe/oaHC4=; b=J8lHneYlvtNdxisVgK
+	Jwz1ajPZpCTtbWPXGp0kZhb1mWGdOrGa371tAKNr313wQpezKJT5tByAeSk8ZSOQ
+	f+ZHA+DyWvLERmySqGjEkg3q8cZ4DOeMvbt4VrxbKoJNMaEncCwkpm88Y6CFMuni
+	I5+VChyqdRFuQuBznqdXaEEK8=
+Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
+	by gzga-smtp-mtada-g1-1 (Coremail) with SMTP id _____wCXl7V8jKdqvTE6Ag--.62504S2;
+	Mon, 14 Sep 2026 13:56:12 +0800 (CST)
+From: Quchaosheng <quchaosheng000406@163.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org,
+	quchaosheng000406@163.com
+Subject: [PATCH] net: can: cc770: propagate the error from platform_get_irq()
+Date: Mon, 14 Sep 2026 13:56:11 +0800
+Message-ID: <20260914055611.495105-1-quchaosheng000406@163.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wCXl7V8jKdqvTE6Ag--.62504S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7WFyUXF1fAF48Zr13JrWrKrg_yoW8JFWDpr
+	s7KFWxJr4kWF4jka1kXw15AFW3Z3ZIgrWUKryY9wnxZas5JFyUJr15XFyq9FsrZrWxCa4Y
+	gF4jyF47CFs0vF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRO4S5UUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4xzGPGqnjHyrlQAA3G
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
-- [Low] The schema omits a reference to the standard SPI peripheral propert=
-ies schema, which will cause valid standard SPI properties (like `spi-max-f=
-requency`) to be falsely rejected.
-- [Low] The maximum supported clock frequency is documented in the schema t=
-ext but not formally enforced as a JSON Schema constraint.
---
+cc770_platform_probe() turns every failure of platform_get_irq() into
+-ENODEV, including -EPROBE_DEFER. Return the error unchanged so that a
+deferred probe stays deferred, and keep -ENODEV for the case where no
+interrupt is described at all.
 
-commit 708f7e5cdeffdf3f0881283fe507970525fe6ae2
-Author: Quchaosheng <quchaosheng000406@163.com>
+The memory resource is checked separately for the same reason, so that a
+missing resource is still reported as -ENODEV rather than being confused
+with an interrupt lookup failure.
 
-dt-bindings: net: can: holt,hi3110: Convert to DT schema
+The same pattern is used by other CAN platform drivers, such as
+c_can_platform.c and flexcan-core.c.
 
-This commit converts the Holt HI-311X stand-alone CAN controller binding fr=
-om
-free-form text to a DT schema. It references the common can-controller sche=
-ma
-and explicitly models the alternative between a provided clock and a clock
-frequency fallback.
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+---
+ drivers/net/can/cc770/cc770_platform.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-> diff --git a/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml b=
-/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
-> new file mode 100644
-> index 0000000000000..8c433fcac4a5a
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
-> @@ -0,0 +1,80 @@
-[ ... ]
-> +description:
-> +  The Holt HI-3110 is a stand-alone CAN controller with an SPI interface.
-> +
-> +allOf:
-> +  - $ref: can-controller.yaml#
+diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+index b690167c4..9cec95ebd 100644
+--- a/drivers/net/can/cc770/cc770_platform.c
++++ b/drivers/net/can/cc770/cc770_platform.c
+@@ -156,8 +156,13 @@ static int cc770_platform_probe(struct platform_device *pdev)
+ 	int err, irq;
+ 
+ 	mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
++	if (!mem)
++		return -ENODEV;
++
+ 	irq = platform_get_irq(pdev, 0);
+-	if (!mem || irq <= 0)
++	if (irq < 0)
++		return irq;
++	if (!irq)
+ 		return -ENODEV;
+ 
+ 	mem_size = resource_size(mem);
+-- 
+2.43.0
 
-[Severity: Low]
-Does this schema need a reference to /schemas/spi/spi-peripheral-props.yaml=
-#?
-
-Because unevaluatedProperties is set to false at the bottom of the schema,=
-=20
-and the SPI peripheral properties are not pulled in by can-controller.yaml,
-valid SPI properties like spi-max-frequency will be treated as undocumented
-and falsely rejected by dtbs_check.
-
-> +
-> +properties:
-> +  compatible:
-> +    const: holt,hi3110
-[ ... ]
-> +  clock-frequency:
-> +    description:
-> +      Frequency of the clock feeding the CAN controller, in Hz. Used when
-> +      no clocks property is provided. The maximum supported frequency is
-> +      40000000.
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-
-[Severity: Low]
-Should this property include a formal maximum: 40000000 constraint?
-
-The description mentions the 40 MHz limit, but without the JSON Schema=20
-constraint, device trees configuring a higher frequency will silently pass=
-=20
-schema validation even though the driver enforces the limit at runtime.
-
-[ ... ]
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914030215.4376=
-02-3-quchaosheng000406@163.com?part=3D1
