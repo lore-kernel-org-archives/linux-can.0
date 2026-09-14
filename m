@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C4924A21;
-	Mon, 14 Sep 2026 01:45:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F29F238166;
+	Mon, 14 Sep 2026 01:45:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789350326; cv=none; b=g9c6iEOohONx+V5u+eSTw9ksXl9a7dsGkPD9TrUtjs55C+vUX5iidTeaASWWu5obZS4LxnzR7KckmTqNeverOdC/0zynftFjbDZU9dL9cdcBA0Nkhxc7XEkVM7UyyrvaRp6OfRo+C7L3A0J5C6CtOpSn7dvIso/kYfbZXnQPxN0=
+	t=1789350332; cv=none; b=OTHGZhki5n4i11+ri77+gxD3o+kXALLf8A/E3dfyWD0JhoVLGWtVzoCsZ6j2cRCEvDLUgZ5nQpC8aBtTrTTtxwSmBv9MVy8kxHCy8tYzjTJuEruClDJjPUlaIdRtSQ+6dLseLzoxc7ol0J/qDGlYAz6hGZSt493559zdTIZTEhw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789350326; c=relaxed/simple;
-	bh=rIJOeO+ERmF7EPb7YNijBvw7MrYMvrh84NT+WpsTMgA=;
+	s=arc-20240116; t=1789350332; c=relaxed/simple;
+	bh=tAYBugW15ze6fzg/yDnnUBPKrXLXELaDscf0DEDZ6Ew=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=tfS5HVyQMIfLkXfbUMHBxtmQ0B3js3hoNhDw6vb1w2a4UfNLuyKENOQVRYyiuD7TKdEYIb4kw0k2F/Uc8qlPUVx5fAAZF/2dm80sAslTH+Hmz2MUqS+Ske214Pt+IVgraNr91zFSEaBwWh4H/41Zi8Mek9MIWvHZIF+8Eunnn9U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Esdu44Yo; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=FPwm61T3MiU8NoI0lS+OZalxrTaMYyFwf1dG0AUbBTwSUs9RfcbTihF9sCMrFeP9anYRHEceRFBmGne+iZqHiFq7P7Ecz4ufigy5ZQArLfRSbYXxq+ZVeV7BxyL6p12u/W5iG0iXxXQ8u9HzKH/ofAhXc2O7Q4Wb8WHnFiFtc48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jx5WngSD; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Esdu44Yo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C31E51F000FF;
-	Mon, 14 Sep 2026 01:45:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jx5WngSD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA5E91F000FF;
+	Mon, 14 Sep 2026 01:45:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789350325;
-	bh=jfYXuzRl0vvsA4y2U6/Xy16jIhfkeJQmKszv/TAby8s=;
+	s=k20260515; t=1789350331;
+	bh=OdyWO25tZ63dkA3NClMeTuVtV//yMD3mY6AFfT2ADT4=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Esdu44Yo+gSZT4PDDLD9/q9nBns7bU9kLLyvN906b1svoh0YKtvJAkMOhyjJWRxJQ
-	 0Un0lJSM5lCPLVxtBqYcGRmbNqYC1/3zfXwuSzwuuF+3tGyuMK8nb8JsrCyjlbCW82
-	 dod6G9CCwOUt5uEv7zXQ+I1i4drkIeGi3hvMfTszJaIHxJS954Tqu1a5dW6dDhiNvP
-	 /ysRNAlmvrgJ5qi6gQTq4J3skOVuKfypesgOuGNv8J7seeGyPblYM5y/ZNEGv7xpKe
-	 9hbUvXVhu4dakDizY8C96rN4RUW2ONlHqoldBPAVke9uB8dNUkXzCINhSMTZuuI5YX
-	 0udxjTy8bX0Lg==
+	b=jx5WngSDPuORz0IQIKf9UJsZXwdyNqA50iv4MutpnncDnJuWtwEgqyNJkBoTWGyJp
+	 JyXiY68ygXbCWDDw9GCoedG5X5MOUs1Fs7YqF4S2OhKq2DEmMKZMX+Qs7PEHDjgk3X
+	 a5cw6b95FVFuXNy7NQXEbJW6307dTXL+o1cqwwXgdC8qKNDh53mpc2lKIvyj82ME2t
+	 gv+i6+/b3PFCbBosiLu9WndridBs16el08OFsjwb71lCtV+5MFNv1Kyulo/e9j+7b+
+	 0ORgJN34IlB1fNd4ak5FqHd1VHAsLRZODPe6iSlG3y8ylIr7IA9H0moBjPrS11muQG
+	 tEFeT7w7T9tcQ==
 From: sashiko-bot@kernel.org
 Subject: Re: [PATCH v2] dt-bindings: net: can: convert ifi_canfd to DT
  schema
 Reply-To: sashiko-reviews@lists.linux.dev
 To: Quchaosheng <quchaosheng000406@163.com>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, conor+dt@kernel.org, devicetree@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, robh@kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20260914013636.394263-1-quchaosheng000406@163.com>
-References: <20260914013636.394263-1-quchaosheng000406@163.com>
+Cc: conor+dt@kernel.org, robh@kernel.org, "Oleksij Rempel" <o.rempel@pengutronix.de>, devicetree@vger.kernel.org, "Vincent
+ Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>
+In-Reply-To: <20260914013745.394514-1-quchaosheng000406@163.com>
+References: <20260914013745.394514-1-quchaosheng000406@163.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 14 Sep 2026 01:45:24 +0000
-Message-Id: <20260914014524.C31E51F000FF@smtp.kernel.org>
+Date: Mon, 14 Sep 2026 01:45:30 +0000
+Message-Id: <20260914014530.AA5E91F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -48,38 +48,34 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [Medium] DT Schema Error: `additionalProperties: false` incorrectly restr=
-icts inherited properties
+- [Medium] Incorrect use of `additionalProperties: false` when inheriting f=
+rom a common schema via `$ref`, which improperly blocks inherited propertie=
+s.
 --
 
-commit 762b0b1dc7188a87b810716f4344f47313aba8cb
+commit 471062b3f0e20cbfb084fbd8547c9d66999316e1
 Author: Quchaosheng <quchaosheng000406@163.com>
 
 dt-bindings: net: can: convert ifi_canfd to DT schema
 
-This patch converts the IFI CAN-FD controller binding from a free-form
-text document to a YAML DT schema. It also references the common
-can-controller.yaml schema to inherit standard CAN properties.
+Convert the IFI CAN-FD controller binding from free-form text to DT schema,
+and reference the common can-controller.yaml schema.
 
 > diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/D=
 ocumentation/devicetree/bindings/net/can/ifi,canfd.yaml
 > new file mode 100644
 > --- /dev/null
 > +++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+
 [ ... ]
+
 > +allOf:
 > +  - $ref: can-controller.yaml#
 > +
 > +properties:
-> +  compatible:
-> +    const: ifi,canfd-1.0
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
+
+[ ... ]
+
 > +required:
 > +  - compatible
 > +  - reg
@@ -88,27 +84,19 @@ ocumentation/devicetree/bindings/net/can/ifi,canfd.yaml
 > +additionalProperties: false
 
 [Severity: Medium]
-Will this strict restriction prevent inherited properties from being used?
+Does using additionalProperties: false here conflict with the $ref to
+can-controller.yaml#?
 
-Because this schema inherits from can-controller.yaml# using an allOf
-block, using additionalProperties: false here only evaluates the local
-properties block. If a standard CAN property like bitrate or
-termination-gpios is added to a device tree node, dtbs_check will reject
-it as an unallowed additional property.
+When referencing another schema via allOf, using additionalProperties: false
+strictly forbids any properties not defined in the local file. This will ca=
+use
+validation to fail if a device tree node includes standard CAN controller
+properties like termination-gpios that are inherited from can-controller.ya=
+ml.
 
-Should this use unevaluatedProperties: false instead to properly allow the
-properties defined in the referenced schema?
-
-> +
-> +examples:
-> +  - |
-> +    canfd0: can@ff220000 {
-> +        compatible =3D "ifi,canfd-1.0";
-> +        reg =3D <0xff220000 0x1000>;
-> +        interrupts =3D <0 43 0>;
-> +    };
-> +...
+Should this be unevaluatedProperties: false instead, to allow the properties
+defined in the referenced common schema?
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914013636.3942=
-63-1-quchaosheng000406@163.com?part=3D1
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260914013745.3945=
+14-1-quchaosheng000406@163.com?part=3D1
