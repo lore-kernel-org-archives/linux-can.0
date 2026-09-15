@@ -1,78 +1,131 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E2B340281;
-	Tue, 15 Sep 2026 10:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD372485CD2;
+	Tue, 15 Sep 2026 11:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789469843; cv=none; b=WcPSUomL4zveqCJR6QPzqOoW8qvSdtBvpqqpvyChruv9uaHN8OhCzVL38UKWOu5DRtKt7mNEp684dlys3ttUhuvck7hiBQqMu5l6rROwAnKaFfLh2RZX3+R4GB60iWB5ejINr4uQrNUMMp56vqdB2r4Un5WdkzpFl3Oga2qJo3c=
+	t=1789470021; cv=none; b=HkR4/QGyqzX1aR7cwmuzpP+KAwiBX/vQ3cpbLjtHBBHUHkRtm1Hqddk+CMNCXCgqHZWSsV8z5cX5fi4QKhcu3NlHA2g7hcRSAoDhj3CIJTIf1TxIMkksLrwnO1SUNgWxq0MspUkPwBcEfqxY40aJKc8YB4I2k+F3lqIPthD9EjA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789469843; c=relaxed/simple;
-	bh=jjcCtZSr49eBUEwrc8c4xNidZjdjTUez9DXiXPHISFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=leaQg5JBGn6PNcWhxeJ98TpLq7ESH6nhI32LlxRG3P/1YSn6Lzy3s6b+aWLZ0ry0sKSfj1g3q/FFnkexSI6e04z/KlxM/SCjWr26v7ITwSv3hm2FPqhPW5ZQQNbNovrCpgtF64az6PpIe8uX+3AiJREFYPlzSG4L6nkbweUVLv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RNPi10ut; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789470021; c=relaxed/simple;
+	bh=gq39yPKul8KzQJghNgRfsj8RAk+9uIH+BK+ui4PAP3c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VHKWfcFT5hbER5bGRDubmAe+wVv0M70E9LS0TY3OlnSHTGHLwmxEDZJvziNK66j7+kcy2M2SQmAqP777RItlpefFcLyNfxsJaSeLMtbCJJboX8tod3ouJJ7AP/1ha4dTQh+zdmFfURpGXrzIUHJAqDuCK9XBLEdMtAIIB0uCDYE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AdLW3NC8; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RNPi10ut"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E64271F000FF;
-	Tue, 15 Sep 2026 10:57:20 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AdLW3NC8"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 512151F000FF;
+	Tue, 15 Sep 2026 11:00:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789469842;
-	bh=yLtYDPRPCgy/hdfO4t1Hv6piT3zNknalnjJ6vmaE9bg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=RNPi10ut1xVgiT/EBxMlQdfOK+jpX7FuX9G/j/gk2DEZVC8uRhJAFEnBEA3hetWMb
-	 JoBDxwfq7NYlJOjd5pNGCcY+G2DTRNMBCZkyg/yI8mKkadCx9azST1lFOya+L3ND89
-	 FXr46ewBilAYEQTCVx/U+dv/UvJxcxXwXog/Fp/F40OCBm6V20fxM7BZ5nPxu9BK5y
-	 awXTyJhKoR+8VqGpLcHNWB4V41PcWqgflXvoudYdL/EAkQwYenZoaseMzbSLvZ+w39
-	 3HFdRZYYyoxeHSBZpumnyxSMpAtQ5Bx1SB7aQWPUx3GRDWdCgFFLR6bk1VEvEtUG09
-	 qxUQrEuZquPRg==
-Date: Tue, 15 Sep 2026 12:57:18 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Quchaosheng <quchaosheng000406@163.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org, 
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] dt-bindings: net: can: holt,hi311x: Convert to DT
- schema
-Message-ID: <20260915-powerful-jackrabbit-of-courtesy-cf5ddc@quoll>
-References: <20260914090440.552884-1-quchaosheng000406@163.com>
+	s=k20260515; t=1789470016;
+	bh=yv/QDszGawl9SeGeOroDanInIUFokMkP+QruusrQuOU=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=AdLW3NC8ZqCvgOC/cUHmij6jlyskjnp5o58mLjBoCTqJEbFVMAwDXMb7oxwNGT8ju
+	 p3Gd3wEHspY8KTEYJq7APZXfcusyufxRlPrT7W7ruFhQefhXOYUznx1u0tK+1Cjb63
+	 H1x8pKjqFhbocAgZJDqOCeRZ8nnq8NJvJxMS5CZdbehduiOYfh5Yb+uCDcYG/+/8mN
+	 ohopIvtWlmfEBaSw0Ud7UbtxAvqtgowZUM5M8dY+mo6BN8DnR7XwV62IxXAV3wse0t
+	 bbVPYEHuQ4J50DSpvepSTyl6R4fM1ATILL3XCueSunipeW+YCN+JrVSezyWWxu2VSE
+	 wjBjNQs7BS1cA==
+Message-ID: <70ae05a5-2415-4895-bc64-37b3d3ba54ac@kernel.org>
+Date: Tue, 15 Sep 2026 13:00:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260914090440.552884-1-quchaosheng000406@163.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] dt-bindings: net: can: convert ifi_canfd to DT schema
+To: Quchaosheng <quchaosheng000406@163.com>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
+ <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org
+References: <20260914022145.408976-1-quchaosheng000406@163.com>
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=krzk@kernel.org; keydata=
+ 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
+In-Reply-To: <20260914022145.408976-1-quchaosheng000406@163.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Sep 14, 2026 at 05:04:39PM +0800, Quchaosheng wrote:
-> Convert the Holt HI-311X binding from free-form text to DT schema.
+On 14/09/2026 04:21, Quchaosheng wrote:
+> Convert the IFI CAN-FD controller binding from free-form text to DT
+> schema, and reference the common can-controller.yaml schema.
 > 
-> Keep the example and the properties as the original text describes them,
-> including clocks as a required property.
+> The driver matches on the "ifi,canfd-1.0" compatible and obtains its
+> interrupt through platform_get_irq(), so interrupts is required.
 > 
-> Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+> The example uses the GIC and irq header defines instead of the raw
+> numbers from the original text, which keeps the values unchanged
+> (GIC_SPI is 0, IRQ_TYPE_NONE is 0 and 1 is IRQ_TYPE_EDGE_RISING). The
+> node name is changed from "canfd" to "can" so that it matches the
+> $nodename pattern required by can-controller.yaml.
+> 
 > ---
 > v2:
->  - Keep clocks required and drop the clock-frequency property. The
->    original text lists clocks as required, and clock-frequency is an
->    ACPI-only property of the driver, not part of the DT binding.
-> 
->  - Drop the variant-specific handling that v2 introduced. It documented
->    properties the binding never had.
+>  - Correct the description: this is a soft IP block typically synthesised
+>    into an FPGA or CPLD, not a controller found on Renesas SoCs.
+>    Wording now follows the driver's Kconfig entry.
 > 
 > v3:
->  - Rewrite the commit message in imperative mood.
-> ---
-> ---
->  .../bindings/net/can/holt,hi311x.yaml         | 67 +++++++++++++++++++
->  .../bindings/net/can/holt_hi311x.txt          | 23 -------
->  2 files changed, 67 insertions(+), 23 deletions(-)
+>  - Use unevaluatedProperties: false instead of additionalProperties: false.
+>    As can-controller.yaml is referenced through allOf, additionalProperties
+>    would have rejected properties defined by that common schema, such as
+>    termination-gpios and termination-ohms.
+> 
+> v4:
+>  - Use defines instead of raw numbers in the example, and rename the
+>    example node from canfd to can. No functional change.
+> 
+> v5:
+>  - Re-send the patch on its own. The v4 posting accidentally included
+>    unrelated changes to the xilinx-xadc binding and did not remove
+>    ifi_canfd.txt. Only the intended change is present now.
 
-Isn't this like third version of the same thing in Patchwork?
+You send this way too many times. Please slow down.
 
 Best regards,
 Krzysztof
-
