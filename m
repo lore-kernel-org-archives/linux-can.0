@@ -1,39 +1,75 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f13.google.com (mail-pj2-f13.google.com [74.125.227.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3382E4D6C57;
-	Thu, 17 Sep 2026 11:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93324F054A
+	for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 12:37:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789645421; cv=none; b=dXpVZpDF+GJF2dBN1WuQ9EHWySIDvhboHpSVCEAx4N/gxRmK564L8sElsRUrWB95JzN/qU4FsFEFIjxfecx9PuyB9s/TgXuFVL4yCU5oYXsY9uBaPnNAn1TBnc/VSoZbixU2DtG78bIRMWZFmalim48cO6SBhYIDKk+bExdVBbs=
+	t=1789648657; cv=none; b=U2PX5BgngQDV9YGSTJ+M0UenuojoBANpq7fdsBFhKvuS9c+m+8iZ8pY45UeWRC4HyG3NuY4fla3/nFr7TC9Kz7uT1gfnKD5qWoepCpk+n3QgeyMkf73T/WnsIFKLteG8Lsb5GhYJ12sTi3ya1XMOPsG3F+t1QhPQdYmzhhHICoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789645421; c=relaxed/simple;
-	bh=eek6u8893Mp6R+IrbpUYqaRh57JHlrRd8yjFeKQc4/Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WL0vYDNiMR5O3ifN+b7GZ4HEdWP+XKKPODNslPmWMiJolKocURrZH254biTOpMVy3hWpHyUDH4BeThp6EqyfHs+pWU2OHhtblWBFP5W/VPcHLsZ2KIJ5/6IEhWkT3F5Hy/8WWYb2eFdt9Ttwy/lWTlQv8KEdZRGXzEMBbTGBO64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=JY3iQ/Pe; arc=none smtp.client-ip=220.197.31.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	s=arc-20240116; t=1789648657; c=relaxed/simple;
+	bh=UjrMYB1SJaVixFfmpvISBt1Okp74qLFloaIEp+D4dWE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=L+lPJpHrwt3S/Kra1vKvtw5lJ5t4BVs0+tn6wdSDb7EASq1gA3ADQ7YoIKvQ0Z8N9+qASvERruMILopt4TygG037969kWlxwjlOW5XS5hcjojt6fZDPq6JtzNr8xDKhRvLos1La1UwHFJ5zoqoKKoaJNUk48rPkgCcoQSz8yqi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Pdp2Dl2I; arc=none smtp.client-ip=74.125.227.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="JY3iQ/Pe"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=yV
-	Gy3/epLqOdYXpbxQL1bVKZCjldwV5S628qAF9EHUk=; b=JY3iQ/PeorRpM2Tq/H
-	JncgDm+PwqNizotcKcon2mUC9O4pl10TPDNINLNiWMS0U3jBtE1g6tEDeLok+amx
-	dZ4/ZwPPMf9tLzBJiAPecFUKgVQDm7DBKHhP1HRfbf4Ruf67qZ0cdiByLzLfc+vu
-	ZJRfwIA13j/i/urGCN1i1FYAY=
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzsmtp3 (Coremail) with SMTP id PigvCgD3TARP0qtqjXTETA--.32916S2;
-	Thu, 17 Sep 2026 19:43:12 +0800 (CST)
-From: Quchaosheng <quchaosheng000406@163.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Pdp2Dl2I"
+Received: by mail-pj2-f13.google.com with SMTP id 98e67ed59e1d1-396ccd66bb4so724649a91.1
+        for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 05:37:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789648645; x=1790253445; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=+wQAdV32Fk3OyDL+A25ZncHwDoalpqgqwEDF4cMme34=;
+        b=Pdp2Dl2I9K8jYceUeoTqYt1lNhldV6eEbuM9/H7su8YgfKBXEM0t3VFObJaJzgQWFQ
+         /Hbba4wEMfjrPWrpW5YO3t2bTxS9r10d81Zj1s1Vw2hZ/FO/WffYSICsSzqRZ0mOt0fv
+         cwsXnYIKRx2gwujHOTuGNAYfizGAhpyXkYlZa18ruJ1DCRukd530swSOJZZtGjI/Q1DV
+         bdd47bmR89GobBGrp/7csp4RyRJtUlzTpg9sBoifJ9rLc944IHGoFKdg+bRCKg2xLlTt
+         +J6XmLZ3VfjuvEg41LIDHYznVT78HCL0z2T+6kZCzd+quIpi4CLHl55+8thcLnQ4vDLU
+         1z5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789648645; x=1790253445;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=+wQAdV32Fk3OyDL+A25ZncHwDoalpqgqwEDF4cMme34=;
+        b=r4lzIA3ITQox2LAs/+kpBjY65MP8cwRkyNjC/LvJl0HuGD8u7ycgyBvkHWBEiOsXOj
+         zQO1cDqwfsb2w2DIhWOz6KdmWdWFs2WbONKulvAqGWWPRdStKQiQyYrZbD2nYJEzJnD1
+         fkZjjzS13xkQ6RGx45iXq0T0Bbopua1I//dY7iWBRNLzsaGtlGiKOwODOC3jhb0UYS+o
+         URf74BfN724KfJzxQWmrxQrfZYXzIqVVjgFSt4FEALY//7bBhXXCnk8CH3ziBX5fQiL1
+         U2w3412NrZN4X9hw61ni25MyNlAxswZMhhtfkiKw5HTGmnLJKrtlWsYquyGcFvjifuWj
+         l/0Q==
+X-Forwarded-Encrypted: i=1; AKwUvBzYQizy2U/s+Q8qpaVlGD+29WWR6Ps8jVzEsHVj4vsVn8P8/cuECYW0j5JwhDzJ/iBRfzEvfj68Fzo=@vger.kernel.org
+X-Gm-Message-State: AFuF++mVFjSJ/UqznTq7k3RCcMnkXbGOdkp2/vDY1lshNWNTH0Fx6IVU
+	9wavU0qSe7i16IrnWnjc9+agv0hp8FgMC5K97kZAbsyBPHtGha1Kvem7
+X-Gm-Gg: AYBFou1drOYK8TzZtd2QEOuDsF5Agv76AgDnhxekKNTS1z0ZSKiwTUqx9onQgLUTRGp
+	IaaluC/2PhrKvMqAa5ZlqJziLTOv/FC6LfIvVvD6M6GPG/ImceYn58aYsbE+/A8ewmhF8fOKD0q
+	jvcmcjNZrHByYyQv9OoOAl8SvatPRskhnc++c3Dz6tdpHT5brPwuP2bMKLRE11k+Kh4+CBMUPo7
+	MAry+nyedXueh6Je5X24SRbGJbNOasDG3/Q5LiejEVdxPGLOpVzvaGhUgjDzyBs9eN/FjCTW1YK
+	a0iwdGd8IuiOx3xldQkTjSEYA5Gf2VkB1+n2ia+7rFhulePGR4y2fViECDUCYS/uFKKpzkW4zGi
+	fJWrKXiM1CWWGIAmKPy5iRnZDCjI5pHngrzfukA4ZqDWNqvAVVeE9NKeEkuOgbfzrV3gMhyLNvn
+	rysTdFJMIG/+qPkHQ5Jp5bqseHgMFJknPYO1WJN/wbZIhaMex5eT328psrAFk4MnBcXSZABMszX
+	UUQQJfsU2sLrpb2xEbeA09B/xDEBjHD9GOtGrM=
+X-Received: by 2002:a17:90b:314c:b0:39d:f4fd:8075 with SMTP id 98e67ed59e1d1-39e1e4e3559mr13681823a91.19.1789648645405;
+        Thu, 17 Sep 2026 05:37:25 -0700 (PDT)
+Received: from localhost.localdomain ([2409:8a1e:2e81:7320:9190:e5c6:16a4:8428])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39e362f0f07sm6057546a91.17.2026.09.17.05.37.22
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Thu, 17 Sep 2026 05:37:24 -0700 (PDT)
+From: zjamg <ndaugoing@gmail.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: linux-can@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: Paolo Abeni <pabeni@redhat.com>,
+	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Quchaosheng <quchaosheng000406@163.com>
-Subject: [PATCH] can: cc770: fix the clock divider check on the platform bus
-Date: Thu, 17 Sep 2026 19:43:11 +0800
-Message-ID: <20260917114311.534863-1-quchaosheng000406@163.com>
-X-Mailer: git-send-email 2.43.0
+	zjamg <ndaugoing@gmail.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] can: restore skb header initialisations in init_can_skb()
+Date: Thu, 17 Sep 2026 20:37:16 +0800
+Message-ID: <20260917123716.63116-1-ndaugoing@gmail.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,59 +77,50 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PigvCgD3TARP0qtqjXTETA--.32916S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZryrWF43GrWrWF43Gr13XFb_yoW8Aw4xp3
-	yq9FW8Jw4qvFs0ka1vgw15ur4Uu3ZFgFyjka4Utw4UZ3sxCry5Jr10qa4kAFWUArZ7Cw15
-	uFn8ZF43ZF4DZr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pi7KItUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDABBOw2qr0lDQXgAA3Q
 
-cc770_get_platform_data() tests priv->cpu_interface for CPUIF_DSC before
-assigning it from pdata->cir:
+Commit 9f10374bb024 ("can: remove private CAN skb headroom infrastructure")
+removed the skb_reset_mac_header()/skb_reset_network_header()/
+skb_reset_transport_header() calls from init_can_skb(). As a result, RX
+skbs from alloc_can_skb() and friends again carry mac_header = 0xFFFF.
+When such an skb reaches packet_rcv_spkt() (SOCK_PACKET), the push length
+calculation overflows and triggers skb_under_panic -> kernel BUG -> full
+machine panic.
 
-	priv->can.clock.freq = pdata->osc_freq;
-	if (priv->cpu_interface & CPUIF_DSC)
-		priv->can.clock.freq /= 2;
-	priv->clkout = pdata->cor;
-	priv->bus_config = pdata->bcr;
-	priv->cpu_interface = pdata->cir;
+The same issue was originally reported in 2014 on linux-can and fixed by
+commit 969439016d2c ("can: add missing initialisations in CAN related
+skbuffs"). packet_rcv_spkt() itself has never been hardened: only
+packet_rcv() and tpacket_rcv() gained dev_has_header() checks in
+commit d549699048b4 ("net/packet: fix packet receive on L3 devices
+without visible hard header").
 
-priv comes from alloc_cc770dev() -> alloc_candev() -> alloc_netdev_mqs(),
-which uses kvzalloc_flex(), so cpu_interface is still zero here and the
-test can never match.
-
-A board that sets CPUIF_DSC in pdata->cir therefore gets its system clock
-halved in the hardware but not in can.clock.freq, and the bit timing is
-computed from twice the real clock. The platform data example in the file
-header, .cir = 0x41, sets that bit.
-
-Assign pdata->cir before the test, as the ISA path in cc770_isa.c already
-does.
-
-Fixes: e285e44d91fe ("can: cc770: add platform bus driver for the CC770 and AN82527")
-Assisted-by: LLM
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+Fixes: 9f10374bb024 ("can: remove private CAN skb headroom infrastructure")
+Cc: stable@vger.kernel.org
+Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: zjamg <ndaugoing@gmail.com>
 ---
- drivers/net/can/cc770/cc770_platform.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+v2:
+ - Remove in-code comment per Oliver's feedback.
+ - Pick up Reviewed-by and Acked-by tags from Oliver Hartkopp.
 
-diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
-index b6c4f02ffb97..1565bd5eea28 100644
---- a/drivers/net/can/cc770/cc770_platform.c
-+++ b/drivers/net/can/cc770/cc770_platform.c
-@@ -137,11 +137,11 @@ static int cc770_get_platform_data(struct platform_device *pdev,
- 	struct cc770_platform_data *pdata = dev_get_platdata(&pdev->dev);
- 
- 	priv->can.clock.freq = pdata->osc_freq;
-+	priv->cpu_interface = pdata->cir;
- 	if (priv->cpu_interface & CPUIF_DSC)
- 		priv->can.clock.freq /= 2;
- 	priv->clkout = pdata->cor;
- 	priv->bus_config = pdata->bcr;
--	priv->cpu_interface = pdata->cir;
- 
- 	return 0;
+ drivers/net/can/dev/skb.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 95fcdc1026f8..14edec5afb57 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -210,6 +210,10 @@ static void init_can_skb(struct sk_buff *skb)
+ {
+ 	skb->pkt_type = PACKET_BROADCAST;
+ 	skb->ip_summed = CHECKSUM_UNNECESSARY;
++
++	skb_reset_mac_header(skb);
++	skb_reset_network_header(skb);
++	skb_reset_transport_header(skb);
  }
+ 
+ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
 -- 
-2.43.0
+2.53.0
 
