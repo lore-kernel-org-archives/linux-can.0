@@ -1,85 +1,93 @@
 Received: from mx.nabladev.com (mx.nabladev.com [178.251.229.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FB31448E0;
-	Thu, 17 Sep 2026 01:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADB9282F1C;
+	Thu, 17 Sep 2026 01:43:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.251.229.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789608823; cv=none; b=Ihpb1yW7S5xEVW6HCCfslzY707JKEmAX6JCC4piAdWyRTGGZHCYr7ecy9s5kmLqlICUAvMn49UdPlZRcogYEH/vuu3sZgLRoUNdH5gBCcRRAiQvrtl3pYXm/kKZ9Z0ABb3RjlscJUaIj9QRn34QL0i/vY1f/dtSo4cvdBBsWkJc=
+	t=1789609404; cv=none; b=qdk3dgdchxGYmXIq3LDj94jeU07VXGjDhxU5Ra++cBxq8cUYONa9YXt/wPv6kQEh2Ko+V8MtO9QcszkuiJFSj7H9eTYSRXLbg6mJ7kLeGBy2lSosE3dcmtmnWPXzFU6NBSPCRkjw8VAtXN6MlemrmKQjbeX0iZ3f+GyFr7FY6ds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789608823; c=relaxed/simple;
-	bh=gcr6vV++R9V3z9Z89ksXwA+Wy120Z7I0sjFQuUmErr8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=MyMSr1FNAOvVveLKkeuQkDJNeSQH5DjRvK3W+cI361j+JrT2k+XKl5Uw+cbobbAR1oD/Bv1tigJrrJtS91tyyTb2Ida5N+DgaWjzaJZc3sJEvBcmj6sEYayFpI5MnRjjEpHbtSMgwwdDmqDVwLRrkPFoa4Vb+/KL/nNFv1CQqx4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com; spf=pass smtp.mailfrom=nabladev.com; dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b=ff5jO7lD; arc=none smtp.client-ip=178.251.229.89
+	s=arc-20240116; t=1789609404; c=relaxed/simple;
+	bh=B616m/acueXMNlbTtolCo+62AiEPz8ID80bbJXumNF4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Xv94mWYHQ5uzp01xI3s83WMFFwVFEwYya9QXzc7AzJ+rToWWTg1X9Z8MoJUPe6ZQ+zFvQozevwkH2idpbl9MA5kGVy0ruK87cVGUIuOmQ1Cvs+H1oROPepnNl7KCfMWtmMjK8jCeUdaqOi7e+UX3FqKEDj2Bm73ePKowzDD6rUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com; spf=pass smtp.mailfrom=nabladev.com; dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b=h1Qe/9P7; arc=none smtp.client-ip=178.251.229.89
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabladev.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b="ff5jO7lD"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id BFA9F1048A4;
-	Thu, 17 Sep 2026 03:33:38 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b="h1Qe/9P7"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id CA187101B3A;
+	Thu, 17 Sep 2026 03:43:18 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
-	s=dkim; t=1789608819;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=gcr6vV++R9V3z9Z89ksXwA+Wy120Z7I0sjFQuUmErr8=;
-	b=ff5jO7lDfNgSyyIFZ014HjYUQ3zRKemOgGAaPm2Wqbjh9t7wp76y8AP9XludetJErQxdZf
-	dRIC8/0LMzsJvQ8OYYi7fJ4XGZTecuP6XJTCE9GuYFdI6FIV/eNZzadSxn69OSaSDxVA7b
-	A9kMGrV3aKaH9ttnk/02w3rdLi6DrGyUr9VjjTqmZ5459wmEQJR385iw078/TSeSqxQPsR
-	Aw0DcOAduWpPhabKKOgJS2a5fjR5WoxIeEWoQM2jOp16QlU0J92vB6Imrki5hkWypEwcft
-	HEbgGbWyId2VCL0wbNqsBO7KbnwZol7HNWai5jh1hJ7y/J2rzs22HjiECxLwVg==
-Message-ID: <d300a86a-2704-41cd-8848-6b0871037ede@nabladev.com>
-Date: Thu, 17 Sep 2026 03:33:37 +0200
+	s=dkim; t=1789609400; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=l11dzaGJa/3l8/IgdpLrw+5Ip4TCD8Y34A7puwW47Xw=;
+	b=h1Qe/9P7o7a9jSJFv8iJR6QD/Ow31YTgUjo3/AbQn/SVbojOM74PZpyklM/E91KCypmSiT
+	nE2+GKZUgKJDzSuFfu5NxhayqdkuaLbYF1BQp8lZ1EjJDlyewEwPww8iaccus+D+mY6eoX
+	CE2kEIOTRWQJuuhodbYiKGdSE/Kq1cDv6rs2NNea6EShInKdRCXM4Wd1P/fXYbxoJ13ZCK
+	HdlWeQzgNUucmapjr/uN3dBx0NP97HzScmco5Mz2bT9oqYLHX6F866RLLecvV4osnsMw38
+	DJks6/qeuIiDeBRXd1/D4v7y/WX4VevlXtaBg5dBSyAMieEfI60p8h47lmcpAw==
+From: Marek Vasut <marex@nabladev.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Marek Vasut <marex@nabladev.com>,
+	Aswath Govindraju <a-govindraju@ti.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	Frank Li <Frank.Li@nxp.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Rob Herring <robh@kernel.org>,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/3] dt-bindings: phy: ti,tcan104x-can: Document Microchip ATA6563
+Date: Thu, 17 Sep 2026 03:43:02 +0200
+Message-ID: <20260917014314.472079-1-marex@nabladev.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] arm64: dts: imx95: Add support for Data Modul i.MX95
- eDM SBC
-To: Frank.Li@kernel.org
-Cc: conor+dt@kernel.org, devicetree@vger.kernel.org,
- Oliver Hartkopp <socketcan@hartkopp.net>,
- Vincent Mailhol <mailhol@kernel.org>, robh@kernel.org,
- Marc Kleine-Budde <mkl@pengutronix.de>, imx@lists.linux.dev,
- Oleksij Rempel <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-References: <20260917010906.424049-1-marex@nabladev.com>
- <20260917010906.424049-3-marex@nabladev.com>
- <20260917012032.982291F000FF@smtp.kernel.org>
-Content-Language: en-US
-From: Marek Vasut <marex@nabladev.com>
-In-Reply-To: <20260917012032.982291F000FF@smtp.kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-On 9/17/26 3:20 AM, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 7 potential issue(s) to consider:
-> - [High] dts: imx95: I2C expanders stuck in reset due to gpio-hog mismatch
+Microchip ATA6563 is High-Speed CAN Transceiver with Standby Mode.
+It is pin-compatible with TI TCAN1042 and has a compatible programming
+model, therefore use ti,tcan1042 as fallback compatible.
 
-This is valid.
+Signed-off-by: Marek Vasut <marex@nabladev.com>
+---
+Cc: Aswath Govindraju <a-govindraju@ti.com>
+Cc: Conor Dooley <conor+dt@kernel.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Frank Li <Frank.Li@nxp.com>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>
+Cc: devicetree@vger.kernel.org
+Cc: imx@lists.linux.dev
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+V2: No change
+---
+ Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-> - [Medium] dts: imx95: Incorrect PCAL6524 interrupt polarity
+diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+index 9f5c37ca6496a..75c276548e122 100644
+--- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
++++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+@@ -18,6 +18,7 @@ properties:
+       - items:
+           - enum:
+               - microchip,ata6561
++              - microchip,ata6563
+               - ti,tcan1051
+           - const: ti,tcan1042
+       - items:
+-- 
+2.53.0
 
-No, Hardware has inverter.
-
-> - [Medium] dts: imx95: Ethernet PHY reset held active due to wrong polarity
-
-No, inverter.
-
-> - [Medium] dts: imx95: Missing pinctrl for Ethernet PHY interrupt
-
-No, GPIO1 pinmux is set by SM.
-
-> - [Medium] dts: imx95: M.2 Key-E (usdhc3) slot left unpowered
-
-No.
-
-> - [Medium] dts: imx95: reg_panel_vcc inverted polarity missing enable-active-high
-
-No, Controlled via DTO.
-
-> - [Low] dts: imx95: reg_pcie1 misnamed as Key-E instead of Key-M
-This is valid.
