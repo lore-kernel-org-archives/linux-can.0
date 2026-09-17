@@ -1,66 +1,99 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9504DAF85;
-	Thu, 17 Sep 2026 11:21:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3382E4D6C57;
+	Thu, 17 Sep 2026 11:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789644086; cv=none; b=izYemgXyBaOQLT2VC+tbq8d6SVHEtqp2oTkVk9Koi2OZa5Y4J0vQ1l/ORUayeSGWxcOWDlvU8UDBdLmUBv3dmcZVMsd8pOqIM1w11S7D13/M1F4jTryR3YkXNJy50zSoYvPPg6yEP2hVTpac5/UhL23aGCLPwHMoJrV2hoL93kQ=
+	t=1789645421; cv=none; b=dXpVZpDF+GJF2dBN1WuQ9EHWySIDvhboHpSVCEAx4N/gxRmK564L8sElsRUrWB95JzN/qU4FsFEFIjxfecx9PuyB9s/TgXuFVL4yCU5oYXsY9uBaPnNAn1TBnc/VSoZbixU2DtG78bIRMWZFmalim48cO6SBhYIDKk+bExdVBbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789644086; c=relaxed/simple;
-	bh=Dim/QSeGUhrQVZ7xvXdr+08HoJesMzwtqPNkQCiQZi4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ar5z1+fTAfKYjFJu60GX6uGGuQ/cWFdkk0k00h6nWmNQ+26FFN1anSch2pKSr9kvGhOaJsMqd8NFq2iaHqVRjfyLYIrUNqFPFmJv9rkChPXKpgppGX1tG9GEnWmsF5hm9yqPKGlN3pBenR8EMlLBLSI+MOO2w2xmR7vbcNZKJB0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AMVVq2Ba; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1789645421; c=relaxed/simple;
+	bh=eek6u8893Mp6R+IrbpUYqaRh57JHlrRd8yjFeKQc4/Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=WL0vYDNiMR5O3ifN+b7GZ4HEdWP+XKKPODNslPmWMiJolKocURrZH254biTOpMVy3hWpHyUDH4BeThp6EqyfHs+pWU2OHhtblWBFP5W/VPcHLsZ2KIJ5/6IEhWkT3F5Hy/8WWYb2eFdt9Ttwy/lWTlQv8KEdZRGXzEMBbTGBO64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=JY3iQ/Pe; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AMVVq2Ba"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B24C1F000FF;
-	Thu, 17 Sep 2026 11:21:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789644074;
-	bh=HNVlKCQj9t4F2QxuG5+Nvtx8ehVkwFth5lkkTZy95rs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=AMVVq2BaaA3ro4YmKSTxDFpK6fKCjPZpAIkS0uvm1IuX4djWApqyTCrxQ5gYhvqnE
-	 +XzJk9ryBy1gWGAduc7mAHRyZ45+K6Xom9gQT6hvZ2RD1weznuciZnIevsQQkN8arD
-	 kzA6+skezzP533vxDgEnOXgTqr653qyOg04Gm4ozbklG5p8u9GZGo+8DStnYlhnL+B
-	 5zuM+QBBtv3z2Z2nBFKs1xAlJZjt9V8Kk0VK1ze4YoIy+vE9Vw9gP2dZD/9OBcNqT1
-	 JP9dGNlC9+vjdxMH+4e0OW99haQaxZnEZYPdDTiCOzYx6pjpI4c79mZQHwPg91C5uD
-	 dX8IKxcXw35eA==
-Date: Thu, 17 Sep 2026 13:21:10 +0200
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Kendall Willis <k-willis@ti.com>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
-	s-kochidanadu@ti.com, a-kaur@ti.com, s-tripathi1@ti.com, vishalm@ti.com, 
-	linux-can@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 1/2] dt-bindings: can: m_can: add ti,am62-mcan
- compatible
-Message-ID: <20260917-ivory-jackrabbit-of-discussion-cb4dd2@quoll>
-References: <20260915-temp-v6-0-ddf1411d63cc@ti.com>
- <20260915-temp-v6-1-ddf1411d63cc@ti.com>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="JY3iQ/Pe"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=yV
+	Gy3/epLqOdYXpbxQL1bVKZCjldwV5S628qAF9EHUk=; b=JY3iQ/PeorRpM2Tq/H
+	JncgDm+PwqNizotcKcon2mUC9O4pl10TPDNINLNiWMS0U3jBtE1g6tEDeLok+amx
+	dZ4/ZwPPMf9tLzBJiAPecFUKgVQDm7DBKHhP1HRfbf4Ruf67qZ0cdiByLzLfc+vu
+	ZJRfwIA13j/i/urGCN1i1FYAY=
+Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
+	by gzsmtp3 (Coremail) with SMTP id PigvCgD3TARP0qtqjXTETA--.32916S2;
+	Thu, 17 Sep 2026 19:43:12 +0800 (CST)
+From: Quchaosheng <quchaosheng000406@163.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Quchaosheng <quchaosheng000406@163.com>
+Subject: [PATCH] can: cc770: fix the clock divider check on the platform bus
+Date: Thu, 17 Sep 2026 19:43:11 +0800
+Message-ID: <20260917114311.534863-1-quchaosheng000406@163.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260915-temp-v6-1-ddf1411d63cc@ti.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:PigvCgD3TARP0qtqjXTETA--.32916S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZryrWF43GrWrWF43Gr13XFb_yoW8Aw4xp3
+	yq9FW8Jw4qvFs0ka1vgw15ur4Uu3ZFgFyjka4Utw4UZ3sxCry5Jr10qa4kAFWUArZ7Cw15
+	uFn8ZF43ZF4DZr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pi7KItUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDABBOw2qr0lDQXgAA3Q
 
-On Tue, Sep 15, 2026 at 01:16:01PM -0500, Kendall Willis wrote:
-> Add "ti,am62-mcan" device. Device is fully compatible with Bosch.
-> The device supports out-of-band wakeup capability.
-> 
-> Signed-off-by: Kendall Willis <k-willis@ti.com>
-> ---
->  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+cc770_get_platform_data() tests priv->cpu_interface for CPUIF_DSC before
+assigning it from pdata->cir:
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+	priv->can.clock.freq = pdata->osc_freq;
+	if (priv->cpu_interface & CPUIF_DSC)
+		priv->can.clock.freq /= 2;
+	priv->clkout = pdata->cor;
+	priv->bus_config = pdata->bcr;
+	priv->cpu_interface = pdata->cir;
 
-Best regards,
-Krzysztof
+priv comes from alloc_cc770dev() -> alloc_candev() -> alloc_netdev_mqs(),
+which uses kvzalloc_flex(), so cpu_interface is still zero here and the
+test can never match.
+
+A board that sets CPUIF_DSC in pdata->cir therefore gets its system clock
+halved in the hardware but not in can.clock.freq, and the bit timing is
+computed from twice the real clock. The platform data example in the file
+header, .cir = 0x41, sets that bit.
+
+Assign pdata->cir before the test, as the ISA path in cc770_isa.c already
+does.
+
+Fixes: e285e44d91fe ("can: cc770: add platform bus driver for the CC770 and AN82527")
+Assisted-by: LLM
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+---
+ drivers/net/can/cc770/cc770_platform.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+index b6c4f02ffb97..1565bd5eea28 100644
+--- a/drivers/net/can/cc770/cc770_platform.c
++++ b/drivers/net/can/cc770/cc770_platform.c
+@@ -137,11 +137,11 @@ static int cc770_get_platform_data(struct platform_device *pdev,
+ 	struct cc770_platform_data *pdata = dev_get_platdata(&pdev->dev);
+ 
+ 	priv->can.clock.freq = pdata->osc_freq;
++	priv->cpu_interface = pdata->cir;
+ 	if (priv->cpu_interface & CPUIF_DSC)
+ 		priv->can.clock.freq /= 2;
+ 	priv->clkout = pdata->cor;
+ 	priv->bus_config = pdata->bcr;
+-	priv->cpu_interface = pdata->cir;
+ 
+ 	return 0;
+ }
+-- 
+2.43.0
 
