@@ -1,44 +1,33 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8F8E4A262C;
-	Thu, 17 Sep 2026 09:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD054B4873;
+	Thu, 17 Sep 2026 09:53:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789636910; cv=none; b=lU6cc9tGo3ORYLQ3j3CRXhJIpGIQSHnOSYRs3ILR7V/4R9PM90qPvq9sXeXb39Mwe5KwRLL7wrYOaMcHRR9kmjbNDxvSzeZ30C6+rgpzaBcFe7pr2V4vbK9Sq5wlfGGdLxMD0PsNurN5nSbxuAK79ZewxB3vv3YLUmsnm4VBIgc=
+	t=1789638801; cv=none; b=eTXUvu0/kGwpIsGnRvRSnS/ht0itezF3t5mJkBhWGayUxrZ1bKa+HA4rCuPJuLTMSoHuy1TDYh273mCsPeUmUuBkg2D/k2xzwBhL2qLhPKxkc331mghjWIBF0GWwKfbmeN0JQM1hnqztM2yeWrGM/QK3R9/4ePLw638TMxjZXQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789636910; c=relaxed/simple;
-	bh=y9vGUKcOYNd8t4Ax5GRbHNRCGEh6c6pSeSoGcggPO5M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fmh31Qm2OqMPYpJBv+WSCGmNYMLz8d1qEq7Vhw8b+VsljEKGhNkWTz2YR2dWl3xd+SM+YreGWHx6Wv1w62sJ7xGbOu/O58R146mgXCrSvKtrslJYz6C5GojvNvCIGk3M7OC6aLCbHCyDtrIWEo/kqWMq+0PtyBuZjHiX6JXRbCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=qQXQSQP7; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="qQXQSQP7"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=y9
-	vGUKcOYNd8t4Ax5GRbHNRCGEh6c6pSeSoGcggPO5M=; b=qQXQSQP7CyCl1gyMyg
-	Ux5VpErO21202l77qaxN2VKvMNXKbQU3JMkNZc74CGcyumQEQRQ7j0i4ZQMALUHm
-	sbHStS7gbtJW9FOzujMjua7vS/+OZ5czDsJDDXIM8zVjdZuCj86A5on+Wh/i5ZiN
-	KhqS2YjEwovetQdAzHdCrLuq8=
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wB3V8kXsatq2o6sBA--.8841S2;
-	Thu, 17 Sep 2026 17:21:28 +0800 (CST)
-From: Quchaosheng <quchaosheng000406@163.com>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: net: can: holt,hi3110: Convert to DT schema
-Date: Thu, 17 Sep 2026 17:21:27 +0800
-Message-ID: <20260917092127.388335-1-quchaosheng000406@163.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260915-elastic-chameleon-of-argument-ab5cdb@quoll>
-References: <20260914030215.437602-1-quchaosheng000406@163.com> <20260914030215.437602-3-quchaosheng000406@163.com> <20260915-elastic-chameleon-of-argument-ab5cdb@quoll>
+	s=arc-20240116; t=1789638801; c=relaxed/simple;
+	bh=3f+jxO7PK1JG6jEHmHY1Phs4vDzY8wgV/qRx4U2vZNA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NZgRs9VerTYbL8pdvaa0FPcZiYgSuWTbEMi03TX0Y4a7Q7jV2W8M+cDgyIMpF6j/UlA/aY9WfFQAu8wc5doQ5plIkU2FhW+piA25vugFR/2lMYuKLXz2smpTtRe/FS/JjV6ASeeTaVU730PK3cPUa3ixeG/VdGnEc6AtMagUomU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
+Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
+	by APP-05 (Coremail) with SMTP id zQCowAAXgDp+uKtqMQ9+CA--.63250S2;
+	Thu, 17 Sep 2026 17:53:02 +0800 (CST)
+From: Wentao Liang <vulab@iscas.ac.cn>
+To: davem@davemloft.net
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mailhol@kernel.org,
+	mkl@pengutronix.de,
+	Wentao Liang <vulab@iscas.ac.cn>,
+	stable@vger.kernel.org
+Subject: [PATCH] can: flexcan: Fix OF node reference leak in flexcan_setup_stop_mode_gpr()
+Date: Thu, 17 Sep 2026 09:53:02 +0000
+Message-Id: <20260917095302.2145506-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -46,30 +35,51 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wB3V8kXsatq2o6sBA--.8841S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrKw1rGF47ZFy8KryfGw4rZrb_yoW3ArcE93
-	yqywnF9w1aq39a9w429FnFgFyrta9xury8XrykGr12v3sY9rn8XFZrZFyFgryxXFyxtrsx
-	t3say3ya93WDujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xRRF1vJUUUUU==
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDABj3bWqrsRhD-gAA3X
+X-CM-TRANSID:zQCowAAXgDp+uKtqMQ9+CA--.63250S2
+X-Coremail-Antispam: 1UD129KBjvdXoWruF4xZFWkWFW7Wr4xCr17ZFb_yoWkXFb_Gr
+	97uF93Ww1UurnrKw4UKw43ZrZa9F1DXF95Xr4xtFW3GayjqF1UtrWfZF45GwsrJrs5ZF9Y
+	kF9xArW0g34UXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbskFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+	wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+	vE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2
+	jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+	x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUAVWU
+	twAv7VC2z280aVAFwI0_Gr1j6F4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
+	vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
+	7VAKI48JMxAIw28IcVCjz48v1sIEY20_Gr43Wr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr
+	1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE
+	14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7
+	IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E
+	87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY1x0267AKxVW0oVCq3bIYCTnIWIevJa73Uj
+	IFyTuYvjfUOMKuUUUUU
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiBwUNA2qrrRks4QAAs0
 
-Hi Krzysztof,
+of_find_node_by_phandle() takes a reference on the GPR node and the
+error path releases it through out_put_node.  The success path returns
+before reaching that label, so the reference is leaked every time the
+stop mode is set up successfully, and the node can never be freed.
 
-Understood, and sorry for the mess. The four patches clumped in one thread
-were my mistake: I posted separate bindings by replying into an existing
-thread instead of starting one thread per patchset, which is what confused
-Patchwork. The threading and the repeated versions were my errors, not a
-tool problem.
+Release the node reference before returning.
 
-I have stopped posting these. holt,hi3110 is part of a single clean v7
-series together with mpc5xxx-mscan and ifi,canfd, and I will hold it until
-you ask for it. When I do send it, it will be one series, one thread, one
-version, with the spi-peripheral-props reference dropped and an
-"Assisted-by: LLM" tag added.
+Fixes: 13dfb3fa4943 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net")
+Cc: stable@vger.kernel.org
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+---
+ drivers/net/can/flexcan/flexcan-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-I replied in more detail on the ifi_canfd thread
-(<70ae05a5-2415-4895-bc64-37b3d3ba54ac@kernel.org>).
-
-Thanks,
-Quchaosheng
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index f5d22c61503f..68699d674fc3 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -1986,6 +1986,7 @@ static int flexcan_setup_stop_mode_gpr(struct platform_device *pdev)
+ 		"gpr %s req_gpr=0x02%x req_bit=%u\n",
+ 		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit);
+ 
++	of_node_put(gpr_np);
+ 	return 0;
+ 
+ out_put_node:
+-- 
+2.34.1
 
