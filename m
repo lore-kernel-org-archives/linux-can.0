@@ -1,30 +1,32 @@
 Received: from mx.nabladev.com (mx.nabladev.com [178.251.229.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EAE2931F0;
-	Thu, 17 Sep 2026 01:09:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1722F6918;
+	Thu, 17 Sep 2026 01:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.251.229.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789607360; cv=none; b=T1xK033OSkBsBcKwkVnDyYHj4mBQcR9D/DppueZ5x8g9BugxaLduHkQERZn8fbe3tmqyg+Tx+tdQ9Ewgku3rchR+Jp+XJ+NJnS2oS+aDUIdxn4Q5mxk0OpQyex9REUssJwve1yn3ELFNaLHem6dIdh9iNS/Soiz3Uj9/8bbcGoI=
+	t=1789607360; cv=none; b=h5F3hnQBOMtlnczucIXqMl7THLy1x7CW5OL7enRMpXIEHRSVpq1vsL0xECska+Qi4X/fvqULjHC5I1WG+8kdqiiLWnjHLUm2jOZTW0s/OBhKdU+i6ECS+WCyIzO++sJZRX6ExZRPo0cj1wcTTgJTVt5rKpZj0oXdI6ImX8g01zU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1789607360; c=relaxed/simple;
-	bh=pl/sZwHSPApHN6Mtl2hmxPY7tvECTi3TjQoBRUSNchc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=j/Ki1MSBaBtJK8ILtrutNQ4MSTn8mdlws7Dr2gterHie5zfsQOXqPgzj5tyBUnVykuxwMSdrMebfDe4z0QtY6vFHaAH7vzOssd956+v1QyyYQ0dzxN58QbBpCaLlFY6DkAnUT33VWcPFMRu42nLhyua6iDCTCNijZUDuAZk6IaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com; spf=pass smtp.mailfrom=nabladev.com; dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b=aA4ulpEh; arc=none smtp.client-ip=178.251.229.89
+	bh=NDalHSaHMoiYFvGliQm3UB0bKfHrkW7ovSRzOHtJWC0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TXalfNyZtnMW5euXyG8arAsUMwb99SNtNHMigCRdi3iuTk5AMlLqe9be+PzwI6KNvs6UAOEPvLW7z3biLTc6nC24JNXwYx9wLt53YfRhBoNpqssjudbT0kgktqQ78gPGOoXsi6ODPnOATGKtRXDNE9dAY319Yk62Vo+eizqo8GQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com; spf=pass smtp.mailfrom=nabladev.com; dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b=gvwRGuWb; arc=none smtp.client-ip=178.251.229.89
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabladev.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b="aA4ulpEh"
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 4CB6B1048BF;
-	Thu, 17 Sep 2026 03:09:12 +0200 (CEST)
+	dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b="gvwRGuWb"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 82DE41048E6;
+	Thu, 17 Sep 2026 03:09:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
-	s=dkim; t=1789607356; h=from:subject:date:message-id:to:cc:mime-version:
-	 content-transfer-encoding; bh=EFBAMUYhNqsEXyNj1QKJ+yEEORLKuLw+kO8xyQijSe8=;
-	b=aA4ulpEhCaqBf84yjv3GLms6m86qq4cYcg9mObAbXX2en3RFeO9YdIOGs27VZ9i33wBumM
-	kjSTi+vvfz+3XO5Lm7UfKstbQCSpEojClKgcTnpaPMtMOOQoqjKrO6XSsIUs+koNPHbxEL
-	B5P5qTlTQFabQJF0G/ljWJhrlIwPhUqkcOhIBjXR5SDw3EzlgDgJMJUc4ZLRj17DNfKdc1
-	86wBwmmcKNlVgRQiA0HG84o6V4DyyfcyzGQw/9fgbxE8NccNLNgpCsbInDRHqQqO3mGcPc
-	uyM8IH2sFWffLJn3VcW/uKE/lXc/cV15zE8G5JLc3vBnSPwhn/p6BitXdopREw==
+	s=dkim; t=1789607357; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding:in-reply-to:references;
+	bh=gNkre/XsEQ/EixXkR7zbvFzj9KfeP4IRk7mqlohngNg=;
+	b=gvwRGuWbh1mDOkBtM9glMTu7nMJ44NXnSZOl8py9EBgpGIahkp5Li0lzD3D6vv4ybX2uji
+	4H2GzROlEgbwVrX17vXoGmqL5fdwq2yPBh9aDqCwHurwvYfumwN5+nWu0tPrCE8Q1MvrAP
+	yBmzIG+R88nbiihMfWIxHKkIuQK3UKYOfo4GVyuQCV/YtTaNtFJ0AQceX57djOKR5BP8fu
+	CPO0T7sntP59qtrM2OTQYkIY1GdHtt2fgwaW3SFXioAxT/NfBBE0d+4/sCgRnd5c31l8HN
+	0Lx2vfjiJoVKLLbovKTfpxrx4yMV9gcCUrjlJeP+8irX2aXCPyajE1OCHFuXgg==
 From: Marek Vasut <marex@nabladev.com>
 To: linux-arm-kernel@lists.infradead.org
 Cc: Marek Vasut <marex@nabladev.com>,
@@ -39,10 +41,12 @@ Cc: Marek Vasut <marex@nabladev.com>,
 	imx@lists.linux.dev,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] dt-bindings: phy: ti,tcan104x-can: Document Microchip ATA6563
-Date: Thu, 17 Sep 2026 03:08:22 +0200
-Message-ID: <20260917010906.424049-1-marex@nabladev.com>
+Subject: [PATCH 2/3] dt-bindings: arm: fsl: Document Data Modul i.MX95 eDM SBC
+Date: Thu, 17 Sep 2026 03:08:23 +0200
+Message-ID: <20260917010906.424049-2-marex@nabladev.com>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260917010906.424049-1-marex@nabladev.com>
+References: <20260917010906.424049-1-marex@nabladev.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -52,9 +56,9 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Last-TLS-Session-Version: TLSv1.3
 
-Microchip ATA6563 is High-Speed CAN Transceiver with Standby Mode.
-It is pin-compatible with TI TCAN1042 and has a compatible programming
-model, therefore use ti,tcan1042 as fallback compatible.
+Document Data Modul i.MX95 eDM SBC board. This is an evaluation
+board for various custom display units. Currently supported are
+serial console, ethernet, eMMC, SD, SPI NOR, USB host and PCIe.
 
 Signed-off-by: Marek Vasut <marex@nabladev.com>
 ---
@@ -71,21 +75,21 @@ Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-can@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 ---
- Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 1 +
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
  1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
-index 9f5c37ca6496a..75c276548e122 100644
---- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
-+++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
-@@ -18,6 +18,7 @@ properties:
-       - items:
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 36e28e0e4ad99..04abae2018043 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -1548,6 +1548,7 @@ properties:
+       - description: i.MX95 based Boards
+         items:
            - enum:
-               - microchip,ata6561
-+              - microchip,ata6563
-               - ti,tcan1051
-           - const: ti,tcan1042
-       - items:
++              - dmo,imx95-data-modul-edm-sbc # i.MX95 eDM SBC
+               - fsl,imx95-15x15-ab2       # i.MX95 15x15 Audio Board V2
+               - fsl,imx95-15x15-evk       # i.MX95 15x15 EVK Board
+               - fsl,imx95-15x15-frdm      # i.MX95 15x15 FRDM Board
 -- 
 2.53.0
 
