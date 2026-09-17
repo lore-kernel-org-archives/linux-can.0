@@ -1,64 +1,150 @@
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed2-f12.google.com (mail-ed2-f12.google.com [74.125.228.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA56513568
-	for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 13:14:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BB3548561
+	for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 13:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789650866; cv=none; b=tJ2Wmyhf8Wti+5edVIbgbMx6O9rjePtxGTSpz+1uTEUjLQGEYDZmcrvCcWQ4vSsUTiBmA0aP0TO+7QT7sa3B4rcMg0wWDugJ4Fi16FEaw5vxWZAOgmC3GiB5cL9RL4XMHt8quzd2D/1qrs+6m0HthEZYj6XOCnvLOXTom8yl2SY=
+	t=1789652471; cv=none; b=koFpRlWhtg6lC4f+abOBo6WM74zDP0eszW4F967wzDqaQmVJ/o8muQ8yFWRXzrbFuu1tuEvmy9odymm5oj7LpRK3Usquo4NMMBZfMgOlRrHRuNFC62zMx/bVrTLIhXtgva7bW+P/gEo4vDHs6JP8HGm9QoPBMyWClM45E7Dsva8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789650866; c=relaxed/simple;
-	bh=LQvhnfXKcS05OD2fvEWvlVvWJRab5SLoPcf72NTyzWs=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=kjLrgYWsHCnYmKVAqcG453bl3q5Bt1F1hPr3CMh2lsq/0+jF2mJKZRLroqRi6PK1ynBTGmxDDxQcq7OQkPeRXN6vyF0G7XiVbOxXf7YXRcrl+3wxTeH56OAN9e3bvMbQfMRQtMX5KCzMHg/0AhBoVmUteTsPcAAgTRCVBhBW1H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 68HDDxd0097812;
-	Thu, 17 Sep 2026 22:13:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 68HDDwlv097808
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Thu, 17 Sep 2026 22:13:59 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c51d839b-4656-4d67-8c48-2d1dccebfd3e@I-love.SAKURA.ne.jp>
-Date: Thu, 17 Sep 2026 22:13:58 +0900
+	s=arc-20240116; t=1789652471; c=relaxed/simple;
+	bh=KOaJCWghMntV5TzVNT+bkin6AYRjjP3DTNMu6mqyk6M=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=ZUBO4zC1HI9SAdT/eSYvVGig/1owutwzWSJvZnWxLgOVAZ9ejHNhR+LaMvjL1464h3fPH/9FneBypT2oKf2y+M4gmg+Kw/PjWMxVZYcqS/Uf5RZk6d/hPbmA3GEvduF9Gp3y6b6JgstsZSm6mizC0jAgypWhgQxw1c5CHWTjWDk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=conchuod.ie; spf=pass smtp.mailfrom=conchuod.ie; dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie header.b=KnuSX4Y3; arc=none smtp.client-ip=74.125.228.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=conchuod.ie
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=conchuod.ie
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie header.b="KnuSX4Y3"
+Received: by mail-ed2-f12.google.com with SMTP id 4fb4d7f45d1cf-6a996c8adf3so1432476a12.1
+        for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 06:41:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=conchuod.ie; s=google; t=1789652466; x=1790257266; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:message-id
+         :references:in-reply-to:user-agent:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to:content-type;
+        bh=dABE6Xxrz13aNXEetLj7J15+q28FsJ34U3AEi9ktr74=;
+        b=KnuSX4Y3izRMU9XZbk1a7n7t+9Yx74uGbWU1IDRq+01FK3ay81PzZ/5pG9m9g67mbO
+         zdmqfaDudJTYsb5hLOjR+f04pcjvbeDuTkB3FlVe1ApQh5qzKQ+8A377y+gbVewcPy9X
+         sH+1R28O2/d+btx5vu3F3+0XafusB2g9sFsrb371w44K3LjVI/FGZPs6tJK/F2ziTK/U
+         YC24QQ6ST+vVLrM+zgzfMp3YveaQj3I70UOJfox3doXwRO0wk3bP5z3qRJOAyRhOfXGI
+         F2NOYEoLqxb2ejnAcP4bEh2FakLC+qvArzf+DCIzSer2rdQP9SYog/OS0jBCxQALdbd9
+         K4wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789652466; x=1790257266;
+        h=content-transfer-encoding:content-type:mime-version:message-id
+         :references:in-reply-to:user-agent:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=dABE6Xxrz13aNXEetLj7J15+q28FsJ34U3AEi9ktr74=;
+        b=ivXId3AiQW7hD+1TaBsg+7YUe9712YIr7YLeJ8obNjjYPY2iTfUZepNz65EQa6hOL3
+         ftGqt9rAqzcTYIecJxEn9H62p/vNq2edk9Jt65QVNbnMYKlFkTEtk7hOxzfecBCE7cAu
+         CCAm+n4p2JE/ezwma6zbQtyWmNgEJAmXoYMeAEjdtI7C19LX57jDDvwQjO817dm33Clv
+         itYDEdaVI5CsxpuZBK/S2q4N6A8+rJtzdOTNs7Vq2uhNzL4+inGNLOT8rNLhyPHUVIvJ
+         EwCT7CSPlS4Em2KqHi7ejSmCGjSpV3AC7JkUSWHyBnVBcz1yqKjHpVWZgNqmMIIcgGYP
+         5jUQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzBL8eNgC6IP5KiK2HqacLJGsKrG8o780b0w1he/t+9DQBs3j1IS3jfkm7kX3WT23f0PZPuNcDftkM=@vger.kernel.org
+X-Gm-Message-State: AFuF++nGf8vrii1QjjS52aJQabwq48/2Rwyx1/Ri3ujKi0idhuti76lQ
+	Yj/SbSy4VjgkILpKLcJ48HIi9CLVi3hrOH33kBjdRq9J5FHxGdGXTou1iB+VzlGl+37JF7SSC1l
+	2M9pnS3g=
+X-Gm-Gg: AYBFou24g4L0pZA9SGytmP6/ycMn8GfwSEo5BS5lkbM9ece5sD5lZvSMT6ahtp4Mcr4
+	04bTt1tBLq3GiOBUuAyJxHJuzJTFrpb0Bs93daCdcMNuHzsEcbtlb/JkI1MdtQk0fHwAwSDSVcx
+	5idxuPBjbva6oi9QS5PtGmZWcyesnQRMxXT0+/mWpUI+/ZxIn+Y6Y/EmlIjlMKYY07+hkVjylkb
+	+SxZ4ikAW/YzbkMzG/JqhZ3EBIwR0t+fGAxWZiyODUoBpg4uuFgBIhEVbfFE9qI1kr58vfLAGHO
+	6sZJiOUXXXZFiphOEEeohyXPiPmEaW2FQtxNbHfdCpGw8Cr+VH8gcWhC07xJ5Hsb5+pa1evQZc7
+	WP36fqkcLE0RMTo8tM693O2hQL1x3qOhyMyH19W33R/BnFQUaBkeOKAI0TeYmlk9NVOloXqri5Y
+	hDIVZZEvUf6yHmHqP03ahPwLqnS0cfZrBYrasl7lPXKknNFzULmXHfCvKep277cS4NOAtfk10=
+X-Received: by 2002:a17:907:d92:b0:c29:f5d8:9c70 with SMTP id a640c23a62f3a-c29f5d89d21mr233167566b.31.1789652465825;
+        Thu, 17 Sep 2026 06:41:05 -0700 (PDT)
+Received: from ehlo.thunderbird.net ([77.20.9.205])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c29de48750fsm298989866b.31.2026.09.17.06.41.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 17 Sep 2026 06:41:04 -0700 (PDT)
+Date: Thu, 17 Sep 2026 15:41:01 +0200
+From: Conor <mail@conchuod.ie>
+To: Quchaosheng <quchaosheng000406@163.com>,
+ Krzysztof Kozlowski <krzk@kernel.org>
+CC: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>,
+ Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+ linux-can@vger.kernel.org, devicetree@vger.kernel.org
+Subject: Re: [PATCH v5] dt-bindings: net: can: convert ifi_canfd to DT schema
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20260917092046.388076-1-quchaosheng000406@163.com>
+References: <20260914022145.408976-1-quchaosheng000406@163.com> <70ae05a5-2415-4895-bc64-37b3d3ba54ac@kernel.org> <20260917092046.388076-1-quchaosheng000406@163.com>
+Message-ID: <98F28A31-2DAD-45CA-9261-C77E5C10806F@conchuod.ie>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 (repost)] can: j1939: j1939_sk_bind(): fix j1939_ecu
- leak when re-bind failed
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>,
-        Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
-References: <deb3ac27-5eaf-406a-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <deb3ac27-5eaf-406a-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Anti-Virus-Server: fsav112.rs.sakura.ne.jp
-X-Virus-Status: clean
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Ping?
 
-On 2026/09/05 18:44, Tetsuo Handa wrote:
-> syzbot is reporting "struct j1939_ecu" refcount leak, which occurs when
-> netdev_hold() is called during ECU creation but the corresponding
-> netdev_put() is never executed because the parent "struct j1939_ecu"
-> object is leaked.
-(...snipped...)
-> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-> Assisted-by: Gemini-Pro
-> Fixes: f214744c8a27 ("can: j1939: j1939_sk_bind(): call j1939_priv_put() immediately when j1939_local_ecu_get() failed")
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+On 17 September 2026 11:20:46 GMT+02:00, Quchaosheng <quchaosheng000406@16=
+3=2Ecom> wrote:
+>Hi Krzysztof,
+>
+>You are right, and sorry for the noise=2E I have stopped sending=2E Nothi=
+ng is
+>queued, and I will not repost the three CAN bindings unless you ask me to=
+=2E
+>
+>What I got wrong, and what is fixed before anything goes out again:
+>
+>1=2E Threading=2E I attached new versions to older threads and unrelated
+>   patchsets=2E That is exactly what submitting-patches=2Erst warns about=
+: it
+>   buried the patches and made Patchwork show several versions of one fil=
+e=2E
+>   The next posting is one series, in its own thread, one version only=2E
+>
+>2=2E spi-peripheral-props=2E Dropped, as you asked=2E The binding now ref=
+erences
+>   only can-controller=2Eyaml, and dt_binding_check passes=2E
+>
+>3=2E clock-frequency=2E Dropped, and clocks stays required=2E You were ri=
+ght that
+>   it is ACPI-only; I had argued from the driver code instead of reading =
+the
+>   git history=2E
+>
+>4=2E Commit messages rewritten as short declarative sentences that descri=
+be
+>   only what changed in the binding=2E
+>
+>5=2E One thing I should have said from the start: these patches were prep=
+ared
+>   with an LLM coding assistant=2E Per
+>   Documentation/process/coding-assistants=2Erst they need an
+>   "Assisted-by: LLM" tag, and mine did not carry one=2E It is now on eve=
+ry
+>   patch=2E You told me not to paste LLM text, and I should also have
+
+And yet, this looks exactly like LLM pasted text=2E
+That's an insult to all who genuinely engage with the development process,=
+ who knows if you even understand what's been said here, and are just blind=
+ly pasting back and forth=2E
+If we wanted to have a discussion with an LLM, we can do that ourselves=2E=
+ We don't need you in the loop for that=2E
+
+Thanks,
+Conor=2E
+
+>   disclosed that the text was LLM-assisted=2E Not doing that was the wor=
+st
+>   part of this, not the wording=2E
+>
+>The bindings are otherwise unchanged=2E holt, mpc5xxx-mscan and ifi,canfd=
+ are
+>ready as a single clean v7 series=2E Tell me when you want it and I will =
+post
+>it in one new thread=2E
+>
+>Thanks for the pointers=2E
+>
+>Quchaosheng
+>
