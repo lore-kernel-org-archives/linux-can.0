@@ -1,150 +1,309 @@
-Received: from mail-ed2-f12.google.com (mail-ed2-f12.google.com [74.125.228.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11011034.outbound.protection.outlook.com [52.101.70.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24BB3548561
-	for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 13:41:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.228.76
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789652471; cv=none; b=koFpRlWhtg6lC4f+abOBo6WM74zDP0eszW4F967wzDqaQmVJ/o8muQ8yFWRXzrbFuu1tuEvmy9odymm5oj7LpRK3Usquo4NMMBZfMgOlRrHRuNFC62zMx/bVrTLIhXtgva7bW+P/gEo4vDHs6JP8HGm9QoPBMyWClM45E7Dsva8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789652471; c=relaxed/simple;
-	bh=KOaJCWghMntV5TzVNT+bkin6AYRjjP3DTNMu6mqyk6M=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=ZUBO4zC1HI9SAdT/eSYvVGig/1owutwzWSJvZnWxLgOVAZ9ejHNhR+LaMvjL1464h3fPH/9FneBypT2oKf2y+M4gmg+Kw/PjWMxVZYcqS/Uf5RZk6d/hPbmA3GEvduF9Gp3y6b6JgstsZSm6mizC0jAgypWhgQxw1c5CHWTjWDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=conchuod.ie; spf=pass smtp.mailfrom=conchuod.ie; dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie header.b=KnuSX4Y3; arc=none smtp.client-ip=74.125.228.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=conchuod.ie
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=conchuod.ie
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ED0950B8A8;
+	Thu, 17 Sep 2026 16:53:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.70.34
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789664019; cv=fail; b=PC3JMy0gb6fm7974VxwUf4ubqggdm/Ne2vUPUInV3y5X/b3VGGEo+PuV2WPwr0P9ubeLha2zWc08sIt94hDv2jhWZp2sTJ7rm7JHcSZkWykXImkLy2B3YyS5beXqWezYsN5+LdfRxYVsNmEga49P53EacqHlnP7UMtHI+BXYDO0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789664019; c=relaxed/simple;
+	bh=XKLfUYbKoFhe11on6VdjGesx2RRffGbrGBTYigrxHdg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=R1cJU2ZUlPIY4SWwoHS0ZkOj7BvZgqRQnrqkFPkIrbYBueGiRgFd3iwHihOii+t/3vSlrFB5KNmYwKIt31cdXfCJAeJhwEJ6xxmDDRNqcG6u9PdUyaNOBxRLFHlm6gZnl5ZKb1B4xiksiK6rJG8BQXulxiS94yS2RL+Uj6tuP1w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com; spf=pass smtp.mailfrom=oss.nxp.com; dkim=fail (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b=x+AUILiE reason="signature verification failed"; arc=fail smtp.client-ip=52.101.70.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=conchuod.ie header.i=@conchuod.ie header.b="KnuSX4Y3"
-Received: by mail-ed2-f12.google.com with SMTP id 4fb4d7f45d1cf-6a996c8adf3so1432476a12.1
-        for <linux-can@vger.kernel.org>; Thu, 17 Sep 2026 06:41:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=conchuod.ie; s=google; t=1789652466; x=1790257266; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:message-id
-         :references:in-reply-to:user-agent:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to:content-type;
-        bh=dABE6Xxrz13aNXEetLj7J15+q28FsJ34U3AEi9ktr74=;
-        b=KnuSX4Y3izRMU9XZbk1a7n7t+9Yx74uGbWU1IDRq+01FK3ay81PzZ/5pG9m9g67mbO
-         zdmqfaDudJTYsb5hLOjR+f04pcjvbeDuTkB3FlVe1ApQh5qzKQ+8A377y+gbVewcPy9X
-         sH+1R28O2/d+btx5vu3F3+0XafusB2g9sFsrb371w44K3LjVI/FGZPs6tJK/F2ziTK/U
-         YC24QQ6ST+vVLrM+zgzfMp3YveaQj3I70UOJfox3doXwRO0wk3bP5z3qRJOAyRhOfXGI
-         F2NOYEoLqxb2ejnAcP4bEh2FakLC+qvArzf+DCIzSer2rdQP9SYog/OS0jBCxQALdbd9
-         K4wQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1789652466; x=1790257266;
-        h=content-transfer-encoding:content-type:mime-version:message-id
-         :references:in-reply-to:user-agent:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=dABE6Xxrz13aNXEetLj7J15+q28FsJ34U3AEi9ktr74=;
-        b=ivXId3AiQW7hD+1TaBsg+7YUe9712YIr7YLeJ8obNjjYPY2iTfUZepNz65EQa6hOL3
-         ftGqt9rAqzcTYIecJxEn9H62p/vNq2edk9Jt65QVNbnMYKlFkTEtk7hOxzfecBCE7cAu
-         CCAm+n4p2JE/ezwma6zbQtyWmNgEJAmXoYMeAEjdtI7C19LX57jDDvwQjO817dm33Clv
-         itYDEdaVI5CsxpuZBK/S2q4N6A8+rJtzdOTNs7Vq2uhNzL4+inGNLOT8rNLhyPHUVIvJ
-         EwCT7CSPlS4Em2KqHi7ejSmCGjSpV3AC7JkUSWHyBnVBcz1yqKjHpVWZgNqmMIIcgGYP
-         5jUQ==
-X-Forwarded-Encrypted: i=1; AKwUvBzBL8eNgC6IP5KiK2HqacLJGsKrG8o780b0w1he/t+9DQBs3j1IS3jfkm7kX3WT23f0PZPuNcDftkM=@vger.kernel.org
-X-Gm-Message-State: AFuF++nGf8vrii1QjjS52aJQabwq48/2Rwyx1/Ri3ujKi0idhuti76lQ
-	Yj/SbSy4VjgkILpKLcJ48HIi9CLVi3hrOH33kBjdRq9J5FHxGdGXTou1iB+VzlGl+37JF7SSC1l
-	2M9pnS3g=
-X-Gm-Gg: AYBFou24g4L0pZA9SGytmP6/ycMn8GfwSEo5BS5lkbM9ece5sD5lZvSMT6ahtp4Mcr4
-	04bTt1tBLq3GiOBUuAyJxHJuzJTFrpb0Bs93daCdcMNuHzsEcbtlb/JkI1MdtQk0fHwAwSDSVcx
-	5idxuPBjbva6oi9QS5PtGmZWcyesnQRMxXT0+/mWpUI+/ZxIn+Y6Y/EmlIjlMKYY07+hkVjylkb
-	+SxZ4ikAW/YzbkMzG/JqhZ3EBIwR0t+fGAxWZiyODUoBpg4uuFgBIhEVbfFE9qI1kr58vfLAGHO
-	6sZJiOUXXXZFiphOEEeohyXPiPmEaW2FQtxNbHfdCpGw8Cr+VH8gcWhC07xJ5Hsb5+pa1evQZc7
-	WP36fqkcLE0RMTo8tM693O2hQL1x3qOhyMyH19W33R/BnFQUaBkeOKAI0TeYmlk9NVOloXqri5Y
-	hDIVZZEvUf6yHmHqP03ahPwLqnS0cfZrBYrasl7lPXKknNFzULmXHfCvKep277cS4NOAtfk10=
-X-Received: by 2002:a17:907:d92:b0:c29:f5d8:9c70 with SMTP id a640c23a62f3a-c29f5d89d21mr233167566b.31.1789652465825;
-        Thu, 17 Sep 2026 06:41:05 -0700 (PDT)
-Received: from ehlo.thunderbird.net ([77.20.9.205])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c29de48750fsm298989866b.31.2026.09.17.06.41.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 17 Sep 2026 06:41:04 -0700 (PDT)
-Date: Thu, 17 Sep 2026 15:41:01 +0200
-From: Conor <mail@conchuod.ie>
-To: Quchaosheng <quchaosheng000406@163.com>,
- Krzysztof Kozlowski <krzk@kernel.org>
-CC: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>,
- Rob Herring <robh@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
- linux-can@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH v5] dt-bindings: net: can: convert ifi_canfd to DT schema
-User-Agent: K-9 Mail for Android
-In-Reply-To: <20260917092046.388076-1-quchaosheng000406@163.com>
-References: <20260914022145.408976-1-quchaosheng000406@163.com> <70ae05a5-2415-4895-bc64-37b3d3ba54ac@kernel.org> <20260917092046.388076-1-quchaosheng000406@163.com>
-Message-ID: <98F28A31-2DAD-45CA-9261-C77E5C10806F@conchuod.ie>
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.b="x+AUILiE"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DLTAvpb8roa9qqHHMBu4e77Xlmv4MTYUleIjOG8y8Zjq6jiLjxVjXys2tRNFnpIFuDgamItyyobHuiAghqsPHY4UXGnw7XkwCMGNsJUIA1NJ/xTKjkqWMsBFTcWlyB8Z8IxzFXbj70Njg3/Ns1pPjqFokfvylD/mWo+3YaXmp7zK+xOl5rOa8xpT+sGDvHmasywbQq3aPYdQu++eo9Hutju1QYzJEQZVE6LaRrSKd7HWx6hPNMDpGYNzVENUowaCPFp/B2hrMIax2bcZhQGgeGXYm6ZctZdIGDpUkIQdpiAnG63gKRob0OJI5qORt5/FLojozcSx2XosD11FB3uSIg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=wvQAeM+pG9SOT4q4CFC2Tr3L+KZkofWL2/2Zovgf/I4=;
+ b=csIV+JauL+HiJ6lohCccSc7RKWU4M9Z+LakmS8zcwVMoBFwydYtnVoU92D3MiOMLJf4Fd03tdsCobq0su80s9Dovy7k6oZOi5ClnuRjWpVBHBLqCLSyoGUya+2t/4WXVCOO7NK0kYqtZsyOyoR6M0oYSu9HvgnRkFo1lJnwpKCxlu3NGji+xUFYm9lQj2aH1QfG5A6jlhgd/h12ywVtu2o0efuE93aManVX5J51e2+Y1QJaVZledY6pUNZ82eg2+LjNYie71Q58UTx7yVjYDk6GYEUpztntPdLA8upKAAQM20qzfLpq/pT9/QThLqrf7SyPd9AhcSCWNQAStiJlJbw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector1-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=wvQAeM+pG9SOT4q4CFC2Tr3L+KZkofWL2/2Zovgf/I4=;
+ b=x+AUILiEyFN8RW6tT8tdWBXJiSYMkNP8UoDngCrKXYa4GW2+cohuO3lrra5CJqIEKQZQlwZVccmgeUiDzJXNtFbUhA8gDnNuCeobgZJ0+qNHNzl0/Br8IGmKXM8oqKtcWFVubeeyXVa12qHaNqXqACq+71zZkPDs2ZSLy3pv+5cTOaDQNrPLPaPEcyqIEcwjTV5TiGneMPjsKm7f6nHlfWm8vXRbkgryE3hduhBrdbngcz8UWQJPPni726QU9A/vKY3JisLJVi61iMdDWnnCPrfAQBpUMTLKQ02X025J/OcKVB9nkZS0GoNwbdKFfSqIcRENPkpDD5TiDjpnDSo4fQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=oss.nxp.com;
+Received: from GV2PR04MB11799.eurprd04.prod.outlook.com (2603:10a6:150:2cf::9)
+ by AS5PR04MB9876.eurprd04.prod.outlook.com (2603:10a6:20b:678::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.406.12; Thu, 17 Sep
+ 2026 16:53:34 +0000
+Received: from GV2PR04MB11799.eurprd04.prod.outlook.com
+ ([fe80::2146:83a2:5329:b7c]) by GV2PR04MB11799.eurprd04.prod.outlook.com
+ ([fe80::2146:83a2:5329:b7c%7]) with mapi id 15.21.0406.012; Thu, 17 Sep 2026
+ 16:53:34 +0000
+Date: Thu, 17 Sep 2026 11:53:25 -0500
+From: Frank Li <Frank.li@oss.nxp.com>
+To: sashiko-reviews@lists.linux.dev
+Cc: Marek Vasut <marex@nabladev.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>, robh@kernel.org,
+	Frank.Li@kernel.org, imx@lists.linux.dev, conor+dt@kernel.org,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Oleksij Rempel <o.rempel@pengutronix.de>, linux-can@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>, devicetree@vger.kernel.org
+Subject: Re: [PATCH v4 3/3] arm64: dts: imx95: Add support for Data Modul
+ i.MX95 eDM SBC
+Message-ID: <aqwbBQUSfd60nVeI@SMW015318>
+References: <20260917062543.534416-1-marex@nabladev.com>
+ <20260917062543.534416-3-marex@nabladev.com>
+ <20260917063512.C71F51F000FF@smtp.kernel.org>
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260917063512.C71F51F000FF@smtp.kernel.org>
+X-ClientProxiedBy: PH8P223CA0013.NAMP223.PROD.OUTLOOK.COM
+ (2603:10b6:510:2db::30) To GV2PR04MB11799.eurprd04.prod.outlook.com
+ (2603:10a6:150:2cf::9)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: GV2PR04MB11799:EE_|AS5PR04MB9876:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4f400ca7-8147-4e02-7045-08df14dc360a
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|19092799006|23010399003|6133799003|3023799007|10067099003|4143699003|56012099006|11063799006|18002099003|22082099003;
+X-Microsoft-Antispam-Message-Info:
+	e6yVajsAtrpBaswlDxKnd3Jo2TYHlpyDZN2a2nyGXQp6+5+4gzUAOs8jj/1njyRhkE7cQi8l/aH34Ympt/f7HlSTwQ5EPPqr+rm2I3a6xX2kAhHKZIhXTwyKosVJ5Jaq+YOX1YQdu0IEKvlpcORL26cg2QMs1xXfutQg6O1BXwjWC00jayJCwMWocpHM6k+GSvU5C9Oi3PFS+yhKpIjcWF7oqPOrs+/MuO2hk7mcTLjN3RHuShOfk/ZXblWwJpIbRSNPwj188643R549HGlV8dJ8Vl5XMbcHtYUcdZyRgF5cYuBmOgIE2dzLFVpTg6WXK4YL2vW/wx9/klhJbyZmObfGgZMPxZiaQB+G2cXPfaVmtZw+43ELrlsQVQ/afZU89UGYz/hW4oQXGcn2zanEd89ZMrXm0SFUmz0uUOqT+fhKCdAEIHdfgDkRpsIJxRmSGIFKmVQxDVn2Zy9cIHwWm6GJAz+8iw+EgirpzRXMxZfBs33v0XoKCbZ8fdsljMidSRY85x9CX5U+75Li503QoV4eVtcWzppMKdloeYoYnnb7quKjRF/DIv88iepqdCkPzrmqmSSAkzo2K+cti/zF7JIctOmC858nFNwVXz7OWLM=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:GV2PR04MB11799.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(19092799006)(23010399003)(6133799003)(3023799007)(10067099003)(4143699003)(56012099006)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?iso-8859-1?Q?fnSYdXG5xnkRCoEqV6OvXWjzgkXUAbEv6tc1U/OxJlinJkUMQOOjB78HQu?=
+ =?iso-8859-1?Q?8VdbvbjrKX3r9Yz8XUeGE4G1WN1ZYz+1IVqa2AtJOHRrQEhLD/D1T+EeQr?=
+ =?iso-8859-1?Q?OfZgwsiP1p7hmETZiw2mKrv0EN3QiWevkbEv3pbGpdubebgaWoBLvqmUhm?=
+ =?iso-8859-1?Q?OBCJob+4qhRq3GG6bIVND6HFl6Lh7IDC+NsKL3ozQj9XiwitnZ7XXTGeVy?=
+ =?iso-8859-1?Q?ddlwt/F85r4nndvPB+288Jn5YJthBlVt7gkeQfKX4o/rteSfp+g9mj3om9?=
+ =?iso-8859-1?Q?en+egUccKT2RlDonndN/91TZzqbgK8hjxNPdA+KiiIwkdvZ8vUGIvCLHBl?=
+ =?iso-8859-1?Q?cMOI/L/6raa0nmqnHANWBztGhfIwxRdZmIiIsKemltVcgh+Fj5W5vg3AIX?=
+ =?iso-8859-1?Q?Ef9cJ28gsCLWLJZ+fBCC173W0dIuXS8kHE/SScKPp9QUkMfnSLunJhE9Wn?=
+ =?iso-8859-1?Q?GrWhU+EenrutrVrVB+wAclq7CUES4M9uSP1tfzsy/hDUBfGo9sVd5cyDo1?=
+ =?iso-8859-1?Q?YIY2O53c4gvGsbSkFC6ZruXVPg6E4uSCBVpfbemHVCqeRqUK66VNQmAN7H?=
+ =?iso-8859-1?Q?BAq1Ai6D52lj4oRrG2fFJW7EDbcOf+Kk2BTwwDtAtrKwuSsGhdfYAiJ76I?=
+ =?iso-8859-1?Q?I5/RKZb5aKC6U5JfX5ObvKETyS3NAOQUjAQRffhmFdwKaJrNiCVOUBjyiE?=
+ =?iso-8859-1?Q?WAoO9e7eVZhnhMcLnuqaR/SGPsORYR9NlM0nLw7QROm0BufcIr+KOqTSBm?=
+ =?iso-8859-1?Q?Rf9uyuSxXcMSBGPoVWQC3niuRIxWNYQHeg9JEpLwj5MORl+w85t9qWajss?=
+ =?iso-8859-1?Q?pdEK7CwpozaWRStaimStcrsf4rxLqlbK0NSUB08RCOgtC3WnQtNDGCg/CQ?=
+ =?iso-8859-1?Q?VLpzcwChPpdz9fXgY9sMWWue/P7laKLbfTS2WK8cpcMBc/eesPRyhpi32j?=
+ =?iso-8859-1?Q?PfG4T2Cfj8VtiXe8ItNOT+4p6qdUFibn+tFDXbS4wWdsgw9Nijyk0XDrW7?=
+ =?iso-8859-1?Q?LYtf+MdBObudKYCQ/xG7CwU1Ss9kSGz15xi3GrQjnBFDVYQxXt5PArVrfH?=
+ =?iso-8859-1?Q?ltgWQyLLyGfN7YNPNX3S1Dz8IY3IU22sqmBCI5GM7PQvPx0CD3rI4cDP0X?=
+ =?iso-8859-1?Q?p23HsktAukKGTqUADg0rRKyk6WZP/VQmVXHmwpYoJE5mRe8Xg6HPNgiuA8?=
+ =?iso-8859-1?Q?myrdwmVZ3ufFTYc7RjtoNQeShEVsPKBzEZLa8vaIa9kHkwIwA7Y6ktW2FE?=
+ =?iso-8859-1?Q?LD3HeTLa2PtDUvW1IHAttW8t/mZI22CSzQAk3kSw3dyLYF3ETmLdma0vRc?=
+ =?iso-8859-1?Q?Fg5he86G7nDr06xNw3fYKTMICooaCUuMqNJNw/MnnYmS+w/4HUVZtxZlYB?=
+ =?iso-8859-1?Q?FcCJuntl9EBUElsTSeoxGOGYxqD//ci5DCqez2BDYaWXkUNoZfKV0P2cT5?=
+ =?iso-8859-1?Q?/xOgT6Xpwkejzm28Y9IWYamPyveGtUbq0p1ucm7trs82+ZPBH4YN1Hdwqu?=
+ =?iso-8859-1?Q?udUPtcNnLCyWY1lRV8AamYLtQ9N1UdYR7hrcZmxfmuWSBV8rlmMb0AhCIF?=
+ =?iso-8859-1?Q?VNIOTu7IsWr04Lm7wLkUVvhERUWKHISfqi3kniNb0Vys4+qbxde7YY/xDx?=
+ =?iso-8859-1?Q?2qwhWkEulUDXK1XHD/FOmQEDl3PXy1uTWtrSrBdI1LSd/sYpJpxhT/R/cr?=
+ =?iso-8859-1?Q?/HN6RuISxEan13Hl6oQcpEZBY71gRERFLVwr6c29gyuFFFOQWmcJU30JtB?=
+ =?iso-8859-1?Q?+w87Rb3pKSZ40NrL6duYbSjLHScSS1d6yyFkt8cTkAmgd6P/Dq5lrDViPX?=
+ =?iso-8859-1?Q?wJ1/en3W9r39u4YpS10PxujnHkstZxHzvu1+b5hypiHZf6Y7Qq6R?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f400ca7-8147-4e02-7045-08df14dc360a
+X-MS-Exchange-CrossTenant-AuthSource: GV2PR04MB11799.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Sep 2026 16:53:34.5208
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ik/NecqbVwsWnUGxp2QPpKpD543mMP62MYW/wQLjLiW1uffyGxuXa2GC/4u9HeAAR98V2SYgKWygyc9eJpf5BRq/nb8Kd8YpLe5mQrG7fufjs3rFf8jOZ7fJ8AnX8U33
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS5PR04MB9876
+
+On Thu, Sep 17, 2026 at 06:35:12AM +0000, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 6 potential issue(s) to consider:
+> - [High] dts: pcal6524 interrupt polarity is incorrectly set to LEVEL_HIGH
+> - [Medium] dts: Ethernet PHY reset-gpios configured with wrong polarity
+> - [Medium] dts: eMMC reset GPIO defined but unused in usdhc1
+> - [Medium] dts: reg_panel_vcc regulator missing enable-active-high property
+> - [Medium] dts: M.2 Key-E (usdhc3) slot missing power regulator
+> - [Low] dts: tas2552 codec uses deprecated enable-gpio instead of enable-gpios
+> --
+>
+> commit 5792bafb068af6288c67560ae9fb90a4c34326af
+> Author: Marek Vasut <marex@nabladev.com>
+> arm64: dts: imx95: Add support for Data Modul i.MX95 eDM SBC
+>
+> This commit adds support for the Data Modul i.MX95 eDM SBC evaluation board,
+> enabling various peripherals like serial console, ethernet, eMMC, SD,
+> SPI NOR, USB, and PCIe.
+>
+> > diff --git a/arch/arm64/boot/dts/freescale/imx95-data-modul-edm-sbc.dts b/arch/arm64/boot/dts/freescale/imx95-data-modul-edm-sbc.dts
+> > new file mode 100644
+> > index 0000000000000..0181262eb8a98
+> > --- /dev/null
+> > +++ b/arch/arm64/boot/dts/freescale/imx95-data-modul-edm-sbc.dts
+>
+> [ ... ]
+>
+> > +	reg_panel_vcc: regulator-panel-vcc {
+> > +		compatible = "regulator-fixed";
+> > +		regulator-min-microvolt = <3300000>;
+> > +		regulator-max-microvolt = <3300000>;
+> > +		regulator-name = "PANEL_VCC";
+> > +		gpios = <&i2c2_gpio_expander_20 17 0>;
+
+gpio third arg 0, means GPIO_ACTIVE_HIGH
+
+	so need enable-active-high
+
+if your boards have invertor should use GPIO_ACTIVE_LOW
 
 
+> > +		/* Disabled by default, unless display board plugged in. */
+> > +		status = "disabled";
+> > +	};
+>
+> [Severity: Medium]
+> Does reg_panel_vcc need an enable-active-high property? Without it, the
+> regulator defaults to active-low logic, which will drive the panel VCC low
+> when the regulator is enabled.
+>
+> [ ... ]
+>
+> > +	i2c2_gpio_expander_20: gpio@20 {	/* U12 */
+> > +		compatible = "nxp,pcal6524";
+> > +		reg = <0x20>;
+> > +		#gpio-cells = <2>;
+> > +		gpio-controller;
+> > +		#interrupt-cells = <2>;
+> > +		interrupt-controller;
+> > +		interrupts-extended = <&gpio5 11 IRQ_TYPE_LEVEL_HIGH>;
+>
+> [Severity: High]
+> Will triggering interrupts-extended on IRQ_TYPE_LEVEL_HIGH cause an interrupt
+> storm? The PCAL6524 INT output is an open-drain, active-low signal, so the
+> line will idle high.
 
-On 17 September 2026 11:20:46 GMT+02:00, Quchaosheng <quchaosheng000406@16=
-3=2Ecom> wrote:
->Hi Krzysztof,
->
->You are right, and sorry for the noise=2E I have stopped sending=2E Nothi=
-ng is
->queued, and I will not repost the three CAN bindings unless you ask me to=
-=2E
->
->What I got wrong, and what is fixed before anything goes out again:
->
->1=2E Threading=2E I attached new versions to older threads and unrelated
->   patchsets=2E That is exactly what submitting-patches=2Erst warns about=
-: it
->   buried the patches and made Patchwork show several versions of one fil=
-e=2E
->   The next posting is one series, in its own thread, one version only=2E
->
->2=2E spi-peripheral-props=2E Dropped, as you asked=2E The binding now ref=
-erences
->   only can-controller=2Eyaml, and dt_binding_check passes=2E
->
->3=2E clock-frequency=2E Dropped, and clocks stays required=2E You were ri=
-ght that
->   it is ACPI-only; I had argued from the driver code instead of reading =
-the
->   git history=2E
->
->4=2E Commit messages rewritten as short declarative sentences that descri=
-be
->   only what changed in the binding=2E
->
->5=2E One thing I should have said from the start: these patches were prep=
-ared
->   with an LLM coding assistant=2E Per
->   Documentation/process/coding-assistants=2Erst they need an
->   "Assisted-by: LLM" tag, and mine did not carry one=2E It is now on eve=
-ry
->   patch=2E You told me not to paste LLM text, and I should also have
+Yes, suppose it should LOW to trigger irq.
 
-And yet, this looks exactly like LLM pasted text=2E
-That's an insult to all who genuinely engage with the development process,=
- who knows if you even understand what's been said here, and are just blind=
-ly pasting back and forth=2E
-If we wanted to have a discussion with an LLM, we can do that ourselves=2E=
- We don't need you in the loop for that=2E
 
-Thanks,
-Conor=2E
+>
+> [ ... ]
+>
+> > +	i2c2_gpio_expander_21: gpio@21 {	/* U14 */
+> > +		compatible = "nxp,pcal6524";
+> > +		reg = <0x21>;
+> > +		#gpio-cells = <2>;
+> > +		gpio-controller;
+> > +		#interrupt-cells = <2>;
+> > +		interrupt-controller;
+> > +		interrupts-extended = <&gpio5 11 IRQ_TYPE_LEVEL_HIGH>;
+>
+> [Severity: High]
+> Could this IRQ_TYPE_LEVEL_HIGH configuration also lead to an interrupt
+> storm for i2c2_gpio_expander_21?
+>
+> [ ... ]
+>
+> > +	i2c2_gpio_expander_22: gpio@22 {	/* U13 */
+> > +		compatible = "nxp,pcal6524";
+> > +		reg = <0x22>;
+> > +		#gpio-cells = <2>;
+> > +		gpio-controller;
+> > +		#interrupt-cells = <2>;
+> > +		interrupt-controller;
+> > +		interrupts-extended = <&gpio5 11 IRQ_TYPE_LEVEL_HIGH>;
+>
+> [Severity: High]
+> Does i2c2_gpio_expander_22 similarly need to be configured for an active-low
+> interrupt instead of IRQ_TYPE_LEVEL_HIGH?
+>
+> [ ... ]
+>
+> > +	tas2552: audio-codec@40 {
+> > +		compatible = "ti,tas2552";
+> > +		reg = <0x40>;
+> > +		#sound-dai-cells = <0>;
+> > +		avdd-supply = <&reg_1p8v>;
+> > +		iovdd-supply = <&reg_3p3v>;
+> > +		vbat-supply = <&reg_5p0v>;
+> > +		enable-gpio = <&i2c2_gpio_expander_20 23 GPIO_ACTIVE_HIGH>;
+>
+> [Severity: Low]
+> This isn't a bug, but should tas2552 be using the enable-gpios property name
+> instead of the deprecated enable-gpio? The patch changelog mentions replacing
+> gpio with gpios DT properties.
 
->   disclosed that the text was LLM-assisted=2E Not doing that was the wor=
-st
->   part of this, not the wording=2E
+Please fix this one.
+
 >
->The bindings are otherwise unchanged=2E holt, mpc5xxx-mscan and ifi,canfd=
- are
->ready as a single clean v7 series=2E Tell me when you want it and I will =
-post
->it in one new thread=2E
+> [ ... ]
 >
->Thanks for the pointers=2E
+> > +	ethphy0: ethernet-phy@1 {	/* KSZ9131RNXI U20 */
+> > +		compatible = "ethernet-phy-id0022.1640";
+> > +		reg = <1>;
+> > +		interrupts-extended = <&gpio1 10 IRQ_TYPE_LEVEL_LOW>;
+> > +		reset-assert-us = <1000>;
+> > +		/* RESET_N signal rise time ~100ms */
+> > +		reset-deassert-us = <120000>;
+> > +		reset-gpios = <&i2c2_gpio_expander_22 4 GPIO_ACTIVE_HIGH>;
 >
->Quchaosheng
+> [Severity: Medium]
+> Will ethphy0 be held in reset permanently? The KSZ9131RNXI RESET_N signal is
+> active-low, so defining reset-gpios with GPIO_ACTIVE_HIGH will drive the line
+> high to assert reset.
 >
+> > +	};
+> > +
+> > +	ethphy1: ethernet-phy@2 {	/* KSZ9131RNXI U22 */
+> > +		compatible = "ethernet-phy-id0022.1640";
+> > +		reg = <2>;
+> > +		interrupts-extended = <&gpio1 10 IRQ_TYPE_LEVEL_LOW>;
+> > +		reset-assert-us = <1000>;
+> > +		/* RESET_N signal rise time ~100ms */
+> > +		reset-deassert-us = <120000>;
+> > +		reset-gpios = <&i2c2_gpio_expander_22 5 GPIO_ACTIVE_HIGH>;
+>
+> [Severity: Medium]
+> Does ethphy1 also suffer from the incorrect GPIO_ACTIVE_HIGH reset polarity?
+
+Is it correct?
+
+>
+> [ ... ]
+>
+> > +&usdhc1 {	/* eMMC */
+> > +	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+> > +	pinctrl-0 = <&pinctrl_usdhc1>;
+>
+> [Severity: Medium]
+> Could usdhc1 be missing its reset sequence configuration? The hardware
+> provides an eMMC_RESET line on the I2C GPIO expander, but it isn't consumed
+> via mmc-pwrseq or reset-gpios. This might cause the eMMC to fail to initialize
+> during warm reboots.
+
+Please check this
+
+Frank
+
+>
+> [ ... ]
+>
+> > +&usdhc3 {	/* M.2 Key-E */
+> > +	pinctrl-names = "default", "state_100mhz", "state_200mhz", "sleep";
+> > +	pinctrl-0 = <&pinctrl_usdhc3>;
+>
+> [Severity: Medium]
+> Does the usdhc3 node need a vmmc-supply? The VDD_3V3_M2-E_EN pin is defined on
+> the expander but there is no fixed regulator defined to power the M.2 Key-E
+> slot, which might leave peripherals undetectable.
+>
+> --
+> Sashiko AI review · https://sashiko.dev/#/patchset/20260917062543.534416-1-marex@nabladev.com?part=3
