@@ -1,120 +1,66 @@
-Received: from cstnet.cn (smtp25.cstnet.cn [159.226.251.25])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-SHA (256/256 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE4B14156FD;
-	Thu, 17 Sep 2026 10:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.226.251.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9504DAF85;
+	Thu, 17 Sep 2026 11:21:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789641928; cv=none; b=ZsQnv9cWp5iBPxEm1OUmbY7ph8B6hoVgb1gfV2FHfG5oXpjXZ2FE82qu+0vN06oWMQz+bQeiZVvkOBAvoQ3vTCzPkVp4lblEF4JSj1Oaukf9eMM478w8P+6zMr0V+r0ElTqNSOfajZUyDSZ6vZK7AOAurxpx08ZLD6auJCya6Xk=
+	t=1789644086; cv=none; b=izYemgXyBaOQLT2VC+tbq8d6SVHEtqp2oTkVk9Koi2OZa5Y4J0vQ1l/ORUayeSGWxcOWDlvU8UDBdLmUBv3dmcZVMsd8pOqIM1w11S7D13/M1F4jTryR3YkXNJy50zSoYvPPg6yEP2hVTpac5/UhL23aGCLPwHMoJrV2hoL93kQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789641928; c=relaxed/simple;
-	bh=afSx3D/vkh44WIvQMHVDzVIdoFNtbb2vZ91yVkdb2/w=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ACQSaY6UycwziM5kdbcoqL00iGA2tLofvDHq6KfkuhJZMXZXvwMrs2uVj3Q6QS9cjHOuKZg8Rjb6RZiKDe9aYImlNCSJs/Ttpa9wCHaO6Z6ixlfmJ0y/4gYm+akPNDGeb9Mup0AWaPQMWxRL1J5dwQKnPA8xHOrbnPc/Ygjf3VU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn; spf=pass smtp.mailfrom=iscas.ac.cn; arc=none smtp.client-ip=159.226.251.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iscas.ac.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iscas.ac.cn
-Received: from dfae2b116770.home.arpa (unknown [36.110.52.2])
-	by APP-05 (Coremail) with SMTP id zQCowAB3qEK6xKtqI+R+CA--.906S2;
-	Thu, 17 Sep 2026 18:45:14 +0800 (CST)
-From: Wentao Liang <vulab@iscas.ac.cn>
-To: info@gerhard-bertelsmann.de
-Cc: jernej.skrabec@gmail.com,
-	linux-arm-kernel@lists.infradead.org,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-sunxi@lists.linux.dev,
-	mailhol@kernel.org,
-	mkl@pengutronix.de,
-	mripard@kernel.org,
-	samuel@sholland.org,
-	wens@kernel.org,
-	Wentao Liang <vulab@iscas.ac.cn>,
-	stable@vger.kernel.org
-Subject: [PATCH] can: sun4i_can: Fix clk leak in sun4ican_probe()
-Date: Thu, 17 Sep 2026 10:45:14 +0000
-Message-Id: <20260917104514.2147347-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1789644086; c=relaxed/simple;
+	bh=Dim/QSeGUhrQVZ7xvXdr+08HoJesMzwtqPNkQCiQZi4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ar5z1+fTAfKYjFJu60GX6uGGuQ/cWFdkk0k00h6nWmNQ+26FFN1anSch2pKSr9kvGhOaJsMqd8NFq2iaHqVRjfyLYIrUNqFPFmJv9rkChPXKpgppGX1tG9GEnWmsF5hm9yqPKGlN3pBenR8EMlLBLSI+MOO2w2xmR7vbcNZKJB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AMVVq2Ba; arc=none smtp.client-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AMVVq2Ba"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5B24C1F000FF;
+	Thu, 17 Sep 2026 11:21:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1789644074;
+	bh=HNVlKCQj9t4F2QxuG5+Nvtx8ehVkwFth5lkkTZy95rs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=AMVVq2BaaA3ro4YmKSTxDFpK6fKCjPZpAIkS0uvm1IuX4djWApqyTCrxQ5gYhvqnE
+	 +XzJk9ryBy1gWGAduc7mAHRyZ45+K6Xom9gQT6hvZ2RD1weznuciZnIevsQQkN8arD
+	 kzA6+skezzP533vxDgEnOXgTqr653qyOg04Gm4ozbklG5p8u9GZGo+8DStnYlhnL+B
+	 5zuM+QBBtv3z2Z2nBFKs1xAlJZjt9V8Kk0VK1ze4YoIy+vE9Vw9gP2dZD/9OBcNqT1
+	 JP9dGNlC9+vjdxMH+4e0OW99haQaxZnEZYPdDTiCOzYx6pjpI4c79mZQHwPg91C5uD
+	 dX8IKxcXw35eA==
+Date: Thu, 17 Sep 2026 13:21:10 +0200
+From: Krzysztof Kozlowski <krzk@kernel.org>
+To: Kendall Willis <k-willis@ti.com>
+Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
+	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Chandrasekar Ramakrishnan <rcsekar@samsung.com>, 
+	s-kochidanadu@ti.com, a-kaur@ti.com, s-tripathi1@ti.com, vishalm@ti.com, 
+	linux-can@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] dt-bindings: can: m_can: add ti,am62-mcan
+ compatible
+Message-ID: <20260917-ivory-jackrabbit-of-discussion-cb4dd2@quoll>
+References: <20260915-temp-v6-0-ddf1411d63cc@ti.com>
+ <20260915-temp-v6-1-ddf1411d63cc@ti.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zQCowAB3qEK6xKtqI+R+CA--.906S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7KFy5GrWfZry5Cry5Ar18Xwb_yoW8Ar1rpF
-	nYqaySkr48GFyYgwnrta10vFyYyw4IyFyakrW0kws3ZanxAr1DCFyrCFyjvF48AFWkGay5
-	Ww4jyF18KFs8Z3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPvb7Iv0xC_Kw4lb4IE77IF4wAFc2x0x2IEx4CE42xK8VAvwI8I
-	cIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2
-	AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v2
-	6r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI
-	0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-	Yx0E2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r4UJVWxJr1lOx8S6xCaFVCjc4
-	AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq62Iq12xI8VA0II8E6IAqYI8I648v4I1l
-	FIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr4
-	1l42xK82IY6x8ErcxFaVAv8VW8GFyrJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s02
-	6c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw
-	0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvE
-	c7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14
-	v26r4UJVWxJr1lIxAIcVC2z280aVCY1x0267AKxVW0oVCq3bIYCTnIWIevJa73UjIFyTuY
-	vjxUqP8nDUUUU
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCRINA2qrq01YSAABsj
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260915-temp-v6-1-ddf1411d63cc@ti.com>
 
-In sun4ican_probe(), the clock is obtained with of_clk_get(), which
-returns a reference that must be released with clk_put().  If
-platform_get_irq(), devm_platform_ioremap_resource(), alloc_candev()
-or register_candev() fails, the reference is never released, leaking
-the clock.
+On Tue, Sep 15, 2026 at 01:16:01PM -0500, Kendall Willis wrote:
+> Add "ti,am62-mcan" device. Device is fully compatible with Bosch.
+> The device supports out-of-band wakeup capability.
+> 
+> Signed-off-by: Kendall Willis <k-willis@ti.com>
+> ---
+>  Documentation/devicetree/bindings/net/can/bosch,m_can.yaml | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 
-Fix this by adding an exit_put_clk label that releases the clock and
-jumping to it from all error paths after the of_clk_get() call.
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
-Fixes: 0738eff14d81 ("can: Allwinner A10/A20 CAN Controller support - Kernel module")
-Cc: stable@vger.kernel.org
-Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
----
- drivers/net/can/sun4i_can.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-index af52285d5a4e..311526107ed8 100644
---- a/drivers/net/can/sun4i_can.c
-+++ b/drivers/net/can/sun4i_can.c
-@@ -854,13 +854,13 @@ static int sun4ican_probe(struct platform_device *pdev)
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0) {
- 		err = -ENODEV;
--		goto exit;
-+		goto exit_put_clk;
- 	}
- 
- 	addr = devm_platform_ioremap_resource(pdev, 0);
- 	if (IS_ERR(addr)) {
- 		err = PTR_ERR(addr);
--		goto exit;
-+		goto exit_put_clk;
- 	}
- 
- 	dev = alloc_candev(sizeof(struct sun4ican_priv), 1);
-@@ -868,7 +868,7 @@ static int sun4ican_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev,
- 			"could not allocate memory for CAN device\n");
- 		err = -ENOMEM;
--		goto exit;
-+		goto exit_put_clk;
- 	}
- 
- 	dev->netdev_ops = &sun4ican_netdev_ops;
-@@ -908,6 +908,8 @@ static int sun4ican_probe(struct platform_device *pdev)
- 
- exit_free:
- 	free_candev(dev);
-+exit_put_clk:
-+	clk_put(clk);
- exit:
- 	return err;
- }
--- 
-2.34.1
+Best regards,
+Krzysztof
 
