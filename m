@@ -1,75 +1,120 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F11044FC8F0;
-	Thu, 17 Sep 2026 12:46:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF064FB9B4;
+	Thu, 17 Sep 2026 12:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.200.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789649179; cv=none; b=Qe/Sn2+dmejkKKYdQ3nyf0bAhg1wW2k/vx26GI1oRV53sze7e97a7+Sr+KY0NISAOXL/bfZHb46abSAq6sdeG8IuFzbCMyv6PGleNYzemjreWhJkLPRZAMxKp7FGtji/8BB5Fw8cb8yWNw3DKC/QVD+QcYQWwwaUeX0beb0FSa4=
+	t=1789649186; cv=none; b=sZzINOrSBLudJAtp2WO13CIPc9GbiL6YbSf3bUl5PsQu3vL75f6HAdKhfRe38B2DWEbvlPC7D8kmYY8DhuQkv48uvr6HZ3W8poEwhCU6akUYnm7QULy9fZ27XjSJd6fZXkxSWyLUYKElvFmlJXWrNx9aCYm3l6lWpHhf7Y8EUFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789649179; c=relaxed/simple;
-	bh=hBvdh9HClhGGCVREIg6h3wrnYFi7XdmLlR3pemu5ljg=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=RPO5/WMal3ozki+cq4V2SomQ6ZHfExXNR1dS6v5VU7YUC6h58j1nXEQ91EAxk0dNa5b+ViN3CX/Dsm0ek8oSKZXhAjD7e5TWy5oO1mndYDaOGM7P8VRlQ5lfPN6NuAh8L7jW+9e1f8MIGmJYLwuZOdsJe2B8sLul2L/+OjXp/VI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dow0FEL6; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dow0FEL6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A391F000FF;
-	Thu, 17 Sep 2026 12:46:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1789649163;
-	bh=XEjkEBMozv5qKaeMN6Kt56A1rybE1JJj9lDoE4MFm9g=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Dow0FEL6wBPAI52+k01nyDNoE8yTPxz6ptOIYePY/MVz/7wOoblpLQwHgGwPep8Zh
-	 qYVC7CCiITO3rboNbgasH5bj7YQpsZ2MCV0sjyREW72oVj+SzU0ADDNGogoW9O9Qe1
-	 2OAinqGD51Uz1YrAiERijCKB2/CFWOdJIfPGvLc3RmyYym9cUfedM/zSbf5EnR92oe
-	 qAiNsQDQ2/J5VMOAnbCD6F+vxfTFpYuX4sGPMH1JJ4uNzLleiowQ9/U1NIeu22QmKS
-	 Ly2MG+To9kU0UH/5yGZWlUMrnk7dj/08UTBjsbqPUkDVcReqzotZRgWx/x8/SXVwFy
-	 8AebfNZ5uM3yg==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next] net: use assign_bit() where applicable
-Reply-To: sashiko-reviews@lists.linux.dev
-To: =?utf-8?b?UGVuZyBGYW4gKE9TUyk=?= <peng.fan@oss.nxp.com>
-Cc: "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, linux-rdma@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, imx@lists.linux.dev, Frank.Li@kernel.org
-In-Reply-To: <20260917-net-assign-bit-v1-1-e9c97965e080@nxp.com>
-References: <20260917-net-assign-bit-v1-1-e9c97965e080@nxp.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 17 Sep 2026 12:46:03 +0000
-Message-Id: <20260917124603.75A391F000FF@smtp.kernel.org>
+	s=arc-20240116; t=1789649186; c=relaxed/simple;
+	bh=ffMa2LYmjtNZfCneY2/wOPZyo78KttonYV3gJ6OYHBI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DkMjEnbdXDWAURwEw+7EyIgRdzt809aEG7Gsmh9sfNvmGD7Pdk3uY1jMGQe45okvgeSQV3eE9Q5tMwAfpHp14+WkNJpL/Tx4PzEs7JMOgXqsX+5KY04keSYkuh9YDcF8V/OVBNPxjEh8nnfn6oIvo9gcSNuIcucD9WW/oRdx1mo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 760B3200314;
+	Thu, 17 Sep 2026 14:46:08 +0200 (CEST)
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1x7BVA-001OrF-1A;
+	Thu, 17 Sep 2026 14:46:08 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C65D659FBFC;
+	Thu, 17 Sep 2026 10:01:11 +0000 (UTC)
+Date: Thu, 17 Sep 2026 12:01:11 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Wentao Liang <vulab@iscas.ac.cn>
+Cc: davem@davemloft.net, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mailhol@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH] can: flexcan: Fix OF node reference leak in
+ flexcan_setup_stop_mode_gpr()
+Message-ID: <20260917-clever-lumpy-stallion-df086f-mkl@pengutronix.de>
+References: <20260917095302.2145506-1-vulab@iscas.ac.cn>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gd4enemhbx4iajs3"
+Content-Disposition: inline
+In-Reply-To: <20260917095302.2145506-1-vulab@iscas.ac.cn>
 
-> From: Peng Fan <peng.fan@nxp.com>
->=20
-> Convert open-coded if/else with set_bit/clear_bit and their
-> non-atomic __set_bit/__clear_bit variants to the assign_bit/__assign_bit
-> API.
->=20
-> Done with Coccinelle semantic patch:
->     // set_bit -> clear_bit =3D> assign_bit
->=20
->     @@
->     expression cond, bit, addr;
->     @@
->=20
->     -if (cond)
->     -        set_bit(bit, addr);
-> [ ... ]
->     -else
->     -        __set_bit(bit, addr);
->     +__assign_bit(bit, addr, !cond);
->=20
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-Sashiko has reviewed this patch and found no issues. It looks great!
+--gd4enemhbx4iajs3
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] can: flexcan: Fix OF node reference leak in
+ flexcan_setup_stop_mode_gpr()
+MIME-Version: 1.0
+
+On 17.09.2026 09:53:02, Wentao Liang wrote:
+> of_find_node_by_phandle() takes a reference on the GPR node and the
+> error path releases it through out_put_node.  The success path returns
+> before reaching that label, so the reference is leaked every time the
+> stop mode is set up successfully, and the node can never be freed.
+>
+> Release the node reference before returning.
+>
+> Fixes: 13dfb3fa4943 ("Merge git://git.kernel.org/pub/scm/linux/kernel/git=
+/netdev/net")
+
+A merge commit probably has not introduced this problem...
+
+Marc
+
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+> ---
+>  drivers/net/can/flexcan/flexcan-core.c | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
+xcan/flexcan-core.c
+> index f5d22c61503f..68699d674fc3 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
+> @@ -1986,6 +1986,7 @@ static int flexcan_setup_stop_mode_gpr(struct platf=
+orm_device *pdev)
+>  		"gpr %s req_gpr=3D0x02%x req_bit=3D%u\n",
+>  		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit);
+>
+> +	of_node_put(gpr_np);
+>  	return 0;
+>
+>  out_put_node:
+> --
+> 2.34.1
+>
+>
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260917-net-assign=
--bit-v1-1-e9c97965e080@nxp.com?part=3D1
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--gd4enemhbx4iajs3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaqu6ZQAKCRDMOmT6rpmt
+0o59AP9vAe/2cIX0lC7anBMR0T2CLTK93kl1hY5HigOU+l4OlgD/dFKkGogHKoNi
+TKoxHzG6RkdVep2I6KhxMco8UmnBfgA=
+=U7kJ
+-----END PGP SIGNATURE-----
+
+--gd4enemhbx4iajs3--
