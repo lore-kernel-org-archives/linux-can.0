@@ -1,111 +1,121 @@
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B1403C197A;
-	Fri, 18 Sep 2026 02:11:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5B863B9950;
+	Fri, 18 Sep 2026 02:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789697477; cv=none; b=SqWxUamzJQ0iNiVN3ubV7ZeZLaHBLtQQRhP+PXmpxLQWD4ZJSpmfrleOH+uRx8lB9zSkOmj22Tz43uAyzbeym4NYvpbEO8ikpVRdf/TPF8pnuwPPUNsLdQogk/JloBrwkxeOg6o+gN6nFMkrHjIaLuLNGiVkJI5R9SHQJ2oLdlo=
+	t=1789700227; cv=none; b=U5KLdWFQZmlzEHzcxSJ0z0/GcbClIkv9cuhE5+WUg+LDX6Z/99gM87v2J+0+vnHT2+g173kacUAXUQEx8mmGwuVr+i5aNedPIvzPdfJkMOwx3Zr0vaCiwTGmWGTTR82tvIPKMcl4jzcQpzqRGwZu2OlbkGzZLYg3JgrNuBKKvGw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789697477; c=relaxed/simple;
-	bh=cEISbGiK00UC58ShMoITjPykZWVzlAoXf2fxmAqSLAM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pWkGeuDy34d/2tdtvAYQ1qdijdb06C0jfpCSI/SsjoD1oZ8MdEeSimLqo/ALn2EuM2x2PrQLyx+1Zlk30ZDCp36EPdhVtxVLnEa9gNKM+m31jbnm9anIodEIPIBXpxc+mO9N6/4PHdwTueFMLhDLtfDgezuA+eRAX1sEEN/sD3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=bDbsHHQE; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+	s=arc-20240116; t=1789700227; c=relaxed/simple;
+	bh=y2TbDAwAo1IIVfjJZoeR79zdccQQhRlCpZnExy6D19U=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KKdd6VIwgFtf8qEErIKeRd/vHZG04J+u7HA9nNPQqQuTeovt3zLWqgVM8PWjaCLbb5Yni1VKwEYXcPTv2C07rBTwZxffoNu3fN6IneSGh8oUpSZnKcrEi9bUfPmmFdGRIO60CocQOg4ERzj4ntK6juMklso1/xdWj2kR5QqlVsg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=Go1Xr0W9; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="bDbsHHQE"
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 68HLGHhX1864779;
-	Thu, 17 Sep 2026 19:10:43 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	cc:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pfpt0220; bh=dubC5oM2qU+4GKATaZzkuHMBM
-	z27y3mGmxddTGnTElE=; b=bDbsHHQE6wnt0FZroHnJpdrMXyTpswmFeZb4n7raW
-	zPKdmQw9JZ7++G37V/APhV80c3fNes407XmTogON0Efh5OHFbr42s8k9Z7xEi6q9
-	vQnX/hy6Z4A0Ha8+EHazZatbItIHkVDoHKoVK1GlKPJVLtzq+/zBcbraQqJku7s/
-	cNtuB1gsBsFqXpN26srWqEkcbfuroXFMei9zQX3Bfm4gLITqhAmi8WbkKteC4e/O
-	5HhiDj+qoMdHMm43imhDuLtiqCxENUYCm3+M7UFGRYBlueIbNhp5FYRSqq0iqZH+
-	Azjw8JrJ4Ig8ZWIcnjbvZfVPWIBbLg+RG0bcqJu4TlH5g==
-Received: from dc6wp-exch02.marvell.com ([4.21.29.225])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 4grmcs3732-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 17 Sep 2026 19:10:43 -0700 (PDT)
-Received: from DC6WP-EXCH02.marvell.com (10.76.176.209) by
- DC6WP-EXCH02.marvell.com (10.76.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.25; Thu, 17 Sep 2026 19:10:41 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC6WP-EXCH02.marvell.com
- (10.76.176.209) with Microsoft SMTP Server id 15.2.1544.25 via Frontend
- Transport; Thu, 17 Sep 2026 19:10:41 -0700
-Received: from rkannoth-OptiPlex-7090 (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id 9BDE13F7055;
-	Thu, 17 Sep 2026 19:10:37 -0700 (PDT)
-Date: Fri, 18 Sep 2026 07:40:31 +0530
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-CC: Andrew Lunn <andrew+netdev@lunn.ch>,
-        "David S. Miller"
-	<davem@davemloft.net>,
-        Eric Dumazet <edumazet@google.com>, Jakub Kicinski
-	<kuba@kernel.org>,
-        Paolo Abeni <pabeni@redhat.com>, Sunil Goutham
-	<sgoutham@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        "Subbaraya
- Sundeep" <sbhatta@marvell.com>,
-        <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <netdev@vger.kernel.org>, Peng Fan
-	<peng.fan@nxp.com>
-Subject: Re: [PATCH net-next] net: use assign_bit() where applicable
-Message-ID: <aqydl2Gao3KFhDSf@rkannoth-OptiPlex-7090>
-References: <20260917-net-assign-bit-v1-1-e9c97965e080@nxp.com>
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="Go1Xr0W9"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=MM
+	2CSkE8/sEUvzaJ70Ejc/9BpWXF0sFAer+E0T0z+Ms=; b=Go1Xr0W9Dge9YOdBu0
+	Jm78s/VUjSOXa2aSkGbe2QnIkXH+L5bCBVCVxeYw443hJIVzICnW/X9b8cbXOR+f
+	JLKhrT+/jFqExKJ/jAOUWrtpWJEpf2M2xdnpn9GU7VOFD/nO4f6JAsh3n31Ze8wH
+	5ctpB6MCX+oee+LkxThPjEwpg=
+Received: from vd-VMware-Virtual-Platform.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wD3X+FaqKxqMQl+BQ--.61271S2;
+	Fri, 18 Sep 2026 10:56:28 +0800 (CST)
+From: Xue Boyang <m18335910246@163.com>
+To: robin@protonic.nl,
+	o.rempel@pengutronix.de,
+	socketcan@hartkopp.net,
+	mkl@pengutronix.de,
+	kernel@pengutronix.de
+Cc: linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	m18335910246@163.com
+Subject: [PATCH net 0/2] can: j1939: fix NULL deref on ETP completion with out-of-range DPO
+Date: Thu, 17 Sep 2026 21:56:13 -0500
+Message-ID: <20260918025622.192582-1-m18335910246@163.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20260917-net-assign-bit-v1-1-e9c97965e080@nxp.com>
-X-Proofpoint-GUID: ePMFN2aTbfCwwfMUL1tbZWiUufOGfzTR
-X-Proofpoint-Spam-Info: AW1haW4tMjYwOTE4MDAyNiBTYWx0ZWRfX7VJZWkAHIq29
- ftizCsDf/FZTWHd2tL79O+tFb+0bZH11JuZL0cqTHhRpK80GYjK224lxB+fVbxRE/KeOj6J/7z6
- rCfmC4LFdRZyn1tSbxgJmy2AodQHsmU=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwOTE4MDAyNiBTYWx0ZWRfX43TnihcxWaiT
- wDZ00EJpOABn1xijqBtk5gndIhgd7Rn+vD2frFPNuKKeXDQ1NErBPQLHQlKH52ie/JyexMswQry
- 3bLvLJTlm6fzl7/D0ElatilQvkgnlnqgki+P37d13dylrkQRCCgXOtUvsvQ96onOlcFVhBagQdR
- 8W/b9F1mvnw0KeU7xfe56q3uKkEC2MX5eabX4mMufY+zEHvcXcukWBneoXEDA0NQ9CGQrSUOTS1
- /TFpdFF/7+tZl4HJ+VR5Cqe3WkoaJXO+i1GDE6BYKwTNBOQX9JeelkUp8DCDaHdnB5WmYuRsum2
- bA69xjwFb2lShjLA5Alw5YW/hZKaSPitwXvA39dGY9CiKulhMyiCW2A/wQdrSOxiLQ5+rvg8qA2
- w2GqnN1H+uv62G4CDjuiH9YJKCCHVH+BKh9W7Y2DWG6Ty7RD6Oryk7i5PTh5NRNTsxy1IoSbHze
- FIhuChl+vYHCFEM/Ouw==
-X-Proofpoint-ORIG-GUID: ePMFN2aTbfCwwfMUL1tbZWiUufOGfzTR
-X-Authority-Analysis: v=2.4 cv=fbs4WEQF c=1 sm=1 tr=0 ts=6aac9da3 cx=c_pps
- a=gIfcoYsirJbf48DBMSPrZA==:117 a=gIfcoYsirJbf48DBMSPrZA==:17
- a=kj9zAlcOel0A:10 a=VdqzKS8jKosA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=l0iWHRpgs5sLHlkKQ1IR:22 a=EAYMVhzMl8SCOHhVQcBL:22 a=8AirrxEcAAAA:8
- a=M5GUcnROAAAA:8 a=hcKA5laK3LMbEB-jZdAA:9 a=CjuIK1q_8ugA:10
- a=ST-jHhOKWsTCqRlWije3:22 a=OBjm3rFKGHvpk9ecZwUJ:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-09-17_05,2026-09-16_02,2025-10-01_01
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD3X+FaqKxqMQl+BQ--.61271S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZw13Ary8Aw1UKr4xZFW3GFg_yoW5Ar47pF
+	W3KryFkr1vkrn2yr48tw15tryfuanaqr17GasYq3sFyw4rXFsYyr18tr1F9FWUCan5C34Y
+	vwnFqw1DCryYga7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRDl1gUUUUU=
+X-CM-SenderInfo: zpryjjavzrijiuw6il2tof0z/xtbC8hwHtWqsqFwfswAA3C
 
-On 2026-09-17 at 18:09:52, Peng Fan (OSS) (peng.fan@oss.nxp.com) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
->
-> Convert open-coded if/else with set_bit/clear_bit and their
-> non-atomic __set_bit/__clear_bit variants to the assign_bit/__assign_bit
-> API.
->
+Hello,
 
-  drivers/net/ethernet/marvell/octeontx2/af/cgx.c    | 10 ++-------
-  .../net/ethernet/marvell/octeontx2/af/cn20k/npc.c  |  5 +----
-  .../net/ethernet/marvell/octeontx2/af/rvu_nix.c    | 15 +++----------
-  .../net/ethernet/marvell/octeontx2/af/rvu_npa.c    | 10 ++-------
+while auditing the J1939 transport layer of v7.3-rc3 we found a NULL
+pointer dereference in j1939_session_completed() that is reachable by
+an unprivileged user through a virtual CAN interface (all required
+capabilities are obtainable inside a user namespace, no hardware
+needed).
 
-For above files
+Root cause: ETP.CM_DPO is accepted without validation, and the final
+message distribution looks up the receive queue at pkt.dpo * 7.  With
+pkt.dpo moved past the end of the reassembled buffer the lookup
+returns NULL, which is passed to j1939_sk_recv() and dereferenced.
+The interesting part is that the transfer still *completes normally*
+beforehand: TP.DT placement uses "dat[0] - 1 + pkt.dpo" arithmetic,
+so with pkt.dpo == pkt.total a final DT frame with dat[0] == 0 is
+accepted as the last in-order packet.  The trigger is therefore fully
+deterministic - no race, no memory pressure:
 
-Reviewed-by: Ratheesh Kannoth <rkannoth@marvell.com>
+    ETP.CM_RTS (size 1786)  -> total = 256 packets
+    ETP.CM_DPO (packet 0)
+    ETP.DT x255             -> packets 0..254, rx = 255
+    ETP.CM_DPO (packet 256) -> dpo = 256, unvalidated
+    ETP.DT (dat[0] = 0)     -> packet 255 == rx, completes transfer
+
+    KASAN: null-ptr-deref in range [0x18-0x1f]
+    RIP: 0010:j1939_sk_recv+0xd8/0x4b0
+    Call Trace:
+     j1939_xtp_rx_eoma+0x43d/0x500
+     j1939_tp_recv+0x930/0xca0
+     j1939_can_recv+0x696/0x900
+
+Both patches verified on v7.3.0-rc3-00313-gdaf677c2c644 + KASAN under
+QEMU: the oops reproduces on vanilla, disappears with the series
+applied, and the reproducer then completes normally (session
+completes, message delivered once with correct dpo).  Self-contained
+C reproducer available on request.
+
+Patch 1 fixes the oops by checking the return value of
+j1939_session_skb_get() like the only other caller
+(j1939_simple_txnext()) already does, while still running
+j1939_session_deactivate_activate_next() so the session is not left
+stuck.
+
+Patch 2 is a small hardening on top: reject DPO packet numbers that
+point past the end of the transfer (pkt.dpo > pkt.total) with an
+abort, mirroring the error handling of j1939_xtp_rx_dat_one().  Note
+that pkt.dpo == pkt.total combined with dat[0] == 0 still encodes the
+final packet and is intentionally kept working - patch 1 is what
+actually covers that case.  Happy to drop or rework patch 2 if you
+prefer a different boundary.
+
+One design question for the maintainers: the DT placement offset
+(dat[0] - 1 + pkt.dpo) and the completion lookup offset (pkt.dpo * 7)
+use different semantics for the same field.  It works because window
+rebases advance pkt.dpo in lockstep with the packet counter, but it
+is the source of this bug class.  A future cleanup could store the
+byte offset once, or clamp at DPO-receive time.
+
+Xue Boyang (2):
+  can: j1939: fix null-ptr-deref in j1939_session_completed()
+  can: j1939: validate the DPO packet number
+
+ net/can/j1939/transport.c | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+-- 
+2.53.0
+
