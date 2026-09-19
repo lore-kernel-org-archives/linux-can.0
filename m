@@ -1,179 +1,122 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.161])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj2-f42.google.com (mail-pj2-f42.google.com [74.125.227.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2443A25B08A;
-	Sat, 19 Sep 2026 21:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.161
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789851808; cv=pass; b=bw5RBfJtaJuDJ8t+0xCYfkQtf7PkVejIhHLe1zj95/Q35n0lyb2UHl0+IxdUOoxFEjdbhZuM5CiQa37D+/pGmgb93EA42HP2dvT2ZFQjmGsu7jhK9FbMO6HD2MGG9/77b1F6IMTik1mTcLAUDOgCc+T1LRaHrFNXfxdJ8/+smn0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789851808; c=relaxed/simple;
-	bh=2XbohxdqP1bAEi3Q9/52oWG68jF9mWF21OaSg7eWCuw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZDKmpcS2Tw7CNBkguVT+PzxktFUzGCr+BfLr6RjRbyz6NezkCQ482k0NXxKcGgGCRS6v2DRNo23Klv/yJQ4hiEdCeJK47GToWebQjMjGXcJvlWtHotDegE0hYFfDxaO4NIdFE6RCguZxQhQyFn/DtwgvTz03kOkSOVDhCBHEpCQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=exDC+LCQ; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Dg73tVY9; arc=pass smtp.client-ip=81.169.146.161
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C1E37AA6D
+	for <linux-can@vger.kernel.org>; Sat, 19 Sep 2026 21:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.227.170
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1789853800; cv=none; b=vEL6FWQ0UNKnhCARn4Z+7LaBUlDDBSSMrBn8o7hnw2UXa5zrz1f2aXaqT9TFfOOz7ndmfOBy0RgFR+BOHSr0faLhn0o4DJnAFjOhoqAynWhUPUAk4w16IPEt/bC2o7pHsouTQRJLQNK0fI9OZYVyuC2DoUAYxOqWqu4T75QFhD0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1789853800; c=relaxed/simple;
+	bh=6bizVIdgIj1fNJLVf+eOfVtpiCc+m0cvPAZP03MoOZg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=DGVgcorhrep3EM6rPBB2Z5XCdIJcBOU3NEhrAtwETwqPSauUcMWvY9zmHK5vvPUzWJyLL47hC6HXuCjkcPaJ98TCQbrKv96EzOfI9cj+4NY/VtAg220Bzf4FSiz2XgT3u6StP7Wru2ZKXkDl8wyA0USEKv7sTYXWvD9pPKSKrwg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Fqm5eufv; arc=none smtp.client-ip=74.125.227.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="exDC+LCQ";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Dg73tVY9"
-ARC-Seal: i=1; a=rsa-sha256; t=1789851434; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ofxxnL4668GsL74wlQPVlKLLMOUTYQQizj2lphIC8K7v2tznuIEuUWOKvDuHjsOFWm
-    cOBfQss93gUC8qw3IPOsSLosKpiSILAvsjnw4/w46L0nvtj6MD4NDJWqRgPEB1Gu4sMM
-    R/X97aKrpsDABG0nvxF82PrpJpCRABBv6FZr7pQ1q6Z4TiTN8i20L0w5mMhtTyMdfEYc
-    9R7fAdv778GRuxA6lrFMIbI2gGr6/SG/qHGA8BzWT44Zaf0LXGDpWz/wTv/MPmQz31y2
-    LrvHLJ7Yj1A4eGLJ6T0cX1nGqCmz5jkDi2w0sBiPUtu/oig1CGqimEVnOxpy/2MOAGIO
-    pZfg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1789851434;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FwuYQ7fDZ5/4eLzsbsrBN+Zv7zzrcX4MEhnrHMzd8rM=;
-    b=rIjduFNIzLdf92/EyEitf9fs02jFA0u5cCUDFqZjAwv14cqaPgmh6SNkotkvFdHHWd
-    qSumriAnIojTp1oUCes5KoEIZYcZLc6Kf7fj9nRwp8Xo8bCjGMhrHEumrkkSnyZt6+rO
-    oe5F24r0DKOyS2XlSonAjPtllxtt2pS3tsGFIefmlsOLSq8tLTH4GEODVD+MOCeZ5AXr
-    9kFESpp66SLB/B7QFvjGcF1Zu8VFVnP5F0cqB1rcN1r739ykQAjK+eiJEmxFeO2qyd21
-    98BREJO+mHk7+PJp2BByP45EGUjn0I9uf93//oa0ErZV4TSbdCvXCsVqcwOnuQ7ptbSq
-    LnAw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1789851434;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FwuYQ7fDZ5/4eLzsbsrBN+Zv7zzrcX4MEhnrHMzd8rM=;
-    b=exDC+LCQPi3CDK+5DG6stVOlw321mTtcLjffTPoZ0hfuMY2bDOZLvKaJkRHOkZQx9v
-    dHnUN/xa6YFrjrRl8pGrWZudzYWFLF9FgNyzH/7yOr4CN0oAEdXimC5pc6wptd+g9Fxb
-    5LTC0Xt0pZ3YUeqQ3or7f4nUt+Q5QQyBGSOzfc7RDgSMeukWLE6+yhfNy2oBB2+IhwJE
-    uEbvjL1OGbEC0kvxnUMmCXWh9j4DoS8q4eJQEuoOZE+QlNft/E47teGn/z59IlxH4pTO
-    +/E7gePSXBG8S066+sEpVMX00IHSIaeYI+dJOHuqRUoS6EMsIwF55ZjxLyqqlAhAFzIE
-    2qdQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1789851434;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FwuYQ7fDZ5/4eLzsbsrBN+Zv7zzrcX4MEhnrHMzd8rM=;
-    b=Dg73tVY9/TBb0t5FdQTdeURg5ywFuFVaOisCwPD5jVP1GktM4Fp0OnWDn1+esUsfc/
-    +FZYWz3WqxXLcNvMUEBA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMr5phO3I3EfIHARZPajJb9uo9jcfLBzZK+IjFFTRtmjsBgASc"
-Received: from [IPV6:2a02:3037:32c:790c:c5a0:f181:4878:3ab8]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K171b728JKvDogM
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sat, 19 Sep 2026 22:57:13 +0200 (CEST)
-Message-ID: <39713d2a-79ce-4afb-8eba-5fe8e33af461@hartkopp.net>
-Date: Sat, 19 Sep 2026 22:57:04 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Fqm5eufv"
+Received: by mail-pj2-f42.google.com with SMTP id 98e67ed59e1d1-396ccb65437so1454013a91.3
+        for <linux-can@vger.kernel.org>; Sat, 19 Sep 2026 14:36:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1789853794; x=1790458594; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=YDLB5spO9G86KxxkAWQZpWYmhLuhLdNenkp/2zmUocU=;
+        b=Fqm5eufviFjPOlyEF+t4FkaNGnoLfTtaMaEuK1miUGPdubQElGchhbM1f/ux4FtXnc
+         UH7Uh8Ea8pue9b6AhYMuHQni3rpcKoS9bwD4stA6WlTYZveD7oMQaZnK24FpcJIvlPdw
+         rUtXnKLm5WgtxFGxCn4aXPPq20djI2dzjp9som1j8qD0NmzW8K7PUfnxlXpC19DtfWf4
+         2vDcloNjWUnmJ4oVKatKPFBrjT7y3x6VbHCE+rWN/TONPgh0B1a3SiNwpWFTVvojJ2cf
+         KdsdJwwUP6zG1RMQ9n7nBqpvjmPE15PJa4nuDuCpHkgmBt1sQ93rsw0R9N5Kqgtekj3O
+         4gLQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1789853794; x=1790458594;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=YDLB5spO9G86KxxkAWQZpWYmhLuhLdNenkp/2zmUocU=;
+        b=yfNvItaUghu7Sage9gXfwYweSeFZ2eCQlC/P6VZx8sqLdvXK2ivcQB0MV/2OnYycO4
+         qbptxkHBbIJyYv//uaJEjN+sPd+vkCONg9owwj9n0knc3Ag1g56DZvBw0UzMyeWkMpKc
+         3IdUTcmI9RzEX+aimXwc0t+aOpgyyHXF+bsrEwQaMixB5AdfIJniuPzeIwLBRUKPJWwi
+         xUICjyOO86brUgRqPn6onPplPyArvhLP51QDnVb3iLBUug/z9AAqYvPJf/jhuSf7Dj2/
+         ZDbbeGKAD9Y/9hVbCA5vE3NZ/7uYYxZNQ+h/6Pp2FQkchj7MVOplEhEg3I6dHbaKY0LS
+         zRSQ==
+X-Forwarded-Encrypted: i=1; AKwUvBzRU8XqT0JLB7hFUG5xIcNYF72H7N/ZAKZYDNNJj03O5kn1HY/J2HbJy3sb/Yw8L1CivBzR1ZVA3zk=@vger.kernel.org
+X-Gm-Message-State: AFuF++mC3w+lVmoBi7ARjive2DUUut9zvtpFdvlZpqJ0uM8fIJ532uSt
+	BxtjZkS8FcEU4e3GKeHbmfXCSwU/3/H5Jyv4D1kn6K2fEIMlOF+WZDR/
+X-Gm-Gg: AYBFou3+ebRSDsdraK/VauNU7QjwrU+YcD3BkTH5aVIQaZT6Xjs/amHflAhQVj+DSNr
+	pgH0Cl7VNJoyZM00tcrsDFtYEEdVgO8OkRfuv8JjUr/DKh0tEC3ApcL9iO3P7zSEyTlsLiHDVWt
+	9qhIz/cO934WpKJYK4xECFHcHYtbxg3dv/3ZaBaEIi15oLjOMW0lDYL78Bl24djbfFGhseRG32O
+	5BRnpggTboMc4qGpG6Gd3uWKB72DHwHAbbwfEBBGmrAujJGnJ09MJE+OQJInvgVN6rhYzv1BFlI
+	3ss9UqiLJ3LGeQlMUPYhJ/r0zPdJHUTB1ZlBbFDwgvftcpU8vQmbFTKUY7hXYDFMcRZSguGNvX3
+	1h2M1ChpiiiHuvCYs8v1g0Eqcb4YTvYWBKu6Qt0NcczosFzBpHkldBvmIKOf7dZx4bNJQ69TNby
+	tNiRnl5s7ni7qcvqLLoeOSi8AOr4Gezmpk59W9VS80wFVzjenYDCbrwBrBOw3p0IBsfg/RSRYdu
+	MrOMjeVC16EYmCwzGCXHT7V0UWGAilh1oUvPuO/qbkpQGP/UlnnJ5vYxzrYdjjETMIiyimK/PxO
+	lMlcm39yrQ==
+X-Received: by 2002:a17:90b:554b:b0:39e:6c6a:4b6d with SMTP id 98e67ed59e1d1-39e6c6a550dmr4317444a91.55.1789853793981;
+        Sat, 19 Sep 2026 14:36:33 -0700 (PDT)
+Received: from phui-2.c.googlers.com.com (78.123.83.34.bc.googleusercontent.com. [34.83.123.78])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-39ed362c71csm2147955a91.2.2026.09.19.14.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 19 Sep 2026 14:36:33 -0700 (PDT)
+From: Hui Peng <benquike@gmail.com>
+To: robin@protonic.nl,
+	o.rempel@pengutronix.de,
+	mkl@pengutronix.de,
+	mailhol@kernel.org,
+	davem@davemloft.net,
+	edumazet@google.com,
+	kuba@kernel.org,
+	pabeni@redhat.com
+Cc: kernel@pengutronix.de,
+	socketcan@hartkopp.net,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] can: j1939: return 0 instead of user value in j1939_sk_setsockopt_flag()
+Date: Sat, 19 Sep 2026 21:36:32 +0000
+Message-ID: <20260919213632.3313825-1-benquike@gmail.com>
+X-Mailer: git-send-email 2.55.0.1082.g2b9226bbc0-goog
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: isotp: check the frame type, not just the length
-To: Kaixuan Li <kaixuanli0131@gmail.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260919122852.1868961-1-kaixuanli0131@gmail.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20260919122852.1868961-1-kaixuanli0131@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hello Kaixuan,
+In `j1939_sk_setsockopt_flag()`, after copying the integer option value
+`tmp` from userspace and updating `jsk->state`, the function returns
+`tmp` instead of `0`.
 
-many thanks for your patch and your finding!
+If a caller passes a negative integer (e.g., `-1`) to enable
+`SO_J1939_BROADCAST` or `SO_J1939_PROMISC`, `if (tmp)` sets `jsk->state
+|= flag` and then returns the negative value as an error code from
+`setsockopt()`. If a caller passes a positive non-zero integer (e.g.,
+`1`), `setsockopt()` violates POSIX by returning `1` instead of `0`.
 
-On 19.09.26 14:28, Kaixuan Li wrote:
-> isotp_rcv() separates Classic CAN from CAN FD by skb->len alone:
-> 
-> 	if (skb->len != so->ll.mtu)
-> 		return;
-> 
-> 	cf = (struct canfd_frame *)skb->data;
-> 
-> A CAN XL frame with cxl->len 4 is CAN_MTU bytes, so it passes, and is then
-> read as a canfd_frame whose len comes out of canxl_frame.flags: at least
-> 0x80.
-> 
-> Of the paths that follow, only the flow control one uses that length
-> without bounding it first, so check_pad() walks to 255 over a 16-byte
-> frame and the caller reports EBADMSG on an unrelated socket.
-> 
-> bcm_rx_handler(), j1939_can_recv(), can_can_gw_rcv() and raw_rcv() check
-> the frame type here, and can_dropped_invalid_skb() switches on
-> skb->protocol on the transmit side. isotp_rcv() is the gap.
-> 
-> Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
-> Signed-off-by: Kaixuan Li <kaixuanli0131@gmail.com>
-> ---
-> Reproduced on v7.2.4 over vcan, one isotp socket per case bound rx 0x123
-> with RX_PADDING|CHK_PAD_DATA and rxpad_content 0xAA, a first frame in
-> flight, and one frame injected from a CAN_RAW socket.
-> 
-> 	case                            stock     patched
-> 	A CAN XL, cxl->len 4, flags ff  EBADMSG   none
-> 	B Classic FC, padded 0xAA       none      none
-> 	C Classic FC, padded 0x00       EBADMSG   EBADMSG
-> 	D as A, with CHK_PAD_LEN on     EBADMSG   none
-> 
-> C bounds the impact: a malformed Classic FC frame from any sender on the
-> bus gives the same EBADMSG, so nothing becomes reachable that was not
-> already. D differs only in which branch of check_pad() returns.
-> 
-> No memory safety issue. KASAN was on for all eight runs and reported
-> nothing.
+Return `0` on success in `j1939_sk_setsockopt_flag()`.
 
-In fact the skb->len length check is not enough since CAN XL has been 
-introduced. A good catch!
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Assisted-by: LLM
+Signed-off-by: Hui Peng <benquike@gmail.com>
 
-> ---
->   net/can/isotp.c | 11 +++++++++++
->   1 file changed, 11 insertions(+)
-> 
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
-> @@ -754,8 +754,19 @@ static void isotp_rcv(struct sk_buff *skb, void *data)
->   	 */
->   	if (skb->len != so->ll.mtu)
->   		return;
->   
-> +	/* skb->len does not separate the frame types on its own: a CAN XL
-> +	 * frame with cxl->len == 4 is CAN_MTU bytes, and canxl_frame.flags
-> +	 * aliases canfd_frame.len.
-> +	 */
+---
+ net/can/j1939/socket.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-No need to duplicate the documentation provided in the patch 
-description. Just describe what is done here.
-
-/* check for correct CAN CC/FD frame content */
-
-should be enough for the below code.
-
-> +	if (so->ll.mtu == CAN_MTU) {
-> +		if (!can_is_can_skb(skb))
-> +			return;
-> +	} else if (!can_is_canfd_skb(skb)) {
-> +		return;
-> +	}
-> +
->   	cf = (struct canfd_frame *)skb->data;
->   
->   	/* if enabled: check reception of my configured extended address */
->   	if (ae && cf->data[0] != so->opt.rx_ext_address)
-
-You can add my
-
-Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-
-in your v2 patch.
-
-Many thanks and best regards,
-Oliver
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 50a598ef5fd4..1d4af472de4a 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -688,7 +688,7 @@ static int j1939_sk_setsockopt_flag(struct j1939_sock *jsk, sockptr_t optval,
+ 	else
+ 		jsk->state &= ~flag;
+ 	release_sock(&jsk->sk);
+-	return tmp;
++	return 0;
+ }
+ 
+ static int j1939_sk_setsockopt(struct socket *sock, int level, int optname,
+-- 
+2.55.0.1082.g2b9226bbc0-goog
 
