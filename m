@@ -1,28 +1,28 @@
-Received: from OS0P286CU011.outbound.protection.outlook.com (mail-japanwestazon11010068.outbound.protection.outlook.com [52.101.228.68])
+Received: from OS0P286CU010.outbound.protection.outlook.com (mail-japanwestazon11011065.outbound.protection.outlook.com [40.107.74.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64BC624E016;
-	Mon, 21 Sep 2026 13:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.228.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4552F24E016;
+	Mon, 21 Sep 2026 13:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.74.65
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1789996822; cv=fail; b=ILKBg0sP5LBVj9L/cXBWdrulD1fPr3YEW1f4KBpsMwEflB15fSnooJsmLq+kxsb6iFaQI2xO1RtqEBTFbxLqdpWHKhghKaHprxqVc+9CfwQ8jTkf6QTnn2bQdXF8BcQtP7EdTp209lG/Qu3CvZQLudpRoMFxQyFGQziF4nN+QHU=
+	t=1789996829; cv=fail; b=dKmWUoB0IVvsCFe07pBYTkS/LlN4Cs3zll3E6fmk7Bj1rweyClmXm/+AlWfQfAQaAowC8cYOOKHZ13eMw2AdJVTsmJYOL1n7cS6KVt7hFacZMgOmRY4hjzYovAiC+LvSQQroWr8WGfvA1SmCZBuKz84BkwrwHxhbzKyeTsels4A=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1789996822; c=relaxed/simple;
-	bh=oEPm4Ul5oqZv484LtdZGpPWC9Da/Zz23TU3yFGXkkMg=;
+	s=arc-20240116; t=1789996829; c=relaxed/simple;
+	bh=0ngeTXenKhSVzxaW3vhDuUxmtdM6CBXugMwbT0wSJ10=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CH3cXHoP91yEEr7Yzuf68zrDE88DRfYAx8zGH7L4So7VPXvsM2izmSZkoLcjUBCaFZJtjwB65ExpQSliIlQ6UKTafG7AT3F3WohuUKh1PMsqSgk6CuuOHrHLgIzgeJ0vPLuUp3xsHWoQyzsp+2RsvGVnAExjXMGu7cMq7OkwvkI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=apF6+0bT; arc=fail smtp.client-ip=52.101.228.68
+	 MIME-Version:Content-Type; b=ntZP94VlmcSymKZUD7GiZ9s+RIZx7AwxR6OPngDSBlg7UnhSkjhJgtPfYNs/3yzh7F/WGh1E3Sd6wDitfof+4i/xl5j6HngGkez0DbTTt7FPtdcczhIGCy24/6gzYX3f6oJCoMAoo+0KXiPKUJJ6s6Flw7QOrGXAzNMrudfd6aA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=PGDSsFx9; arc=fail smtp.client-ip=40.107.74.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="apF6+0bT"
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="PGDSsFx9"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JdbF1MPNVrCL9cYopXuMCY4jck9olZcTvOuRcoMkn914WSRb5snhr1ICc5wFMqc7VreOqviCEEL9aWom75LUJx/3PS0MV+E2BBStH+cu6TvPt55VNCxB4pEGlaa5Yh32UmUUVE7A4ZA3pqW2UbmBZnhiyJIJp5bXHLsYPUV5LD9zPY9FcZUlzx4BF7MWb4Vka6QzFCfY9LrgaBjIpBu83Gbwdb25T/RQPMFikU1GwAfwUTN8dwbD/KQ4orb71YdMG/+H2PebJDHa3kxEqOJ1cjidYZ+J5wkiAF+kqTSZ5srISwLA0GtWsVn3M4lZ/+L8RVkSEX9OfVWGFzdvN2fNMg==
+ b=nETbRAMOy2bZZQL8dnhKoTarDLOQpYj8uSaax+4SwvuYr8x+YZHEQI0oVPxPF3TtmX+yR2/DODcwoAL9uVkj6DarmEcoBJHbsDHYhTI8rEGKNt/ABakqpOMM+wyjLMc41KilfhbG4DB0x2dqG0KecTRfdh3aLoCRH3e1MPNG9FaiD4M3Vfw1zxNIVeXhbqIz26JM/chAvzAeCsr955E3zoSJ3nh8hus2Pe65FFV+/S6ZB2YECjKg0TrVCLMclF0eRs98iWeTVEYD8EkMi3k5vpZGgO5l/EbWxrQjuFi6Ig8plD0NXc4GShn6xnqLeA5w98UBMCgKIs/LQx0sAkgdfw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=4+CFoz/asjleNhHHeont3oIVvLBu7eiY3q2GzVWCOKI=;
- b=tjIpNXfkEMXcScELOau2O+GNLoioMk6K6iG6GC5JhzPlPzHvSrj551NPGaZrXaT8nBioLFPjxXnFHwsQdwgMXaKSj3jXLGl8xBOXEXodygzYrYuVJw+wrkVSaxmz79kA82SANHOOz1wFVDBqOTDKZq/VuBlaKyjTWeF4EzEFdwh1UNd9UxEC29HS6ZAc1rN+yRiUXJU3QIc1cFM/1aBp9IEzzxei0It7GiMRETQVPt+6rGODq2o8BTledii0AobWScvy+M/eyjA1BUrT8TSFNUv/3Es/V8Nz0ewx33B4rnjPdJr7ZnInu0YLxoYzPvptpGbFOF9itUNoAT9yhVJJnA==
+ bh=r+r3xvqQR2KWY3VqLchmFRZRuE4i82guCjdDwwFriyg=;
+ b=pcatCJ1OolSXFscntypNDvXWwdcb/r8nVesqcP2CUTfEit4jqtKE8Ugxu9GZnlm93H2f2+bYyjHXmDXFCQHz3BtnlAR5PSfcU2vtt+HfBo0CdHFpP3jk/XnLMjKWV8P8GittlyisbhKhGEovLWdIm9VWj1vA0iiSrINXLnSUpxK5tf6+Mb8+qFbJuIlSMHPBcYatPSJTiQ2nX3YfaHuHLsbyxoIV1Qkpbfchz30OtCvggyripjf5USbHunRyCqB5VO5ro3NqRcLlXH0Tx1CVcJcraG/7IatnFGkcBmJkciFtEWli/YiaiuTCd8oLIDjwHxP71ImkUYlRJC0gM+rSWw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
  8.62.32.50) smtp.rcpttodomain=bp.renesas.com smtp.mailfrom=bp.renesas.com;
  dmarc=pass (p=none sp=none pct=100) action=none header.from=bp.renesas.com;
@@ -30,18 +30,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4+CFoz/asjleNhHHeont3oIVvLBu7eiY3q2GzVWCOKI=;
- b=apF6+0bTa528KoWIHCioPq1VF6L86cyr8/bFyBjlDYXAUHnHQwA/LhoyezmKFwsgeN54SEGXiQv9iFoMaSNW2+2vMAY3PxMHe2U2QQTUU5yXoCVTceT7Dp6LbWxvHEAaITwtRyyaAkCKZEP3aq5WDWBGa4RaVmK1V0IOBTJLh8s=
-Received: from OS7PR01CA0213.jpnprd01.prod.outlook.com (2603:1096:604:252::14)
- by OS7PR01MB13617.jpnprd01.prod.outlook.com (2603:1096:604:35d::5) with
+ bh=r+r3xvqQR2KWY3VqLchmFRZRuE4i82guCjdDwwFriyg=;
+ b=PGDSsFx9UzMAEkbLSQunQYE4Uk8tHiJUPxPfHAoKkqOc5b7GClHVnib0q4UjBwQvjAIbJ9SI2kGk84J+eAp7hj2cTHq/LhPsnSVkkuAyPmPYdfin8qMemlI9Efi8c9sT7IpPxT3RaRN3N10AK6UYUImEzsrwsTQqL4l6R8uedwE=
+Received: from OS7PR01CA0111.jpnprd01.prod.outlook.com (2603:1096:604:258::7)
+ by OS9PR01MB14003.jpnprd01.prod.outlook.com (2603:1096:604:361::13) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.428.16; Mon, 21 Sep
- 2026 13:20:17 +0000
-Received: from OS3PEPF0000003B.JPNP286.PROD.OUTLOOK.COM
- (2603:1096:604:252:cafe::a5) by OS7PR01CA0213.outlook.office365.com
- (2603:1096:604:252::14) with Microsoft SMTP Server (version=TLS1_3,
+ 2026 13:20:23 +0000
+Received: from OS1PEPF0000D20D.JPNP286.PROD.OUTLOOK.COM
+ (2603:1096:604:258:cafe::4) by OS7PR01CA0111.outlook.office365.com
+ (2603:1096:604:258::7) with Microsoft SMTP Server (version=TLS1_3,
  cipher=TLS_AES_256_GCM_SHA384) id 15.21.428.16 via Frontend Transport; Mon,
- 21 Sep 2026 13:20:17 +0000
+ 21 Sep 2026 13:20:23 +0000
 X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 8.62.32.50)
  smtp.mailfrom=bp.renesas.com; dkim=none (message not signed)
  header.d=none;dmarc=pass action=none header.from=bp.renesas.com;
@@ -49,31 +49,28 @@ Received-SPF: Pass (protection.outlook.com: domain of bp.renesas.com
  designates 8.62.32.50 as permitted sender) receiver=protection.outlook.com;
  client-ip=8.62.32.50; helo=ejcrelay005p.adwin.renesas.com; pr=E
 Received: from ejcrelay005p.adwin.renesas.com (8.62.32.50) by
- OS3PEPF0000003B.mail.protection.outlook.com (10.167.240.4) with Microsoft
+ OS1PEPF0000D20D.mail.protection.outlook.com (10.167.240.36) with Microsoft
  SMTP Server (version=TLS1_3, cipher=TLS_AES_256_GCM_SHA384) id 15.21.451.8
- via Frontend Transport; Mon, 21 Sep 2026 13:20:17 +0000
+ via Frontend Transport; Mon, 21 Sep 2026 13:20:23 +0000
 Received: from biju-VirtualBox.adwin.renesas.com (unknown [10.226.93.82])
-	by ejcrelay005p.adwin.renesas.com (Postfix) with ESMTP id C13D63000283;
-	Mon, 21 Sep 2026 22:20:09 +0900 (JST)
+	by ejcrelay005p.adwin.renesas.com (Postfix) with ESMTP id CDB6C3000283;
+	Mon, 21 Sep 2026 22:20:17 +0900 (JST)
 From: Biju Das <biju.das.jz@bp.renesas.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Magnus Damm <magnus.damm@gmail.com>
 Cc: Biju Das <biju.das.jz@bp.renesas.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
+	Tu Nguyen <tu.nguyen.xg@renesas.com>,
 	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
 	linux-renesas-soc@vger.kernel.org,
 	Chris Paterson <Chris.Paterson2@renesas.com>,
-	Biju Das <biju.das@bp.renesas.com>,
-	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/5] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
-Date: Mon, 21 Sep 2026 14:19:44 +0100
-Message-ID: <20260921131951.187981-3-biju.das.jz@bp.renesas.com>
+	Biju Das <biju.das@bp.renesas.com>
+Subject: [PATCH 3/5] can: rcar_canfd: Add support for Renesas RZ/G3L
+Date: Mon, 21 Sep 2026 14:19:45 +0100
+Message-ID: <20260921131951.187981-4-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260921131951.187981-1-biju.das.jz@bp.renesas.com>
 References: <20260921131951.187981-1-biju.das.jz@bp.renesas.com>
@@ -86,142 +83,56 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: OS3PEPF0000003B:EE_|OS7PR01MB13617:EE_
+X-MS-TrafficTypeDiagnostic: OS1PEPF0000D20D:EE_|OS9PR01MB14003:EE_
 Content-Type: text/plain
-X-MS-Office365-Filtering-Correlation-Id: 85918da4-93bc-4757-2b4d-08df17e31410
+X-MS-Office365-Filtering-Correlation-Id: 54b6ad0b-38ba-4d8c-4227-08df17e31812
 X-LD-Processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|376014|36860700016|23010399003|82310400026|1800799024|13003099007|10067099003|56012099006|11063799006|18002099003|22082099003;
+	BCL:0;ARA:13230040|23010399003|36860700016|376014|82310400026|1800799024|10067099003|6133799003|11063799006|22082099003|18002099003|56012099006;
 X-Microsoft-Antispam-Message-Info:
-	UX4DrHRTjRTZnwrSoLwhFdBwA2lq/BTsWhBv/AnfO5NF8nsXROJ92/uP7qu3aJS8jMrhumf8K8WJlHxZTXU/+9qXfQvyDRihNe43uqWKOo33GopcoQ0tnuZKv6lwUcFwiJJJ33c3ixgAoc+eDz1Vev9RNPdBkj1W7R41HWPoNvncajmXZeEq/zC6iao1sKfX6993XIvSTscpBlRd8DiGwlAa/3G+NkBpud0iWynlYtlGl4Yz/gzmXEKwckyUYIa8wDkhurQ8RkJk5DnMNlR4ywRvqD7U3PVJ2MG1p2K/wHKI6KFLKb6wKuzT1gfUnBXVlDFMaEtk+OiEzn9ZtI9/WKpvpgNqLIre7heocOB26R8/8a/7UBaQX7IpgwMpXswAfshLUdgtOvD90bWFQh+7SoEwBOoK+iv1L1UmRr0dw4te4nM4Ro4dzllJqeJSqHJfk/dDWE0+jQ9W4LCppquXQb3Iu4lAafzjfUAMP+Zis2vzqze3Jcfb5cst3OBUEv8AupGTrmscGnnBi3XXvZsDVd24yhQSLrmZhwMH2OYX0XOS8TUviuHDLVBmBM0RGeDFp4kULRNQDUeiWQHb/p8WenFjSbl0nnrO6YKD7pvif9vasrjvepVNVFvwDVOXWGw1op3dhw6hZyNIeyBlxIbpxgwefgQj1FD6fQVirP9iRZg=
+	0gOYwGtJDAiP/x5vdKWXoVExCQRKOav9YWphIA39Vu2qK+D/iUlPhbuC88K/hQyxb7hJ8y3ucwEcwNay+gNKyr2W+h9EKPvZI/Gq33brDIDQHI4BE26OUWfmwDeIYjDsFp95zgrgOaJBCpHU4eb1Uns1st4xADfjsNcui/r8GOZysIOkmxyyGaZShvWUyEvk7T4SKgHOrUvZRWIfZ/3PuDzaJNXwEoIuJu3YWGulwWC9rJoBtaXNBQllpZYV/Xv2bqkyK7UfED/HQAH0atEJGkfdy8VgRoGH4TM9enrqV6QwxxtBKIOPmpAqeyYZPwgN5th94gK2EAC7bprTZU2138RQEfCiR1JDX/UKnAJKUg9VOnB5LljPfK52GXs3Oi89Ts986vudJoMKRKV1jvZeJzOWcooLJHHbTaeW0iAQrLTCtYSzqFDl1PGR+11sm6Xes4W3GiTC0g0tZFWpAQAiR7KfpA1qteWqjpLHnjOY6gSCkSgW4OHTqmO1nUAEW7IVVWboaVghgtAmVXsx10C/lVn8jDmepUkCGPTFM589mnv18Oxt9EhV2lEh3idN5y7+K1OddrT6mb17umGHoqsvwnN5Qn9MAANxJLsORIRFUV4dJK7txHf8+1uQT98vN6HZMp+MPpTrBzPdIPfhebP0j9D25sXhrmoJLnaC3Y6SQ94Dtyb+5Akwf+BABVOAfOVsydc5yGKr/FXMSK5b/L2qCw==
 X-Forefront-Antispam-Report:
-	CIP:8.62.32.50;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ejcrelay005p.adwin.renesas.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(7416014)(376014)(36860700016)(23010399003)(82310400026)(1800799024)(13003099007)(10067099003)(56012099006)(11063799006)(18002099003)(22082099003);DIR:OUT;SFP:1101;
+	CIP:8.62.32.50;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:ejcrelay005p.adwin.renesas.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(23010399003)(36860700016)(376014)(82310400026)(1800799024)(10067099003)(6133799003)(11063799006)(22082099003)(18002099003)(56012099006);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	fMrQuf9kHfyiv6bltZjS97oaKW2ArfJwZfB5BiLjWE3jJZ4ANY82kLV1ECWsr6n648nLSqLRELx5WUh2v9M3GLGeNoDPsgY7gElMOzw09/OopH0g6Ov4fjmU71GzvFhLUEza9Cyk6E01faYG8vo0I/JiZ5JwRduvETIf+1/elLCPhsTpyNnMpnkmsjqx9OrvWktHBRDOGdXtdqqjS0o/ukx5334aWyyK61we+5yXJWHTusTj/EuKV1NzpcvoIW1ZaAKr6LkwQ/LIoCZov9ymr2s7PaceBMc3K97FB360U1eW1aH6xFPg03CSrDgPoQF6jlbzRKCimORvLUX4QKYbLI/B60dAfvjV1R3ByKLsrxSvFVH7NPh4GPYyW/2e35DllhWFeWRx5r5ksHNONGzQEOMHi/uiYkN9s+o30qrwE72DhApMwrPfniImEFBjWPN7
+	pSux285Zg0Ak6apdpcz5Dun49aldX16Wm0mhSWwPn2p43xLK2yZ8jdWNHCexr5HoBNFxQH19e++ZVk8/YkmiVdAu0Sxq9Yho4vMWOHTQyzTWAfZuK5+eQ3/9KRYB+6QZJw1vAOxcH1lXU3+6nygn/v/0H+Vd/BCHTPEiptBvycmzuL2hbTudpyaXcghAszuKCLFH6O5RqIkNfGW1/IwDTJHMgMWyyjCYEroYbKc6PX+RpEfdIpP8i468MXgcbJY+xS0vMB1wM1ljePQTRUdV1/+JNjIH4/daTIjnhiSkXoJgJV9XRtUJ4xszc2LBLpldz6c5oXYMBXt+dyDZHs3XmdGTb3SLdJgmpXUJbOIRfBbMOVrhxdkwC9o75g20Cb71gdHXQ9B0+elyImSPVoU5kfMuImQQuxIWKT4bRXWCo+H6Obx2atRuH252hqWpjvts
 X-OriginatorOrg: bp.renesas.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2026 13:20:17.0902
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Sep 2026 13:20:23.8106
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 85918da4-93bc-4757-2b4d-08df17e31410
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54b6ad0b-38ba-4d8c-4227-08df17e31812
 X-MS-Exchange-CrossTenant-Id: 53d82571-da19-47e4-9cb4-625a166a4a2a
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=53d82571-da19-47e4-9cb4-625a166a4a2a;Ip=[8.62.32.50];Helo=[ejcrelay005p.adwin.renesas.com]
-X-MS-Exchange-CrossTenant-AuthSource: OS3PEPF0000003B.JPNP286.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthSource: OS1PEPF0000D20D.JPNP286.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Anonymous
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS7PR01MB13617
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS9PR01MB14003
 
-Document the RZ/G3L (R9A08G046) SoC support, which reuses the
-RZ/G3S (R9A08G045) CANFD bindings as a fallback compatible.
-
-RZ/G3L has 11 interrupts and 3 CANFD channels compared to 8 interrupts
-and 2 CANFD channels on RZ/G3S.
+Add support for Renesas RZ/G3L CANFD IP by reusing the RZ/G3S
+compatible. Both SoCs share the same IP block, but RZ/G3L provides
+3 channels and 11 interrupts, whereas RZ/G3S provides 2 channels
+and 8 interrupts. Update max_channels to 3 to cover the RZ/G3L
+configuration.
 
 Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 ---
-This patch depend on
-https://lore.kernel.org/all/20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev/
----
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 64 ++++++++++++++++++-
- 1 file changed, 61 insertions(+), 3 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index bbaaef8f4282..1062a52ba77f 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -47,6 +47,10 @@ properties:
-               - renesas,r9a07g054-canfd    # RZ/V2L
-           - const: renesas,rzg2l-canfd     # RZ/G2L family
- 
-+      - items:
-+          - const: renesas,r9a08g046-canfd  # RZ/G3L
-+          - const: renesas,r9a08g045-canfd
-+
-       - items:
-           - enum:
-               - renesas,r9a09g056-canfd     # RZ/V2N
-@@ -196,9 +200,18 @@ allOf:
-       properties:
-         compatible:
-           contains:
--            enum:
--              - renesas,r9a08g045-canfd
--              - renesas,rzg2l-canfd
-+            const: renesas,r9a08g045-canfd
-+    then:
-+      properties:
-+        resets:
-+          minItems: 2
-+          maxItems: 2
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,rzg2l-canfd
-     then:
-       properties:
-         interrupts:
-@@ -270,6 +283,11 @@ allOf:
-               - renesas,r9a09g077-canfd
-               - renesas,rcar-gen3-canfd
-               - renesas,rzg2l-canfd
-+      not:
-+        properties:
-+          compatible:
-+            contains:
-+              const: renesas,r9a08g046-canfd
-     then:
-       patternProperties:
-         "^channel[2-7]$": false
-@@ -292,6 +310,46 @@ allOf:
-       patternProperties:
-         "^channel[6-7]$": false
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,r9a08g045-canfd
-+      not:
-+        properties:
-+          compatible:
-+            contains:
-+              const: renesas,r9a08g046-canfd
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 8
-+          maxItems: 8
-+
-+        interrupt-names:
-+          minItems: 8
-+          maxItems: 8
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,r9a08g046-canfd
-+    then:
-+      properties:
-+        interrupts:
-+          minItems: 11
-+          maxItems: 11
-+
-+        interrupt-names:
-+          minItems: 11
-+          maxItems: 11
-+
-+      required:
-+        - channel2
-+      patternProperties:
-+        "^channel[3-7]$": false
-+
-   - if:
-       properties:
-         compatible:
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 74c3c3f20991..f35c235b49a8 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -670,7 +670,7 @@ static const struct rcar_canfd_hw_info r9a08g045_hw_info = {
+ 	.rnc_field_width = 16,
+ 	.max_aflpn = 15,
+ 	.max_cftml = 31,
+-	.max_channels = 2,
++	.max_channels = 3,
+ 	.postdiv = 2,
+ 	.shared_global_irqs = 0,
+ 	.multi_channel_irqs = 1,
 -- 
 2.43.0
 
