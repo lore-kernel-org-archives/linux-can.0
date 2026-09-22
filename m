@@ -1,185 +1,197 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11B47545D96;
-	Tue, 22 Sep 2026 12:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08FF451588A
+	for <linux-can@vger.kernel.org>; Tue, 22 Sep 2026 15:14:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.226.204
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790081207; cv=none; b=FXidIhvpFiDKV8AmLDQ7eauxMVHNyOdbdtSbecfEzl5H3U8i6MsW7bY5yYrGTFraE/89P0hxiOnaRN16kUy/hC7i2slmrEV86deyjYNhE+w4sttdEJojtR0yVJerSWYG86oTS6pTcXxzkPXllhrZ8zLEwfhNNubP5rtqhz3oijg=
+	t=1790090064; cv=none; b=bCVQwuAGzS7boeBqatIwpoQddncptUQSMvbXvPP863wdj6fW1GhVJ8AUiv79XGkM7HUGFO/wr9ilJQursYkIFbIrdLr5pQDB8DRL6qi+/o6+UwWVaFlh51RQbrbxzXwgnPBPoq16GlHSPfI+uIQoxOP06zTEzonG7IzlEqI3El8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790081207; c=relaxed/simple;
-	bh=oekyyXLIJMPA27K+I2NeBppt63N2bzDmCIIrdQPSMLw=;
-	h=Date:Content-Type:MIME-Version:From:Cc:To:In-Reply-To:References:
-	 Message-Id:Subject; b=Ahv6KfrrsEYGHkPlLnhEXBaHL3WZHM2sQvTcIt2TesnVFMY+eH1Y7Qg087BGTpJXm9nrU0BGbNCQL/TrT2Cprm95aTV9/lNpQk2mZoH4HLTeHrJpRyh4IiPkBV7WpgtoBP+6h0U0TosVAJXMXzo9Kgt/MVcMygpBE27ZFGWwn8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nAGhWhlW; arc=none smtp.client-ip=100.103.45.18
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nAGhWhlW"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2250B1F00893;
-	Tue, 22 Sep 2026 12:46:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790081205;
-	bh=YQI4S6xOFj9aXi6AUyR67yVVE0SDqC7IC5Hc1LzBfws=;
-	h=Date:From:Cc:To:In-Reply-To:References:Subject;
-	b=nAGhWhlWj6Yfak/TednGBs8oSvV7A0dVDkm8cozkzoi2aymCMHDflhz+T9KNMw+vx
-	 YXbbtRX7X2QiwqrBdPqYRsgFUvTod+V7lR5rOvSluJVozEuKkH1C28Q9W4Vk4j2v7I
-	 xFpjASvky2G924z2LOKqpZAXUMROS10jVe2U7/Uqv/i3PBAZgxfmsXGHxVWZd7Sc2d
-	 PnN9yamXm//J0ZnzTpxypPO8aBH09dWaxjWOFp9EMj7xNE1orQnmxclKO2S0XK8aW9
-	 U4lpK+W/wPS/OCnUHFnR3QXXeiVKpJ+DpMxRHk+mdRuSoLFK+yRe3ejpHKXYhAfd5r
-	 l02lNajC0SMIA==
-Date: Tue, 22 Sep 2026 07:46:44 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1790090064; c=relaxed/simple;
+	bh=mKPAm9lSrRcV08N0bMDOn/x6I0AzKpQyWCO4ViNMFDw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nSdWlo+0x0Ms30VIIQQUbcCLUgA/TL52WHHdExisBF18zvvtFfTUP0FD4BA1q9j7HPXTKeRBAPxaQFZsgIiOb1jIPuHhO3qIwMTREUwhrj86sb7qiDafcLNTz23ucI+2leG2UhgGIJCyhHMpYYQAcI4w3KdNBARbxWV5emXWHfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.226.204
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-97e7c72bfe7so1230746241.0
+        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2026 08:14:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790090062; x=1790694862;
+        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
+         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=xGvRLKavNp07IDObK0x4MyNXPYCHC6J8E0NCLAikfuA=;
+        b=ELA3AIkiQRdqSQWOupSY2sWQJubf/6XE11znf2YKrkii13I46J14+iFyUsZnzYqz/+
+         gt0FbtPtt4LAdyoo7YVaf/FBVcMqt5QrvydPCuaShE+eLzd4Es0Ts+FM9T3HVnTMgR+1
+         JyuYrMN0SRQy0iW4aEL6Yzs1dPBMld3wKBMqaN7U+gCzKUJLT468bPvF78jxlS9uc7wf
+         zGM2OPUeq3fjDua1lJkjY/6VeGoilCSsg91fPghhHCZ0PNOTKqjYYoQAyOLipTMpPhvm
+         44KN+0Nb3M6MFl8BJ+t2L3/0c7vw3DlNozEUxablk2pLuSYiOGo2z/ZssWYrJ0Yr5YTK
+         YTTw==
+X-Forwarded-Encrypted: i=1; AKwUvBwadGv8nR6WHIplrI0nYyaVOAv9EJCs/Lv6cxqf4qTLABEV2qZ7Lv53A+7rPBG2FUtJ3VmQKTDQfms=@vger.kernel.org
+X-Gm-Message-State: AFuF++mSibPyYIvgqx1ygcSDqjK7plhAC9DlKducmddPD3GLQ3yhmV7E
+	nGoOyHuZlXn6wc7umOrGPi5Pz6vI1MY1TjkQ22YuCmIFBlkw87ISaB4uYgvEHnqP
+X-Gm-Gg: AYBFou1CdwALMFnrGdIVJp48rHHZGDNskPuFPugVcEW2x13h4eUmbiI+zbvJp/gAzy0
+	nQiXfcS9oXL6zQrGCJEVV7zi8nk5eTM2YzgmvvateLNOLIQ3aBze0XWO1u9mH2TyOqAa/hH/34s
+	gcbjtdAc9EIwH415Vd0/KxKW4uuWBI+JFXrriDO/pAL23ZNkCRpiGbDtuRFouSq8DNucH1whveN
+	H+X7AQGVsi8Of7+/0yK0GPCSYKdl74SJhSGWzdFUurUU/oLwm4w7AIn3mBw9MVtdhEt3GcinLtd
+	HV8lsXuNy1C4O/ag1yPc69k6FiXWpnZaJgqzLvFPrrXEp/o4qM+E/lokYlOzJ6tnxsNj877ypaO
+	G9ghQo1999/d4xLr0VcDqDqUvAdxEEjqEHNI0nyxi8MiWtm14ideSkLXVVpGr39LxcxShIZAegq
+	fMYmSDCD5ciPaS9Va1SPOWThFPKnuAigw8cQhKoaodp3H9/T5ekjNnQ03NIHrgvSDyndjkovK3x
+	xRChC3uG9jkhhtf03EFshlHkec++2cmpdLG
+X-Received: by 2002:a05:6122:8d4:b0:5c9:ef0d:9fa7 with SMTP id 71dfb90a1353d-5c9ef0db434mr1058564e0c.15.1790090061705;
+        Tue, 22 Sep 2026 08:14:21 -0700 (PDT)
+Received: from mail-vs2-f12.google.com (mail-vs2-f12.google.com. [74.125.227.12])
+        by smtp.gmail.com with ESMTPSA id a1e0cc1a2514c-9851691693asm47555241.2.2026.09.22.08.14.18
+        for <linux-can@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 22 Sep 2026 08:14:19 -0700 (PDT)
+Received: by mail-vs2-f12.google.com with SMTP id 71dfb90a1353d-5c67e512ee5so1583080e0c.2
+        for <linux-can@vger.kernel.org>; Tue, 22 Sep 2026 08:14:18 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AKwUvBzEdw2VeX91C+vGN25Sqt0XpT9MBrWk6qE423cU6fuWgKHsXWy6o6EolaUUGlzE1vYiFxz/6eooQmQ=@vger.kernel.org
+X-Received: by 2002:a05:6122:6b0d:b0:5c9:c60a:e9b7 with SMTP id
+ 71dfb90a1353d-5c9c60af4fbmr7493050e0c.23.1790090058750; Tue, 22 Sep 2026
+ 08:14:18 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "Rob Herring (Arm)" <robh@kernel.org>
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, linux-kernel@vger.kernel.org, 
- Sashiko <sashiko-bot@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, 
- devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>
-To: Quchaosheng <quchaosheng000406@163.com>
-In-Reply-To: <20260922102258.138753-3-quchaosheng000406@163.com>
-References: <20260922102258.138753-1-quchaosheng000406@163.com>
- <20260922102258.138753-3-quchaosheng000406@163.com>
-Message-Id: <179008111842.3145564.13410709686921168865.robh@kernel.org>
-Subject: Re: [PATCH v8 2/3] dt-bindings: net: can: holt,hi311x: Convert to
- DT schema
+References: <20260921131951.187981-1-biju.das.jz@bp.renesas.com> <20260921131951.187981-3-biju.das.jz@bp.renesas.com>
+In-Reply-To: <20260921131951.187981-3-biju.das.jz@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 22 Sep 2026 17:14:07 +0200
+X-Gmail-Original-Message-ID: <CAMuHMdUx5-P97CFEH3Dif1g4K=NPfkDkE=3vrzjZB-TsyxqO8Q@mail.gmail.com>
+X-Gm-Features: AclHuK-rCbm16AlWI6NRQzJvntZXC9gv_oZQlkAlsfHFavMScH5L1qYsY-ROQQE
+Message-ID: <CAMuHMdUx5-P97CFEH3Dif1g4K=NPfkDkE=3vrzjZB-TsyxqO8Q@mail.gmail.com>
+Subject: Re: [PATCH 2/5] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
+To: Biju Das <biju.das.jz@bp.renesas.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
+	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, linux-can@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>, 
+	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 
+Hi Biju,
 
-On Tue, 22 Sep 2026 18:22:57 +0800, Quchaosheng wrote:
-> Convert the Holt HI-311X binding from free-form text to DT schema.
-> 
-> Reference can-controller.yaml and spi/spi-peripheral-props.yaml. The
-> HI-3110 sits on an SPI bus, so its node carries the standard SPI
-> properties, spi-max-frequency among them. With unevaluatedProperties:
-> false and no reference to spi-peripheral-props.yaml, dtbs_check rejects
-> those properties:
-> 
->   can@1 (holt,hi3110): Unevaluated properties are not allowed
->     ('spi-max-frequency' was unexpected)
-> 
-> Keep the properties and the example as the original text describes them,
-> including clocks as a required property.
-> 
-> Assisted-by: LLM
-> Reported-by: Sashiko <sashiko-bot@kernel.org>
-> Link: https://sashiko.dev/#/patchset/20260922084542.104788-1-quchaosheng000406@163.com?part=2
-> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-> Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
-> ---
-> 
-> v8:
->  - Put back the $ref to spi/spi-peripheral-props.yaml. v7 dropped it as
->    redundant, but the HI-3110 is an SPI peripheral and its node carries
->    spi-max-frequency. With unevaluatedProperties: false and no reference,
->    dt_binding_check reports:
-> 
->      can@1 (holt,hi3110): Unevaluated properties are not allowed
->        ('spi-max-frequency' was unexpected)
-> 
->    A node carrying spi-max-frequency fails without the reference and passes
->    with it, so the reference is required. Reported by sashiko.
-> 
->    The schema is identical to the v6 that Rob reviewed, so his Reviewed-by
->    is kept.
->  .../bindings/net/can/holt,hi311x.yaml         | 67 +++++++++++++++++++
->  .../bindings/net/can/holt_hi311x.txt          | 23 -------
->  2 files changed, 67 insertions(+), 23 deletions(-)
->  create mode 100644 Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
->  delete mode 100644 Documentation/devicetree/bindings/net/can/holt_hi311x.txt
-> 
+On Mon, 21 Sept 2026 at 15:20, Biju Das <biju.das.jz@bp.renesas.com> wrote:
+> Document the RZ/G3L (R9A08G046) SoC support, which reuses the
+> RZ/G3S (R9A08G045) CANFD bindings as a fallback compatible.
+>
+> RZ/G3L has 11 interrupts and 3 CANFD channels compared to 8 interrupts
+> and 2 CANFD channels on RZ/G3S.
+>
+> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-My bot found errors running 'make dt_binding_check' on your patch:
+Thanks for your patch!
 
-yamllint warnings/errors:
+> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> @@ -47,6 +47,10 @@ properties:
+>                - renesas,r9a07g054-canfd    # RZ/V2L
+>            - const: renesas,rzg2l-canfd     # RZ/G2L family
+>
+> +      - items:
+> +          - const: renesas,r9a08g046-canfd  # RZ/G3L
+> +          - const: renesas,r9a08g045-canfd
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/memory-controllers/nvidia,tegra210-emc.example.dtb: emc-table@83400000 (nvidia,tegra210-emc-table): {'compatible': ['nvidia,tegra210-emc-table'], 'reg': [[2202009600, 65536]], 'phandle': 2, '$nodename': ['emc-table@83400000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/nvidia,tegra210-emc-table.yaml
-Documentation/devicetree/bindings/soc/fsl/fsl,qman-fqd.example.dtb: qman-fqd (fsl,qman-fqd): {'compatible': ['fsl,qman-fqd'], 'size': 4194304, 'alignment': 4194304, 'no-map': True, '$nodename': ['qman-fqd']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['size']}
-	from schema $id: http://devicetree.org/schemas/soc/fsl/fsl,qman-fqd.yaml
-Documentation/devicetree/bindings/soc/fsl/fsl,qman-fqd.example.dtb: qman-fqd (fsl,qman-fqd): Unevaluated properties are not allowed ('alignment', 'no-map', 'size' were unexpected)
-	from schema $id: http://devicetree.org/schemas/soc/fsl/fsl,qman-fqd.yaml
-Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dtb: dsp-memory@98000000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[2550136832, 8388608]], 'reusable': True, 'phandle': 1, '$nodename': ['dsp-memory@98000000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dtb: dsp-memory@98000000 (shared-dma-pool): Unevaluated properties are not allowed ('reg', 'reusable' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dtb: ipu-memory@95800000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[0, 2508193792, 0, 58720256]], 'reusable': True, 'phandle': 2, '$nodename': ['ipu-memory@95800000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dtb: ipu-memory@95800000 (shared-dma-pool): Unevaluated properties are not allowed ('reg', 'reusable' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dtb: dsp1-memory@99000000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[0, 2566914048, 0, 67108864]], 'reusable': True, 'phandle': 3, '$nodename': ['dsp1-memory@99000000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,omap-remoteproc.example.dtb: dsp1-memory@99000000 (shared-dma-pool): Unevaluated properties are not allowed ('reg', 'reusable' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.example.dtb: m4f-dma-memory@9cb00000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[0, 2628780032, 0, 1048576]], 'no-map': True, 'phandle': 2, '$nodename': ['m4f-dma-memory@9cb00000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.example.dtb: m4f-dma-memory@9cb00000 (shared-dma-pool): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.example.dtb: m4f-memory@9cc00000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[0, 2629828608, 0, 14680064]], 'no-map': True, 'phandle': 3, '$nodename': ['m4f-memory@9cc00000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/remoteproc/ti,k3-m4f-rproc.example.dtb: m4f-memory@9cc00000 (shared-dma-pool): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/dsp/fsl,dsp.example.dtb: vdev0buffer@94300000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[2486173696, 1048576]], 'no-map': True, 'phandle': 2, '$nodename': ['vdev0buffer@94300000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/dsp/fsl,dsp.example.dtb: vdev0buffer@94300000 (shared-dma-pool): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dtb: reserved-mem@52800000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[1384120320, 1048576]], 'no-map': True, 'phandle': 2, '$nodename': ['reserved-mem@52800000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/sound/google,cros-ec-codec.example.dtb: reserved-mem@52800000 (shared-dma-pool): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.example.dtb: shmem@f1be0000 (nvidia,tegra264-bpmp-shmem): {'compatible': ['nvidia,tegra264-bpmp-shmem'], 'reg': [[0, 4055760896, 0, 8192]], 'no-map': True, '$nodename': ['shmem@f1be0000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml
-Documentation/devicetree/bindings/reserved-memory/nvidia,tegra264-bpmp-shmem.example.dtb: shmem@f1be0000 (nvidia,tegra264-bpmp-shmem): Unevaluated properties are not allowed ('no-map' was unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/nvidia,tegra264-bpmp-shmem.yaml
-Documentation/devicetree/bindings/reserved-memory/phram.example.dtb: flash@12340000 (phram): {'compatible': ['phram'], 'label': ['rootfs'], 'reg': [[305397760, 8388608]], '$nodename': ['flash@12340000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/phram.yaml
-Documentation/devicetree/bindings/reserved-memory/ramoops.example.dtb: ramoops@bfdf0000 (ramoops): {'compatible': ['ramoops'], 'reg': [[3219062784, 65536]], 'console-size': 32768, 'record-size': 1024, 'ecc-size': 16, '$nodename': ['ramoops@bfdf0000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/ramoops.yaml
-Documentation/devicetree/bindings/reserved-memory/qcom,cmd-db.example.dtb: reserved-memory@85fe0000 (qcom,cmd-db): {'reg': [[2248015872, 131072]], 'compatible': ['qcom,cmd-db'], 'no-map': True, '$nodename': ['reserved-memory@85fe0000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/qcom,cmd-db.yaml
-Documentation/devicetree/bindings/reserved-memory/qcom,cmd-db.example.dtb: reserved-memory@85fe0000 (qcom,cmd-db): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/qcom,cmd-db.yaml
-Documentation/devicetree/bindings/reserved-memory/intel,wakeup-mailbox.example.dtb: wakeup-mailbox@ffff0000 (intel,wakeup-mailbox): {'compatible': ['intel,wakeup-mailbox'], 'reg': [[0, 4294901760, 4096]], '$nodename': ['wakeup-mailbox@ffff0000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/intel,wakeup-mailbox.yaml
-Documentation/devicetree/bindings/reserved-memory/intel,wakeup-mailbox.example.dtb: wakeup-mailbox@ffff0000 (intel,wakeup-mailbox): Unevaluated properties are not allowed ('reg' was unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/intel,wakeup-mailbox.yaml
-Documentation/devicetree/bindings/reserved-memory/google,open-dice.example.dtb: dice@12340000 (google,open-dice): {'compatible': ['google,open-dice'], 'reg': [[0, 305397760, 8192]], 'no-map': True, '$nodename': ['dice@12340000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/google,open-dice.yaml
-Documentation/devicetree/bindings/reserved-memory/google,open-dice.example.dtb: dice@12340000 (google,open-dice): Unevaluated properties are not allowed ('no-map' was unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/google,open-dice.yaml
-Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.example.dtb: rmtfs@86700000 (qcom,rmtfs-mem): {'compatible': ['qcom,rmtfs-mem'], 'reg': [[2255486976, 917504]], 'no-map': True, 'qcom,client-id': 1, '$nodename': ['rmtfs@86700000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/qcom,rmtfs-mem.yaml
-Documentation/devicetree/bindings/reserved-memory/qcom,rmtfs-mem.example.dtb: rmtfs@86700000 (qcom,rmtfs-mem): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/qcom,rmtfs-mem.yaml
-Documentation/devicetree/bindings/display/msm/gpu.example.dtb: gpu@8f200000 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[0, 2427453440, 0, 10485760]], 'no-map': True, 'phandle': 5, '$nodename': ['gpu@8f200000']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/display/msm/gpu.example.dtb: gpu@8f200000 (shared-dma-pool): Unevaluated properties are not allowed ('no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/display/imx/fsl,imx-lcdc.example.dtb: display0: fsl,pcr: b'\xf0\xc8\x80\x80' is not of type 'object', 'integer', 'array', 'boolean', 'null'
-	from schema $id: http://devicetree.org/schemas/dt-core.yaml
-Documentation/devicetree/bindings/firmware/intel,stratix10-svc.example.dtb: svcbuffer@0 (shared-dma-pool): {'compatible': ['shared-dma-pool'], 'reg': [[0, 0, 0, 16777216]], 'alignment': 4096, 'no-map': True, 'phandle': 1, '$nodename': ['svcbuffer@0']} is valid under each of {'if': {'required': ['iommu-addresses']}, 'then': {'required': ['reg']}}, {'required': ['reg']}
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
-Documentation/devicetree/bindings/firmware/intel,stratix10-svc.example.dtb: svcbuffer@0 (shared-dma-pool): Unevaluated properties are not allowed ('alignment', 'no-map', 'reg' were unexpected)
-	from schema $id: http://devicetree.org/schemas/reserved-memory/shared-dma-pool.yaml
+I am not sure it is a good idea to use RZ/G3S as a fallback
 
-doc reference errors (make refcheckdocs):
+RZ/G3S:
+  - Selects receive message according to 128 receive rules,
+  - Sets the number of receive rules (0 to 128) for each channel.
+RZ/G3L;
+  - Selects receive message according to 384 receive rules,
+  - Sets the number of receive rules (0 to 256) for each channel.
+These differences are not explained just by the different number
+of channels.  However, it's not clear to me what is the real impact.
 
-See https://patchwork.kernel.org/project/devicetree/patch/20260922102258.138753-3-quchaosheng000406@163.com
+> @@ -270,6 +283,11 @@ allOf:
+>                - renesas,r9a09g077-canfd
+>                - renesas,rcar-gen3-canfd
+>                - renesas,rzg2l-canfd
+> +      not:
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+Can you really stick a "not" here? Yes, apparently you can.
+Still, I find this hard to read.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              const: renesas,r9a08g046-canfd
+>      then:
+>        patternProperties:
+>          "^channel[2-7]$": false
+> @@ -292,6 +310,46 @@ allOf:
+>        patternProperties:
+>          "^channel[6-7]$": false
+>
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: renesas,r9a08g045-canfd
+> +      not:
 
-pip3 install dtschema --upgrade
+Likewise.
+This one can easily be restructured like
 
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
+    if: ... renesas,r9a08g046-canfd
+        ...
+    else: if: ... renesas,r9a08g046-canfd
+        ...
 
+to improve readability.
+
+> +        properties:
+> +          compatible:
+> +            contains:
+> +              const: renesas,r9a08g046-canfd
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 8
+> +          maxItems: 8
+> +
+> +        interrupt-names:
+> +          minItems: 8
+> +          maxItems: 8
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: renesas,r9a08g046-canfd
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 11
+> +          maxItems: 11
+> +
+> +        interrupt-names:
+> +          minItems: 11
+> +          maxItems: 11
+> +
+> +      required:
+> +        - channel2
+> +      patternProperties:
+> +        "^channel[3-7]$": false
+> +
+>    - if:
+>        properties:
+>          compatible:
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
