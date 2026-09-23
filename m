@@ -1,116 +1,126 @@
-Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721A0443AB9;
-	Wed, 23 Sep 2026 07:04:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
+Received: from mail-wr2-f12.google.com (mail-wr2-f12.google.com [74.125.225.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2010E34D4E9
+	for <linux-can@vger.kernel.org>; Wed, 23 Sep 2026 07:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790147100; cv=none; b=Rgy4GAbDovo8j/c5cxaESLqrzijC8jyr8/2xiI5XiQ5NljkhdCXzJpZ9BBNMVmHqgR3+sq9flVQpb4LlOdtJlaPkPWE6vdKpQDN+UDnQblrIvOArHv5COjFQrS8ophdWThtOvkRj4/wI58FAqApYBSoNXLnXS+jjFpkXhSW8DlY=
+	t=1790147246; cv=none; b=bXrUuCUhG13P4h6sfB57/CHiRQqTersoHd1jrzVfdEOrkH4HsVjNwMQqDTWMyWvqOGMJ6M2pbCzPpOxNYHvQw6PwV6ruSvdcvzu8gNI1ZCs5AvniYbGdyYHAbZBjnAf+zIX5aScKO0npqp+IKU6V+qCCAJ3mHiWu60rzEjin7Jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790147100; c=relaxed/simple;
-	bh=r8a+4eNBHeysQqTYoRMI9KPT5zoninvrg+/ruGE+Y7A=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z456Hc1AHMyDFDfsfhathyneIGUSvk0ISanE1HsyUOM7pcTF5Neo9zep0pfzKhyUKESJDtNy0T1h5byEDnEMd9glMAiw+vw2d6xFzitFB1n9pSnOVoVCyjRbmXR/pcdZbzJXzg+2PRe+c4zsEH6oNJjgbqMWxpZtlrJUaxVxwlY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
-Received: from zju.edu.cn (unknown [10.98.66.117])
-	by mtasvr (Coremail) with SMTP id _____wBniigQerNqssgwAQ--.6034S3;
-	Wed, 23 Sep 2026 15:04:49 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.98.66.117])
-	by mail-app2 (Coremail) with SMTP id zC_KCgBn2c4QerNqgwuWBA--.49072S2;
-	Wed, 23 Sep 2026 15:04:48 +0800 (CST)
-From: Fan Wu <fanwu01@zju.edu.cn>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Fan Wu <fanwu01@zju.edu.cn>,
-	stable@vger.kernel.org,
-	Song Li <songl@zju.edu.cn>
-Subject: [PATCH] can: gs_usb: kill RX URBs before destroying the netdevs
-Date: Wed, 23 Sep 2026 07:03:52 +0000
-Message-Id: <20260923070352.487595-1-fanwu01@zju.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1790147246; c=relaxed/simple;
+	bh=LYBVKkcHNGxYQtKg+Za6MkgY2pL8kFHKawgXWYzSgOc=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=FhAmCTh1Yu3TroRZFRaPFtVtVUVtP0K5nw5yTXLs+BlbEgronnQG85iB3RvItNE+/+2FIO+Ue0u+f/0Ds5zQTjNI+hODkAAC/McNNS5Rf0fwDlQnzZKKwtKPz2yIUe/tlMZCViOn0sKRLf7NPZs6Pn8ncvSxMUD5hR85VdUNiE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=Hsjiv4ba; arc=none smtp.client-ip=74.125.225.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="Hsjiv4ba"
+Received: by mail-wr2-f12.google.com with SMTP id ffacd0b85a97d-48439feca17so535568f8f.1
+        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2026 00:07:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1790147242; x=1790752042; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=LYBVKkcHNGxYQtKg+Za6MkgY2pL8kFHKawgXWYzSgOc=;
+        b=Hsjiv4barW4vMiXygVwX2m9gVfk9pexOJi7OOgfjoHi8W7fYUdMnkPAEhvUAW7jPPA
+         AMcN3Au35cXyntKMYMHGN396UPNs7hCZdsY5hEfRg4CWxIkMGJsQtFmVmYFj1ZS2go80
+         yOkVN9aC72yeBNG0CEjKr9Vn/WIQ6Sl/+0Wko6eeB8UAM0YaaVgS5ynXt2sZOC8XQpCT
+         zKMfR4R+hEfqxgmON7qUtKAGiSTkFam62FNqr5cAKHawkHip7MDTH8fJ5jLT1hZ4AS4x
+         o5HszoFMl0OFJczc/nqRG9amPT6/93GYlQPnuYULFlkZJO3zClFl4FA+x4Mlec5xq9mY
+         QaFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790147242; x=1790752042;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=LYBVKkcHNGxYQtKg+Za6MkgY2pL8kFHKawgXWYzSgOc=;
+        b=FyvW3x3BuqNovtNQ5omYDcVGDACN/thfHoT5LbmvBg+P9Ppp2pn6AucAcBUXVsx/ie
+         Nw1bwK489bTaRF0jQlmiMlUYZoEwMILJiKgaiAMXN1auMeS8CGxUWeT/I9QRxMkA8/aq
+         jKf/rqjnC7HNZQQWXTY6t1tviJRsRxyou6yBJGxBr18dSJic6EyTFJOXPcbival2ddtM
+         /YJzfW3SSVM8upW/sa6tZzskUz1JNn0x/4fqJWY1qv1gHQ5s+i80pD+nJP0+g65fi1aT
+         GVyWKiR28XXDLUFe7ZEkJRumizkcovH8e8vdqUOxp1/QaoWDEAqT8mJJBUS3oHGgrayy
+         umXA==
+X-Forwarded-Encrypted: i=1; AKwUvBwPO2zqNHjc5iyseoSAbyXSsMkqKDscE/sVycCqKVW4F9YTAeS0Bn82dfqmGfsdH0UTWLEepJfZEGc=@vger.kernel.org
+X-Gm-Message-State: AFuF++lavJRjGsynwvrjecnaquTEShdbdrePHuTs7lzKr3VpvI+njWbs
+	Ie9etdr92r6nOvJWALqATHOSXMUekDUOL76xhaZzSVGlRlDSVvVgViKGYfNDY1finfU=
+X-Gm-Gg: AYBFou3n7AV2OY+leoFM2dJSH4bXjmVaTi4wrZt/t0FKCq7CHYDluXzEZeXTmZFuAhS
+	/RA4kZ2x/JVUfp0o8BarFyYHCkqk50WTcMEWl64BYaOxF17R+qTsipxrFEPSboUcocY+8GLnRwQ
+	1Kh8r+dRFyhqiyNSZ3jIc0Md78QGWG44hs6jakAg1T0xPx6Z9Te47/AEhSdGW3z1TgVQDBXWLQu
+	9ssyIW8XkIdG+kLoglNMynEyIa49ZGQdFlW8cbrzgacZn6I6AmMSWLjN2bmgodP4K+Cmwb1oPZe
+	BUwWLYh7lHOFNBTYKbsqZ4CeVfipade0c9BMTHK+ThohZUXlWS+PcSMHL68H5zei/BZwWrAqfSb
+	U1TaxOXMAxYi1PGTaoJPt5C1OW4Ep8qlF+0fBt5ju/rsLTZnjHX3V8UGHtOJliuLjq0gO7D0//K
+	oiwMFqWQKJRXMuAjeAsSRArGx7FSAfmHlOJViADZJwAFsxQQ2T/Qu8Ak23IIV1RjY+
+X-Received: by 2002:a5d:5849:0:b0:487:489:7af0 with SMTP id ffacd0b85a97d-48867065ee4mr2508662f8f.17.1790147242310;
+        Wed, 23 Sep 2026 00:07:22 -0700 (PDT)
+Received: from localhost ([2001:4090:a244:8223:c4e6:4d28:61c:74bb])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-488688893a0sm4833745f8f.32.2026.09.23.00.07.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Sep 2026 00:07:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:zC_KCgBn2c4QerNqgwuWBA--.49072S2
-X-CM-SenderInfo: qrstjiaswqq6lmxovvfxof0/
-X-CM-DELIVERINFO: =?B?nWDCAQXKKxbFmtjJiESix3B1w3vZ3A9ovKVTomAyoQazvoRs/NHSP8GI2EvgeEEW7R
-	sfncGSG+szpQCInt5Y8rbJUI2v+ZK8a/WB5UEqM6w+2CI+Ofbkec6KJ6j+2OqMEVpE9r+W
-	Dfxwh6G2teOWOqFrYmmp9E6mavGmQbzmcFsnzP86
-X-Coremail-Antispam: 1Uk129KBj93XoW7Zw47CFy5ZrW7uw4xKrWxuFX_yoW8uFW8pF
-	srKay5tFWUXF1fAw1DJa1DuF1rAa97Aa47ua4Y9an5Zr9xA3W8JF1Fqa4j9rsrCFW2vFy0
-	vr43t3y7JF13WrXCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUU9Gb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
-	xVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc804V
-	CY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AK
-	xVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48Icx
-	kI7VAKI48JM4x0Y48IcxkI7VAKI48G6xCjnVAKz4kxMxAIw28IcxkI7VAKI48JMxC20s02
-	6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
-	I_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
-	6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj4
-	0_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8
-	JrUvcSsGvfC2KfnxnUUI43ZEXa7IU86c_DUUUUU==
+Mime-Version: 1.0
+Content-Type: multipart/signed;
+ boundary=b597186e58e521a28c53b6ab6430a085a4a819c333318ef3f8c1713c2dac;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Date: Wed, 23 Sep 2026 09:06:59 +0200
+Message-Id: <DLMI87KFXHTQ.SWLSTWGCM2T4@baylibre.com>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol"
+ <mailhol@kernel.org>, <linux-can@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] can: m_can: pci: add missing
+ pm_runtime_dont_use_autosuspend() call
+From: "Markus Schneider-Pargmann" <msp@baylibre.com>
+To: "Joshua Crofts" <joshua.crofts1@gmail.com>, "Markus Schneider-Pargmann"
+ <msp@baylibre.com>
+X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
+References: <20260916124236.1389-1-joshua.crofts1@gmail.com>
+ <DLIC0I1VQLHE.13KVAJJ5FUYZN@baylibre.com>
+ <20260918131504.00005d2a@gmail.com>
+In-Reply-To: <20260918131504.00005d2a@gmail.com>
 
-gs_usb_disconnect() destroys the channels one by one via
-gs_destroy_candev()/free_candev(). gs_can_close() disposes the RX bulk
-URBs on the shared parent->rx_submitted anchor only when the last
-active channel is closed. With two or more channels up, the earlier
-channels are freed while their RX URBs are still submitted, and a
-completion in gs_usb_receive_bulk_callback() accesses the freed struct
-gs_can and struct net_device.
+--b597186e58e521a28c53b6ab6430a085a4a819c333318ef3f8c1713c2dac
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Fix this by killing the anchored RX URBs in gs_usb_disconnect() before
-the first netdev is destroyed, and in the error path of gs_usb_probe()
-before the previously created netdevs are destroyed.
+On Fri Sep 18, 2026 at 1:15 PM CEST, Joshua Crofts wrote:
+> On Fri, 18 Sep 2026 11:24:09 +0200
+> "Markus Schneider-Pargmann" <msp@baylibre.com> wrote:
+>
+>> Hi Joshua,
+>>=20
+>> On Wed Sep 16, 2026 at 2:42 PM CEST, Joshua Crofts wrote:
+>> > m_can_pci_remove() forgets to call pm_runtime_dont_use_autosuspend() o=
+n
+>> > teardown, even though autosuspend is enabled in m_can_pci_probe().
+>> >
+>> > Add the missing function call.
+>> > =20
+>>=20
+>> Can you please add a Fixes: tag?
+>
+> I guess it's not a problem, however we had a discussion in the
+> USB subsystem whether this type of patch is a fix and ended up
+> agreeing that it's more hardening, hence no Fixes tag.
+>
+> Alright if I just append the tag here for b4 to collect?
 
-usb_kill_anchored_urbs() waits for running completions and a killed URB
-completes with -ENOENT, so the completion handler returns without
-resubmitting the URB. The kill in gs_can_close() of the last active
-channel then operates on an already empty anchor.
+Yes, that's ok for me.
 
-This issue was found by an in-house static analysis tool.
+--b597186e58e521a28c53b6ab6430a085a4a819c333318ef3f8c1713c2dac
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Cc: stable@vger.kernel.org
-Co-developed-by: Song Li <songl@zju.edu.cn>
-Signed-off-by: Song Li <songl@zju.edu.cn>
-Signed-off-by: Fan Wu <fanwu01@zju.edu.cn>
----
- drivers/net/can/usb/gs_usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index ec9a7cb..663746d 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -1595,10 +1595,10 @@ static int gs_usb_probe(struct usb_interface *intf,
- 
- 			/* on failure destroy previously created candevs */
- 			icount = i;
-+			usb_kill_anchored_urbs(&parent->rx_submitted);
- 			for (i = 0; i < icount; i++)
- 				gs_destroy_candev(parent->canch[i]);
- 
--			usb_kill_anchored_urbs(&parent->rx_submitted);
- 			kfree(parent);
- 			return rc;
- 		}
-@@ -1636,6 +1636,8 @@ static void gs_usb_disconnect(struct usb_interface *intf)
- 		return;
- 	}
- 
-+	usb_kill_anchored_urbs(&parent->rx_submitted);
-+
- 	for (i = 0; i < parent->channel_cnt; i++)
- 		if (parent->canch[i])
- 			gs_destroy_candev(parent->canch[i]);
+iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCarN6kxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlPK
+EQEAq8JaGnwxat9Mrazio0Qlb2f3n/P8XpRz+jp0ri+EmqYBAJ134slplunVJ/tr
+MN1cdvAnOLCqJhrhtWIARmgt3DkH
+=mE+2
+-----END PGP SIGNATURE-----
 
+--b597186e58e521a28c53b6ab6430a085a4a819c333318ef3f8c1713c2dac--
