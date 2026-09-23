@@ -1,45 +1,43 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E15A280CE5;
-	Wed, 23 Sep 2026 01:38:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E9537A840;
+	Wed, 23 Sep 2026 02:31:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790127531; cv=none; b=pPcHWoIpv7zAUgag9kA2UtykDDq2uJP3WKh6PjvPKHCtkvBmPOyG4rgeqMwsuOMMAv+0U8mq9OwdImHzDsdml3qzz6RgxJh+cH84ExDXrjOvvI40jf7wit8UT771BfDprjY87TMXsIKR7spEZTpNv95217fQfg3nj5Ro2KwoO0o=
+	t=1790130669; cv=none; b=WV1fcTC3zXI4pW9gVKLqPHNpQ8n+nAW2wj6fojvwOGWCJ9x+AW1h4yJj7ZyoNILgq5HtECP/ieVa3ZC6GWqm71fCP5rZv7ZApOqcx82APOwXCVrH+59Decw6kd5nhVwSQ7+LPy9Q1rdPoZy05+yO02iTQYZccmCfNxqI0qKC9xs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790127531; c=relaxed/simple;
-	bh=eZh06shuqHIYbdk2qNqV1tq5+uAm/bVrpFSQu9U5/rg=;
+	s=arc-20240116; t=1790130669; c=relaxed/simple;
+	bh=r1PyjHplFWLo0qH2k0g8IQNAGk+vBXKJq4wxfsUBQA4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AUW3W6t60zIG0lEqfFFV1UOl9MKrxvgd/KLzV05iX7bK04hCrF89N9YVymPq+j3YTPYV4jnHQ8YxvG3vJTM9mlglhr7BHWh1OqvQ4Ea6G2rE5vzDDHNDrR7/3Y3PXF+wJ4SMlgJt03JRE7XvguPa0r/NzjWYg3DwdKTtG+mFWoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=lVqzVuTb; arc=none smtp.client-ip=117.135.210.4
+	 MIME-Version; b=VOvHc9MrXMYWaQ3g/ETtbBUwFw0Egv92HR1MJ0xYpg/5H+sbagTurgoaw3gQ/JftAJkEdmtf+2LU/TwGguhat3su/FPnCkzrjQIavaKKF1Znt1fdb77cTjo9Q+lWefJYzdccIhO2GLvIBQ26x7La3l/242Shw3MPnIA6tUb3Cm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=SOtLGYwe; arc=none smtp.client-ip=220.197.31.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="lVqzVuTb"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="SOtLGYwe"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=RI
-	99MM920KlirIbxR+D0b1pYBiaj25vbsB6KSElZhwY=; b=lVqzVuTbv7bGp1SBOv
-	sd77dp/pJNsH4lC8W7p6L04vzVRvbrokhMWANWb4CcQWDLXJAJXvWh5SHVg1lZ/p
-	vaRge7UeGZq0Q2F7THSVQTTbRd4RyJTjzwGZr5o0NCy7kdCzb1iQ8tDcWCxr+O2t
-	Z10UaXUUApBYLWrjFhy29HWd4=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=0N
+	sqepxNeBVmgMj8c92zRAqIkxsPWhSpvLpOBd8wNAY=; b=SOtLGYweNJnbLyWbUZ
+	uu1TwYgjlnDoPVTgD34a/NLWYxtfyNbtMPC7mx7qIgvaQJtmeKCmzYqVB93NE3zW
+	/F5hEIOSg+9J7WQWXwZCqiGVJViFB+Tuy6M4SLMJIruPCpbeohSoT1sqd4DO9gVl
+	0ZkvEpAyKrjDpSL0LR8SK8+f0=
 Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wD3z+WNLbNqyHDyAA--.39164S2;
-	Wed, 23 Sep 2026 09:38:22 +0800 (CST)
+	by gzga-smtp-mtada-g0-4 (Coremail) with SMTP id _____wDH07rNObNqApTsAA--.33096S2;
+	Wed, 23 Sep 2026 10:30:38 +0800 (CST)
 From: Quchaosheng <quchaosheng000406@163.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	linux-can@vger.kernel.org,
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org,
 	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
 	quchaosheng000406@163.com
-Subject: Re: [PATCH v8 2/3] dt-bindings: net: can: holt,hi311x: Convert to DT schema
-Date: Wed, 23 Sep 2026 09:38:12 +0800
-Message-ID: <20260923013812.256689-1-quchaosheng000406@163.com>
+Subject: Re: [PATCH] dt-bindings: net: can: bosch,cc770: Convert to DT schema
+Date: Wed, 23 Sep 2026 10:30:27 +0800
+Message-ID: <20260923023027.352131-1-quchaosheng000406@163.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <179008111842.3145564.13410709686921168865.robh@kernel.org>
-References: <179008111842.3145564.13410709686921168865.robh@kernel.org>
+In-Reply-To: <20260914030215.437602-1-quchaosheng000406@163.com>
+References: <20260914030215.437602-1-quchaosheng000406@163.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -47,60 +45,51 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3z+WNLbNqyHDyAA--.39164S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7CrW7KF4ktw47KryxAFWUurg_yoW8ArW5pr
-	Z5JFWfAFWqqF1fAay8Zr48u34fKwsxWan8KryfKrWxuay5uFyayF4vy347XrWkur18Ja13
-	ta90qrWkJw1ruFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUmNtcUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4w71a2qzLY7xCQAA3x
+X-CM-TRANSID:_____wDH07rNObNqApTsAA--.33096S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7ZryUuw15uFykJrWkWr13XFb_yoW8ZryxpF
+	ZxKrWrKryvvayY9wn7W3W8ArZxZF9Igr4j9FyUK34qvas8uw18XrykK34UWF47CrZrCa15
+	XFn0gwnrK3Z8ZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUJOzcUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAA4JfmqzOc5bOAAA30
 
-Rob,
+Marc, Vincent,
 
-My previous reply went out from the 163 webmail client and carried an HTML
-part, so linux-can, devicetree and linux-kernel all rejected it. Resending
-as plain text; same content.
+These four cc770 patches are still sitting unread. Three went out on 09-14 and
+the fourth on 09-17. Sending one summary rather than four pings.
 
-Reproduced. The errors come from a dt-schema change in git, not from the
-patch.
+  1. dt-bindings: net: can: bosch,cc770: Convert to DT schema
+     <20260914030215.437602-1-quchaosheng000406@163.com>
+  2. net: can: cc770: update the binding file reference in the driver comment
+     <20260914030215.437602-2-quchaosheng000406@163.com>
+  3. net: can: cc770: propagate the error from platform_get_irq()
+     <20260914055611.495105-1-quchaosheng000406@163.com>
+  4. can: cc770: fix the clock divider check on the platform bus
+     <20260917114311.534863-1-quchaosheng000406@163.com>
 
-They are all in reserved-memory and the IPs that embed it:
-shared-dma-pool (via ti,omap-remoteproc, ti,k3-m4f-rproc, msm gpu,
-intel,stratix10-svc), nvidia,tegra210-emc-table and fsl,qman-fqd.
-Nothing in net/can. None of the files this series touches are involved.
+1 is the conversion; the schema is in net/can and references
+can-controller.yaml. 2 is the one-line path in the driver's header comment,
+and it only makes sense once 1 is in.
 
-The cause is 840a01d ("schemas: iommu: Add iommu-ranges on a device
-node", 2026-09-17) in dt-schema. It reworked the top-level constraint in
-reserved-memory.yaml from
+3 and 4 came out of sashiko's review of 1, which flagged two things in the
+platform driver. Both are still there in current mainline:
 
-  oneOf:
-    - oneOf: [required: [reg], required: [size]]
-    - oneOf: [required: [iommu-addresses], required: [reg, iommu-addresses]]
+  cc770_platform_probe() collapses every platform_get_irq() failure into
+  -ENODEV, so an -EPROBE_DEFER is thrown away and the probe is not retried.
 
-to
+  cc770_get_platform_data() tests priv->cpu_interface for CPUIF_DSC before
+  assigning it from pdata->cir. priv comes from alloc_cc770dev() ->
+  alloc_candev() -> alloc_netdev_mqs(), which uses kvzalloc_flex(), so the
+  field is still zero at that point and the test never matches. A board whose
+  pdata->cir has CPUIF_DSC set gets its clock halved in hardware but not in
+  can.clock.freq, so the bit timing is computed from twice the real rate. The
+  platform data example in the header of that file sets exactly that bit
+  (.cir = 0x41), and cc770_isa.c already assigns before testing.
 
-  oneOf:
-    - required: [reg]
-    - required: [size]
-    - if: {required: [iommu-addresses]}
-      then: {required: [reg]}
+Neither 3 nor 4 is a dt-binding change, so they can go in on their own. If
+you would rather have them as one series under net/, say so and I will repost
+them that way. And if any of this is out of scope for you, tell me and I will
+drop it.
 
-A plain shared-dma-pool node with a reg now satisfies the first branch and
-also the third one vacuously, so oneOf fails with "is valid under each
-of". The "Unevaluated properties are not allowed" lines are the same
-failure cascading. The error text matches this exactly:
-
-  is valid under each of {'if': {'required': ['iommu-addresses']},
-  'then': {'required': ['reg']}}, {'required': ['reg']}
-
-That commit is not in a release yet. Confirmed on the same tree with no
-patches applied:
-
-  dt-schema 2026.6 (PyPI)  -> clean
-  dt-schema 2026.9 (tag)   -> clean
-  dt-schema git 840a01d    -> reproduces the errors above
-
-Nothing to fix in the series. v8 stands: only 2/3 differs from v7, and it
-puts back the spi-peripheral-props.yaml reference sashiko flagged.
-
+Thanks,
 Quchaosheng
 
