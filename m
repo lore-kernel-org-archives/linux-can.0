@@ -1,49 +1,44 @@
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B307378838;
-	Wed, 23 Sep 2026 14:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20AF6511E8A;
+	Wed, 23 Sep 2026 14:30:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790172953; cv=none; b=NPQ9ihmnb9c3Juf/pHBZtYvj7E25PM/PsRAfzrQoz33mw5Mp8kuJlvLHPbXFUWXMqPLBg/QKYDwG1EsQ2XGZc8gAcJDmQrxjUCreyjvMPrT7fIIR8354XekFb+ufZI2zSYZjm7ljXVnfOks0QLTJAvN85oiDdwe2DhE4wW0DEjI=
+	t=1790173855; cv=none; b=SNwjwlTD3vHTS9A0+OGBkzPQ5UnvkvjwBatB++pv6+kWeIXqJbhiG6vat7WTW5IwDSFz6Ue4rmoq2BdNm49QddS6rgxr5jKhPqZKfcytcL1yh2EoxWkGCleA8orHVv2FmPH10k3whnjzvaixaNIGNQyENJ+8OXoMcsZ44DqdZz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790172953; c=relaxed/simple;
-	bh=gLKxiXaYuzXzRH3NzpPWYDvSfcLvfUIzm83C2oCYFzc=;
+	s=arc-20240116; t=1790173855; c=relaxed/simple;
+	bh=N5YqmKihMPoUFLmWlgyIrlyHZ1ar4Pmirq3scgwhBAI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fAJpqsA9Onyi78OxVpZJNUMMSaT8SDYdCpsGFR5xuQKvRbEchouxRbGO3ydrrXpWkA9KR8Yxyp/kFv1CTrZXdGQ2/jkbG4bVFeZguVe2wZcv4o9ipEKCb8+Gutf7G1EJ4bdqxdRON326tOdBALIpc201vzNxPSifFln+5LQyNSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=Eirx7ZkB; arc=none smtp.client-ip=156.67.10.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+	 Content-Type:Content-Disposition:In-Reply-To; b=gAP4Va7nPgvKDXImc86JOBc1NmHx2ybk83lFUV0LGb4vGzTFxOceW/H0zD0epHoXRXBW/DCkOw8uElSLtCJe8daBeO2BjEFbXzdHBxQ6o89QxlFKEWjaOC74gY/8FaOli/MeJSW4Dj4abZTifFQFyKY/Nj2jq680rgp7VVB4YbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gDh91WxM; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="Eirx7ZkB"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=Kh1BmU+b8bRZ/hX23dXwEg+RXJfNapV72jSBmuL3mNs=; b=Eirx7ZkBmpWEbnEkL9kj5cyFJP
-	tyiDa/gYdEre/pfo+5s+kW4rM+yNk4dyrUpwQPFmwgLhbZfdhd3jN+0W6fXCphigcWRg6rax1srEz
-	WM8pLmcYupWLDv0LGPMy+KZV8F/C0YZvNxpjw8qOpmorJikbGPU7Thx9JiZo3/4PLiBs=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1x9NlC-006p29-Qx; Wed, 23 Sep 2026 16:15:46 +0200
-Date: Wed, 23 Sep 2026 16:15:46 +0200
-From: Andrew Lunn <andrew@lunn.ch>
-To: Greg Ungerer <gerg@linux-m68k.org>
-Cc: linux-m68k@lists.linux-m68k.org, linux-kernel@vger.kernel.org,
-	arnd@kernel.org, wei.fang@nxp.com, frank.li@nxp.com,
-	shenwei.wang@nxp.com, imx@lists.linux.dev, netdev@vger.kernel.org,
-	nico@fluxnic.net, linux-can@vger.kernel.org,
-	linux-spi@vger.kernel.org, olteanv@gmail.com, andrew+netdev@lunn.ch,
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-	pabeni@redhat.com
-Subject: Re: [PATCHv3 1/3] net: fec: do not use readl()/writel() for ColdFire
-Message-ID: <fe8a632a-80a8-45da-ba64-31158af7c987@lunn.ch>
-References: <20260907134037.1855408-1-gerg@linux-m68k.org>
- <20260907134037.1855408-2-gerg@linux-m68k.org>
- <42ad1525-fceb-43d6-aa03-d17e844a9ad9@linux-m68k.org>
- <eb987eb9-f368-4d28-bdd0-c289c3039c3b@lunn.ch>
- <46246a5b-3e95-4ecb-bc52-e374dc136514@linux-m68k.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gDh91WxM"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF0611F000FF;
+	Wed, 23 Sep 2026 14:30:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790173853;
+	bh=AKQFNKkkPF9N3C14+Wm2pRhX/CAnaIcorL6P/HjrDIw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=gDh91WxM+CHwV8l4yb/tpPEoplnXiWKN/NZZJDNBjBSpzmUoohaqGXVtJC6Na2az0
+	 SHK0VfJ5PrQBV5Q1Z8v4LA+6PiwaAESe4gyFgiLKt+guhJ1oXPTTr6wI61QpuwaDhK
+	 6+VxR3qEQBxJyTSrOUG67xQUAcas2HWVaI0fsnyeHzQaChoQr66I2d6WdyGUSFFO7m
+	 CtQguCxbL1wsXAXmmCAd5ghIVGDF37l56pYJzQWzgswMif05yRA64xuY0PTBvAmnNV
+	 9ktzy4hma6jyk0AGOc/SMmujr7Ykrq7WBey95Mgmm8tSGeb0V/wekPhXDW87Oj1EjH
+	 8QAy6NwHX8fOA==
+Date: Wed, 23 Sep 2026 09:30:52 -0500
+From: Rob Herring <robh@kernel.org>
+To: Quchaosheng <quchaosheng000406@163.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v8 3/3] dt-bindings: net: can: fsl,mpc5xxx-mscan: Convert
+ to DT schema
+Message-ID: <20260923143052.GC27237-robh@kernel.org>
+References: <20260922102258.138753-1-quchaosheng000406@163.com>
+ <20260922102258.138753-4-quchaosheng000406@163.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -52,13 +47,39 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46246a5b-3e95-4ecb-bc52-e374dc136514@linux-m68k.org>
+In-Reply-To: <20260922102258.138753-4-quchaosheng000406@163.com>
 
-> The driver will always need to support big and little endian hardware, so I
-> am not sure how to avoid some abstraction like this.
+On Tue, Sep 22, 2026 at 06:22:58PM +0800, Quchaosheng wrote:
+> Convert the Freescale MPC5xxx MSCAN binding from free-form text to DT
+> schema.
+> 
+> The original text documents fsl,mpc5200-mscan and fsl,mpc5121-mscan in two
+> separate sections. Keep that split: fsl,mscan-clock-source takes "ip" or
+> "ref" on fsl,mpc5200-mscan, and "ip", "ref" or "sys" on fsl,mpc5121-mscan.
+> 
+> Add fsl,mpc5200b-mscan as a fallback of fsl,mpc5200-mscan. mpc5200b.dtsi
+> uses it.
+> 
+> Document clocks and clock-names, which the original text does not describe.
+> fsl,mpc5121-mscan requires the "ipg", "ips", "sys", "ref" and "mclk"
+> clocks in that order, as mpc5121.dtsi supplies them. MPC5200 does not use
+> DT clocks; it takes its frequency from the CDM block.
+> 
+> fsl,mscan-clock-divider divides the selected clock, so value 0 cannot be
+> used.
+> 
+> Keep the note that the MPC5121 Rev. 1 processor is not supported.
+> 
+> Assisted-by: LLM
+> Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+> ---
+> 
+> v8:
+>  - No change.
+>  .../bindings/net/can/fsl,mpc5xxx-mscan.yaml   | 109 ++++++++++++++++++
+>  .../bindings/net/can/mpc5xxx-mscan.txt        |  53 ---------
+>  2 files changed, 109 insertions(+), 53 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/net/can/fsl,mpc5xxx-mscan.yaml
+>  delete mode 100644 Documentation/devicetree/bindings/net/can/mpc5xxx-mscan.txt
 
-I was wondering if there is a linux standard set of macros which is
-supposed to handle this big/little difference, the macro knows the
-architecture and does the correct thing?
-
-	Andrew
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
