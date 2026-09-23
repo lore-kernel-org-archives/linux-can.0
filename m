@@ -1,42 +1,35 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D398B3B14D2;
-	Wed, 23 Sep 2026 03:43:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
+Received: from zg8tndyumtaxlji0oc4xnzya.icoremail.net (zg8tndyumtaxlji0oc4xnzya.icoremail.net [46.101.248.176])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 721A0443AB9;
+	Wed, 23 Sep 2026 07:04:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.101.248.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790135010; cv=none; b=Y8BlCqmyMjK2+hfOdoxLJcur8A7B+wAH4u25ln1qbKPGDGXMSL+2osH6hBcoqxaNITtc80WYZQEugCLdXKIAi/mWPBF3sCBmgW9sk83keSrsTIsnSU76pmhwYhNlOC2Hbftt8vkPNdoKNbnT8g4igdKuiOfF8izgnGWl4UGX6Yg=
+	t=1790147100; cv=none; b=Rgy4GAbDovo8j/c5cxaESLqrzijC8jyr8/2xiI5XiQ5NljkhdCXzJpZ9BBNMVmHqgR3+sq9flVQpb4LlOdtJlaPkPWE6vdKpQDN+UDnQblrIvOArHv5COjFQrS8ophdWThtOvkRj4/wI58FAqApYBSoNXLnXS+jjFpkXhSW8DlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790135010; c=relaxed/simple;
-	bh=uVoG7MLIklO9mSQNiRJPAPLHzAImZnjnPgSHg4UYrHY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gU9MlCM3Q4DBqmplTJE8j4MjkPZNZsxFWkaCQ+fsd2qVicvU5HrPilw04IrwmrPTsGKJwrlyD83DaE68c9o7hWXvIsWsVaL2Hwuyl/Wm+AaqzwvAaVMEQJN/5wOgwYMGrlVuD9zMQgOLIfPyaMjlcY0ZvgTohOi4WOoPs+aovzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=cNf8/EeC; arc=none smtp.client-ip=117.135.210.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="cNf8/EeC"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Pv
-	WdHzOaQK1MoZGGrkPXvWCBi6wgVhZHU49kXz8ZfmI=; b=cNf8/EeC/ciBdD30mL
-	og5y70QTzayicZVL6DIZAc/dnh+zbaaQZZSD18U6Bd7618e8wd6Mguzcd76Jet1E
-	6wP8xgn7MMtvHwVvURQVdtyL6j3FSNtt9+I9gKUB6VV8Ynv12jF/bGq7eppF/nD1
-	7XFHXmtCT9RVlKM8kartl+iyw=
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wDX_4bKSrNqInP_AA--.22590S2;
-	Wed, 23 Sep 2026 11:43:06 +0800 (CST)
-From: Quchaosheng <quchaosheng000406@163.com>
-To: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Shuah Khan <shuah@kernel.org>
-Cc: Vincent Mailhol <mailhol@kernel.org>,
-	linux-can@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
+	s=arc-20240116; t=1790147100; c=relaxed/simple;
+	bh=r8a+4eNBHeysQqTYoRMI9KPT5zoninvrg+/ruGE+Y7A=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z456Hc1AHMyDFDfsfhathyneIGUSvk0ISanE1HsyUOM7pcTF5Neo9zep0pfzKhyUKESJDtNy0T1h5byEDnEMd9glMAiw+vw2d6xFzitFB1n9pSnOVoVCyjRbmXR/pcdZbzJXzg+2PRe+c4zsEH6oNJjgbqMWxpZtlrJUaxVxwlY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn; spf=pass smtp.mailfrom=zju.edu.cn; arc=none smtp.client-ip=46.101.248.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=zju.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zju.edu.cn
+Received: from zju.edu.cn (unknown [10.98.66.117])
+	by mtasvr (Coremail) with SMTP id _____wBniigQerNqssgwAQ--.6034S3;
+	Wed, 23 Sep 2026 15:04:49 +0800 (CST)
+Received: from localhost.localdomain (unknown [10.98.66.117])
+	by mail-app2 (Coremail) with SMTP id zC_KCgBn2c4QerNqgwuWBA--.49072S2;
+	Wed, 23 Sep 2026 15:04:48 +0800 (CST)
+From: Fan Wu <fanwu01@zju.edu.cn>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org,
+	netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	quchaosheng000406@163.com
-Subject: [PATCH v2] selftests: can: add CAN XL raw socket tests
-Date: Wed, 23 Sep 2026 11:42:56 +0800
-Message-ID: <20260923034256.396514-1-quchaosheng000406@163.com>
-X-Mailer: git-send-email 2.43.0
+	Fan Wu <fanwu01@zju.edu.cn>,
+	stable@vger.kernel.org,
+	Song Li <songl@zju.edu.cn>
+Subject: [PATCH] can: gs_usb: kill RX URBs before destroying the netdevs
+Date: Wed, 23 Sep 2026 07:03:52 +0000
+Message-Id: <20260923070352.487595-1-fanwu01@zju.edu.cn>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -44,474 +37,80 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDX_4bKSrNqInP_AA--.22590S2
-X-Coremail-Antispam: 1Uf129KBjvAXoW3KrW8WFyrWw17ury7JrykAFb_yoW8Jr4rAo
-	ZrKa13Xr1rJr1Duayvqrn7Wa1fZr4Ut3y5AayYvryrtFyDurW2qrWSka1Sqa93JFyF9rZr
-	XrZ2qr4fXFZYvr1fn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjTRtXozUUUUU
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAApMwWqzSsohjQAA3y
+X-CM-TRANSID:zC_KCgBn2c4QerNqgwuWBA--.49072S2
+X-CM-SenderInfo: qrstjiaswqq6lmxovvfxof0/
+X-CM-DELIVERINFO: =?B?nWDCAQXKKxbFmtjJiESix3B1w3vZ3A9ovKVTomAyoQazvoRs/NHSP8GI2EvgeEEW7R
+	sfncGSG+szpQCInt5Y8rbJUI2v+ZK8a/WB5UEqM6w+2CI+Ofbkec6KJ6j+2OqMEVpE9r+W
+	Dfxwh6G2teOWOqFrYmmp9E6mavGmQbzmcFsnzP86
+X-Coremail-Antispam: 1Uk129KBj93XoW7Zw47CFy5ZrW7uw4xKrWxuFX_yoW8uFW8pF
+	srKay5tFWUXF1fAw1DJa1DuF1rAa97Aa47ua4Y9an5Zr9xA3W8JF1Fqa4j9rsrCFW2vFy0
+	vr43t3y7JF13WrXCm3ZEXasCq-sJn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7KY7ZEXa
+	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
+	0xBIdaVrnRJUUU9Gb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2
+	IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
+	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
+	0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
+	xVW0oVCq3wAac4AC62xK8xCEY4vEwIxC4wAS0I0E0xvYzxvE52x082IY62kv0487Mc804V
+	CY07AIYIkI8VC2zVCFFI0UMc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AK
+	xVWUJVWUGwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48Icx
+	kI7VAKI48JM4x0Y48IcxkI7VAKI48G6xCjnVAKz4kxMxAIw28IcxkI7VAKI48JMxC20s02
+	6xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_Jr
+	I_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v2
+	6r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj4
+	0_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8
+	JrUvcSsGvfC2KfnxnUUI43ZEXa7IU86c_DUUUUU==
 
-The CAN raw socket CAN XL support (CAN_RAW_XL_FRAMES,
-CAN_RAW_XL_VCID_OPTS) is currently untested in kselftest. The only CAN
-test in the tree, test_raw_filter, exercises classic CAN filter matching
-and never touches CAN XL.
+gs_usb_disconnect() destroys the channels one by one via
+gs_destroy_candev()/free_candev(). gs_can_close() disposes the RX bulk
+URBs on the shared parent->rx_submitted anchor only when the last
+active channel is closed. With two or more channels up, the earlier
+channels are freed while their RX URBs are still submitted, and a
+completion in gs_usb_receive_bulk_callback() accesses the freed struct
+gs_can and struct net_device.
 
-Add a set of CAN XL tests to test_raw_filter. vcan is used as the test
-interface, which reports CAN XL capability when the MTU is large enough,
-so these run without CAN hardware. Tests are skipped when the interface
-cannot carry CAN XL frames, so a classic CAN or CAN FD only interface
-does not turn them into failures.
+Fix this by killing the anchored RX URBs in gs_usb_disconnect() before
+the first netdev is destroyed, and in the error path of gs_usb_probe()
+before the previously created netdevs are destroyed.
 
-Covered behaviour:
+usb_kill_anchored_urbs() waits for running completions and a killed URB
+completes with -ENOENT, so the completion handler returns without
+resubmitting the URB. The kill in gs_can_close() of the last active
+channel then operates on an already empty anchor.
 
-  - payload round-trips for 1, 8, 64 and the maximum of 2048 bytes,
-    including the priority, SDU type and acceptance field
-  - a CAN XL frame is rejected with -EINVAL while CAN_RAW_XL_FRAMES is
-    disabled
-  - a frame without the mandatory CANXL_XLF flag is rejected
-  - the declared length must match the payload actually written
-  - enabling CAN XL implicitly enables CAN FD, and CAN FD cannot be
-    disabled again while CAN XL stays enabled
-  - the VCID is stripped by default, and a VCID tagged frame is only
-    forwarded once CAN_RAW_XL_VCID_RX_FILTER is set
-  - CAN_RAW_XL_VCID_TX_SET overwrites the VCID without clobbering the
-    priority, and a non-matching RX VCID filter drops the frame
+This issue was found by an in-house static analysis tool.
 
-A blocking read() cannot be used to assert that a frame was filtered out,
-as it never returns; the new recv_timeout() helper waits for a frame with
-a bounded timeout instead.
-
-Verified on a vcan device: 26/26 pass with the default CAN XL MTU. With
-the interface forced down to a classic CAN MTU the seven XL tests skip
-and the remaining 19 still pass.
-
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Link: https://sashiko.dev/#/patchset/20260923025317.374997-1-quchaosheng000406@163.com?part=1
-Assisted-by: LLM
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Cc: stable@vger.kernel.org
+Co-developed-by: Song Li <songl@zju.edu.cn>
+Signed-off-by: Song Li <songl@zju.edu.cn>
+Signed-off-by: Fan Wu <fanwu01@zju.edu.cn>
 ---
- .../selftests/net/can/test_raw_filter.c       | 396 ++++++++++++++++++
- 1 file changed, 396 insertions(+)
+ drivers/net/can/usb/gs_usb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/can/test_raw_filter.c b/tools/testing/selftests/net/can/test_raw_filter.c
-index bb8ae8854273..0eac9f497b40 100644
---- a/tools/testing/selftests/net/can/test_raw_filter.c
-+++ b/tools/testing/selftests/net/can/test_raw_filter.c
-@@ -16,11 +16,19 @@
- #include <net/if.h>
- #include <linux/if.h>
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index ec9a7cb..663746d 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -1595,10 +1595,10 @@ static int gs_usb_probe(struct usb_interface *intf,
  
-+#include <errno.h>
-+#include <stddef.h>
-+
- #include <linux/can.h>
- #include <linux/can/raw.h>
-+#include <linux/types.h>
+ 			/* on failure destroy previously created candevs */
+ 			icount = i;
++			usb_kill_anchored_urbs(&parent->rx_submitted);
+ 			for (i = 0; i < icount; i++)
+ 				gs_destroy_candev(parent->canch[i]);
  
- #include "kselftest_harness.h"
- 
-+#ifndef ARRAY_SIZE
-+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
-+#endif
-+
- #define ID 0x123
- 
- char CANIF[IFNAMSIZ];
-@@ -390,6 +398,394 @@ TEST_F(can_filters, test_filter)
+-			usb_kill_anchored_urbs(&parent->rx_submitted);
+ 			kfree(parent);
+ 			return rc;
+ 		}
+@@ -1636,6 +1636,8 @@ static void gs_usb_disconnect(struct usb_interface *intf)
+ 		return;
  	}
- }
  
-+/* --- CAN XL --- */
-+
-+#define XLF 0x80
-+
-+/* CAN XL requires an interface whose MTU is large enough; a classic CAN or
-+ * CAN FD only interface cannot carry CAN XL frames.
-+ */
-+static bool can_iface_supports_xl(void)
-+{
-+	struct ifreq ifr;
-+	int s, ret;
-+
-+	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-+	if (s < 0)
-+		return false;
-+
-+	strncpy(ifr.ifr_name, CANIF, sizeof(ifr.ifr_name));
-+	ret = ioctl(s, SIOCGIFMTU, &ifr);
-+	close(s);
-+
-+	if (ret < 0)
-+		return false;
-+
-+	return ifr.ifr_mtu >= CANXL_MIN_MTU;
-+}
-+
-+static int open_xl_socket(int send_xl, const struct can_raw_vcid_options *vcid)
-+{
-+	struct sockaddr_can addr = { };
-+	struct ifreq ifr;
-+	int one = 1;
-+	int s, ret;
-+
-+	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
-+	if (s < 0)
-+		return -1;
-+
-+	strncpy(ifr.ifr_name, CANIF, sizeof(ifr.ifr_name));
-+	ret = ioctl(s, SIOCGIFINDEX, &ifr);
-+	if (ret < 0)
-+		goto close_sock;
-+
-+	addr.can_family = AF_CAN;
-+	addr.can_ifindex = ifr.ifr_ifindex;
-+
-+	ret = bind(s, (struct sockaddr *)&addr, sizeof(addr));
-+	if (ret < 0)
-+		goto close_sock;
-+
-+	ret = setsockopt(s, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS, &one, sizeof(one));
-+	if (ret < 0)
-+		goto close_sock;
-+
-+	if (vcid) {
-+		ret = setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_VCID_OPTS, vcid,
-+				 sizeof(*vcid));
-+		if (ret < 0)
-+			goto close_sock;
-+	}
-+
-+	ret = setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_FRAMES, &send_xl,
-+			 sizeof(send_xl));
-+	if (ret < 0)
-+		goto close_sock;
-+
-+	return s;
-+
-+close_sock:
-+	close(s);
-+	return -1;
-+}
-+
-+static void fill_canxl(struct canxl_frame *cxl, unsigned int len, __u8 sdt)
-+{
-+	int i;
-+
-+	memset(cxl, 0, sizeof(*cxl));
-+	cxl->prio = ID;
-+	cxl->flags = XLF;
-+	cxl->sdt = sdt;
-+	cxl->len = len;
-+	cxl->af = 0xdeadbeef;
-+
-+	for (i = 0; i < len; i++)
-+		cxl->data[i] = i & 0xff;
-+}
-+
-+/* Wait up to 200ms for a frame. Returns the frame size, or -1 if nothing
-+ * arrived. A blocking read() cannot be used to assert that a frame was
-+ * filtered out, as it would simply wait forever.
-+ */
-+static int recv_timeout(int sock, void *buf, size_t len)
-+{
-+	struct timeval tv = {
-+		.tv_sec = 0,
-+		.tv_usec = 200000,
-+	};
-+	fd_set rdfs;
-+	int ret;
-+
-+	FD_ZERO(&rdfs);
-+	FD_SET(sock, &rdfs);
-+
-+	ret = select(sock + 1, &rdfs, NULL, NULL, &tv);
-+	if (ret <= 0)
-+		return -1;
-+
-+	return read(sock, buf, len);
-+}
-+
-+FIXTURE(canxl) {
-+	int sock;
-+};
-+
-+FIXTURE_SETUP(canxl)
-+{
-+	self->sock = open_xl_socket(1, NULL);
-+}
-+
-+FIXTURE_TEARDOWN(canxl)
-+{
-+	if (self->sock >= 0)
-+		close(self->sock);
-+}
-+
-+/* Round-trip payload lengths, including the maximum CAN XL payload */
-+TEST_F(canxl, payload_roundtrip)
-+{
-+	const unsigned int lens[] = { 1, 8, 64, 2048 };
-+	struct canxl_frame tx;
-+
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	ASSERT_GE(self->sock, 0)
-+		TH_LOG("failed to open CAN XL socket on %s", CANIF);
-+
-+	for (unsigned int i = 0; i < ARRAY_SIZE(lens); i++) {
-+		unsigned int len = lens[i];
-+		struct canxl_frame rx;
-+		int ret;
-+
-+		fill_canxl(&tx, len, 0x11);
-+
-+		ret = write(self->sock, &tx, CANXL_HDR_SIZE + len);
-+		ASSERT_EQ(ret, CANXL_HDR_SIZE + len)
-+			TH_LOG("failed to send CAN XL frame of len %u", len);
-+
-+		ret = read(self->sock, &rx, sizeof(rx));
-+		ASSERT_EQ(ret, CANXL_HDR_SIZE + len)
-+			TH_LOG("failed to receive CAN XL frame of len %u", len);
-+
-+		ASSERT_EQ(rx.len, len)
-+			TH_LOG("wrong payload length in received frame");
-+		ASSERT_EQ(rx.sdt, tx.sdt)
-+			TH_LOG("wrong SDU type in received frame");
-+		ASSERT_EQ(rx.af, tx.af)
-+			TH_LOG("wrong acceptance field in received frame");
-+		ASSERT_EQ(rx.prio, tx.prio)
-+			TH_LOG("wrong priority in received frame");
-+		ASSERT_EQ(memcmp(rx.data, tx.data, len), 0)
-+			TH_LOG("payload corrupted");
-+	}
-+}
-+
-+/* A CAN XL frame must not be accepted when CAN_RAW_XL_FRAMES is off */
-+TEST(canxl_send_requires_xl_frames)
-+{
-+	struct canxl_frame tx;
-+	int s, ret;
-+
-+	/* a plain socket that did not enable CAN XL */
-+	s = open_xl_socket(0, NULL);
-+	ASSERT_GE(s, 0)
-+		TH_LOG("failed to open CAN socket on %s", CANIF);
-+
-+	fill_canxl(&tx, 8, 0x11);
-+
-+	ret = write(s, &tx, CANXL_HDR_SIZE + tx.len);
-+	ASSERT_LT(ret, 0)
-+		TH_LOG("CAN XL frame accepted without CAN_RAW_XL_FRAMES");
-+	ASSERT_EQ(errno, EINVAL);
-+
-+	close(s);
-+}
-+
-+/* A frame without the mandatory CANXL_XLF flag must be rejected */
-+TEST(canxl_requires_xlf_flag)
-+{
-+	struct canxl_frame tx;
-+	int s, ret;
-+
-+	s = open_xl_socket(1, NULL);
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	ASSERT_GE(s, 0)
-+		TH_LOG("failed to open CAN XL socket on %s", CANIF);
-+
-+	fill_canxl(&tx, 8, 0x11);
-+	tx.flags = 0;
-+
-+	ret = write(s, &tx, CANXL_HDR_SIZE + tx.len);
-+	ASSERT_LT(ret, 0)
-+		TH_LOG("frame without CANXL_XLF accepted");
-+	ASSERT_EQ(errno, EINVAL);
-+
-+	close(s);
-+}
-+
-+/* The declared length must match the payload actually written */
-+TEST(canxl_declared_len_must_match_payload)
-+{
-+	struct canxl_frame tx;
-+	int s, ret;
-+
-+	s = open_xl_socket(1, NULL);
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	ASSERT_GE(s, 0)
-+		TH_LOG("failed to open CAN XL socket on %s", CANIF);
-+
-+	fill_canxl(&tx, 8, 0x11);
-+	tx.len = 100;
-+
-+	ret = write(s, &tx, CANXL_HDR_SIZE + 8);
-+	ASSERT_LT(ret, 0)
-+		TH_LOG("frame with mismatching length accepted");
-+	ASSERT_EQ(errno, EINVAL);
-+
-+	close(s);
-+}
-+
-+/* Enabling CAN XL must implicitly enable CAN FD, and it must not be turnable
-+ * off again while CAN XL stays enabled
-+ */
-+TEST(canxl_enables_fd_and_cannot_be_disabled)
-+{
-+	struct canfd_frame tx;
-+	struct canxl_frame rx;
-+	int s, ret;
-+	int zero = 0;
-+
-+	s = open_xl_socket(1, NULL);
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	ASSERT_GE(s, 0)
-+		TH_LOG("failed to open CAN XL socket on %s", CANIF);
-+
-+	ret = setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &zero, sizeof(zero));
-+	ASSERT_LT(ret, 0)
-+		TH_LOG("CAN FD could be disabled while CAN XL was enabled");
-+	ASSERT_EQ(errno, EINVAL);
-+
-+	memset(&tx, 0, sizeof(tx));
-+	tx.can_id = ID;
-+	tx.len = 8;
-+
-+	ret = write(s, &tx, CANFD_MTU);
-+	ASSERT_EQ(ret, CANFD_MTU)
-+		TH_LOG("CAN FD not implicitly enabled by CAN XL");
-+
-+	ret = read(s, &rx, sizeof(rx));
-+	ASSERT_EQ(ret, CANFD_MTU)
-+		TH_LOG("CAN FD frame not delivered to a CAN XL socket");
-+
-+	close(s);
-+}
-+
-+/* Without VCID options the VCID is stripped on TX and a VCID-tagged frame is
-+ * not forwarded on RX
-+ */
-+TEST(canxl_vcid_stripped_by_default)
-+{
-+	struct can_raw_vcid_options pass = {
-+		.flags = CAN_RAW_XL_VCID_TX_PASS,
-+	};
-+	struct canxl_frame tx, rx;
-+	int tx_sock, rx_sock, ret;
-+
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	tx_sock = open_xl_socket(1, &pass);
-+	ASSERT_GE(tx_sock, 0)
-+		TH_LOG("CAN XL not supported on %s", CANIF);
-+
-+	rx_sock = open_xl_socket(1, NULL);
-+	ASSERT_GE(rx_sock, 0);
-+
-+	fill_canxl(&tx, 8, 0x11);
-+	tx.prio |= 0x42 << CANXL_VCID_OFFSET;
-+
-+	ret = write(tx_sock, &tx, CANXL_HDR_SIZE + tx.len);
-+	ASSERT_EQ(ret, CANXL_HDR_SIZE + tx.len);
-+
-+	/* the RX socket has no VCID filter, so it drops VCID tagged frames */
-+	ret = recv_timeout(rx_sock, &rx, sizeof(rx));
-+	ASSERT_LT(ret, 0)
-+		TH_LOG("VCID tagged frame forwarded without CAN_RAW_XL_VCID_RX_FILTER");
-+
-+	close(tx_sock);
-+	close(rx_sock);
-+}
-+
-+/* CAN_RAW_XL_VCID_TX_SET overwrites the VCID, and the RX side can select it */
-+TEST(canxl_vcid_set_and_filter)
-+{
-+	struct can_raw_vcid_options opts = {
-+		.flags = CAN_RAW_XL_VCID_TX_SET,
-+		.tx_vcid = 0x77,
-+	};
-+	struct can_raw_vcid_options filter = {
-+		.flags = CAN_RAW_XL_VCID_RX_FILTER,
-+		.rx_vcid = 0x77,
-+		.rx_vcid_mask = 0xff,
-+	};
-+	struct canxl_frame tx, rx;
-+	int tx_sock, rx_sock, ret;
-+
-+	tx_sock = open_xl_socket(1, &opts);
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	ASSERT_GE(tx_sock, 0)
-+		TH_LOG("failed to open CAN XL VCID socket on %s", CANIF);
-+
-+	rx_sock = open_xl_socket(1, &filter);
-+	ASSERT_GE(rx_sock, 0);
-+
-+	fill_canxl(&tx, 8, 0x11);
-+	tx.prio |= 0x42 << CANXL_VCID_OFFSET;
-+
-+	ret = write(tx_sock, &tx, CANXL_HDR_SIZE + tx.len);
-+	ASSERT_EQ(ret, CANXL_HDR_SIZE + tx.len);
-+
-+	ret = read(rx_sock, &rx, sizeof(rx));
-+	ASSERT_EQ(ret, CANXL_HDR_SIZE + 8);
-+
-+	ASSERT_EQ((rx.prio & CANXL_VCID_MASK) >> CANXL_VCID_OFFSET, 0x77)
-+		TH_LOG("CAN_RAW_XL_VCID_TX_SET did not overwrite the VCID");
-+	ASSERT_EQ(rx.prio & CANXL_PRIO_MASK, ID)
-+		TH_LOG("priority clobbered by the VCID option");
-+
-+	close(tx_sock);
-+	close(rx_sock);
-+}
-+
-+/* A non-matching VCID filter must not forward the frame */
-+TEST(canxl_vcid_filter_mismatch)
-+{
-+	struct can_raw_vcid_options pass = {
-+		.flags = CAN_RAW_XL_VCID_TX_PASS,
-+	};
-+	struct can_raw_vcid_options filter = {
-+		.flags = CAN_RAW_XL_VCID_RX_FILTER,
-+		.rx_vcid = 0x99,
-+		.rx_vcid_mask = 0xff,
-+	};
-+	struct canxl_frame tx, rx;
-+	int tx_sock, rx_sock, ret;
-+
-+	tx_sock = open_xl_socket(1, &pass);
-+	if (!can_iface_supports_xl())
-+		SKIP(return, "%s does not support CAN XL", CANIF);
-+
-+	ASSERT_GE(tx_sock, 0)
-+		TH_LOG("failed to open CAN XL VCID socket on %s", CANIF);
-+
-+	rx_sock = open_xl_socket(1, &filter);
-+	ASSERT_GE(rx_sock, 0);
-+
-+	fill_canxl(&tx, 8, 0x11);
-+	tx.prio |= 0x42 << CANXL_VCID_OFFSET;
-+
-+	ret = write(tx_sock, &tx, CANXL_HDR_SIZE + tx.len);
-+	ASSERT_EQ(ret, CANXL_HDR_SIZE + tx.len);
-+
-+	ret = recv_timeout(rx_sock, &rx, sizeof(rx));
-+	ASSERT_LT(ret, 0)
-+		TH_LOG("frame with non-matching VCID was forwarded");
-+
-+	close(tx_sock);
-+	close(rx_sock);
-+}
-+
- int main(int argc, char **argv)
- {
- 	char *ifname = getenv("CANIF");
--- 
-2.43.0
++	usb_kill_anchored_urbs(&parent->rx_submitted);
++
+ 	for (i = 0; i < parent->channel_cnt; i++)
+ 		if (parent->canch[i])
+ 			gs_destroy_candev(parent->canch[i]);
 
