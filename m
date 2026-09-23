@@ -1,112 +1,198 @@
-Received: from mail-ua2-f12.google.com (mail-ua2-f12.google.com [74.125.226.204])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90997386441
-	for <linux-can@vger.kernel.org>; Wed, 23 Sep 2026 14:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.226.204
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93DCF497B93;
+	Wed, 23 Sep 2026 16:12:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790174456; cv=none; b=NkIEGTJ3lvqT9tRhgRRpM3oBlRofPvF/HHCOzaSXEiJxdWq91ki22WfizcUr15OwhIsyabXMg3beY0l9rwdpMrGwwHheec7Ed4YEfR3R+3EoBycgnpSFEC17N/IX4XD/sdhJa17cknTQP/jEw4GmdiPzQ5KieiFCRTYKgTUvshg=
+	t=1790179934; cv=none; b=kL207iKmw4KdRSK6A7YfmK/6/ABghDq+XWH48iMYQEwvaOuyMLPV55PI6khFFgGM2dXP9qnNdVIr1vyl9liLdeUryOguzIy+qDA8nW/2fPHu5NE8GgLUSaq9vBZuIYWZf+lcv8WQ2CcYCvq/OipgPLPV6k3vcGzxbzYPZIs3DNs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790174456; c=relaxed/simple;
-	bh=HAiG2uKeueum3NwR1fOOATsx3Nfb/2XuIB0lowPT5AE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BL8it+b7eJy/xmp1spADpYLs0oZmyerkdIdIe3GMCQFRtwkrzk0skd3LuloVLf88pavmFSWrSpTVP0D2n8W9BWGx57DjBq4SxFlEVzVp60skEU25L11JX2SP2/Q88npK9RX/OxzQ7BqThbQPffZjCWD6R6gmmJBw4CjBug5ojCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=74.125.226.204
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua2-f12.google.com with SMTP id a1e0cc1a2514c-982db8d3b79so325567241.1
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2026 07:40:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790174453; x=1790779253;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=3QXVYin3gKtafVdGEnWDbswOTPSZ/Xq4fs9pj7jQGAU=;
-        b=JxYjVBjqHvpN6UPgpIdI5/f3NZo9hdGx9R2N6Veb5LHOjE/LGcOP+JRR0upmeIDg41
-         vtuvUsDrRFQsHmkT3GQVEAU0SeKpzI0cZ455Y02RkJH625IslrMNGLQZk3SS7dC5+uO4
-         0ZkVVqLpNARSII4XjwIMX+x+fub9IzKnbYZiEm3N4d6NmHjAQ96vn8cZ67rSgmJlHXqw
-         L3uyHOJxALd7rBsoqRuyFz2qvIegHJ9Duw+cB6w7pkEL+Mw5AaqfE2vTxoReJCKsbZ8b
-         uTCTtWG/lLOR66jyHMrAYdwMENeU234eJfFujUb8l60jGtVIdOCTiCGUpLLoDJwj3lB1
-         t7aA==
-X-Forwarded-Encrypted: i=1; AKwUvByM3CxalMZt/WiY9Awpkdv+Za3unoxUgDzYQmw8LI9ooM8D5FcpVLaVW0g6zghadCE4XxNwdVOh4UA=@vger.kernel.org
-X-Gm-Message-State: AFuF++lgCZyQiKXQ0e1kwZ+oKYusPc9KHmiR59hq08ZuXVGa0h7xi7ej
-	5DQJqEPjuzPEH+3MXY3jgk6wLzqggzzYKhas8ObVK7kqCG7ck4p4kHoj2wvPWTyyrls=
-X-Gm-Gg: AYBFou0yWD4pJMjBRxEO2n+lTKxsC26fVeYQBpFGIi71kmo4CL61iHg8DhS07OuY1II
-	3M1bzx4qi+X7GhNN87QBcuXiN9dwpirqioOaTjb6GIK+JkQAaPu4sDHoifWFE2XoFrCN30UFpcT
-	lUVDTqOUvd8dneJR46a9HuiPcmFaGrjch2/LbrMMyCL7Jr1VJk3aG+kdoJycAvZYi1DYaxU+ENx
-	aDh7+eoL72JQZIn7eJTRT84k+n+4+IZ4eXif23pD2FZ0rlPjY9B4dZ+qlvhIi3W5jfDZ5c9tZ3v
-	azzbVHY+bjSo8x5pK8cH3yRl/wabVF3hS4+RzPcglVWeNAd25hEaK5r3jxy79dNg1RJmSjGIMUs
-	iBTmDKmK0nghCaPjz0KYHEl+QcDGeTMgHBI4/hAqULr2tn5Nrf1NbbbC6s7wyTbyQD45E5GrE12
-	XGIZVAGX3ps+H9ycVKq41cNVKQdZZVBNHZK/4KGwa0HRHwh6m3l30A10HuHRwKTJ19D3qU6tNZv
-	jRe29PE1IbNxtID76FyMGVcy0pvON6OxGnDWpyIqwAqFskH
-X-Received: by 2002:a05:6102:5124:b0:7a1:f7d2:e849 with SMTP id ada2fe7eead31-7ac1d90658dmr2345204137.25.1790174453389;
-        Wed, 23 Sep 2026 07:40:53 -0700 (PDT)
-Received: from mail-ua2-f43.google.com (mail-ua2-f43.google.com. [74.125.226.235])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5c9f04c05b3sm3507731e0c.6.2026.09.23.07.40.53
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 23 Sep 2026 07:40:53 -0700 (PDT)
-Received: by mail-ua2-f43.google.com with SMTP id a1e0cc1a2514c-97e7c62dde3so356059241.3
-        for <linux-can@vger.kernel.org>; Wed, 23 Sep 2026 07:40:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AKwUvBz06LPWHUaKEQZf+v79y5Kaxrxj5/FQKwGyV5M7PBZOpOXeQ4SJoItXqYjhSocshxrl/i/j5B/oR+w=@vger.kernel.org
-X-Received: by 2002:a05:6102:3711:b0:785:c643:a415 with SMTP id
- ada2fe7eead31-7ac1bb45468mr2431267137.12.1790174453060; Wed, 23 Sep 2026
- 07:40:53 -0700 (PDT)
+	s=arc-20240116; t=1790179934; c=relaxed/simple;
+	bh=h1Y/hT7xJXPbkLPA41aY5ChwM3UIyGiYAsbPxBDVqGg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rWThAeMHIz8j0myGSffebHwPag9iNT0/eQ9uqbrHz0NIxg7I2ZeuhVCOGBgYq5g56qUrky3gO3HP6xB+YHWVcKnSypGbmI12suhXmfNQM53e36tUWmfL1/YVpEmX8xUZ/ou7MilgjTTUsj7xLiHaNcQ9TWs8RJXi2Xa/DbgIQpc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=Pr/4fD9a; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="Pr/4fD9a"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1790179910; x=1790784710; i=wahrenst@gmx.net;
+	bh=T7Fo3OIKO8mR6PYK0T66Jl1e/sJx4Ryl9JKTCCQhd3c=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Pr/4fD9a/5s1YsTM/ej5Q882PZlp54NBJcWw/O/jXACBSog5SYt3j1/zjfM6cB41
+	 D/290ie63AXZ4mS7HJTKdRWPZhNG1QR6OoUQcY00SxEbOikxj9pmOf3sTpEPteYjY
+	 V85Cy5c6p8XVClcOpRHNVBDVaLK6DNfM1PEuWAq5Lw53VqJdSC0xCe3N8EmRaac75
+	 wtHYyjGkJy35PexVGVIjJCo1gXWHxFKzHwkDVh6y/+YlVFfIlxZOicYqBfT6rF9Wg
+	 GjWHDF3qPIRUkkqAQxab/+lztgFBkW9WFnxViHde11TXq5hhHfYh40C0tXbJYNGk8
+	 UWxQii4PM+a1YhKkYQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N9dwj-1wfBcR10Sr-012PuX; Wed, 23
+ Sep 2026 18:11:50 +0200
+Message-ID: <72033c48-5219-4ed4-94fd-1b7d8ef8017c@gmx.net>
+Date: Wed, 23 Sep 2026 18:11:48 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260907134037.1855408-1-gerg@linux-m68k.org> <20260907134037.1855408-2-gerg@linux-m68k.org>
- <42ad1525-fceb-43d6-aa03-d17e844a9ad9@linux-m68k.org> <eb987eb9-f368-4d28-bdd0-c289c3039c3b@lunn.ch>
- <46246a5b-3e95-4ecb-bc52-e374dc136514@linux-m68k.org> <fe8a632a-80a8-45da-ba64-31158af7c987@lunn.ch>
-In-Reply-To: <fe8a632a-80a8-45da-ba64-31158af7c987@lunn.ch>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Wed, 23 Sep 2026 16:40:40 +0200
-X-Gmail-Original-Message-ID: <CAMuHMdWrRmvaEVjs4Whncybn-zVCKStC4gOpvwsnT+XRtm9Hbg@mail.gmail.com>
-X-Gm-Features: AclHuK8JOpxbtBL9eo2JZ21xOlmZ2HJ-Q_I8grURwALj-s_IRRLbJXlaWaj0iq8
-Message-ID: <CAMuHMdWrRmvaEVjs4Whncybn-zVCKStC4gOpvwsnT+XRtm9Hbg@mail.gmail.com>
-Subject: Re: [PATCHv3 1/3] net: fec: do not use readl()/writel() for ColdFire
-To: Andrew Lunn <andrew@lunn.ch>
-Cc: Greg Ungerer <gerg@linux-m68k.org>, linux-m68k@lists.linux-m68k.org, 
-	linux-kernel@vger.kernel.org, arnd@kernel.org, wei.fang@nxp.com, 
-	frank.li@nxp.com, shenwei.wang@nxp.com, imx@lists.linux.dev, 
-	netdev@vger.kernel.org, nico@fluxnic.net, linux-can@vger.kernel.org, 
-	linux-spi@vger.kernel.org, olteanv@gmail.com, andrew+netdev@lunn.ch, 
-	davem@davemloft.net, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: (subset) [PATCH V5 0/4] arm64: dts: freescale: Add chargebyte
+ Charge Control Y
+To: Vinod Koul <vkoul@kernel.org>, Frank Li <Frank.Li@nxp.com>
+Cc: Christoph Stoidner <c.stoidner@phytec.de>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, Rob Herring <robh@kernel.org>,
+ linux-kernel@vger.kernel.org, Aswath Govindraju <a-govindraju@ti.com>,
+ Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Conor Dooley <conor+dt@kernel.org>,
+ linux-can@vger.kernel.org, linux-phy@lists.infradead.org,
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+ Vincent Mailhol <mailhol@kernel.org>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>
+References: <20260907150420.18787-1-wahrenst@gmx.net>
+ <179016749941.155868.1810345055482953110.b4-ty@kernel.org>
+Content-Language: en-US
+From: Stefan Wahren <wahrenst@gmx.net>
+Autocrypt: addr=wahrenst@gmx.net; keydata=
+ xjMEZ1dOJBYJKwYBBAHaRw8BAQdA7H2MMG3q8FV7kAPko5vOAeaa4UA1I0hMgga1j5iYTTvN
+ IFN0ZWZhbiBXYWhyZW4gPHdhaHJlbnN0QGdteC5uZXQ+wo8EExYIADcWIQT3FXg+ApsOhPDN
+ NNFuwvLLwiAwigUCZ1dOJAUJB4TOAAIbAwQLCQgHBRUICQoLBRYCAwEAAAoJEG7C8svCIDCK
+ JQ4BAP4Y9uuHAxbAhHSQf6UZ+hl5BDznsZVBJvH8cZe2dSZ6AQCNgoc1Lxw1tvPscuC1Jd1C
+ TZomrGfQI47OiiJ3vGktBc44BGdXTiQSCisGAQQBl1UBBQEBB0B5M0B2E2XxySUQhU6emMYx
+ f5QR/BrEK0hs3bLT6Hb9WgMBCAfCfgQYFggAJhYhBPcVeD4Cmw6E8M000W7C8svCIDCKBQJn
+ V04kBQkHhM4AAhsMAAoJEG7C8svCIDCKJxoA/i+kqD5bphZEucrJHw77ujnOQbiKY2rLb0pE
+ aHMQoiECAQDVbj827W1Yai/0XEABIr8Ci6a+/qZ8Vz6MZzL5GJosAA==
+In-Reply-To: <179016749941.155868.1810345055482953110.b4-ty@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:RdPUK6v2MMsm5yM3xIhRnBZrjYZDWmc9aRdhJLRiBX0/3QdfrvW
+ ipzNJWVQrs1gEpPhrsSFwDgHcjKb11we6CrpfI5ZPR8PsDewdve0w3hzTAflB9N1taZJPnX
+ AwdYe9akRJ03GOuEnaYN84/bTiScFHtejk6FcR5rm3wb5lCSCtcObWshQmlF/WjRjrtCk3u
+ Da9uP1wLJDQUWtbgX4/+g==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:0wO6cW7mlRk=;NVfLgiepIRrcHMjVY7kHtGmZbPc
+ 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
 
-Hi Andrew,
+Hi Vinod,
 
-On Wed, 23 Sept 2026 at 16:16, Andrew Lunn <andrew@lunn.ch> wrote:
-> > The driver will always need to support big and little endian hardware, so I
-> > am not sure how to avoid some abstraction like this.
+Am 23.09.26 um 14:44 schrieb Vinod Koul:
+> On Mon, 07 Sep 2026 17:04:16 +0200, Stefan Wahren wrote:
+>> This series adds support for the chargebyte Charge Control Y, which is
+>> an Electrical Vehicle Supply Equipment (EVSE) for MCS (Megawatt
+>> Charging System) charging stations.
+>>
+>> sashiko reported in the first version of the series [1] that X_nRST_LAN
+>> is available via GPIO line names, but there is no reset mechanismn in the
+>> device tree. This finding is valid. Since the reset line feature isn't
+>> implemented for LAN8651 driver yet, I like to proceed with the current
+>> version. The LAN8651 handles reset via SPI commands and in rare cases
+>> we still have the possibility to control the reset from userspace.
+>> Btw the pin has a pull resistor in hardware, so it's not floating.
+>>
+>> [...]
+> Applied, thanks!
 >
-> I was wondering if there is a linux standard set of macros which is
-> supposed to handle this big/little difference, the macro knows the
-> architecture and does the correct thing?
+> [1/4] dt-bindings: phy: ti,tcan104x-can: Fix property constrains
+>        commit: c7f2322431cb6d108b18fb4154606b49e2bc50f7
+thanks, but what about
 
-Unfortunately not.
+[3/4] dt-bindings: phy: ti,tcan104x-can: Document Microchip MCP2542
 
-Quoting Arnd:
-   "fec is an exception to this because it happened to rely on the
-    unusual macros: all the Arm SoCs using this hardware have little-endian
-    registers (regardless of whether the CPU runs as BE or LE), while
-    all the coldfire chips use big-endian registers (and don't support
-    LE kernels). The powerpc variant of fec also uses big-endian registers
-    but has a separate copy of the driver that hardcodes this. Other
-    Freescale drivers already have a runtime endianess detection that
-    is needed because they built both BE and LE variants of the hardware
-    on Arm SoCs that could run the same kernel."
+Best regards
+>
+> Best regards,
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
