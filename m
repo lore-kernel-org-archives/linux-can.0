@@ -1,56 +1,53 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A04304FE2D0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AA284FE2CE;
 	Mon, 28 Sep 2026 19:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790624004; cv=pass; b=Wn0rjSeTymkisv0iLWwBv9Vrbpi+6+vCG2qWYAZYSN2WkseyJAuas37N+FogqVO1/OnqIt+fI7Df1JwdFzhB37MVYyyeAvrQUUI2w4b8RpzVigarq0eyI0MhMCyHmm6vEtUuhds94x6ykM34MFDdK6RsFgu/uoJlKcLawKeyKlY=
+	t=1790624004; cv=pass; b=BNzpiSDZAL3VlE3ENcELOoprmgP1AzHyUZbItVJad0B5BBlsZgS7dozRYii1LeDOel4KN+4UxR/Ag5UJLzDCyyUb3g3Auwy1a8CobqGn2YlTPqoyPyIvP2rd7m9M4VKgTdigO+kviHVnUjBLX4v0cH99c5HMvdtFh8N2LB0I1U0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1790624004; c=relaxed/simple;
-	bh=Qq+Ycq3EIdCyP7fRRmpcFsVOd3QQV3bqGdlZRSjk2Ko=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uLnc2/DvQSr+YjF5/lxRwjAlqhbV5mIxMviPPW9ltDDxl7/F8TsuVT0JbEeNARxRUOxkvTrW/cHFDlPMVJ4UFO1PgPAyUT8Us43Zzqk8R9Z9xm/fsyv3krIGxjVACbZVB9Q2aUOgHB+o63flo61/SbrGX49qPH1I5Zh1j9jmRgs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=OTnrTIEW; arc=pass smtp.client-ip=185.203.200.13
+	bh=hIrSrfsaxTtlqaNUhqCMl7SV+G9kcfp5MRSU94Q+MJM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZaE9C2fikEGxRpB6a2B8H6nDWBOiZI5JkMcjEIE/8UccrSoys/oLvxkK/zwSQkA/riNePyUrYGeyhqHeI2jh15EZYRgT6Gu5XcHzGErH2QCrKKJD0QsDZv2U56rRNSh5c1Pr/eExYza6TlFelGm7iF0GBLJe3Je48SPdutc5KvY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Vs0rZffd; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="OTnrTIEW"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Vs0rZffd"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id D01D5201F2F;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 3FF9C2004BB;
 	Mon, 28 Sep 2026 21:33:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1790623995;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U12IRhUVqyc9ePFqFC43WEcFbnA/BEO9QQoiF0/4eZo=;
-	b=OTnrTIEWFKo09ClvkaBPru6BB94ZbZCmHNZ/K+XFt1Da1nMgMd6WHyO0R8x+AtT0z7EZur
-	3LX4gEHJzR5WqfkHdlFLriLzeWywAsfkUFKC4OpGT1sBZV+zcT5XCJAt4JSe+GmcTV3FUR
-	SujXxUILPJnBDVZEQrAi2nPELXpzOWEqPtiAmMvEwk7CeLmjS4TuG62a3w47ijUuiAErm1
-	x7dA9FOSrOHUwpeBC2/OOidgJj4uHqyZkQ21I8JYqFWs68DF9AYIvfoDN3GDOQbhgwoCjn
-	sodE0Rd3ZWIx4UHAVprDPAf5mutwRUlwnCT5hgIB6l07xq92iXrI3ovoLH9mrw==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CqnGz/+EPVkF8ulugjTGKJflKkfq8fTuuWwljxkj7Hc=;
+	b=Vs0rZffdUJfr0mQn0BdgK/zyRjrwNc+p/iq4wOCyX5P51h86hzbtaXJ3RJNrY2KrZKMBgU
+	X9ZEboGqMxadrL9+EkZp88/kbnNnqE1a5vx9iHTcQANmycaY6u9o2bINxzJM0FWqboRYqA
+	x7jC3BLIbbGd34jcRrBwebsyTf74owrG04GVhQWCBxFSbCN8Dfl1vUDClKA93XvNVseHA4
+	XCAh2Q/OOep+I4xwdbUeOTxuB9mRenLlWCT7uTVuvLNonCHZt13tgUotj4l84yiUUj8rm/
+	gr8lsr3VcB1WHiSzt+yxrUlCnk6SZ8ovmBtg3kWcaeBSZbSnjwkYyobSr0D9Uw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1790623995;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=U12IRhUVqyc9ePFqFC43WEcFbnA/BEO9QQoiF0/4eZo=;
-	b=OZCNkqRnJ6H3DDpj4YraiJ6z8Y9AkgC5N1K1aTRANHKuX10WzWifB7na1I5DbBIKfRnUHi
-	I9Su/+vHfCZDhDwmUxbgYuVk5NZZMhidLCdY6B3Nfkr0BX+huOtnm7/Qiw7Etl5N6OjNuQ
-	psTWwgnLBAZ4M91OM0laoID6Ir/mJBbjKAKbMaQXdw6impq9h4RZGK/E7E69bhCIAhns7T
-	yCK9RxO3IFxcGcIvPOJ20cqln5T3lOl+lcgyc+hK5eZoNPsG6OrJ4I+S9VD63hghlGDxy9
-	jnxEdtLPIR5dEXP5ZhW6wO1xSk6x4rB9QLzUmh7FajFhA0txxlDXErSDrkCKbA==
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=CqnGz/+EPVkF8ulugjTGKJflKkfq8fTuuWwljxkj7Hc=;
+	b=ACjrn4t8dcAUu/dDlDqRh49PhGQuSyaQ0EsVIxMff5HUwzQYy3BX2sMM+2VTHTBfXUuOSI
+	si+SK9KIJx9FszVAm8lsSx4iTBULCnd78We8KYJj8aY4gTddG7u676oH61hXHj11xxn03f
+	tATp1bddeYE+yUz+QSXIYOXUk/UPN+CMxWlNa+mbrTypi2JlF5ymEp94L+xW62hr5NeBTN
+	Sc/9BVCBrukz5z8fp1T7rA/BGOmS92CKrDQrA8V3YVE6BVOlfUbXbSjgTq9OgC+XW+qhq9
+	LqI/Me8zgsD5Wxfkc+81N7LD9ehwf7Hbg/WVvtZLFl5P4H9hlfjucTJ2wsDo0Q==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790623995; a=rsa-sha256;
 	cv=none;
-	b=VTNNQTIn4iMy5JDlZk38LuNw3A5cD8SxxyAx0V+ujJB5FAqJcuTdMoMFALDjZ343xdhjrt
-	GGC+BSv9Txls2hHr50fsjFkq2SEHD5hLlhzamogWD92UG/zi1kJTMna2/OGEKFxIcywcyU
-	+NJ7sJdYj7U1ylIJkvHBuuALNDw6cmtR8QSvhc6Ei27po6pHmBdZeRxSMJMgDkyDBVkuTq
-	BMoM+M5T36+nlkLk+s5LJWCgyXNlAhp9eH77QfWFwYy/IMttPOFXacs3CLYe0SJXfeVrMA
-	m/JDLRlZa2GvA02CU5QBJsfgVyR/sM48BQdHpHXTYzMsqa4lfqotkEMpSvuKhg==
+	b=bRMci+F80NGBH21jYynI09UM7ZtOaIxH3CjTwF1gHD7uu+aTsWbhjlVCfClcxaMhugW81I
+	DyVzFyF7XgiM6L9kAwk851yL9kysboSaq5ltsPoBkVj9DomI+WUpgENaGmIl+/twTp2L9X
+	DyydbUy/y3wh18L9wWrGcSUXuMSUCdUcXTyVpt1MRBej65a9oNlwuYF24P1ScR3w2SiiWM
+	wxZLPbmGPuX1Wdk1oNZTdU4ADg8zs5vtQsrxKtA+A6lJh9TXFci6EXIjJf7Wc+Qc4eqj33
+	3j+5LD86JpjYSrsi9ePd5gS7Hu35iRbSrnTBQtVPZsBt92WLk6WlYzRLu8PyOw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -58,186 +55,188 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xBH6B-003H60-20;
+	id 1xBH6B-003H5p-0V;
 	Mon, 28 Sep 2026 21:33:15 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 614A75B154D;
-	Mon, 28 Sep 2026 19:33:15 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id DA1FB5B1547;
+	Mon, 28 Sep 2026 19:33:14 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
-	syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 06/22] can: j1939: j1939_sk_bind(): fix j1939_ecu leak when re-bind failed
-Date: Mon, 28 Sep 2026 20:45:13 +0200
-Message-ID: <20260928193312.553632-7-mkl@pengutronix.de>
+	kernel@pengutronix.de
+Subject: [PATCH net 0/22] pull-request: can 2026-09-28
+Date: Mon, 28 Sep 2026 20:45:07 +0200
+Message-ID: <20260928193312.553632-1-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260928193312.553632-1-mkl@pengutronix.de>
-References: <20260928193312.553632-1-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
 Content-Transfer-Encoding: 8bit
 
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Hello netdev-team,
 
-syzbot is reporting "struct j1939_ecu" refcount leak, which occurs when
-netdev_hold() is called during ECU creation but the corresponding
-netdev_put() is never executed because the parent "struct j1939_ecu"
-object is leaked.
+this is a pull request of 22 patches for net/main.
 
-  unregister_netdevice: waiting for vxcan1 to become free. Usage count = 3
-  ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
-       __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
-       netdev_hold include/linux/netdevice.h:4525 [inline]
-       j1939_ecu_create_locked+0x1c9/0x400 net/can/j1939/bus.c:159
-       j1939_local_ecu_get+0xeb/0x220 net/can/j1939/bus.c:293
-       j1939_sk_bind+0x70a/0xc60 net/can/j1939/socket.c:529
-       __sys_bind_socket net/socket.c:1920 [inline]
-       __sys_bind+0x2e3/0x410 net/socket.c:1951
-       __do_sys_bind net/socket.c:1956 [inline]
-       __se_sys_bind net/socket.c:1954 [inline]
-       __x64_sys_bind+0x7a/0x90 net/socket.c:1954
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+The first patch is by Vincent Mailhol and drops CAN-XL frames on non
+CAN-XL devices.
 
-  ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
-       __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
-       netdev_hold include/linux/netdevice.h:4525 [inline]
-       j1939_priv_create net/can/j1939/main.c:140 [inline]
-       j1939_netdev_start+0x387/0xb20 net/can/j1939/main.c:268
-       j1939_sk_bind+0x946/0xc60 net/can/j1939/socket.c:506
-       __sys_bind_socket net/socket.c:1920 [inline]
-       __sys_bind+0x2e3/0x410 net/socket.c:1951
-       __do_sys_bind net/socket.c:1956 [inline]
-       __se_sys_bind net/socket.c:1954 [inline]
-       __x64_sys_bind+0x7a/0x90 net/socket.c:1954
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+The next 3 patches are by Cunhao Lu and make CAN skb freeing safe in
+any context in several CAN helper functions.
 
-The root cause lies in the error handling of j1939_sk_bind() during a
-re-bind operation (binding an already bound socket to the same interface).
-Currently, the function prematurely drops the old ECU references by calling
-j1939_local_ecu_put() before verifying whether the new configuration can be
-successfully acquired via j1939_local_ecu_get().
+A patch by zjamg restores the skb header initialization lost during
+the v7.0 release cycle.
 
-If j1939_local_ecu_get() subsequently fails, the function unconditionally
-calls j1939_netdev_stop() and clears jsk->priv. This leaves the socket in a
-half-broken state where the old ECU's refcount has already been decremented
-incompletely, but the socket destruct pathway (j1939_sk_sock_destruct) can
-no longer perform proper cleanup because jsk->priv is NULL. As a result,
-the old "struct j1939_ecu" remains orphaned on the priv->ecus list,
-permanently leaking both the ECU object and the net_device reference held
-inside it.
+Tetsuo Handa's patch fixes a j1939_ecu leak in the CAN J1939 protocol
+when re-bind fails.
 
-Fix this by deferring the removal and release of the old ECU references
-until after j1939_local_ecu_get() has successfully acquired the new
-resources. As a side effect of this change, the socket's state no longer
-changes when the re-bind operation failed.
+A patch by Kaixuan Li for the CAN ISOTP protocol improves the check
+for the correct CAN CC/FD frames.
 
-Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-Assisted-by: Gemini-Pro
-Fixes: f214744c8a27 ("can: j1939: j1939_sk_bind(): call j1939_priv_put() immediately when j1939_local_ecu_get() failed")
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://patch.msgid.link/deb3ac27-5eaf-406a-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp
-Cc: stable@vger.kernel.org
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Quchaosheng contributes 2 patches for the cc770 driver, to properly
+propagate error values in the cc770_platform_probe() function and to
+fix the clock divider check on the platform bus in the
+cc770_get_platform_data() function.
+
+Fan Wu's patch for the kvaser_pciefd driver fixes a potential
+use-after-free.
+
+A patch by Joshua Crofts adds a missing
+pm_runtime_dont_use_autosuspend() to the m_can_pci driver.
+
+Markus Schneider-Pargmann's patch for the m_can driver fixes the
+deinit() error path in the m_can_class_suspend() function.
+
+The next patch by Wentao Liang fixes a clk leak in the error path of
+the sun4ican_probe()'s function.
+
+Maximilian Zimmermann's patch for the xilinx CAN driver adds the
+setting the ESI and BSR flags in the receive path if they are active.
+
+Jiale Yao's patch for the mcp251xfd driver rejects devices without
+match data.
+
+A patch by Runyu Xiao fixes a potential deadlock in the error path of
+the hi311x CAN driver.
+
+Fan Wu's patch for the ems_usb driver properly stops the interrupt
+URB when shutting down the device.
+
+Ji-Ze Hong fixes a struct size mismatch in the f81604 CAN driver.
+
+The next 2 patches are for the gs_usb driver. Fan Wu's patch properly
+kills the RX URBs before destroying the netdevs. The other patch is by
+me and adds workarounds for the HScanT USB to CAN adapter.
+
+Cen Zhang fixes a slab-out-of-bounds read access in the kvaser_usb
+driver.
+
+The last patch is by Stefan Günther, target the peak_usb driver and
+fixes the CAN-ID when reporting CAN errors.
+
+regards,
+Marc
+
 ---
- net/can/j1939/socket.c | 37 ++++++++++++++++++++++---------------
- 1 file changed, 22 insertions(+), 15 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 50a598ef5fd4..24efb25c58c3 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -450,6 +450,7 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
- 	struct sock *sk;
- 	struct net *net;
- 	int ret = 0;
-+	bool was_bound;
- 
- 	ret = j1939_sk_sanity_check(addr, len);
- 	if (ret)
-@@ -462,7 +463,8 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
- 	net = sock_net(sk);
- 
- 	/* Already bound to an interface? */
--	if (jsk->state & J1939_SOCK_BOUND) {
-+	was_bound = (jsk->state & J1939_SOCK_BOUND);
-+	if (was_bound) {
- 		/* A re-bind() to a different interface is not
- 		 * supported.
- 		 */
-@@ -470,10 +472,6 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
- 			ret = -EINVAL;
- 			goto out_release_sock;
- 		}
--
--		/* drop old references */
--		j1939_jsk_del(priv, jsk);
--		j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
- 	} else {
- 		struct can_ml_priv *can_ml;
- 		struct net_device *ndev;
-@@ -519,22 +517,31 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
- 		jsk->priv = priv;
- 	}
- 
-+	/* get new references without dropping old references */
-+	ret = j1939_local_ecu_get(priv, addr->can_addr.j1939.name, addr->can_addr.j1939.addr);
-+	if (ret) {
-+		/* nothing to undo if re-bind() failed */
-+		if (!was_bound) {
-+			j1939_netdev_stop(priv);
-+			jsk->priv = NULL;
-+			synchronize_rcu();
-+			j1939_priv_put(priv);
-+		}
-+		goto out_release_sock;
-+	}
-+
-+	/* drop old references after re-bind() succeeded */
-+	if (was_bound) {
-+		j1939_jsk_del(priv, jsk);
-+		j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
-+	}
-+
- 	/* set default transmit pgn */
- 	if (j1939_pgn_is_valid(addr->can_addr.j1939.pgn))
- 		jsk->pgn_rx_filter = addr->can_addr.j1939.pgn;
- 	jsk->addr.src_name = addr->can_addr.j1939.name;
- 	jsk->addr.sa = addr->can_addr.j1939.addr;
- 
--	/* get new references */
--	ret = j1939_local_ecu_get(priv, jsk->addr.src_name, jsk->addr.sa);
--	if (ret) {
--		j1939_netdev_stop(priv);
--		jsk->priv = NULL;
--		synchronize_rcu();
--		j1939_priv_put(priv);
--		goto out_release_sock;
--	}
--
- 	j1939_jsk_add(priv, jsk);
- 
-  out_release_sock: /* fall through */
--- 
-2.53.0
+The following changes since commit a7bfaba4823e3c165bb2004c74eff7c096672bc7:
 
+  ipv6: fix prefix route expiry in modify_prefix_route() (2026-09-25 17:34:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-7.3-20260928
+
+for you to fetch changes up to 3a8690cbd943aef99252073d560366f25d1b6b9a:
+
+  can: peak_usb: fix missing CAN_ERR_FLAG when reporting error counters (2026-09-28 20:38:34 +0200)
+
+----------------------------------------------------------------
+linux-can-fixes-for-7.3-20260928
+
+----------------------------------------------------------------
+Cen Zhang (Microsoft Security FORGE Labs) (1):
+      can: kvaser_usb: validate command format before parsing in hydra receive path
+
+Cunhao Lu (3):
+      can: skb: make echo skb freeing safe in any IRQ context
+      can: skb: make CAN skb allocation failure paths IRQ-safe
+      can: dev: can_put_echo_skb(): free skb on invalid echo index
+
+Fan Wu (3):
+      can: kvaser_pciefd: fix use-after-free in bec poll timer
+      can: ems_usb: use usb_kill_urb() to stop the intr URB
+      can: gs_usb: kill RX URBs before destroying the netdevs
+
+Ji-Ze Hong (Peter Hong) (1):
+      usb: f81604: fix struct f81604_int_data size mismatch
+
+Jiale Yao (1):
+      can: mcp251xfd: mcp251xfd_probe(): reject devices without match data
+
+Joshua Crofts (1):
+      can: m_can: pci: add missing pm_runtime_dont_use_autosuspend() call
+
+Kaixuan Li (1):
+      can: isotp: check the frame type, not just the length
+
+Marc Kleine-Budde (2):
+      Merge patch series "can: skb: make echo skb freeing safe in any IRQ context"
+      can: gs_usb: add workarounds for HScanT USB to CAN adapter
+
+Markus Schneider-Pargmann (TI) (1):
+      can: m_can: m_can_class_suspend(): fix suspend deinit() error path
+
+Maximilian Zimmermann (1):
+      can: xilinx_can: set CAN FD flags on received frames
+
+Quchaosheng (2):
+      can: cc770: platform_get_irq(): propagate the error
+      can: cc770: fix the clock divider check on the platform bus
+
+Runyu Xiao (1):
+      can: hi311x: drop hi3110_lock before free_irq() on open failure
+
+Stefan Günther (1):
+      can: peak_usb: fix missing CAN_ERR_FLAG when reporting error counters
+
+Tetsuo Handa (1):
+      can: j1939: j1939_sk_bind(): fix j1939_ecu leak when re-bind failed
+
+Vincent Mailhol (1):
+      can: dev: can_dropped_invalid_skb: drop CAN XL frames on non-CAN XL devices
+
+Wentao Liang (1):
+      can: sun4i_can: sun4ican_probe(): fix clk leak
+
+zjamg (1):
+      can: dev: init_can_skb(): restore skb header initialization
+
+ drivers/net/can/cc770/cc770_platform.c             |   9 +-
+ drivers/net/can/dev/skb.c                          |  20 +--
+ drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c |   3 +-
+ drivers/net/can/m_can/m_can.c                      |  23 +++-
+ drivers/net/can/m_can/m_can_pci.c                  |   1 +
+ drivers/net/can/spi/hi311x.c                       |   3 +
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c     |   7 +-
+ drivers/net/can/sun4i_can.c                        |   8 +-
+ drivers/net/can/usb/ems_usb.c                      |   2 +-
+ drivers/net/can/usb/f81604.c                       |   2 +-
+ drivers/net/can/usb/gs_usb.c                       | 129 +++++++++++++++++++-
+ drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c  | 135 +++++++++++++++++++--
+ drivers/net/can/usb/peak_usb/pcan_usb.c            |   2 +-
+ drivers/net/can/xilinx_can.c                       |   6 +
+ include/linux/can/dev.h                            |   2 +-
+ include/linux/can/skb.h                            |   4 +-
+ net/can/isotp.c                                    |   8 ++
+ net/can/j1939/socket.c                             |  37 +++---
+ 18 files changed, 353 insertions(+), 48 deletions(-)
