@@ -1,230 +1,187 @@
-Received: from mail.enpas.org (lighthouse.enpas.org [46.38.232.102])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FF0B33F5BE;
-	Sat, 26 Sep 2026 15:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.38.232.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2333535201A;
+	Mon, 28 Sep 2026 06:50:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790436423; cv=none; b=WnqLtj/JL/U8jqGSFQm3MIqnVKDx1ZZ30tYcF1pVRi5HskAtz5sAzNiTy4ORRKA/v+NLVwJYsBZElOLD+o2k8wdaU7pPWe4PLyFN9zKxhpFDp4Gqi0wVqUKnNuOlgjtspP1zTqWqDxGw8bEc3GmKmhZ5B8RY+UmFIbNXWcRMeQU=
+	t=1790578243; cv=none; b=s/4u2SR0o/WTSlGDIUBuBqa8M03W6mTAg7Ymq9zqPMSURBIib3KnkYTJ+RGx/jiicYjCeDlmcWnYmc5j2xMZ8ZXIID0TKzudeHemMpUtC7v1ggDoWGCoE22rURqOeVeOSbbbOKDwdwR3aJoJxUmMvaW+GdslJCzt1kDSlkWV+qU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790436423; c=relaxed/simple;
-	bh=z3rqi5lnhp3ytAxTUH3SdZvOqMvHh55hc83Yuk+tdHU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gcZYHbH6/FG1p4yplXOYZAhuaJKmBwStgO7L4GD/+y4s8j665OkezjT1TZQbIq/Jqz1VgRHrAG35GUN5Nm7g99Vs9A3TnjQXR9AT3f8ZGtv3Oubrn+aogBeQXjQ2mFBz7guU+/9uC+vCXmyvaBoFMzOLUv3iy49zrY4iyaFL2vc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org; spf=pass smtp.mailfrom=enpas.org; arc=none smtp.client-ip=46.38.232.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=enpas.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	by mail.enpas.org (Postfix) with ESMTPSA id 3AD17104F78;
-	Sat, 26 Sep 2026 15:26:51 +0000 (UTC)
-Message-ID: <0daea1b3-82ef-48f0-8d35-6ce0100b60bf@enpas.org>
-Date: Sun, 27 Sep 2026 00:26:49 +0900
+	s=arc-20240116; t=1790578243; c=relaxed/simple;
+	bh=/PMiTRhTca/Ba2WyyagmYvvuRWbUSJVJwgY0dmft4l8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uXHAkNHNmBENkJJ37RSmK54Dz9zxdcpWnVlbdHgBj3WxmfN5C5QWbxpJtj3HwvE0HEit60EUznmpW6n8/6f32FS6C4AagfnYmO+K9FkthcqQ/lsd4bBxf40HCDCQufuP5nRgEAkDG/s+FXaJXymI3kMOSMAwIGnSGTDX/L/g7x0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=eL+fpo1Z; arc=none smtp.client-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="eL+fpo1Z"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=IL
+	2EBXZ/+Q17dXypphHNBR4Qhatsa1DOCyC+1LTMRqs=; b=eL+fpo1ZAIaJC4sHvO
+	y/R7HLKkfwrcj9u9yYFY950jancOGuDfxdlaee69RcAObjJ5gQ48+BzvoHK16dr4
+	xNJamOesmqB5HDvjReDkUFSmkXdzn4b0IjTVKSUzNm0HsCB3etS9WKarvcrRpbCy
+	TzsRk7yUkflj/geYNRWtgeCmA=
+Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wD350wnDrpqY_dYBQ--.60414S2;
+	Mon, 28 Sep 2026 14:50:16 +0800 (CST)
+From: Quchaosheng <quchaosheng000406@163.com>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de
+Cc: Quchaosheng <quchaosheng000406@163.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH net] can: j1939: validate the EDPO packet number
+Date: Mon, 28 Sep 2026 14:49:59 +0800
+Message-ID: <20260928065000.1749383-1-quchaosheng000406@163.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 2/3] can: rx-offload: add a per-IRQ receive context
-Content-Language: en-US
-To: Ciprian Costea <ciprianmarian.costea@oss.nxp.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
- <mailhol@kernel.org>, Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>,
- Dario Binacchi <dario.binacchi@amarulasolutions.com>,
- Markus Schneider-Pargmann <msp@baylibre.com>,
- Heiko Stuebner <heiko@sntech.de>, Manivannan Sadhasivam <mani@kernel.org>,
- Thomas Kopp <thomas.kopp@microchip.com>, Ming Yu <tmyu0@nuvoton.com>
-Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- linux-rockchip@lists.infradead.org, NXP S32 Linux Team <s32@nxp.com>,
- imx@lists.linux.dev, Haibo Chen <haibo.chen@nxp.com>,
- Enric Balletbo <eballetb@redhat.com>
-References: <20260925144558.2909639-1-ciprianmarian.costea@oss.nxp.com>
- <20260925144558.2909639-3-ciprianmarian.costea@oss.nxp.com>
-From: Max Staudt <max@enpas.org>
-Autocrypt: addr=max@enpas.org; keydata=
- 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
- 1Nk4wgjdif6n69chAwuDQyOfWdz/dQ==
-In-Reply-To: <20260925144558.2909639-3-ciprianmarian.costea@oss.nxp.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Thank you for your patch. The general idea sounds useful, and at a quick 
-glance, the implementation seems sound. I'm not able to do a full review 
-- please wait for a maintainer's reply.
-
-Comments below, from the point of view of a simple CAN driver's 
-maintainer (can327).
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wD350wnDrpqY_dYBQ--.60414S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxtr1UurWrCFWrXF4rtry7Jrb_yoW7Ww4fpF
+	y3KryUGr1kArsrAw4rJrWUX34ayws3JryrJasFq3sakw45ZF45tF98tryfWayqy3s5u343
+	W3WDXwsxKr40q37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRvtC5UUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAAjWTGq6DiiEmQAA35
 
 
+ETP.CM_DPO is peer controlled and its packet number is accepted without
+any validation.  It names the packet a transmission window starts at, and
+j1939_xtp_rx_dat_one() places incoming data at "dat[0] - 1 + pkt.dpo", so
+a value past the end of the message moves pkt.dpo beyond the reassembled
+buffer.
 
-On 9/25/26 11:45 PM, Ciprian Costea wrote:
-> From: Ciprian Marian Costea <ciprianmarian.costea@oss.nxp.com>
-> 
-> The IRQ handler fills skb_irq_queue without a lock and the finish helpers
-> then splice it into skb_queue under skb_queue.lock. This breaks when a
-> driver uses the helpers from more than one IRQ line. On NXP S32G2, the
-> flexcan handlers can run at the same time on different CPUs and corrupt
-> skb_irq_queue.
+The transfer still completes normally in that case.  With
+pkt.dpo == pkt.total, a closing ETP.DT frame with dat[0] == 0 evaluates to
+packet pkt.total - 1, which is the last in-order packet, so pkt.rx reaches
+pkt.total and the receiver emits its own EOMA.  The local loopback of that
+EOMA runs j1939_session_completed(), which asks
+j1939_session_skb_get() for offset "pkt.dpo * 7" -- one full packet past
+the end of the queued skb -- gets NULL, and passes it straight to
+j1939_sk_recv(), which dereferences oskb->sk.
 
-Please add "Currently, " to the beginning of this paragraph.
+The trigger is deterministic and needs no hardware, no race and no memory
+pressure.  All of it is reachable by an unprivileged user through a
+virtual CAN interface:
 
+  ETP.CM_RTS (size 1786)  -> total = 256 packets
+  ETP.CM_DPO (packet 0)
+  ETP.DT seq 1..255       -> packets 0..254, pkt.rx = 255
+  ETP.CM_DPO (packet 256) -> pkt.dpo = 256, unvalidated
+  ETP.DT seq 0            -> packet 255 == pkt.rx, completes the transfer
 
-> Add struct can_rx_offload_irq, one per IRQ line, which holds
-> skb_irq_queue, skb_queue_len_max and the mailbox range. skb_queue and napi
-> stay in struct can_rx_offload and are shared by all contexts.
+resulting in:
 
-The IRQ naming gives me a bit of a headache. It may be IRQ in the case 
-of flexcan, but can be something else in other drivers. Also, _irq gives 
-the impression that the struct stores an IRQ, or at least something 
-related to it, but this really does not.
+  BUG: kernel NULL pointer dereference, address: 0000000000000018
+  RIP: 0010:j1939_sk_recv+0xaf/0x150
+  Call Trace:
+   <IRQ>
+   j1939_session_completed+0x69/0x80
+   j1939_xtp_rx_eoma+0xc1/0x170
+   j1939_tp_recv+0x41b/0x4c0
+   j1939_can_recv+0x1ad/0x290
+  Kernel panic - not syncing: Fatal exception in interrupt
 
-Can you please rename the new struct and concept to something else? 
-Maybe _queue? And then the old struct can be renamed to _common or 
-_shared or something. The maintainers may have better naming ideas.
+Reject an EDPO that names a packet at or past pkt.total and abort the
+session with J1939_XTP_ABORT_BAD_EDPO_OFFSET, the SAE J1939-21 abort code
+for exactly this case.  The check has to be ">=" and not ">": pkt.total is
+a packet count, so the last valid packet is pkt.total - 1 and
+"dpo == pkt.total" is already out of range -- it is the value used by the
+trigger above.
 
-I think you can keep the name skb_irq_queue inside the struct, my 
-request is about the new struct's name itself. In the same vein, 
-expanding the new struct's explanatory comment would help - please 
-explain that *the purpose* of having this struct is so you can have one 
-per source, *such as* one for each unique IRQ that the same CAN hardware 
-may trigger.
+Both roles tolerate the check because a transmitter derives the offset
+from pkt.tx_acked, which is "cts_packet - 1" with cts_packet <= pkt.total,
+so the largest value it ever announces is pkt.total - 1.
 
+Also guard j1939_session_completed() against a NULL skb as defense in
+depth, so that any future regression in the offset arithmetic degrades to
+a dropped message instead of a kernel panic.  The only other caller of
+j1939_session_skb_get(), j1939_simple_txnext(), already does this.
 
-> @@ -351,64 +378,88 @@ EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_finish);
->   
->   static int can_rx_offload_init_queue(struct net_device *dev,
->   				     struct can_rx_offload *offload,
-> +				     struct can_rx_offload_irq *offload_irq,
->   				     unsigned int weight)
->   {
-> -	offload->dev = dev;
-> -
-> -	/* Limit queue len to 4x the weight (rounded to next power of two) */
-> -	offload->skb_queue_len_max = 2 << fls(weight);
-> -	offload->skb_queue_len_max *= 4;
-> -	skb_queue_head_init(&offload->skb_queue);
-> -	__skb_queue_head_init(&offload->skb_irq_queue);
-> +	struct can_rx_offload_irq *pos;
-> +	u32 skb_queue_len_max;
-> +
-> +	offload_irq->offload = offload;
-> +	__skb_queue_head_init(&offload_irq->skb_irq_queue);
-> +
-> +	/* The first registered IRQ initializes the shared state. */
-> +	if (!offload->irq_cnt) {
-> +		offload->dev = dev;
-> +		skb_queue_head_init(&offload->skb_queue);
-> +		INIT_LIST_HEAD(&offload->irqs);
-> +		netif_napi_add_weight(dev, &offload->napi,
-> +				      can_rx_offload_napi_poll, weight);
-> +	} else if (weight > offload->napi.weight) {
-> +		/* All contexts feed the same NAPI, keep the largest weight. */
-> +		offload->napi.weight = weight;
-> +	}
-> +	list_add_tail(&offload_irq->node, &offload->irqs);
-> +	offload->irq_cnt++;
->   
-> -	netif_napi_add_weight(dev, &offload->napi, can_rx_offload_napi_poll,
-> -			      weight);
-> +	/* Limit queue len to 4x the weight (rounded to next power of two).
-> +	 * All contexts feed the same skb_queue, so they share its limit.
-> +	 */
-> +	skb_queue_len_max = 2 << fls(offload->napi.weight);
-> +	skb_queue_len_max *= 4;
-> +	list_for_each_entry(pos, &offload->irqs, node)
-> +		pos->skb_queue_len_max = skb_queue_len_max;
->   
->   	dev_dbg(dev->dev.parent, "%s: skb_queue_len_max=%d\n",
-> -		__func__, offload->skb_queue_len_max);
-> +		__func__, skb_queue_len_max);
->   
->   	return 0;
->   }
+Tested on v7.3.0-rc5 under QEMU:
 
-This API is confusing now. It's called _init_queue(), but you've really 
-changed it into something that acts like _init_or_add_queue(). Please 
-rename this, and while at it, please add an explanatory comment for the 
-function above it, since it has grown quite complex.
+  - the frame sequence above panics an unpatched kernel in
+    j1939_sk_recv() and is cleanly aborted by this patch
+  - a full 1786 byte ETP transfer between two J1939 sockets still
+    completes with the payload intact.  That transfer announces
+    pkt.total - 1 in its last EDPO, so it exercises the boundary value
+    one below the rejected one, and it runs the transmitter's own EDPO
+    through the vcan loopback as well.
 
-The comment you added in can_rx_offload_del() is a positive example - 
-having more of this stuff helps! Actually, that specific comment talks 
-about "contexts" - please try to align that wording with whatever you 
-rename the _irq struct to, such as "queue", to keep the code and 
-comments consistent for the next reader.
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Assisted-by: LLM
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+---
+ net/can/j1939/transport.c | 29 +++++++++++++++++++++++++----
+ 1 file changed, 25 insertions(+), 4 deletions(-)
 
-
-Thanks,
-Max
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8fcfd13e5..065b4f71e 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1243,9 +1243,18 @@ static void j1939_session_completed(struct j1939_session *session)
+ 
+ 	if (!session->transmission) {
+ 		se_skb = j1939_session_skb_get(session);
+-		/* distribute among j1939 receivers */
+-		j1939_sk_recv(session->priv, se_skb);
+-		consume_skb(se_skb);
++
++		/* The offset "pkt.dpo * 7" is not necessarily covered by a
++		 * queued skb, e.g. when a peer names a packet past the end of
++		 * the message in an EDPO.  j1939_simple_txnext() already
++		 * guards its call the same way; dropping the message is
++		 * better than handing a NULL skb to j1939_sk_recv().
++		 */
++		if (se_skb) {
++			/* distribute among j1939 receivers */
++			j1939_sk_recv(session->priv, se_skb);
++			consume_skb(se_skb);
++		}
+ 	}
+ 
+ 	j1939_session_deactivate_activate_next(session);
+@@ -1823,14 +1832,34 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
+ 				 struct sk_buff *skb)
+ {
+ 	const u8 *dat = skb->data;
++	unsigned int dpo;
+ 
+ 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+ 		return;
+ 
+ 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+ 
++	dpo = j1939_etp_ctl_to_packet(dat);
++
++	/*
++	 * EDPO is peer controlled.  It names the packet the announced window
++	 * starts at, and j1939_xtp_rx_dat_one() places data at
++	 * "dat[0] - 1 + pkt.dpo", so it has to stay inside the message.  A
++	 * value past the end moves pkt.dpo beyond the reassembled buffer and
++	 * makes the ETP completion path look up offset "pkt.dpo * 7", which is
++	 * no longer covered by any queued skb.
++	 */
++	if (dpo >= session->pkt.total) {
++		netdev_warn(session->priv->ndev,
++			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
++			    __func__, session, dpo, session->pkt.total);
++		j1939_session_timers_cancel(session);
++		j1939_session_cancel(session, J1939_XTP_ABORT_BAD_EDPO_OFFSET);
++		return;
++	}
++
+ 	/* transmitted without problems */
+-	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
++	session->pkt.dpo = dpo;
+ 	session->last_cmd = dat[0];
+ 	j1939_tp_set_rxtimeout(session, 750);
+ 
 
