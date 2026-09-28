@@ -1,170 +1,145 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAAE4B7A31
-	for <linux-can@vger.kernel.org>; Mon, 28 Sep 2026 11:56:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790596562; cv=none; b=IuqbOizJ1hEKm2jnJhTOrCJ7OXHYXmYucveX18H9tR4XchwMSIJrHJ4bje65o+d4PEzgKbh4sfgVNsZcSoOcBvzKyjRcBJydVgDX8sM4uBtEhrrV6IK55UqUSujVcogZMzxM4emFKHmm6BPDLhGXblqaBnEUTFIgZse0BP3E3Aw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790596562; c=relaxed/simple;
-	bh=wuBm7wQKvGKBHX0ufsK0qRbYaOC++SdFrKllsCNx+Gs=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=Bl5DQ2+Kvzl84phf8vV95wK8jL30ypH8NhiX3XhjoLPGz2/92gGB88lEVP3xHubOK7Xd36ucLQ/hO2IQtd9xUysYG7WjEpiJLYNhMw8RSMJiCh613ZSi1iIQ3zH3rHnm0UH/iBPkL+qWU2oLvkmyqbMWg+R5jeGZx26FdWm/Xnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vlkd4jCT; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2492914A60F;
+	Mon, 28 Sep 2026 12:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.216
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790597806; cv=pass; b=fnk4rDDCB/Qe51HeelUedkdiieoAoQJQWehe2vDz896QyIrdY+Jp0TFv6Osd29dYIJM0hqXhOWcONUZtTmBlxYgn/L7Ndcwx/wTNwrSfZ7lzfBXRBGwa65z92O1n57MCPkIxY3nMpcvG/Nh6KE0GVoE7yKbyIwP3cN1M2zR1ZSY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790597806; c=relaxed/simple;
+	bh=/2evjd2+72ZQewLYViyHpo7Db1D+xFI86negJxGswDk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=N+drrWQOghFpymvC+93zODrB/glZx3Jby6/rQuf1EI4hQ2YA3pbOLGDkSNJs35+Ur1zxcBwSi7dfWdjXc6eqRptoObCk+eePwaH/HXacXaPAKhg13hrGFpBfRwWuhqtQ/uCtXOyZp4W1QsAOYp0Qe6cpNPmJrcfP/naw31cmM8I=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=pc3n+X0/; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ynuGiXLl; arc=pass smtp.client-ip=81.169.146.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vlkd4jCT"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4FC3C1F000FF;
-	Mon, 28 Sep 2026 11:56:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790596560;
-	bh=D+mVBa8Km4p7HseMGbS9EVyj/lWY2iFFlGuox9SwE90=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Vlkd4jCT3c2dxL24S9qRR0hNclV1nd7xA/rGjpiEvkNDk/VCe9ALyfJDWCLeqlNfG
-	 L5OMUuVHzpd/UzCm9n4qYoRf99APyLJnr/8f9lveuPTxicYkYbLLv41EPTVa216a9V
-	 7n5nkYn202D9LtHLL5dxOeKpkXnkWwMOzLtFnYaqgv7sgFBe7doZkM2B2hZ9eJevxB
-	 3pzHmjFZSCxaGc6vL3YVvFIbXw/8zm17C3n1p7Gx//wWTLU9k9iJ8zaia85ia/Aq4m
-	 P3WZ2uXZx8ghe7jU+ZmWGxy57d2C4ovnZYqgw/X8vNj9GFQL+4FrNyjE+TrDj2gFHN
-	 xVVgb5SawbWTQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2] selftests: can: add isotp frame-type tests
-Reply-To: sashiko-reviews@lists.linux.dev
-To: Quchaosheng <quchaosheng000406@163.com>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260928114551.2148536-1-quchaosheng000406@163.com>
-References: <20260928114551.2148536-1-quchaosheng000406@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 28 Sep 2026 11:55:58 +0000
-Message-Id: <20260928115600.4FC3C1F000FF@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="pc3n+X0/";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ynuGiXLl"
+ARC-Seal: i=1; a=rsa-sha256; t=1790597795; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=RinegyyW7BlPh6jipTBsJl6XjNzehnC4W4kMg0bfVDbFIlvhufPQPue+/PoTL+JQdL
+    jjYwJvdfKy6+DhClhQZLQ/HcioRGPiIkml3mqPW2p9Bk83b06aTG3dmNfwUoeP1vFLO1
+    ReIeHurnXyKDBxZGa21P5OfM7kmyzOEesyDKOybjHV4E9az4DMmXQ5GfNE03RwFPLVwg
+    5V7673wiJsleH6IAoRq+cNiJsULW8pLvcQYlbMNQfzvOST9LKsijTNgGXWyjhBbVylwO
+    pgQi8anpEFstab/wY1N7D6r+I6pXCNhfHJRLHt9wrycSC3R/1ftCJjSDWNTcGTKizlWe
+    5j7A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1790597795;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=2An1qy9oy7UwD9iyloKVnzVLllLnxZ+90/zNaHKPmkQ=;
+    b=s6JnTjlhQuGCArI8+8o9WGxTYuQRf6FOj6fRoN0GFnFLNs0fegqtTXhPqj/3fsXJ/a
+    FQxCWP9XkjhiBZ2o4zftvI7FS93JRpbciKL00TxpnUuPGgJ0GpnXRUU1ihr1mu/lFP/w
+    Aq5FSH5nPEZev+1zoDHYwqW3FTOQl3C1PRKvgYyzczDsmta7vORI0t8xAhfSDYgJ7g1N
+    4P3RrY0owe9fpF0HCXHZr9kDD9aQlelaA3HmGxxA1FGKZVOCKGhBje4MMBPB+O06Ldt3
+    55clRBYGiFZJ/0aX3t+iun85TnN//MeRoUK7ArziaxD/KReKxHyF3tVOuiT4VCuo634x
+    oqIg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1790597795;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=2An1qy9oy7UwD9iyloKVnzVLllLnxZ+90/zNaHKPmkQ=;
+    b=pc3n+X0/Tg/SlxHEWXhdyhaIdcjXVffC8WSFchD72uo8V6YJ+1CGY/a3hiM1+3iYIj
+    wCOIdulStp8ZGzs67rq4PXCRycKovBIoqQWUv5SEo8dAPvzbZnXV9tEhHPt4PGdF0Zwe
+    mqwz/YPNtCF7AKRmlntLH0T2hHa4HFE4f8UYISDxATEPzx/FHmb1YyaundiHnO1Lqz8Q
+    e5HA2F2km6DrJM6q05fwVM/QdaW5JVm96J6QPIv1YpIh5SMQF1pz45nPifVmbKMBI1u3
+    A80k6FQ2EaQwBzomD0pV44l75WIQ9jQz1bs8+7R2ooaR/Egx/heCGO2Iot9Jrzx43gfC
+    47DA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1790597795;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=2An1qy9oy7UwD9iyloKVnzVLllLnxZ+90/zNaHKPmkQ=;
+    b=ynuGiXLlW+BM2PZhXwGO2svH5hQeDnuFZUEPdMxHA6D14/ZSrf6+hv/Pgh9n9gY+9T
+    tY7RsiKqxC9syOK1EGBw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K04b9a28SCGZLUt
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 28 Sep 2026 14:16:35 +0200 (CEST)
+Message-ID: <9216a55d-957d-4f7c-b67a-6093a1917faf@hartkopp.net>
+Date: Mon, 28 Sep 2026 14:16:34 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] can: RX frames silently dropped in raw_rcv() with RPS
+ enabled since d4fb6514ff8e
+To: =?UTF-8?Q?J=C3=B6rg_Willmann?= <joe@clnt.de>, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, netdev@vger.kernel.org
+References: <VI1P18901MB0640EC60F0E40E18EED92A0AAA8D2@VI1P18901MB0640.EURP189.PROD.OUTLOOK.COM>
+ <2859AD3D-C805-41A0-9036-C5E8EE152419@clnt.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <2859AD3D-C805-41A0-9036-C5E8EE152419@clnt.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
-- [Medium] selftests: alignment and strict aliasing violation via byte arra=
-y cast
-- [Medium] selftests: tests fail unconditionally on kernels lacking CAN XL =
-support
---
+Hi Joerg,
 
-commit b7b667ec4c19dd41b74b7f4ee25cdee4ffaf4702
-Author: Quchaosheng <quchaosheng000406@163.com>
+many thanks for the report!
 
-selftests: can: add isotp frame-type tests
+On 28.09.26 13:55, Jörg Willmann wrote:
 
-This commit adds an ISOTP frame-type test to verify that the CAN transport
-channels are correctly separated. It ensures that CAN XL frames are not
-mistaken for flow control frames on both Classic CAN and CAN FD channels.
+> since commit d4fb6514ff8e ("can: use skb hash instead of private
+>   variable in headroom") we are losing received CAN frames on raw sockets
+>   when RPS is enabled on the CAN interface. The problem also shows up in
+>   the stable backports (seen on [6.12.109]).
+> 
+>   Setup:
+>   - Kernel: 6.12.109
+>   - Platform: OpenWrt 25.12.5, 4 CPU cores
+>   - CAN controller / driver: mcp251xfd
+>   - OpenWrt enables packet steering (RPS) by default on multi-core
+>   systems, so rps_cpus is non-zero on can0
+> 
+>   Symptom:
+>   The application on a CAN_RAW socket misses frames. /proc/net/can/stats
+>   counts more RX frames than the application receives. With
+> 
+>   echo 0 > /sys/class/net/can0/queues/rx-0/rps_cpus
+> 
+>   the losses disappear completely. [Optional: rate/amount of loss, number
+>   of filters on the socket, whether join_filters is used.]
+> 
+>   Analysis (as far as I understand it):
+>   1. RX skbs from the driver start with skb->hash == 0.
+>   2. With RPS enabled, get_rps_cpu() calls skb_get_hash() in the
+>   netif_rx() path before can_rcv() is reached. The flow dissector
+>   finds no L3/L4 headers in CAN skbs, so every CAN frame gets the
+>   same non-zero hash with sw_hash = 1.
 
-> diff --git a/tools/testing/selftests/net/can/test_isotp_frame_type.c b/to=
-ols/testing/selftests/net/can/test_isotp_frame_type.c
-> --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_isotp_frame_type.c
-[ ... ]
-> +static int iface_max_xl_len(const char *ifname)
-> +{
-> +	struct sockaddr_can addr =3D { .can_family =3D AF_CAN };
-> +	unsigned char buf[CANXL_MTU];
-> +	struct canxl_frame *cxl =3D (struct canxl_frame *)buf;
+Ouch! I wasn't aware of this.
 
-[Severity: Medium]
-Is this cast safe on architectures that enforce strict alignment? Since buf
-is an unsigned char array on the stack, it is only guaranteed to be 1-byte
-aligned. Casting it to struct canxl_frame * and writing to 32-bit and
-16-bit fields like cxl->prio and cxl->len could lead to unaligned memory
-access crashes. Also, does this violate strict aliasing rules, which are
-enabled by default in the tools/ directory?
+>   3. can_set_skb_uid() only assigns a new counter value while
+>   skb->hash is 0, so the RPS hash is kept and the frame gets no
+>   unique identifier.
 
-> +	int s, one =3D 1, ret =3D -1;
-[ ... ]
-> +static int inject_xl(int tx, unsigned int frame_len)
-> +{
-> +	unsigned char buf[CANXL_MTU];
-> +	struct canxl_frame *cxl =3D (struct canxl_frame *)buf;
+Correct! That's bad and not intended here.
 
-[Severity: Medium]
-As with iface_max_xl_len above, does this stack-allocated byte array cast
-cause unaligned accesses and strict aliasing violations when writing to
-cxl->prio and cxl->flags in inject_xl?
+>   4. raw_rcv() treats a frame as a duplicate when both the skb pointer
+>   and skb->hash match the per-CPU uniq entry. Since the slab
+>   allocator often returns the same address for the next skb, a new
+>   frame with the same (constant) hash is dropped as a duplicate.
 
-> +
-> +	memset(buf, 0, sizeof(buf));
-> +	cxl->prio =3D ID_RX;
-> +	cxl->flags =3D CANXL_XLF | 0x7f;	/* read back as canfd_frame.len */
-[ ... ]
-> +static int open_observer(const char *ifname)
-> +{
-> +	struct sockaddr_can addr =3D { .can_family =3D AF_CAN };
-> +	int s, one =3D 1;
-> +
-> +	s =3D socket(PF_CAN, SOCK_RAW, CAN_RAW);
-> +	if (s < 0)
-> +		return -1;
-> +	addr.can_ifindex =3D ifindex_of(ifname);
-> +	if (addr.can_ifindex < 0)
-> +		goto err;
-> +	/* the First Frame is a CAN FD frame: without this the observer is
-> +	 * blind and the precondition check below reports a false alarm
-> +	 */
-> +	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &one, sizeof(one)) < =
-0)
-> +		goto err;
-> +	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_FRAMES, &one, sizeof(one)) < =
-0)
-> +		goto err;
+Right!
 
-[Severity: Medium]
-The commit message states "a host without CAN XL support still gets flow
-control and padding coverage", but this setsockopt causes open_observer
-to return -1 if the kernel lacks CAN XL support.
+>   Before d4fb6514ff8e this could not happen because the unique id was
+>   kept in can_skb_priv::skbcnt, independent of skb->hash.
 
-Since the Classic CAN tests assert that open_observer succeeds via
-ASSERT_GE(self->obs, 0), won't this cause the tests to fail entirely on
-kernels without CAN XL support rather than skipping or running the non-XL
-portions?
+Yes. We won't get can_skb_priv::skbcnt back but I will take a look at it.
 
-> +	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-> +		goto err;
-> +	return s;
-> +err:
-> +	close(s);
-> +	return -1;
-> +}
-> +
-> +static int open_injector(const char *ifname)
-> +{
-> +	struct sockaddr_can addr =3D { .can_family =3D AF_CAN };
-> +	int s, one =3D 1;
-> +
-> +	s =3D socket(PF_CAN, SOCK_RAW, CAN_RAW);
-> +	if (s < 0)
-> +		return -1;
-> +	addr.can_ifindex =3D ifindex_of(ifname);
-> +	if (addr.can_ifindex < 0)
-> +		goto err;
-> +	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_FRAMES, &one, sizeof(one)) < =
-0)
-> +		goto err;
+Best regards,
+Oliver
 
-[Severity: Medium]
-Similarly, does this unconditional setsockopt for CAN_RAW_XL_FRAMES in
-open_injector prevent the non-XL tests from running successfully on a
-kernel without CAN XL support?
-
-> +	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
-> +		goto err;
-> +	return s;
-> +err:
-> +	close(s);
-> +	return -1;
-> +}
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260928114551.2148=
-536-1-quchaosheng000406@163.com?part=3D1
