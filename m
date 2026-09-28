@@ -1,153 +1,71 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C454F96AD;
-	Mon, 28 Sep 2026 19:33:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790624014; cv=pass; b=ijXcM7L1Cstb31+KBzSx8VVEiFcSR5jB/DPu8oSMrA9fdpu7h4t00ddJk4d+RjNmu/lWlyuhlJc1WT6PnBTrlkWMpT5zAV+e/CNSYB/yY1fsY+0s4xbky2zUxgFWwZim9V3+nOYy90bhAmAVlV8wuyg/evSWE7VXqZ7fLKmBevQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790624014; c=relaxed/simple;
-	bh=xlBpmG2S8ktOUfyR9BnjBv4YZtFPuPM4pSpKCik+ybo=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1232D4F4D01;
+	Mon, 28 Sep 2026 19:36:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790624172; cv=none; b=n6piXBOBak9Pz60KQBATSBFUjsVO5cxY2viz8kioyvvQ1xICymwOCfcslwGcLY7a4IHNi3tHtphf53pFQdyOFgtYa8iJYlTi1bu3Mqh7ZBVTp4fT34hsVt8p6vfCgz5+uFkEMtgEVcJLPDW7/ZLt37CkMVdoMdaOkfcx0PcnJNo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790624172; c=relaxed/simple;
+	bh=gp7PRv3WjAiMJrp0DvXpRvTv3mwC8R3NiezXzUE7FxE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VhgaHYGHUUGSdIXZbDuOFLzWfocaQ1pgKW/fXUSv8dU2gUQvjsLxOSss1f+jW/bUbK49HH3MupIVtyKPhhJnlIUOxhxwxxNF+Y6gI5apLVglvcYf93bLwbVMphWPUVP0UQbnCchsPyk679wFNJFCFTV81N1P/OeWX9/2eZFUm8g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=f4xShQ8l; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	 Content-Type:MIME-Version; b=nbMtaqbblqi5jwHgw0LCR1qktq2fFzmdPwdYdO+bis95VDcPfeQzYsspG/FJxkD1kgd5WfkMFZ4peUGJarD7ZoV37/+MWVhPmzNUwkZAXWC8fXSpmzz1ZNys+NO+fDBDoTpkWjWQX9PWYTezbIHqtt4nsc/wLU9FhfEa4/lc5Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gdhqOquG; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="f4xShQ8l"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id BD5182022D8;
-	Mon, 28 Sep 2026 21:33:16 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790623996;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0e4sLg8VRKC7HcEYnp0BWef6sI/CdcfN6PpzxAScpc=;
-	b=f4xShQ8lr8eFdskt9hdYkPynMnBuOLBOJ35kGMWaoEY5I2elFfWkHxTqwKWyz6soQbvMRI
-	nKhqocY2nlYPEzjYwxC2U4OxJ/jn2sNdWgL1yB6JmVH1Ol2geJI9rrWExwE/C5rcsrlkGx
-	9+5XSjn5a/x85T2Ae9xjiH2FevJXZvwoFaiCljYMC0Lb1k/RtEbbGDyCTUwX05xkFVDHdK
-	wF91gQrM9PYzzokgoLsBQdnBouxSXxDJgRvDliZIa2CYGjcRTZF96LkY+DmoRy02LscO6j
-	UMQ3uwl78aK+RQOqHH30gnx37Tu5bY2RYfLQEKHUiAR1xISbXbolxvPv6/YL4A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790623996;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0e4sLg8VRKC7HcEYnp0BWef6sI/CdcfN6PpzxAScpc=;
-	b=I8Zo7pNNNdddJJ7CPJKqL5QFZXOFyrbl7SppO5f4c9mQHbdlHK7FSRL5stZ7EiFfMYOsBl
-	EJxOEZamE0RzXpBpLOMkY38s+bLzx8EnCPfBkWNXmWZngJT6kKyjZbPD6CEQxJnlaIo4kh
-	sdZGwbLOOgvyM/k2twSLEw8f7I8CqWgRXxQNZm6KFsb1LU8B50Sk2f3ZTaywxgn1y/u038
-	ppICllzJDowZ8SudOtisLCrF4VDpCYoS8XdNsVUM89FcKxwQlgyzU2hcB5AuGOKwGivCZP
-	hymqwi4rtSkUAEoCsGlpj1FIgGuvHyfRTUp/p907oGbjLCYi/Ujnux9q0G1BIg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790623996; a=rsa-sha256;
-	cv=none;
-	b=XxRKr7o26iEduTONaLvtHijxMwwYcHzK8qcUBMewuIFb+KJ4b3aVqd2HYm+KCH06DUi74p
-	SO/ndh0l7GWRReVhD2MMApnTTiWhxRWqAHDD3T+7ng6xXDhRCXitihqi8XAXnS77jNoWSY
-	WuJxMhk2ksWC3jKEdayBzhHwq3+aLonNZ2RjMztix4tETLv/E4r7x3Sw0cipv2NiltP2H6
-	J3lPmPSFsTXkVWWABPmIYTCTJ8DQir0je8MM4e/7f8eiymEqH2VKgIfymY/oCbbfeUJouh
-	y0uWwifMt95P/Q9/pSYcDUV5gZoHgNacfsbv5xhzbApKiLjHWrn2+U8s+0fzJQ==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xBH6C-003H6c-1r;
-	Mon, 28 Sep 2026 21:33:16 +0200
-Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 53A275B155A;
-	Mon, 28 Sep 2026 19:33:16 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Fan Wu <fanwu01@zju.edu.cn>,
-	stable@vger.kernel.org,
-	Song Li <songl@zju.edu.cn>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 19/22] can: gs_usb: kill RX URBs before destroying the netdevs
-Date: Mon, 28 Sep 2026 20:45:26 +0200
-Message-ID: <20260928193312.553632-20-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260928193312.553632-1-mkl@pengutronix.de>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gdhqOquG"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A7B1F000FF;
+	Mon, 28 Sep 2026 19:36:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1790624170;
+	bh=Z9zRtXHe/J1k/4/9wAeq1n+PwAt+ioXmV3zyjSNrjDw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=gdhqOquGvaqbTSsnG3HkDIsneciiW/JvoLKdtLSBHTjDA1ml63B4QBIEA5R3d/PAj
+	 WgzrVG6NL50S09E7iiAQg8HNjcQwVHwOl4yKzfBxNIHSzScbspp0FlH9BYCNc1hW3F
+	 rZbx3evQFS93gAp776/4tCimFxRTR9Kyk3aCBK9tqaJNCNu+XTyCw6T2iv47pgYy4r
+	 vDkytqaHpZK7cnBlER7nhPYOUG/thRZHKAvpHpypArCIUQzV9obNxWeXKinrbY8Ldx
+	 PZrWLGQnAodKBQSXUg9BMAjfgSPVp6Ump7dL7D4QCn9uKNQb8XCsMOaj6e7FoKNXET
+	 kAUZhdWIwwafA==
+From: netdev-bot+sinfo@kernel.org
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de,
+ Vincent Mailhol <mailhol@kernel.org>, stable@kernel.org
+Subject: Re: [PATCH net 01/22] can: dev: can_dropped_invalid_skb: drop CAN XL
+ frames on non-CAN XL devices
+Date: Mon, 28 Sep 2026 19:36:09 +0000
+Message-ID: <179062416961.31693.13012733403972252556@kernel.org>
+In-Reply-To: <20260928193312.553632-2-mkl@pengutronix.de>
 References: <20260928193312.553632-1-mkl@pengutronix.de>
+ <20260928193312.553632-2-mkl@pengutronix.de>
+Auto-Submitted: auto-generated
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: Fan Wu <fanwu01@zju.edu.cn>
+Hi!
 
-gs_usb_disconnect() destroys the channels one by one via
-gs_destroy_candev()/free_candev(). gs_can_close() disposes the RX bulk URBs
-on the shared parent->rx_submitted anchor only when the last active channel
-is closed. With two or more channels up, the earlier channels are freed
-while their RX URBs are still submitted, and a completion in
-gs_usb_receive_bulk_callback() accesses the freed struct gs_can and struct
-net_device.
+This is an automated message. This series looks like a fix, but its
+commit messages seem to be missing some information:
 
-Fix this by killing the anchored RX URBs in gs_usb_disconnect() before the
-first netdev is destroyed, and in the error path of gs_usb_probe() before
-the previously created netdevs are destroyed.
+ - How the issue was discovered, e.g. hit in production, hit during
+   development, syzbot report, manual code inspection, LLM or static
+   analysis tool scan.
 
-usb_kill_anchored_urbs() waits for running completions and a killed URB
-completes with -ENOENT, so the completion handler returns without
-resubmitting the URB. The kill in gs_can_close() of the last active channel
-then operates on an already empty anchor.
+ - Whether the issue was actually triggered, or is only theoretical
+   (e.g. found by code inspection). If it was triggered please include
+   the symptoms, like the stack trace or error messages.
 
-This issue was found by an in-house static analysis tool.
+Please do not repost the series just to address the above. Instead,
+reply to this email with the missing information, so that reviewers
+can take it into account. If the series needs another revision for
+other reasons, please include the information in the commit messages
+then.
 
-Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
-Cc: stable@vger.kernel.org
-Co-developed-by: Song Li <songl@zju.edu.cn>
-Signed-off-by: Song Li <songl@zju.edu.cn>
-Signed-off-by: Fan Wu <fanwu01@zju.edu.cn>
-Link: https://patch.msgid.link/20260923070352.487595-1-fanwu01@zju.edu.cn
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- drivers/net/can/usb/gs_usb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 3b9b2f104d86..f604358c8259 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -1595,10 +1595,10 @@ static int gs_usb_probe(struct usb_interface *intf,
- 
- 			/* on failure destroy previously created candevs */
- 			icount = i;
-+			usb_kill_anchored_urbs(&parent->rx_submitted);
- 			for (i = 0; i < icount; i++)
- 				gs_destroy_candev(parent->canch[i]);
- 
--			usb_kill_anchored_urbs(&parent->rx_submitted);
- 			kfree(parent);
- 			return rc;
- 		}
-@@ -1636,6 +1636,8 @@ static void gs_usb_disconnect(struct usb_interface *intf)
- 		return;
- 	}
- 
-+	usb_kill_anchored_urbs(&parent->rx_submitted);
-+
- 	for (i = 0; i < parent->channel_cnt; i++)
- 		if (parent->canch[i])
- 			gs_destroy_candev(parent->canch[i]);
--- 
-2.53.0
-
+The evaluation is done by an LLM so it may be wrong, if you think
+that is the case please reply and explain.
