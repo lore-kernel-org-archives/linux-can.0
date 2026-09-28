@@ -1,336 +1,163 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8496636B934;
-	Mon, 28 Sep 2026 18:11:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF38377AB3;
+	Mon, 28 Sep 2026 18:12:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.170
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790619103; cv=pass; b=W4RNY7KEBIaq/7xlHIPG+Qv5O9pxzqlba4IvMq0NcB2vaXKfdUFVp1fcnALvYn6r+RrXwbWMBLrZwGr8k+eTFAu75+5TNyTlMEiJM5LS7pLJa199Hxn73BzdR0qMhTes6kuCrLHtq8JiPUvauDB5iRTfESC3r9QCPOMYJDP+1Wk=
+	t=1790619162; cv=pass; b=iHpSGXpqpU3N3Qe000UdlE4xtQYlAala3nQ2KiPhYhEQ1+S028o97AQKhv3D5dfl3eD28mTR4Hi2oz8aSr2lYr3LbHq0Y4cQqUQVTa0KDMYk+j8BO23msHA/wFx2fjRdSk+PbvPfc1dhR8qVl4SBPCztAB01ca2qPrhJGGxvOls=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790619103; c=relaxed/simple;
-	bh=Kah3eHbTKoaJ+iJtfht2O2ZaIcJAx3eMuaDUm0OAr18=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=hsHwqS84g1CI+LMMOzFYI6ajSVZ3MnumOLwKxf4jWrcC8MgesQQtCFyjqIT0+AdgNxc0PNvWjEQ4f9LfRHBc15EWxQB1OJfPQs4NSDWhXJLsYz1aut/Wnf2f3o/ShbWZ/gcJfONwFUVS7q/D4lE5FfaCFtLdxLIyVkk6CgpBal8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Fq1jPeaV; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	s=arc-20240116; t=1790619162; c=relaxed/simple;
+	bh=xzss5aWqp9DrMdVNFvTUeyfpbbbhNkewJdgu7hkOytg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ueOH9s0KJyXBJ11UrMeo1HKB6oD15pBI+vQBtrVph4Po1104Waq7ygq81u6I1A7OpX5jqgyAnCImUU+fsHj7bt++frCLSkFg0dzHN/E9pZNaRfDUIn6wxJ1+5XWgW9PkEELvLCye12W8BkQLZSGTWigy/APQckkq6bUW5emxAGk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=Nk+zpTVO; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=bzbbevE4; arc=pass smtp.client-ip=81.169.146.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Fq1jPeaV"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 63109201E30;
-	Mon, 28 Sep 2026 20:11:33 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790619093;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JWMduxsExf3/W+XCkHfjwiKgowofx7uk6DUJ6Fq7QcQ=;
-	b=Fq1jPeaVxofdzcS1HuCj+s4RISDEM4nTmSvhwuXpaRDdCBF6ChA8kfGL7QFWWtgIXGZOm6
-	zlCjXTnYvOZCSzL9jDxJD6ArZbqaWYFRn4PTn9cvUX08QrN7bDSb3i9IoWcTcpB3UU/wP4
-	jY9qC7KOhrR4BpaC0GpUI6tVHR65bEzmcpJp26qS02BCKUr54IEZ/ON89qcLDmY+Y/vlLw
-	qHcwn2Ar86qvUaoUZSqKW/DBVNh6VwHT5CHrbYszcb1NJwsjzt/j1uUMn2JNy+y5Qu6fpy
-	Rg0FwVWwUts/mqVspXTbERMMeUZhr+QePgs+DFu+l0/31JnLwiW4CJwk7lRgZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790619093;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=JWMduxsExf3/W+XCkHfjwiKgowofx7uk6DUJ6Fq7QcQ=;
-	b=geBFGmug9RZm6aYSa3beZoXodNbPCeB7GJ1WmjnukFhvU4car/IJdOlZgCFsBw5wma/FxY
-	+K156nE5AjldXvNZcZNVE+G7T3HzdNZ68q1Xw4xe2UH4YEp0x6lrE4LxD6S/jp3UXUJsKu
-	rRMySP0OezzXXAQ1d0/HZ8t2+5v1zN5Ab1lAl1hL0JxdXH8jxMcxUflLrlV5rB+Wy6C5X7
-	+scpVKDqhf8a9aDkaUtaYO2rCz1d0TJvF3Cj9qZ5/hFe89UAlshfKJ7cztg2fwR22yseUh
-	SFT3yCpEZNZ55/A6zJbMAjeXhlMCokIXfzC4PyRoaFkIrrULFeCgHngjertV3g==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790619093; a=rsa-sha256;
-	cv=none;
-	b=U6LakWSgH4H/Pu8AIGnEfvxoROGxbbsCSDqcVCDsDWoCdbLwGZ2CSKJDQkTBlsZ44ybKos
-	TnPnYfXeNkFYDv9T+PswXnZtPJAEvHiSWLiJOcQ2Xij7q8d3ePuzpU1gkZK+sjs+TQDNeR
-	tVX/1U/+7PFws5GpG3B3z547nBnSD7ZY9bmpog9yPIGg/RaG1ozzjbJ7KEU29V1NBBb2+r
-	ZKoyOUgsZIsI4k66DsswXuwC4FTDQHhgjGyav8SVzyzKV4n38FvCBK8lypZKml6riq8rD5
-	/tucxJ6mWiKtltAzpp73rdcvlq13q+Yza2iJvNmbTQWUlmZfs8rpOkhXpaVi0g==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xBFp7-003GTe-0x;
-	Mon, 28 Sep 2026 20:11:33 +0200
-Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 08A2F5B1442;
-	Mon, 28 Sep 2026 18:11:32 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Mon, 28 Sep 2026 20:11:21 +0200
-Subject: [PATCH can v2] can: gs_usb: add workarounds for HScanT USB to CAN
- adapter
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="Nk+zpTVO";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="bzbbevE4"
+ARC-Seal: i=1; a=rsa-sha256; t=1790617711; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=kSmeEdmdnxIcj/Ml9FGDXIwVfoAS3n1pUD/DbqyfSUYXsnhD4lxtuE46CmxwFt0I08
+    qTMB4tJ0PEm0+YRels12gScLih7rZJrArUhJFuGWODio48EjomQduPOJC8ta+X5kv98P
+    Lxj8Zizix/UPztJ1AWqNeGd4gQG1fqqUr9i4jCFYYr5WE+SE/8FaNwZ/QTUS3yFt4wOb
+    9Qzwdba9N0ypBUeD7f71vK139gOzvjh9pbS1y0RmRDcSj+AFLf89w5omwfkXpwwUdcFm
+    QVRVuBBaS+fd29dondvPbIrtuvSP4jmZKiQXKWQ611pxS00Tb+iEL86Rp3Zw6zU/YZnq
+    GlKA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1790617711;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ctr7Fl5PXofQpgNDSgqzb4LqqsTg3MiV8kqYT/rCfaM=;
+    b=WzWxeajjzt7PE9rEkgmVwRcEeyauJ2co6Mm9fliNOJ01h2I4TC28XMZOLGWuSNODMH
+    NMx2rhLopuwGoTsbpCoJnoAckUW9kljCX1o6q1wxGQzy5jtUo5sWSqSZv1SzIc86iTRT
+    9dYSAaUevUj3TIjVD6jzpwRDuFnD06ZIFg2ei1jpqXLVRg+ZsKAnX2wZHrKOkmm8TRAN
+    7LFRqdr7Eiy4qtaWhBpjKWfBTVv6+XHvXMvfkE0qzaW5PmFIOqHwvr01NGjrUTF+dBXo
+    bPtBqBBK/rgBbn1l/d2VcYH+EHcJT8NJ5WfVmdXXHkrmQhfFaaLHd9APerarvWsoB+VP
+    aGEg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1790617711;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ctr7Fl5PXofQpgNDSgqzb4LqqsTg3MiV8kqYT/rCfaM=;
+    b=Nk+zpTVOjlOeBcaiMgt6Idd16aAaTElSRFcZ3DcFl9oYEGIWRI3K6WuKrMvcGQ5R/L
+    FfCNLYUMHkVt14zShyyX89CCAwr4mf6PSClrhiHgzCIuddkTg3wX+LnfcDBryJJ3CbGK
+    gbOrvloPeXf8dl5jc8GJ218zBbdEnGVlHim9l6FAeP6CibyXIlK4rtQITR2LNyvyOT2X
+    E2ORwKQFeqrxSOVYEnqC3gBjVI2bSvfCmBo66GU1OFgv1Ne79G14ehyKoReAZ9b6/tf4
+    POFhWvZqAW7soADE8ZmqRZhzU6jU8ZiJ6SR8qu8GKY8OzxFZwC1fqqnjtIgLNin0tar2
+    q1kg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1790617711;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ctr7Fl5PXofQpgNDSgqzb4LqqsTg3MiV8kqYT/rCfaM=;
+    b=bzbbevE41YCGzzC70XHE+r3Vz0UAfWMP2R/hjnjIdZep/PbIGj60mInX/LRDnT7qb8
+    e5O8SuG4GYMgmr5U1IAg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K04b9a28SHmVOnA
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 28 Sep 2026 19:48:31 +0200 (CEST)
+Message-ID: <4a398197-402e-438b-88ca-2c53733da2be@hartkopp.net>
+Date: Mon, 28 Sep 2026 19:48:31 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260928-gs_usb-hscant-v2-1-a7c1c02460e9@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/12NwQ6CMBBEf4Xs2RqoCMWT/2GIoWUL66GQbiEYw
- r9b0JPHmbyZtwKjJ2S4JSt4nIlpcDHIUwKmb1yHgtqYQaaySCuZi46fE2vRs2lcENpiUalSV6W
- WEDejR0vL8feASED9LXnSLzRhf9qxnjgM/n1Y5+yAfwL1J5gzkYlcFhdlmtSqq72P6Lop+MHRc
- m4R6m3bPnYQ8PXGAAAA
-X-Change-ID: 20260924-gs_usb-hscant-bfe6987b97b2
-To: Vincent Mailhol <mailhol@kernel.org>
-Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8496; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=Kah3eHbTKoaJ+iJtfht2O2ZaIcJAx3eMuaDUm0OAr18=;
- b=owGbwMvMwCV2xirl17qZay8xnlZLYsjatfaSM8sc233WrqK3EvlYr6gXvZya8e76lMTPq5JlW
- tY5moQ86ChlYRDjYpAVU2RZ+uOEokCgQ2nvy4RJMHNYmUCGMHBxCsBEeOYw/He/a7Ppc+quuMly
- U/qanJ/zH+Y99KPDrXJJ+sVqzTMe3p8YGV6uPLf+/empvY/F/uVeYv/qGR1t/KB437prGvPcLl1
- 608UGAA==
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+User-Agent: Mozilla Thunderbird
+Subject: Re: [BUG] can: RX frames silently dropped in raw_rcv() with RPS
+ enabled since d4fb6514ff8e
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: =?UTF-8?Q?J=C3=B6rg_Willmann?= <joe@clnt.de>, linux-can@vger.kernel.org
+Cc: mkl@pengutronix.de, netdev@vger.kernel.org
+References: <VI1P18901MB0640EC60F0E40E18EED92A0AAA8D2@VI1P18901MB0640.EURP189.PROD.OUTLOOK.COM>
+ <2859AD3D-C805-41A0-9036-C5E8EE152419@clnt.de>
+ <9216a55d-957d-4f7c-b67a-6093a1917faf@hartkopp.net>
+Content-Language: en-US
+In-Reply-To: <9216a55d-957d-4f7c-b67a-6093a1917faf@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-The HScanT [1] is a RISC-V based USB to 4 channels CAN-FD adapter, which is
-compatible with the gs_usb protocol.
+Hi Jörg!
 
-The device is shipped with firmware version 0x00010007 and needs several
-quirks to work properly.
+I've sent out a v2 patch set where the third patch addresses your 
+reported RPS related bug.
 
-The HScanT FW announces 5 channels, but the hardware has only 4. Workaround
-the problem by changing the struct gs_device_config::icount to 3, which
-corresponds to 4 channels.
+https://patchwork.kernel.org/series/1175458/
 
-The HScanT FW requires a USB High Speed Hub, bail out if device is
-connected to slower USB Hub.
+The third patch needs patch 2 as both are changing code in can*_rcv.
 
-The HScanT FW always sends USB In URB with length 512 bytes and seems to
-have broken Zero Packet Length handling. Add quirk
-GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE to allocate URBs of 513 bytes to work
-around these issues.
+Can you please test the patch set in your setup?
 
-This driver supports up to 256 channels per USB Interface. The HScanT
-device has 4 channels, but the FW requires each channels to be bound to a
-USB interface using the GS_USB_BREQ_HSCANT_SET_INTERFACENUMBER_ENDPOINT USB
-request. Add quirk to GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL to bind the
-CAN channel to the USB Interface 0 during gs_can_open()
+Many thanks,
+Oliver
 
-Link: https://github.com/cherry-embedded/HSCanT-hardware
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Changes in v2:
-- drop struct quirk_hscant and use length of 513 bytes for USB In URB
-  (detected by sashiko)
-- bail out on USB Full Speed eor slower Hubs
-- Link to v1: https://patch.msgid.link/20260928-gs_usb-hscant-v1-1-42638ca0f85f@pengutronix.de
----
- drivers/net/can/usb/gs_usb.c | 125 +++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 121 insertions(+), 4 deletions(-)
-
-diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 3b9b2f104d86..60a58dcea897 100644
---- a/drivers/net/can/usb/gs_usb.c
-+++ b/drivers/net/can/usb/gs_usb.c
-@@ -72,6 +72,7 @@ enum gs_usb_breq {
- 	GS_USB_BREQ_SET_TERMINATION,
- 	GS_USB_BREQ_GET_TERMINATION,
- 	GS_USB_BREQ_GET_STATE,
-+	GS_USB_BREQ_HSCANT_SET_INTERFACENUMBER_ENDPOINT = 17,
- };
- 
- enum gs_can_mode {
-@@ -188,6 +189,21 @@ struct gs_device_termination_state {
- 
- /* internal quirks - keep in GS_CAN_FEATURE space for now */
- 
-+/* HScanT firmware version 0x00010007:
-+ * - FW requires the binding of CAN channels to USB Interfaces.
-+ * - Route all CAN channels to USB Interface 0.
-+ */
-+#define GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL BIT(29)
-+
-+/* HScanT firmware version 0x00010007:
-+ * - FW sends bulk In URBs with length of 512 bytes.
-+ * - When using In URBs with 512 bytes it will send a second in URB with length 0
-+ *   It seems the ZLP handling is broken.
-+ * - Use In URBs of length GS_USB_QUIRK_HSCANT_IN_URB_SIZE as a workaround.
-+ */
-+#define GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE BIT(30)
-+#define GS_USB_QUIRK_HSCANT_IN_URB_SIZE (513)
-+
- /* CANtact Pro original firmware:
-  * BREQ DATA_BITTIMING overlaps with GET_USER_ID
-  */
-@@ -812,6 +828,18 @@ static int gs_usb_set_data_bittiming(struct gs_can *dev)
- 				    GFP_KERNEL);
- }
- 
-+static int gs_usb_hscant_bind_channel_to_interface(const struct gs_can *dev)
-+{
-+	const u16 interface_number = 0;
-+
-+	/* Bind dev->channel to interface_number */
-+	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_HSCANT_SET_INTERFACENUMBER_ENDPOINT,
-+				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
-+				    dev->channel, interface_number,
-+				    NULL, 0, 1000,
-+				    GFP_KERNEL);
-+}
-+
- static void gs_usb_xmit_callback(struct urb *urb)
- {
- 	struct gs_tx_context *txc = urb->context;
-@@ -1069,6 +1097,16 @@ static int gs_can_open(struct net_device *netdev)
- 		}
- 	}
- 
-+	if (dev->feature & GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL) {
-+		rc = gs_usb_hscant_bind_channel_to_interface(dev);
-+		if (rc) {
-+			netdev_err(netdev,
-+				   "failed to bind Channel to Interface: %pe\n",
-+				   ERR_PTR(rc));
-+			goto out_usb_kill_anchored_urbs;
-+		}
-+	}
-+
- 	/* finally start device */
- 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
- 	dm.flags = cpu_to_le32(flags);
-@@ -1314,6 +1352,49 @@ static const u16 gs_usb_termination_const[] = {
- 	GS_USB_TERMINATION_ENABLED
- };
- 
-+static bool gs_usb_is_hscant(const struct usb_device *udev,
-+			     const struct gs_device_config *dconf,
-+			     const u32 sw_version)
-+{
-+	if (udev->descriptor.idVendor != cpu_to_le16(USB_GS_USB_1_VENDOR_ID) ||
-+	    udev->descriptor.idProduct != cpu_to_le16(USB_GS_USB_1_PRODUCT_ID))
-+		return false;
-+
-+	if (strcmp(udev->manufacturer, "HScanT") ||
-+	    strcmp(udev->product, "HScanT USB to CAN adapter"))
-+		return false;
-+
-+	if (dconf->sw_version != cpu_to_le32(sw_version))
-+		return false;
-+
-+	return true;
-+}
-+
-+static void
-+gs_usb_make_candev_get_feature(struct gs_can *dev, const struct gs_device_config *dconf,
-+			       const struct gs_device_bt_const *bt_const)
-+{
-+	const struct usb_device *udev = dev->udev;
-+	const u32 feature = le32_to_cpu(bt_const->feature);
-+
-+	dev->feature = FIELD_GET(GS_CAN_FEATURE_MASK, feature);
-+
-+	if (!udev->manufacturer || !udev->product)
-+		return;
-+
-+	/* HScanT firmware version 0x00010007:
-+	 * - FW doesn't advertise GS_CAN_FEATURE_BT_CONST_EXT,
-+	 *   but implements GS_USB_BREQ_BT_CONST_EXT, fixup.
-+	 * - FW requires binding of CAN channel to USB Interface, add quirk.
-+	 * - FW requires bulk In URBs with >= 512 bytes, add quirk.
-+	 */
-+	if (gs_usb_is_hscant(udev, dconf, 0x00010007)) {
-+		dev->feature |= GS_CAN_FEATURE_BT_CONST_EXT |
-+			GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL |
-+			GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE;
-+	}
-+}
-+
- static struct gs_can *gs_make_candev(unsigned int channel,
- 				     struct usb_interface *intf,
- 				     struct gs_device_config *dconf)
-@@ -1385,8 +1466,9 @@ static struct gs_can *gs_make_candev(unsigned int channel,
- 
- 	dev->can.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC;
- 
--	feature = le32_to_cpu(bt_const.feature);
--	dev->feature = FIELD_GET(GS_CAN_FEATURE_MASK, feature);
-+	gs_usb_make_candev_get_feature(dev, dconf, &bt_const);
-+	feature = dev->feature;
-+
- 	if (feature & GS_CAN_FEATURE_LISTEN_ONLY)
- 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LISTENONLY;
- 
-@@ -1514,6 +1596,34 @@ static void gs_destroy_candev(struct gs_can *dev)
- 	free_candev(dev->netdev);
- }
- 
-+static int gs_usb_probe_quirks(const struct usb_interface *intf, struct gs_device_config *dconf)
-+{
-+	const struct usb_device *udev = interface_to_usbdev(intf);
-+
-+	if (!udev->manufacturer || !udev->product)
-+		return 0;
-+
-+	/* HScanT firmware version 0x00010007:
-+	 * - FW has an icount of 4, which corresponds to 5 CAN interfaces.
-+	 *   The hardware has only 4 interfaces, fixup.
-+	 * - FW provides broken Endpoint Descriptors on USB Full Speed Hubs:
-+	 *   config 1 interface 0 altsetting 0 endpoint 0x4 has invalid maxpacket 512, setting to 64
-+	 *   Probably related to GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE,
-+	 *   FW only works on USB High Speed Hubs, detect and bail out.
-+	 */
-+	if (gs_usb_is_hscant(udev, dconf, 0x00010007)) {
-+		if (dconf->icount == 4)
-+			dconf->icount = 3;
-+
-+		if (udev->speed < USB_SPEED_HIGH) {
-+			dev_err(&intf->dev, "Device only works with USB High Speed Hubs\n");
-+			return -ENODEV;
-+		}
-+	}
-+
-+	return 0;
-+}
-+
- static int gs_usb_probe(struct usb_interface *intf,
- 			const struct usb_device_id *id)
- {
-@@ -1560,6 +1670,10 @@ static int gs_usb_probe(struct usb_interface *intf,
- 		return rc;
- 	}
- 
-+	rc = gs_usb_probe_quirks(intf, &dconf);
-+	if (rc)
-+		return rc;
-+
- 	icount = dconf.icount + 1;
- 	dev_info(&intf->dev, "Configuring for %u interfaces\n", icount);
- 
-@@ -1604,10 +1718,13 @@ static int gs_usb_probe(struct usb_interface *intf,
- 		}
- 		parent->canch[i]->parent = parent;
- 
--		/* set RX packet size based on FD and if hardware
-+		/* set RX packet size based on quirks, FD and if hardware
- 		 * timestamps are supported.
- 		 */
--		if (parent->canch[i]->can.ctrlmode_supported & CAN_CTRLMODE_FD) {
-+		if (parent->canch[i]->feature & GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE) {
-+			hf_size_rx = GS_USB_QUIRK_HSCANT_IN_URB_SIZE;
-+			BUILD_BUG_ON(struct_size(hf, canfd, 1) > GS_USB_QUIRK_HSCANT_IN_URB_SIZE);
-+		} else if (parent->canch[i]->can.ctrlmode_supported & CAN_CTRLMODE_FD) {
- 			if (parent->canch[i]->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
- 				hf_size_rx = struct_size(hf, canfd_ts, 1);
- 			else
-
----
-base-commit: a7bfaba4823e3c165bb2004c74eff7c096672bc7
-change-id: 20260924-gs_usb-hscant-bfe6987b97b2
-
-Best regards,
---  
-Marc Kleine-Budde <mkl@pengutronix.de>
+On 28.09.26 14:16, Oliver Hartkopp wrote:
+> Hi Joerg,
+> 
+> many thanks for the report!
+> 
+> On 28.09.26 13:55, Jörg Willmann wrote:
+> 
+>> since commit d4fb6514ff8e ("can: use skb hash instead of private
+>>   variable in headroom") we are losing received CAN frames on raw sockets
+>>   when RPS is enabled on the CAN interface. The problem also shows up in
+>>   the stable backports (seen on [6.12.109]).
+>>
+>>   Setup:
+>>   - Kernel: 6.12.109
+>>   - Platform: OpenWrt 25.12.5, 4 CPU cores
+>>   - CAN controller / driver: mcp251xfd
+>>   - OpenWrt enables packet steering (RPS) by default on multi-core
+>>   systems, so rps_cpus is non-zero on can0
+>>
+>>   Symptom:
+>>   The application on a CAN_RAW socket misses frames. /proc/net/can/stats
+>>   counts more RX frames than the application receives. With
+>>
+>>   echo 0 > /sys/class/net/can0/queues/rx-0/rps_cpus
+>>
+>>   the losses disappear completely. [Optional: rate/amount of loss, number
+>>   of filters on the socket, whether join_filters is used.]
+>>
+>>   Analysis (as far as I understand it):
+>>   1. RX skbs from the driver start with skb->hash == 0.
+>>   2. With RPS enabled, get_rps_cpu() calls skb_get_hash() in the
+>>   netif_rx() path before can_rcv() is reached. The flow dissector
+>>   finds no L3/L4 headers in CAN skbs, so every CAN frame gets the
+>>   same non-zero hash with sw_hash = 1.
+> 
+> Ouch! I wasn't aware of this.
+> 
+>>   3. can_set_skb_uid() only assigns a new counter value while
+>>   skb->hash is 0, so the RPS hash is kept and the frame gets no
+>>   unique identifier.
+> 
+> Correct! That's bad and not intended here.
+> 
+>>   4. raw_rcv() treats a frame as a duplicate when both the skb pointer
+>>   and skb->hash match the per-CPU uniq entry. Since the slab
+>>   allocator often returns the same address for the next skb, a new
+>>   frame with the same (constant) hash is dropped as a duplicate.
+> 
+> Right!
+> 
+>>   Before d4fb6514ff8e this could not happen because the unique id was
+>>   kept in can_skb_priv::skbcnt, independent of skb->hash.
+> 
+> Yes. We won't get can_skb_priv::skbcnt back but I will take a look at it.
+> 
+> Best regards,
+> Oliver
+> 
+> 
 
