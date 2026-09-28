@@ -1,71 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1232D4F4D01;
-	Mon, 28 Sep 2026 19:36:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790624172; cv=none; b=n6piXBOBak9Pz60KQBATSBFUjsVO5cxY2viz8kioyvvQ1xICymwOCfcslwGcLY7a4IHNi3tHtphf53pFQdyOFgtYa8iJYlTi1bu3Mqh7ZBVTp4fT34hsVt8p6vfCgz5+uFkEMtgEVcJLPDW7/ZLt37CkMVdoMdaOkfcx0PcnJNo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790624172; c=relaxed/simple;
-	bh=gp7PRv3WjAiMJrp0DvXpRvTv3mwC8R3NiezXzUE7FxE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nbMtaqbblqi5jwHgw0LCR1qktq2fFzmdPwdYdO+bis95VDcPfeQzYsspG/FJxkD1kgd5WfkMFZ4peUGJarD7ZoV37/+MWVhPmzNUwkZAXWC8fXSpmzz1ZNys+NO+fDBDoTpkWjWQX9PWYTezbIHqtt4nsc/wLU9FhfEa4/lc5Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gdhqOquG; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB14D4EBAF7
+	for <linux-can@vger.kernel.org>; Mon, 28 Sep 2026 19:37:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790624242; cv=pass; b=a5PiU/yCafUd3/IDaOdg+A6U4IMj3KuLu/GkeltU1ca4fjTB+73wv1Vyvm6NljtV0MaiOQ9+ROFJkoTSwATsT9IwcMMHaYBNZFNOmA6GermkHB/oVkRb8iVQOnfM1lghBv4JcTZc+s7A8tDo2qSrdA8nHOmC/xOjhpCVyZyFZNk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790624242; c=relaxed/simple;
+	bh=uG1AbUa4cij4TIAWhGw2Pz5oj+f+5x8PpW8CrCl3XMU=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=O1vC7ggvEi9RT/pBQ/k5paJktEeWjiSzZc5Eo52U89dhkN07HsDbyGR0Zb7Nq7nbR7y88nRZvIjvikZyoaClHptzVp8IlcbJq8LDWJ0il5cj8PykyByonIBOlSRSCMWB5HM1zrJkjd4KjmgUeLsVKyEQO9+UZwlgWWVVlvTSKjk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=RnEopR6c; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=2pN9l3L7; arc=pass smtp.client-ip=81.169.146.167
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gdhqOquG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 14A7B1F000FF;
-	Mon, 28 Sep 2026 19:36:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790624170;
-	bh=Z9zRtXHe/J1k/4/9wAeq1n+PwAt+ioXmV3zyjSNrjDw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=gdhqOquGvaqbTSsnG3HkDIsneciiW/JvoLKdtLSBHTjDA1ml63B4QBIEA5R3d/PAj
-	 WgzrVG6NL50S09E7iiAQg8HNjcQwVHwOl4yKzfBxNIHSzScbspp0FlH9BYCNc1hW3F
-	 rZbx3evQFS93gAp776/4tCimFxRTR9Kyk3aCBK9tqaJNCNu+XTyCw6T2iv47pgYy4r
-	 vDkytqaHpZK7cnBlER7nhPYOUG/thRZHKAvpHpypArCIUQzV9obNxWeXKinrbY8Ldx
-	 PZrWLGQnAodKBQSXUg9BMAjfgSPVp6Ump7dL7D4QCn9uKNQb8XCsMOaj6e7FoKNXET
-	 kAUZhdWIwwafA==
-From: netdev-bot+sinfo@kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de,
- Vincent Mailhol <mailhol@kernel.org>, stable@kernel.org
-Subject: Re: [PATCH net 01/22] can: dev: can_dropped_invalid_skb: drop CAN XL
- frames on non-CAN XL devices
-Date: Mon, 28 Sep 2026 19:36:09 +0000
-Message-ID: <179062416961.31693.13012733403972252556@kernel.org>
-In-Reply-To: <20260928193312.553632-2-mkl@pengutronix.de>
-References: <20260928193312.553632-1-mkl@pengutronix.de>
- <20260928193312.553632-2-mkl@pengutronix.de>
-Auto-Submitted: auto-generated
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="RnEopR6c";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="2pN9l3L7"
+ARC-Seal: i=1; a=rsa-sha256; t=1790624238; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=FFyuAP/6zRpk9dDX8a0CPC5p1Iq0v3ohggFvRRA9zmdVzBoI+IIR5mNxc8NHvUAs0k
+    +SOBEPlBh+p++muqRGRAtwqf3teRCwB4PWdzgPH0Z92p9/DxgY0AeNIJHLKkO9SprJd0
+    EsSgar2VjSjiBLOFElfQIESZYFLxt0mW01gZOsNxXrgN2s4sUQOcQjdNrHWWDgpZPQxW
+    irSGu5Lkw0V41yiW9ROhbVb8upn4f796TCywVFCXCOjm9glgcv4TLPbhxaJ4V3PV+0Ol
+    tk4V8yXhFvIwqf+N39iX4hNr6dMc80yTBRRfoqzNFxZMjxe9foFLY0ze1KfOQW2dZZUz
+    T46A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1790624238;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=/Bve3AtboXE3WoaCQwUi5yAUx5z1BWMxYWlPzNYGP/o=;
+    b=m5EPMpJEQlK1m8pa5eabYSbE5ddJRWrX+Z/C21b/EDr2yzM8vBSM2P+rXPAZ+iTBNp
+    XYwg8JLDfcbTue3ErUNdZFnmI3cKqOHwBSD6s+FZx8y7G0gRqRoum4vJRdhFmJnl7DWX
+    hVBwIedXNIXh6alvJ/SbhP4Sb1QOKRphTOZydwD6cu4h9dPIBvVuGIBIkQ8RsfOOATkc
+    4ygPAfw2Nljn0yFUQ0aDt27RjmRqqnWs+rs+gQo17/9J5mhziC6O9v8EnnYrwvNIN8bv
+    TdlIPqdUI55qXwYDXDWSCOHhBX7zlN7LgouVMgZ7tfriLTR7gxcbmA2ZIEEvJMzBteBj
+    DHUQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1790624238;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=/Bve3AtboXE3WoaCQwUi5yAUx5z1BWMxYWlPzNYGP/o=;
+    b=RnEopR6c6MsKRwrkhg7BdhLMBUPgTjvd+IPRTcbHYHpfW8P2FH97gKo1oZbTZAxoWD
+    0n670F02V4Tyg6km/GecY/8QZf/Q+qBz6BLYd7VXJKi/dlnXQRdRrvmJ1nJd5EDFDtNp
+    MlFush7JmGmpciUq+L4j+qyzQPMEs/60Xh4zd6FTkNwHaJaJMVBkv/tENvUdNmhI1Fed
+    Np/MV1VN+pZTsqW2rd5qTZhPr5X3qvwCIlRNOyebiTRw+edPdpGGAf9YALsa9zi9O+dY
+    2gKBBQ96Ua6x9rXtIPhPHu3sTEN4fjwjKbKh/jqTAegRrpj6isBP3g/yDiJwpPpC1UDB
+    6eOg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1790624238;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:References:Cc:To:From:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=/Bve3AtboXE3WoaCQwUi5yAUx5z1BWMxYWlPzNYGP/o=;
+    b=2pN9l3L7ClRnkkGPzIZFYQe+dnUjSNTd79tPJqQi+/0nOO/PxmdQ61RWevJDiAJoH3
+    KkNx07SDAOkcNY/zlmBQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K04b9a28SJbIP0F
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 28 Sep 2026 21:37:18 +0200 (CEST)
+Message-ID: <07764aa7-e46f-42a2-b2a9-b4fdb3411b48@hartkopp.net>
+Date: Mon, 28 Sep 2026 21:37:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 0/3] CAN netlayer fixes for stable
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+References: <20260928173105.51765-1-socketcan@hartkopp.net>
+ <20260928-rhino-of-marvelous-honeydew-7abf71-mkl@pengutronix.de>
+ <c3fa6f4e-d19b-42eb-93ac-bd694a666aa3@hartkopp.net>
+Content-Language: en-US
+In-Reply-To: <c3fa6f4e-d19b-42eb-93ac-bd694a666aa3@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi!
+Btw. the first two patches of this patch set might go in immediately.
 
-This is an automated message. This series looks like a fix, but its
-commit messages seem to be missing some information:
+On 28.09.26 21:26, Oliver Hartkopp wrote:
+> 
+> 
+> On 28.09.26 20:43, Marc Kleine-Budde wrote:
+>> On 28.09.2026 19:31:02, Oliver Hartkopp wrote:
+>>> This patch set aggregates the open stable fixes for the CAN netlayer.
+>>>
+>>> v2: restore non-zero UID value generation for isotp cfecho handling
+>>
+>> I'll send a PR soonish. Once this series is ready, I'll send another PR.
+> 
+> Thanks Marc!
+> 
+> I've updated a v3 - maybe sashiko is fine now :-D
+> 
+> Best regards,
+> Oliver
+> 
+> 
 
- - How the issue was discovered, e.g. hit in production, hit during
-   development, syzbot report, manual code inspection, LLM or static
-   analysis tool scan.
-
- - Whether the issue was actually triggered, or is only theoretical
-   (e.g. found by code inspection). If it was triggered please include
-   the symptoms, like the stack trace or error messages.
-
-Please do not repost the series just to address the above. Instead,
-reply to this email with the missing information, so that reviewers
-can take it into account. If the series needs another revision for
-other reasons, please include the information in the commit messages
-then.
-
-The evaluation is done by an LLM so it may be wrong, if you think
-that is the case please reply and explain.
