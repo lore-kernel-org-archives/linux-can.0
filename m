@@ -1,24 +1,24 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32AF4FE2CD;
-	Mon, 28 Sep 2026 19:33:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2C7D502573;
+	Mon, 28 Sep 2026 19:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790624010; cv=pass; b=q2YDqYzs5W5MaH00l8+XNQ3tINOEzaeSzq3D/jlx2lJCor7vy0dF7gQ1Xbg8Rs++Dve5enfbkzg+vD0Ugio1R47VK0qyezSQUZmrTIRA+ED5u3Rg98HvHchDcizaofqF2hUQW/4cZOMELsa9aCpXK4ICBCBfV5DyzjFNK8X9OTM=
+	t=1790624011; cv=pass; b=OGrzdfo0QOglIUYhoj7jvXlH8vWV8kZi95cskspUsAEcAhY6Duq0dSWzjJYEcPU5GJwM90hIfUb8ng7gp9MAc/DT6SryhFQKpstxl9Fs9sVJypqBqe2uTnGRJuNQEfdjkRXXLFv/Yvhy4olMBy+Avs0w2s063/Jr2zVbanJaw18=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790624010; c=relaxed/simple;
-	bh=WznmPzS3kmlshSKozxwxItT+ZETCx3pNmeQ+aS7nSPk=;
+	s=arc-20240116; t=1790624011; c=relaxed/simple;
+	bh=lskkQ2y6TVuLZagtt1NwF+1X3Jrat5Q7k/6SFd5rCok=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mnOpdAve93A+InjZRehUq8T0AxxlYcz8vIP+/mtE6vkEpt4G0qB6mXKVV0H9qoPbxeiv8HyBceIv6AjLyShKsWoLh5i1jjdy2Be5yRWTAGdeqiGGbhzgt/5R+6AEoq+EP+hI/Us0v3lVxq73i8/YgjtZxbHWyu99TRj5N9b1KJs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Q3VVE5Kb; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=uBtljOZTie1yuuAu59sFLbjaYNronT2Pfbzmke/mdObjfQQBNpjgKn7Z8D7HAA2L6OwR8mEX25tDBigI77y7INoLISeEQP7XtPWGnZegQpMHegXqy6AqrSeyrKRdAIy2KX6OLd9PgI3VW4FhPPaf5NAI7+oDOFcLW8NjFJR6TZ4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=DpZLdqKE; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Q3VVE5Kb"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="DpZLdqKE"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 79C8720216E;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 8589720228B;
 	Mon, 28 Sep 2026 21:33:16 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1790623996;
@@ -26,31 +26,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KEN5ZypB40P0YfGkq38aJE4BdtSzLwnZcBL5dNs54wM=;
-	b=Q3VVE5KbJuPALxqXfePU6l8/NHJ3xjHWqKzstoas+ZcKM1kKR2QrwMIo5DAwdxdvbHM2FV
-	1Jx4wd0AH06jfQXI8B7bPA69OJOIis/9A8QnJBU6JU16qi/keQUd12nBJouPikN6kB4jZ+
-	fD4CW5OIsXiP1EMrtxWu3NoLURNrLV4IHk50XDxuVMFJd3DdBTtUmEXgy83LWhFBYB9LI5
-	x4LEr7CByepoIBJeR3E1EILg3bOWFd31gx5vwK+7+66SmGjxo6pOZRMqxL03Kf5aguCyNc
-	0PU3jgAefQtLXbh3HNRa7bzBzq+EOLhiJrw1uoxc/cC7KCR3Kg9SnjNqF5eH1g==
+	bh=rkFrMeI1K/9jtFaRQaSdoClE0EYXTjbrelviheLU/kk=;
+	b=DpZLdqKEgqfsGsSvA3xPlQ/1ucue1U7UbbozElgUS0728VSVXGFAKseQHMGn4NbpLU72gB
+	+dbfWN6oBifVUGMQrJSZQDAobosui1NkClQSe+Q8DsIw9/Sbj3yIfvItZc/qG+0bu/X9Mv
+	k5jCD241DnahoCXXQH59KOM1Xjl7Robf6S9BCLlZtX/v0YUH9TSxwIZzxABhFLsIT8RYAv
+	R2zwi1NdUYomsrzn3ACqhR6LspB6IkG/YmHJBb6Ew3JMIEtl2AzSSO5D48nN+TmX1IPsA1
+	7dmU72MMCBe5PoPNWN1ZbX1CwweaUzpWACV41DnBksPVCcf7cwgVd2L4ud2FCQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1790623996;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KEN5ZypB40P0YfGkq38aJE4BdtSzLwnZcBL5dNs54wM=;
-	b=Ejs4ndTVV6M37sjBbORFthBwyuBiaUnpXXeNbAf+DDaM++A6YnjacgpRuhocMsxnJAoMTv
-	HaejHT4sYSi5sLUtE5uML4jr1GYwoITVqSf5d7pVO+LWZNUG7+RmegMh06B0NPKxs+o3H5
-	jGlRMviSIbkt8Z76/W9fdrRaMBJ645t+IHAOUBags5g0lfrFdB/ysYE50VNX/8e2621izW
-	Rk4X0LjKUmkgbqTI30vb1sR10k0WObE76XVFriKtWFfBumELyjXpXrnAeKAl5+ABuMieGY
-	VLxF5lAymBSj+j3r52JRxR3GM4ppYDkfRmvl72b1Gwfgqjg0WdRMwkolYzSYHw==
+	bh=rkFrMeI1K/9jtFaRQaSdoClE0EYXTjbrelviheLU/kk=;
+	b=Hf+n6W1K90+i5/JRh+DQnrU98as/yEh/fW8qvkJyIVLX6ZSANBYx2sajVRLNRaQNTqe4JG
+	Nang4h4zGtMlV/Hio5T600dMmXLl8MlYOF3j5ISekKqrhyY87DKhniqzEjZsQ6PKchJZUW
+	9BTDULLAx6Cst38Q4BAExZvopqnO3UW1FiPC70EYxpMPGUECDxbeyFDgo/GcXnfTCiGQvH
+	ch999AA5xYVMvPAYgJ+/1JA8wkKd5dXb57d6LxaRgaTodIa9iV9toKvCrr/Gs2pL8roOFy
+	97d1BJQypWvEq6dCTl7ywk5vpNKjyShkhRDocuvP3Dk8tzzZWzvHe5NbdhQGOA==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790623996; a=rsa-sha256;
 	cv=none;
-	b=GheWKRZ7bkbD6gUd5ME38jH19E0QVPqwQ0vsnqT2xDAR4NKdUlW1d9lX3Goir4S4JRlMuJ
-	M0Sfe9Y/0+Tp9f1bUWGKn/R5IZcZMCq5gls8+Vk4sWeClulMdV3l77yXhy9qjVtaSyJE2v
-	QFfgvHomnvKzP9tgtS9lNnlGtdl7Z7op2XSPwq+wTLkyecj0vPym0UCnrgWbMbbWv/YaFb
-	Cg0aqQtsX/466sYv7ijcMbuj9MX4HItJC9VEzTahn1YZkaAGMX9i6KX5F/EIiNO3jp/7ae
-	nou0xnpi5ADDgtXtcm5W4qP6d4OnbjPCt+gzp7yPVt6LdXbd7TkDheQvHNNSHg==
+	b=BqmRrS6G4XGZhhV+7XAunY2yEGDtzlunwTmSnDWKEMl2FXZo96WEmZsrLhRpX3YBXS7RUb
+	CBEv6C6LsL8+lXE1f4dttcDxWtYvR7VET33NpEr53ZT9PHnOWwj5BLTkJtQOVeGHir2Htg
+	DRO6oyGCsls4ib7PWlcjSXOKqzitvc/2GmKTiMKtFGWj4cgna2/dd64aDOIqstV3I6i+Ro
+	a8urGNVNEQNuTZ0fFnHCcs7APBX79nKUlDFoQSFjeTWRX9BLKWJ3NyRdvqzaBYjmLSYJiy
+	iTmZKkLgdp8ZRW5wOHD358pm9INQO5lS1WRiCWBimQDTbk6XhIjq+avpLwPzPw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -58,14 +58,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xBH6C-003H6O-0z;
+	id 1xBH6C-003H6S-1A;
 	Mon, 28 Sep 2026 21:33:16 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 0C8325B1555;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 19D025B1556;
 	Mon, 28 Sep 2026 19:33:16 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -73,12 +73,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Maximilian Zimmermann <maxz@spacecubics.com>,
-	stable@vger.kernel.org,
+	Jiale Yao <yaojiale02@163.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 14/22] can: xilinx_can: set CAN FD flags on received frames
-Date: Mon, 28 Sep 2026 20:45:21 +0200
-Message-ID: <20260928193312.553632-15-mkl@pengutronix.de>
+Subject: [PATCH net 15/22] can: mcp251xfd: mcp251xfd_probe(): reject devices without match data
+Date: Mon, 28 Sep 2026 20:45:22 +0200
+Message-ID: <20260928193312.553632-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260928193312.553632-1-mkl@pengutronix.de>
 References: <20260928193312.553632-1-mkl@pengutronix.de>
@@ -90,52 +89,55 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Maximilian Zimmermann <maxz@spacecubics.com>
+From: Jiale Yao <yaojiale02@163.com>
 
-The Xilinx CAN FD controller reports the bit rate switch (BRS) and error
-state indicator (ESI) in the receive buffer DLC register. The receive
-path currently uses this register to determine frame format and payload
-length, but does not set BRS and ESI in struct canfd_frame::flags.
+A device bound through driver_override need not match an entry in the
+driver tables. In that case spi_get_device_match_data() returns NULL, but
+mcp251xfd_probe() dereferences the result while copying the device type
+data.
 
-This results in applications being unable to receive the BRS and ESI
-flags, even when the controller correctly received them.
+Reject devices without match data before continuing probe.
 
-Add the ESI register mask and copy the controller flags to the
-corresponding SocketCAN canfd_frame struct.
-
-Fixes: c223da689324 ("can: xilinx_can: Add support for CANFD FD frames")
-Cc: stable@vger.kernel.org
-Signed-off-by: Maximilian Zimmermann <maxz@spacecubics.com>
-Link: https://patch.msgid.link/20260921-fix-xilinx-canfd-flags-v1-1-a371c90b4e7c@spacecubics.com
+Fixes: 9cdae370c4ec ("can: mcp251xfd: simplify with spi_get_device_match_data()")
+Signed-off-by: Jiale Yao <yaojiale02@163.com>
+Link: https://patch.msgid.link/20260925133716.2230252-1-yaojiale02@163.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/xilinx_can.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
-index 43d7f22820b8..52661e088205 100644
---- a/drivers/net/can/xilinx_can.c
-+++ b/drivers/net/can/xilinx_can.c
-@@ -157,6 +157,7 @@ enum xcan_reg {
- #define XCAN_2_FSR_RI_MASK		0x0000003F /* RX Read Index */
- #define XCAN_DLCR_EDL_MASK		0x08000000 /* EDL Mask in DLC */
- #define XCAN_DLCR_BRS_MASK		0x04000000 /* BRS Mask in DLC */
-+#define XCAN_DLCR_ESI_MASK		0x02000000 /* ESI Mask in DLC */
- #define XCAN_ECC_CFG_REECRX_MASK	BIT(2) /* Reset RX FIFO ECC error counters */
- #define XCAN_ECC_CFG_REECTXOL_MASK	BIT(1) /* Reset TXOL FIFO ECC error counters */
- #define XCAN_ECC_CFG_REECTXTL_MASK	BIT(0) /* Reset TXTL FIFO ECC error counters */
-@@ -959,6 +960,11 @@ static int xcanfd_rx(struct net_device *ndev, int frame_base)
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index f441f2265299..8759bc05bd8f 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -2213,6 +2213,7 @@ MODULE_DEVICE_TABLE(spi, mcp251xfd_id_table);
  
- 	/* Check the frame received is FD or not*/
- 	if (dlc & XCAN_DLCR_EDL_MASK) {
-+		if (dlc & XCAN_DLCR_BRS_MASK)
-+			cf->flags |= CANFD_BRS;
-+		if (dlc & XCAN_DLCR_ESI_MASK)
-+			cf->flags |= CANFD_ESI;
+ static int mcp251xfd_probe(struct spi_device *spi)
+ {
++	const struct mcp251xfd_devtype_data *devtype_data;
+ 	struct net_device *ndev;
+ 	struct mcp251xfd_priv *priv;
+ 	struct gpio_desc *rx_int;
+@@ -2222,6 +2223,10 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	u32 freq = 0;
+ 	int err;
+ 
++	devtype_data = spi_get_device_match_data(spi);
++	if (!devtype_data)
++		return -ENODATA;
 +
- 		for (i = 0; i < cf->len; i += 4) {
- 			dw_offset = XCANFD_FRAME_DW_OFFSET(frame_base) +
- 					(dwindex * XCANFD_DW_BYTES);
+ 	if (!spi->irq)
+ 		return dev_err_probe(&spi->dev, -ENXIO,
+ 				     "No IRQ specified (maybe node \"interrupts-extended\" in DT missing)!\n");
+@@ -2307,7 +2312,7 @@ static int mcp251xfd_probe(struct spi_device *spi)
+ 	priv->reg_vdd = reg_vdd;
+ 	priv->reg_xceiver = reg_xceiver;
+ 	priv->xstbyen = device_property_present(&spi->dev, "microchip,xstbyen");
+-	priv->devtype_data = *(struct mcp251xfd_devtype_data *)spi_get_device_match_data(spi);
++	priv->devtype_data = *devtype_data;
+ 
+ 	/* Errata Reference:
+ 	 * mcp2517fd: DS80000792C 5., mcp2518fd: DS80000789E 4.,
 -- 
 2.53.0
 
