@@ -1,43 +1,42 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6378F4AA1C2;
-	Mon, 28 Sep 2026 11:27:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B25AF4A5C53;
+	Mon, 28 Sep 2026 11:27:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790594842; cv=none; b=F7Z5Fwhzgr3OEjMQuj0YuHafS8nlwnoWut0NeIULGj4qDnXz8Clq1pj/wCek1vpM/74M1wblKKst8D3jaKUoPu0j954KmW/TnGFdrM+iXYBgaxaOtPcM7XoKV85JgXTZDsatFNZ3D69HTgSXDg7E6XPtGRluXjcsvqhYkIf6kI0=
+	t=1790594861; cv=none; b=KuYtvUAjIZxHNtwKXRcQ7Z3mVM8CgH0spPAln+9pviNB6j6JjGSZk2RgMhBs5ljzuniTaNHqL+wXiGkIxHgtVmE+SAG+y+TzAu53Zw08lEJuTsehtXPyzgus/H67f9LAfuH/lAMZjgAsaz6w1S08NhsNCVtQ8lNjDsEZotnT/c8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790594842; c=relaxed/simple;
-	bh=l70PCDVe5odKUXU8MAaM2rTo1ceQRbLWbNVoUL83OvE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B1qNkl5NeCyofihW7UAuHsz7oa1/XneyU4gWad/lHNQOZbQ8oXbPUaKdJE0giiofBSr2f/Cy7E6XA/3z8PgGCNzf+tAIGX6sna76uq5qkIW128WgozM7M2VgLEddoTsr7XehFyEBGwF7/hpYGbaVT6fmR3u5ZYQ4FpmyxFMIMHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=ZMxidCxZ; arc=none smtp.client-ip=117.135.210.3
+	s=arc-20240116; t=1790594861; c=relaxed/simple;
+	bh=762Zd7uV4+JuKpVTsmu8ejqrIVxs/xHL+LCQPMV+KFg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jmIumT2A+tUhr8GoOtjJSViFMnjtqZqrJPOwF3Bi3iwA4Lc+Pku7Z4ujKkBsHyAZYOhqcXdUxK2fxVm7N7UUpmN6N3LvKlJxkuWR1OG79DbKAdxKgqXKSrO2YrXKXoffDbZkDg8lgKt0co7BP+A6aA+SHPOYvUtZjU9Qi0kcXAc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=M6ZPWQ03; arc=none smtp.client-ip=117.135.210.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="ZMxidCxZ"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="M6ZPWQ03"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=BC
-	YFnquRg4ESM+E/GGvXcfXknbqzYmGno6fhj0l2hLs=; b=ZMxidCxZPG0nvbjVRi
-	qs4RwBiNvi0DPwqLsoDwe06FzJ3vFez1YtiDq7k5SwrevGwztTtzcuB9YEx4+oqi
-	UxxRrumyA6ymaUW0HHiVcttZFvuVk1d2tlxF8pePE1BP56yC3uxlaNqyOnS15X1U
-	Hc3NwUfHNL6bF1zWd/iG6OKtw=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Qr
+	zLtXo4FP1Vbk4G05mNOCZ0xqJtwPQ+XTTYPYj/ycY=; b=M6ZPWQ03tuV/F4XjCp
+	s3VBsb/jqFBIbibLJigU86SbDioW2rkkjCWcjJ40qoxNWQuH+fLZKI14LWulyD3V
+	QS8Yur6RNi1P2ztPjQcDPBFQDxJnYD+qQsgWCXINkhYS5BgxCh/aEmcHTt2EiaFT
+	m6HUAgZAJUwNc804L0kW77ACA=
 Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzsmtp5 (Coremail) with SMTP id QCgvCgBn63cCT7pq8FBXBw--.34376S2;
-	Mon, 28 Sep 2026 19:26:59 +0800 (CST)
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wD3n5sYT7pq2euHBQ--.19585S2;
+	Mon, 28 Sep 2026 19:27:20 +0800 (CST)
 From: Quchaosheng <quchaosheng000406@163.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Shuah Khan <shuah@kernel.org>
 Cc: Quchaosheng <quchaosheng000406@163.com>,
 	linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH] dt-bindings: net: can: convert grcan to DT schema
-Date: Mon, 28 Sep 2026 19:26:57 +0800
-Message-ID: <20260928112658.2119678-1-quchaosheng000406@163.com>
+	Vincent Mailhol <mailhol@kernel.org>,
+	Kaixuan Li <kaixuanli0131@gmail.com>
+Subject: [PATCH] selftests: can: add isotp frame-type tests
+Date: Mon, 28 Sep 2026 19:27:20 +0800
+Message-ID: <20260928112720.2120220-1-quchaosheng000406@163.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -46,164 +45,707 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:QCgvCgBn63cCT7pq8FBXBw--.34376S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW3GrW5Kw4kZrWxAF48GFy3urg_yoW7uw4Dpa
-	9xGFy7GrZ7KF4xWw1Svw4xCF13Zws5AF4YkryDuw12y3Z8W34Fqr4Skr15Za9rCr4kAa4a
-	9F4Yga48KaykC3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUj2NZUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4wUek2q6TwXXVwAA3x
+X-CM-TRANSID:_____wD3n5sYT7pq2euHBQ--.19585S2
+X-Coremail-Antispam: 1Uf129KBjvAXoWfWF1Utw45JF4ruw1Utr4fKrg_yoW8uw4UXo
+	ZxGw43Kw1rGr1UuF4DKF10gr4fuF4jyryUGw4fXrs5GFnFyryYgrWF9w4fWFsxJr409rZ8
+	ZFZ3Z3yfZFWktrn3n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjfUO9avDUUUU
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5BkjmGq6TxkP6AAA3n
 
-grcan.txt is the only CAN controller binding whose device does not have a
-compatible string.  There are no device tree source files for LEON SPARC,
-and the nodes are built by the PROM from the AMBA plug&play information,
-which carries a core name and a register window but no compatible.  The
-driver matches on the node name instead.
+isotp_rcv() used to separate the Classic CAN from the CAN FD transport
+channel by skb->len alone.  A CAN XL frame whose canxl_frame.len makes
+skb->len equal CAN_MTU or CANFD_MTU passed that check and was then read
+as a struct canfd_frame, whose len field overlaps canxl_frame.flags --
+and CANXL_XLF (0x80) is mandatory, so that length is always past
+CANFD_MAX_DLEN.  The flow control path used it unbounded and the socket
+reported EBADMSG for a frame it never asked for.
 
-It is the last of the five CAN controller bindings that were still written
-as free-form text; the other four are posted separately.
+The tree has no isotp test at all, so add one that pins the behaviour
+down on both channels and keeps any future fix honest in both
+directions.  Suite:
 
-A binding without a compatible string is not selected by dtbs_check,
-because nodes are matched through their compatible values.  The schema
-therefore needs an explicit select on the node name.  This is the same
-mechanism ethernet-phy.yaml uses for optional-compatible nodes, and
-without it the schema would never be applied to anything.
+  - an XL frame must not be mistaken for a flow control frame on the
+    Classic CAN channel (skb->len == CAN_MTU)
+  - the same on the CAN FD channel (skb->len == CANFD_MTU)
+  - a well-formed flow control frame must still be accepted, on both
+    channels
+  - a frame with wrong padding must still be reported, so that padding
+    validation cannot be weakened to make the cases above pass
 
-Two further details are worth pointing out, because the text binding got
-them wrong or left them implicit:
+The acceptance cases require positive evidence rather than the mere
+absence of an error: the socket has to act on the CTS and start sending
+Consecutive Frames.  An XL frame is likewise only injected after the
+receiver has been observed to enter ISOTP_WAIT_FC; that state is reached
+through a First Frame, and a First Frame only goes out when the payload
+does not fit into a Single Frame.  Without those preconditions the
+injected frame is dropped at the state check and a case would pass for
+the wrong reason.
 
-  - "systemid" is not a property of the controller node.  The driver and
-    arch/sparc/kernel/leon_kernel.c both read it from the "/ambapp0" node,
-    so it is described in the description rather than in properties.  The
-    binding is stricter than the text file here, and dtbs_check now
-    rejects a controller node that carries it.
-
-  - The node name format is "<core name>@<irq>,<address>", as built by
-    ambapp_path_component() in arch/sparc/kernel/prom_32.c from the "name"
-    and "reg" properties of the AMBA plug&play core.  The select pattern
-    and the example follow that format.
-
-The "name" property of the text binding is not described: dtc enforces
-that it equals the base node name and then deletes it from the output, so
-it never reaches a compiled devicetree.
-
-This binding does not reference can-controller.yaml, unlike the other CAN
-controller schemas.  That common schema constrains the node name to
-"^can(@.*)?$", which these nodes cannot satisfy -- they are named after
-the AMBA plug&play core.  Referencing it makes every valid node fail.
-
-No functional change.  The driver comment is updated by a separate patch.
+The two cases that inject a CAN XL frame skip when the interface cannot
+carry them, and the CAN FD acceptance case skips on an interface that does
+not carry CAN FD frames.  The two Classic CAN cases run on any CAN
+interface, so a host without CAN XL support still gets flow control and
+padding coverage.  A CANIF that does not name an existing interface skips
+as well, since it is the caller's choice of device.
 
 Assisted-by: LLM
 Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
 
 ---
- .../bindings/net/can/aeroflexgaisler,grcan.yaml    | 65 ++++++++++++++++++++++
- .../devicetree/bindings/net/can/grcan.txt          | 28 ----------
- 2 files changed, 65 insertions(+), 28 deletions(-)
+ tools/testing/selftests/net/can/.gitignore         |   1 +
+ tools/testing/selftests/net/can/Makefile           |   4 +-
+ tools/testing/selftests/net/can/config             |   1 +
+ .../selftests/net/can/test_isotp_frame_type.c      | 558 +++++++++++++++++++++
+ .../selftests/net/can/test_isotp_frame_type.sh     |  47 ++
+ 5 files changed, 609 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/aeroflexgaisler,grcan.yaml b/Documentation/devicetree/bindings/net/can/aeroflexgaisler,grcan.yaml
+diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
+index 764a53fc8..fa0a3f798 100644
+--- a/tools/testing/selftests/net/can/.gitignore
++++ b/tools/testing/selftests/net/can/.gitignore
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ test_raw_filter
++test_isotp_frame_type
+diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
+index 5b82e60a0..7d6be87bd 100644
+--- a/tools/testing/selftests/net/can/Makefile
++++ b/tools/testing/selftests/net/can/Makefile
+@@ -4,8 +4,8 @@ top_srcdir = ../../../../..
+ 
+ CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INCLUDES)
+ 
+-TEST_PROGS := test_raw_filter.sh
++TEST_PROGS := test_raw_filter.sh test_isotp_frame_type.sh
+ 
+-TEST_GEN_FILES := test_raw_filter
++TEST_GEN_FILES := test_raw_filter test_isotp_frame_type
+ 
+ include ../../lib.mk
+diff --git a/tools/testing/selftests/net/can/config b/tools/testing/selftests/net/can/config
+index 188f79796..848f3a8d8 100644
+--- a/tools/testing/selftests/net/can/config
++++ b/tools/testing/selftests/net/can/config
+@@ -1,3 +1,4 @@
+ CONFIG_CAN=m
+ CONFIG_CAN_DEV=m
+ CONFIG_CAN_VCAN=m
++CONFIG_CAN_ISOTP=m
+diff --git a/tools/testing/selftests/net/can/test_isotp_frame_type.c b/tools/testing/selftests/net/can/test_isotp_frame_type.c
 new file mode 100644
-index 000000000..d5cba5b1b
+index 000000000..5ac2e57cd
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/aeroflexgaisler,grcan.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/aeroflexgaisler,grcan.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/tools/testing/selftests/net/can/test_isotp_frame_type.c
+@@ -0,0 +1,558 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * Test that isotp_rcv() separates the CAN transport channels by frame type,
++ * not by frame length alone.
++ *
++ * A CAN XL frame whose canxl_frame.len makes skb->len equal CAN_MTU or
++ * CANFD_MTU passes the length-only check that used to guard isotp_rcv().
++ * The frame is then read as a struct canfd_frame, whose len field overlaps
++ * canxl_frame.flags -- and CANXL_XLF (0x80) is mandatory, so that length is
++ * always past CANFD_MAX_DLEN.  The flow control path used it unbounded and the
++ * socket reported EBADMSG for a frame it never asked for.
++ *
++ * Every case runs on both channels (Classic CAN and CAN FD).  A CAN XL frame
++ * is only ever injected after the receiver is confirmed to be in
++ * ISOTP_WAIT_FC: that state is reached only by a First Frame, and a First
++ * Frame only goes out when the payload does not fit into a Single Frame.
++ * Without that precondition an injected frame is discarded at the state check
++ * and the case would pass for the wrong reason (this is not hypothetical --
++ * the first version of this test did exactly that and reported a false
++ * negative on the CAN FD channel).
++ *
++ * The last case of each channel is the opposite control: a well-formed frame
++ * with wrong padding must still be reported, so that the guard cannot be
++ * "passed" by disabling padding validation altogether.
++ */
++#define _GNU_SOURCE
 +
-+title: Aeroflex Gaisler GRCAN and GRHCAN CAN controllers
++#include <errno.h>
++#include <stddef.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
 +
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
++#include <sys/ioctl.h>
++#include <sys/socket.h>
++#include <sys/time.h>
++#include <net/if.h>
 +
-+description: |
-+  The GRCAN and GRHCAN CAN controllers are available in the GRLIB VHDL IP
-+  core library.
++#include <linux/can.h>
++#include <linux/can/isotp.h>
++#include <linux/can/raw.h>
 +
-+  On a LEON SPARC system there are no device tree source files. The nodes
-+  are built by the PROM from the AMBA plug&play information, which does not
-+  provide a compatible string. The driver therefore matches on the node
-+  name, which is built as "<core name>@<irq>,<address>" from the "name" and
-+  "reg" properties of the AMBA plug&play core.
++#include "kselftest_harness.h"
 +
-+  The GRLIB build ID is not a property of the controller node either. It is
-+  read from the "systemid" property of the "/ambapp0" node, and the TX bug
-+  workaround is enabled when that property is absent or when its least
-+  significant 16 bits are smaller than 4100.
++#ifndef ARRAY_SIZE
++#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]))
++#endif
 +
-+select:
-+  properties:
-+    $nodename:
-+      pattern: '^(01_034|01_03d|GAISLER_GRCAN|GAISLER_GRHCAN)@'
-+  required:
-+    - $nodename
++#define ID_RX 0x123
++#define ID_TX 0x456
 +
-+properties:
-+  reg:
-+    maxItems: 1
++/* optional extended addressing would shift every PCI byte */
++#define RX_FLAGS (CAN_ISOTP_RX_PADDING | CAN_ISOTP_CHK_PAD_LEN | \
++		  CAN_ISOTP_CHK_PAD_DATA)
 +
-+  freq:
-+    description:
-+      Frequency of the external oscillator clock in Hz, which is the
-+      frequency of the AMBA bus in the ordinary case.
-+    $ref: /schemas/types.yaml#/definitions/uint32
++char CANIF[IFNAMSIZ];
 +
-+  interrupts:
-+    maxItems: 1
-+    description:
-+      Interrupt number of the controller, as built from the AMBA plug&play
-+      information.
++static int ifindex_of(const char *ifname)
++{
++	struct ifreq ifr = { 0 };
++	int s, ret;
 +
-+required:
-+  - reg
-+  - freq
-+  - interrupts
++	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (s < 0)
++		return -1;
++	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
++	ret = ioctl(s, SIOCGIFINDEX, &ifr) < 0 ? -1 : ifr.ifr_ifindex;
++	close(s);
++	return ret;
++}
 +
-+additionalProperties: false
++/* Does the interface reject a CAN XL frame of this size?  Returns the number
++ * of bytes accepted, or -1 when the send itself failed.
++ */
++static int iface_mtu(const char *ifname)
++{
++	struct ifreq ifr = { 0 };
++	int s, ret;
 +
-+examples:
-+  - |
-+    /* AMBA plug&play children are named "<core name>@<irq>,<address>" */
-+    GAISLER_GRCAN@c,80000000 {
-+        reg = <0x80000000 0x1000>;
-+        freq = <40000000>;
-+        interrupts = <12>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/net/can/grcan.txt b/Documentation/devicetree/bindings/net/can/grcan.txt
-deleted file mode 100644
-index 34ef3498f..000000000
---- a/Documentation/devicetree/bindings/net/can/grcan.txt
-+++ /dev/null
-@@ -1,28 +0,0 @@
--Aeroflex Gaisler GRCAN and GRHCAN CAN controllers.
--
--The GRCAN and CRHCAN CAN controllers are available in the GRLIB VHDL IP core
--library.
--
--Note: These properties are built from the AMBA plug&play in a Leon SPARC system
--(the ordinary environment for GRCAN and GRHCAN). There are no dts files for
--sparc.
--
--Required properties:
--
--- name : Should be "GAISLER_GRCAN", "01_03d", "GAISLER_GRHCAN" or "01_034"
--
--- reg : Address and length of the register set for the device
--
--- freq : Frequency of the external oscillator clock in Hz (the frequency of
--	the amba bus in the ordinary case)
--
--- interrupts : Interrupt number for this device
--
--Optional properties:
--
--- systemid : If not present or if the value of the least significant 16 bits
--	of this 32-bit property is smaller than GRCAN_TXBUG_SAFE_GRLIB_VERSION
--	a bug workaround is activated.
--
--For further information look in the documentation for the GLIB IP core library:
--http://www.gaisler.com/products/grlib/grip.pdf
++	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (s < 0)
++		return -1;
++	strncpy(ifr.ifr_name, ifname, sizeof(ifr.ifr_name));
++	ret = ioctl(s, SIOCGIFMTU, &ifr) < 0 ? -1 : ifr.ifr_mtu;
++	close(s);
++	return ret;
++}
++
++static bool require_iface(int mtu)
++{
++	return mtu >= 0;
++}
++
++/* Returns the frame length the interface accepts for a CAN XL frame, or -1. */
++static int iface_max_xl_len(const char *ifname)
++{
++	struct sockaddr_can addr = { .can_family = AF_CAN };
++	unsigned char buf[CANXL_MTU];
++	struct canxl_frame *cxl = (struct canxl_frame *)buf;
++	int s, one = 1, ret = -1;
++
++	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (s < 0)
++		return -1;
++
++	addr.can_ifindex = ifindex_of(ifname);
++	if (addr.can_ifindex < 0)
++		goto out;
++	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_FRAMES, &one, sizeof(one)) < 0)
++		goto out;
++	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
++		goto out;
++
++	memset(buf, 0, sizeof(buf));
++	cxl->prio = ID_RX;
++	cxl->flags = CANXL_XLF;
++	cxl->len = CANFD_MTU - CANXL_HDR_SIZE;
++	if (send(s, buf, CANFD_MTU, 0) == CANFD_MTU)
++		ret = CANFD_MTU;
++out:
++	close(s);
++	return ret;
++}
++
++static int make_isotp_socket(const char *ifname, unsigned int rx_id,
++			     unsigned int tx_id, unsigned int flags,
++			     unsigned char rxpad, unsigned char mtu,
++			     unsigned char tx_dl)
++{
++	struct sockaddr_can addr = { 0 };
++	struct can_isotp_options opt = { 0 };
++	struct can_isotp_ll_options ll = { 0 };
++	struct timeval tv = { .tv_sec = 2 };
++	int s;
++
++	s = socket(PF_CAN, SOCK_DGRAM, CAN_ISOTP);
++	if (s < 0)
++		return -1;
++
++	opt.flags = flags;
++	opt.rxpad_content = rxpad;
++	opt.txpad_content = 0xAA;
++	if (setsockopt(s, SOL_CAN_ISOTP, CAN_ISOTP_OPTS, &opt, sizeof(opt)) < 0)
++		goto err;
++	ll.mtu = mtu;
++	ll.tx_dl = tx_dl;
++	if (setsockopt(s, SOL_CAN_ISOTP, CAN_ISOTP_LL_OPTS, &ll, sizeof(ll)) < 0)
++		goto err;
++	if (setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) < 0)
++		goto err;
++
++	addr.can_family = AF_CAN;
++	addr.can_ifindex = ifindex_of(ifname);
++	addr.can_addr.tp.rx_id = rx_id;
++	addr.can_addr.tp.tx_id = tx_id;
++	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
++		goto err;
++	return s;
++err:
++	close(s);
++	return -1;
++}
++
++/* Wait for the First Frame of a transfer, which is what proves the receiver is
++ * in ISOTP_WAIT_FC.  The First Frame carries N_PCI type 1.
++ */
++static int wait_for_first_frame(int obs, unsigned int tx_id)
++{
++	struct canfd_frame f;
++	int i;
++
++	for (i = 0; i < 80; i++) {
++		fd_set fds;
++		struct timeval tv = { .tv_usec = 20000 };
++		ssize_t n;
++
++		FD_ZERO(&fds);
++		FD_SET(obs, &fds);
++		if (select(obs + 1, &fds, NULL, NULL, &tv) <= 0)
++			continue;
++		n = recv(obs, &f, sizeof(f), MSG_DONTWAIT);
++		/* the First Frame is CAN_MTU bytes on the Classic channel and
++		 * CANFD_MTU bytes on the CAN FD channel -- both carry can_id at
++		 * the same offset, so one buffer serves for both
++		 */
++		if ((n == CAN_MTU || n == CANFD_MTU) && f.can_id == tx_id &&
++		    (f.data[0] & 0xF0) == 0x10)
++			return 0;
++	}
++	return -1;
++}
++
++/* After a valid CTS the stack starts sending Consecutive Frames, so seeing
++ * one on the bus is positive evidence that the flow control frame was not
++ * merely tolerated but actually acted upon.  A Consecutive Frame carries
++ * N_PCI type 2.
++ */
++static int wait_for_consecutive_frame(int obs, unsigned int tx_id)
++{
++	struct canfd_frame f;
++	int i;
++
++	for (i = 0; i < 80; i++) {
++		fd_set fds;
++		struct timeval tv = { .tv_usec = 20000 };
++		ssize_t n;
++
++		FD_ZERO(&fds);
++		FD_SET(obs, &fds);
++		if (select(obs + 1, &fds, NULL, NULL, &tv) <= 0)
++			continue;
++		n = recv(obs, &f, sizeof(f), MSG_DONTWAIT);
++		if ((n == CAN_MTU || n == CANFD_MTU) && f.can_id == tx_id &&
++		    (f.data[0] & 0xF0) == 0x20)
++			return 0;
++	}
++	return -1;
++}
++
++/* Bring an isotp receiver into ISOTP_WAIT_FC.
++ *
++ * The payload has to be larger than the Single Frame capacity, otherwise the
++ * stack sends a Single Frame and never leaves ISOTP_SENDING.
++ */
++static int arm_receiver(const char *ifname, int rx, int obs, int payload_len)
++{
++	struct sockaddr_can addr = { .can_family = AF_CAN };
++	unsigned char payload[2048];
++
++	memset(payload, 'A', sizeof(payload));
++	addr.can_ifindex = ifindex_of(ifname);
++	addr.can_addr.tp.rx_id = ID_TX;
++	addr.can_addr.tp.tx_id = ID_RX;
++	if (sendto(rx, payload, payload_len, 0,
++		   (struct sockaddr *)&addr, sizeof(addr)) < 0)
++		return -1;
++	return wait_for_first_frame(obs, ID_TX);
++}
++
++/* Inject a CAN XL frame whose skb->len is exactly frame_len bytes */
++static int inject_xl(int tx, unsigned int frame_len)
++{
++	unsigned char buf[CANXL_MTU];
++	struct canxl_frame *cxl = (struct canxl_frame *)buf;
++
++	memset(buf, 0, sizeof(buf));
++	cxl->prio = ID_RX;
++	cxl->flags = CANXL_XLF | 0x7f;	/* read back as canfd_frame.len */
++	cxl->sdt = 0;
++	cxl->len = frame_len - CANXL_HDR_SIZE;
++	/* byte 8 overlaps canfd_frame.data[0]: N_PCI = flow control, CTS */
++	buf[8] = 0x30;
++	return send(tx, buf, frame_len, 0) == (ssize_t)frame_len ? 0 : -1;
++}
++
++static void drain(int s)
++{
++	struct timeval tv = { 0 };
++	unsigned char buf[4096];
++	fd_set fds;
++
++	for (;;) {
++		FD_ZERO(&fds);
++		FD_SET(s, &fds);
++		if (select(s + 1, &fds, NULL, NULL, &tv) <= 0)
++			return;
++		if (recv(s, buf, sizeof(buf), MSG_DONTWAIT) <= 0)
++			return;
++	}
++}
++
++/* Did the socket report an error caused by a frame it never asked for? */
++static int rx_reports_ebadmsg(int rx)
++{
++	int i;
++
++	for (i = 0; i < 30; i++) {
++		unsigned char buf[64];
++
++		usleep(25000);
++		if (recv(rx, buf, sizeof(buf), MSG_DONTWAIT) < 0 &&
++		    (errno == EBADMSG || errno == EPROTO))
++			return 1;
++	}
++	return 0;
++}
++
++FIXTURE(isotp_frame_type) {
++	int rx;
++	int obs;	/* raw socket on the same interface */
++	int tx;		/* injector, CAN_RAW_XL_FRAMES enabled */
++	int has_fd;	/* the interface carries CAN FD frames (mtu >= CANFD_MTU) */
++	int has_xl;	/* the interface carries CAN XL frames */
++	int mtu;	/* -1 when the interface does not exist */
++};
++
++static int open_observer(const char *ifname)
++{
++	struct sockaddr_can addr = { .can_family = AF_CAN };
++	int s, one = 1;
++
++	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (s < 0)
++		return -1;
++	addr.can_ifindex = ifindex_of(ifname);
++	if (addr.can_ifindex < 0)
++		goto err;
++	/* the First Frame is a CAN FD frame: without this the observer is
++	 * blind and the precondition check below reports a false alarm
++	 */
++	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_FD_FRAMES, &one, sizeof(one)) < 0)
++		goto err;
++	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_FRAMES, &one, sizeof(one)) < 0)
++		goto err;
++	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
++		goto err;
++	return s;
++err:
++	close(s);
++	return -1;
++}
++
++static int open_injector(const char *ifname)
++{
++	struct sockaddr_can addr = { .can_family = AF_CAN };
++	int s, one = 1;
++
++	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (s < 0)
++		return -1;
++	addr.can_ifindex = ifindex_of(ifname);
++	if (addr.can_ifindex < 0)
++		goto err;
++	if (setsockopt(s, SOL_CAN_RAW, CAN_RAW_XL_FRAMES, &one, sizeof(one)) < 0)
++		goto err;
++	if (bind(s, (struct sockaddr *)&addr, sizeof(addr)) < 0)
++		goto err;
++	return s;
++err:
++	close(s);
++	return -1;
++}
++
++FIXTURE_SETUP(isotp_frame_type)
++{
++	if (!CANIF[0])
++		SKIP(return, "CANIF is not set");
++
++	self->rx = -1;
++	self->obs = -1;
++	self->tx = -1;
++	/* isotp_bind() rejects ll.mtu > dev->mtu, so the Classic channel
++	 * needs any CAN device, the FD channel needs an FD-capable one, and
++	 * only the two cases that inject a CAN XL frame need anything more.
++	 * A missing interface is a skip, not a failure: CANIF names whatever
++	 * device the caller happens to have.
++	 */
++	self->mtu = iface_mtu(CANIF);
++	self->has_fd = self->mtu >= CANFD_MTU;
++	self->has_xl = iface_max_xl_len(CANIF) > 0;
++}
++
++FIXTURE_TEARDOWN(isotp_frame_type)
++{
++	if (self->rx >= 0)
++		close(self->rx);
++	if (self->obs >= 0)
++		close(self->obs);
++	if (self->tx >= 0)
++		close(self->tx);
++}
++
++/* --- Classic CAN channel: a CAN XL frame can be exactly CAN_MTU bytes --- */
++
++TEST_F(isotp_frame_type, classic_xl_frame_is_not_a_flow_control_frame)
++{
++	int payload_len = 100;	/* > 7, so a First Frame is sent */
++
++	if (!require_iface(self->mtu))
++		SKIP(return, "interface %s does not exist", CANIF);
++	if (!self->has_xl)
++		SKIP(return, "interface does not carry CAN XL frames");
++
++	self->rx = make_isotp_socket(CANIF, ID_RX, ID_TX, RX_FLAGS, 0xAA,
++				     CAN_MTU, 8);
++	ASSERT_GE(self->rx, 0);
++
++	self->obs = open_observer(CANIF);
++	ASSERT_GE(self->obs, 0);
++	self->tx = open_injector(CANIF);
++	ASSERT_GE(self->tx, 0);
++
++	drain(self->obs);
++	ASSERT_EQ(arm_receiver(CANIF, self->rx, self->obs, payload_len), 0)
++		TH_LOG("receiver never reached ISOTP_WAIT_FC");
++
++	ASSERT_EQ(inject_xl(self->tx, CAN_MTU), 0);
++
++	EXPECT_EQ(rx_reports_ebadmsg(self->rx), 0)
++		TH_LOG("an XL frame was reported as a malformed FC frame");
++}
++
++TEST_F(isotp_frame_type, classic_well_formed_flow_control_is_accepted)
++{
++	struct can_frame cf;
++
++	if (!require_iface(self->mtu))
++		SKIP(return, "interface %s does not exist", CANIF);
++
++	/* plain Classic CAN traffic: runs on any CAN interface */
++	self->rx = make_isotp_socket(CANIF, ID_RX, ID_TX, RX_FLAGS, 0xAA,
++				     CAN_MTU, 8);
++	ASSERT_GE(self->rx, 0);
++	self->obs = open_observer(CANIF);
++	ASSERT_GE(self->obs, 0);
++	self->tx = open_injector(CANIF);
++	ASSERT_GE(self->tx, 0);
++
++	drain(self->obs);
++	ASSERT_EQ(arm_receiver(CANIF, self->rx, self->obs, 100), 0);
++
++	/* a genuine Classic CAN flow control frame, padded as configured */
++	memset(&cf, 0, sizeof(cf));
++	cf.can_id = ID_RX;
++	cf.len = 8;
++	cf.data[0] = 0x30;	/* N_PCI flow control, CTS */
++	memset(&cf.data[1], 0xAA, 7);
++	ASSERT_EQ(send(self->tx, &cf, sizeof(cf), 0), (ssize_t)sizeof(cf));
++
++	/* positive evidence, not merely the absence of an error: the socket
++	 * has to act on the CTS and start sending Consecutive Frames
++	 */
++	EXPECT_EQ(wait_for_consecutive_frame(self->obs, ID_TX), 0)
++		TH_LOG("the flow control frame was not acted upon");
++	EXPECT_EQ(rx_reports_ebadmsg(self->rx), 0)
++		TH_LOG("a well-formed flow control frame was rejected");
++}
++
++/* --- the same acceptance check on the CAN FD channel --- */
++
++TEST_F(isotp_frame_type, fd_well_formed_flow_control_is_accepted)
++{
++	struct canfd_frame cf;
++
++	if (!require_iface(self->mtu))
++		SKIP(return, "interface %s does not exist", CANIF);
++	if (!self->has_fd)
++		SKIP(return, "interface does not carry CAN FD frames");
++
++	self->rx = make_isotp_socket(CANIF, ID_RX, ID_TX, RX_FLAGS, 0xAA,
++				     CANFD_MTU, 64);
++	ASSERT_GE(self->rx, 0);
++	self->obs = open_observer(CANIF);
++	ASSERT_GE(self->obs, 0);
++	self->tx = open_injector(CANIF);
++	ASSERT_GE(self->tx, 0);
++
++	drain(self->obs);
++	/* > 62 bytes, so the First Frame is a CAN FD frame as well */
++	ASSERT_EQ(arm_receiver(CANIF, self->rx, self->obs, 800), 0);
++
++	memset(&cf, 0, sizeof(cf));
++	cf.can_id = ID_RX;
++	cf.flags = CANFD_FDF;
++	cf.len = 12;		/* padlen(12) == 12 */
++	cf.data[0] = 0x30;	/* N_PCI flow control, CTS */
++	cf.data[1] = 0;		/* block size */
++	cf.data[2] = 0;		/* separation time */
++	memset(&cf.data[3], 0xAA, 9);
++	ASSERT_EQ(send(self->tx, &cf, sizeof(cf), 0), (ssize_t)sizeof(cf));
++
++	EXPECT_EQ(wait_for_consecutive_frame(self->obs, ID_TX), 0)
++		TH_LOG("the flow control frame was not acted upon");
++	EXPECT_EQ(rx_reports_ebadmsg(self->rx), 0)
++		TH_LOG("a well-formed flow control frame was rejected");
++}
++
++/* --- The same collision, one length gate further up --- */
++
++TEST_F(isotp_frame_type, fd_xl_frame_is_not_a_flow_control_frame)
++{
++	int payload_len = 800;	/* > 62, so a First Frame is sent */
++
++	if (!require_iface(self->mtu))
++		SKIP(return, "interface %s does not exist", CANIF);
++	if (!self->has_xl)
++		SKIP(return, "interface does not carry CAN XL frames");
++
++	self->rx = make_isotp_socket(CANIF, ID_RX, ID_TX, RX_FLAGS, 0xAA,
++				     CANFD_MTU, 64);
++	ASSERT_GE(self->rx, 0);
++	self->obs = open_observer(CANIF);
++	ASSERT_GE(self->obs, 0);
++	self->tx = open_injector(CANIF);
++	ASSERT_GE(self->tx, 0);
++
++	drain(self->obs);
++	ASSERT_EQ(arm_receiver(CANIF, self->rx, self->obs, payload_len), 0)
++		TH_LOG("receiver never reached ISOTP_WAIT_FC");
++
++	ASSERT_EQ(inject_xl(self->tx, CANFD_MTU), 0);
++
++	EXPECT_EQ(rx_reports_ebadmsg(self->rx), 0)
++		TH_LOG("an XL frame was reported as malformed on the FD channel");
++}
++
++/* --- The guard must not turn padding validation off --- */
++
++TEST_F(isotp_frame_type, wrong_padding_is_still_reported)
++{
++	struct sockaddr_can addr = { .can_family = AF_CAN };
++	unsigned char payload[100];
++	int sender;
++
++	if (!require_iface(self->mtu))
++		SKIP(return, "interface %s does not exist", CANIF);
++
++	/* this case carries only Classic CAN frames: the point is that the
++	 * frame-type guard must not disable padding validation, and that is
++	 * observable without any XL support
++	 */
++	/* the receiver insists on a padding byte the sender does not use */
++	self->rx = make_isotp_socket(CANIF, ID_RX, ID_TX, RX_FLAGS, 0xBB,
++				     CAN_MTU, 8);
++	ASSERT_GE(self->rx, 0);
++	sender = make_isotp_socket(CANIF, ID_TX, ID_RX, CAN_ISOTP_TX_PADDING,
++				   0xAA, CAN_MTU, 8);
++	ASSERT_GE(sender, 0);
++
++	memset(payload, 'B', sizeof(payload));
++	addr.can_ifindex = ifindex_of(CANIF);
++	addr.can_addr.tp.rx_id = ID_TX;
++	addr.can_addr.tp.tx_id = ID_RX;
++	ASSERT_GT(sendto(sender, payload, sizeof(payload), 0,
++			 (struct sockaddr *)&addr, sizeof(addr)), 0);
++
++	EXPECT_EQ(rx_reports_ebadmsg(self->rx), 1)
++		TH_LOG("padding validation no longer reports a malformed frame");
++	close(sender);
++}
++
++int main(int argc, char **argv)
++{
++	char *ifname = getenv("CANIF");
++
++	if (!ifname) {
++		printf("CANIF environment variable must contain the test interface\n");
++		return KSFT_FAIL;
++	}
++	if (strlen(ifname) >= sizeof(CANIF)) {
++		printf("CANIF is too long\n");
++		return KSFT_FAIL;
++	}
++	memcpy(CANIF, ifname, strlen(ifname) + 1);
++
++	return test_harness_run(argc, argv);
++}
+diff --git a/tools/testing/selftests/net/can/test_isotp_frame_type.sh b/tools/testing/selftests/net/can/test_isotp_frame_type.sh
+new file mode 100755
+index 000000000..1ee28ff31
+--- /dev/null
++++ b/tools/testing/selftests/net/can/test_isotp_frame_type.sh
+@@ -0,0 +1,47 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++ALL_TESTS="
++	test_isotp_frame_type
++"
++
++net_dir=$(dirname $0)/..
++source $net_dir/lib.sh
++
++export CANIF=${CANIF:-"vcan0"}
++
++setup()
++{
++	if [[ $CANIF == vcan* ]]; then
++		ip link add name $CANIF type vcan || exit $ksft_skip
++		# a vcan device defaults to CANXL_MTU, so it carries every frame
++		# type this test needs without further configuration
++		ip link set dev $CANIF mtu 2060 2>/dev/null
++	else
++		echo "test_isotp_frame_type requires a vcan device" >&2
++		exit $ksft_skip
++	fi
++	ip link set dev $CANIF up
++}
++
++cleanup()
++{
++	ip link set dev $CANIF down
++	if [[ $CANIF == vcan* ]]; then
++		ip link delete $CANIF
++	fi
++}
++
++test_isotp_frame_type()
++{
++	./test_isotp_frame_type
++	check_err $?
++	log_test "test_isotp_frame_type"
++}
++
++trap cleanup EXIT
++setup
++
++tests_run
++
++exit $EXIT_STATUS
 
