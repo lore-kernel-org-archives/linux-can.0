@@ -1,126 +1,95 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743164AA1C3
-	for <linux-can@vger.kernel.org>; Mon, 28 Sep 2026 11:35:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DD234A9D5C;
+	Mon, 28 Sep 2026 11:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790595317; cv=none; b=TJX99xz9OewiJfQNZ/rEdJ2yMD8a6JmTATViaKySgNAQcy+G4/VYmBBTFVSU5SZRIyVhSnkEWTf8BVyWIJPDSRj3iMp2IbcX84ekMYily0dt4AF9PwjScVAnQhyAnFaCfPBQLcyD3J/MwmMQiKX+R8p1YTH/4mvAGqCyUtionvA=
+	t=1790595463; cv=none; b=JUxx8yc4NGhn5ZM43gAGzXR1zULvEQhvGbNxTPsLymYr1qLgAdrkOJcLxTXVw7XAcB7t8airlTo4vhWeDrqHV8JhzgA43IwOSgvUuC4g/b2YmbwHVzUPeURFPiRu0QqUa6F65uP7pw7MoVZeO32BDoaKU+90d4T9t1nFmBmiV9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790595317; c=relaxed/simple;
-	bh=Gi5zACnJc/3ULH13LfNFDZC7kieZQ2f5C8BnB/jPw/c=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=dEtidgCfHpNaVbArEyEwTuxd1PVTlzqFLLBBtIWRTx70PoeJfrt2if5OLBkGdTYBrlBrkA31Iv3C1IYZKS0mKVNH4iCELuZOU1w7o5aqwURlbF2J/3o45ADMRFqlRdPttz/cEz3e/SEmGHP09x+0eJ/kYFLXX16dwPNNBSWRoSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOA1Z4J4; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790595463; c=relaxed/simple;
+	bh=i1HLmhfYYY1XgeHMmP92XohC1QUEx0bM50CxC1yMQGc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=cuPpTf1AnWSn17fV2fSz3fHzcMWcxWXMKgtd/fhBHpUBIBT8S3lUHkINWo5BFtep+6SATUboDULMGUCzsCRCsDhI1lZZ5HOYkeb6Fg3Is4jC61SPo40vKKHiFMLZ8453yRnXTIhJmIo3JFRen0qcUA3oix8qzwh+cySmJHj1jrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=O58xL+t+; arc=none smtp.client-ip=220.197.31.2
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOA1Z4J4"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0212B1F000FF;
-	Mon, 28 Sep 2026 11:35:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790595315;
-	bh=XwER1SDQCI7yxTtcZp4gdUrNRTkKocJ/I+WeOXBi9FM=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=FOA1Z4J4/H4ZE/qjxbqQzFwVjWsODW3SwGYwxP2tAyU1502Dqn9lmUslwcdO+p6WT
-	 P4fpe7LsI+7vWRO+8RcG/9k3SyNprlIROJF/EfOizNcPqXXtj17pAMP64jWBWf5q6S
-	 Ovfjm3dJC8qRHNPfuCeUy47F7D42LjjXIlVMW07o0Wgq3GVUgemY/rtaJBRnc/jz7L
-	 L+bKTIyjKirdvJsQODGABdZ4Uu5X2sF3bzTKxs8rNcJc/l8GD2dpkT0HY1NxyEn/J3
-	 3xJE2t8R7haOibiuXGez+hlCQ6bk8AhrQPG5svf/fwfF0u1EqLfgh2Rlp7Sl1GGG7v
-	 OIYjnkRILIoXg==
-From: sashiko-bot@kernel.org
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="O58xL+t+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=4I
+	P/18Z3LtA8nsNujgY1Bh7YEYYCD4uNr6tnkGKZr6k=; b=O58xL+t+UNayHHIBQ3
+	WVsay3ts5ObItAJblDTt1bX0xI8TLjV3a1c7WBUApaFFHrx5zixghxpY01M6Fn2f
+	/BBrcmK0RC2wTsRdQNC0r6wt0Bn0DijqxVrHz/bNHSdgRg7/R7iTNAlVb6qE42FR
+	dvyva01VC7iCzaDkPx73ol/qM=
+Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
+	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wDnZ2ptUbpqvOicBQ--.36813S2;
+	Mon, 28 Sep 2026 19:37:17 +0800 (CST)
+From: Quchaosheng <quchaosheng000406@163.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Quchaosheng <quchaosheng000406@163.com>,
+	linux-can@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Kaixuan Li <kaixuanli0131@gmail.com>
 Subject: Re: [PATCH] selftests: can: add isotp frame-type tests
-Reply-To: sashiko-reviews@lists.linux.dev
-To: Quchaosheng <quchaosheng000406@163.com>
-Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Date: Mon, 28 Sep 2026 19:37:16 +0800
+Message-ID: <20260928113716.2133785-1-quchaosheng000406@163.com>
+X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260928112720.2120220-1-quchaosheng000406@163.com>
 References: <20260928112720.2120220-1-quchaosheng000406@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Mon, 28 Sep 2026 11:35:14 +0000
-Message-Id: <20260928113515.0212B1F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnZ2ptUbpqvOicBQ--.36813S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7CrW8Gw1kJr1fZr1fWry8Zrb_yoW8XF1xpF
+	W5KanrtFWkKaySg34xCw4rXr93Kry3Zay5GFyY9rWqvwn8W39rKr4fXa4Uua43CrWkWayY
+	yF4Yqa4DGrs8Ja7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JU_CzJUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4w24Lmq6UW0FFAAA3F
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] selftests: unconditional cleanup destroys pre-existing interfaces
---
+A note on the expected result, since the test is written to fail on a tree
+that still has the bug it pins down.
 
-commit ffa7302bd0c4a8a610bf89cdbd13b8881574eec4
-Author: Quchaosheng <quchaosheng000406@163.com>
-   =20
-selftests: can: add isotp frame-type tests
-   =20
-This commit adds a suite of tests for the isotp socket frame-type
-handling, ensuring that Classic CAN and CAN FD channels correctly separate
-frames by channel characteristics without incorrectly identifying CAN XL
-frames.
+On current mainline the suite reports pass:3 fail:2.  The two failures are
+the two CAN XL cases, which is the bug; the three passing cases are the
+controls.  With the fix applied it is pass:5 fail:0.  I would rather say
+this up front than have someone build it, see two red lines and assume the
+test is broken.
 
-> diff --git a/tools/testing/selftests/net/can/test_isotp_frame_type.sh b/t=
-ools/testing/selftests/net/can/test_isotp_frame_type.sh
-> new file mode 100755
-> index 0000000000000..1ee28ff3108ba
-> --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_isotp_frame_type.sh
-[ ... ]
-> +setup()
-> +{
-> +	if [[ $CANIF =3D=3D vcan* ]]; then
-> +		ip link add name $CANIF type vcan || exit $ksft_skip
+The fix it is aimed at is Kaixuan's:
 
-[Severity: Medium]
-If the vcan interface already exists, ip link add will fail, causing the
-script to exit. Since the trap for the cleanup function is registered before
-setup is called, won't this trigger the cleanup function and tear down the
-user's pre-existing interface?
+  [PATCH v2] can: isotp: check the frame type, not just the length
 
-> +		# a vcan device defaults to CANXL_MTU, so it carries every frame
-> +		# type this test needs without further configuration
-> +		ip link set dev $CANIF mtu 2060 2>/dev/null
-> +	else
-> +		echo "test_isotp_frame_type requires a vcan device" >&2
-> +		exit $ksft_skip
+which was posted on 09-20 and is in the CAN patchwork, not yet in
+net-next as far as I can tell.  I sent a Reviewed-by for it this morning
+and I am not asking for it to be expedited -- only flagging that if this
+test lands first, the two failures are real and are what it documents.
 
-[Severity: Medium]
-If a user runs this test with a non-vcan interface, the setup function
-will exit and skip. Does this also trigger the unconditional cleanup on
-the user's provided interface?
+If a maintainer would rather not have a red selftest in the tree at all,
+the alternative is to take this only after the fix, and I am fine with
+that.  Say so and I will resend it as a follow-up to the fix instead.
 
-> +	fi
-> +	ip link set dev $CANIF up
-> +}
-> +
-> +cleanup()
-> +{
-> +	ip link set dev $CANIF down
-> +	if [[ $CANIF =3D=3D vcan* ]]; then
-> +		ip link delete $CANIF
-> +	fi
-> +}
+One detail on the skips: the two Classic CAN cases need only any CAN
+interface, and the CAN FD acceptance case needs one that carries CAN FD.
+The two XL cases and the FD case are skipped rather than failed when the
+interface cannot carry the frame type, so a tree built without CAN XL
+support still gets flow control and padding coverage rather than a red
+result.
 
-[Severity: Medium]
-Can this unconditionally destroy host network interfaces?
+  v7.3-rc5, vcan, in-kernel isotp sockets on both channels:
 
-Because setup can fail or skip after the exit trap is registered, this
-cleanup function executes unconditionally. It looks like this will bring do=
-wn
-and potentially delete active host interfaces that the test itself never
-created.
+    stock              pass:3 fail:2
+    Classic-only guard pass:4 fail:1
+    Kaixuan's v2       pass:5 fail:0
 
-Should the script track whether it actually created the interface before
-attempting to modify its state or delete it?
+Thanks,
+Quchaosheng
 
-[ ... ]
-> +trap cleanup EXIT
-> +setup
-> +
-> +tests_run
-> +
-> +exit $EXIT_STATUS
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260928112720.2120=
-220-1-quchaosheng000406@163.com?part=3D1
