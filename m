@@ -1,126 +1,110 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 665CF3E0725
-	for <linux-can@vger.kernel.org>; Tue, 29 Sep 2026 16:09:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790698163; cv=none; b=J7R8FWoBuNyFImvaIBZc9JfCabRYskSrUC3cKKa6kuobEMMg2EKz9T0ifEfZa6YPrRIzNyuwSfS1MR1KXQGgLkqC3eE2IqDTtsVKUVLlbNm5SzXCpaYEq88pgQgheUIVwk3K5vJTqYWkmUBFgjcIF3rBTxFKz2Zc0veHlTAuWrI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790698163; c=relaxed/simple;
-	bh=ZDUSkWZwahFeHpdDKe/5Sp4TB9U8aJMHjF1wJXX/gTA=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=W1Idz1ESy0HFwh2ouyjcyH7HIqV8E5YITop8TQq2+ntpMCDjLbIM7vVqEJfRjrjjBFojNr8saF529gD0bCV9vma0+BoCXFwALCA9qime2VvmUp0l+DLQFe/hkgEFrNb85kpjQ4bfMSjyqhkvg0CfYXA6IEdriZldOyonK1BGMdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/p01NFo; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03B88367B74
+	for <linux-can@vger.kernel.org>; Tue, 29 Sep 2026 16:34:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790699675; cv=pass; b=dQjQxOobC9fhugOCchEScfhSVNIatVhs8doxAuThwhTQseN2/Dzj9dEdgCc0JqaVyF9om1JF+ngfvHTCxHHq4FqT31l4F0e4Ut6ll0bD5xBROH+bJv5RhfD9AT4/aOTVbF/vqBAZrqDZfDG4Gu1r7zpTi1c9G9kLNWeRr7aDl3U=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790699675; c=relaxed/simple;
+	bh=2umtojJDHds3UWjnMDx8UKPXfVbBgx2fgPgoZ4OIQZM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Z+XJMnTPTOJaKQ3dJHO7oJ1wu+GdKDXkh323wyOcbv9rUtcXDLpF+hKskt0jkqVEyCwwOeqxGNxBkV9U5TlF741vcbqS4w02i8vTrk6VBLwNU7A8UeP/a3boj2hUZHh3mJo2AHHfnUre0mt9F85nCh2DZZI3illswm9w9Ea5tGg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sI5xSjFJ; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=VlQzFTIK; arc=pass smtp.client-ip=85.215.255.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/p01NFo"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E94E51F000FF;
-	Tue, 29 Sep 2026 16:09:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790698162;
-	bh=egZ9T38Wi6rR/e0AtBhobjwrCRRp2D0yKkBDY59F4DU=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Q/p01NFox24WNnVZxXtUy3GpgZr7WfPiJ3GXw2id/mcfLNuAR4B+0WiTkJaDMR504
-	 ktAlbPJDa4sHwBEM65UBLQkATYR7tyWIo4DfoGhjXKUWSxRDJi9FC7BBlymCy3QhjM
-	 hfEi6MKYHXOcfzH1WrasPMgZswuwpN49yl7GZBZwEH4oMWGzn+jBzSdDvE1Mn3jQuo
-	 RJVMA2BjgBK3l7wG19fz5YUfkfyjfzksbuwcLIdvWkBz7zoerELIB468T/JdQvW4JG
-	 Y53BZNConmQOusHYsRDVQ1/NHt1debHe/K0MTmaFepLhRnnZsydWaLtVUxZ5QcsHCC
-	 lVBAumF7AY5TA==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v4 3/3] can: fix unique skb identifier regression under
- RPS
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Oliver Hartkopp" <socketcan@hartkopp.net>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260929154125.3298-4-socketcan@hartkopp.net>
-References: <20260929154125.3298-1-socketcan@hartkopp.net>
- <20260929154125.3298-4-socketcan@hartkopp.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 29 Sep 2026 16:09:21 +0000
-Message-Id: <20260929160921.E94E51F000FF@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sI5xSjFJ";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="VlQzFTIK"
+ARC-Seal: i=1; a=rsa-sha256; t=1790699670; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Pikn4TU/ABVY+Muoh5ut0jNQdjq1aXkzwXMex6bzzyYUR/xFaEyQhAN/lN0QdCDPhQ
+    x9W2kAqgbQxZ7YvMn7OG1qnyt/e9j9VEtb1HVGC1Nf3YylMnxj9UEwTvlqdMU4e4we3e
+    3ZYKBNATYZiLkubLnw1Vvvm91zS772BuQf89HsViH4DnZyVClynGl2F+hDKfXXpZINUs
+    oXclONELKPFV2EjI3JZx4DkwsTd2hcah24YoeJvKGIRojzxFTd5pJQkSxoVKET93B+vM
+    H7FaUiWpes3W0HYIqvA9gNhKvJxiY10a9DIPc3i62h710x9YJ95qxPJocGlJ6RBBU9kP
+    umaw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1790699670;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=vNFSeKchleC/eCcTERiBeqixeOEdw75f/xh9tTKAqJw=;
+    b=GBCO8yN2loTOYd33T7h8Z5kFy43chuTR/uFrIPOjoRYZYmB4lPDmI49iaKlm0XHUkE
+    JCX32BU0ltK1mYUS1GamD9wavuJ/f2YsDSxbd7tRwCA9jb+v27Bqa6Zs1su5gUpBf6zm
+    rHPBhDV8uQT1Uh1HVg41FP4DESZ8Oil6UdyVeZSCeHMK++yhEhFd0DmaTM9MFlpucDbd
+    U19l6NDihYo19ngOCVcHs2aTmfX5K0vm6N1XLoMS6YtRl4+Eahj8RGT7B06277bulKBX
+    SfC5ImSmsM1HJQ5TlgqJhsLvJsbsUfe1diGoz555OUjN+I4Zp/l4sgZtysVKQUxxLxVa
+    H3XA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1790699670;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=vNFSeKchleC/eCcTERiBeqixeOEdw75f/xh9tTKAqJw=;
+    b=sI5xSjFJtuHbiCsDKoN2J0pPszR+MLDXPYAcmdbw6TZJiBaYSJq5NJmThLL4hJEkwt
+    WSlwV5zmJrteF/FWijmHR9YF5D9B7EyiVFMPRmvgTfOX+tXpDnttAcVmD+SwP9Uecf2X
+    YFvK4Dv1XTn+gahVsdQTf/F/QJTBBzGBIh/2FRfGwQm8wAoh7z5moFPkka151ivd9gOn
+    kk43SxNx4h1b01eMO+LpFWxXVCHp9hPobO15KneeHYbmmMozM3VKi7hCfVB7wWlC9Sl0
+    mpmqpG9Vlm5HInbNo2Jq6zrVF7FYDCfZ88idD9OOFChFEf9JDHdDv5DV3RUCVRvJ1JDp
+    y/lg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1790699670;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=vNFSeKchleC/eCcTERiBeqixeOEdw75f/xh9tTKAqJw=;
+    b=VlQzFTIKSxhPQAIIIPBDddAORsyYwF7kXuY3CVUBOdU+l9eZqvVmzr+ItrQJFc0pXP
+    whW3YqtxWn+7+kD2PoAw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from vivo.lan
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K04b9a28TGYUTtt
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 29 Sep 2026 18:34:30 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH v5 0/3] CAN netlayer fixes for stable
+Date: Tue, 29 Sep 2026 18:34:21 +0200
+Message-ID: <20260929163424.16382-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] can: data race and extension corruption due to incorrect skb_clone=
-d() check
---
+This patch set aggregates the open stable fixes for the CAN netlayer.
 
-commit 1ddbc558b8096bdaecb507a831137177beb7d0ad
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
+Patch 3 is new and addresses a RPS regression but it needs the other patches
+as basis.
 
-can: fix unique skb identifier regression under RPS
+Changes in patch 3 only.
+v2: We need a non-zero UID for the cfecho checks in isotp.c
+    So restore the former while (!(skb->hash)) statement
+v3: omit the problematic use of skb->hash reported by sashiko bot
+v4: address tc mirred or netem duplicate clones suggested by sashiko bot
+v5: remove the skb_clone() test speed-up as it introduces a bug
 
-This commit moves the per-skb unique identifier used for duplicate detection
-into a CAN skb extension instead of using skb->hash. It aims to fix an issue
-where RPS assigned a non-zero hash to CAN frames, preventing a unique ID fr=
-om
-being generated and causing legitimate frames to be dropped as duplicates.
+Oliver Hartkopp (3):
+  can: remove CAN filters independent from namespace
+  can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
+  can: fix unique skb identifier regression under RPS
 
-Link: https://lore.kernel.org/linux-can/2859AD3D-C805-41A0-9036-C5E8EE15241=
-9@clnt.de/
+ drivers/net/can/vxcan.c  |   3 ++
+ include/linux/can/core.h |   3 +-
+ include/linux/can/skb.h  |   4 +-
+ include/net/can.h        |   2 +
+ net/can/af_can.c         |  56 +++++++++++++-------
+ net/can/bcm.c            | 107 +++++++++++++++++++++++++++++----------
+ net/can/gw.c             |  10 ++--
+ net/can/isotp.c          |  28 +++++-----
+ net/can/raw.c            |  17 ++++---
+ 9 files changed, 160 insertions(+), 70 deletions(-)
 
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index ef435f22ac933..4aa233d7e8a1d 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-[ ... ]
-> -void can_set_skb_uid(struct sk_buff *skb)
-> +void can_set_skb_uid(struct can_skb_ext *csx)
->  {
-> -	/* create non-zero unique skb identifier together with *skb */
-> -	while (!(skb->hash))
-> -		skb->hash =3D atomic_inc_return(&skbcounter);
-> -
-> -	skb->sw_hash =3D 1;
-> +	while (!(csx->can_skb_uid))
-> +		csx->can_skb_uid =3D atomic_inc_return(&skbcounter);
->  }
+-- 
+2.53.0
 
-[Severity: High]
-If the extension block passed here is shared with another SKB, will this wr=
-ite
-to csx->can_skb_uid cause a data race and corrupt the clone's UID?
-
-[ ... ]
-> +static struct can_skb_ext *can_get_unshared_skb_ext(struct sk_buff *skb,
-> +						    struct can_skb_ext *csx)
-> +{
-> +	/* create unshared CAN skb_extension for netem/mirred skb clones */
-> +	if (unlikely(skb_cloned(skb)))
-> +		return skb_ext_add(skb, SKB_EXT_CAN);
-> +	else
-> +		return csx;
-> +}
-
-[Severity: High]
-Is skb_cloned() the correct check to determine if the extension block is sh=
-ared?
-
-If a CAN SKB is cloned (for example, via tc mirred) and its data buffer is
-later unshared via skb_unshare() or pskb_expand_head(), the data buffer is
-copied but the extension block remains shared because __skb_ext_copy() only
-increments its refcount.
-
-In this scenario, skb_cloned(skb) returns false because the data buffer its=
-elf
-is no longer shared. Returning csx directly here would bypass the COW refco=
-unt
-logic inside skb_ext_add() and pass a shared extension block to
-can_set_skb_uid().
-
-This seems like it could cause raw_rcv() to mistakenly identify legitimate
-frames as duplicates and silently drop them. Should this rely directly on t=
-he
-refcount handling within skb_ext_add() instead?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260929154125.3298=
--1-socketcan@hartkopp.net?part=3D3
