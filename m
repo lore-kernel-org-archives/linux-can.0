@@ -1,24 +1,24 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F073043787A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C0145D908;
 	Tue, 29 Sep 2026 21:07:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790716060; cv=pass; b=kdxLDabQ0ekMhl0rV5zmeH5TbTJ8NVjWKPimCVHYBsv+WgVaua5+O+EF8lIIxOD2MNYNKLWP8n3cdCtViWAItUHnuzf0ug/Kbe6YORSUkcszXUmLzahljYVqynNz/FwpoZuFqspWxngWi28nrWNh1wiaNX1BzgDxfGQelacJlXc=
+	t=1790716061; cv=pass; b=nPmzffBgawtSGeLK0cgWX+wfrw4PUNV/Cl1eunY1h+TyfZkcDx5ALhp4CJK/jPj5C+SMbWFsSQe4Ribhhsw7yrVb9CjEQpgrbyzUDHW+fQjY0716aKiPaYAVTrLw1EDVRab4Bh99KL9sAb7fbsp8jF+RBWDzQqGkEPwc/U9I0bk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790716060; c=relaxed/simple;
-	bh=oVtn4hjTILP4WfJawsId+8nWCMEuDrQvefKqr1eOG3U=;
+	s=arc-20240116; t=1790716061; c=relaxed/simple;
+	bh=KDe9fHVSNEr529q5iusnG0EQmQ/8PUuh3in0I4G5Re0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=n09g0M8MdJv2p6/8tSoNkzxZAscmqqI+0wCNu9DMt55lQqAP2tf+mYq9iD5cfawIJgcKrkgf0AqSt8iurxnMZwABPn0GnhWtz3jC6nZRqP+lSiBxNbQqVVdDFcrmDGYpjD/xS46Q2r9euTeyhlW2e3tkvu400qKy5u3ytZl7U7s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Em9s91LW; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=bCPjHA+Hks1lNUjuDgDRDz1/iZWwT5Jl4bAF7GZwinyQcwGpuSLumaxALk3kN8/REE7sHtUxIFpeHeETM1Hyf0TPCqh9IZhY+kV9O0gHGyxvfcAQTN4Ygi04ZBBSuhyG7er+NMSAKAfM4aLpUtmOhNEyRjvG6BXXE5SLus6/2Fk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=fG9QXBLi; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Em9s91LW"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="fG9QXBLi"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4595D20228B;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 2D5F2201F03;
 	Tue, 29 Sep 2026 23:07:04 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1790716024;
@@ -26,31 +26,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Px51A8V/hWNf0E0AfB0vilaoFyAZ784PRuLHBIiLo5s=;
-	b=Em9s91LWV2qSsSNxejFNnzGRYksDbJgJf+ob41NhU2aXWzwsLteQSgJaUO5CNJi10gTzSR
-	rEGutmY5SvOaPqjkkia5jEde9kO8GBqeKwTe6Ga4kIzX0CjWTjdX2jnTM4d6LSEenMoWg6
-	oB8YdASyDry8KQE587H9xaA1j61mTadiX+YPMzKVi+1AoFTnyMvKoPQNOsCUCdYdnE+yUw
-	EvcXPxQUgGUqJCOSOv7rcIdCADyFMS6yM6AjBmgau0eBolEGwc70nx7I0q1we4cu9+wxjg
-	+P4IdM5HJLCDOOdDyuqJLandL+xnlpJPQtOCKhLo1EVbW3KLEx861JSq24k7rg==
+	bh=nZfGkW2/1hivBUzl01QmbV8IEUXpupiMov1cfpC61a4=;
+	b=fG9QXBLijz2GMfnQbDZuKlRJYL/04LGHQU5OPgap6hCC0hbdZepy8VoKuHHDQ82EG8bZx7
+	1PQU7SwZzIUro5t1ZoJk0dt/YvvlLmbR8flSotThBR7klvzaBI/1YD8ZXiB9qd5xh9176Z
+	NfEzQlcjrpVfd1JYxI9zU3T+6NCSbC86MvZms69AtDuQRb0B3ihEGSuW2/WhxutNymSeQT
+	ErCxi6QP7EOTY0oVwvtMgYj+1zstMUqSXws9FWYY63AaYSrawMNjSYyEKnc6FMpU/vCezZ
+	mV/97KJ/cMQI+tC0rNVdJf6kie63nPT1HHi1Mrp59uEHsTcKnQsBbt6bD5tUIA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1790716024;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Px51A8V/hWNf0E0AfB0vilaoFyAZ784PRuLHBIiLo5s=;
-	b=gl23tRu/nX6NtqYRh5Zz8aJsn9Sk82ug9qjJXjT/TqgWLuoxl7vTkKzc30b7P25524De7n
-	1DtaScla5/dXKVfBLVQXMS/eqedcC+LH8j2JZy+bPdvlyeewRX7Jc5DChz6+rqRYEgaMng
-	+fjHz3NhV4yVP1lVZ+ytoylkcGtq2xS4SVVhcufgOTqfvuZFmwyU3G5XxB6UBAIFdxNxMn
-	UBOOtTOyy5PsWnp8cOOQCP1PR42/b3K/Kcgb6ZfIQKki+cV9/hPaCjwsN2H2bO/rGbXPpa
-	8GcKIcxd7B9KHkPNSUOCYFaQ30CcarFdF14AvM98WfGTcAHtPRa9Cgofj4U5/A==
+	bh=nZfGkW2/1hivBUzl01QmbV8IEUXpupiMov1cfpC61a4=;
+	b=V08mKC3n2dMmSyeAjlp+Jbxc331vC0iVQKiL6EE8M0XZ1Y+Px079CGGOtfbSGQ5uKysd+I
+	m4zmxJ6gxZDE7BcS4oXBG9+8qwpDGXqWix/UV94ZKer+SLFFs1y+l3lzt924KQyqVx9Dya
+	SpT8m+K1Sywy3bzgBovcw4BJ0Sp6W8oXbqIYW7DDW0jk1BsmuctfqJYjQjU6niw8AZSnfT
+	S+F+t+ZP35OlFCefSiHj9c7rQsRv8PE4wS8rdljOTZ48BrDNBJzg6aAhdfeYhmNvffmHHe
+	eJRq2U7x6ssg+p6LGnzZnHH6Ezlg/lJH+CPKH9pkOVSPqPLZvmZBqMl21WB5wQ==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790716024; a=rsa-sha256;
 	cv=none;
-	b=YwXMteoRE81EwJf78+LIWiDQjM4OCavnd680akHHsPyGrTqFixQLz86HEDXFVIvnBGNaxE
-	+Do7an8PH1z6rFuwz0rJKMMRwBlTRXWMtCH/wpkJ5schxZzGQ0Q1XjoyZgqQZ6OvFrwQ5P
-	yZPylP5kpA2TqRVlflosBLNovZM4SHS2okDnGS2FQsbejXfXlWn473TRhrH4MhtW2Q5Ys/
-	cQCvxd/pg6tRJCYAAMG8MwByOmsZN+9j13Abkh9kqC+RLVfkN/pgiXwBB7Tkoksf6CBKOJ
-	VXQUrBPtGOu2T7X5oufm34l3yLFTC+TZCfU9ezfxU5RTgla964Kl8WyEnCWk2w==
+	b=JkegYgECMcWckFyg6fPzMW1HVzKUe9hwsZ46SIXwHhDapTORUWV/Vr+Yk4fHhgTof/ZVGc
+	0+uOmZHSP2qgZRQHEZ3LXWClGvoXjwKwD/ovwsZAgiym2nciaguDZ+JjRCPNfO+HiF6msM
+	4QVGMKJH4MypvISkokgiH574u/7fLgmH7fb1Pway+wnUqtHPJWfhVHEpyXi73ZlFhWpy39
+	70xnnSE5IgN/CaCkaOb2Xu4MYVIGWUoK9OXM3Fo7KilGVBU8eZdab5MlNgn279QFYE+8fx
+	md1LlsZND3CdNcs+laTMhkMkfrI7FZIHB4AYsqolPGFe8qCsQ59pUn2JJxWlBg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -58,14 +58,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xBf2W-003S4D-0U;
+	id 1xBf2W-003S4B-0A;
 	Tue, 29 Sep 2026 23:07:04 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id D13545B4CE0;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C4E255B4CDF;
 	Tue, 29 Sep 2026 21:07:03 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -75,9 +75,9 @@ Cc: davem@davemloft.net,
 	kernel@pengutronix.de,
 	Chris Strong <chris.strong@flocksafety.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 16/16] can: mcp251xfd: flush RX offload queue during long IRQs
-Date: Tue, 29 Sep 2026 22:44:06 +0200
-Message-ID: <20260929210700.1183036-17-mkl@pengutronix.de>
+Subject: [PATCH net 15/16] can: rx-offload: add IRQ queue flush predicate
+Date: Tue, 29 Sep 2026 22:44:05 +0200
+Message-ID: <20260929210700.1183036-16-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260929210700.1183036-1-mkl@pengutronix.de>
 References: <20260929210700.1183036-1-mkl@pengutronix.de>
@@ -91,62 +91,40 @@ Content-Transfer-Encoding: 8bit
 
 From: Chris Strong <chris.strong@flocksafety.com>
 
-Under sustained receive traffic, the threaded interrupt handler can
-continue draining the controller indefinitely. Received SKBs remain in
-skb_irq_queue until the handler returns, but the overflow checks inspect
-the NAPI-visible skb_queue instead. The IRQ-local queue can therefore grow
-without bound while NAPI remains unscheduled, potentially exhausting
-memory.
+Drivers that queue received SKBs from a threaded interrupt may need to
+publish a partial batch before the handler returns. The existing overflow
+check covers only the NAPI-visible queue after the IRQ-local queue has been
+spliced, so it cannot guide that decision.
 
-Stop the dedicated RX loop when the IRQ-local queue reaches the NAPI weight
-so TEF and other pending interrupts are processed before publishing the
-batch. Publish further batches from the main interrupt loop while the
-controller remains busy. This bounds IRQ-local accumulation and keeps RX
-and TEF timestamps from each controller-status pass in the same sort
-window.
+Add can_rx_offload_irq_queue_needs_flush() to report when the IRQ-local
+queue reaches the NAPI poll weight. Keep the query separate from the flush
+operation so callers can finish processing related interrupt sources before
+publishing the batch.
 
-Fixes: c757096ea103 ("can: rx-offload: add skb queue for use during ISR")
 Assisted-by: LLM
 Signed-off-by: Chris Strong <chris.strong@flocksafety.com>
-Link: https://patch.msgid.link/20260929-upstream-can-rx-offload-batching-v2-2-3b587c519f5d@flocksafety.com
+Link: https://patch.msgid.link/20260929-upstream-can-rx-offload-batching-v2-1-3b587c519f5d@flocksafety.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 14 +++++++++++++-
- 1 file changed, 13 insertions(+), 1 deletion(-)
+ include/linux/can/rx-offload.h | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-index 8759bc05bd8f..26d6a0d4b34b 100644
---- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-+++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-@@ -1498,8 +1498,14 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 			/* We don't know which RX-FIFO is pending, but only
- 			 * handle the 1st RX-FIFO. Leave loop here if we have
- 			 * more than 1 RX-FIFO to avoid starvation.
-+			 *
-+			 * Once the IRQ queue reaches the NAPI weight, process
-+			 * TEF and other pending interrupts before publishing
-+			 * the batch, keeping RX and TEF timestamps in the same
-+			 * sort window.
- 			 */
--		} while (priv->rx_ring_num == 1);
-+		} while (priv->rx_ring_num == 1 &&
-+			 !can_rx_offload_irq_queue_needs_flush(&priv->offload));
+diff --git a/include/linux/can/rx-offload.h b/include/linux/can/rx-offload.h
+index d29bb4521947..f9b9474f7190 100644
+--- a/include/linux/can/rx-offload.h
++++ b/include/linux/can/rx-offload.h
+@@ -62,4 +62,11 @@ static inline void can_rx_offload_disable(struct can_rx_offload *offload)
+ 	napi_disable(&offload->napi);
+ }
  
- 	do {
- 		u32 intf_pending, intf_pending_clearable;
-@@ -1615,6 +1621,12 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
- 			}
- 		}
- 
-+		/* Keep each splice into the offload queue near one NAPI poll
-+		 * budget when a busy controller keeps this handler running.
-+		 */
-+		if (can_rx_offload_irq_queue_needs_flush(&priv->offload))
-+			can_rx_offload_threaded_irq_finish(&priv->offload);
++static inline bool
++can_rx_offload_irq_queue_needs_flush(const struct can_rx_offload *offload)
++{
++	/* skb_irq_queue is owned by the interrupt context queuing the SKBs. */
++	return skb_queue_len(&offload->skb_irq_queue) >= offload->napi.weight;
++}
 +
- 		handled = IRQ_HANDLED;
- 	} while (1);
- 
+ #endif /* !_CAN_RX_OFFLOAD_H */
 -- 
 2.53.0
 
