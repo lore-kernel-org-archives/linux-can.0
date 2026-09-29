@@ -1,110 +1,94 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mx.nabladev.com (mx.nabladev.com [178.251.229.89])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 438643939A3
-	for <linux-can@vger.kernel.org>; Tue, 29 Sep 2026 14:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B8B551997;
+	Tue, 29 Sep 2026 15:20:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.251.229.89
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790693643; cv=none; b=hRFa3npBzXmPiuoP+h1yxyHo5csay+gIfVqoVSps3idQxQe4u20I+VSQSh++7TUxmca0oPjW2sxSkt9h2ble8jzehWrII0JVeYiFLf3f2zaOc4eVnca/QJKOAPQ4jnt4qvCNz5oxrCNpM8u5i8zatbV2o0hKUT9ewM+P3TFdQhY=
+	t=1790695253; cv=none; b=CqWDb/eLE9nnhc7Hpw5vU45V6uETgBlkBgii0G95fN0RLXvs94iIcs8T8TXcEyufPQcii5/xssRV4+Gkt45p8iqyOyo2W4r31zybVMNBIhhvXIRAelvtdvzxyVTsKW+B9xfbd6Dq9b6FLqRhukc1X9XTOMzEXdXRgGJQwfADKFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790693643; c=relaxed/simple;
-	bh=B9xA/pj3YaZKtW1thnnZKXjyT9PBu2s+4w4l+Hb7qjs=;
-	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=CXHQHDBYM9/haO0dvJygSDJZYVTvjRe3z2WgsSbapJuHY0q2FPmdwXZNL7uYm9SKjpoLC8JNuTs65ySoKdM/RbGGT93hjQCGQOzXvEoxdXIUn8cBi6XlgXfto40zx1UwmsIxVA/cp02YgPTR13EsXM5MINV+FvvtT2FWuTFa+kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aGeFzrQa; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1790695253; c=relaxed/simple;
+	bh=pBxNS1bNtBf30rEZNvzpqa0C4ZlKjw0kKCPl6PN35dg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=db4Szk7NcfWu8MLG40mi/2iDfzMIAEaZohmObIaNgdfl/q8crrZECwA7OEF1bQO/IKO4GZaHLlgF0Gptgg93qBTDE2IL7BZAOxfFJAq+zVUgoe2yiFradzlchrCUwSmInhvRCDr3Bf8t8Y0q5u3eiUzA/tmNcsCjSVkg4WQ81Ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com; spf=pass smtp.mailfrom=nabladev.com; dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b=OwYg1zNe; arc=none smtp.client-ip=178.251.229.89
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabladev.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aGeFzrQa"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FD0C1F000FF;
-	Tue, 29 Sep 2026 14:54:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790693641;
-	bh=PJmk76doL8iiXQQBIjtPC/4Rx271lqvbQUiNeLVgvXc=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=aGeFzrQa9kof3HEZDThF0s6m54fm62jirUPg7NjtWPTodWSSN5N9BCuSN5cSuYPrV
-	 Kh9JLJQs+XrC7GBqTAJoc2gDfiIRwpTdpgvamgAHIzosA1lNYwSgnjuAU0UfyYHwW7
-	 kTrzkqcgdPyIHMlr4ZvwtINFSS5GJC99Xmx+PSM1w04lC4VSSCZt6Rmp5RyDQW9+N3
-	 SEFye5liDQ846grxJHNoPa11ftD6ytiXsx2iTDwVEZATklM92LqHQt2Gmx1Bw25wOA
-	 2O5VMnCbqaT5+Y78Hnbn/E/+d+iavxKv/2HGK/fCGHHEuvVdkePsbcCm8KjRaHpYpo
-	 RN7tFPjQz6LtQ==
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2] can: peak_usb: Add bus error reporting for the
- PCAN-USB FD family
-Reply-To: sashiko-reviews@lists.linux.dev
-To: =?utf-8?b?U3TDqXBoYW5lIEdyb3NqZWFu?= <stephane.grosjean@free.fr>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20260929-peak_usb-canfd-berr-v2-1-1a7005797c38@peak-system.fr>
-References: <20260929-peak_usb-canfd-berr-v2-1-1a7005797c38@peak-system.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 29 Sep 2026 14:54:00 +0000
-Message-Id: <20260929145401.6FD0C1F000FF@smtp.kernel.org>
+	dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.b="OwYg1zNe"
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B2D00106C7C;
+	Tue, 29 Sep 2026 17:20:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
+	s=dkim; t=1790695232;
+	h=from:subject:date:message-id:to:cc:mime-version:content-type:
+	 content-transfer-encoding:content-language:in-reply-to:references;
+	bh=jaSo4Yb5WbEA26v9hASwh38CJf2MLKJoEN33KGK1KgY=;
+	b=OwYg1zNeWSvdQ4w9b+0TZLvqfWPigX0M3fzPgWzz+vPcJje+jsx5G9iaA3nb96uB46BhnB
+	bpUAgegtqCIlqJEgRs0tC8jzU80+f6TWCC84lEsbRMhI8+7qZtAXimvd0Lm7j/MYgIdq7z
+	edl6CZsip8z+cEmazKcVjdbds4HsGMLJcIS6hCj1Oz/bbZSruTBoyXbT4sqtJQQBcSJkWB
+	3hmFeCIdr7PMB7WkQQJVPjS+YNXhHY87/CldFdRAvSBSRRNrmicvjq1iNcGnutArvRKDVJ
+	xops2aHs+in5y9A7DwQgid3i7qcN704OwIO/ZkKV5hOsm2YG5QaKgDKIMdKRTA==
+Message-ID: <49303872-5622-4e1d-8e1a-01394ec29367@nabladev.com>
+Date: Tue, 29 Sep 2026 17:20:27 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/3] arm64: dts: imx95: Add support for Data Modul
+ i.MX95 eDM SBC
+To: Frank Li <Frank.li@oss.nxp.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+ Aswath Govindraju <a-govindraju@ti.com>, Conor Dooley <conor+dt@kernel.org>,
+ Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+ Krzysztof Kozlowski <krzk+dt@kernel.org>,
+ Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh@kernel.org>,
+ devicetree@vger.kernel.org, imx@lists.linux.dev, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20260928204741.175754-1-marex@nabladev.com>
+ <20260928204741.175754-3-marex@nabladev.com> <arvPDq8sjjv7na01@SMW015318>
+Content-Language: en-US
+From: Marek Vasut <marex@nabladev.com>
+In-Reply-To: <arvPDq8sjjv7na01@SMW015318>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Last-TLS-Session-Version: TLSv1.3
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] can: peak_usb: returning -EINVAL for bogus error reports drops val=
-id URB packets
---
+On 9/29/26 4:45 PM, Frank Li wrote:
 
-commit 6ff05518907e7981e5fff27d40e8a2458d563751
-Author: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
+Hello Frank,
 
-can: peak_usb: Add bus error reporting for the PCAN-USB FD family
+>> +	backlight_lvds: backlight-lvds {
+>> +		compatible = "pwm-backlight";
+>> +		pinctrl-names = "default";
+>> +		pinctrl-0 = <&pinctrl_panel_backlight_lvds>;
+>> +		brightness-levels = <0 1 10 20 30 40 50 60 70 75 80 90 100>;
+>> +		default-brightness-level = <7>;
+>> +		enable-gpios = <&gpio2 27 GPIO_ACTIVE_HIGH>;
+>> +		pwms = <&tpm3 3 5000000 0>;
+>> +		/* Disabled by default, unless display board plugged in. */
+>> +		status = "disabled";
+>> +	};
+> 
+> The both backlight is not used in this dts, can you remove it and
+> add these when it real use.
+It's the same thing we do on the other boards, so I would prefer to keep 
+this consistent:
 
-CAN bus error reporting is currently missing for all PEAK-System
-USB-to-CAN FD devices. Add support for reporting bus errors by enabling
-bus error notifications in the firmware for each CAN channel.
-
-Link to v1: https://patch.msgid.link/20260929-peak_usb-canfd-berr-v1-1-7abd=
-585f877f@peak-system.fr
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can=
-/usb/peak_usb/pcan_usb_fd.c
-> index 0d46f4ce5dca7..98f6943469b33 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> @@ -661,17 +661,71 @@ static int pcan_usb_fd_decode_error(struct pcan_usb=
-_fd_if *usb_if,
->  	struct pucan_error_msg *er =3D (struct pucan_error_msg *)rx_msg;
->  	struct pcan_usb_fd_device *pdev;
->  	struct peak_usb_device *dev;
-> +	struct can_frame *cf;
-> +	struct sk_buff *skb;
-> +	u8 can_err_tx =3D 0;
-> =20
->  	if (pucan_ermsg_get_channel(er) >=3D ARRAY_SIZE(usb_if->dev))
->  		return -EINVAL;
-> =20
-> +	/* Guard against bogus channel 1 reports from single-channel adapters */
->  	dev =3D usb_if->dev[pucan_ermsg_get_channel(er)];
-> +	if (!dev)
-> +		return -EINVAL;
-
-[Severity: High]
-Does returning -EINVAL here cause valid URB packets to be dropped?
-
-The caller pcan_usb_fd_decode_buf() handles a negative return value by
-aborting the URB decoding entirely and jumping to the fail label:
-
-	case PUCAN_MSG_ERROR:
-		err =3D pcan_usb_fd_decode_error(usb_if, rx_msg);
-		if (err < 0)
-			goto fail;
-		break;
-
-Because USB bulk transfers pack multiple CAN records together, aborting
-the loop discards any subsequent valid CAN frames in the same URB.
-This appears to lead to silent data loss under normal operation.
-
-Should this return 0 instead of -EINVAL to safely ignore the hardware quirk
-without dropping the rest of the buffer?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20260929-peak_usb-c=
-anfd-berr-v2-1-1a7005797c38@peak-system.fr?part=3D1
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts: 
+backlight: backlight {
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts: 
+compatible = "pwm-backlight";
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts- 
+brightness-levels = <0 1 10 20 30 40 50 60 70 75 80 90 100>;
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts- 
+default-brightness-level = <7>;
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts- 
+pwms = <&pwm1 0 5000000 0>;
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts- 
+/* Disabled by default, unless display board plugged in. */
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts- 
+status = "disabled";
+arch/arm64/boot/dts/freescale/imx8mm-data-modul-edm-sbc.dts-    };
