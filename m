@@ -1,134 +1,284 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53F8D52FE35;
-	Tue, 29 Sep 2026 14:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790692200; cv=pass; b=eg8+iKtmg3TfSZ2ba5jF8POhI27ICUbniK1PVr161tRwr3/Yn6oJdsR97C2jGF87Pg9a2sKn5oI4cIYLrKvG+NqLvwvNpcninEdOax9udGLdoagQazqoO/W4HGy5E8OoZqeVtA/tIh7rxTJpXpFCDfk2J+/dem4VQHRftaxoRMw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790692200; c=relaxed/simple;
-	bh=Ki4ULZKZjqspZRw97qDNSKKTQp2s50rHsTN5bA4ahoo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SrhPhheWBxGBKbaBXovnlnU/QPPWtSM2mQ5pRquXj/HyGySYE1qk3PDYOEJDpCDpKIIz5M5hyBriIr7U87miIFhUX/tfmC1AfWxkmbfA2LKf+HEWikOwT9mZ4PXzAf1klNGfyWpVX8jK8Z2v/1GYsTJkg4c1maOJcTSanUStYDM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Rz+luffq; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70D95383D3;
+	Tue, 29 Sep 2026 14:41:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.6
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790692905; cv=none; b=bKmUMtb064z+xJiQACQOH09Ge4G4qKE6pirXEeSL6kWriX4VX0G1KeXSiNeZCcYf/tGmAkQKNRHeFlS180Oel9nEub5OpZBPIJLXcAJhDjXZTz/49icHOv8NyG4nVig3dfimLm87wmvhxDFGbf8Ebb9qk6gtxBomltdzfIzTfjQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790692905; c=relaxed/simple;
+	bh=n7c/9yUMz69v5IqCNcpDLzMA3tZ8S+lpt4RyCLmeFWw=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=O5zlr3VY/DgvMWzsyjONzf18QPgB+Sq8VcZNAuPke2bcC3ssepHIzQdzY/a7ykXC9/kdODeOZmHsoNlfbqbuu8dq4R4OxYXC7XsQ96p9qFNxe4js2t4zgQQv0chbWbtCqmv1RI/eYMcLXSddtHxDyl3pawG1uKWeh0TiGIdWZDc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=LIj2gOrL; arc=none smtp.client-ip=212.27.42.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Rz+luffq"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 8E2E5200C22;
-	Tue, 29 Sep 2026 16:29:45 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790692185;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ESYwkv4SShJfcI2nL14NiF76xciBBpPOBuVmMxwjXdw=;
-	b=Rz+luffqDrJm1juCbeN06twCQ6Ws1mvHFUnL+m4hkjAEF73NyHDSwAWBtDN6nqOjznGMRb
-	qVEC6q6zRS8RRiMIq5+SANCf3SaCupVsZnzMpqX6nJKUHFyPesgXdvK1LzjKCxFRie1CKB
-	LkyJOHAHLNLD80OhCO1GHdyGANMrTu/u2nFLzayiY3GSLjcSa2+HCcbD9BRs4n4wf+MFjN
-	PxFfkiCfPsKxaxFMdhoDPB5YKbj4SC7gNn/35CWE87FkIQQJxkOf1eHuPpZeGStkGzt0Am
-	mt+eXZgv4efs/pC2ZqqCzKmqBkjzXxRf3SSGibL6OK7rQ8kNgNbirF8fnNcypQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790692185;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ESYwkv4SShJfcI2nL14NiF76xciBBpPOBuVmMxwjXdw=;
-	b=CQpTz+NK3mHvJxdEBy2u45bz+5qZ8U7XRG/jz/akRNV8yHWp5HwNjJPTTOlqxV2s6XhUqZ
-	XKx0K/+H+dJ+EM2rqeQogeNLuaGmj9A8TNOXVHVu6JXwP5b822cZylWqTketoiwin9X9j8
-	l6FdIR1fg5khEQBkA328Q8T8QiJncrupA42coZ9h6PQ5jc1OryVfXcbwBW3YHUhCJhCMmu
-	ARfitzX3AAqAIK7MIId2PkXBfgoF3xmZj20TFiuNWywXdlwn336pqKOXPQv58KqRAqtVmd
-	3BYPI0lsCxiHwXok00BN43P723N2aMbeX7xAQP5af5tlRpTd8RjYEYkTAiSNpw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790692185; a=rsa-sha256;
-	cv=none;
-	b=HkuhBqu77SBsGRtm1gXWyDTbUfrMu0+Nla92PTW9NY2nVnDFVq2UyxYQ+uRDpSoDYeUIuI
-	F+W/0RnQ88JEFys+ivCxUQvXBOp8po2NEKwh2atUxNkso0OoMFsOfQzQEEjKL2gjHwWmob
-	83d1T8sZK4Fw9MFuRlSfp/femj3QcBzwzpzXacs1y2GRbu7t6KFt9EyJnltay0cJsqbPMJ
-	dcJb3MdMr4RsrA/UkMdysBl3trH61zWASzaFkJShThObSfyyTOds2xjDhwoZJ1sKsKmu3l
-	tvF3OKlODZVk6a66RH2O+iUBj75/It2AQEIDQKhBG6I68rfv0l/bHNkV8cKiWw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xBYq1-003PHT-1Z;
-	Tue, 29 Sep 2026 16:29:45 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2AB1A5B4955;
-	Tue, 29 Sep 2026 14:29:45 +0000 (UTC)
-Date: Tue, 29 Sep 2026 16:29:44 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Kendall Willis <k-willis@ti.com>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
-	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chandrasekar Ramakrishnan <rcsekar@samsung.com>, s-kochidanadu@ti.com, a-kaur@ti.com, s-tripathi1@ti.com, 
-	vishalm@ti.com, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: Re: [PATCH v7 0/2] can: m_can: introduce ti,am62-mcan compatible for
- out-of-band wakeup
-Message-ID: <20260929-nondescript-statuesque-oarfish-434a76-mkl@pengutronix.de>
-References: <20260924-temp-v7-0-f40defe5957f@ti.com>
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="LIj2gOrL"
+Received: from localhost.localdomain (unknown [82.96.140.143])
+	(Authenticated sender: stephane.grosjean@free.fr)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id 4A84278050E;
+	Tue, 29 Sep 2026 16:41:27 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1790692891;
+	bh=n7c/9yUMz69v5IqCNcpDLzMA3tZ8S+lpt4RyCLmeFWw=;
+	h=From:Date:Subject:To:Cc:From;
+	b=LIj2gOrLYcUROFpt4S0CpkNPjNnR/tMgcK+t/KwpYSa868RVqedopVriYuUesi6HO
+	 r71pS3wOSQ2tRaouMgzwOkvj/KWqfxD/a/2ph4ZNRiNjqFSd1HLeHKL/z32WPfsD8N
+	 Y0O1/ifyeMIOflSUO8487Jwtwqn07k8yg0fuHafQStdU1Z0LctTXpdNFmvZdEcjL9x
+	 mbmx1iuVF/eto3vXw3UOJttO6hbi6M/HULlUEpayWt6gTd9GyJrvENFTg5jD5P6eJi
+	 DRXVEwirphAdMhrcswWRYOHYGxPyl6/zwMup4MwQGALkioMs1b3smV9imtpCiSbUOK
+	 z/EXRyIFIjYIA==
+From: =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@free.fr>
+Date: Tue, 29 Sep 2026 16:41:03 +0200
+Subject: [PATCH v2] can: peak_usb: Add bus error reporting for the PCAN-USB
+ FD family
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="z5qi2oiwqkx6wtbs"
-Content-Disposition: inline
-In-Reply-To: <20260924-temp-v7-0-f40defe5957f@ti.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260929-peak_usb-canfd-berr-v2-1-1a7005797c38@peak-system.fr>
+X-B4-Tracking: v=1; b=H4sIAP7Nu2oC/32Nyw6CMBBFf4V07ZjSiIAr/8MQ08dUqrGQGSASw
+ r9Lce/yJOeeuwhGCsjiki2CcAocuriBOmTCtjo+EILbWCipzrJWNfSoX/eRDVgdvQODROAQT8p
+ Ka7SUYlv2hD589uqt+TGP5ol2SKlktIGHjub9dsqT9/9hyiGHUhtXVIWvytJfkwU884DvoyfRr
+ Ov6Bf3HE87NAAAA
+X-Change-ID: 20260929-peak_usb-canfd-berr-dee42c0cba00
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
+X-Mailer: b4 0.16.0
 
+From: Stéphane Grosjean <s.grosjean@peak-system.fr>
 
---z5qi2oiwqkx6wtbs
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v7 0/2] can: m_can: introduce ti,am62-mcan compatible for
- out-of-band wakeup
-MIME-Version: 1.0
+CAN bus error reporting is currently missing for all PEAK-System
+USB-to-CAN FD devices. Add support for reporting bus errors by enabling
+bus error notifications in the firmware for each CAN channel.
 
-On 24.09.2026 16:54:30, Kendall Willis wrote:
-> This series introduces the "ti,am62-mcan" compatible which adds support
-> for out-of-band wakeup capability in m_can devices.
->
-> A corresponding DTS series enabling this feature on TI K3 AM62 family
-> of devices has been submitted separately:
-> "arm64: dts: ti: use ti,am62-mcan compatible for m_can devices"
->
-> Rebased on top of "can: m_can: Fix suspend deinit() error path" [1]
+Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
+---
+Changes in v2:
+- Add a defensive check against single-channel adapters reporting an
+  invalid channel index.
+- Link to v1: https://patch.msgid.link/20260929-peak_usb-canfd-berr-v1-1-7abd585f877f@peak-system.fr
 
-This should go mainline with the next can-fixes PR. Please ping me after
-net has been merged back to net-next.
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 89 ++++++++++++++++++++++++++----
+ include/linux/can/dev/peak_canfd.h         | 15 ++++-
+ 2 files changed, 92 insertions(+), 12 deletions(-)
 
-regards,
-Marc
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 0d46f4ce5dca..98f6943469b3 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -661,17 +661,71 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
+ 	struct pucan_error_msg *er = (struct pucan_error_msg *)rx_msg;
+ 	struct pcan_usb_fd_device *pdev;
+ 	struct peak_usb_device *dev;
++	struct can_frame *cf;
++	struct sk_buff *skb;
++	u8 can_err_tx = 0;
+ 
+ 	if (pucan_ermsg_get_channel(er) >= ARRAY_SIZE(usb_if->dev))
+ 		return -EINVAL;
+ 
++	/* Guard against bogus channel 1 reports from single-channel adapters */
+ 	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
++	if (!dev)
++		return -EINVAL;
++
+ 	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+ 
+ 	/* keep a trace of tx and rx error counters for later use */
+ 	pdev->bec.txerr = er->tx_err_cnt;
+ 	pdev->bec.rxerr = er->rx_err_cnt;
+ 
++	/* ignore non-CAN error notifications */
++	if (PUCAN_ERMSG_TYPE(er) > PUCAN_ERMSG_OTHER_ERROR)
++		return 0;
++
++	/* update other errors counters */
++	dev->can.can_stats.bus_error++;
++
++	if (PUCAN_ERMSG_RX(er)) {
++		dev->netdev->stats.rx_errors++;
++	} else {
++		dev->netdev->stats.tx_errors++;
++		can_err_tx = CAN_ERR_PROT_TX;
++	}
++
++	/* if berr-reporting is off, stop here */
++	if (!(dev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
++		return 0;
++
++	/* otherwise, build the CAN_ERR_xxx frame */
++	skb = alloc_can_err_skb(dev->netdev, &cf);
++	if (!skb)
++		return -ENOMEM;
++
++	cf->can_id |= CAN_ERR_CNT | CAN_ERR_PROT | CAN_ERR_BUSERROR;
++	cf->data[2] |= can_err_tx;
++
++	switch (PUCAN_ERMSG_TYPE(er)) {
++	case PUCAN_ERMSG_BIT_ERROR:
++		cf->data[2] |= CAN_ERR_PROT_BIT;
++		break;
++	case PUCAN_ERMSG_FORM_ERROR:
++		cf->data[2] |= CAN_ERR_PROT_FORM;
++		break;
++	case PUCAN_ERMSG_STUFF_ERROR:
++		cf->data[2] |= CAN_ERR_PROT_STUFF;
++		break;
++	default:
++		break;
++	}
++
++	cf->data[3] = PUCAN_ERMSG_CODE(er);
++
++	cf->data[6] = pdev->bec.txerr;
++	cf->data[7] = pdev->bec.rxerr;
++
++	peak_usb_netif_rx_64(skb, le32_to_cpu(er->ts_low),
++			     le32_to_cpu(er->ts_high));
+ 	return 0;
+ }
+ 
+@@ -899,6 +953,7 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
+ {
+ 	struct pcan_usb_fd_device *pdev =
+ 			container_of(dev, struct pcan_usb_fd_device, dev);
++	u16 usb_opts = 0;
+ 	int err;
+ 
+ 	/* set filter mode: all acceptance */
+@@ -912,12 +967,17 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
+ 		peak_usb_init_time_ref(&pdev->usb_if->time_ref,
+ 				       &pcan_usb_pro_fd);
+ 
+-		/* enable USB calibration messages */
+-		err = pcan_usb_fd_set_options(dev, 1,
+-					      PUCAN_OPTION_ERROR,
+-					      PCAN_UFD_FLTEXT_CALIBRATION);
++		/* enable USB calibration messages (needed only once for the
++		 * entire interface)
++		 */
++		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
+ 	}
+ 
++	/* set channel device options: always asks for bus error notifications
++	 * to get (at least) rxerr/txerr, as well as any USB-specific option.
++	 */
++	err = pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);
++
+ 	pdev->usb_if->dev_opened_count++;
+ 
+ 	/* reset cached error counters */
+@@ -955,12 +1015,15 @@ static int pcan_usb_fd_stop(struct peak_usb_device *dev)
+ {
+ 	struct pcan_usb_fd_device *pdev =
+ 			container_of(dev, struct pcan_usb_fd_device, dev);
++	u16 usb_opts = 0;
+ 
+ 	/* turn off special msgs for that interface if no other dev opened */
+ 	if (pdev->usb_if->dev_opened_count == 1)
+-		pcan_usb_fd_set_options(dev, 0,
+-					PUCAN_OPTION_ERROR,
+-					PCAN_UFD_FLTEXT_CALIBRATION);
++		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
++
++	/* turn off bus error option, as well as any USB-specific options */
++	pcan_usb_fd_set_options(dev, 0, PUCAN_OPTION_ERROR, usb_opts);
++
+ 	pdev->usb_if->dev_opened_count--;
+ 
+ 	return 0;
+@@ -1200,7 +1263,8 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++			CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1276,7 +1340,8 @@ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++		CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1352,7 +1417,8 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++			CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1428,7 +1494,8 @@ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++			CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
+index 056e0efa649f..bbcba2711f19 100644
+--- a/include/linux/can/dev/peak_canfd.h
++++ b/include/linux/can/dev/peak_canfd.h
+@@ -8,6 +8,8 @@
+ #ifndef PUCAN_H
+ #define PUCAN_H
+ 
++#include <linux/bitfield.h>
++
+ /* uCAN commands opcodes list (low-order 10 bits) */
+ #define PUCAN_CMD_NOP			0x000
+ #define PUCAN_CMD_RESET_MODE		0x001
+@@ -197,7 +199,18 @@ struct __packed pucan_rx_msg {
+ #define PUCAN_ERMSG_FORM_ERROR		1
+ #define PUCAN_ERMSG_STUFF_ERROR		2
+ #define PUCAN_ERMSG_OTHER_ERROR		3
+-#define PUCAN_ERMSG_ERR_CNT_DEC		4
++
++#define PUCAN_ERMSG_TYPE_MASK		GENMASK(6, 4)
++#define PUCAN_ERMSG_D_BIT		BIT(7)
++#define PUCAN_ERMSG_TYPE(e) \
++	FIELD_GET(PUCAN_ERMSG_TYPE_MASK, (e)->channel_type_d)
++
++#define PUCAN_ERMSG_RX(e) \
++	FIELD_GET(PUCAN_ERMSG_D_BIT, (e)->channel_type_d)
++
++#define PUCAN_ERMSG_CODE_MASK		GENMASK(6, 0)
++#define PUCAN_ERMSG_CODE(e) \
++	FIELD_GET(PUCAN_ERMSG_CODE_MASK, (e)->code_g)
+ 
+ struct __packed pucan_error_msg {
+ 	__le16	size;
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+---
+base-commit: a7bfaba4823e3c165bb2004c74eff7c096672bc7
+change-id: 20260929-peak_usb-canfd-berr-dee42c0cba00
 
---z5qi2oiwqkx6wtbs
-Content-Type: application/pgp-signature; name="signature.asc"
+Best regards,
+--  
+Stéphane Grosjean <s.grosjean@peak-system.fr>
 
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCarvLVgAKCRDMOmT6rpmt
-0r7OAQC2Jh+BqZKOA005Z4hDQY//PPSadQL56mizBWLOT7OBhQEAw4wtlcnn7tC+
-+slwly4+tSuMAZOQhCYqi3qeLlG2NAM=
-=dWOn
------END PGP SIGNATURE-----
-
---z5qi2oiwqkx6wtbs--
