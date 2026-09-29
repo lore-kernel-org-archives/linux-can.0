@@ -1,38 +1,38 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEAB63D952E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9743D8107;
 	Tue, 29 Sep 2026 15:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790696110; cv=none; b=knniOIksmU1MqRWuc9A9q/yZQBPIwdW5FKf9vfFGHxjqHW4XQlSRQCcydXNQT9CQccZgkzOrpJpNUkcfu+kwltjcyYUeR/3AF1G/O1BMJ1PjdXhkTUQBtOCybHjxK5DnVjyGCZzwKW7Xr285AstADSLNYs+qDhsWeHvgZUcDkGQ=
+	t=1790696110; cv=none; b=m8XCzyW9QDC8Vcsow8Au+59Si5xsW+RCYkvzQGuj2EryAtZ5CmxnBJ6rIkQu0BWEd1QSiE9XfvlLWhayho3pg+LRP7DpV+1yL38pCY22ZlmW685GFzWi6gzPf4iPxZ2BSSZe/k49ok9LH2KBja3pnTy9VXZOJ+riMJgZp6r70V0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1790696110; c=relaxed/simple;
-	bh=3ii5g5XioV/QpJdb+r2E2qif+Mg0ka1gVPmu8OXLez8=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=mguTbvoBiUtCtiOkgzyLFaJtuv8u0Iits1zjX0GgRf/SREkauoQTjzxFld1EyOJLHpGB9HhvRZQOVGIUgA0WP6DhEGHtjcekhmbDqkjal8/jX+dOgQy9fNPtZVBat8a9rATIDJsnBY2lNrobpoJGhbU9XUnMdJz6B6oYgTHVr60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=abdKA26N; arc=none smtp.client-ip=10.30.226.201
+	bh=QDIUcGrm6sHInJWVG6jW09uegE6SNxPQxqSUuSMvpoo=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=kMXt7xmrWXthfBg80mvQkxc36h4xLqHjgMoZxtSWKI3xGTHPi53p4cxz8ECQDqHlFtQW57lxf0b7s37lz6As8k9NZyjurnJCFXx3tR0gDIsrxtsfXEKfmA9EQQwZ0nV1eYCg582kCls9hLqR48BXLfHKnNBPaKLy7c3mF9M73Bc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DKefjkNk; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="abdKA26N"
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 7DECCC2BCF6;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DKefjkNk"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9998DC4AF15;
 	Tue, 29 Sep 2026 15:35:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1790696110;
-	bh=3ii5g5XioV/QpJdb+r2E2qif+Mg0ka1gVPmu8OXLez8=;
-	h=From:Subject:Date:To:Cc:Reply-To:From;
-	b=abdKA26NFzJiGv64crbMvzuG1s5ZkutUFGza3ppjVAektsjNw4Q/lgfzRXrp7Zod0
-	 V7hDUJwUvTH/dJZy+GNW3Tj+z7lF7IG94JJgo0wK1D6h62aOAGiufnmm8L/SAV6z05
-	 4mF8BUr1HapuAsnewlNhMtTtA5lpDdUdz40itHyh87Lr15Egb/aR26hRNEimih516p
-	 LkdRrjsxsVql7O4hyHvVSnVgpMz7xay7yb0vFfspPz1LTDVG2xWrIG0AY5FKeiMHpx
-	 qslySP73m/e1RwwvAqeoEtAK+DgcOK7wejRLZ3489XUp+wDMap2VOT/HQhLS8xSJoi
-	 aMzsxiEz9P4oQ==
+	bh=QDIUcGrm6sHInJWVG6jW09uegE6SNxPQxqSUuSMvpoo=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
+	b=DKefjkNkuoIGS4rE/D5LULbHzbg6eZeKd7el/jlVETLVNgAle0xTOc0H4p+44UXRE
+	 dVPguG3e8MAyblIUJT2kyLfH3w13O6h6jBY+U2cHwNrmwbpIK3YjQfNgF43u/XAayn
+	 ZH4SnxVtIKyWdLVLUO0GDKF+RoWrDk3aWNBlMY7ddF5FY7ORKi/9vnvTPrTgynqeGM
+	 xxF2qZ0y1g5aigRNeSa+D1IbK3IOL3CU8Kq8st7G7NF0oDugKMt/ZqZ6IdFYcVRp3O
+	 Pyx+YMrK4pGa9ddWHIUeHhHv7Iz3BZiD7woqPQi5P/R76RwQop9bhjVobJP9vvHSkf
+	 rYTaDuPqoXpSQ==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5B4B7CA5FAC;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 7B979CA5FAE;
 	Tue, 29 Sep 2026 15:35:10 +0000 (UTC)
 From: Chris Strong via B4 Relay <devnull+chris.strong.flocksafety.com@kernel.org>
-Subject: [PATCH net v2 0/2] can: mcp251xfd: bound RX offload batches during
+Date: Tue, 29 Sep 2026 11:35:02 -0400
+Subject: [PATCH net v2 2/2] can: mcp251xfd: flush RX offload queue during
  long IRQs
-Date: Tue, 29 Sep 2026 11:35:00 -0400
-Message-Id: <20260929-upstream-can-rx-offload-batching-v2-0-3b587c519f5d@flocksafety.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,10 +41,9 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAKTau2oC/4WNwQ6CMBBEf4Xs2TW0iVU8+R+Gw7psoVFb0lYCI
- fy7DfHu8c1M5q2QJDpJcK1WiDK55IIvoA8V8EC+F3RdYdC1NnWjFX7GlKPQG5k8xhmDta9AHT4
- o8+B8j4YvlqQzrE4Gys0Yxbp5V9zBS4a2hINLOcRl105qr34G/d8wKVRYN42cmZTmRt3KgJ+Jr
- OTlyOEN7bZtX1SVX3XbAAAA
+Message-Id: <20260929-upstream-can-rx-offload-batching-v2-2-3b587c519f5d@flocksafety.com>
+References: <20260929-upstream-can-rx-offload-batching-v2-0-3b587c519f5d@flocksafety.com>
+In-Reply-To: <20260929-upstream-can-rx-offload-batching-v2-0-3b587c519f5d@flocksafety.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
  Vincent Mailhol <mailhol@kernel.org>, 
  Manivannan Sadhasivam <mani@kernel.org>, 
@@ -52,12 +51,12 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Chris Strong <chris.strong@flocksafety.com>
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1790696109; l=1768;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1790696109; l=2363;
  i=chris.strong@flocksafety.com; s=flock-workstation;
  h=from:subject:message-id;
- bh=3ii5g5XioV/QpJdb+r2E2qif+Mg0ka1gVPmu8OXLez8=;
- b=sqG/OlvWVuExzBPFDZbxeZ4PhnZ1V+nWXnXMh9Zbm4RU1Ol3KT5SfoerUIo0RzgJwAD7G23Tg
- aP3WCi8esFFCI1bTc2vINd6CUttlNo81d1C8seRnKdxEFGaM0PwI1OU
+ bh=Irg7Hh/rvvN2ZObBa7XWor4c8mF34tGo8/fv+q/HTp4=;
+ b=3CqhrRsFq8VMT7W+g6O72MKf23v3bAJnQUYsrntLTjq3NGoHzf9u3IhG1UDHuS4Sk1OT4y841
+ j0cDFcdJ2JZBjR32/0nE1TRJ4bw1wVuGIJDGmlAIJxY0NtDU0t4jfW+
 X-Developer-Key: i=chris.strong@flocksafety.com; a=ed25519;
  pk=IaEYd0fwBUeOKjqZzp2UKZY1tn3CLcPh6JpOKznZyRE=
 X-Endpoint-Received: by B4 Relay for
@@ -65,49 +64,64 @@ X-Endpoint-Received: by B4 Relay for
 X-Original-From: Chris Strong <chris.strong@flocksafety.com>
 Reply-To: chris.strong@flocksafety.com
 
-Hi all,
+From: Chris Strong <chris.strong@flocksafety.com>
 
-Under sustained receive traffic, the MCP251XFD threaded interrupt handler
-can remain active indefinitely, leaving received SKBs in the IRQ-local
-RX-offload queue while NAPI remains unscheduled.
+Under sustained receive traffic, the threaded interrupt handler can
+continue draining the controller indefinitely. Received SKBs remain in
+skb_irq_queue until the handler returns, but the overflow checks inspect
+the NAPI-visible skb_queue instead. The IRQ-local queue can therefore
+grow without bound while NAPI remains unscheduled, potentially
+exhausting memory.
 
-Add an RX-offload helper for identifying a full IRQ-local batch, then use
-it in MCP251XFD to publish batches while the handler continues draining
-the controller.
+Stop the dedicated RX loop when the IRQ-local queue reaches the NAPI
+weight so TEF and other pending interrupts are processed before
+publishing the batch. Publish further batches from the main interrupt
+loop while the controller remains busy. This bounds IRQ-local
+accumulation and keeps RX and TEF timestamps from each controller-status
+pass in the same sort window.
 
-An equivalent backport was tested on a Qualcomm QRB5165
-(msm-qrb5165-4.19 vendor tree, with mcp251xfd and rx-offload backported
-from v5.15+) driving an MCP251863 over GENI SPI at 125 kbit/s. The system
-remained operational overnight under 100% CAN bus load while receiving
-more than 51 million frames.
-
-This mainline version passes checkpatch and an x86_64 build with
-MCP251XFD enabled. I do not have a setup that can run mainline with an
-MCP251863, so it is build-tested only; a hardware test would be welcome.
-
+Fixes: c757096ea103 ("can: rx-offload: add skb queue for use during ISR")
+Assisted-by: LLM
 Signed-off-by: Chris Strong <chris.strong@flocksafety.com>
 ---
-Changes in v2:
-- Split the RX-offload helper into a separate patch.
-- Shorten the patch descriptions and use imperative mood.
-- Keep the code unchanged from v1.
-
-Link to v1: https://lore.kernel.org/r/20260922-upstream-can-rx-offload-batching-v1-1-099e7ca12c91@flocksafety.com
-
----
-Chris Strong (2):
-      can: rx-offload: add IRQ queue flush predicate
-      can: mcp251xfd: flush RX offload queue during long IRQs
-
  drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c | 14 +++++++++++++-
- include/linux/can/rx-offload.h                 |  7 +++++++
- 2 files changed, 20 insertions(+), 1 deletion(-)
----
-base-commit: 54518e0e827f4ca9229ae657022c60bf60f5c1bf
-change-id: 20260921-upstream-can-rx-offload-batching-6c8faed6c156
+ 1 file changed, 13 insertions(+), 1 deletion(-)
 
-Best regards,
+diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+index f441f2265299..d8078895b6d4 100644
+--- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
++++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+@@ -1498,8 +1498,14 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
+ 			/* We don't know which RX-FIFO is pending, but only
+ 			 * handle the 1st RX-FIFO. Leave loop here if we have
+ 			 * more than 1 RX-FIFO to avoid starvation.
++			 *
++			 * Once the IRQ queue reaches the NAPI weight, process
++			 * TEF and other pending interrupts before publishing
++			 * the batch, keeping RX and TEF timestamps in the same
++			 * sort window.
+ 			 */
+-		} while (priv->rx_ring_num == 1);
++		} while (priv->rx_ring_num == 1 &&
++			 !can_rx_offload_irq_queue_needs_flush(&priv->offload));
+ 
+ 	do {
+ 		u32 intf_pending, intf_pending_clearable;
+@@ -1615,6 +1621,12 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
+ 			}
+ 		}
+ 
++		/* Keep each splice into the offload queue near one NAPI poll
++		 * budget when a busy controller keeps this handler running.
++		 */
++		if (can_rx_offload_irq_queue_needs_flush(&priv->offload))
++			can_rx_offload_threaded_irq_finish(&priv->offload);
++
+ 		handled = IRQ_HANDLED;
+ 	} while (1);
+ 
+
 -- 
-Chris Strong <chris.strong@flocksafety.com>
+2.43.0
 
 
