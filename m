@@ -1,123 +1,153 @@
-Received: from mail-wr2-f12.google.com (mail-wr2-f12.google.com [74.125.225.76])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FA493AA50B
-	for <linux-can@vger.kernel.org>; Tue, 29 Sep 2026 08:26:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.76
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790670400; cv=none; b=Axx7jfoKIqKClnK9yXFPnVvEMoVvMl1CBdcDsujzybnttmjowVcmsbcfTXK4+7BYDm/EvDC5s70EUdWARcFA5SE5KoUUrrGpziXepTxmbdkfceIWF0pJwH3WlGK1UkuN8MWU01tnAWLutengYrKPk2HNuAG6Mox26xWywAJgkyg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790670400; c=relaxed/simple;
-	bh=c/YAoCkqI5uJ0uIcLZRtRK48iXLk9E8C0EfmVs86n88=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=TiSp/WcKmYxubL1wONonK5FrL94XbgZs1PKK4/kT7/PnUPugJj1GxWM/CxQlN8xPpNT4KkBwbn29Y/R0DvxZhMyZ6Eegl+gQutCUOaa6NzaDpZ9lyyTjSqcH1ErBOKKVAg+G0jlXcEQrnkyO2koeScHzgdU2inIwW5bxKqtP9mU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=BZFBLzOy; arc=none smtp.client-ip=74.125.225.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2671047C0F8;
+	Tue, 29 Sep 2026 08:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790671295; cv=pass; b=M5xT5YKbifPoLocQaECLICEr77h6cvBYBZxuRzy4yMb+1O+Jxbk37ObOSEb+0Jc7AY2dK1Zyg5JZ+eZ2h3722yQuqhvFQUeHYK7+jZh21b3kqZfKNRmxvw/GG2cS7etVZmUJM3KwNQQp84cMk6z2IhkENIrEBIBl7WnU5dKzZA8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790671295; c=relaxed/simple;
+	bh=ifyLTMeuVsDv458JUi7PRhLOPSp/EvgHwNpABos9HrM=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=IlIiAAVGWS0sRpFJHug+mEd5MB/KhtLSRWZ58b/MRk2vUXUAFHfEHogdZVyYHt0W/gHZ3NAzkDgzD3mnZo90qTR0OIRkT9jxLaRyRR29hRaZv6RUHP32aHwvdwHPuMA/nGKy4VnfnSprWIgjyJx8Bzri3tUrgQ8E85f6WiHg6KQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=WK7ifxOk; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="BZFBLzOy"
-Received: by mail-wr2-f12.google.com with SMTP id ffacd0b85a97d-4843796e373so2207088f8f.1
-        for <linux-can@vger.kernel.org>; Tue, 29 Sep 2026 01:26:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1790670396; x=1791275196; darn=vger.kernel.org;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:mime-version:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=c/YAoCkqI5uJ0uIcLZRtRK48iXLk9E8C0EfmVs86n88=;
-        b=BZFBLzOy4OYtGLOiu+O6qtQrUuU9Ia2mvkJBQ3ExKxQreDg8RUb58h65p+22CK+U79
-         DhhXyYD3+qEE6mB0Ev1gnTseE7f0JQm3SOhuT+g/aGp+oyl1xySVe2+VsUzCiEuZh3yN
-         h7ZxlHdOTg4FwUsCMv5IKgjqBHtoUYuLzhNQeXsw8QjK40U4DNi/7p9yv7DZIIpjlxS4
-         yBmcsaoyMbe2brApO3JoGFeDpnc15MRgfobY9aBASDBY6oXBlMKzCG51+cAymTd7wlw+
-         T4c4IktmC6WKXmf7q1YWaeePgktoLXkw28b2TQV3EI6DJoF0z5Aj5blZpC56SXNBUB7p
-         5eQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790670396; x=1791275196;
-        h=in-reply-to:references:to:from:subject:cc:message-id:date
-         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=c/YAoCkqI5uJ0uIcLZRtRK48iXLk9E8C0EfmVs86n88=;
-        b=vFajHNiSJka5Sj1BBmRwNuDcB4Wx81oIEmIh6GkN9vyoYkQyvQeQEO7wvvdce/WjdU
-         PAiojUypAPBWvTtLk9PeUAzSqa9YW0xL6jHjtkqOZ7fH+39ov3RN4Nyy3ENw22lSt1X3
-         lKYis296al4hK1py80GgZCaKGEB/p+L0Zks6cZNdwQlgpTejEA49PhXa4/gbcPYceXvC
-         foQOZ4fzTe38mhr0iBGQzK4sJ4UgoA6XOXreQYX7E32wDuFf+AgF6Z/giTQlHb0JuYsc
-         b6aeOg6sKObikWJ6xpeMvJqAwYzdUDAU2wlPiMAJ2nmgMhK2SFNATw4svGjQsVUPLv95
-         fIYQ==
-X-Forwarded-Encrypted: i=1; AKwUvBw3jWe9kEuV9ILzQceHIs1sqmvG/Mb41PZgujX1a4Ty/r86dLEUpp3CR9SYuyf6Sxj2yARz1BM/9a0=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIqJuTfjWGohTgnztz4ZcpJsWsafTZeb8rP8SPHCzsas49A1jJn
-	2BPtLfS3ayDmZaRnjds9TObunuMGo5FUkoYfKvUYKeHEP82vJBP2/79lsR40MUFGx+A=
-X-Gm-Gg: AYBFou2VaeogQufHNq61zJ4ocpJmSYACtuv4UdtKZQqDaMgErxUFWHVHLJ3SYJ873dI
-	U6SxhM1S7QySVeZoJuufJias/o3gzN1F64qi8J1UTkgKWTgFtxTTvUxSRtFiOSyZL08ohg8SHGM
-	i8NI/T+R103kudqtzixfyMM8IV68baozxGx82LrvIBjmVvNECumDzWoYhKAKVXPzi6VJ983WIKk
-	M7ED/aa56O1a8fjcmZOw2GqQ5e5ny4HdXG2PW0WNyPaOK6X1+1mWjQEKitepEqXw2/LfKT/CilT
-	759AwQK6tR3SsMp9zzAaBB9u4ogAqczOIDTojWpIshDud7N6S0bJHHFQO4yyrt19iqDNZ+05Dy3
-	lvTU3kIRBeGZ/EAEEoUEt4UmABXJShR+3BVwSwcIAaQgRJH8m31e3o8105s3gLFPts5iCIyjRrW
-	S9uDzKaGp22P5NEObcrvniw7clqkKNdjetRtYMfNesNZXSBHiiVvaAmQIZRB0DGsd+QHLxSq0LY
-	Es=
-X-Received: by 2002:a05:6000:288e:b0:488:80d4:754d with SMTP id ffacd0b85a97d-48880d47663mr22980780f8f.40.1790670395994;
-        Tue, 29 Sep 2026 01:26:35 -0700 (PDT)
-Received: from localhost ([2001:4090:a244:8223:c4e6:4d28:61c:74bb])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48af4f88b37sm2458205f8f.5.2026.09.29.01.26.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 29 Sep 2026 01:26:35 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="WK7ifxOk"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id BAF31201E6E;
+	Tue, 29 Sep 2026 10:41:29 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1790671289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dP0/8tUZqbkGFMkFxlQW3Pa2i+aTX2eHvc6W1tWwX2k=;
+	b=WK7ifxOkcVdKKf21R4Hfgadrml9iukZE+adL+xhRAxkJ1G+2qavtQXw/qPumtxfeXPq1ua
+	x6JyG4TJSt3wXgmyxTpRr9LSdY3gwIAmvkqo/KZRnLaa0L/5su72UtD2Out3v3g8m2Nq7W
+	OiPPh+5ovgXqGjTV0mYWqZlQHxyWBwRnWC+VWyTpge84ejum/WhogtLkgLiPjT6bp9bW65
+	peBdo4hPBRwajWEj8+q6ISwlv0Yx/T+m2gcEE5xxESxTI6hD4BlOta+TRE3sv8nQn8ARCl
+	K8gIGq2VhAwHMzECNvB09pCzsmeXaFB0Zth2xaps7QFCrVddCXOXae3/kgza6A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1790671289;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dP0/8tUZqbkGFMkFxlQW3Pa2i+aTX2eHvc6W1tWwX2k=;
+	b=H2fMGd4gRvE8maW4OF4zYJxgeefCHLEm+Ww39n7oIpj5EIgwjRt0Wy319gSYLEVY4TZ0aX
+	6v4bTAW1KRR5igfuGKP6p5gLuShLBgutOivXRZslszMyys4LniBBIHeA/akmFhFtHxhhwM
+	fXpLnl3EAaNUDkE0IK7QTS41CpzKeXkiQq0NajIiTEzlzSXo14oG6Taif4qcA555+LunxI
+	gTHWxcA8kNtxvl9/SaohdBgrlSKF3kp7V09ZP4nvSe4jWNXrzY4fEoEDPeMRP+xN/WvTDD
+	d6ZJZiienerNQH7+WtNfvjQXExfmiv8ff2uxSNljfF/5XWhYwds2NSNWzupj2A==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790671289; a=rsa-sha256;
+	cv=none;
+	b=RcHS8aNCR5lX+vB5bLbTp0z4RB18lauJwP2+6D5qDJytg9KChK4yL2NdUMpVMviYlSJ42y
+	F1V78SqbS8kjj3ucFjWOazKyCLgFT5Wxgz5yijTKlvXM+h/medAboQs0L7hFzA1I5SdgsT
+	5wTfma0i0dhVkK26p1SbWoORKDlVEBaqE6nyl8nhB3G3LCqBgcuYRALDEKAmLX4Cgmukwb
+	6R6HLlmaDb6kDkQW5s01L6ei0BVS6TL+rzEbTvUWDB9l3hoqrZ4vUlbDZLkOcIWVpPKn/p
+	Pta28Vs/+GpCU/6IlDcS+gVUtlCWclSiU0w3aXLLq210fztRldPrqUc9e9sE5w==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xBTOz-003MdW-2A;
+	Tue, 29 Sep 2026 10:41:29 +0200
+Received: from hardanger.blackshift.org (unknown [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5C46D5B32F1;
+	Tue, 29 Sep 2026 08:41:29 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Tue, 29 Sep 2026 10:41:16 +0200
+Subject: [PATCH can] can: esd: acc_start_xmit(): do not touch skb after
+ can_put_echo_skb()
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary=b85174839f920e7485dc2924fcc56e243020d2d5778e725847992da712cb;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Tue, 29 Sep 2026 10:26:26 +0200
-Message-Id: <DLRNOB4Q83KI.3U2QE8AP2P6JB@baylibre.com>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol"
- <mailhol@kernel.org>, "Sean Nyekjaer" <sean@geanix.com>,
- <linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] can: m_can: Fix suspend deinit() error path
-From: "Markus Schneider-Pargmann" <msp@baylibre.com>
-To: "Kendall Willis" <k-willis@ti.com>, "Markus Schneider-Pargmann (TI)"
- <msp@baylibre.com>
-X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
-References: <20260918-v7-3-topic-mcan-suspend-fix-fix-v1-1-e24fa70c754e@baylibre.com> <20260918192125.yjbqjwivucj5wyuf@uda0506412>
-In-Reply-To: <20260918192125.yjbqjwivucj5wyuf@uda0506412>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20260929-esd-fix-skb-deref-v1-1-fa2529fbacdc@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWMzQqDMBAGX0X23AWNaNFXKT3k50u7FdKStUUQ3
+ 91UjzMws5IiC5TGaqWMn6i8U4HmUpF/2vQASyhMpjZ9PZiBoYGjLKyT44CMyLZH13YNYnRXKt2
+ nSFmO5428TXQ/pX7dC37+32jbdg3h+MN6AAAA
+X-Change-ID: 20260929-esd-fix-skb-deref-a6e5351effb7
+To: =?utf-8?q?Stefan_M=C3=A4tje?= <stefan.maetje@esd.eu>, socketcan@esd.eu, 
+ Vincent Mailhol <mailhol@kernel.org>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1924; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=ifyLTMeuVsDv458JUi7PRhLOPSp/EvgHwNpABos9HrM=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsjaXblN+fxevUz7s6y3g4qnMXh8Ud39McDxdhqT5D+Bv
+ in+3A52HaUsDGJcDLJiiixLf5xQFAh0KO19mTAJZg4rE8gQBi5OAZjIWwGG/5W5uUdXdTGLMe/Y
+ +FlDuUT6XmeX2z73tc+Vuh7WPsmuesnI8JpvfsJCq16dqalGFXzTHjYJhafdc5EXvlM/vfCz5nc
+ uBgA=
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
---b85174839f920e7485dc2924fcc56e243020d2d5778e725847992da712cb
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+After the call to can_put_echo_skb() in acc_start_xmit() the skb should be
+considered invalid and not accessed anymore, but acc_txq_put() will access
+the skb's data.
 
-On Fri Sep 18, 2026 at 9:21 PM CEST, Kendall Willis wrote:
-> On 10:29-20260918, Markus Schneider-Pargmann (TI) wrote:
->> When suspending mcan, deinit is called and its return value is returned,
->> but nothing is restored. Returning an error in the suspend function will
->> stop suspending and resume the system immediately. So on error the
->> device should be restored to its previous state.
->>=20
->> Fixes: ad1ddb3bfb0c ("can: m_can: call deinit/init callback when going i=
-nto suspend/resume")
->> Signed-off-by: Markus Schneider-Pargmann (TI) <msp@baylibre.com>
->> ---
->
-> Separate from this commit, but does cdev->can.state in
-> m_can_class_resume need to be moved to outside the cdev->pm_wake_source
-> conditional since in the suspend path it is only in the
-> netif_running(ndev) conditional?
+So far acc_txq_put() first loads the CAN data into the controller then
+starts the TX. Move the start-TX functionality into the acc_txq_start()
+function.
 
-Thanks for the review and pointing this out. But m_can_start() in the
-else case sets cdev->can.state as well. So I think it should be fine.
+In acc_start_xmit(), first load the data into the controller using
+acc_txq_put(), then can_put_echo_skb() and finally start the TX with
+acc_txq_start().
 
-Best
-Markus
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/esd/esdacc.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
---b85174839f920e7485dc2924fcc56e243020d2d5778e725847992da712cb
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/drivers/net/can/esd/esdacc.c b/drivers/net/can/esd/esdacc.c
+index 73e66f9a3781..2a02dae3be9f 100644
+--- a/drivers/net/can/esd/esdacc.c
++++ b/drivers/net/can/esd/esdacc.c
+@@ -70,6 +70,10 @@ static void acc_txq_put(struct acc_core *core, u32 acc_id, u32 acc_dlc,
+ 	acc_write32_noswap(core, ACC_CORE_OF_TXFIFO_DATA_0,
+ 			   *((const u32 *)data));
+ 	acc_write32(core, ACC_CORE_OF_TXFIFO_DLC, acc_dlc);
++}
++
++static void acc_txq_start(struct acc_core *core, u32 acc_id)
++{
+ 	/* CAN id must be written at last. This write starts TX. */
+ 	acc_write32(core, ACC_CORE_OF_TXFIFO_ID, acc_id);
+ }
+@@ -287,11 +291,12 @@ netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 		acc_id = cf->can_id & CAN_SFF_MASK;
+ 	}
+ 
+-	can_put_echo_skb(skb, netdev, core->tx_fifo_head, 0);
++	acc_txq_put(core, acc_id, acc_dlc, cf->data);
+ 
++	can_put_echo_skb(skb, netdev, core->tx_fifo_head, 0);
+ 	core->tx_fifo_head = acc_tx_fifo_next(core, tx_fifo_head);
+ 
+-	acc_txq_put(core, acc_id, acc_dlc, cf->data);
++	acc_txq_start(core, acc_id);
+ 
+ 	return NETDEV_TX_OK;
+ }
 
------BEGIN PGP SIGNATURE-----
+---
+base-commit: 37e02c42a00be692c06343e11779aadc45f45971
+change-id: 20260929-esd-fix-skb-deref-a6e5351effb7
 
-iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCart2MhsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlMx
-UwD9GSqOWoi5O3M1pa2dRkPw2+hSeP8+zmA2nvPc3QxKri8BAKez0OtgPTAITNxR
-mr4Ji+RS8Ij/Uw9heQuqW6t+g0gG
-=rENn
------END PGP SIGNATURE-----
+Best regards,
+--  
+Marc Kleine-Budde <mkl@pengutronix.de>
 
---b85174839f920e7485dc2924fcc56e243020d2d5778e725847992da712cb--
