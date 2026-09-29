@@ -1,162 +1,265 @@
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59C24501293
-	for <linux-can@vger.kernel.org>; Tue, 29 Sep 2026 11:47:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73ADE357CF1;
+	Tue, 29 Sep 2026 14:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790682477; cv=none; b=D29+NLqRWN5Jsi92a1moh1To0v+f33U48UhtcYa65IiFj4ArwLkh8kVKw7GrS8hrtH4jBlaRvzRc+SSwV1hpF8/6RhmYEgLKxkB6qv+MpvoKjKOVq7AJWc2sJUEfr8hx1zHBkrhq0vngL4SCC2fclCggW2RCr9Nj28ds3xJG2Q8=
+	t=1790690539; cv=none; b=nyp5HdH4JztzzyBIXKxzYVxk6XXbyNhZtc7WcTNb83eEA15d6fqDWiLrU5S37St9FoZ2JqjLGLsrLUjJppe9H+XA1zr9QEowDBEih93oG6qUI27GZmU81LeI+OeLBE//7wUXDxreA5ESEVyRpX8RnU+OUkn+5KFKn/17/G2IV00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790682477; c=relaxed/simple;
-	bh=yoOg8t4Li+I0encEyH0d/QgVvTW+1DmAqS5N261TWIk=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=K4YvwXMxroCpV5IvJhSz9mbkBWg0o8+pvs/nnUtxNofozTMTbYrBLb4nbS1GTuoAipFYCJNSD/2HBcCfLYHidkafC/xs6raE9WGa+eBfY4S2swHDWC2PAXiWYGukKCsNHn2CDF+HjSCnDNKQv6y4bMdEi4dqAeybH+zFIx5rrr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 68TBlVkf028864;
-	Tue, 29 Sep 2026 20:47:31 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 68TBlUpF028861
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Tue, 29 Sep 2026 20:47:30 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <9ba38419-967a-4d47-bcdf-bbb2fa7d3e9f@I-love.SAKURA.ne.jp>
-Date: Tue, 29 Sep 2026 20:47:30 +0900
+	s=arc-20240116; t=1790690539; c=relaxed/simple;
+	bh=M0VgUqW7fHRbTf8paXaEol4APJB3ny1wtfe82NxAQuc=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=HvBkZsyoOD4k7r+FSrgkpiGh+mQomRrI4/IxYoJapjTZ+AlGDdgleJyzOtBQp6Ci+9jeHRYXGbMQaVxUp6tKIYHXKZcUalywf5UHpnI/G/TTyi7LRNCDwjaoktdh/YChaSXB0dg/FcSrLSssI10iVi0V1c8C2PimO6L78vOm4BI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=LbPAR8rF; arc=none smtp.client-ip=212.27.42.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="LbPAR8rF"
+Received: from localhost.localdomain (unknown [82.96.140.143])
+	(Authenticated sender: stephane.grosjean@free.fr)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id 25EA3780506;
+	Tue, 29 Sep 2026 16:02:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1790690534;
+	bh=M0VgUqW7fHRbTf8paXaEol4APJB3ny1wtfe82NxAQuc=;
+	h=From:Date:Subject:To:Cc:From;
+	b=LbPAR8rF+nVRTnpIc4VX27q/nNmYFx9Zm/Rmgb2Hw5047z33wGNfMjutyd/qGXMtr
+	 mAFZW2/nKNXQGQm7WhzgOk+NTNQOojQAM+pj4C3wPKBR6Ia9wzDyeBQfrnl/5u9y6S
+	 6qXJbfP1s/QuzY7PpFF8fBMktDyLHkdj4Su33OQ403S6a85IxTJyeXyMOpnSBUiYBp
+	 +ZWnMVFJ1Hl3qMRb3fcNMVCvpTA2HDbLKKCc0tB8HJFVO/hTcHjlH2583X4Syv+Jbt
+	 aSdqq96Pj4w7RZpnCLa9uquvdDJzbD2+ChRUVwKfttxvnlkA/mzo9exzRj9/kxEC0l
+	 YwojXHCsJHJrg==
+From: =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@free.fr>
+Date: Tue, 29 Sep 2026 16:01:16 +0200
+Subject: [PATCH] can: peak_usb: Add bus error reporting for the PCAN-USB FD
+ family
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH v3] can: j1939: cancel pending address claim timers from
- j1939_ecu_unmap_all()
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Anti-Virus-Server: fsav312.rs.sakura.ne.jp
-X-Virus-Status: clean
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260929-peak_usb-canfd-berr-v1-1-7abd585f877f@peak-system.fr>
+X-B4-Tracking: v=1; b=H4sIAKvEu2oC/yXMQQrCMBBG4auUWTswBinUq4hIMvmroxBLxopQe
+ ndTXX6L9xZyVIPTsVuo4m1uz9Kw33Wkt1iuYMvNFCT0MoSBJ8THZfbEGsuYOaFWzsAhqGiKItT
+ KqWK0z+96Ov/tc7pDX9uK1vULnoYsqHcAAAA=
+X-Change-ID: 20260929-peak_usb-canfd-berr-dee42c0cba00
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
+X-Mailer: b4 0.16.0
 
-syzbot is reporting "struct j1939_ecu" refcount leak, for
+From: Stéphane Grosjean <s.grosjean@peak-system.fr>
 
-  j1939_ecu_get(ecu);
-  priv->ents[ecu->addr] = ecu;
+CAN bus error reporting is currently missing for all PEAK-System
+USB-to-CAN FD devices. Add support for reporting bus errors by enabling
+bus error notifications in the firmware for each CAN channel.
 
-in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
-even after
-
-  priv->ents[ecu->addr] = NULL;
-  j1939_ecu_put(ecu);
-
-in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
-__j1939_rx_release() from j1939_netdev_stop() has completed.
-
-  unregister_netdevice: waiting for vxcan1 to become free. Usage count = 3
-  ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
-       __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
-       netdev_hold include/linux/netdevice.h:4525 [inline]
-       j1939_ecu_create_locked+0x1c9/0x400 net/can/j1939/bus.c:159
-       j1939_local_ecu_get+0xeb/0x220 net/can/j1939/bus.c:293
-       j1939_sk_bind+0x70a/0xc60 net/can/j1939/socket.c:529
-       __sys_bind_socket net/socket.c:1920 [inline]
-       __sys_bind+0x2e3/0x410 net/socket.c:1951
-       __do_sys_bind net/socket.c:1956 [inline]
-       __se_sys_bind net/socket.c:1954 [inline]
-       __x64_sys_bind+0x7a/0x90 net/socket.c:1954
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-  ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
-       __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
-       netdev_hold include/linux/netdevice.h:4525 [inline]
-       j1939_priv_create net/can/j1939/main.c:140 [inline]
-       j1939_netdev_start+0x387/0xb20 net/can/j1939/main.c:268
-       j1939_sk_bind+0x946/0xc60 net/can/j1939/socket.c:506
-       __sys_bind_socket net/socket.c:1920 [inline]
-       __sys_bind+0x2e3/0x410 net/socket.c:1951
-       __do_sys_bind net/socket.c:1956 [inline]
-       __se_sys_bind net/socket.c:1954 [inline]
-       __x64_sys_bind+0x7a/0x90 net/socket.c:1954
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Fix this race condition by canceling address claim timers from
-j1939_ecu_unmap_all().
-
-Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-Link: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260928193312.553632-1-mkl%40pengutronix.de # [PATCH net 06/22]
-Assisted-by: Gemini-Pro gpt-6-astra opus-5-5
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
 ---
-Changes in v3:
-  - Make sure that final j1939_ecu_put() is protected by priv->lock.
-  - Removed synchronize_rcu(), as traversal is protected by priv->lock.
-  - Cancel inside j1939_ecu_unmap_all(), as traversal is protected by
-    priv->lock.
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 85 ++++++++++++++++++++++++++----
+ include/linux/can/dev/peak_canfd.h         | 15 +++++-
+ 2 files changed, 88 insertions(+), 12 deletions(-)
 
-Changes in v2:
-  - The "can: j1939: j1939_sk_bind(): fix j1939_ecu leak when re-bind failed"
-    patch has passed a review by sashiko@sashiko.dev . But another review by
-    sashiko@netdev-ai.bots.linux.dev mentioned that this leak is caused by
-    not "re-bind failure" but "j1939_ecu_timer_handler() race".
-
- net/can/j1939/bus.c | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index cdc3c0a71937..0d109d1a3b4a 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -99,8 +99,38 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
- void j1939_ecu_unmap_all(struct j1939_priv *priv)
- {
- 	int i;
-+	struct j1939_ecu *ecu;
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 0d46f4ce5dca..fdd38908b4c3 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -661,6 +661,9 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
+ 	struct pucan_error_msg *er = (struct pucan_error_msg *)rx_msg;
+ 	struct pcan_usb_fd_device *pdev;
+ 	struct peak_usb_device *dev;
++	struct can_frame *cf;
++	struct sk_buff *skb;
++	u8 can_err_tx = 0;
  
- 	write_lock_bh(&priv->lock);
-+	/* Cancel all pending address claim timers before unmapping.
-+	 * This prevents an orphaned late-firing timer from re-mapping
-+	 * an ECU after the spaces are cleared.
-+	 */
-+rescan_timers:
-+	list_for_each_entry(ecu, &priv->ecus, list) {
-+		int ret = hrtimer_try_to_cancel(&ecu->ac_timer);
+ 	if (pucan_ermsg_get_channel(er) >= ARRAY_SIZE(usb_if->dev))
+ 		return -EINVAL;
+@@ -672,6 +675,53 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
+ 	pdev->bec.txerr = er->tx_err_cnt;
+ 	pdev->bec.rxerr = er->rx_err_cnt;
+ 
++	/* ignore non-CAN error notifications */
++	if (PUCAN_ERMSG_TYPE(er) > PUCAN_ERMSG_OTHER_ERROR)
++		return 0;
 +
-+		if (ret == 0) { /* Not active or already finished. */
-+			continue;
-+		} else if (ret == 1) { /* Successfully canceled. */
-+			/* Drop a ref from j1939_ecu_timer_start(). */
-+			j1939_ecu_put(ecu);
-+		} else { /* Executing on another CPU. */
-+			/* Let j1939_ecu_timer_cancel() determine whether to
-+			 * drop a ref from j1939_ecu_timer_start(). But guard
-+			 * with a local ref in order to make sure that unlocked
-+			 * j1939_ecu_put() from j1939_ecu_timer_cancel() cannot
-+			 * be the final reference.
-+			 */
-+			j1939_ecu_get(ecu);
-+			write_unlock_bh(&priv->lock);
-+			j1939_ecu_timer_cancel(ecu);
-+			write_lock_bh(&priv->lock);
-+			j1939_ecu_put(ecu);
-+		}
-+		goto rescan_timers;
++	/* update other errors counters */
++	dev->can.can_stats.bus_error++;
++
++	if (PUCAN_ERMSG_RX(er)) {
++		dev->netdev->stats.rx_errors++;
++	} else {
++		dev->netdev->stats.tx_errors++;
++		can_err_tx = CAN_ERR_PROT_TX;
 +	}
-+	/* Unmap any remaining mapped ECUs */
- 	for (i = 0; i < ARRAY_SIZE(priv->ents); i++)
- 		if (priv->ents[i].ecu)
- 			j1939_ecu_unmap_locked(priv->ents[i].ecu);
--- 
-2.52.0
++
++	/* if berr-reporting is off, stop here */
++	if (!(dev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
++		return 0;
++
++	/* otherwise, build the CAN_ERR_xxx frame */
++	skb = alloc_can_err_skb(dev->netdev, &cf);
++	if (!skb)
++		return -ENOMEM;
++
++	cf->can_id |= CAN_ERR_CNT | CAN_ERR_PROT | CAN_ERR_BUSERROR;
++	cf->data[2] |= can_err_tx;
++
++	switch (PUCAN_ERMSG_TYPE(er)) {
++	case PUCAN_ERMSG_BIT_ERROR:
++		cf->data[2] |= CAN_ERR_PROT_BIT;
++		break;
++	case PUCAN_ERMSG_FORM_ERROR:
++		cf->data[2] |= CAN_ERR_PROT_FORM;
++		break;
++	case PUCAN_ERMSG_STUFF_ERROR:
++		cf->data[2] |= CAN_ERR_PROT_STUFF;
++		break;
++	default:
++		break;
++	}
++
++	cf->data[3] = PUCAN_ERMSG_CODE(er);
++
++	cf->data[6] = pdev->bec.txerr;
++	cf->data[7] = pdev->bec.rxerr;
++
++	peak_usb_netif_rx_64(skb, le32_to_cpu(er->ts_low),
++			     le32_to_cpu(er->ts_high));
+ 	return 0;
+ }
+ 
+@@ -899,6 +949,7 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
+ {
+ 	struct pcan_usb_fd_device *pdev =
+ 			container_of(dev, struct pcan_usb_fd_device, dev);
++	u16 usb_opts = 0;
+ 	int err;
+ 
+ 	/* set filter mode: all acceptance */
+@@ -912,12 +963,17 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
+ 		peak_usb_init_time_ref(&pdev->usb_if->time_ref,
+ 				       &pcan_usb_pro_fd);
+ 
+-		/* enable USB calibration messages */
+-		err = pcan_usb_fd_set_options(dev, 1,
+-					      PUCAN_OPTION_ERROR,
+-					      PCAN_UFD_FLTEXT_CALIBRATION);
++		/* enable USB calibration messages (needed only once for the
++		 * entire interface)
++		 */
++		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
+ 	}
+ 
++	/* set channel device options: always asks for bus error notifications
++	 * to get (at least) rxerr/txerr, as well as any USB-specific option.
++	 */
++	err = pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);
++
+ 	pdev->usb_if->dev_opened_count++;
+ 
+ 	/* reset cached error counters */
+@@ -955,12 +1011,15 @@ static int pcan_usb_fd_stop(struct peak_usb_device *dev)
+ {
+ 	struct pcan_usb_fd_device *pdev =
+ 			container_of(dev, struct pcan_usb_fd_device, dev);
++	u16 usb_opts = 0;
+ 
+ 	/* turn off special msgs for that interface if no other dev opened */
+ 	if (pdev->usb_if->dev_opened_count == 1)
+-		pcan_usb_fd_set_options(dev, 0,
+-					PUCAN_OPTION_ERROR,
+-					PCAN_UFD_FLTEXT_CALIBRATION);
++		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
++
++	/* turn off bus error option, as well as any USB-specific options */
++	pcan_usb_fd_set_options(dev, 0, PUCAN_OPTION_ERROR, usb_opts);
++
+ 	pdev->usb_if->dev_opened_count--;
+ 
+ 	return 0;
+@@ -1200,7 +1259,8 @@ const struct peak_usb_adapter pcan_usb_fd = {
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++			CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1276,7 +1336,8 @@ const struct peak_usb_adapter pcan_usb_chip = {
+ 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++		CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1352,7 +1413,8 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++			CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+@@ -1428,7 +1490,8 @@ const struct peak_usb_adapter pcan_usb_x6 = {
+ 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
+ 	.ctrlmode_supported = CAN_CTRLMODE_FD |
+ 			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
+-			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
++			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC |
++			CAN_CTRLMODE_BERR_REPORTING,
+ 	.clock = {
+ 		.freq = PCAN_UFD_CRYSTAL_HZ,
+ 	},
+diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
+index 056e0efa649f..bbcba2711f19 100644
+--- a/include/linux/can/dev/peak_canfd.h
++++ b/include/linux/can/dev/peak_canfd.h
+@@ -8,6 +8,8 @@
+ #ifndef PUCAN_H
+ #define PUCAN_H
+ 
++#include <linux/bitfield.h>
++
+ /* uCAN commands opcodes list (low-order 10 bits) */
+ #define PUCAN_CMD_NOP			0x000
+ #define PUCAN_CMD_RESET_MODE		0x001
+@@ -197,7 +199,18 @@ struct __packed pucan_rx_msg {
+ #define PUCAN_ERMSG_FORM_ERROR		1
+ #define PUCAN_ERMSG_STUFF_ERROR		2
+ #define PUCAN_ERMSG_OTHER_ERROR		3
+-#define PUCAN_ERMSG_ERR_CNT_DEC		4
++
++#define PUCAN_ERMSG_TYPE_MASK		GENMASK(6, 4)
++#define PUCAN_ERMSG_D_BIT		BIT(7)
++#define PUCAN_ERMSG_TYPE(e) \
++	FIELD_GET(PUCAN_ERMSG_TYPE_MASK, (e)->channel_type_d)
++
++#define PUCAN_ERMSG_RX(e) \
++	FIELD_GET(PUCAN_ERMSG_D_BIT, (e)->channel_type_d)
++
++#define PUCAN_ERMSG_CODE_MASK		GENMASK(6, 0)
++#define PUCAN_ERMSG_CODE(e) \
++	FIELD_GET(PUCAN_ERMSG_CODE_MASK, (e)->code_g)
+ 
+ struct __packed pucan_error_msg {
+ 	__le16	size;
+
+---
+base-commit: a7bfaba4823e3c165bb2004c74eff7c096672bc7
+change-id: 20260929-peak_usb-canfd-berr-dee42c0cba00
+
+Best regards,
+--  
+Stéphane Grosjean <s.grosjean@peak-system.fr>
 
