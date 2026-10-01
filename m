@@ -1,46 +1,40 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4242845348A;
-	Thu,  1 Oct 2026 15:25:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C3043F08C;
+	Thu,  1 Oct 2026 15:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790868355; cv=none; b=CD4Ov4P1933p+nQeoUqKvddpi/TzmI+wBZAUr2DoJTszcgoPlCFrxmolnb9Cp/NpmRtpA5l5C1Ir08L2L26x57/S98hCGBlJBFiB0a7bEOx/3vM418YqBs+DGP0Ge5nxgKoKeVpSzuoJdgJpKcuOwxIf+GBrvtd3nVRvZVam9h4=
+	t=1790868532; cv=none; b=S1+EZ4c/99hx7Z1kljy7Q94FxQc7R+GDD3qbynaEQ0Ow1HcOylE+6k8LQfhCkY4HNi1Ebg0wic+Mjv+gcWazAZycz2xnmYP1tnWMwIPqdAHcfajADs0vvOvwzjt2LcL+vNQGCYLX/cjb0YEaOT+7yRUKLw7SkDzdtEFchZoUwqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790868355; c=relaxed/simple;
-	bh=jbYeAgRBLbmIH13YBNQfdJjogpQnN34oE/VzD7zD81k=;
+	s=arc-20240116; t=1790868532; c=relaxed/simple;
+	bh=K5V+4/7y6C/8aieKYjMDr3wi6ymRCs/uoDyHSnFQM2U=;
 	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Q0DC7XlLuXnTMP2U8tcYU6zIUFP5xS613s06FTXWLYlw6D2rWT2xk/GzkOzXvhbV7PXdqcsKLZDqLCHFGa67Tf+Fg4XH/gXnQHlvPPgCmtirxfo+vf+61RqZM1BAr88cVNZQPo6VA9+gufNGqoVEnk20A0FgNGZoaYjNXAbdtmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cRXPc/zL; arc=none smtp.client-ip=100.103.45.18
+	 MIME-Version:Content-Type; b=BS5bdnN9NXVEdgNqJT5bcvB+yHHcLgT/zVZ6u+UpFVYJMeWcRJ+HND1Ygmi5Ht3+z4i0IELvrjXTX+fHfoVxkI/JPfkHXipWYef2Svlo+ZGYDRPAWs9RCRJSHHntLbrAROmb6oO8CXb+fWBt6nY/rG2KVniiw9aRyXelqZaWcik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O00xxzTm; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cRXPc/zL"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81CF91F000FF;
-	Thu,  1 Oct 2026 15:25:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O00xxzTm"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E52B1F000FF;
+	Thu,  1 Oct 2026 15:28:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1790868353;
-	bh=o22oYhY13ayGEzd/g8uAIvjzkDgowkm1GB++w3LQcs0=;
+	s=k20260515; t=1790868530;
+	bh=oNofgzqxFuyu94E6P59dJHs9pZC5NzX0dR9jjsYcZL4=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=cRXPc/zLUyJw2dfrnxfscTPkJ1MqxmR+fAYE6O76cNV/kB2oJX+K7ywkYMotIkrKX
-	 WqnDHoSeFu3dki8mOQT2Y0XGetuRtEdgpw8a6evfKuAaoEl9skGQLNd3s2ElcQLSeV
-	 uRuX3gNEnNItbQgYg0QSP3UDOBdsdha0alDSH8PG6Xk/wKoVO04uO2AbOn7dSanf7U
-	 foD5dIViebbS3HB5XzKcbzbo9lh2qQn2aSQd13ySw9gHSLPzmlG/xaiqpch9Y2PiM1
-	 pVdsE8d3DGeAYSJrl/mrZZl/T8jajQN/OLxHVMqvxNUJIYYVCareaWqLs5dbOJjq5Y
-	 /kEtEctZW010w==
-Date: Thu, 1 Oct 2026 08:25:52 -0700
+	b=O00xxzTmb5NIgP7BBWIjDbDYKKsZfuC9YRS7cuEi5q/NEK9nYZLOlFHYdrrFpxBm+
+	 qVdGNXJhOSGhCy82Z0TowqteQoEKQyaItkGGVeWND9nDG4+elYqBmVulViCiDzj/KE
+	 tdDQrT96+2HOzGm4UExzsqrVYgXwhbESBhmijkCAZoOWMswpCJe0Ci4UvQbZ7/eK3F
+	 q8UothQLkzfZuYXYnSUTQTTs37fueIPfZKrNcekxn/N781+IZM4Qr6CRSJrGK9dMJw
+	 62do+DBEnSSxqSuLZ2kbxhGkWug9Wfv3DRFAGFUfuxCqy/CoPnXtQIwllwL9+X4UpI
+	 r1cmzRY9mzjgg==
+Date: Thu, 1 Oct 2026 08:28:50 -0700
 From: Jakub Kicinski <kuba@kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>, ore@pengutronix.de, Paolo
- Abeni <pabeni@redhat.com>, netdev@vger.kernel.org, davem@davemloft.net,
- linux-can@vger.kernel.org, kernel@pengutronix.de
+Cc: netdev@vger.kernel.org, davem@davemloft.net, linux-can@vger.kernel.org,
+ kernel@pengutronix.de
 Subject: Re: [PATCH net 0/16] pull-request: can 2026-09-29
-Message-ID: <20261001082552.514c54fd@kernel.org>
-In-Reply-To: <20261001-fascinating-clam-of-plenty-5307a0-mkl@pengutronix.de>
+Message-ID: <20261001082850.754ca22f@kernel.org>
+In-Reply-To: <20260929210700.1183036-1-mkl@pengutronix.de>
 References: <20260929210700.1183036-1-mkl@pengutronix.de>
-	<9956662e-6001-413d-864d-d8d048a93819@redhat.com>
-	<cb83d0dc-58a4-4262-99a0-1e4478630ba0@hartkopp.net>
-	<19ab3d46-f326-4f08-a161-d31ae272a9d8@redhat.com>
-	<e4a05f3a-7206-4fe4-b04f-bf2a9f1fb926@hartkopp.net>
-	<20261001-fascinating-clam-of-plenty-5307a0-mkl@pengutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,22 +44,14 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 1 Oct 2026 12:55:59 +0200 Marc Kleine-Budde wrote:
-> On 01.10.2026 12:28:48, Oliver Hartkopp wrote:
-> > Ok. The review on Linux-CAN ML was done with
-> >
-> > gemini/gemini-3.1-pro-preview
-> >
-> > https://sashiko.dev/#/patchset/20260929163424.16382-1-socketcan%40hartkopp.net
-> >
-> > While the PR netdev review was done by
-> >
-> > bedrock/us.anthropic.claude-opus-5-5
-> >
-> > https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260929210700.1183036-1-mkl%40pengutronix.de
-> >
-> > @Marc: Can we switch on Linux-CAN Patchwork to Claude Opus too?  
+On Tue, 29 Sep 2026 22:43:50 +0200 Marc Kleine-Budde wrote:
+> Hello netdev-team,
 > 
-> Don't know Oleksij has done the sashiko.dev integraton.
+> this is a pull request of 16 patches for net/main.
 
-Let me try to plug you into netdev-ai one for now.
+AFAIU there will be a respin here, and it's hitting:
+
+net/can/bcm.c:944:2-12: WARNING: NULL check before (net)dev_{put, hold} functions is not needed.
+net/can/bcm.c:1312:2-12: WARNING: NULL check before (net)dev_{put, hold} functions is not needed.
+
+so dropping from PW.
