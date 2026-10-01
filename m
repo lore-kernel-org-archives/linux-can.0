@@ -1,193 +1,205 @@
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from OS0P286CU011.outbound.protection.outlook.com (mail-japanwestazon11010066.outbound.protection.outlook.com [52.101.228.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20149431A5C
-	for <linux-can@vger.kernel.org>; Thu,  1 Oct 2026 06:08:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790834923; cv=none; b=sVfpPWraD33WMDIlT6wI6Qy1LoyqzQHQWXU8d29iv+J8ocK0Yyv/UJ0WPfriemCVcuw5gH0Fa/BK5p62N3VgN+PYbhfZ2hm6uPooP1pXu5wRdKvAxAI9Xvo8HJbpwUmmlTu+HiuXnrFTEJh4lWhJoCxwNvhmwrktiUX4PaG8Q78=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790834923; c=relaxed/simple;
-	bh=EKISGBUUfR2T00G1oUFO8B5JWeNXQjqvDxFBm53oB1E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bG4vSo9GaSZNHOckKz5SNMGELF+s/4Yxks6EjmJVS+gBghisFF6EBOWPR2NEi1k/8owPETlsFNiVyGlrDlBHIRX5E4lnaqCcKTeG27FGY9hYspRYGPRV07Fgo5JTvPimj7iVXQqMUtlSUIbBHiR41RluPWpCLe0c5ZD74BgNmLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com; spf=pass smtp.mailfrom=oss.qualcomm.com; dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b=aAZb5a2W; dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b=eX2EvcA6; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oss.qualcomm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.qualcomm.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB5C3F107E;
+	Thu,  1 Oct 2026 07:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.228.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790840471; cv=fail; b=Hj7lAOBUXNzxEGjBa78F4iuNuh0wtzi3Y8yTZNx+7UvEJmOfbK7lte2LwaUfgRW4D/ZS+IIagq5YcMWJJFCDA3WrNAt1m0O1TGKOfV1NCkJKd9m8tMJpXjXD3ZjFtAGU9X/wDS0R2hb9iP6QEgVgAX51bQGDnozBuw62QEpQmIk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790840471; c=relaxed/simple;
+	bh=30vJdTmqhCTQcXRxTjhS/+BsMaNkyTjmL8mZchoxkiw=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=sEFTaCFiLOEn62KdBVmvu3nDZ+h77ZzBIzZolJwJV4/fub2lMpXK3sj5sh84kgdCyNfxG6WzNAip6P2Q7T2BjdR/EkM6CdxrGXkj52EjphF+QfMBUBAxm26mBNqPF3sZ3y0gCjIegR8vlKHP1jNkWlqmUmvozJBeSJoziUSDToA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=XF6Mjgxq; arc=fail smtp.client-ip=52.101.228.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=qualcomm.com header.i=@qualcomm.com header.b="aAZb5a2W";
-	dkim=pass (2048-bit key) header.d=oss.qualcomm.com header.i=@oss.qualcomm.com header.b="eX2EvcA6"
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 6913fxfe1238051
-	for <linux-can@vger.kernel.org>; Thu, 1 Oct 2026 06:08:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qualcomm.com; h=
-	cc:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=qcppdkim1; bh=30Jdl6JqUqExlNbkYRrVWI3IXB2MAdHLsLJ
-	yVQztsQ4=; b=aAZb5a2WT1ujq3/UmHCBkODWRjIvyLCNAPmAknyQ1PEKTkj2nze
-	bFrNNSGpXyIBY9VgaKUtWTksLF+dT7JywDE5FCeb0lvS05Q3TVtH76//nDFuOtVE
-	psOUhIcULvKDTjAoPqdmBSauP+Jfi6Rz2cY/DYqVly4yycL6g16JBPislVs3Qn77
-	7RCluYFx+uz48K92ca6SZaryHwhzEtU1qZHj3LoVBRslAVJqr2rIv0CNaCod/ivc
-	il1LCKk+4L8B1/ZjI6NjjfsRGJYwb6ucCJzU3tjpEenBP7Ec5EmwQXuVayDWb4Y4
-	B8zKZVN+AKNH6thN9psCN1fog7kwNbUxmhw==
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com [209.85.222.199])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 4h167pjspv-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <linux-can@vger.kernel.org>; Thu, 01 Oct 2026 06:08:37 +0000 (GMT)
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-93a082c014aso144775785a.0
-        for <linux-can@vger.kernel.org>; Wed, 30 Sep 2026 23:08:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=oss.qualcomm.com; s=google; t=1790834917; x=1791439717; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=30Jdl6JqUqExlNbkYRrVWI3IXB2MAdHLsLJyVQztsQ4=;
-        b=eX2EvcA6fDoDgqVXHGlrM+Jh6P0aEeIOHjniJmuv/I0gHPAsVmgWInt1Nu/BEmn1ub
-         L9UPHZRv3nCm4RM2QhewUsZLBU9yLXXumO3p+irdFlmv4C6SYDtR6MQCgH2KTGJFBBea
-         YS70v5nVMMnvLPxm3uWKQOEX+MMfemaL8HoeLyPoBFo4f+b/EDNHo8xNUOgyHNavPj7O
-         3PleGRIfdFfbDR/ePqjGqOpG9zrjHuiKjqdzUWJiCjAHCvLfyVqz6S4ha4kG7/k7vtRf
-         oQbKeT/ze0IfnQLukdqA9UbR7IP1Xdh6VrRKnq89vlWYH2LV4FRzh5iCBDbtgl1D6Go5
-         70Pw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1790834917; x=1791439717;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=30Jdl6JqUqExlNbkYRrVWI3IXB2MAdHLsLJyVQztsQ4=;
-        b=FmYVse8b6A4ewQefgKZ8lI6Wdm6rjgzKzfKlsGL64wtrVvl9OsUOgLKZfXnbAIJ4+2
-         y0wBYlt7Vqg1JFBm4yl1uNrjc2jc4kqR9g3DzERPTSlr96757rcs+miHXdIH4XiQZat3
-         N9tW+Su/yftnlQU9lj1BC8jw+WasJHjq1PoIiKexrWzu11QTauOqGbs16To5UZu1dtaP
-         YrQyL6e0+lYUJpbPVfGeP3DH9Rd5wn8jb1+SEauN921GeCcToZdPnwvDkGh6YEx820Td
-         fwSwC9RdM7iMiwbqeUaZufNJxfA9WZf7zMN3soIm1K/RAgCa4Gia+iTbMADYaGhKENMW
-         NCjg==
-X-Forwarded-Encrypted: i=1; AKwUvByGeZprDF6EuytAepn7YAjHj9tsdcvbZwVGrF0yMdckwlwyjPYtwhNom0q5pdsrhsKZfq6JGLatbhM=@vger.kernel.org
-X-Gm-Message-State: AFuF++nhgvcy4N+arw++N2/Qg5N8/F3B+mcMLGBkArCEkyEseDV7jVal
-	/tr/XUkWBKMmRa7qrMqC6zpjwiYZoDoEZ9z7Cea3kxcGgkrpomB1lxX9syQ2+ssAssuoTSZJpLb
-	5tQdiTacvXo9Kza8qSg1yMCmrvQ82Jv2k1m9T6g/K5PgKmiwUh2ag1RuJE5T8Jqc=
-X-Gm-Gg: AYBFou1dBgR6j1wC5RTRVPnSvyyvetWhEUkoSFW11I8CVK0PdM+TWfSHk+gd/Da6/g/
-	702njO+FO6kh/7oqqcEOEmhyX+SjBQHZAwwrMndblCN/MLb4zWCY5TxRPf0MX5D1qz9Syv3sgwA
-	1OLNgMGO5f01o6dhyh1I0n9KvHtZAGtdwvYWWx0zIFWNQfOUweNIhkwBYrUvl4a3w3/oj1gGPT4
-	tRAl2dTJz4LW/Hu39M3f/6pTvUjHyB6MOFnaKtc0zA3piKn+XchuMxWN9ZtPH8dSVQNmqcNVCJ6
-	G66/Sk3aTGVaiRdZ62o/vkfFldt+H5s0EsJLneB4qRtJgHHpDgclxfuvOs+NN9+n9vTs1kMBTqc
-	zLtm898X0ZYMTIJg=
-X-Received: by 2002:a05:620a:470a:b0:939:5d22:d1f0 with SMTP id af79cd13be357-93cb56464e5mr384548985a.2.1790834916894;
-        Wed, 30 Sep 2026 23:08:36 -0700 (PDT)
-X-Received: by 2002:a05:620a:470a:b0:939:5d22:d1f0 with SMTP id af79cd13be357-93cb56464e5mr384545085a.2.1790834916367;
-        Wed, 30 Sep 2026 23:08:36 -0700 (PDT)
-Received: from quoll ([178.197.219.214])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a022619b42sm6316525e9.3.2026.09.30.23.08.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Sep 2026 23:08:35 -0700 (PDT)
-From: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-        Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof Kozlowski <krzk+dt@kernel.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: [PATCH] dt-bindings: can: renesas,rcar-canfd: Restrict resets in top-level
-Date: Thu,  1 Oct 2026 08:08:26 +0200
-Message-ID: <20261001060825.53335-2-krzysztof.kozlowski@oss.qualcomm.com>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="XF6Mjgxq"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=T0Zydc++AwWS12peLDtcVh9GeIW4yGZJOO6rjGF4hbE6jsmY6AsJWwnxftlIdaKbMEPhL0FFY9rAgcuD1XLSoC43msb5hFlzbLO3DDrhc1U44YlTHtxZIu4gIp2SWJl1iwi4TgUGFMC9hkAtmTj5oVRJN95NrtkapaX/kl5dW9cO4QIbMGTwgMc4Dpf0/jTYOsgTLxk/8sJmIzdMglBQPRcAzTwPOZPCxzBlXato0y3XbE2hxVDUBax0GZT76Go9OMWe21K0ppa48xCb3VUANGu0LEcAcIz5j48zjJW/MEofUl35WPznCxwO5YEIMNS1vQYCjnbOh/QonPN6ytmeZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=s5AugtXzz63pnVzuTPPuGkSAfGEN7tPfDvMKaXC8wrI=;
+ b=bG4RtLOAxN5ldM4KVLzGDJyCJUYjEDeD3cUXzqhEfCNGrzNUyecxoegMujbm4g9HHb9rDjolMdXQkYjVPxHXR6//gEF9yzPZCx9k+vqHBHyxNkfk/A8V6tK+nQLd0La7fN4wj7eQbpEgniI3Ijrie1GQIAIxsFW7ef9wP1fCquQk3lBvRaSZj4ku5XQCjQVcWNTgfK004Ny5qmTKbLZ7jWpj+jmJVGZF1RsuHsYwd71tcLdjJvAkZHFRfm0FU+vyJ/Z5ZTERpzr6ByvNzejfZrWQfoxX2uxi7Y3yD9yj4L0ohRyVNpJhpQyszlph9NmZjMB0izKrSPLwUKg6pg/Yfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=s5AugtXzz63pnVzuTPPuGkSAfGEN7tPfDvMKaXC8wrI=;
+ b=XF6MjgxqYbyBLOMjJSDGyylxV7Sm9TTQ1cFSdQT5N4h0vOpAVbkvpNArNTZtJcABwLlSyJUmf7IFQfxwdE6vogcuDyMkLNjJvXPGDdbkhJPwJQkppIzwlGVfl4x+cpMdH8clpIgjTj87PpozLs8bzfMQTsbn1R1X9DPNMNgFdJ8=
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com (2603:1096:400:3d0::7)
+ by OSCPR01MB15629.jpnprd01.prod.outlook.com (2603:1096:604:3b6::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.472.15; Thu, 1 Oct
+ 2026 07:41:05 +0000
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de]) by TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de%6]) with mapi id 15.21.0451.026; Thu, 1 Oct 2026
+ 07:41:05 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, Marc
+ Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor
+ Dooley <conor+dt@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>,
+	"magnus.damm" <magnus.damm@gmail.com>, Fabrizio Castro
+	<fabrizio.castro.jz@renesas.com>, "linux-can@vger.kernel.org"
+	<linux-can@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org"
+	<linux-renesas-soc@vger.kernel.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] dt-bindings: can: renesas,rcar-canfd: Restrict resets in
+ top-level
+Thread-Topic: [PATCH] dt-bindings: can: renesas,rcar-canfd: Restrict resets in
+ top-level
+Thread-Index: AQHdUWtR+xjFVOXGnEOnACmSWso6QbboTVTg
+Date: Thu, 1 Oct 2026 07:41:04 +0000
+Message-ID:
+ <TY3PR01MB113464BDF987612E3B13173FC868A2@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+References: <20261001060825.53335-2-krzysztof.kozlowski@oss.qualcomm.com>
+In-Reply-To: <20261001060825.53335-2-krzysztof.kozlowski@oss.qualcomm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY3PR01MB11346:EE_|OSCPR01MB15629:EE_
+x-ms-office365-filtering-correlation-id: ec5656a2-64a2-4a46-6b0a-08df1f8f5960
+x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|376014|7416014|366016|23010399003|1800799024|10067099003|11063799006|921020|3023799007|56012099006|18002099003|22082099003|38070700021;
+x-microsoft-antispam-message-info:
+ tb1ofXvWj3YV6IoaFMwA8XRMo8+LJM0AE7qgKUbWEkKyRnbIwqZlxHPlzI1xDOc8Rgvkt4V/Xm5rJawLp3C1f5PkI+zruXMe4ISozFN2kFxE8AXJ0rA2zX+BDzmymhj3ATZZNMaAhkSX1eUq0KkE/gvpctdvAP4hkwXK4WW4pogaoSd4mumAMSi9chMjr7g8o0PDGrFcDX2pLJztaklUxUFZn/ZFFVm4GMa6d0U/QQkjAltkcV9c4TVeA9FahQhBTSKMAjiLtz3JGQe2ECNNuGdXI30ubFdXdr9AroTLdUpCt/ohffCfJ6Y3OmPeHhugY4Fa7hGMkCcTDHrOcixg5cl7D1R2OpM/3pCkQfjh4MObbQLy4A3JE15SzvvoGME4Tmbq/UPYIIzJ8Vz0dG5d1p8zqHaQS2Z+rV+56gF7SFcP+DCQH4VmzCx83ysHhC35LHVM1L9IwJuXBjCiFHI9FjU4WewM5Rup+8vVNzLO5B17019KvlKg/I5SKGNZJTqBMzcoFEiVHkbWSQjBy+pHPunKBPd/kdRCMvv97y+XTlBnS7KxxeIH6zCpPNdBug+9fdXSLj48rwxeBietOBNyr/xn+IPWq96cacmFN4rBTzWAKIM5UpskzK5YaQHY8zGelZwozwPykXYzoDXATVVuUp7IaI/ouzAvRKN7IY1UIxDIReRk+SXT3l+91P80dYQEs7/jcoTXcBp2MH48Y36jo4XwWwWsOEXD+1VJwx5XPfAfXIr04lG87XHtDbImbpdh
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY3PR01MB11346.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(23010399003)(1800799024)(10067099003)(11063799006)(921020)(3023799007)(56012099006)(18002099003)(22082099003)(38070700021);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?1zZw2znhZG5o2OGAMrMJOv0Y/miHfc793QEPAyAr4lBiKQN1A+6GhBJqb0/f?=
+ =?us-ascii?Q?UvPDocJ40fY0Fq5Z5OuuiVxqvDwb9XShksS/uu3LoDNehpZEDsEJLXPHjvBY?=
+ =?us-ascii?Q?yLTJcxnVhIYfc0ZtnDtTZQK8CsRtFTceWeZfg8DRcABuvvzlfaBdJBUi0va4?=
+ =?us-ascii?Q?ijZUp1+vbf2+HqN+T4XwBjEYY9msZkasH/WiVEQ2Too3icmOw+UVbTYAnUCK?=
+ =?us-ascii?Q?6BmM/5UDCXfgnphaxigVqj1RYN2i02rucPEeFGr4OYJcmYKuk5VqWcmJANIW?=
+ =?us-ascii?Q?sQTa4z8ZExPhDd05535wWzaynrHj8r7iMSG7ZBr49nQJshMxc4aDnkQ+Tq1I?=
+ =?us-ascii?Q?PHmPdhB0cF/eO6VxA0ChyBmIp4fRDxyNY0cNZmVqLF8/vrPL7aBil37zZhx/?=
+ =?us-ascii?Q?jNN+7xfa7XLkyID0T0jfQxNn2vFRA/TyFYzKWEtW476YeTdW1x0m44Jlxg5k?=
+ =?us-ascii?Q?zQqhdXfdwSO0CGhkyWjADfwwSjmdU1TkRBkCrUPIfP7mzRh0hTeih909GHXF?=
+ =?us-ascii?Q?ucUerX5BFH2RYVo2o5EUcMPxkWWPQXEohV+knJSl4VpvZlHVueRW3fyaAPo3?=
+ =?us-ascii?Q?ZmlANNDC/RbmbEi4WIGVwM+q61Zh4yeFaeX1y0hWDf2RroGnFwOAMVOOnQRe?=
+ =?us-ascii?Q?+mh0SjOF7DDX4nC80IHngZ/1rLjyzh/2bYuocD7eWmA2uog2oGdCOyxmu9he?=
+ =?us-ascii?Q?zaBYkrTgFM9QNm2tqy03LucDI5Ju/ejz3rRXvtMlR3xFszmWqJgMIpq9dp2i?=
+ =?us-ascii?Q?yfKCeUDQZ5RzQGbOkyYodpBAowSchU3j9O53blTEHXDy+T9DrBkpFCMDEelf?=
+ =?us-ascii?Q?WpON7A82uQWdbwg0hTTn+sPl4a7HJ94h3Ne34d2VVudIxsmX0O0BW4j5sJKw?=
+ =?us-ascii?Q?OXQFY2ee7pMNfcY9PIi27bGTXorNJxf8NYGixZhlPYiFkoLGVhhXypeHC3KS?=
+ =?us-ascii?Q?4d5exbNL0KFIhOda6R7v8VKH9yf4Y22KrO4kCRzaAj7/DZdX8sfL50D05uN4?=
+ =?us-ascii?Q?FB6+xoTA6pmTfxM/KAfRgJbIcMtiWQcIgSGIJZgTTSXNFqRTKAx+tId9C/1R?=
+ =?us-ascii?Q?XS3Tm0ssHHdRFq8o5dL030fLoZ1FMabk5YDZC7d60S6uZWSnlv2i+JjNA37H?=
+ =?us-ascii?Q?W53Y4UNAwLqxGW/ImrUbKpaUU7BYz3xf5/qcTUXpY6s6rBHMOk0hGkLmopsM?=
+ =?us-ascii?Q?x1s7IdGpGFFrwaBoM/wPwG+59LLaEzE5aPdUA7EuG7qBtG2bm5wI4gl6pk9Q?=
+ =?us-ascii?Q?rtiSKej2Ym8KOTn6sslYvr3C2KYGYNjTs3l0BJfuCUd5wrssAOHVc4k0bP6+?=
+ =?us-ascii?Q?Irt32+JAXgYYK6XmbN5CcZPEmyKFB5abb11DD5zie1djtLZDBToZcBQg2Jim?=
+ =?us-ascii?Q?HQzQKhbLLojLdNzfNyMOAaEE3xofGO68Piko3IdY1PCAhLHsYhO4e8EPMnFo?=
+ =?us-ascii?Q?eOyOgtjT0K0oE4o4q+JXMvskGoCGkMdGZy77FpRc4afU9wI52OWCOQ/OxO60?=
+ =?us-ascii?Q?mUKbglfGp5XJgz/CYlkqQpy+T9FvLe2INJGPCQD4WUIeyWCsbDPKrXoO4vMR?=
+ =?us-ascii?Q?2k6KPvE2wcqPb0qYcQ05xNDx4Wm6Y/MDGfYBoQIedhJjw8Bt6gHHltsyhsbe?=
+ =?us-ascii?Q?gCeqfw6rCnIPgURpK7jbRLfE9Giq6/N+qWFo6Gos+rrbMLkbcR6K+E6mFtXu?=
+ =?us-ascii?Q?8yMif5VwnFwk4MbCjxj20nX7gicFdX4IzhTeB8IQLBQakPhKRfbEHkmq4lT4?=
+ =?us-ascii?Q?YJYshdRmjA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1417; i=krzysztof.kozlowski@oss.qualcomm.com;
- h=from:subject; bh=EKISGBUUfR2T00G1oUFO8B5JWeNXQjqvDxFBm53oB1E=;
- b=owEBbQKS/ZANAwAKAcE3ZuaGi4PXAcsmYgBqvfjZPEQDW0HRJhcKDjtn+70niEdskRCFnDkWq
- fa0vMc6loWJAjMEAAEKAB0WIQTd0mIoPREbIztuuKjBN2bmhouD1wUCar342QAKCRDBN2bmhouD
- 15s2D/9VCFFdVrnKQhXM+zRwcwvmq5yxk0g9DbBg/mEg+4hgMmCb9rYnxbdldXBshulD5bvnpN3
- tfyq9nZDuYawCej166ua9X2diCl1uI2AZHGh+jTFWLcd5iFYI1OTM5hvaU7TxqFSdvGX1y9B/kF
- nvCJDCC+qTVTZOxelHp5EoA93XyGOI3RdlHiB8RmgwKcBbu2R5fn3Pn0bG3sxsbf006oKHMVclt
- G9LMDOFrNuPn21v6f1hcJYQ/BtN43dxIwuyX2AM4725YGIeFDkILd1bZiMrwX5hMrXjQsl2DJi8
- Iu9uegAKjtWNnTC4uiPVA8PyvJGt08LgjJS5WQEd02VvV6GhlvsQkSw1ExO+goD29Fa/0VFJpAo
- x6QQL/pjAa8mji21Vyr0WEyv2EiYtOW4Ah76NLWK/B/gzdyovJNvjMe1ZbXhRsTktgXHlGCs+Bu
- RMbyfdY9SAV09YyrkgjSWwMmv/SjO3YsbBlUeRiIBNdpg9vwE6D25Er1Kn2ovjWidAHKy9HmMd5
- ODpSdPcDJgK1L/UddA0gFhW4sFiUz4KlJ9HtqS2W1UTj+CZQu8hLeJEvkSTVfz9zTXZT7OUZL+S
- oLDjVxkIN2O+m0CQ0ucOHzz1XTSU8KwHTtQi/HUa7HYFwUbAv5EB4+iVmRCnaxTjtq7J1IfeR4y jxKZCR4LVFV3NfQ==
-X-Developer-Key: i=krzysztof.kozlowski@oss.qualcomm.com; a=openpgp; fpr=9BD07E0E0C51F8D59677B7541B93437D3B41629B
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: 5ggV3HDsFt0LWN1I1abvUcZhYwt4qpBk
-X-Proofpoint-Spam-Info: AW1haW4tMjYxMDAxMDAyNCBTYWx0ZWRfX4F/oMo9OC/qt
- AhIej/5UKDf2hJdSNjIUi8Gr8mj9r45WU90LPxEz7oh3+pW7RUAyp8A7c+JDQ/jAYjVRJhfeySk
- 5BtXeG/sShMWON1CWCC5Ewr9afc06oQ=
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDAxMDAyNCBTYWx0ZWRfX/RMy+UXaj0fp
- LGGo3BGADmqYNG8hDWWrciNxE2+37FiiBKm4gL9K/fubqneCAig5ZQxdQEjQa1jknl7ygS+cvwM
- H9t+6FVmBncgKUXmvWuNnl2sib1HUrw9jNZ+/o65O2ihgXoMTElUn1LeGRTRKZUrTwsFsOArCPe
- 9NVYModayphfvCCxK4Qk6Ndz8HW/HLs94ZYiVxhChD4LjB6ZeNcTuwBZKWtNlCBWAVt5PvDZ/Gg
- kVRMbm5sG0wPkM4qL3k2wmpRMRUwgGpV1bwMzGqgnKo7ly2aftl0ELVM8cdD5q4jL4f0GHsmxKt
- PkRrJZ2zbVfDKhbKGw+xEKQEbzahRhfk2dUtFH+IZBCUQJgjL5uHbIW4lGD5wcgmMNEGWQ8j/Xx
- 6cQiybB+MsdpRvGu+rcsA2T6DpSR2Vp9GpdhYAiubQSuABCIk4KpJn0bNmxvtuob/RWo7lS2V1W
- nbSIzeMyuw1n966U7Cw==
-X-Proofpoint-GUID: 5ggV3HDsFt0LWN1I1abvUcZhYwt4qpBk
-X-Authority-Analysis: v=2.4 cv=WpC+otfv c=1 sm=1 tr=0 ts=6abdf8e5 cx=c_pps
- a=HLyN3IcIa5EE8TELMZ618Q==:117 a=+bKQE0WJfmhK2875HamI0Q==:17
- a=660iZSQnnn4A:10 a=s4-Qcg_JpJYA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=u7WPNUs3qKkmUXheDGA7:22 a=rJkE3RaqiGZ5pbrm-msn:22 a=EUspDBNiAAAA:8
- a=aMQYPRUqVwEaD7bFCZwA:9 a=bTQJ7kPSJx9SKPbeHEYW:22
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.134,FMLib:17.12.100.49
- definitions=2026-10-01_02,2026-09-21_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- lowpriorityscore=0 phishscore=0 bulkscore=0 priorityscore=1501 suspectscore=0
- malwarescore=0 impostorscore=0 adultscore=0 clxscore=1015 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2609040000 definitions=main-2610010024
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY3PR01MB11346.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ec5656a2-64a2-4a46-6b0a-08df1f8f5960
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 Oct 2026 07:41:05.0029
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: lLSgbNJn5p7GpiVLM3JBHTVg9aQHXjX2rLgTR2pKIWCNV99r/eH0AoYQbxL7mj4SBwyxr/0+ciAh/j0LN/bqnEY/rG4d33vLEr8QgF2fabo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSCPR01MB15629
 
-Properties varying per variant of the device should still have the
-broadest constraints set in the top level, so add such for the "resets".
-Since top-level part says "reset-names" cannot accept one item, disallow
-it for the two variants which do not use it in practice.
+Hi Krzysztof Kozlowski,
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
----
- .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml   | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+> -----Original Message-----
+> From: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+> Sent: 01 October 2026 07:08
+> Subject: [PATCH] dt-bindings: can: renesas,rcar-canfd: Restrict resets in=
+ top-level
+>=20
+> Properties varying per variant of the device should still have the broade=
+st constraints set in the top
+> level, so add such for the "resets".
+> Since top-level part says "reset-names" cannot accept one item, disallow =
+it for the two variants which do
+> not use it in practice.
+>=20
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index b9d9dd7a7967..ca92e1a9a051 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -132,7 +132,9 @@ properties:
-   power-domains:
-     maxItems: 1
- 
--  resets: true
-+  resets:
-+    minItems: 1
-+    maxItems: 2
- 
-   reset-names:
-     items:
-@@ -209,7 +211,6 @@ allOf:
- 
-         resets:
-           minItems: 2
--          maxItems: 2
- 
-   - if:
-       properties:
-@@ -231,6 +232,8 @@ allOf:
-         resets:
-           maxItems: 1
- 
-+        reset-names: false
-+
-   - if:
-       properties:
-         compatible:
-@@ -246,7 +249,6 @@ allOf:
- 
-         resets:
-           minItems: 2
--          maxItems: 2
- 
-   - if:
-       properties:
--- 
-2.53.0
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+
+Cheers,
+Biju
+
+> ---
+>  .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml   | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd=
+.yaml
+> b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> index b9d9dd7a7967..ca92e1a9a051 100644
+> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> @@ -132,7 +132,9 @@ properties:
+>    power-domains:
+>      maxItems: 1
+>=20
+> -  resets: true
+> +  resets:
+> +    minItems: 1
+> +    maxItems: 2
+>=20
+>    reset-names:
+>      items:
+> @@ -209,7 +211,6 @@ allOf:
+>=20
+>          resets:
+>            minItems: 2
+> -          maxItems: 2
+>=20
+>    - if:
+>        properties:
+> @@ -231,6 +232,8 @@ allOf:
+>          resets:
+>            maxItems: 1
+>=20
+> +        reset-names: false
+> +
+>    - if:
+>        properties:
+>          compatible:
+> @@ -246,7 +249,6 @@ allOf:
+>=20
+>          resets:
+>            minItems: 2
+> -          maxItems: 2
+>=20
+>    - if:
+>        properties:
+> --
+> 2.53.0
+>=20
 
