@@ -1,165 +1,226 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm2-f12.google.com (mail-wm2-f12.google.com [74.125.225.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCF0E4F93D0;
-	Thu,  1 Oct 2026 09:23:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.164
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790846616; cv=pass; b=cIW4w6CC1XjJYikGwSQi65/PEt+6x3RfL1AjobDO8FwCQEWky+8Uf1nushQzdKUJn7b5tlBgpPtG7oQoqFsH8LDXpohdac92sl2g0C3+PL4aYBConfIEYEIyL/LRQOqHpeNbZP1wmYTDCgpgOEUjmtJWauTnFxtXswgFF6gIixc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790846616; c=relaxed/simple;
-	bh=uXz06xG8AGFlhl8QdbP6ubMQBsrBTy82UncVvrfZ/Sc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Myz7qfQBUNpKW4reTe8XLhSKTDntmQNOX2vVTT5JrRFn81K7+1zFkXNPO8hSthEz12AuScUL8QjqZInaQMt3kt8ci+upXH/lCkzbwAXQwJPLrNR9JhDomxX8FN3OyfV1aaAgG6tWmPvDOkC872620Yahe9Dhm0Y3B/Q9b67oDMM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=RXpzIR5N; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=P0A+ThxM; arc=pass smtp.client-ip=81.169.146.164
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77A824CEE4D
+	for <linux-can@vger.kernel.org>; Thu,  1 Oct 2026 09:52:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.140
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790848333; cv=none; b=LrujBX3DAgGdrHTEpTcuxcd6JbD452E9LQLSUutTsGnyuz2SvwX2T7cgmfMdeA8b9dumQdavZROTMzA/N98c7ioDN3n43mut2KPkQGpqGKd2s9ltNAUE+rr8AfTciCedRKl/s1+OL9Af4CU6nYAfFoJIN6GUSBKNk/fo4e4Uy4k=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790848333; c=relaxed/simple;
+	bh=NlI9989RJXkcIj5gybAsIHSJgxn0PED+5Q3UHV8axL0=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=b60Y+ASaaU5RpnDZQYsVXq6os80vVSLdYZ8+sy1G2+PDZrI4WluUklgSEKAj3TFc3YfbMcSSRXNBskgdokcoXf/yniny23HWHoNns7T+2dDY2xHJWE7Fc6VAPexDSePwoI7SoG0nv1DsYFelgdtZrxOXF1jSYIHc6rbrSfspKG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=QMA0lxTM; arc=none smtp.client-ip=74.125.225.140
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="RXpzIR5N";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="P0A+ThxM"
-ARC-Seal: i=1; a=rsa-sha256; t=1790846592; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=VU7naCXCb5pyJcB6TM2YeJLZw7uG9n6IjXxivy22LuSy/pXjz3ekCsNXYtZK/FMosZ
-    bLT+imdlAVoAh41xL+9VNXPM4sY6e1PjG0KZD0ueTIzIQXhb9NYOe9IyuLmib33ROPCe
-    zvzkx6bSp3YYxcHbpZx+nh5o5mFhBSW1WdPvGkCHeKeMS0XZQJYMVoSzPoUVhn42FVd2
-    pafUeAu5A1E024ee7G58dCYycG/lWS1bv4le5pGtuzD2C9H7cZ78yuyLlvulGT6RmDuy
-    yvooUi9OeoUJCgaJvYi6hmuaW+7qRJVxi4oOLWkj/smMXhZyg5a4yEAE2BzzdZnPK+WW
-    rFNA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1790846592;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=YrNRnCjkjXbRg1JmZz7Nqw66nkRndh2mIE9HFNpd+N8=;
-    b=nLwkonWqFWSLi2M/fzQwFNwgomfOU/u615Ac+jefyywOYDlyPwMM6NJCrI+hEYrsyj
-    gFIGtSOkvMG3YHz7a0nd7H3LyKKr6SzUB1mbCIY11Sslu4gjf5fAnp1dXaFduBR1UQrF
-    saNLb6/aipV1tYRycHSdAqeq4/NtHMvtPGbu8UcGkfJ179dHmtfVy3fioW2d9R0xWnsH
-    iUeTvabKdcSbROtF8rkBKhLgBbpH90Z6ll8sn5HapMcgviVDIDAdq/7dpL5RF9kqxfKJ
-    TntPyM9hUthwe0xNAC7waOf1qKtenoUlE152VnJUleQcPTy2BQ9hIIjb2i8lcyOabYZs
-    5ncQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1790846592;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=YrNRnCjkjXbRg1JmZz7Nqw66nkRndh2mIE9HFNpd+N8=;
-    b=RXpzIR5NVpLLORDG4vYHRndB6ZO+pRXlscFRKP6khIBxVqVGZEFM4lVkQrl5Gtyymp
-    Q5OIz1mdpiAcxhp7X1xmFZxbksSuNd+913hg6YZ5YAd5Uxkcdhsleup2ph0R6Gi2hWGq
-    yFznQhYJJYl3ApEIQ2PMq0lBH2dHPGrLMMKt2d6JsD8LdGp6dOYNhz+5W1VcSrrLOhUF
-    ZTlIGdOYP0Y4hXMW5XURNgP1j/oAymK/e+Fa3YMuZcBTAUs4bOFDH9VE7plGNhTLA0+H
-    /tAS5aJ3zYZ8CQlAx/oa0FToNJztfZyNAojZsOrkgDY0mnnNuK6o9vl8AaV10Q+PV677
-    RJIQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1790846592;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=YrNRnCjkjXbRg1JmZz7Nqw66nkRndh2mIE9HFNpd+N8=;
-    b=P0A+ThxMDn17eRy3H8Suw81Cjovp6VPF2XmLBw9c27m6ydxLpoRoMZfHk8MY3oRcrm
-    Q16moYgn5E8RNSO4SvCg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4Kp38="
-Received: from [192.168.20.217]
-    by smtp.strato.de (RZmta 55.6.2 SBL|AUTH)
-    with ESMTPSA id K04b9a2919NBfMg
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 1 Oct 2026 11:23:11 +0200 (CEST)
-Message-ID: <cb83d0dc-58a4-4262-99a0-1e4478630ba0@hartkopp.net>
-Date: Thu, 1 Oct 2026 11:23:07 +0200
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="QMA0lxTM"
+Received: by mail-wm2-f12.google.com with SMTP id 5b1f17b1804b1-49b912d3920so47449855e9.1
+        for <linux-can@vger.kernel.org>; Thu, 01 Oct 2026 02:52:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1790848328; x=1791453128; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=IP3AWrdgyhsi4gEriAWOsCBAC915a9ZMRefWSKzbTns=;
+        b=QMA0lxTMQtqa5MKJHAwd5BzXesbqPXjU/DP8I22JOJpfLDQhPjMpGXKn/Shg9d/sOb
+         OAyKgOhDYqodmK6UVFET/PGtcGSeY9o33gRTo/FcB3Nms2oamoTBA645qpOr8CkFFoQU
+         8Xom2A6SnT2NMW/Dr8fmclsmZRZRR6UdStbxdDrD3einu6PdlSOdje6n+efH4EO2dPx+
+         lLK806WHYjS3vcdqkl7DwAyQDcQcKNzakKCdIn4kE2BxL3+4a2DY6tUNCizMkATh5oH0
+         kLBXUFRAc9tTsaXs/+V0HvqRp2gJprQfHIbauNbvBa2bgZSEJ8fCY2CMX4E7nNP+7r7u
+         PTOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790848328; x=1791453128;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=IP3AWrdgyhsi4gEriAWOsCBAC915a9ZMRefWSKzbTns=;
+        b=cbVRwIoRou40iJFMdbPr4e70WotUtyuuP90WrGCBTfEZ7GBNKZh8gscjcRTOdIo4nl
+         gMIztBAkykhH3taxoYjbdRmQlTpR0jhdwuz6OoossivSAu4zyXOKcmXQZIsiIAca9n46
+         KfIMXiaJ4/t1FoTzg85PfcNlf1SkqnVZPs3EAhZG+4/WODymIuhuoXIRJmLGtIH0/dMd
+         +CCfbgLti+gmaZKnsykL3TXDUsm4tS+twNfKZxcVJFtBxMcwxWRyYzvYP8ph/fYYxYNG
+         vONixCbRXJCLRrrI/dNGyQ/GlG49KuoIPoyk/9QFkYDrcJO5D6j93NxsPMjZ/NBhJ3EX
+         4fsQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwInN5Pf3Ru5TaGDl5sRcCdk3BeP38Lkf5yOpytAO0IZSNQgigcuYKw7mtOpVTwIg0ekCBonjPADi0=@vger.kernel.org
+X-Gm-Message-State: AFuF++kSX5QZwkdguqRTPoAFsb9iYbc6KxyJ8EOGTUTyeY9gR4R7KvYL
+	TbcYurXgdOlRzgzFU6opRDnHzKutCfK84QYHzKyHGFHUkT+mh9um77XeFhVXJEDxlnND+2t0QB4
+	aYOTV
+X-Gm-Gg: AYBFou3UsMoFEdeeclrwXQQnWehNurI49ytVwKszuNyioEbxyyrwjiPJKpKsXzSPr9A
+	/Z6mBPQ9dbjPd8eLLLs3wDg9Dnsboz9+PY2MJ50g0cWumPUn1OVjpoTOFMWWjBifyVtye401Yoi
+	Wtlx1fGtNMvWoUZsQBznlwBcyD1fc3+1FkgkFMWMUrQLxj85610kW12+XUY4esALdedqNjZiUHz
+	iOt9Z1a9KCNdU8geoLDtgMTxe4HlQr9gATSg7aHAbNQW545O1m3gLYvbPiJO8LrW2tHqFqVGkJ+
+	hE+cXtZkxe1CLuBsXN9HWGgnvHt/JwLU8N+ZmB8i+Ei6mM6Jue7PwMc+KNTsW8RUjIfD2IRv4vW
+	EzyD/p5CZa9C2QJDmrf19JVJG/sFDNiwYHpH9pEcgXEMp0JPI13Mve8kTJADu8ceijnXh7NUjq7
+	cXaVgkltfanciLT/hKTGcWmoq9ACTqZSsPnXNI43/N8E1RkOobvPqK12owzTf1MdNxSQ==
+X-Received: by 2002:a05:600c:4e42:b0:499:79b9:e220 with SMTP id 5b1f17b1804b1-4a01aff3a44mr69865245e9.10.1790848328129;
+        Thu, 01 Oct 2026 02:52:08 -0700 (PDT)
+Received: from localhost ([2001:4090:a244:8223:c4e6:4d28:61c:74bb])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a01f938f89sm49777045e9.9.2026.10.01.02.52.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2026 02:52:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 0/16] pull-request: can 2026-09-29
-To: Paolo Abeni <pabeni@redhat.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- netdev@vger.kernel.org
-Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
- kernel@pengutronix.de
-References: <20260929210700.1183036-1-mkl@pengutronix.de>
- <9956662e-6001-413d-864d-d8d048a93819@redhat.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <9956662e-6001-413d-864d-d8d048a93819@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: multipart/signed;
+ boundary=7a6e549848da0d50090fdccd7284ba463193af1978db53d9875c8a734ada;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Date: Thu, 01 Oct 2026 11:51:59 +0200
+Message-Id: <DLTEQW8XYO30.3684CENKEUSOQ@baylibre.com>
+Cc: <s-kochidanadu@ti.com>, <a-kaur@ti.com>, <s-tripathi1@ti.com>,
+ <vishalm@ti.com>, <linux-can@vger.kernel.org>,
+ <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v7 2/2] can: m_can: add ti,am62-mcan compatible with
+ out-of-band wakeup support
+From: "Markus Schneider-Pargmann" <msp@baylibre.com>
+To: "Kendall Willis" <k-willis@ti.com>, "Markus Schneider-Pargmann"
+ <msp@baylibre.com>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzk+dt@kernel.org>, "Conor Dooley" <conor+dt@kernel.org>,
+ "Chandrasekar Ramakrishnan" <rcsekar@samsung.com>
+X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
+References: <20260924-temp-v7-0-f40defe5957f@ti.com>
+ <20260924-temp-v7-2-f40defe5957f@ti.com>
+In-Reply-To: <20260924-temp-v7-2-f40defe5957f@ti.com>
+
+--7a6e549848da0d50090fdccd7284ba463193af1978db53d9875c8a734ada
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi Kendall,
+
+On Thu Sep 24, 2026 at 11:54 PM CEST, Kendall Willis wrote:
+> In TI K3 AM62 SoCs, the M_CAN controllers are in power domains which are
+> OFF in the deepest low power states. However, the m_can pins are able to
+> wakeup the system from states where the power domain is OFF through its
+> out-of-band wakeup functionality.
+>
+> Introduce the ti,am62-mcan compatible with match data to identify the
+> out-of-band wakeup capability for TI AM62 SoCs. During suspend, set the
+> out-of-band wakeup flag when the device is configured as a wakeup
+> source, the "wakeup" pinctrl state is present, and the match data
+> indicates out-of-band wakeup support.
+>
+> Signed-off-by: Kendall Willis <k-willis@ti.com>
+> ---
+>  drivers/net/can/m_can/m_can.c          | 10 ++++++++--
+>  drivers/net/can/m_can/m_can.h          |  6 ++++++
+>  drivers/net/can/m_can/m_can_platform.c |  9 +++++++++
+>  3 files changed, 23 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.=
+c
+> index 91a0c5eca260c19fa97c6f5724341cad0c1c95b8..815a11531ff47b8460aa3efa3=
+075804b4f769848 100644
+> --- a/drivers/net/can/m_can/m_can.c
+> +++ b/drivers/net/can/m_can/m_can.c
+> @@ -2628,8 +2628,14 @@ int m_can_class_suspend(struct device *dev)
+>  		cdev->can.state =3D CAN_STATE_SLEEPING;
+>  	}
+> =20
+> -	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
+> -		pinctrl_pm_select_sleep_state(dev);
+> +	if (!ret) {
+
+I guess this !ret is from an earlier iteration? Code at this point is
+only executed if everything was successful so far. So I think you can
+drop this outer if.
+
+> +		if (m_can_class_wakeup_pinctrl_enabled(cdev)) {
+> +			if (cdev->out_band_wakeup)
+> +				device_set_out_band_wakeup(dev);
+> +		} else {
+> +			pinctrl_pm_select_sleep_state(dev);
+> +		}
+> +	}
+> =20
+>  	return 0;
+> =20
+> diff --git a/drivers/net/can/m_can/m_can.h b/drivers/net/can/m_can/m_can.=
+h
+> index 4743342b2fba3823819b9e2bc5b085cc0fe6d1e2..da64e6bbcef2a721a330e67fd=
+852ca4a703c5794 100644
+> --- a/drivers/net/can/m_can/m_can.h
+> +++ b/drivers/net/can/m_can/m_can.h
+> @@ -132,6 +132,12 @@ struct m_can_classdev {
+> =20
+>  	struct pinctrl *pinctrl;
+>  	struct pinctrl_state *pinctrl_state_wakeup;
+> +
+> +	bool out_band_wakeup;
+> +};
+> +
+> +struct m_can_of_data {
+> +	bool out_band_wakeup;
+
+Can you please move struct m_can_of_data to the top of m_can_platform.c
+to keep it local to where it is used?
+
+The rest looks good to me.
+
+Best
+Markus
+
+>  };
+> =20
+>  struct m_can_classdev *m_can_class_allocate_dev(struct device *dev, int =
+sizeof_priv);
+> diff --git a/drivers/net/can/m_can/m_can_platform.c b/drivers/net/can/m_c=
+an/m_can_platform.c
+> index 51dd41dbf2c9a971295994946e190ec0187addd5..dbd59730c0bc16f519cb2c40b=
+cd8093ca1bcb369 100644
+> --- a/drivers/net/can/m_can/m_can_platform.c
+> +++ b/drivers/net/can/m_can/m_can_platform.c
+> @@ -83,6 +83,7 @@ static int m_can_plat_probe(struct platform_device *pde=
+v)
+>  	void __iomem *addr;
+>  	void __iomem *mram_addr;
+>  	struct phy *transceiver;
+> +	const struct m_can_of_data *of_data;
+>  	int irq =3D 0, ret =3D 0;
+> =20
+>  	mcan_class =3D m_can_class_allocate_dev(&pdev->dev,
+> @@ -148,6 +149,9 @@ static int m_can_plat_probe(struct platform_device *p=
+dev)
+> =20
+>  	mcan_class->is_peripheral =3D false;
+> =20
+> +	of_data =3D of_device_get_match_data(&pdev->dev);
+> +	mcan_class->out_band_wakeup =3D of_data && of_data->out_band_wakeup;
+> +
+>  	platform_set_drvdata(pdev, mcan_class);
+> =20
+>  	pm_runtime_enable(mcan_class->dev);
+> @@ -218,8 +222,13 @@ static const struct dev_pm_ops m_can_pmops =3D {
+>  	SET_SYSTEM_SLEEP_PM_OPS(m_can_suspend, m_can_resume)
+>  };
+> =20
+> +static const struct m_can_of_data m_can_plat_am62 =3D {
+> +	.out_band_wakeup =3D true,
+> +};
+> +
+>  static const struct of_device_id m_can_of_table[] =3D {
+>  	{ .compatible =3D "bosch,m_can", .data =3D NULL },
+> +	{ .compatible =3D "ti,am62-mcan", .data =3D &m_can_plat_am62 },
+>  	{ /* sentinel */ }
+>  };
+>  MODULE_DEVICE_TABLE(of, m_can_of_table);
 
 
 
-On 01.10.26 10:40, Paolo Abeni wrote:
-> Hi,
-> 
-> On 9/29/26 22:43, Marc Kleine-Budde wrote:
->> this is a pull request of 16 patches for net/main.
->>
->> The first patch is by Vincent Mailhol and drops CAN-XL frames on non
->> CAN-XL devices.
->>
->> A patch by zjamg restores the skb header initialization lost during
->> the v7.0 release cycle.
->>
->> Oliver Hartkopp contributes 3 patches for the CAN net layer, the first
->> one fixes the net namespace integration for BCM, ISOTP and the CAN RAW
->> protocols. The second one converts the unreliable ARPHRD_CAN type
->> check to the robust can_get_ml_priv(). The third one fixes the unique
->> skb identifier regression under RPS, introduced in the v7.0 release
->> cycle, which causes lost packets.
->>
->> A patch by Joshua Crofts adds a missing
->> pm_runtime_dont_use_autosuspend() to the m_can_pci driver.
->>
->> Maximilian Zimmermann's patch for the xilinx CAN driver adds the
->> setting the ESI and BSR flags in the receive path if they are active.
->>
->> Jiale Yao's patch for the mcp251xfd driver rejects devices without
->> match data.
->>
->> Ji-Ze Hong fixes a struct size mismatch in the f81604 CAN driver.
->>
->> The next patch is by me, targets the gs_usb driver and adds
->> workarounds for the HScanT USB to CAN adapter.
->>
->> Cen Zhang fixes a slab-out-of-bounds read access in the kvaser_usb
->> driver.
->>
->> A patch by Stefan Günther targets the peak_usb driver and fixes the
->> CAN-ID when reporting CAN errors.
->>
->> Chris Strong contributes 2 patches, to fix an out of memory and packet
->> loss problem in the mcp251xfd CAN driver under sustained receive
->> traffic.
-> Linus has started pushing back on the ever-increasing net RC PRs:
-> 
-> https://lore.kernel.org/netdev/CAHk- 
-> =wiSnTE9vBZ=5_v+3EEkdazCCbBM5YABRzRHUAeRdyd4Xw@mail.gmail.com/
-> 
-> We are trying to defer things to 'next', especially this late
-> in the cycle.
-> 
-> I think there are a few patches here eligible for that. i.e.
-> 
-> can: gs_usb: add workarounds for HScanT USB to CAN adapter
+--7a6e549848da0d50090fdccd7284ba463193af1978db53d9875c8a734ada
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> can: remove CAN filters independent from namespace
-> can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
+iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCar4tPxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlMI
+1AD/TxuXMsKLyW4KCUwc3mc0dQc0TCA0biVWcg29YQByTWQBAM7eBZmnjxysyq/q
+gPgVihQ96Rf4bG6qcyGfwHY2EWcM
+=S4Wj
+-----END PGP SIGNATURE-----
 
-I would be fine with those two patches.
-There was unfortunately some new(!) feedback by sashiko-bot on the 
-namespace patch and the ml_priv patch is not that urgent.
-
-> 
-> WDYT? How much a pain would be shrinking this PR?
-> 
-> Thanks,
-> 
-> Paolo
-> 
-> 
-
-Best regards,
-Oliver
-
+--7a6e549848da0d50090fdccd7284ba463193af1978db53d9875c8a734ada--
