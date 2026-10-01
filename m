@@ -1,194 +1,92 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm2-f13.google.com (mail-wm2-f13.google.com [74.125.225.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48C284E323A;
-	Thu,  1 Oct 2026 10:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790850553; cv=pass; b=JShvpjt9N6m76Edw/+hazfxxygHQx/oyVMDj5NTqnPQhtDPGmyaIMm5GSiCRsfK/P8EXJOCW+gVrjett70NyTwaaaqsEDIpvpAqGYlxCKJpSrsZyFR2pZDQYAB3IxG97MIyNFCsmorqCE4naYvEUh2RPHMxzhaxqSFClMV/U70Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790850553; c=relaxed/simple;
-	bh=RQxW2qfK9ZTjzlW+LErzsDO8GNh/Nmjc10lOUeiEg+0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tLlzKcQlmzfjam1RZhycOWCjv86lE+6XIPIo8Cxmyis1YJ0Csmn0QKfwEGEri/deRkHmO26TGUZ6rF3Hhz1XXQtEx3FHxz9vW+2x+8DiDb4G7LsHJj4KL5srrQJU/yGhCzo+I0pXiIbpL/rwWjA437q72xVxKYH9Nj5z8Id3suU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=szK0I9xO; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=bQ9nLA2h; arc=pass smtp.client-ip=85.215.255.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8F903D813C
+	for <linux-can@vger.kernel.org>; Thu,  1 Oct 2026 10:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.225.141
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1790851351; cv=none; b=nwsSTjQ6WCJlNiAViCe2T60kF8fqkn3zLR+Q4kAAMKRqNj7W/S1mkTF1IFB6b5Rho0u1R0LfTyxzhyo/vnx5N4RMOvx3H8lGmT/UP61UYBLNfRT0E5Qmin9jL/8Z2pCGpwMcochg6CJBhLjSBrbBxHsbrAZ6KIpa0RB1uJ3tb20=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1790851351; c=relaxed/simple;
+	bh=lQZTDSIHL00paX37Uy1dmIWO7Foaykj82cQvGVzut+U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FHgo8uetdsEsy1i4qvJD3uOhINpavRnrX+FZXL46xucvXw4ARfqRK1b4VEGb5P2IuliTYzSWyu/VM8V9Cqby8Zizuda3eHWMzmOS5zLDNN/La1tU1IzIiqPkHrt0kXKV2XqNHkfCixY4nScXZqkX2+KG66doYF3WXdpEOudGAe0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nC2kfYEF; arc=none smtp.client-ip=74.125.225.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="szK0I9xO";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="bQ9nLA2h"
-ARC-Seal: i=1; a=rsa-sha256; t=1790850529; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=B+bxIkxhLEr/IeF28Tmk2ZyGykquHOOEipKtdhOuNjNs0x/ZoFB0X4Y8vUR2sIR8F2
-    W/fc11TJ77tYpqDdY7FjRV8M00BDI0OU9G/PqLGeKAZSUUF5mbh4s372Cp1JXbw84hb6
-    CWWzhVrIhEgZUycJlSCDX8pQ00Yytscp3XYac+T9cniyPwX1EAawjXJLUf6sYo6l4XDE
-    YGaDt0qT12VEG9/HLApbHMIo9NTUlMX0o/Y/9qjd8HDDdWPibxkyPUY8a/tGvK7NMYtB
-    XyuPOxyZa8/sXdpMHPJVH+ch3wSYNx42+E+sLixzSsE431mx5GFbc8m7/ZpjM7uznVWu
-    vAQg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1790850529;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=NzeXNqilBP/PAIHeIbEaxjxhQaTNKCvBAgVE3wzT7nw=;
-    b=gNv8jcwnbByYTU8j6fJk+KdPBT/nHidMQUcsRPhMRn9+fFG5dvPDlnYMZ+wfmW4+D7
-    ZXvRYd0PM/GTn4N7IfwjeCXG21R/y4OYxYx3immpz8qFa7HpkUUKfM0eBmUzXMjQojHQ
-    McYiZ44SUfEjekgMst9vFULTHkZi6kjG1l+MGHVrbtU2SQmhxeuceJ73m0zymQnOTITF
-    KqI8wvu78OwkKTOwsSk7I7+mFnd1ZOVP0gMGvn5RNH4ha/wzFgBrrVEX3jmdynUzmu6O
-    Wvv85tfg9vdMmJ8US+2T3tWSXiupLe5j9xbI8euo2AlV68GtcF0QPcac+PmBH2Gbn9l9
-    YZLA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1790850529;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=NzeXNqilBP/PAIHeIbEaxjxhQaTNKCvBAgVE3wzT7nw=;
-    b=szK0I9xOVZZT9Y7HGm9yjJnl/ceKS6AMj0kRJO8xGytgUK5LBEoo7f4WIkbB2Z5+AX
-    eUmaw6dBPQICBId3QoJ0wmcq+I3bwvoZaWwUwS2GSCc3A42oKGltFBZETIt/ZdPv137K
-    /vI9l4bTYzGy0f0FMnTipjfkT17ZhZypBrMXnpjDh4cYlJLr20JygLV4YAExRZ51e8TH
-    /sgpaIjyT/AUrM5Vam/uZ8KB1T9vrWOR7Lp2AITEinThAN8TVtD3BN3kt4T0A2bA2OzG
-    3DbiOXJZ9DtReWFA2CXD+mxQwyHbLbSb8NTWAhyklwUVmusbYhM0uKa/J6zpoRR5tN75
-    cMZQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1790850529;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=NzeXNqilBP/PAIHeIbEaxjxhQaTNKCvBAgVE3wzT7nw=;
-    b=bQ9nLA2hpLQsYdTTFNcxiiqWZDcqY7v6KgtNLvOLAglt05WbIvYkCYgHYPeuC50din
-    +GzKJm9ni+2yee1cc5DQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K04b9a291ASmgiz
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 1 Oct 2026 12:28:48 +0200 (CEST)
-Message-ID: <e4a05f3a-7206-4fe4-b04f-bf2a9f1fb926@hartkopp.net>
-Date: Thu, 1 Oct 2026 12:28:48 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nC2kfYEF"
+Received: by mail-wm2-f13.google.com with SMTP id 5b1f17b1804b1-49e83a388f8so46794905e9.1
+        for <linux-can@vger.kernel.org>; Thu, 01 Oct 2026 03:42:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1790851343; x=1791456143; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=lQZTDSIHL00paX37Uy1dmIWO7Foaykj82cQvGVzut+U=;
+        b=nC2kfYEF/Usos6OjjH1MgnFunuUCnpr1MwnO4/lS1JlUW0eEmL8gfsM2ZSkUAlrMQn
+         fTXWpt+gYV074DEQWAa5CsMT6KLmwNgh2Mn/RdacSGX+hm36/9RsZ/gACkmPMW7WVpzV
+         K93jzjrEl5KrKujCm8unrA89z/b/BwipQlVPHHT1Ye0XRjOhg7afik2UI/kMluxrdXeC
+         A4iH5FDby7tuLOFWfUsj03NDMdK0WAQoo/xI6y1HRJLxo1GNJof/hej/fbNJbdzo6MoV
+         MGbkzL5o14TDubcOXORgF81z0hGMKEZyYgzH7wptahG3/xjnmrdgamxsO0SndOf0z65Y
+         fGdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1790851343; x=1791456143;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=lQZTDSIHL00paX37Uy1dmIWO7Foaykj82cQvGVzut+U=;
+        b=T6JYBWZWD+cdW+UgKJLkp/CXtpxeVC/TP/xO1s/j50rJ5ms5xt2Tcp6lf+2ZASOUWi
+         zm+7rvnXVCsgKm2qfSFgLLcUCER3qbkVrbyyuaK7xcVlXnvKVmE9Hu6SLhAc7O03bpAG
+         zhlSWkiHvecwIt80FdbZBg59K9E6akuIoGjwHw8bFPAwAO5DXssDMSe7cxvxDJIPXmF9
+         RyhBLyRvoQR+yy0B5EGCzHXdl+WERSlltHb+KworVFHCFkNVmTnhv+DJp8+tEi2OHcrU
+         B0ghoo+s4LRUgaSGpcd+ZUVIDdJ6vjrdLuhAKaN0uFrazS7MYMuMpKAtznzhVfxIpOkB
+         STFQ==
+X-Forwarded-Encrypted: i=1; AKwUvByAbUpANRedmcVHofzCEw+pyGfNsSPL9YuPXkys+WHVC4P0ZGb4q9VerwDDl/1+9akSLQhdIfGwMdo=@vger.kernel.org
+X-Gm-Message-State: AFuF++kya9/pdJlzNObFEKp8Y8l0KmGr7bb3g1vLx3hx3YjAw63BRFQx
+	qoPF5Pn/ltjf2g0arQi08BFPQJ4I3X88M/btvwH033HL+wCwyCyka2BD
+X-Gm-Gg: AYBFou2i7ivl1dLn/LkWJ4FprU28d43iJWaj+2M05fhimJbOtKIocNVSLt/9eOPq52I
+	bZnQlQ5B1+5X1VzZ8ku5tkgIcVWWtg4xVSZLM3F+nE718r7cLzVh3W9MZGfs7Cr3nvAPicodx62
+	vTJMa9gwdLFLgxEwkWSPxadWYNUGuDC9p5bqFzK5HSgBeF7F6NY+S6V/rakqMBPnuS/rGUcZDSM
+	6q3L3vvaeCjso1/BYthoEe32Arm/h3EdRkuGvqvOpCcKfZTctSSl6YPwbF3FfR3vScDgm3O0xCr
+	nY9yz7OBxdPe6OTrT/yeMH2HxuG3wEJ2L+0ICdtFdpIkcfLP0v8QwoSWaLxXT29t9DbuNSbg6CN
+	bclvrhJiqG6vcy/nAuF6oNXm8wxai8BenQSVscncfrZcvxv84w9aURhL3yubx7n+k9agTRU0yNV
+	AeMQRjniOH4IL/o2AHrz6c2ih0OZvlsb5vSV1QqLEkKnEsqtgZc63n3qNjve6UJnUlis9eqP0Zz
+	AxF030=
+X-Received: by 2002:a05:600c:4e42:b0:49d:2450:68ac with SMTP id 5b1f17b1804b1-4a01afe84a4mr73565895e9.5.1790851343345;
+        Thu, 01 Oct 2026 03:42:23 -0700 (PDT)
+Received: from LEGNB0874 ([2a00:79c0:ae4:9d00:1f4b:c311:c1af:96c9])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a01f923320sm63394605e9.7.2026.10.01.03.42.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 01 Oct 2026 03:42:23 -0700 (PDT)
+Date: Thu, 1 Oct 2026 12:42:21 +0200
+From: Markus Koeniger <markus.koeniger87@gmail.com>
+To: Alexander =?iso-8859-1?Q?H=F6lzl?= <alexander.hoelzl@gmx.net>
+Cc: o.rempel@pengutronix.de, robin@protonic.nl,
+	linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+	linux-can@vger.kernel.org, markus.koeniger87@gmail.com
+Subject: Re: [PATCH] can: j1939: fix potential race condition in BAM
+ segmentation
+Message-ID: <ar45DX0aPoWBvA_-@LEGNB0874>
+References: <20260610090619.70626-1-alexander.hoelzl@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 0/16] pull-request: can 2026-09-29
-To: Paolo Abeni <pabeni@redhat.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- netdev@vger.kernel.org
-Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
- kernel@pengutronix.de
-References: <20260929210700.1183036-1-mkl@pengutronix.de>
- <9956662e-6001-413d-864d-d8d048a93819@redhat.com>
- <cb83d0dc-58a4-4262-99a0-1e4478630ba0@hartkopp.net>
- <19ab3d46-f326-4f08-a161-d31ae272a9d8@redhat.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <19ab3d46-f326-4f08-a161-d31ae272a9d8@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260610090619.70626-1-alexander.hoelzl@gmx.net>
 
+Hi Alexander,
 
+I really appreciate your solution to schedule the TX timer for a BAM transfer after receiving the looped-back frame.
 
-On 01.10.26 12:13, Paolo Abeni wrote:
-> On 10/1/26 11:23, Oliver Hartkopp wrote:
->> On 01.10.26 10:40, Paolo Abeni wrote:
->>> On 9/29/26 22:43, Marc Kleine-Budde wrote:
->>>> this is a pull request of 16 patches for net/main.
->>>>
->>>> The first patch is by Vincent Mailhol and drops CAN-XL frames on non
->>>> CAN-XL devices.
->>>>
->>>> A patch by zjamg restores the skb header initialization lost during
->>>> the v7.0 release cycle.
->>>>
->>>> Oliver Hartkopp contributes 3 patches for the CAN net layer, the first
->>>> one fixes the net namespace integration for BCM, ISOTP and the CAN RAW
->>>> protocols. The second one converts the unreliable ARPHRD_CAN type
->>>> check to the robust can_get_ml_priv(). The third one fixes the unique
->>>> skb identifier regression under RPS, introduced in the v7.0 release
->>>> cycle, which causes lost packets.
->>>>
->>>> A patch by Joshua Crofts adds a missing
->>>> pm_runtime_dont_use_autosuspend() to the m_can_pci driver.
->>>>
->>>> Maximilian Zimmermann's patch for the xilinx CAN driver adds the
->>>> setting the ESI and BSR flags in the receive path if they are active.
->>>>
->>>> Jiale Yao's patch for the mcp251xfd driver rejects devices without
->>>> match data.
->>>>
->>>> Ji-Ze Hong fixes a struct size mismatch in the f81604 CAN driver.
->>>>
->>>> The next patch is by me, targets the gs_usb driver and adds
->>>> workarounds for the HScanT USB to CAN adapter.
->>>>
->>>> Cen Zhang fixes a slab-out-of-bounds read access in the kvaser_usb
->>>> driver.
->>>>
->>>> A patch by Stefan Günther targets the peak_usb driver and fixes the
->>>> CAN-ID when reporting CAN errors.
->>>>
->>>> Chris Strong contributes 2 patches, to fix an out of memory and packet
->>>> loss problem in the mcp251xfd CAN driver under sustained receive
->>>> traffic.
->>> Linus has started pushing back on the ever-increasing net RC PRs:
->>>
->>> https://lore.kernel.org/netdev/CAHk- 
->>> =wiSnTE9vBZ=5_v+3EEkdazCCbBM5YABRzRHUAeRdyd4Xw@mail.gmail.com/
->>>
->>> We are trying to defer things to 'next', especially this late
->>> in the cycle.
->>>
->>> I think there are a few patches here eligible for that. i.e.
->>>
->>> can: gs_usb: add workarounds for HScanT USB to CAN adapter
->>
->>
->>> can: remove CAN filters independent from namespace
->>> can: convert unreliable ARPHRD_CAN type checks to robust 
->>> can_get_ml_priv()
->>
->> I would be fine with those two patches.
->> There was unfortunately some new(!) feedback by sashiko-bot on the 
->  > namespace patch and the ml_priv patch is not that urgent.
-> FTR I mentioned the HScanT patch because if feels more additional H/W
-> enablement than a fix and is also quite largish/invasive. Feel free to
-> disagree!
+We use external CAN controllers in our system, which introduce some jitter into the transmit path. As a result, messages were sent from time to time too quickly and violated the 50 ms minimum interval. Your patch solves this problem.
 
-Btw. we need the
-
-can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
-
-patch as it is a prerequisite for the urgent
-
-can: fix unique skb identifier regression under RPS
-
-The ml_priv patch is not a big thing and intended for stable too.
-
-> Also, not sure if it's already clear, but the main/more relevant sashiko
-> instance for netdev is the nipa one:
-> 
-> https://netdev-ai.bots.linux.dev/sashiko/#
-> 
-> It uses more models, and cross-correlates among them and sashiko.dev
-> feedback.
-
-Ok. The review on Linux-CAN ML was done with
-
-gemini/gemini-3.1-pro-preview
-
-https://sashiko.dev/#/patchset/20260929163424.16382-1-socketcan%40hartkopp.net
-
-While the PR netdev review was done by
-
-bedrock/us.anthropic.claude-opus-5-5
-
-https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260929210700.1183036-1-mkl%40pengutronix.de
-
-@Marc: Can we switch on Linux-CAN Patchwork to Claude Opus too?
+Tested-by: Markus Koeniger markus.koeniger@liebherr.com
 
 Best regards,
-Oliver
-
+Markus
