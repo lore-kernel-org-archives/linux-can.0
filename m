@@ -1,76 +1,73 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1E3C395AD8;
-	Fri,  2 Oct 2026 08:15:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F113541D12C;
+	Fri,  2 Oct 2026 09:02:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1790928923; cv=pass; b=Pa7g442A5uHvPE5fLIj92D+QGgIK6NS4Gawffw8xxxTa+kMfbpU+BC9wn5P8zE2K7d4EtyJe2615Yi/NCCKNR982on8nN/3T77g9gXqIAhe5DwK5n7J8rKxKFTYgrFOrJpxLO1iFcJseXXhobUiQ6yVNgAD8NTBI3spm5LAuYK8=
+	t=1790931727; cv=pass; b=ZNI1cEr5YMVtzASI4KIjlW3gedwMSdPB0Tl4R7nKPkuWlT7jLhh6nqScvHTN++o+fpj0cJcxcpiwNAzNX1VqFP7w2LvVsiTlRSrOa0ml9q+Z7VQXNlkYFaL+ZeoQ3Qyd3AOlDKopEU4Y3OCmTiSKQhGntqYq1AEKbmEr7eswJb8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1790928923; c=relaxed/simple;
-	bh=vpvgp76mf8K1aO2/k3UU24h6wybclzSXpH5NwiQDWm4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=DJGvniOIeQq2QAP7ZGJrxyrVs+D6k3nzxpztIikqqgtY8lJTtrYRSFX9xP9uJXEvrj9g/QRoJLLW0nAyWCP0pxgvnogSVVnyTeT/4MezjE4cHEIqqHlxk2NiyoUxjWH5QC4ZfPD3KV7rglyxsMma3HsXH+Hmo2NYex+5zbz7fck=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=NP8xuplc; arc=pass smtp.client-ip=185.203.200.13
+	s=arc-20240116; t=1790931727; c=relaxed/simple;
+	bh=oZtZ1ANd6My5Zwo641nF24E1i9fdfKxfeQ+qEiOMdJ0=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eWFlEzzfppNNzvDG3dtnMnhbWUZxjEn4a4tz+6xJOjE0bVM/l7Tgo7uvCgiC80UZs0HoyNcE2d/53MatHVpO19wnGjLz8yAgThZevXJnBTkY/1YFdannUPUNYBvzkSPk52mDC7sviefuNTP3DwjRjXOmZNRdvYYSEwxFkNqEFFg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=XUrGbQFk; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="NP8xuplc"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="XUrGbQFk"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 029F4201991;
-	Fri, 02 Oct 2026 10:15:11 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 64181201547;
+	Fri, 02 Oct 2026 11:01:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790928911;
+	s=20260414; t=1790931719;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+31nrR1Q5VJhzy7BOTVJQJ58oRbTuhqVZjfMt3ldyxs=;
-	b=NP8xuplckHpCZKQ/iPyTDIQblOAj22zly5Q2yevXJuxKzf5s41UVSkq/QQyTaC7mNFVTiJ
-	dEeuBkXKEKD5taC28tDpsZm8huKf4I0+9uAo0bMDbejR+TcWKb4X2zLIWdMfJAzeekacop
-	9GJVhAo2wO1I9DguF6Sdt7/rkfEePhfrQKHKhXu8F70wXoZ5LAPw94MP42a0ZwPg/bxbda
-	wayECFIOUd2WPxbLKWv8O0HB4MudaxboMl7ZhMsycl2A6pjUEF2YDHwYf1o51ovoBsuI93
-	Kg7p/flT0Qpf3KXRk1ChWF0cJlZrD9ruwKJ4lDWKjlIhSP0ENBQyJNoB39t7Gg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790928911; a=rsa-sha256;
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=JBEAP5JrsbcBsu26VZh1yf0j/o83s6Ftiyzs5zox1sw=;
+	b=XUrGbQFkb3xlmzJM+joM58KiVm+bRPGw5dsRgET6jXOK8HY/jpUJsVCIu4NNjypB5n/Mjg
+	TL1gtEL+2ddNSN2b/g1F8TTyA34p+7E/K7yO+k9SpCF12SM8Dw+Zz0SdYvUwonDyCPbVZX
+	b3bNhTbnKx8ZKnESZzqIXj8WTajWhYqlwYAjQwNVTnbXsamaM+ZWi7s2yuo01GJR4lYult
+	5XrxPAzumEV//DjgqYKDh0tCEcrffQgP05pWUJg0CgVzYAmCFjCRekM4T6F5+PJnTJQPXL
+	pGhaT2/VrVMsjeNtpmgskJFGyL2uK8KOYTAlvnFxZW4fRR7H+iKnGSwzjuEGqA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1790931719; a=rsa-sha256;
 	cv=none;
-	b=Ya9habF6GfnhMch79GlbOzFtjN+7DiOAr6maJ8MirQA0yIZ8vC0MOF4Aq3edKRqGSAfZH6
-	hTBIoRh57QubM67pK9v4FSbyrzW2bI47R6/Rc+3xsYF1vtkq0cDPcUqIwl9a0MScn+YEi5
-	31RQKhSZAZlgdPS/HSqDQxe2NKbRCEJ+2uR/z+aX75BPSMehOjAXM4SwX4NFxHb+4Mh2G5
-	bLl1g66+9HiIoL64jA61jhRdM9h3AhnMJa5KEUzRVU7MyYltkUVMm6siAmQjM4drrjtHHE
-	9WaQOm35/Oxngrkgw1t8kD2zEPPMKuKbyuWG6qiaW375MhEZxSR6XCb6JSFW8g==
+	b=F3MSBW7pN2OxR1FbjLjEuhBz/6RZBuMThp26L1NHsSHEOcSf0LyR/ES5sYcUV5v1lMx7Ro
+	z/thcz6c/vGcGbk/vIATxYscnwGw08rQUMdfdRpB21LPULRTIygSAth05xRdlIrGUVVkfU
+	woL5Ggazu0wsYxxg2lel2nRJwUCuKt3+2n4cXTj+9QzxgNVucJdTjVsHBrODNbf5E3iqW4
+	pFQgk4sUklSpjtrr1tXFp4Cr5L5uGxegCwgR6iMA96ncUTDiyNwtA/odb4XHkfPFR99jv/
+	tIdRJ+52wXl6ILq6ST3hiLpGCNDM9wM+gpJaz/Rq0FrFjfDoZiGZusC6qa0kOw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1790928911;
+	s=20260414; t=1790931719;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+31nrR1Q5VJhzy7BOTVJQJ58oRbTuhqVZjfMt3ldyxs=;
-	b=WLevG4+9D81vEK+gAnAtcrukZAAaV9apjQJiACNefDZbdkV5y+buqCjcxzwBjAOh1HSulN
-	eSHXcVco/WRznvW88kfwmcxo+23xF6yv7tWhU5sNNJr8W9QBG2K/MN3VPr/jrO7r9qU9CU
-	3Sam14o11gM2juSNtPi6cG+anEu8s4II+8w1rO2yPkjQouuI3UreuK8ufL9hytWlxcNOPw
-	W+ffqe47Jx1CVZgbVChyTPJwLQ4L+iuM4wWj0NJIDlJeyKl3hq4ziOXmD61BYG1kX5tm8Q
-	ZdkwLDXEiWPPmvnlrRKMtpm3Wu543KEOquMhd8H+Nhh0m+2dsVi4FQ+4UaTvwA==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=JBEAP5JrsbcBsu26VZh1yf0j/o83s6Ftiyzs5zox1sw=;
+	b=NvByYNYrm+GN9Nxl7zKZVLUGCC3K/nnUUznzgsuTckJSGuUK/ea5gyzhoaOzzHCFLWUl5F
+	D7VwML9u6gNlZvNO6WwafXUZZil7UX/C5eSuRvBG2tscGnREiG5BLcsP96prk/sQLRFlL5
+	w+38cTgvXmxxtps7weDgy+6XEOTOPMeY+mGh+tWGrfEVgR/55f945ZXVSzXsYiyViCj63r
+	ecbPhJ6ur2OYorB5p0XoUai9bLzKnAADol/2rxB4IbTTtQgRyv543jG2AUlMyIgtPrfiWV
+	TRXpabXT311GpiVoENXZkpL00NoSTLPfLjd+fp/JyxRTbJyH/7Z4FIrUjBsLdQ==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xCYQA-003rVQ-2t;
-	Fri, 02 Oct 2026 10:15:10 +0200
+	id 1xCZ9T-003ren-0z;
+	Fri, 02 Oct 2026 11:01:59 +0200
 Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 796F75B828E;
-	Fri, 02 Oct 2026 07:55:39 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 0F3C35B83A4;
+	Fri, 02 Oct 2026 09:01:58 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Fri, 02 Oct 2026 09:55:13 +0200
-Subject: [PATCH can-next 6/7] can: peak_usb: Add bus error reporting for
- the PCAN-USB FD family
+Date: Fri, 02 Oct 2026 11:01:56 +0200
+Subject: [PATCH can-next v3] can: gs_usb: add workarounds for HScanT USB to
+ CAN adapter
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -79,230 +76,292 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20261002-peak_usb_enhancements-v1-6-50e965755c06@pengutronix.de>
-References: <20261002-peak_usb_enhancements-v1-0-50e965755c06@pengutronix.de>
-In-Reply-To: <20261002-peak_usb_enhancements-v1-0-50e965755c06@pengutronix.de>
-To: Vincent Mailhol <mailhol@kernel.org>, 
- =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
+Message-Id: <20261002-gs_usb-hscant-v3-1-f9b2b2319079@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/32NQQ6CMBREr0K6tqYULMWV9zDGtOUX6qKQ/kIwh
+ Ltb0JUmLicz895CEIIDJOdsIQEmh673KRSHjJhO+Raoa1ImnHHBal7SFu8jatqhUT5SbUHUstJ
+ 1pTlJnyGAdfPOu5K0oB7mSG7vBkf9ABM33LbtHMY+PHf1lO+Pj0V+Waac5rTkopBGMStP9jKAb
+ 8cYeu/mYwO7YOJ/ETwhVGVyw3gpGNQ/iHVdX4y6qd8OAQAA
+X-Change-ID: 20260924-gs_usb-hscant-bfe6987b97b2
+To: Vincent Mailhol <mailhol@kernel.org>
 Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
  linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6921; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=Es3Ji303COuak8bPccHkyGLYcEroLS1hT0QpfLbXGNc=;
- b=owGbwMvMwCV2xirl17qZay8xnlZLYsjan1wc5O57pyX/602WSdo+Lmf2Hj0Scryj22jDjv0/7
- +zzaZ5m31HKwiDGxSArpsiy9McJRYFAh9LelwmTYOawMoEMYeDiFICJOIsx/LNdsOSo27pFcQ+i
- 1t1UNGNYY7ix/+rmXfPeCaukX5mjEVDIyDD1w6O3V5Ojur/++yL1veVxyF6tHG+BOmGVicVKfPe
- nT2AAAA==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=9981; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=oZtZ1ANd6My5Zwo641nF24E1i9fdfKxfeQ+qEiOMdJ0=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsjaX8ySksH7pWaik/CiM2fsi4N/LjOKvdtstdg39fSki
+ e4Oc+JzOkpZGMS4GGTFFFmW/jihKBDoUNr7MmESzBxWJpAhDFycAjCRyccZ/int2uDwMn6f1ARJ
+ k5Cn78PW21VlGm7N3ZZrqq3x+TbTVCVGhj2nC/f7Mv3hO+CkWescFrYs9p96ZWuPsPzzZd4sEx5
+ oMQIA
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-From: Stéphane Grosjean <s.grosjean@peak-system.fr>
+The HScanT is a RISC-V-based USB-to-4-channel CAN-FD adapter that is
+compatible with the gs_usb protocol. The device ships with firmware
+version 0x00010007 and requires several quirks to function properly.
 
-CAN bus error reporting is currently missing for all PEAK-System
-USB-to-CAN FD devices. Add support for reporting bus errors by enabling
-bus error notifications in the firmware for each CAN channel. Parsing of
-the entire URB is aborted if the firmware reports an invalid channel.
+The HScanT firmware specifies 5 channels, but the µC contains only 4
+m_can IP cores. To work around this issue, change the value of `struct
+gs_device_config::icount` to 3, which corresponds to 4 channels.
 
-Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
+The HScanT supports CAN-FD with different bit-timing constants for
+arbitration and data rate. The firmware reports that it supports
+CAN-FD (GS_CAN_FEATURE_FD), but does not support querying the data
+bit-timing constants (GS_CAN_FEATURE_BT_CONST_EXT). As a result, the driver
+uses the arbitration bit-timing constants for the data rate.
+
+According to EcuBus-Pro (a cross-platform CAN analyzer), if the
+firmware supports GS_CAN_FEATURE_FD, it also supports querying the
+data bit timing constants. Fix: Add GS_CAN_FEATURE_BT_CONST_EXT if
+GS_CAN_FEATURE_FD is set.
+
+The HScanT firmware requires a USB High Speed Hub, bail out if device is
+connected to slower USB Hub.
+
+The HScanT firmware requires In-URBs with a length of at least 512 bytes.
+If In-URBs with a length of less than 512 bytes are used, the firmware does
+not send any In-URBs.
+
+When using In-URBs with exactly 512 bytes (= maximum packet length of the
+endpoint), 512-byte In-URBs are sent, immediately followed by a 0-byte
+In-URB. This results in a "short read" error in
+gs_usb_receive_bulk_callback(). This can be avoided by using In-URBs with a
+length of 513 bytes.
+
+Add the GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE quirk to allocate In-URBs that
+are 513 bytes in size and work around these issues.
+
+This driver supports up to 255 channels per USB interface. The HScanT
+device has 4 channels, but the firmware requires that each channel be bound
+to a USB interface via the USB request
+"GS_USB_BREQ_HSCANT_SET_INTERFACENUMBER_ENDPOINT." Add a quirk to
+"GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL" to bind the CAN channel to USB
+interface 0 during "gs_can_open()".
+
+Link: https://github.com/cherry-embedded/HSCanT-hardware
+Link: https://github.com/ecubus/EcuBus-Pro/blob/86f6e1bab0de/src/main/docan/candle/api/candle.c#L307-L313
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 83 +++++++++++++++++++++++++++---
- include/linux/can/dev/peak_canfd.h         | 15 +++++-
- 2 files changed, 90 insertions(+), 8 deletions(-)
+Changes in v3:
+- Link to v2: https://patch.msgid.link/20260928-gs_usb-hscant-v2-1-a7c1c02460e9@pengutronix.de
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 82502594a409..9081f30e3d35 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -661,17 +661,73 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
- 	struct pucan_error_msg *er = (struct pucan_error_msg *)rx_msg;
- 	struct pcan_usb_fd_device *pdev;
- 	struct peak_usb_device *dev;
-+	struct can_frame *cf;
-+	struct sk_buff *skb;
-+	u8 can_err_tx = 0;
+Changes in v2:
+- drop struct quirk_hscant and use length of 513 bytes for USB In URB
+  (detected by sashiko)
+- bail out on USB Full Speed or slower Hubs
+- Link to v1: https://patch.msgid.link/20260928-gs_usb-hscant-v1-1-42638ca0f85f@pengutronix.de
+
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>
+Cc: kernel@pengutronix.de
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+ drivers/net/can/usb/gs_usb.c | 128 +++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 124 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 3b9b2f104d86..67e57ccbcdec 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -72,6 +72,7 @@ enum gs_usb_breq {
+ 	GS_USB_BREQ_SET_TERMINATION,
+ 	GS_USB_BREQ_GET_TERMINATION,
+ 	GS_USB_BREQ_GET_STATE,
++	GS_USB_BREQ_HSCANT_SET_INTERFACENUMBER_ENDPOINT = 17,
+ };
  
- 	if (pucan_ermsg_get_channel(er) >= ARRAY_SIZE(usb_if->dev))
- 		return -EINVAL;
+ enum gs_can_mode {
+@@ -188,6 +189,21 @@ struct gs_device_termination_state {
  
-+	/* Guard against bogus channel 1 reports from single-channel adapters.
-+	 * Treat the entire URB as invalid in that case.
-+	 */
- 	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
-+	if (!dev)
-+		return -EINVAL;
-+
- 	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+ /* internal quirks - keep in GS_CAN_FEATURE space for now */
  
- 	/* keep a trace of tx and rx error counters for later use */
- 	pdev->bec.txerr = er->tx_err_cnt;
- 	pdev->bec.rxerr = er->rx_err_cnt;
- 
-+	/* ignore non-CAN error notifications */
-+	if (PUCAN_ERMSG_TYPE(er) > PUCAN_ERMSG_OTHER_ERROR)
-+		return 0;
++/* HScanT firmware version 0x00010007:
++ * - FW requires the binding of CAN channels to USB Interfaces.
++ * - Route all CAN channels to USB Interface 0.
++ */
++#define GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL BIT(29)
 +
-+	/* update other errors counters */
-+	dev->can.can_stats.bus_error++;
++/* HScanT firmware version 0x00010007:
++ * - FW sends bulk In-URBs with length of 512 bytes.
++ * - When using In-URBs with 512 bytes it will send a second In-URB with length 0
++ *   It seems the ZLP handling is broken.
++ * - Use In-URBs of length GS_USB_QUIRK_HSCANT_IN_URB_SIZE as a workaround.
++ */
++#define GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE BIT(30)
++#define GS_USB_QUIRK_HSCANT_IN_URB_SIZE (513)
 +
-+	if (PUCAN_ERMSG_RX(er)) {
-+		dev->netdev->stats.rx_errors++;
-+	} else {
-+		dev->netdev->stats.tx_errors++;
-+		can_err_tx = CAN_ERR_PROT_TX;
-+	}
-+
-+	/* if berr-reporting is off, stop here */
-+	if (!(dev->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING))
-+		return 0;
-+
-+	/* otherwise, build the CAN_ERR_xxx frame */
-+	skb = alloc_can_err_skb(dev->netdev, &cf);
-+	if (!skb)
-+		return -ENOMEM;
-+
-+	cf->can_id |= CAN_ERR_CNT | CAN_ERR_PROT | CAN_ERR_BUSERROR;
-+	cf->data[2] |= can_err_tx;
-+
-+	switch (PUCAN_ERMSG_TYPE(er)) {
-+	case PUCAN_ERMSG_BIT_ERROR:
-+		cf->data[2] |= CAN_ERR_PROT_BIT;
-+		break;
-+	case PUCAN_ERMSG_FORM_ERROR:
-+		cf->data[2] |= CAN_ERR_PROT_FORM;
-+		break;
-+	case PUCAN_ERMSG_STUFF_ERROR:
-+		cf->data[2] |= CAN_ERR_PROT_STUFF;
-+		break;
-+	default:
-+		break;
-+	}
-+
-+	cf->data[3] = PUCAN_ERMSG_CODE(er);
-+
-+	cf->data[6] = pdev->bec.txerr;
-+	cf->data[7] = pdev->bec.rxerr;
-+
-+	peak_usb_netif_rx_64(skb, le32_to_cpu(er->ts_low),
-+			     le32_to_cpu(er->ts_high));
- 	return 0;
+ /* CANtact Pro original firmware:
+  * BREQ DATA_BITTIMING overlaps with GET_USER_ID
+  */
+@@ -812,6 +828,18 @@ static int gs_usb_set_data_bittiming(struct gs_can *dev)
+ 				    GFP_KERNEL);
  }
  
-@@ -899,6 +955,7 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
++static int gs_usb_hscant_bind_channel_to_interface(const struct gs_can *dev)
++{
++	const u16 interface_number = 0;
++
++	/* Bind dev->channel to interface_number */
++	return usb_control_msg_send(dev->udev, 0, GS_USB_BREQ_HSCANT_SET_INTERFACENUMBER_ENDPOINT,
++				    USB_DIR_OUT | USB_TYPE_VENDOR | USB_RECIP_INTERFACE,
++				    dev->channel, interface_number,
++				    NULL, 0, 1000,
++				    GFP_KERNEL);
++}
++
+ static void gs_usb_xmit_callback(struct urb *urb)
  {
- 	struct pcan_usb_fd_device *pdev =
- 			container_of(dev, struct pcan_usb_fd_device, dev);
-+	u16 usb_opts = 0;
- 	int err;
- 
- 	/* set filter mode: all acceptance */
-@@ -912,12 +969,17 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
- 		peak_usb_init_time_ref(&pdev->usb_if->time_ref,
- 				       &pcan_usb_pro_fd);
- 
--		/* enable USB calibration messages */
--		err = pcan_usb_fd_set_options(dev, 1,
--					      PUCAN_OPTION_ERROR,
--					      PCAN_UFD_FLTEXT_CALIBRATION);
-+		/* enable USB calibration messages (needed only once for the
-+		 * entire interface)
-+		 */
-+		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
+ 	struct gs_tx_context *txc = urb->context;
+@@ -1069,6 +1097,16 @@ static int gs_can_open(struct net_device *netdev)
+ 		}
  	}
  
-+	/* set channel device options: always asks for bus error notifications
-+	 * to get (at least) rxerr/txerr, as well as any USB-specific option.
++	if (dev->feature & GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL) {
++		rc = gs_usb_hscant_bind_channel_to_interface(dev);
++		if (rc) {
++			netdev_err(netdev,
++				   "failed to bind Channel to Interface: %pe\n",
++				   ERR_PTR(rc));
++			goto out_usb_kill_anchored_urbs;
++		}
++	}
++
+ 	/* finally start device */
+ 	dev->can.state = CAN_STATE_ERROR_ACTIVE;
+ 	dm.flags = cpu_to_le32(flags);
+@@ -1314,6 +1352,50 @@ static const u16 gs_usb_termination_const[] = {
+ 	GS_USB_TERMINATION_ENABLED
+ };
+ 
++static bool gs_usb_is_hscant(const struct usb_device *udev,
++			     const struct gs_device_config *dconf,
++			     const u32 sw_version)
++{
++	if (udev->descriptor.idVendor != cpu_to_le16(USB_GS_USB_1_VENDOR_ID) ||
++	    udev->descriptor.idProduct != cpu_to_le16(USB_GS_USB_1_PRODUCT_ID))
++		return false;
++
++	if (strcmp(udev->manufacturer, "HScanT") ||
++	    strcmp(udev->product, "HScanT USB to CAN adapter"))
++		return false;
++
++	if (dconf->sw_version != cpu_to_le32(sw_version))
++		return false;
++
++	return true;
++}
++
++static void
++gs_usb_make_candev_get_feature(struct gs_can *dev, const struct gs_device_config *dconf,
++			       const struct gs_device_bt_const *bt_const)
++{
++	const struct usb_device *udev = dev->udev;
++	const u32 feature = le32_to_cpu(bt_const->feature);
++
++	dev->feature = FIELD_GET(GS_CAN_FEATURE_MASK, feature);
++
++	if (!udev->manufacturer || !udev->product)
++		return;
++
++	/* HScanT firmware version 0x00010007:
++	 * - According to EcuBus-Pro: if FW support GS_CAN_FEATURE_FD,
++	 *   it also supports the GS_CAN_FEATURE_BT_CONST_EXT, fixup.
++	 * - FW requires binding of CAN channel to USB Interface, add quirk.
++	 * - FW requires bulk In-URBs with >= 512 bytes, add quirk.
 +	 */
-+	err = pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);
++	if (gs_usb_is_hscant(udev, dconf, 0x00010007)) {
++		if (dev->feature & GS_CAN_FEATURE_FD)
++			dev->feature |= GS_CAN_FEATURE_BT_CONST_EXT;
++		dev->feature |=  GS_CAN_FEATURE_QUIRK_HSCANT_BIND_CHANNEL |
++			GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE;
++	}
++}
 +
- 	pdev->usb_if->dev_opened_count++;
+ static struct gs_can *gs_make_candev(unsigned int channel,
+ 				     struct usb_interface *intf,
+ 				     struct gs_device_config *dconf)
+@@ -1385,8 +1467,9 @@ static struct gs_can *gs_make_candev(unsigned int channel,
  
- 	/* reset cached error counters */
-@@ -955,12 +1017,15 @@ static int pcan_usb_fd_stop(struct peak_usb_device *dev)
+ 	dev->can.ctrlmode_supported = CAN_CTRLMODE_CC_LEN8_DLC;
+ 
+-	feature = le32_to_cpu(bt_const.feature);
+-	dev->feature = FIELD_GET(GS_CAN_FEATURE_MASK, feature);
++	gs_usb_make_candev_get_feature(dev, dconf, &bt_const);
++	feature = dev->feature;
++
+ 	if (feature & GS_CAN_FEATURE_LISTEN_ONLY)
+ 		dev->can.ctrlmode_supported |= CAN_CTRLMODE_LISTENONLY;
+ 
+@@ -1514,6 +1597,34 @@ static void gs_destroy_candev(struct gs_can *dev)
+ 	free_candev(dev->netdev);
+ }
+ 
++static int gs_usb_probe_quirks(const struct usb_interface *intf, struct gs_device_config *dconf)
++{
++	const struct usb_device *udev = interface_to_usbdev(intf);
++
++	if (!udev->manufacturer || !udev->product)
++		return 0;
++
++	/* HScanT firmware version 0x00010007:
++	 * - FW has an icount of 4, which corresponds to 5 CAN interfaces.
++	 *   The hardware has only 4 interfaces, fixup.
++	 * - FW provides broken Endpoint Descriptors on USB Full Speed Hubs:
++	 *   config 1 interface 0 altsetting 0 endpoint 0x4 has invalid maxpacket 512, setting to 64
++	 *   Probably related to GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE,
++	 *   FW only works on USB High Speed Hubs, detect and bail out.
++	 */
++	if (gs_usb_is_hscant(udev, dconf, 0x00010007)) {
++		if (dconf->icount == 4)
++			dconf->icount = 3;
++
++		if (udev->speed < USB_SPEED_HIGH) {
++			dev_err(&intf->dev, "Device only works with USB High Speed Hubs\n");
++			return -ENODEV;
++		}
++	}
++
++	return 0;
++}
++
+ static int gs_usb_probe(struct usb_interface *intf,
+ 			const struct usb_device_id *id)
  {
- 	struct pcan_usb_fd_device *pdev =
- 			container_of(dev, struct pcan_usb_fd_device, dev);
-+	u16 usb_opts = 0;
+@@ -1560,6 +1671,10 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 		return rc;
+ 	}
  
- 	/* turn off special msgs for that interface if no other dev opened */
- 	if (pdev->usb_if->dev_opened_count == 1)
--		pcan_usb_fd_set_options(dev, 0,
--					PUCAN_OPTION_ERROR,
--					PCAN_UFD_FLTEXT_CALIBRATION);
-+		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
++	rc = gs_usb_probe_quirks(intf, &dconf);
++	if (rc)
++		return rc;
 +
-+	/* turn off bus error option, as well as any USB-specific options */
-+	pcan_usb_fd_set_options(dev, 0, PUCAN_OPTION_ERROR, usb_opts);
-+
- 	pdev->usb_if->dev_opened_count--;
+ 	icount = dconf.icount + 1;
+ 	dev_info(&intf->dev, "Configuring for %u interfaces\n", icount);
  
- 	return 0;
-@@ -1201,6 +1266,7 @@ const struct peak_usb_adapter pcan_usb_fd = {
- 	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
- 			      CAN_CTRLMODE_3_SAMPLES |
- 			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_BERR_REPORTING |
- 			      CAN_CTRLMODE_FD |
- 			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
-@@ -1279,6 +1345,7 @@ const struct peak_usb_adapter pcan_usb_chip = {
- 	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
- 			      CAN_CTRLMODE_3_SAMPLES |
- 			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_BERR_REPORTING |
- 			      CAN_CTRLMODE_FD |
- 			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
-@@ -1357,6 +1424,7 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
- 			      CAN_CTRLMODE_3_SAMPLES |
- 			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_BERR_REPORTING |
- 			      CAN_CTRLMODE_FD |
- 			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
-@@ -1435,6 +1503,7 @@ const struct peak_usb_adapter pcan_usb_x6 = {
- 	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
- 			      CAN_CTRLMODE_3_SAMPLES |
- 			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_BERR_REPORTING |
- 			      CAN_CTRLMODE_FD |
- 			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
-diff --git a/include/linux/can/dev/peak_canfd.h b/include/linux/can/dev/peak_canfd.h
-index 056e0efa649f..bbcba2711f19 100644
---- a/include/linux/can/dev/peak_canfd.h
-+++ b/include/linux/can/dev/peak_canfd.h
-@@ -8,6 +8,8 @@
- #ifndef PUCAN_H
- #define PUCAN_H
+@@ -1604,10 +1719,15 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 		}
+ 		parent->canch[i]->parent = parent;
  
-+#include <linux/bitfield.h>
+-		/* set RX packet size based on FD and if hardware
++		/* set RX packet size based on quirks, FD and if hardware
+ 		 * timestamps are supported.
+ 		 */
+-		if (parent->canch[i]->can.ctrlmode_supported & CAN_CTRLMODE_FD) {
++		if (parent->canch[i]->feature & GS_CAN_FEATURE_QUIRK_HSCANT_URB_SIZE) {
++			BUILD_BUG_ON(struct_size(hf, canfd_ts, 1) >
++				     GS_USB_QUIRK_HSCANT_IN_URB_SIZE);
 +
- /* uCAN commands opcodes list (low-order 10 bits) */
- #define PUCAN_CMD_NOP			0x000
- #define PUCAN_CMD_RESET_MODE		0x001
-@@ -197,7 +199,18 @@ struct __packed pucan_rx_msg {
- #define PUCAN_ERMSG_FORM_ERROR		1
- #define PUCAN_ERMSG_STUFF_ERROR		2
- #define PUCAN_ERMSG_OTHER_ERROR		3
--#define PUCAN_ERMSG_ERR_CNT_DEC		4
-+
-+#define PUCAN_ERMSG_TYPE_MASK		GENMASK(6, 4)
-+#define PUCAN_ERMSG_D_BIT		BIT(7)
-+#define PUCAN_ERMSG_TYPE(e) \
-+	FIELD_GET(PUCAN_ERMSG_TYPE_MASK, (e)->channel_type_d)
-+
-+#define PUCAN_ERMSG_RX(e) \
-+	FIELD_GET(PUCAN_ERMSG_D_BIT, (e)->channel_type_d)
-+
-+#define PUCAN_ERMSG_CODE_MASK		GENMASK(6, 0)
-+#define PUCAN_ERMSG_CODE(e) \
-+	FIELD_GET(PUCAN_ERMSG_CODE_MASK, (e)->code_g)
- 
- struct __packed pucan_error_msg {
- 	__le16	size;
++			hf_size_rx = GS_USB_QUIRK_HSCANT_IN_URB_SIZE;
++		} else if (parent->canch[i]->can.ctrlmode_supported & CAN_CTRLMODE_FD) {
+ 			if (parent->canch[i]->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+ 				hf_size_rx = struct_size(hf, canfd_ts, 1);
+ 			else
 
--- 
-2.53.0
+---
+base-commit: d24e8ac715de2e16a53c144005b1863660a5fbea
+change-id: 20260924-gs_usb-hscant-bfe6987b97b2
+
+Best regards,
+--  
+Marc Kleine-Budde <mkl@pengutronix.de>
 
