@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8D833AD88;
-	Sat,  3 Oct 2026 21:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C48E154785;
+	Sat,  3 Oct 2026 21:36:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791063388; cv=none; b=rLjglL3lwpQg0FHqRiOymvCIhwy9/Bgl6zbHu71v/0wfvVRcMWFecKJFsDcit3Od7RzYCAdp2D/NeqqKLpXlSh66101H1UfcQRziyeVp3EEoIk4xH5WZGvaZzzNzg55s0n9v8q6jMfGptshixBnlgQBir2i0Qeud0Yi2WVqf49A=
+	t=1791063390; cv=none; b=UvOhbOtIAuUuBGe7hkrb/ULIzGyhLeWU3HKLY41w3cx8exIAdrNCUz8uSn1nD2acmuJ1AzfZIp+0ySuoobgDGrIVgMkD3NLW2yD5ATiP1Zs1nmEl+7SG6N/UDUE8M1UX8A2W8UFpVFaAvOV8NXTj6sf8bSGQ94o7yhBF3ONcsW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791063388; c=relaxed/simple;
-	bh=y3gwCaXkzHFF6dv0Bl/98bdu5mQY0MXw+44JNmN0inM=;
+	s=arc-20240116; t=1791063390; c=relaxed/simple;
+	bh=oeADwhY+ha3t1xIOj5Oi2fdV6c1SmsdT3fXI1k6tsx0=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=GPEi8KyG8QcLvwmAc+lbf8DQzWRHqIEnxsVUrvk4C5Dk7aaGGkuxsLEOuQAzwVN76apWdZu3MqOxOHouFhlXuBRta1nIRsp7eTckcDtVbVmMlwU9yFfiME2r1AeXIdU7gw/BSbuF7NYsVmpboFOhAaTab3dGq1afNcxCovBvogk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gvcb6y8l; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=nbXzkeUScV78pt9VWPI3BlnlhjfL8mOr2ULLQYdjmxm3OH2a5CsV2rh293ERBrs10cd/CIGomdTHQS8tK+Bhqmqg/Vc53ORbaFkiPXSek9Oc9Ak0+JJNSQ/USdEaWDeWPK9AWvAWB7T8nb2U+lgK9jZ/kVLgMwigmKrkwkPi+m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=baP4vsup; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gvcb6y8l"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 553FE1F0089B;
-	Sat,  3 Oct 2026 21:36:26 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="baP4vsup"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EB071F0089C;
+	Sat,  3 Oct 2026 21:36:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791063387;
-	bh=+2Zfs3PcsP+d5BdM1qvovFHJjOfUJVTAnK9KsR5VRvQ=;
+	s=k20260515; t=1791063388;
+	bh=VPw9IUST4MTI4NDpxhmLwBIOZI2fEhJtaK02pXVE9+c=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Gvcb6y8l0nJy4nDvsFrpg8JkXEMdaTMDxhauZHiWn+Gi33KSpgAwcURUv5acAc649
-	 K4k4Kry3ip1wY/NNqQOIM1XdnV4u+HBhU5NMjtTrfw+NsFvYrQ4QAgNz+ofCQzas1H
-	 CuhcF3uzzQIImy/C1p4IE2nSt0rRLRo/omT/PJ3dSV2fVTq+vp+4a1/NYPLRbVGtEm
-	 OPyxkoFc1u5Q+pd8tt0AQmf4IfcLWT4V5va9uJGomYzJScd/mUOBIpZghJlgFw274V
-	 MVLNWgg5wZvTaDqF1Wd88FydVpd+jJ8sjH7MW+xquA5OHPVkphI7CXmWN7hKUoHM4K
-	 r4AgnrvVerWJg==
+	b=baP4vsupBvKIxNxg0+cnwTt45K/cw8YIYShfomiDt5Q6hJeDI9W24iNBd2sgZhYqc
+	 wHZ/tl9h8AL8PtIGs2naElgaAKFKZWM8iRmPN6Q/rt4nTA87NmfbzviTrdFGxIXRHI
+	 +JdAHGZJ0FCObNIJIfhdxKruscmwGjOkZw3j+GXhk9/rzmPTrj5/5wUOKaKXHruLXW
+	 +nguRx+Ze2Kpp6TMv9x6pdIfW7/n/syvnDdbyvRO4A4FTVYckFMUUQx9/jRfbNyNL8
+	 eGfxsl4sSNYyXJzYA9RyA0FU/3Y2zYKxnqBa8fg3IHU5CXaYQiovmDQNRnmJN1KeP7
+	 2bODg3M90dE1A==
 Subject:
- Re: [PATCH v7 3/4] can: rx-offload: allow more than one receive source
+ Re: [PATCH v7 4/4] can: flexcan: use one rx-offload source per IRQ line
 From: netdev-bot+sashiko@kernel.org
 To: ciprianmarian.costea@oss.nxp.com
 Cc: mkl@pengutronix.de, mailhol@kernel.org, nicolas.ferre@microchip.com,
@@ -35,11 +35,11 @@ Cc: mkl@pengutronix.de, mailhol@kernel.org, nicolas.ferre@microchip.com,
  linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-kernel@vger.kernel.org, s32@nxp.com, imx@lists.linux.dev,
  eballetb@redhat.com, kuba@kernel.org
-Date: Sat, 03 Oct 2026 21:36:25 +0000
-Message-ID: <179106338585.1406898.13675590689657020972@kernel.org>
-In-Reply-To: <20261002071203.1287650-4-ciprianmarian.costea@oss.nxp.com>
-References: <20261002071203.1287650-4-ciprianmarian.costea@oss.nxp.com>
-X-sashiko-severity: Medium
+Date: Sat, 03 Oct 2026 21:36:27 +0000
+Message-ID: <179106338718.1406898.9181099617806406362@kernel.org>
+In-Reply-To: <20261002071203.1287650-5-ciprianmarian.costea@oss.nxp.com>
+References: <20261002071203.1287650-5-ciprianmarian.costea@oss.nxp.com>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -49,10 +49,10 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 5 potential
+Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 4 (2)
+Critical: 0 · High: 1 (1) · Medium: 1 (1) · Low: 1
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -60,276 +60,261 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] In can_rx_offload_move_to_skb_queue() the comment says the
-  sorted merge will 'keep the timestamp order over all sources', but it…
-- [Low] Concern: the commit message describes a live S32G2 flexcan bug,
-  but the patch only adds can_rx_offload_add_source() and nothing calls…
-- [Low] can_rx_offload_add_source() calls
-  can_rx_offload_init_mb_range(source, &weight), then never uses the…
-- [Low] queue->sort is set only by can_rx_offload_add_timestamp(), so
-  with several FIFO-mode or manual-mode sources each source's…
-- [Low] can_rx_offload_add_source() does not check whether @source is
-  already linked.
+- [High] Concurrent handlers can still corrupt the shared rx-offload
+  queue through the TX-completion path, which is the bug class the…
+- [Medium] In flexcan_irq() (drivers/net/can/flexcan/flexcan-core.c), the
+  per-line source's skb_irq_queue is only flushed when `handled` is set…
+- [Low] The patch has `Fixes: 8503a4b1a24d ("can: flexcan: add NXP
+  S32G2/S32G3 SoC support")`, so stable trees that carry S32G2 support…
 
 Pre-existing issues:
-- [Low] This problem wasn't introduced by this patch, but
-  can_rx_offload_init_mb_range() (previously inline in…
-- [Low] This problem wasn't introduced by this patch, but several sources
-  share dev->stats, and can_rx_offload_offload_one(),…
+- [High] This problem wasn't introduced by this patch, but it remains
+  after it.
+- [Medium] This problem wasn't introduced by this patch, but concurrent
+  S32G2 handlers still race on shared CAN state and statistics.
 
 --
 
-can: rx-offload: allow more than one receive source
+can: flexcan: use one rx-offload source per IRQ line
 
-This commit lets a CAN device have several rx-offload sources, one per
-producer such as an IRQ line. All of them share one can_rx_offload_queue,
-which the primary source owns. A new can_rx_offload_add_source() attaches
-extra sources, and the IRQ finish helpers move each source's skb_irq_queue
-into the shared skb_queue under skb_queue.lock, sorting by timestamp when
-several sources run in timestamp mode.
+This patch adds an rx-offload source with can_rx_offload_add_source() for
+each extra FlexCAN IRQ line: bus off, error and the secondary mailbox line.
+flexcan_irq() picks the source from the IRQ number and passes it to the
+functions that queue skbs, so concurrent handlers on S32G2 no longer corrupt
+the shared rx-offload queue. flexcan_mailbox_read() now gets the private
+data through netdev_priv() instead of container_of().
 
-> diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-> index 92309ed47bac5..5352d70b6e93c 100644
-> --- a/drivers/net/can/dev/rx-offload.c
-> +++ b/drivers/net/can/dev/rx-offload.c
-> @@ -304,18 +304,40 @@ can_rx_offload_get_echo_skb_queue_tail(struct can_rx_offload *offload,
->  }
->  EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb_queue_tail);
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+> index f5d22c61503fa..2ef06ed0c7449 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
+
+[ ... ]
+
+> @@ -932,7 +934,7 @@ static void flexcan_irq_state(struct net_device *dev, u32 reg_esr)
+>  	if (unlikely(new_state == CAN_STATE_BUS_OFF))
+>  		can_bus_off(dev);
 >  
-> -void can_rx_offload_irq_finish(struct can_rx_offload *offload)
-> +/* Sources may run on different CPUs at the same time, skb_queue.lock
-> + * serializes them.
-> + */
-
-[Severity: Low]
-This is a pre-existing issue, but the sources also share
-offload->dev->stats. can_rx_offload_offload_one(),
-can_rx_offload_get_echo_skb_queue_timestamp() and
-can_rx_offload_get_echo_skb_queue_tail() update these counters with plain
-increments from IRQ context:
-
-drivers/net/can/dev/rx-offload.c:can_rx_offload_offload_one() {
-    ...
-	if (IS_ERR(skb)) {
-		offload->dev->stats.rx_dropped++;
-		offload->dev->stats.rx_fifo_errors++;
-    ...
-}
-
-When sources run on different CPUs, can these increments get lost?
-
-flexcan already ran these helpers from several IRQ lines at once before
-this series. The only effect is slightly wrong drop and error counters.
-
-> +static void can_rx_offload_move_to_skb_queue(struct can_rx_offload *offload)
->  {
->  	struct can_rx_offload_queue *queue = offload->queue;
->  	unsigned long flags;
-> +
-> +	spin_lock_irqsave(&queue->skb_queue.lock, flags);
-> +
-> +	if (queue->source_cnt > 1 && queue->sort) {
-> +		/* keep the timestamp order over all sources */
-> +		struct sk_buff *skb;
-> +
-> +		while ((skb = __skb_dequeue(&offload->skb_irq_queue)))
-> +			__skb_queue_add_sort(&queue->skb_queue, skb,
-> +					     can_rx_offload_compare);
+> -	err = can_rx_offload_queue_timestamp(&priv->offload, skb, timestamp);
+> +	err = can_rx_offload_queue_timestamp(offload, skb, timestamp);
+>  	if (err)
+>  		dev->stats.rx_fifo_errors++;
+>  }
 
 [Severity: Medium]
-Does this really keep the timestamp order over all sources?
+This is a pre-existing issue and was not introduced by this patch.
+Concurrent S32G2 handlers still race on the shared CAN state here.
 
-__skb_queue_add_sort() only orders the frames that are in queue->skb_queue
-at the moment of the merge. can_rx_offload_napi_poll() drains that queue
-independently of the producers:
+With FLEXCAN_QUIRK_BROKEN_PERR_STATE, flexcan_irq_state() runs on every
+call on every line. It compares the new_state from its own ESR snapshot
+with priv->can.state, without a lock:
 
-drivers/net/can/dev/rx-offload.c:can_rx_offload_napi_poll() {
-    ...
-	while ((work_done < quota) &&
-	       (skb = skb_dequeue(&queue->skb_queue))) {
-		...
-		netif_receive_skb(skb);
-	}
-    ...
-}
+	/* state hasn't changed */
+	if (likely(new_state == priv->can.state))
+		return;
 
-With two sources on different CPUs:
+can_change_state() then does a plain priv->state = new_state.
 
-CPU0 (source A)                  CPU1 (source B)
-                                 reads frame ts=10 into skb_irq_queue
-                                 still busy in RX loop, TX complete or
-                                 ESR handling
-reads frame ts=20
-can_rx_offload_irq_finish()
-  merges ts=20, napi_schedule()
-NAPI delivers ts=20
-                                 can_rx_offload_irq_finish()
-                                   merges ts=10
-NAPI delivers ts=10
+Can two CPUs see the same transition? If so, both would queue an error
+frame, both would bump can_stats and both would call can_bus_off().
 
-Can CAN frames reach the stack out of timestamp order this way?
+Could a handler with an older ESR snapshot replace a newer
+CAN_STATE_BUS_OFF with CAN_STATE_ERROR_WARNING?
 
-With the next patch in the series, S32G2 in timestamp mode runs all four
-flexcan sources through flexcan_irq() concurrently. That configuration
-meets the queue->source_cnt > 1 && queue->sort condition.
+The BROKEN_PERR_STATE block at the end of flexcan_irq() has a similar
+problem. It calls flexcan_error_irq_enable() or flexcan_error_irq_disable()
+based on unlocked snapshots of last_state and priv->can.state. Both
+functions write a full CTRL value built from reg_ctrl_default. Can the last
+writer leave ERR_MSK out of step with the final state?
 
-skb_queue.lock only serializes the list manipulation. Nothing holds back
-delivery until the other sources have merged their older frames.
-
-If full ordering isn't achievable here, should the comment and the commit
-message describe the narrower guarantee?
-
-> +	} else {
-> +		skb_queue_splice_tail_init(&offload->skb_irq_queue,
-> +					   &queue->skb_queue);
-> +	}
-
-[Severity: Low]
-Only can_rx_offload_add_timestamp() sets queue->sort. With several
-FIFO-mode or manual-mode sources, each skb_irq_queue is therefore just
-appended here. That happens even when a driver ordered its frames with
-can_rx_offload_queue_timestamp().
-
-The commit message documents this ("Otherwise they append it").
-
-At the end of the series, the only in-tree FIFO multi-source user is
-flexcan on mcf5441x (FLEXCAN_QUIRK_NR_IRQ_3). That part is uniprocessor
-m68k, so its handlers never run in parallel.
-
-Would it make sense to state in the kerneldoc of
-can_rx_offload_add_source() that ordering across sources is not kept in
-FIFO and manual mode, for future SMP users?
+The dev->stats and can_stats counters (tx_bytes, tx_packets, rx_errors,
+rx_fifo_errors, rx_dropped, bus_error) are also plain read-modify-write
+updates from several hardirq contexts, so increments can be lost.
 
 [ ... ]
 
-> @@ -350,6 +369,16 @@ void can_rx_offload_threaded_irq_finish(struct can_rx_offload *offload)
->  }
->  EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_finish);
+> @@ -1120,7 +1141,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
 >  
-> +static void can_rx_offload_link_source(struct can_rx_offload_queue *queue,
-> +				       struct can_rx_offload *offload)
+>  		handled = IRQ_HANDLED;
+>  		stats->tx_bytes +=
+> -			can_rx_offload_get_echo_skb_queue_timestamp(&priv->offload, 0,
+> +			can_rx_offload_get_echo_skb_queue_timestamp(offload, 0,
+>  								    reg_ctrl << 16, NULL);
+>  		stats->tx_packets++;
+>  
+
+[Severity: High]
+Can two handlers still race on the echo skb here?
+
+flexcan_open() requests flexcan_irq() on dev->irq, irq_boff, irq_err and
+irq_secondary_mb. Every call reads flexcan_read_reg_iflag_tx(). The TX
+iflag is cleared only after the echo skb has been taken:
+
+		flexcan_write64(priv, priv->tx_mask, &regs->iflag1);
+		netif_wake_queue(dev);
+
+So two handlers on different CPUs can both see the TX bit, and both go
+down this path:
+
+flexcan_irq()
+  can_rx_offload_get_echo_skb_queue_timestamp(offload, 0, ...)
+    __can_get_echo_skb(dev, 0, ...)
+
+__can_get_echo_skb() checks priv->echo_skb[idx] and clears the slot only
+later, with no lock or xchg. Both CPUs can therefore get the same skb.
+
+For a PACKET_LOOPBACK skb, each CPU adds it with __skb_queue_add_sort() to
+its own source's skb_irq_queue. can_rx_offload_move_to_skb_queue() later
+merges both into the shared queue->skb_queue. Would that link the same skb
+into one list twice, so that NAPI passes a freed skb to
+netif_receive_skb()?
+
+For an echo skb that is not PACKET_LOOPBACK, both CPUs would call
+dev_consume_skb_any() on it.
+
+There is a related interleaving. The late handler could pick up a new echo
+skb that flexcan_start_xmit() queued after the first handler's
+netif_wake_queue(). It would then write FLEXCAN_MB_CODE_TX_INACTIVE to
+tx_mb, aborting a transmission that was already reported as sent.
+
+The echo handling itself is older than this patch. However, the commit
+message says this fixes concurrent handlers corrupting the shared
+rx-offload queue. Should the TX completion handling (or the whole handler)
+be serialized across lines, rather than only splitting the staging queues?
+
+[ ... ]
+
+> @@ -1143,12 +1164,12 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>  	if ((reg_esr & FLEXCAN_ESR_ERR_STATE) ||
+>  	    (priv->devtype_data.quirks & (FLEXCAN_QUIRK_BROKEN_WERR_STATE |
+>  					   FLEXCAN_QUIRK_BROKEN_PERR_STATE)))
+> -		flexcan_irq_state(dev, reg_esr);
+> +		flexcan_irq_state(dev, offload, reg_esr);
+>  
+
+[ ... ]
+
+> @@ -1189,7 +1210,7 @@ static irqreturn_t flexcan_irq(int irq, void *dev_id)
+>  	}
+>  
+>  	if (handled)
+> -		can_rx_offload_irq_finish(&priv->offload);
+> +		can_rx_offload_irq_finish(offload);
+>  
+>  	return handled;
+>  }
+
+[Severity: Medium]
+Can a state-change skb get stuck in a per-line source here?
+
+nxp_s32g2_devtype_data has FLEXCAN_QUIRK_BROKEN_PERR_STATE, so the
+flexcan_irq_state() call above runs on every call, whatever ESR contains.
+If new_state differs from priv->can.state, flexcan_irq_state() queues an
+error skb with can_rx_offload_queue_timestamp(offload, ...). It does this
+even when handled is still IRQ_NONE.
+
+handled can stay IRQ_NONE when a handler on another line has already acked
+all RX, TX and ESR interrupt bits. Two cases reach this path:
+
+  - a passive to warning/active transition, which raises no interrupt
+  - a concurrent handler that has not updated can.state yet
+
+Before this patch, the skb sat in priv->offload.skb_irq_queue, and the next
+handled interrupt on any line flushed it.
+
+Now flexcan_get_offload() sends it to offload_boff, offload_err or
+offload_secondary_mb. Only can_rx_offload_irq_finish() on that same source
+drains it, or can_rx_offload_del() purges it at close.
+
+On the bus-off or error line, could the state-change frame stay stuck for
+an arbitrarily long time? When it is finally merged, its stale timestamp
+would sort it against frames that were already delivered, so it would
+arrive out of order.
+
+can_rx_offload_irq_finish() already returns early when skb_irq_queue is
+empty. Would calling it unconditionally avoid this?
+
+[ ... ]
+
+> @@ -1381,6 +1402,15 @@ static void flexcan_ram_init(struct net_device *dev)
+>  	priv->write(reg_ctrl2, &regs->ctrl2);
+>  }
+>  
+> +static int flexcan_rx_offload_add_source(struct flexcan_priv *priv,
+> +					 struct can_rx_offload *source)
 > +{
-> +	offload->queue = queue;
-> +	__skb_queue_head_init(&offload->skb_irq_queue);
+> +	source->mb_first = priv->offload.mb_first;
+> +	source->mb_last = priv->offload.mb_last;
+
+[Severity: High]
+This isn't a bug introduced by this patch, but it remains after it. Every
+extra source gets the full primary mailbox range here, and the RX loop in
+flexcan_irq() runs on every line:
+
+		while ((reg_iflag_rx = flexcan_read_reg_iflag_rx(priv))) {
+			...
+			ret = can_rx_offload_irq_offload_timestamp(offload,
+								   reg_iflag_rx);
+
+Nothing serializes flexcan_mailbox_read() between CPUs. The FlexCAN read
+sequence assumes a single reader:
+
+  - reading C/S locks the MB
+  - the ID and data are copied
+  - IFLAG is cleared
+  - reading the free running timer unlocks the MB, globally
+
+Suppose two handlers both have bit n in their IFLAG snapshot. Can both of
+them read MB n? The CODE stays RX_FULL after a read, so the second reader
+passes this check and delivers the frame a second time:
+
+		if ((code != FLEXCAN_MB_CODE_RX_FULL) &&
+		    (code != FLEXCAN_MB_CODE_RX_OVERRUN))
+			return NULL;
+
+Another CPU can read priv->read(&regs->timer) from flexcan_mailbox_read(),
+flexcan_irq_state() or flexcan_irq_bus_err(). Could that unlock the MB
+while this CPU is still copying it, so the hardware overwrites it mid-copy?
+
+Could the second reader's late clear
+
+	flexcan_write64(priv, FLEXCAN_IFLAG_MB(n), &regs->iflag1);
+
+wipe the IFLAG of a newer frame that arrived after the first reader
+unlocked the MB? Later scans would then miss that frame.
+
+The commit message defers this to a follow-up series ("All handlers still
+process the whole mailbox range"). Until then, the S32G2 support named in
+the Fixes: tag can deliver duplicated, torn or lost CAN frames.
+
 > +
-> +	list_add_tail(&offload->node, &queue->sources);
-> +	queue->source_cnt++;
+> +	return can_rx_offload_add_source(&priv->offload, source);
+
+[Severity: Low]
+can_rx_offload_add_source() only exists once these earlier patches in the
+series are applied:
+
+  can: rx-offload: move skb_queue and napi into struct can_rx_offload_queue
+  can: rx-offload: allow more than one receive source
+
+The fix also relies on two things from those patches: the per-source
+offload->queue linkage, and the locked merge in
+can_rx_offload_move_to_skb_queue().
+
+Neither of those patches has a Fixes: or Cc: stable tag. This commit has:
+
+  Fixes: 8503a4b1a24d ("can: flexcan: add NXP S32G2/S32G3 SoC support")
+
+If stable selects this patch only through the Fixes: tag, will the build
+fail? A hand backport could also leave out the merge logic that actually
+stops the corruption.
+
+Would it help to add Cc: stable@vger.kernel.org, with dependency notes for
+both rx-offload patches?
+
 > +}
 
-[Severity: Low]
-Nothing here checks whether offload is already on a sources list.
-
-Suppose can_rx_offload_add_source() is called twice for the same source
-with no can_rx_offload_del() in between. Wouldn't that reinitialize a live
-skb_irq_queue, count the source twice in source_cnt, and call
-list_add_tail() on a node that is already linked? The node could end up
-pointing at itself, and then the list_for_each_entry_safe() loop in
-can_rx_offload_del() would never finish.
-
-No in-tree path does this. At the end of the series, flexcan calls
-can_rx_offload_del(&priv->offload) in flexcan_close() and on every failure
-path before flexcan_open() adds the sources again. can_rx_offload_init_queue()
-also resets the list.
-
-Would a defensive check against adding the same source twice be worth
-having?
-
 [ ... ]
-
-> @@ -357,41 +386,65 @@ static int can_rx_offload_init_queue(struct net_device *dev,
-
-[ ... ]
-
-> -int can_rx_offload_add_timestamp(struct net_device *dev,
-> -				 struct can_rx_offload *offload)
-> +static int can_rx_offload_init_mb_range(struct can_rx_offload *offload,
-> +					unsigned int *weight)
->  {
-> -	unsigned int weight;
-> -
->  	if (offload->mb_first > BITS_PER_LONG_LONG ||
-> -	    offload->mb_last > BITS_PER_LONG_LONG || !offload->mailbox_read)
-> +	    offload->mb_last > BITS_PER_LONG_LONG)
->  		return -EINVAL;
-
-[Severity: Low]
-This isn't a bug introduced by this patch, but the bound check moved here
-accepts mb_first or mb_last equal to BITS_PER_LONG_LONG (64).
-can_rx_offload_irq_offload_timestamp() walks the range inclusively and
-does:
-
-		if (!(pending & BIT_ULL(i)))
-			continue;
-
-so i == 64 would be an out-of-range shift. Should these checks use >=?
-
-No in-tree driver passes 64 today. flexcan uses mb_count - 2, at91 uses
-rx_last, and ti_hecc uses at most HECC_MAX_MAILBOXES - 1.
-
-[ ... ]
-
-> @@ -416,6 +469,46 @@ int can_rx_offload_add_manual(struct net_device *dev,
->  }
->  EXPORT_SYMBOL_GPL(can_rx_offload_add_manual);
->  
-> +/**
-
-[ ... ]
-
-> +int can_rx_offload_add_source(struct can_rx_offload *primary,
-> +			      struct can_rx_offload *source)
-> +{
-
-[Severity: Low]
-This isn't a bug, but the commit message describes a live S32G2 flexcan
-problem, while nothing in this commit calls can_rx_offload_add_source()
-and there is no Fixes: tag.
-
-This is resolved later in the series. The next patch, "can: flexcan: use
-one rx-offload source per IRQ line", does the following:
-
-- adds the extra sources in flexcan_rx_offload_setup()
-- picks the source per IRQ via flexcan_get_offload()
-- switches flexcan_mailbox_read() to netdev_priv(offload->dev)
-- carries Fixes: 8503a4b1a24d ("can: flexcan: add NXP S32G2/S32G3 SoC
-  support")
-
-So adding the infrastructure first and the user next looks fine.
-
-> +	struct can_rx_offload_queue *queue = primary->queue;
-> +	unsigned int weight;
-> +	int err;
-> +
-> +	if (queue != &primary->own_queue || !queue->source_cnt ||
-> +	    source == primary)
-> +		return -EINVAL;
-> +
-> +	if (queue->sort) {
-> +		err = can_rx_offload_init_mb_range(source, &weight);
-> +		if (err)
-> +			return err;
-> +	}
-> +
-> +	source->dev = primary->dev;
-> +	source->mailbox_read = primary->mailbox_read;
-> +	source->skb_queue_len_max = primary->skb_queue_len_max;
-
-[Severity: Low]
-The weight that can_rx_offload_init_mb_range() computes for source is
-never used. skb_queue_len_max is copied from the primary, and the shared
-NAPI weight is not adjusted. So the drop limit and the NAPI weight depend
-only on the primary's mailbox range.
-
-This matches the commit message ("inherits the mode, netdev, queue length
-limit and mailbox_read() of the primary"). Later in the series,
-flexcan_rx_offload_add_source() copies the primary's mb_first and mb_last
-into every source, so the limit fits there.
-
-A driver that split its mailboxes into a small primary range and a larger
-secondary range would get an undersized shared limit, though.
-
-Should the unused weight be dropped, or is it meant to feed into
-skb_queue_len_max?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261002071203.1287650-1-ciprianmarian.costea%40oss.nxp.com
