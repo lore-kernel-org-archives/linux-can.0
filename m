@@ -1,41 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 084261A9FB7
-	for <linux-can@vger.kernel.org>; Sat,  3 Oct 2026 05:48:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A572D5C7A
+	for <linux-can@vger.kernel.org>; Sat,  3 Oct 2026 05:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791006517; cv=none; b=dTrl7ued9rMfPctWzpUToqY2RHDXbPFLopQ3OhsUSIbLk15qikZb5bPP71JGQqr/uCzCQawMw47Ao/Q22L7BaIUN32MhfOE3fNZKJ5xaqNcisKAS+zQeYMP9w4d2DPWEKABzdk9zu+MClyi99xzTz8BzrNIAsBhmcw9/Tt9qtIE=
+	t=1791006518; cv=none; b=r+SavEFuC3tQsKUr2nGVEHREfba97caP1ZmBeacqq7fyhBgv/lZ8CY3R0O0bmakF+TjOj+XWNv/GK/B6VQ3kW7zuKfly1QicnO+M7ot8l0hM0ICkWuin7oeY2nFA8diWBuWpGPfzvU8qfKpv/n8pnytD2VRiw5nq1AjZ65HccnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791006517; c=relaxed/simple;
-	bh=6OcntRfLQCK48Q4ls1SWpCpFoF+QXLqMxxpy5bUFXUA=;
+	s=arc-20240116; t=1791006518; c=relaxed/simple;
+	bh=HHF21otj/GL5tDM4JutFVfU8dGmp9Rj2UeG8+pu9Zz8=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=m0VYFAJzq3EzzWJvuUd8Bo1dJs1kHGCNYX8pmRPWNdJsRSySCCsT74X32wSy3a4i0eTwUMlkeVUesfmQK7m6DRIXW36zYmzhCatytGAYMUZx6rw/Fr1L+UANFkbZTp5NMbd9myTPoZdvSILheb1YrwdhZ6i75tF16/YcdVyEqIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cs/W1CeG; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=l3/g0RHN1FgAIUR44nKS4hTGQK3nwABHeUZpjvFC5o8WjArHsJXOcTDUkKvldJdzArGx1WYsLW8qsENlJ8fFOQKtmt4NBQerJ7YPaPrmVQXNl/HbSEgp4BKamnitgC4mFDHxYlqSQffqgQY5ONq/lSPGljPszB5TzSZEgnYBzDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MkGqq/JF; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cs/W1CeG"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FF481F0089B;
-	Sat,  3 Oct 2026 05:48:35 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MkGqq/JF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2775C1F0089C;
+	Sat,  3 Oct 2026 05:48:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791006515;
-	bh=loUoQX5xPb9cvzwXg3NuMUZku5iZhLh1gQ7ZbeAHnUg=;
+	s=k20260515; t=1791006516;
+	bh=1rU5SKWg2kcrQKBM/WFtj4QkpEXR36VZJqdLIc28MwA=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Cs/W1CeGmYe5nVzqMkAGmu+Bbb3rT4Ms5a/ZG7ABZwH4LjuGshYF9TCDm39o0OaIi
-	 8Ncs4Dpt3f8Mut6ATAtswf/xkCA3tde1Tvlr4ucbLq04TPtyFmYp6pv2rHbvdBMs2a
-	 wW08KfVTM6qDebQ3lMw+IDBVK0caDvaTNwOmrW8k/efInsNhvYkTtgpHRxw0UZr+Ya
-	 6RtwS0plCtjAJcD1O+u9QZvFOB6XibJwR+URA98wxBb7WWWuY1zndjTID/ZjBb3LtJ
-	 KW1lWJhZ+SahXXjwXZDpv9HWDLXOxC1kQ38YbVwihaHMhWQY8z9Wx92tAdm2Z2kR8K
-	 bw8lzwZJ+RGUA==
-Subject: Re: [PATCH v5 1/3] can: remove CAN filters independent from namespace
+	b=MkGqq/JF7kVgCk89EpYzdhgBYBZ+ctU9GbSAFZGwk534+0x+EktzHoP/JMMjbghgs
+	 SuhhpFx2HOjMJc021rRO9dRTJxGN/WpxN/BONN4CBbPpiQgcjPnN6Waa7VSx5N/rar
+	 I6COo9tzjHOshfd9lNpEoRK+RjjV1MptlrE4QNScTLS9jMq5YGOMxMdDGiFY+/1JKE
+	 mSqKqRh3f/yIX6P1FnpOownm0tNTNYnzTzurPuIsA2nWuTvgEyKPaW4LT/lmK1Gxfk
+	 IGzkmQjLPOv1PZ2AIUwYP8Q0efgNmQqYgAofR0hrRqzvufNOvtHuIixDxm+3Jo65b8
+	 hgYlY48R9BFjQ==
+Subject: Re: [PATCH v5 2/3] can: convert unreliable ARPHRD_CAN type checks to
+ robust can_get_ml_priv()
 From: netdev-bot+sashiko@kernel.org
 To: socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, stable@kernel.org, o.rempel@pengutronix.de,
  kuba@kernel.org
-Date: Sat, 03 Oct 2026 05:48:34 +0000
-Message-ID: <179100651478.1406898.6853696436813565877@kernel.org>
-In-Reply-To: <20260929163424.16382-2-socketcan@hartkopp.net>
-References: <20260929163424.16382-2-socketcan@hartkopp.net>
-X-sashiko-severity: High
+Date: Sat, 03 Oct 2026 05:48:35 +0000
+Message-ID: <179100651569.1406898.574032658944604939@kernel.org>
+In-Reply-To: <20260929163424.16382-3-socketcan@hartkopp.net>
+References: <20260929163424.16382-3-socketcan@hartkopp.net>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -45,242 +46,85 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 1 · Medium: 2 · Low: 0
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] bcm_release() (net/can/bcm.c) unregisters device-bound receive
-  filters without holding RTNL, so a concurrent namespace move can still…
-- [Medium] The commit message describes a failure that does not occur in
-  the notifier code.
-- [Medium] The patch removes the early net_eq() return in bcm_notify()
-  and moves lock_sock(sk) above the switch (net/can/bcm.c:1838).
+- [Low] The commit message does not say what user-visible bug this
+  stable-tagged patch fixes.
 
 --
 
-can: remove CAN filters independent from namespace
+can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
 
-This commit removes the net_eq() namespace check from the BCM, ISOTP and
-RAW netdev notifiers, so CAN filters are removed on NETDEV_UNREGISTER
-even when the device namespace differs from the socket namespace. In
-bcm.c it adds tracked net_device pointers (bo->dev, op->tx_dev) for
-device comparisons, and bcm_notify() now takes lock_sock() for every
-event. In isotp_release() the can_rx_unregister() calls now use
-dev_net(so->dev).
+This patch replaces the dev->type != ARPHRD_CAN checks in af_can, bcm, gw,
+isotp and raw with can_get_ml_priv() checks. The stated reason is that
+TUNSETLINK lets a down TUN/TAP device change its type to ARPHRD_CAN while
+dev->ml_priv stays NULL.
 
-Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+> This has been used directly by the referenced commit in the CAN specific
+> j1939 and proc code but not in the other parts of the CAN subsystem.
 
-> When the devices namespace is changed the socket namespace and the device
-> namespace might differ. The net_eq(dev_net(dev), sock_net(sk)) check in
-> the CAN protocols netdev notifiers therefore led to skipping the required
-> removal of the CAN filters from the (namespace changed) CAN devices.
+[Severity: Low]
+Is the "not in the other parts of the CAN subsystem" part accurate?
 
-[Severity: Medium]
+af_can.c already checks can_get_ml_priv() in can_rx_register(), which was
+added by commit 8aa59e355949 ("can: af_can: fix NULL pointer dereference
+in can_rx_register()"). It is also checked in can_rcv(), canfd_rcv() and
+canxl_rcv(). The removed lines in this diff show it:
 
-Is this root cause accurate? In __dev_change_net_namespace(), the
-UNREGISTER notifiers run while dev_net(dev) still points to the old
-namespace:
+    if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
+        return -ENODEV;
 
-net/core/dev.c:__dev_change_net_namespace() {
+> Instead of checking dev->type being the unreliable ARPHRD_CAN value convert
+> the missing "valid CAN devices" checks to can_get_ml_priv().
+
+The patch is tagged for stable, but the message reads like a cleanup.
+Could it also describe the user-visible bug being fixed?
+
+Before this patch, a NULL pointer dereference looks reachable through
+CAN_ISOTP. isotp_bind() only checked dev->type, so it accepted a TUN
+device whose type had been set to ARPHRD_CAN. It also ignores the
+-ENODEV that can_rx_register() returns:
+
+    if (isotp_register_rxid(so))
+        can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
+                        isotp_rcv, sk, "isotp", sk);
     ...
-	unlist_netdevice(dev);
+    so->bound = 1;
     ...
-	call_netdevice_notifiers(NETDEV_UNREGISTER, dev);
-    ...
-	netdev_lock(dev);
-	dev_net_set(dev, net);
-	netdev_unlock(dev);
-	dev->ifindex = new_ifindex;
-    ...
-}
+    so->dev = dev;
 
-The bind and registration paths are raw_bind(), isotp_bind(),
-bcm_connect(), bcm_rx_setup() and bcm_sendmsg(). All of them look up
-the device with dev_get_by_index(sock_net(sk), ...). can_rx_register()
-also refuses a device from another namespace:
+On close(), isotp_release() then calls can_rx_unregister() on so->dev.
+Before this patch, can_rx_unregister() only checked the type:
 
-	if (dev && !net_eq(net, dev_net(dev)))
-		return -ENODEV;
+    if (dev && dev->type != ARPHRD_CAN)
+        return;
 
-For a socket with filters on the moved device, wouldn't the removed
-net_eq() check in raw_notify(), isotp_notify() and bcm_notify() have
-passed during the move?
+So it carried on into can_dev_rcv_lists_find(), which has no NULL check:
 
-No registration seems able to get in between either:
+    struct can_ml_priv *can_ml = can_get_ml_priv(dev);
+    return &can_ml->dev_rcv_lists;
 
-- raw and isotp register under rtnl.
-- bcm_rx_setup() runs under lock_sock(), which bcm_notify() also takes
-  for UNREGISTER.
-- Lookups fail after unlist_netdevice().
+dev_rcv_lists is the first member of struct can_ml_priv, so this returns
+NULL. The call chain is:
 
-I couldn't find a path where the notifier sees a bound device in a
-foreign namespace.
+close()
+  isotp_release()
+    can_rx_unregister()
+      can_dev_rcv_lists_find()     <- returns NULL
+      can_rcv_list_find()
+      hlist_for_each_entry_rcu()   <- NULL dereference
 
-The real bug this patch fixes looks like it is in isotp_release():
+isotp_notify() for NETDEV_UNREGISTER reaches the same path. Creating the
+TUN device needs CAP_NET_ADMIN, and an unprivileged user can get that
+inside a user namespace.
 
-1. The socket is unlinked from the notifier list.
-2. A namespace move completes.
-3. can_rx_unregister(sock_net(sk), so->dev, ...) returns early on its
-   own net_eq() check.
-
-That is a race between release and the move, not the notifier check.
-
-Could the commit message describe the path that was actually hit, or
-the reproducer from the report? The BCM rework, which is tagged for
-stable, is justified by this description.
-
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 3d637a1e0ac1a..cd3522ec32c0a 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-
-[ ... ]
-
-> @@ -1792,15 +1833,13 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
->  {
->  	struct sock *sk = &bo->sk;
->  	struct bcm_op *op;
-> -	int notify_enodev = 0;
-> +	int sk_err = 0;
->  
-> -	if (!net_eq(dev_net(dev), sock_net(sk)))
-> -		return;
-> +	lock_sock(sk);
-
-[Severity: Medium]
-
-With the early return gone and lock_sock() moved above the switch,
-bcm_notifier() now takes the lock of every BCM socket in every
-namespace. It does this for every NETDEV_DOWN and NETDEV_UNREGISTER of
-any CAN device, while holding RTNL:
-
-net/can/bcm.c:bcm_notifier() {
-    ...
-	list_for_each_entry(bcm_busy_notifier, &bcm_notifier_list, notifier) {
-		spin_unlock(&bcm_notifier_lock);
-		bcm_notify(bcm_busy_notifier, msg, dev);
-		spin_lock(&bcm_notifier_lock);
-	}
-    ...
-}
-
-Before this change, sockets in other namespaces returned immediately,
-and NETDEV_DOWN never took lock_sock().
-
-bcm_sendmsg() holds lock_sock() across bcm_tx_setup(), bcm_rx_setup()
-and bcm_tx_send(), and these call memcpy_from_msg() on the user buffer.
-Suppose that buffer is on a FUSE-backed mmap that never answers the
-read. An unprivileged user in a user namespace can set this up. The
-copy then blocks with the socket lock held.
-
-Can a CAN device event in an unrelated namespace then block in
-lock_sock() inside bcm_notify() with RTNL held? An example is "ip link
-set can0 down" in init_net. That would stall network configuration
-system-wide.
-
-A similar stall was already possible for same-namespace UNREGISTER
-events. This change extends it to cross-namespace events and to
-NETDEV_DOWN. Later patches in this series don't appear to change this.
-
-NETDEV_DOWN only needs the bo->dev == dev comparison, which
-raw_notify() and isotp_notify() already do without the socket lock.
-Would a lockless check, before lock_sock(), of whether this socket
-references dev at all avoid this?
-
->  
->  	switch (msg) {
-
-[ ... ]
-
-> @@ -1984,6 +2025,10 @@ static int bcm_release(struct socket *sock)
->  	if (bo->bound) {
->  		WRITE_ONCE(bo->bound, 0);
->  		bo->ifindex = 0;
-> +		if (bo->dev) {
-> +			netdev_put(bo->dev, &bo->dev_tracker);
-> +			bo->dev = NULL;
-> +		}
->  	}
->  
->  	sock_orphan(sk);
-
-[Severity: High]
-
-Does bcm_release() still have the same window between release and a
-namespace move that this patch closes for isotp?
-
-bcm_release() removes the socket from bcm_notifier_list and then takes
-only lock_sock(). Unlike raw_release() and isotp_release(), it does not
-take rtnl_lock():
-
-net/can/bcm.c:bcm_release() {
-    ...
-	list_del(&bo->notifier);
-	spin_unlock(&bcm_notifier_lock);
-
-	lock_sock(sk);
-    ...
-			if (op->rx_reg_dev)
-				bcm_rx_unreg(op->rx_reg_dev, op);
-    ...
-}
-
-The list_del() can happen before a concurrent move's UNREGISTER walk
-reaches this socket. In that case bcm_notify() never runs for it, and
-op->rx_reg_dev stays set.
-
-bcm_rx_unreg() then reads dev_net(dev) without RTNL, and
-can_rx_unregister() reads it a second time:
-
-net/can/bcm.c:bcm_rx_unreg() {
-	if (op->rx_reg_dev == dev) {
-		can_rx_unregister(dev_net(dev), dev, op->can_id,
-				  REGMASK(op->can_id), bcm_rx_handler, op);
-
-		/* mark as removed subscription */
-		op->rx_reg_dev = NULL;
-		netdev_put(dev, &op->rx_reg_dev_tracker);
-    ...
-}
-
-net/can/af_can.c:can_rx_unregister() {
-    ...
-	if (dev && !net_eq(net, dev_net(dev)))
-		return;
-    ...
-}
-
-The concurrent writer is dev_net_set() in __dev_change_net_namespace(),
-which runs under RTNL and netdev_lock().
-
-Say the argument is sampled as the old namespace and dev_net_set() runs
-before the net_eq() check. can_rx_unregister() then returns without
-unlinking anything. bcm_rx_unreg() still clears op->rx_reg_dev, and
-bcm_remove_op() later frees op.
-
-Can the next frame received on the device in the new namespace then
-call bcm_rx_handler() with the freed op?
-
-Now say the check passes instead. hlist_del_rcu() runs under the old
-namespace's rcvlists_lock, while code in the new namespace may modify
-the same per-device list under its own lock.
-
-Could this corrupt the receive list?
-
-The isotp_release() change to dev_net(so->dev) in this patch relies on
-rtnl_lock() being held there. This window existed before this patch,
-and later patches in this series don't appear to change bcm_release().
-
-For the BCM part of this fix to be complete, does bcm_release() need
-rtnl_lock() around the unregister step, as raw_release() and
-isotp_release() take?
+Could the message mention the crash, the affected protocol, and the
+trigger (TUNSETLINK to ARPHRD_CAN, then binding a CAN_ISOTP socket)? That
+would make it clear to stable backporters that this is a crash fix.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260929163424.16382-1-socketcan%40hartkopp.net
