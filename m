@@ -1,199 +1,89 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CF4318EF4;
-	Sat,  3 Oct 2026 06:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 551703537E8;
+	Sat,  3 Oct 2026 09:06:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791007242; cv=none; b=D4/lrn4hcm68Yje7xitmbWimDOeVYabakVOSHWlxp4vOPINLedmwsPBcu/Z7rTYK2WzvhuKRp3+V6MP2dhUHrDZ9mZcqaYpp4mh+91ibm1n3Tjen6k5uHB+A0S3PDQ28csH3RDxXgh86LIGEVeqQ8wL7zU+k6rZ0ekwpOHDhm/s=
+	t=1791018398; cv=none; b=o9ADtmDg0kszass5yFs4M12sk/UjOl/0HNkdEBgnV0OsO61+nxhZdu7C6d+KyX6+cqT17GXBdxsxzhNZEGyOH5oxLxn7Fr/qVg9uxXx8xxzrVmZBiRRV7wYK9usyerslQLijRtPXML6txSCjTX5NbAFlIwaWnDEhBlDoulwtMRI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791007242; c=relaxed/simple;
-	bh=xs/eu+1AGocgu3fxahmW/bsjbrDlmJogrD5CEsqckCI=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=D3W7AugdhgwQAdpCt02xpTTYX5e7WfGjMXiOsDH6qNrTJvn7C7BUSiNN9VI6HljaUJe9Z5fM8ORw2SuhDUB4XzWYfyQsxpDNI0cNzVqtfEhIfAPSqlqX5xobontWU4Z/zaz+nXSxXxNxfUqQT00peK1jB1696TULCWBh9Kb/CqQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Jpkc44/+; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791018398; c=relaxed/simple;
+	bh=C8hn0OmWEwKv3HFnLyhjwUesJF4WIm0deCXPX3bqI7w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NJUsTWlpIlfrl9QSX6/rEFbFD1i9Cplz0u8puKXB5/wQRRUXle9og30IXDOFy6Hg3gSrY4hSYylNS2/dHg7hkOnDWGbuTJA2D7uuDBWjvjmEDZPA3n6cv0yAGqXcZB5Z+e6mACB+W6zQP5CqieOCaH9noBW/qGUn7jkacfLWGew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZBGCzPG1; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Jpkc44/+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC1201F0089C;
-	Sat,  3 Oct 2026 06:00:40 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZBGCzPG1"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72CA61F008A0;
+	Sat,  3 Oct 2026 09:06:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791007241;
-	bh=Xi4jqe9cG2WbOW+dJnz5XyhS0AarZpL28wD8BisZRxE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Jpkc44/+G8WwdlZ/HO5nRPNgJMyabZ4vwsP3iCy2GUSDnZh2zHrkvKQqg1eezoEhZ
-	 ZHpyvxJDXAoNkS2JCzFye4bacM8ZpwNn7M+sbGnJMRUKwEUpJID1oodqtRD/b1bS6N
-	 0bO+iBLfn28G8j1GCTW95mglYKrXMOfqX0WMaYWfZJsd1ZGY1oc/CyRBee5BoeqdqK
-	 HPVveGLVFCxnZepZS85zZoSvsXPlW0N6nOa+yQG6rPFFvSpZ4Sefc99qMv7/Vh9zxu
-	 kt2OQ3APoIuIcMD0O9w41UaZc8mu1GwH+hawocKhR5+lX/OlhKWtwCSvcgdR1bG7Yg
-	 68Yky3UgPaVZQ==
-Subject:
- Re: [PATCH v4 3/3] can: fix unique skb identifier regression under RPS
-From: netdev-bot+sashiko@kernel.org
-To: socketcan@hartkopp.net
-Cc: linux-can@vger.kernel.org, norbert@doyensec.com, stable@vger.kernel.org,
- kuba@kernel.org
-Date: Sat, 03 Oct 2026 06:00:40 +0000
-Message-ID: <179100724051.1406898.18080408504073975767@kernel.org>
-In-Reply-To: <20260929154125.3298-4-socketcan@hartkopp.net>
-References: <20260929154125.3298-4-socketcan@hartkopp.net>
-X-sashiko-severity: High
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20260515; t=1791018397;
+	bh=Wv72l0hD8jDyK3VWKJExO+bl1rbU9EYOwEy7E6rmeXM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=ZBGCzPG19VqMPJ/xEM8Kkge9Bg0ygZJ3inmdOrgAgzhyOYWy6+jmxQqIPUE0f5o+I
+	 p8BF3hziXT/Z0Y7NjBWfY6ArV8LakvLRQp9yR1vkbBYn+1XXqIur1qqKL2Ohkr3+u9
+	 7STomURNJ5izwpHrRPZ06G1UCC9UMpsUxY93RArxjW0RY/QpFba+MtYC5n1XQc//rb
+	 bV6dPQAEzoCucmBCNcGAcvjyk/HU+RrU0MkBwALYpwVaaCwZeJvysAA7XuGkwlxds2
+	 tBaQzRuHZPjIXOyOmxj8f6J7D8FFVZmyd+r4QgrdYiPYnjwy+YNnfYbWVbis9Rvx+T
+	 ZcO5L5KR192GQ==
+Date: Sat, 3 Oct 2026 11:06:33 +0200
+From: Vinod Koul <vkoul@kernel.org>
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: Frank Li <Frank.Li@nxp.com>, Christoph Stoidner <c.stoidner@phytec.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Rob Herring <robh@kernel.org>, linux-kernel@vger.kernel.org,
+	Aswath Govindraju <a-govindraju@ti.com>,
+	Fabio Estevam <festevam@gmail.com>, devicetree@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Conor Dooley <conor+dt@kernel.org>, linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org, imx@lists.linux.dev,
+	linux-arm-kernel@lists.infradead.org,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>
+Subject: Re: (subset) [PATCH V5 0/4] arm64: dts: freescale: Add chargebyte
+ Charge Control Y
+Message-ID: <asDFmf_G0v_MWY3k@parshuram>
+References: <20260907150420.18787-1-wahrenst@gmx.net>
+ <179016749941.155868.1810345055482953110.b4-ty@kernel.org>
+ <72033c48-5219-4ed4-94fd-1b7d8ef8017c@gmx.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <72033c48-5219-4ed4-94fd-1b7d8ef8017c@gmx.net>
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issue(s) to consider.
+On 23-09-26, 18:11, Stefan Wahren wrote:
+> Hi Vinod,
+> 
+> Am 23.09.26 um 14:44 schrieb Vinod Koul:
+> > On Mon, 07 Sep 2026 17:04:16 +0200, Stefan Wahren wrote:
+> > > This series adds support for the chargebyte Charge Control Y, which is
+> > > an Electrical Vehicle Supply Equipment (EVSE) for MCS (Megawatt
+> > > Charging System) charging stations.
+> > > 
+> > > sashiko reported in the first version of the series [1] that X_nRST_LAN
+> > > is available via GPIO line names, but there is no reset mechanismn in the
+> > > device tree. This finding is valid. Since the reset line feature isn't
+> > > implemented for LAN8651 driver yet, I like to proceed with the current
+> > > version. The LAN8651 handles reset via SPI commands and in rare cases
+> > > we still have the possibility to control the reset from userspace.
+> > > Btw the pin has a pull resistor in hardware, so it's not floating.
+> > > 
+> > > [...]
+> > Applied, thanks!
+> > 
+> > [1/4] dt-bindings: phy: ti,tcan104x-can: Fix property constrains
+> >        commit: c7f2322431cb6d108b18fb4154606b49e2bc50f7
+> thanks, but what about
+> 
+> [3/4] dt-bindings: phy: ti,tcan104x-can: Document Microchip MCP2542
 
-Critical: 0 · High: 1 · Medium: 1 · Low: 0
-
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] In net/can/af_can.c, can_get_unshared_skb_ext() uses the wrong
-  test to decide whether the CAN skb extension is shared.
-- [Medium] A UID set before transmission survives the new extension
-  unsharing, so duplicated or mirrored copies of such frames still share…
-
---
-
-can: fix unique skb identifier regression under RPS
-
-This patch moves the CAN per-skb unique identifier used for raw_rcv()
-duplicate detection from skb->hash into a new can_skb_uid field in
-struct can_skb_ext. The UID is now assigned in can_rcv(), canfd_rcv()
-and canxl_rcv() after the CAN skb extension is made private for cloned
-skbs, and can-gw and vxcan reset it for forwarded frames.
-
-Closes: https://lore.kernel.org/linux-can/2859AD3D-C805-41A0-9036-C5E8EE152419@clnt.de/
-
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index ef435f22ac933..4aa233d7e8a1d 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-
-[ ... ]
-
-> @@ -684,11 +679,22 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
->  	}
->  }
->  
-> +static struct can_skb_ext *can_get_unshared_skb_ext(struct sk_buff *skb,
-> +						    struct can_skb_ext *csx)
-> +{
-> +	/* create unshared CAN skb_extension for netem/mirred skb clones */
-> +	if (unlikely(skb_cloned(skb)))
-
-[Severity: High]
-Is skb_cloned() the right test for whether the extension is shared?
-
-skb_cloned() only tells you whether the packet data is shared through
-shinfo->dataref. The skb_ext has its own refcount.
-__copy_skb_header() shares the extension through __skb_ext_copy() for
-copies as well as clones:
-
-include/linux/skbuff.h:__skb_ext_copy() {
-    ...
-        refcount_inc(&ext->refcnt);
-        dst->extensions = ext;
-    ...
-}
-
-So results of skb_copy(), pskb_copy() and skb_unshare() have private
-data but still share the CAN extension with their source.
-
-One way to reach this is netem with duplicate and corrupt on a CAN
-device:
-
-net/sched/sch_netem.c:netem_enqueue() {
-    ...
-        skb2 = skb_clone(skb, GFP_ATOMIC);
-    ...
-        skb = skb_unshare(skb, GFP_ATOMIC);
-    ...
-}
-
-After this, skb2 has dataref == 1 and the copy has private data, so
-skb_cloned() is false for both. They still point to the same skb_ext
-with refcnt == 2.
-
-Echo skbs from can_create_echo_skb() on IFF_ECHO devices (e.g. vcan
-echo=1) can end up in the same state once the parent is consumed.
-
-In that case can_get_unshared_skb_ext() returns the shared csx, and
-can_set_skb_uid() writes can_skb_uid in place:
-
-    while (!(csx->can_skb_uid))
-        csx->can_skb_uid = atomic_inc_return(&skbcounter);
-
-The second frame then sees a non-zero UID and keeps it. Doesn't this
-contradict the commit message statement that "independently received
-clones never end up with the same UID"?
-
-With a shared UID, raw_rcv() can again drop a legitimate frame when the
-slab reuses the skb address on the same CPU:
-
-    if (this_cpu_ptr(ro->uniq)->skb == oskb &&
-        this_cpu_ptr(ro->uniq)->can_skb_uid == csx->can_skb_uid) {
-
-If the two frames go through can_rcv() on different CPUs, the
-check-then-store in can_set_skb_uid() is also an unsynchronized write
-into memory that both skbs share. The UID could then change while
-raw_rcv() on the other CPU is between filter matches. Could that break
-the join_filters counting?
-
-skb_ext_add() already does the refcount-based check in
-skb_ext_maybe_cow():
-
-    if (refcount_read(&old->refcnt) == 1)
-        return old;
-
-Would it be enough to call skb_ext_add() unconditionally here, or to
-check the extension refcount, instead of gating on skb_cloned()?
-
-> +		return skb_ext_add(skb, SKB_EXT_CAN);
-
-[Severity: Medium]
-Does the private copy really get its own UID if the frame was already
-tagged before transmission?
-
-isotp_sendmsg() and isotp_send_cframe() call can_set_skb_uid(csx) on
-the tx skb before can_send(). So the UID is already non-zero (say X)
-by the time netem duplicate (skb_clone) or tc mirred mirror/redirect
-copies the skb. Neither path resets the UID, unlike can-gw and vxcan
-in this patch.
-
-When such a clone reaches can_rcv() still cloned, skb_ext_add() goes
-through skb_ext_maybe_cow(). That function copies the whole extension,
-X included:
-
-    memcpy(new, old, old->chunks * SKB_EXT_ALIGN_VALUE);
-
-can_set_skb_uid() then leaves the non-zero X in place, so the private
-copy keeps the same identity as the original.
-
-Once can_receive() consumes the first copy, a later copy (the echo
-clone from can_create_echo_skb(), or the mirrored frame) can be
-allocated at the freed slab address. On the same CPU, a raw socket
-that did not send the frame, such as candump, would then match both
-uniq->skb and uniq->can_skb_uid in raw_rcv() and drop the frame as a
-duplicate.
-
-The commit message only explains why the UID is kept across the local
-loopback path. Should duplicated or mirrored copies of pre-tagged
-frames also get a fresh UID, so that the "never end up with the same
-UID" claim holds?
-
-> +	else
-> +		return csx;
-> +}
+Not sure why I missed this, I have picked it now
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260929154125.3298-1-socketcan%40hartkopp.net
+~Vinod
