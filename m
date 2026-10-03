@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EDA4365A19;
-	Sat,  3 Oct 2026 23:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 285D33AEB4E;
+	Sat,  3 Oct 2026 23:00:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791068443; cv=none; b=KZ/eXnGas7xRwcDpbCP1xxus67q1qaYm8ZAnuueUAMfeAFB84mkmIyr1dvFASTM0D0ylZrOC/cTtS98LDxVcS37fI7t8PiznSBE1j/2XqyFVWC9xSuuDJ7t2J7NpZT5U3xs8eUUf+tDluQeBJZ+P55EQjbyCCzHTTgcQD6GXEOE=
+	t=1791068444; cv=none; b=TJJR4B7WS8MfxYxDuufyHZUvOgkbYeFazYYon8O96N9jQd689dc7WdfsTCPeNwzRXpT5pIA+Ny3ahBkMPrXwN7O0JWuMU+aGv+1B/Wh6zhFXIy/aIrxH7byAimxe9R2s8M+uMMFAjbX+W//qi3IuCPMppTt2bN1DnjsPNBKCyxA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791068443; c=relaxed/simple;
-	bh=HiTCW8m6Vkl5rGJ/sqEY8PujCVkVlaHlGLnOU8GeLA8=;
+	s=arc-20240116; t=1791068444; c=relaxed/simple;
+	bh=ozr1pGct8sZ1e3ofHQUeVlWgvWZlxwMC+u7f/qxjDCU=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=S8/bUl+0MrK2BJ/s79b5IMaTIZ1x/DlufPzfUOJvnLSwkFFnW4dimBj+MQKEigOpLBCPkApuxOowp+2dbxNH2kAWYkS93kS1N3/zGfLDLj15z+T+dd5M/Hu7tc4h1Y3FFF+iDxFD8cwIB1WQohRTR8/vvZLZfAw9KTr30ifGx+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M+FCHuTN; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=jnZXcYG6NCkwN5stTLrlkPEAK06BdLGQ1gE+ZT7IFtWNx0A0cCgXxssa+Z2w5zBblkelXPtSRkVKAqzG7eK9DbAORy7QSH++5Q4UBXXzpW6YzathO1zyoPJXggeOgBf7jeqISMmqToUIz/ViE7d2l0MeggiMnaPCykPM+uCE6zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l3pURTVS; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M+FCHuTN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E9B81F0089C;
-	Sat,  3 Oct 2026 23:00:41 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l3pURTVS"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 833951F0089D;
+	Sat,  3 Oct 2026 23:00:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791068441;
-	bh=q9klnfyBRKEZ/2q57qxE3dBtwm7vxTJ9S+yaDYZzPi0=;
+	s=k20260515; t=1791068442;
+	bh=wuhkYdIAkqjbbctqV5SZo/cc5Kw50f5heZOpqZaFFBc=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=M+FCHuTNCrbtV1+sy9tvlxTr0y/OHnRfS19v5LSsv+/a4Gi6QMvOYaEa6qTOt798D
-	 Ju7F74am9Kij21ONe235NOFlj2LprxHbq0+nXz02S8LLYcUiHuzqwlYIAwI5PUkh7y
-	 YFLqH+BA0mz3O87a4J8xFvBKp4WJesa3VOYjzGKREF91ajiGGMBs8k6TlIA7wDK46d
-	 a1AD6pAXAApRv/KFccFUcJTrrRjwyXTg1eg0BC3ntCUChl8epqMwlGPDZ0++A+DJhN
-	 o2V/MS1lnLM5tqbDh4jXeWcf7iNjw44BbKGnN7fnTW5njgTHyExw1oHZN7FZj2QY44
-	 r3N4Ces52FMug==
-Subject: Re: [PATCH can-next 6/7] can: peak_usb: Add bus error reporting for
- the PCAN-USB FD family
+	b=l3pURTVSRJnmaW0HQev5l2uXXgOiZXqU0uyuwj5Nn/LeGjIeYmTNbtf+cdb6AcoVR
+	 WTgsWz64vJKQPXA3s1CRcT2auOT/8oSHwaI15TgKk2AbZP1F31sCmDxCK6rvKQ+n+q
+	 VFsYrH8mfRez69eH3nKurhkppsi2XGh0aEs1DJwq+MeVcnwe/2lKENL6lMm4DLX6an
+	 t3nXvorcAg6PeKfQFQCz7OnOz2xziuRIjMSruvQgtIbnRX45+Bj9sJePwSmwlgZasJ
+	 x67+AK2rL38vF0ut9CynY3YdW6/aA7o+C6D5iNhauvlSbzYbRBIkk2380lFU1fG0Q3
+	 z071tvq01wlAw==
+Subject: Re: [PATCH can-next 7/7] can: peak_usb: Add support of loopback mode
+ to the PCAN-USB FD family
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: mailhol@kernel.org, s.grosjean@peak-system.fr, kernel@pengutronix.de,
  linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Sat, 03 Oct 2026 23:00:41 +0000
-Message-ID: <179106844116.1406898.10605612528694983606@kernel.org>
-In-Reply-To: <20261002-peak_usb_enhancements-v1-6-50e965755c06@pengutronix.de>
-References: <20261002-peak_usb_enhancements-v1-6-50e965755c06@pengutronix.de>
-X-sashiko-severity: High
+Date: Sat, 03 Oct 2026 23:00:42 +0000
+Message-ID: <179106844209.1406898.13531220510046899289@kernel.org>
+In-Reply-To: <20261002-peak_usb_enhancements-v1-7-50e965755c06@pengutronix.de>
+References: <20261002-peak_usb_enhancements-v1-7-50e965755c06@pengutronix.de>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -46,176 +46,127 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 1 · Medium: 1 (1) · Low: 1
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] The invalid-channel guard is incomplete.
-- [Medium] pcan_usb_fd_start() now calls `err =
-  pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);` (line…
-- [Low] The new `if (!dev)` check in pcan_usb_fd_decode_error() fixes an
-  existing NULL pointer dereference, but the fix is folded into a…
+- [Low] The patch adds CAN_CTRLMODE_LOOPBACK to the static
+  .ctrlmode_supported of all four FD-family adapters: pcan_usb_fd,…
 
 Pre-existing issues:
-- [Medium] This problem wasn't introduced by this patch, but when
-  peak_usb_start() fails at dev_set_bus(dev, 1) after…
+- [High] This problem wasn't introduced by this patch, but a malicious or
+  faulty USB device that presents itself as a single-channel PCAN-USB FD…
 
 --
 
-can: peak_usb: Add bus error reporting for the PCAN-USB FD family
+can: peak_usb: Add support of loopback mode to the PCAN-USB FD family
 
-This patch adds CAN bus error reporting for the PEAK-System USB-to-CAN FD
-devices. pcan_usb_fd_start() now enables PUCAN_OPTION_ERROR for each
-channel, pcan_usb_fd_decode_error() turns firmware error records into CAN
-error frames, and the adapters now advertise CAN_CTRLMODE_BERR_REPORTING.
-It also adds a NULL check for an invalid channel in
-pcan_usb_fd_decode_error().
+This commit adds CAN_CTRLMODE_LOOPBACK to the supported modes of the
+PCAN-USB FD, PCAN-Chip USB, PCAN-USB Pro FD and PCAN-USB X6 adapters. When
+loopback is on, pcan_usb_fd_encode_msg() sets PUCAN_MSG_LOOPED_BACK and
+PUCAN_MSG_SELF_RECEIVE in the uCAN TX message flags. This follows the
+peak_pciefd driver, but local echo still comes from USB write completions.
 
 > diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> index 82502594a4092..9081f30e3d356 100644
+> index 9081f30e3d356..59debe009f922 100644
 > --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
 > +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> @@ -661,17 +661,73 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
->  	struct pucan_error_msg *er = (struct pucan_error_msg *)rx_msg;
->  	struct pcan_usb_fd_device *pdev;
->  	struct peak_usb_device *dev;
-> +	struct can_frame *cf;
-> +	struct sk_buff *skb;
-> +	u8 can_err_tx = 0;
+> @@ -934,6 +934,12 @@ static int pcan_usb_fd_encode_msg(struct peak_usb_device *dev,
+>  	if (dev->can.ctrlmode & CAN_CTRLMODE_ONE_SHOT)
+>  		tx_msg_flags |= PUCAN_MSG_SINGLE_SHOT;
 >  
->  	if (pucan_ermsg_get_channel(er) >= ARRAY_SIZE(usb_if->dev))
->  		return -EINVAL;
->  
-> +	/* Guard against bogus channel 1 reports from single-channel adapters.
-> +	 * Treat the entire URB as invalid in that case.
+> +	/* Request controller loopback and mark the frame as self-received,
+> +	 * matching the behavior of the peak_pciefd driver.
 > +	 */
->  	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
-> +	if (!dev)
-> +		return -EINVAL;
+> +	if (dev->can.ctrlmode & CAN_CTRLMODE_LOOPBACK)
+> +		tx_msg_flags |= PUCAN_MSG_LOOPED_BACK | PUCAN_MSG_SELF_RECEIVE;
 > +
+>  	tx_msg->flags = cpu_to_le16(tx_msg_flags);
+>  	tx_msg->channel_dlc = PUCAN_MSG_CHANNEL_DLC(dev->ctrl_idx, dlc);
+>  	memcpy(tx_msg->d, cfd->data, cfd->len);
+> @@ -1263,7 +1269,8 @@ const struct peak_usb_adapter pcan_usb_fd = {
+>  	.name = "PCAN-USB FD",
+>  	.device_id = PCAN_USBFD_PRODUCT_ID,
+>  	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
+> -	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
+> +	.ctrlmode_supported = CAN_CTRLMODE_LOOPBACK |
+> +			      CAN_CTRLMODE_LISTENONLY |
+>  			      CAN_CTRLMODE_3_SAMPLES |
+>  			      CAN_CTRLMODE_ONE_SHOT |
+>  			      CAN_CTRLMODE_BERR_REPORTING |
+
+[Severity: Low]
+Does every firmware revision of these adapters support loopback?
+
+LOOPBACK is added statically here, and also in pcan_usb_chip,
+pcan_usb_pro_fd and pcan_usb_x6. All the new mode does is set
+PUCAN_MSG_LOOPED_BACK | PUCAN_MSG_SELF_RECEIVE in pcan_usb_fd_encode_msg().
+The host does not program any controller mode, and
+pcan_usb_fd_decode_canmsg() never reads these flags. Whether the mode works
+is therefore up to the firmware.
+
+pcan_usb_fd_init() already gates modes that depend on the firmware:
+
+	if (fw_info->fw_version[0] >= 2) {
+		/* firmware >= 2.x supports ISO/non-ISO switching */
+		dev->can.ctrlmode_supported |= CAN_CTRLMODE_FD_NON_ISO;
+
+If a firmware revision ignored these TX flags, "ip link set canX type can
+loopback on" would be accepted but would do nothing.
+
+This may well be fine. ONE_SHOT is already advertised statically, and it
+is also just a uCAN TX flag (PUCAN_MSG_SINGLE_SHOT). The non-FD driver's
+pcan_usb_init() does gate LOOPBACK on device_rev >= 41, but it gates
+ONE_SHOT the same way, so that comparison may not apply here. The commit
+message also says all USB-to-CAN FD interfaces support this mode.
+
+Is there any FD firmware version that should be excluded here?
+
+[ ... ]
 
 [Severity: High]
-This check covers pcan_usb_fd_decode_error(). Do the other decoders that
-read a channel from the same URB need it too?
+This is a pre-existing issue and was not introduced by this patch. Can a
+single-channel adapter cause a NULL pointer dereference in the bulk-IN
+decode path?
 
-On PCAN-USB FD and PCAN-Chip USB, ctrl_count is PCAN_USBFD_CHANNEL_COUNT
-(1). pcan_usb_fd_init() therefore sets only usb_if->dev[0], and dev[1]
-stays NULL. The ARRAY_SIZE(usb_if->dev) bound is PCAN_USB_MAX_CHANNEL (2),
-so channel 1 passes that check.
+PCAN-USB FD and PCAN-Chip USB use ctrl_count = PCAN_USBFD_CHANNEL_COUNT
+(1). struct pcan_usb_fd_if, however, has dev[PCAN_USB_MAX_CHANNEL] (2).
+pcan_usb_fd_init() only fills the slot of the controller being registered:
 
-The other three decoders still dereference without a NULL check:
+	pdev->usb_if->dev[dev->ctrl_idx] = dev;
 
-pcan_usb_fd_decode_canmsg():
+On those adapters, usb_if->dev[1] stays NULL.
+
+Before dereferencing, pcan_usb_fd_decode_canmsg() only checks the channel
+against the array size:
+
+	if (pucan_msg_get_channel(rm) >= ARRAY_SIZE(usb_if->dev))
+		return -ENOMEM;
+
 	dev = usb_if->dev[pucan_msg_get_channel(rm)];
 	netdev = dev->netdev;
 
-pcan_usb_fd_decode_status():
-	dev = usb_if->dev[pucan_stmsg_get_channel(sm)];
-	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
-	netdev = dev->netdev;
+A faulty or malicious device could send a PUCAN_MSG_CAN_RX record with
+channel 1. That record passes this check, and the code then dereferences
+NULL in URB completion context.
 
-pcan_usb_fd_decode_overrun():
-	dev = usb_if->dev[pufd_omsg_get_channel(ov)];
-	netdev = dev->netdev;
+pcan_usb_fd_decode_status() and pcan_usb_fd_decode_overrun() use the same
+pattern, for PUCAN_MSG_STATUS and PCAN_UFD_MSG_OVERRUN records.
 
-Suppose the firmware sends the bogus channel 1 described in the new comment
-on a CAN_RX, STATUS or OVERRUN record. Wouldn't that dereference NULL in
-peak_usb_read_bulk_callback()->pcan_usb_fd_decode_buf()?
+pcan_usb_fd_decode_error() already handles this case. The guard came in
+with "can: peak_usb: Add bus error reporting for the PCAN-USB FD family",
+but it was added only to this decoder:
 
-The commit message says "Parsing of the entire URB is aborted if the
-firmware reports an invalid channel". As far as I can tell, that only holds
-for error records. The later loopback patch in this series doesn't seem to
-change these decoders either.
-
-[Severity: Low]
-The code itself is fine, but this check also fixes an existing NULL pointer
-dereference. Before this patch, pcan_usb_fd_decode_error() did:
-
+	/* Guard against bogus channel 1 reports from single-channel adapters.
+	 * Treat the entire URB as invalid in that case.
+	 */
 	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
-	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
-	pdev->bec.txerr = er->tx_err_cnt;
+	if (!dev)
+		return -EINVAL;
 
-PUCAN_OPTION_ERROR was already enabled on first open, so a channel 1 error
-record on a single-channel adapter could already fault there.
-
-Could this fix be split out with a Fixes: tag and Cc: stable, as was done
-for the earlier "fix missing CAN_ERR_FLAG ..." patch in this series? That
-way stable trees would pick it up.
-
-[ ... ]
-
-> @@ -912,12 +969,17 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
->  		peak_usb_init_time_ref(&pdev->usb_if->time_ref,
->  				       &pcan_usb_pro_fd);
->  
-> -		/* enable USB calibration messages */
-> -		err = pcan_usb_fd_set_options(dev, 1,
-> -					      PUCAN_OPTION_ERROR,
-> -					      PCAN_UFD_FLTEXT_CALIBRATION);
-> +		/* enable USB calibration messages (needed only once for the
-> +		 * entire interface)
-> +		 */
-> +		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
->  	}
->  
-> +	/* set channel device options: always asks for bus error notifications
-> +	 * to get (at least) rxerr/txerr, as well as any USB-specific option.
-> +	 */
-> +	err = pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);
-> +
->  	pdev->usb_if->dev_opened_count++;
-
-[Severity: Medium]
-Can dev_opened_count end up one too high here?
-
-pcan_usb_fd_set_options() now runs on every open. If it fails, the counter
-is still incremented before err is returned. peak_usb_start() then takes
-the err_adapter path:
-
-	if (dev->adapter->dev_start) {
-		err = dev->adapter->dev_start(dev);
-		if (err)
-			goto err_adapter;
-	}
-
-err_adapter frees the tx URBs and kills the rx URBs, but it never calls
-adapter->dev_stop(). ndo_stop isn't called after a failed open either.
-
-With the count stuck too high:
-
-- the == 0 check here no longer resets time_ref or re-enables calibration
-  on the next first open
-- the == 1 check in pcan_usb_fd_stop() never matches, so calibration
-  messages are never turned off
-- the > 0 check in pcan_usb_fd_exit() gives the wrong result
-
-Before this patch, a non-first open could only fail in
-pcan_usb_fd_set_filter_std(), which returns before the increment. Should
-the increment be skipped when pcan_usb_fd_set_options() fails?
-
-[Severity: Medium]
-This is a pre-existing issue and was not introduced by this patch, but a
-related path exists when pcan_usb_fd_start() succeeds and bus-on then fails
-in peak_usb_start():
-
-	err = dev->adapter->dev_set_bus(dev, 1);
-	if (err)
-		goto err_adapter;
-
-err_adapter doesn't call dev_stop() here either. dev_opened_count stays
-incremented and the firmware notification options stay enabled. With this
-patch, the per-channel PUCAN_OPTION_ERROR is also left armed in that case.
-
-Should peak_usb_start() undo dev_start() on this path?
-
-[ ... ]
+Should the CAN_RX, STATUS and OVERRUN decoders get the same NULL check?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261002-peak_usb_enhancements-v1-0-50e965755c06%40pengutronix.de
