@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A5511C84D7;
-	Sat,  3 Oct 2026 04:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AF7D3A5E89;
+	Sat,  3 Oct 2026 04:57:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791003268; cv=none; b=sRxxCk8Z5Qy9rpvjQVEjo1fGVS0xxvuvnRCCi/JiUgVCSP15l5dF1xVGnqUCjGdK0/AjtOXlKE9jUUuk/RUtcTGQKze0KUdUSJAdCiN76shY1o5Y4uZ8kaGBe1/PzCwKH03vg4pp4yEo67RWoHmSbMc/725882GDiezR2RdT+h0=
+	t=1791003451; cv=none; b=qaWiBvYkbcMT1cXCvOEBJYQvrbu1HYSxiHbtgF9TV+12Yt+2f0kwDX/5fyZVP7HVxjDGgzMWJI/X8JuANLbZttnazzhXwRclNuwXJh+sU8jkZ4WmUFpgFuf6MmpXxKjaJ65ruWORm4DcSPQGhfZ+a4HPoXjRJ6xbsGOJJpcBXIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791003268; c=relaxed/simple;
-	bh=3OXTh+oBjeDwYxskyfhntp4KmKNQB142H3W0L/SH5ig=;
+	s=arc-20240116; t=1791003451; c=relaxed/simple;
+	bh=mjI5rIRp4ceSGqL3LOrwT7RsadqTsWrl4aJOHPxocFM=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=fwYa4HDqteByPfJ4++5wWBIqo3VaGgjPHDxblHVIXmUweJ9nP4noroYL6B6iJEFsftZOIygtLfQk8XdDcvPADAM/VoQyJr1zyzCuLrxDWb2KiQcj9AqMW5Hu0wnk2aMurQuYentkgJ+wCA7ddXv4vM/STwHAJmARwxrNnph1a04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WSkcH4/3; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=iEdkdQupbJQEl5M9vxC+L1XsnO/CuTuD6MfoyGGJLcfFq8rYKsq5S6mEYHgyY5pcdMUadurHUS6W7siZ7LVlaOc4+n0GCTRUVwUrlWZy5sMCprfvZRdbd1g/sgrUiKHlcTLvL2xYiGfU6t8wylvqGg0aDqO3MSLugI7o/2d1gC4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XJ9WqFlD; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WSkcH4/3"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E67CA1F000FF;
-	Sat,  3 Oct 2026 04:54:24 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XJ9WqFlD"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6298C1F000FF;
+	Sat,  3 Oct 2026 04:57:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791003265;
-	bh=v8sKs2lhZZePXeDFrspZsvPpoFgbeANBYb6q+5CIx0Y=;
+	s=k20260515; t=1791003446;
+	bh=KsveYxtkVFv9pW4s77/pBg15j1mxmMyYR2mwFFni1FQ=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=WSkcH4/3qY8obN/hVY/JamxOgVUZMPDz3QdzzZqFa+e3caOXglHMh+aPIFKP06pRt
-	 TpsUqyVAT+aF6RMYNJj6rlbkKEamgG4eQNQlq0ajcLwysi15vOenAnzJxUiN9EV6LK
-	 4cGTbUH3ovPntETGpE7yhmS2o+inqCHkXb/6vzTvVFGMFVdG8K6+RqVwKmwItQE0t4
-	 TUWt/MoP+w5Xn9M5kYTKi2UVvsxVWw0YSP8b3x3gto6MPZ/jE3G/b1AQFnoKu4f6yK
-	 pgDskAddhKKAAETWzeKIO6kiD8zFiqzu+pNDAia/4Qp7kRNbTvCsJRI9ZTEhN8XrUc
-	 wFPdoktSrVSmQ==
-Subject: Re: [PATCH net v2 RESEND] can: j1939: validate the EDPO packet number
+	b=XJ9WqFlD7jRMcGeFfdft+Ezg5k2OVkaR27+77q+OHOqGDAWhB3FmFBQCf3ibjKhPg
+	 ndUI8pF/vpaOP5ozCcuFuGx+k5dsow3VVp5cRozojn/1joOxc/6YelnsaocuK+H1LF
+	 8qqLU50zimNLxX8W9HsoC0G+gl4IrbxBEJfhziTiUdX/U/C/DmbY8njgVfkmUAHHCw
+	 Jg14VxhsHigEJi8kGiXS50FhI8+e4GUNnTIeBc+lY60uES8xuS3P1ULAp59AGMmdTn
+	 I7/luxsaEtqCgb1g1N2GDDO1xGEiana4vBWPw0GGT+lp6hIl099NnPdovVGAlaHY4l
+	 PNYf2samTTHAg==
+Subject: Re: [PATCH v3] can: peak_usb: Add bus error reporting for the
+ PCAN-USB FD family
 From: netdev-bot+sashiko@kernel.org
-To: quchaosheng000406@163.com
-Cc: robin@protonic.nl, o.rempel@pengutronix.de, kernel@pengutronix.de,
- socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Sat, 03 Oct 2026 04:54:24 +0000
-Message-ID: <179100326445.1406898.9460146166731761306@kernel.org>
-In-Reply-To: <20260930055942.216879-1-quchaosheng000406@163.com>
-References: <20260930055942.216879-1-quchaosheng000406@163.com>
-X-sashiko-severity: Medium
+To: stephane.grosjean@free.fr
+Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, s.grosjean@peak-system.fr, kuba@kernel.org
+Date: Sat, 03 Oct 2026 04:57:25 +0000
+Message-ID: <179100344592.1406898.12578802093404470362@kernel.org>
+In-Reply-To: <20260930-peak_usb-canfd-berr-v3-1-0506dfba9fb4@peak-system.fr>
+References: <20260930-peak_usb-canfd-berr-v3-1-0506dfba9fb4@peak-system.fr>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -49,7 +49,7 @@ MIME-Version: 1.0
 Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 2 · Low: 1 (1)
+Critical: 0 · High: 1 · Medium: 1 (1) · Low: 1
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -57,233 +57,233 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] The commit message says the transmitter role is unaffected by
-  the new check: "a transmitter derives the offset from pkt.tx_acked,…
-- [Medium] The new EDPO abort branch in j1939_xtp_rx_dpo_one() calls
-  j1939_session_timers_cancel() and then j1939_session_cancel() without…
-- [Low] The commit message reports that a kernel with only the NULL guard
-  in j1939_session_completed() "still panics 3 out of 3 runs", and uses…
+- [High] The new channel check covers only one of the four decoders that
+  look up usb_if->dev[].
+- [Medium] This feature commit also fixes two existing user-visible bugs
+  without saying so, without Fixes: tags, and without splitting them out…
+- [Low] pcan_usb_fd_decode_error() copies the raw 7-bit firmware code
+  (`PUCAN_ERMSG_CODE(er)`, i.e. FIELD_GET(GENMASK(6,0), er->code_g))…
 
 Pre-existing issues:
-- [Low] j1939_xtp_rx_dat_one() computes `packet = (dat[0] - 1 +
-  session->pkt.dpo)` and rejects only `packet > session->pkt.total`, so…
+- [Medium] This problem wasn't introduced by this patch, but the patch
+  makes it reachable on more paths.
 
 --
 
-can: j1939: validate the EDPO packet number
+can: peak_usb: Add bus error reporting for the PCAN-USB FD family
 
-This patch checks the ETP.CM_DPO packet number against pkt.total in
-j1939_xtp_rx_dpo_one(). When the number is out of range, it aborts the
-session with J1939_XTP_ABORT_BAD_EDPO_OFFSET. It also adds a NULL check for
-the skb returned by j1939_session_skb_get() in j1939_session_completed().
+This adds CAN bus error reporting for the PEAK-System USB-to-CAN FD
+adapters. On every open, each channel now enables PUCAN_OPTION_ERROR in
+the firmware. pcan_usb_fd_decode_error() builds CAN_ERR_BUSERROR frames,
+and all four adapters now advertise CAN_CTRLMODE_BERR_REPORTING.
 
-> Both roles tolerate the check because a transmitter derives the offset
-> from pkt.tx_acked, which is "cts_packet - 1" with cts_packet <= pkt.total,
-> so the largest value it ever announces is pkt.total - 1.
-
-[Severity: Medium]
-
-Where is the cts_packet <= pkt.total bound enforced? In
-j1939_xtp_rx_cts_one(), the peer's 24-bit packet number is rejected only
-when it is 0 or when dat[1] is larger than pkt.block:
-
-net/can/j1939/transport.c:j1939_xtp_rx_cts_one() {
-    ...
-	if (!pkt)
-		goto out_session_cancel;
-	else if (dat[1] > session->pkt.block /* 0xff for etp */)
-		goto out_session_cancel;
-
-	/* set packet counters only when not CTS(0) */
-	session->pkt.tx_acked = pkt - 1;
-	j1939_session_skb_drop_old(session);
-	session->pkt.last = session->pkt.tx_acked + dat[1];
-	if (session->pkt.last > session->pkt.total)
-		/* safety measure */
-		session->pkt.last = session->pkt.total;
-    ...
-}
-
-Only pkt.last is clamped. tx_acked is not, and the transmitter copies it
-straight into its EDPO:
-
-net/can/j1939/transport.c:j1939_session_tx_dpo() {
-    ...
-	session->pkt.dpo = session->pkt.tx_acked;
-	pkt = session->pkt.dpo;
-    ...
-}
-
-So a peer that sends an ETP.CM_CTS with a packet number above pkt.total
-makes the local transmitter put an EDPO >= pkt.total on the bus. That
-EDPO is looped back through j1939_xtp_rx_dpo(priv, skb, true) into
-j1939_xtp_rx_dpo_one() on the transmit session.
-
-There the new check aborts the transmit session with
-J1939_XTP_ABORT_BAD_EDPO_OFFSET. That is a receiver-side abort code, and it
-is sent back to the peer and reported to the sending socket.
-
-No memory-safety problem was found on the transmitter side.
-
-Should j1939_xtp_rx_cts_one() also check the CTS packet number against
-pkt.total? That would make the invariant in the commit message hold.
-
-> On v7.3.0-rc5 under QEMU:
->
->   - an unpatched kernel panics 3 out of 3 runs, in j1939_sk_recv():
->       BUG: kernel NULL pointer dereference, address: 0000000000000018
->       RIP: 0010:j1939_sk_recv+0xaf/0x150
->   - with only the NULL guard in j1939_session_completed() (i.e. without
->     the EDPO range check) it still panics 3 out of 3 runs, so the guard
->     alone does not close the hole and the range check is the actual fix
-
-[Severity: Low]
-
-Is there an oops trace for the guard-only kernel? The only crash shown is
-j1939_session_completed() passing a NULL se_skb to j1939_sk_recv(), and the
-new guard removes exactly that dereference.
-
-Here is the reproducer sequence with only the guard applied:
-
-- The closing DT gives packet 255.
-- The lookup at offset 1785 succeeds and pkt.rx reaches 256.
-- The EOMA loopback then runs j1939_session_completed().
-- Its lookup at offset 1792 returns NULL, and the guard now skips it.
-
-The other users of a pkt.dpo-based lookup already handle NULL:
-
-- j1939_simple_txnext() returns 0.
-- j1939_xtp_rx_dat_one() goes to out_session_cancel.
-- j1939_session_tx_dat() returns -ENOBUFS.
-
-Where does the remaining panic come from? If there is no trace for it,
-could this part of the commit message be corrected or dropped? The range
-check itself still looks worth having.
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..065b4f71e9af8 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-
-[ ... ]
-
-> @@ -1823,14 +1832,34 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
->  				 struct sk_buff *skb)
->  {
->  	const u8 *dat = skb->data;
-> +	unsigned int dpo;
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> index 0d46f4ce5dca7..5840623662afa 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> @@ -661,17 +661,73 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
+>  	struct pucan_error_msg *er = (struct pucan_error_msg *)rx_msg;
+>  	struct pcan_usb_fd_device *pdev;
+>  	struct peak_usb_device *dev;
+> +	struct can_frame *cf;
+> +	struct sk_buff *skb;
+> +	u8 can_err_tx = 0;
 >  
->  	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
->  		return;
+>  	if (pucan_ermsg_get_channel(er) >= ARRAY_SIZE(usb_if->dev))
+>  		return -EINVAL;
 >  
->  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
->  
-> +	dpo = j1939_etp_ctl_to_packet(dat);
+> +	/* Guard against bogus channel 1 reports from single-channel adapters.
+> +	 * Treat the entire URB as invalid in that case.
+> +	 */
+>  	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
+> +	if (!dev)
+> +		return -EINVAL;
 > +
 
+[Severity: High]
+The commit message says "Parsing of the entire URB is aborted if the
+firmware reports an invalid channel". However, this check is only added to
+pcan_usb_fd_decode_error(). Can a channel 1 report still crash the other
+decoders that pcan_usb_fd_decode_buf() calls?
+
+PCAN-USB FD and PCAN-Chip USB set ctrl_count to PCAN_USBFD_CHANNEL_COUNT
+(1). pcan_usb_fd_init() only fills usb_if->dev[dev->ctrl_idx], so
+usb_if->dev[1] stays NULL.
+
+ARRAY_SIZE(usb_if->dev) is 2 (PCAN_USB_MAX_CHANNEL), so channel 1 passes
+the bound check in each of these:
+
+pcan_usb_fd_decode_canmsg():
+	if (pucan_msg_get_channel(rm) >= ARRAY_SIZE(usb_if->dev))
+		return -ENOMEM;
+
+	dev = usb_if->dev[pucan_msg_get_channel(rm)];
+	netdev = dev->netdev;
+
+pcan_usb_fd_decode_status():
+	dev = usb_if->dev[pucan_stmsg_get_channel(sm)];
+	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+	netdev = dev->netdev;
+
+pcan_usb_fd_decode_overrun():
+	dev = usb_if->dev[pufd_omsg_get_channel(ov)];
+	netdev = dev->netdev;
+
+Wouldn't a CAN_RX, STATUS or OVERRUN record with channel 1 still
+dereference a NULL dev in the URB completion path? Could the channel be
+checked once in pcan_usb_fd_decode_buf(), or could all four decoders get
+the same NULL check?
+
+The out-of-range return values also differ: -ENOMEM in decode_canmsg and
+decode_status, but -EINVAL in decode_error and decode_overrun.
+
+>  	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+
 [ ... ]
 
-> +	if (dpo >= session->pkt.total) {
+> +	switch (PUCAN_ERMSG_TYPE(er)) {
+> +	case PUCAN_ERMSG_BIT_ERROR:
+> +		cf->data[2] |= CAN_ERR_PROT_BIT;
+> +		break;
+> +	case PUCAN_ERMSG_FORM_ERROR:
+> +		cf->data[2] |= CAN_ERR_PROT_FORM;
+> +		break;
+> +	case PUCAN_ERMSG_STUFF_ERROR:
+> +		cf->data[2] |= CAN_ERR_PROT_STUFF;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	cf->data[3] = PUCAN_ERMSG_CODE(er);
 
 [Severity: Low]
+Does the firmware code_g value use the same numbering as the
+CAN_ERR_PROT_LOC_* values in include/uapi/linux/can/error.h?
 
-This is a pre-existing issue and was not introduced by this patch. The new
-check treats any index >= pkt.total as out of range, but the related check
-in j1939_xtp_rx_dat_one() only rejects packet > pkt.total:
+The uAPI defines data[3] as the error location, using 5-bit SJA1000 style
+segment codes (0x00 to 0x1f). PUCAN_ERMSG_CODE() copies the raw 7-bit
+value selected by GENMASK(6, 0), so values from 0x20 to 0x7f can also end
+up in data[3].
 
-net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
-    ...
-	packet = (dat[0] - 1 + session->pkt.dpo);
-	if (packet > session->pkt.total ||
-	    (session->pkt.rx + 1) > session->pkt.total) {
-    ...
-}
+I couldn't find anything in-tree that documents the uCAN code_g encoding.
+pucan_handle_error() in peak_canfd.c never reads code_g.
 
-Even with dpo limited to pkt.total - 1, the peer controls dat[0]. A value
-of 2 still gives packet == pkt.total. The next
-j1939_session_skb_get_by_offset(session, packet * 7) returns NULL and the
-session is cancelled through out_session_cancel, so this does not crash.
+If the numbering differs, wouldn't candump -e and libsocketcan decode the
+wrong error location? Could the code be translated explicitly? The other
+option is to document that it matches the SJA1000 segment codes and narrow
+the mask to 0x1f.
 
-Should j1939_xtp_rx_dat_one() use the same >= bound, for consistency?
+[ ... ]
 
-> +		netdev_warn(session->priv->ndev,
-> +			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
-> +			    __func__, session, dpo, session->pkt.total);
-> +		j1939_session_timers_cancel(session);
-> +		j1939_session_cancel(session, J1939_XTP_ABORT_BAD_EDPO_OFFSET);
-> +		return;
-> +	}
+> @@ -912,12 +969,17 @@ static int pcan_usb_fd_start(struct peak_usb_device *dev)
+>  		peak_usb_init_time_ref(&pdev->usb_if->time_ref,
+>  				       &pcan_usb_pro_fd);
+>  
+> -		/* enable USB calibration messages */
+> -		err = pcan_usb_fd_set_options(dev, 1,
+> -					      PUCAN_OPTION_ERROR,
+> -					      PCAN_UFD_FLTEXT_CALIBRATION);
+> +		/* enable USB calibration messages (needed only once for the
+> +		 * entire interface)
+> +		 */
+> +		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
+>  	}
+>  
+> +	/* set channel device options: always asks for bus error notifications
+> +	 * to get (at least) rxerr/txerr, as well as any USB-specific option.
+> +	 */
+> +	err = pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);
+> +
+>  	pdev->usb_if->dev_opened_count++;
 
 [Severity: Medium]
+This isn't a bug introduced by this patch, but the patch makes it
+reachable on more paths. pcan_usb_fd_start() increments dev_opened_count
+even when pcan_usb_fd_set_options() fails, and then returns the error.
 
-Can this leave a receive session stuck in J1939_SESSION_WAITING_ABORT? The
-new branch cancels both timers without checking the session state.
+In peak_usb_start(), both failure paths jump to err_adapter, which never
+calls adapter->dev_stop():
 
-First out-of-range EDPO:
+	if (dev->adapter->dev_start) {
+		err = dev->adapter->dev_start(dev);
+		if (err)
+			goto err_adapter;
+	}
+	...
+	if (dev->adapter->dev_set_bus) {
+		err = dev->adapter->dev_set_bus(dev, 1);
+		if (err)
+			goto err_adapter;
+	}
 
-  j1939_session_timers_cancel()
-  j1939_session_cancel()
-    state is ACTIVE
-    j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS)
-    __j1939_session_cancel() -> state = J1939_SESSION_WAITING_ABORT
+So the increment is never undone. Before this patch, a set_options
+failure could only happen on the first open. Now it can happen on every
+channel open.
 
-Second out-of-range EDPO with the same PGN:
+A dev_set_bus() failure also now leaves PUCAN_OPTION_ERROR enabled in the
+firmware for that channel.
 
-  j1939_session_get_by_addr_locked() does not filter by state
-  j1939_xtp_rx_cmd_bad_pgn() lets it through
-  j1939_session_timers_cancel()
-    hrtimer_cancel(&session->rxtimer)  <- abort timeout removed
-  j1939_session_cancel()
-    state is WAITING_ABORT, so rxtimer is not re-armed
+For example, on a 2-channel adapter:
 
-j1939_session_cancel() only re-arms the timer in this case:
+open can0                         count 0 -> 1
+open can1, set_options fails      count 1 -> 2, open fails
+close can0                        count == 2, calibration disable
+                                  skipped, count -> 1
 
-	if (session->state >= J1939_SESSION_ACTIVE &&
-	    session->state < J1939_SESSION_WAITING_ABORT) {
-		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+After that, PCAN_UFD_FLTEXT_CALIBRATION stays enabled with no channel
+open. The next first open also sees a non-zero count, so it skips
+peak_usb_init_time_ref() and keeps a stale time reference.
 
-The WAITING_ABORT branch in j1939_tp_rxtimer() is the only automatic way to
-deactivate the session.
+Should the count only be incremented on success, or should the failure
+paths in peak_usb_start() undo it?
 
-The receiver's own looped-back ABORT is only passed to
-j1939_xtp_rx_abort(priv, skb, true), which matches transmitter sessions. So
-the session and its reassembly skb stay on priv->active_session_list until
-one of these happens:
+[ ... ]
 
-- the peer sends an ABORT
-- the peer sends an RTS with the same PGN
-- the netdev goes down
-
-Until then, an RTS for a different PGN on that sa/da pair is rejected with
-BUSY.
-
-Before this patch, a DPO that arrived in WAITING_ABORT went through
-j1939_tp_set_rxtimeout(session, 750), which re-armed rxtimer.
-
-The out_session_cancel paths in j1939_xtp_rx_dat_one() and
-j1939_xtp_rx_cts_one() already have this exposure. This branch adds another
-instance of it.
-
-j1939_xtp_rx_rts_session_active() already handles the same problem:
-
-		} else if (session->state == J1939_SESSION_WAITING_ABORT) {
-			/* Force deactivation for the receiver.
-			 * If we rely on the timer starting in j1939_session_cancel,
-			 * a second RTS call here will cancel that timer and fail
-			 * to restart it because the state is already WAITING_ABORT.
-			 */
-			j1939_session_deactivate_activate_next(session);
-		}
-
-Should the new EDPO branch do the same, or skip the timer cancel when the
-session is already in WAITING_ABORT?
-
+> @@ -955,12 +1017,15 @@ static int pcan_usb_fd_stop(struct peak_usb_device *dev)
+>  {
+>  	struct pcan_usb_fd_device *pdev =
+>  			container_of(dev, struct pcan_usb_fd_device, dev);
+> +	u16 usb_opts = 0;
 >  
->  	/* transmitted without problems */
-> -	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
-> +	session->pkt.dpo = dpo;
->  	session->last_cmd = dat[0];
->  	j1939_tp_set_rxtimeout(session, 750);
+>  	/* turn off special msgs for that interface if no other dev opened */
+>  	if (pdev->usb_if->dev_opened_count == 1)
+> -		pcan_usb_fd_set_options(dev, 0,
+> -					PUCAN_OPTION_ERROR,
+> -					PCAN_UFD_FLTEXT_CALIBRATION);
+> +		usb_opts |= PCAN_UFD_FLTEXT_CALIBRATION;
+> +
+> +	/* turn off bus error option, as well as any USB-specific options */
+> +	pcan_usb_fd_set_options(dev, 0, PUCAN_OPTION_ERROR, usb_opts);
+> +
+>  	pdev->usb_if->dev_opened_count--;
+
+[Severity: Medium]
+The commit message only describes new features, but the patch also seems
+to fix two existing bugs. Should these be split out with Fixes: tags so
+stable trees can pick them up?
+
+First, before this patch pcan_usb_fd_decode_error() did this with no NULL
+check:
+
+	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
+	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+	pdev->bec.txerr = er->tx_err_cnt;
+
+A channel 1 error record on a single-channel adapter therefore wrote
+through a NULL pointer. The new if (!dev) check fixes that.
+
+Second, PUCAN_OPTION_ERROR was only enabled when dev_opened_count == 0
+and only disabled when dev_opened_count == 1. The command is per channel
+(pucan_cmd_opcode_channel(dev->ctrl_idx, ...)).
+
+On the PCAN-USB Pro FD and X6, the second channel opened therefore never
+received error records. Its pdev->bec stayed at 0/0. Those zero counters
+were reported through do_get_berr_counter and used by
+pcan_usb_fd_decode_status() to compute the tx/rx state. The option could
+also be left enabled on the channel that closed first.
+
+[ ... ]
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260930055942.216879-1-quchaosheng000406%40163.com
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260930-peak_usb-canfd-berr-v3-1-0506dfba9fb4%40peak-system.fr
