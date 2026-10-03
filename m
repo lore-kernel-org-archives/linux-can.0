@@ -1,286 +1,335 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AD99175A7B;
-	Sat,  3 Oct 2026 11:45:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791027953; cv=pass; b=qEVCtEtQY6n/weATatOnhyIYrnUqTEjlvN4nGJgRj/KK17vD2ITKqBMUMCn1LCteuXd7L2o8KhB1jtU+tE1qmuBIGQ4gQ3GH03ibIGII5p/F+FZ2olL/LJ5WVjPiCW1g4h1Ri+7RW9piJgUWNwDhcJmUmg/BwtTlwlfWTkYIXyg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791027953; c=relaxed/simple;
-	bh=GwKbBgu7Y95TKT8/SFa9ikBlPBwjpdZaOuJeoGemCGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aoPfif2b2ng2Y9bA2ZTA8GIJm05jOLVod0AG1sLIB7Z/SaNUi2IS8ASNMr/pwbo2jsLunvmMhUWHfRFtzxlsg2YNuFvLSN60aoczr4EFx8OHs5RgppC9yk1VMtE7KhR8tXJADWRV5LeaPzbd++p9km899lCUvsBvk19T0FqnVao=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=e8BxF54f; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8D833AD88;
+	Sat,  3 Oct 2026 21:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791063388; cv=none; b=rLjglL3lwpQg0FHqRiOymvCIhwy9/Bgl6zbHu71v/0wfvVRcMWFecKJFsDcit3Od7RzYCAdp2D/NeqqKLpXlSh66101H1UfcQRziyeVp3EEoIk4xH5WZGvaZzzNzg55s0n9v8q6jMfGptshixBnlgQBir2i0Qeud0Yi2WVqf49A=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791063388; c=relaxed/simple;
+	bh=y3gwCaXkzHFF6dv0Bl/98bdu5mQY0MXw+44JNmN0inM=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GPEi8KyG8QcLvwmAc+lbf8DQzWRHqIEnxsVUrvk4C5Dk7aaGGkuxsLEOuQAzwVN76apWdZu3MqOxOHouFhlXuBRta1nIRsp7eTckcDtVbVmMlwU9yFfiME2r1AeXIdU7gw/BSbuF7NYsVmpboFOhAaTab3dGq1afNcxCovBvogk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Gvcb6y8l; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="e8BxF54f"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 66D432001F2;
-	Sat, 03 Oct 2026 13:45:42 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791027942;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mScnjil3OHXQHbEj0MChhUrmjdK6rOY2h5e9ZekJNcc=;
-	b=e8BxF54fMp7Sso9tdpB1rD4kzXlADTrKrG4GJ9xTLvXF45gPbaxYQWyezWyEXglIY3rD7K
-	Xq2xT9Ayx6NLx9UH0zusVm9q2LJZs1WWOPY/h37YMEQ/DIxxoediydEUXP5MWk5WpyzwiG
-	Ji1zazbZG2imopIKdcbGjYelLCO3jb1Nny6qlGJf5WmPwT9TnN6Wh9DBgQ9YsAGC2YU2Vl
-	HuPcQ5dOGeiukquvwkKECjHvXUJcQB/6P5oRS9W0P8coThRWyb3c5QA1keFXnE1/uvlaNj
-	WZZbwZArEbeyQckCZ5uvo92YTTuIQ37pqRBHBcUjcMMPlH0HoKGpUxQ2GEsKDQ==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791027942; a=rsa-sha256;
-	cv=none;
-	b=Pzwin5/URqrJM28cQOFbEdKKZXcbKs8ikUdEoEpA+X0LtNPJwgycNOgcXg7iq6aUIASFaM
-	A59Ad8BNfXEYk8MvxhNASnwrdmLuwJ1FJdmxL40A28gaT3pSzdJZeIrFT8UcvSPDQu85qs
-	hHuGxUNb4zJVtdMMnqLgPcB4C+RLz0BifFzyT7xD2NebNiOwRiRRtWCLGOY2rcVPFXvDmS
-	mwZz7B/TxFJ0UDDnBne5J+W4lYoNCY94CxWei+hjUaJDmVG3nya1y2ofZ7bmezIieMn4+X
-	gn+AT7B7nk2PUgI265otbjHQHbCat4KNlmfC856OJtjMVUfxR39Q7tuLslHXkw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791027942;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mScnjil3OHXQHbEj0MChhUrmjdK6rOY2h5e9ZekJNcc=;
-	b=ULHOpnvr9g9QOvdJt3mxdJjdklIlwX2S521/W7PClXzmFVk/aETIWHuYG4yOlrbjCCoFER
-	nSl+Hw2NSp99nQWGPyZS+iKeKCmUlPCoCJHljwZSujubJRy2Ew/rn9XSJ+PK0PuQK2vkMS
-	Gn/eYBE1MIg5/FdpOMhkO/5YEBZiyFOEfXR8NDuFgHWSovycpIGs6cU5O0Y1rj1CcPk/62
-	w5NI2PsG5M+z2UAspIN2IotPLP88mXBUcnQNIiyQ333FCyKwc4Eb171rU8Sr9WMraSV0rg
-	sUWumNDQdf+uYvzU5lEv2UEX/YwdQfCRdXyRd+MfN6AuWeiL4pSQKQ4nlTzf9w==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xCyBS-0042vP-0z;
-	Sat, 03 Oct 2026 13:45:42 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 09C905B904A;
-	Sat, 03 Oct 2026 11:45:41 +0000 (UTC)
-Date: Sat, 3 Oct 2026 13:45:41 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Ji-Ze Hong via B4 Relay <devnull+peter_hong.fintek.com.tw@kernel.org>
-Cc: Vincent Mailhol <mailhol@kernel.org>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org, "Dynetrex, Admin" <admin@dynetrex.com>, 
-	"Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>
-Subject: Re: [PATCH v2] can: usb: f81604: fix struct f81604_int_data size
- mismatch
-Message-ID: <20261003-shiny-alchemical-donkey-156221-mkl@pengutronix.de>
-References: <20260824-f81604-fix-v2-1-fc9be5581394@fintek.com.tw>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Gvcb6y8l"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 553FE1F0089B;
+	Sat,  3 Oct 2026 21:36:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791063387;
+	bh=+2Zfs3PcsP+d5BdM1qvovFHJjOfUJVTAnK9KsR5VRvQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=Gvcb6y8l0nJy4nDvsFrpg8JkXEMdaTMDxhauZHiWn+Gi33KSpgAwcURUv5acAc649
+	 K4k4Kry3ip1wY/NNqQOIM1XdnV4u+HBhU5NMjtTrfw+NsFvYrQ4QAgNz+ofCQzas1H
+	 CuhcF3uzzQIImy/C1p4IE2nSt0rRLRo/omT/PJ3dSV2fVTq+vp+4a1/NYPLRbVGtEm
+	 OPyxkoFc1u5Q+pd8tt0AQmf4IfcLWT4V5va9uJGomYzJScd/mUOBIpZghJlgFw274V
+	 MVLNWgg5wZvTaDqF1Wd88FydVpd+jJ8sjH7MW+xquA5OHPVkphI7CXmWN7hKUoHM4K
+	 r4AgnrvVerWJg==
+Subject:
+ Re: [PATCH v7 3/4] can: rx-offload: allow more than one receive source
+From: netdev-bot+sashiko@kernel.org
+To: ciprianmarian.costea@oss.nxp.com
+Cc: mkl@pengutronix.de, mailhol@kernel.org, nicolas.ferre@microchip.com,
+ alexandre.belloni@bootlin.com, claudiu.beznea@tuxon.dev, haibo.chen@nxp.com,
+ linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, s32@nxp.com, imx@lists.linux.dev,
+ eballetb@redhat.com, kuba@kernel.org
+Date: Sat, 03 Oct 2026 21:36:25 +0000
+Message-ID: <179106338585.1406898.13675590689657020972@kernel.org>
+In-Reply-To: <20261002071203.1287650-4-ciprianmarian.costea@oss.nxp.com>
+References: <20261002071203.1287650-4-ciprianmarian.costea@oss.nxp.com>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bqgah23wjv3jb3mn"
-Content-Disposition: inline
-In-Reply-To: <20260824-f81604-fix-v2-1-fc9be5581394@fintek.com.tw>
 
+Thank you for your contribution! Sashiko AI review found 5 potential
+issue(s) to consider.
 
---bqgah23wjv3jb3mn
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] can: usb: f81604: fix struct f81604_int_data size
- mismatch
-MIME-Version: 1.0
+Critical: 0 · High: 0 · Medium: 1 · Low: 4 (2)
 
-On 24.08.2026 21:18:14, Ji-Ze Hong via B4 Relay wrote:
-> From: "Ji-Ze Hong (Peter Hong)" <peter_hong@fintek.com.tw>
->
-> The struct f81604_int_data defines 9 bytes of interrupt data:
-> - Byte 0: Status register (sr)
-> - Byte 1: Interrupt register (isrc)
-> - Byte 2: Interrupt enable register (ier)
-> - Byte 3: Arbitration lost capture (alc)
-> - Byte 4: Error code capture (ecc)
-> - Byte 5: Error warning limit register (ewlr)
-> - Byte 6: RX error counter (rxerr)
-> - Byte 7: TX error counter (txerr)
-> - Byte 8: Reserved (val)
->
-> The hardware sends exactly 9 bytes for the interrupt endpoint.
-> However, the struct was defined with __aligned(4) attribute which
-> caused the compiler to pad the struct to 12 bytes.
->
-> This causes a problem in f81604_read_int_callback() where the short
-> URB check compares urb->actual_length against sizeof(*data). When
-> sizeof(struct f81604_int_data) is 12 but the hardware only sends 9
-> bytes, the check fails and valid interrupt messages are discarded.
->
-> This results in the driver only being able to transmit once because
-> the TX complete interrupt is never processed.
->
-> Fix this by removing the __aligned(4) attribute so the struct size
-> matches the actual hardware data size of 9 bytes.
->
-> Fixes: 7299b1b39a25 ("can: usb: f81604: handle short interrupt urb messag=
-es properly")
-> Cc: stable@vger.kernel.org
-> Reported-by: Dynetrex, Admin <admin@dynetrex.com>
-> Closes: https://lore.kernel.org/all/A3834A07-5639-4779-844F-C5843DFC3928@=
-dynetrex.com/
-> Signed-off-by: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-I hope this patch goes into v7.3. While reviewing this patch the bot
-found this issue:
+- [Medium] In can_rx_offload_move_to_skb_queue() the comment says the
+  sorted merge will 'keep the timestamp order over all sources', but it…
+- [Low] Concern: the commit message describes a live S32G2 flexcan bug,
+  but the patch only adds can_rx_offload_add_source() and nothing calls…
+- [Low] can_rx_offload_add_source() calls
+  can_rx_offload_init_mb_range(source, &weight), then never uses the…
+- [Low] queue->sort is set only by can_rx_offload_add_timestamp(), so
+  with several FIFO-mode or manual-mode sources each source's…
+- [Low] can_rx_offload_add_source() does not check whether @source is
+  already linked.
 
-Will the 2nd issue be fixed by
-https://lore.kernel.org/all/20260901-f81604-fix-v1-1-c55b5178f9f8@fintek.co=
-m.tw/ ?
+Pre-existing issues:
+- [Low] This problem wasn't introduced by this patch, but
+  can_rx_offload_init_mb_range() (previously inline in…
+- [Low] This problem wasn't introduced by this patch, but several sources
+  share dev->stats, and can_rx_offload_offload_one(),…
 
-regards,
-Marc
+--
 
---- Patch [3]: [PATCH net 3/3] usb: f81604: fix struct f81604_int_data size=
- mismatch ---
-commit 6877926768a247e156dd43002e5a7320e9ac2d39
-Author: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
+can: rx-offload: allow more than one receive source
 
-usb: f81604: fix struct f81604_int_data size mismatch
+This commit lets a CAN device have several rx-offload sources, one per
+producer such as an IRQ line. All of them share one can_rx_offload_queue,
+which the primary source owns. A new can_rx_offload_add_source() attaches
+extra sources, and the IRQ finish helpers move each source's skb_irq_queue
+into the shared skb_queue under skb_queue.lock, sorting by timestamp when
+several sources run in timestamp mode.
 
-This commit drops the __aligned(4) attribute from struct f81604_int_data.
-With the attribute gone, sizeof() is 9 bytes, which matches what the
-interrupt endpoint sends. With the old 12-byte padded size, the short URB
-check in f81604_read_int_callback() threw away every valid interrupt
-message, so TX completion was never processed.
+> diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
+> index 92309ed47bac5..5352d70b6e93c 100644
+> --- a/drivers/net/can/dev/rx-offload.c
+> +++ b/drivers/net/can/dev/rx-offload.c
+> @@ -304,18 +304,40 @@ can_rx_offload_get_echo_skb_queue_tail(struct can_rx_offload *offload,
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_get_echo_skb_queue_tail);
+>  
+> -void can_rx_offload_irq_finish(struct can_rx_offload *offload)
+> +/* Sources may run on different CPUs at the same time, skb_queue.lock
+> + * serializes them.
+> + */
 
-Link: https://patch.msgid.link/20260824-f81604-fix-v2-1-fc9be5581394@fintek=
-=2Ecom.tw
+[Severity: Low]
+This is a pre-existing issue, but the sources also share
+offload->dev->stats. can_rx_offload_offload_one(),
+can_rx_offload_get_echo_skb_queue_timestamp() and
+can_rx_offload_get_echo_skb_queue_tail() update these counters with plain
+increments from IRQ context:
 
-> diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
-> index f12318268e46b..4c147b9d6d690 100644
-> --- a/drivers/net/can/usb/f81604.c
-> +++ b/drivers/net/can/usb/f81604.c
-> @@ -169,7 +169,7 @@ struct f81604_int_data {
->  	u8 rxerr;
->  	u8 txerr;
->  	u8 val;
-> -} __packed __aligned(4);
-> +} __packed;
-
-Discovered by: opus-5-5 =C2=B7 Missed by: gpt-6-astra, sashiko-gemini =C2=
-=B7 Confirmed by: gpt-6-astra =C2=B7 Ranked High by: gpt-6-astra
-This isn't a bug introduced by this patch, but there is a problem in the
-short URB check that this patch adjusts. In f81604_read_int_callback(),
-the check runs before the status switch:
-
-drivers/net/can/usb/f81604.c:f81604_read_int_callback() {
+drivers/net/can/dev/rx-offload.c:can_rx_offload_offload_one() {
     ...
-	if (urb->actual_length < sizeof(*data)) {
-		netdev_warn(netdev, "%s: short int URB: %u < %zu\n",
-			    __func__, urb->actual_length, sizeof(*data));
-		goto resubmit_urb;
+	if (IS_ERR(skb)) {
+		offload->dev->stats.rx_dropped++;
+		offload->dev->stats.rx_fifo_errors++;
+    ...
+}
+
+When sources run on different CPUs, can these increments get lost?
+
+flexcan already ran these helpers from several IRQ lines at once before
+this series. The only effect is slightly wrong drop and error counters.
+
+> +static void can_rx_offload_move_to_skb_queue(struct can_rx_offload *offload)
+>  {
+>  	struct can_rx_offload_queue *queue = offload->queue;
+>  	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&queue->skb_queue.lock, flags);
+> +
+> +	if (queue->source_cnt > 1 && queue->sort) {
+> +		/* keep the timestamp order over all sources */
+> +		struct sk_buff *skb;
+> +
+> +		while ((skb = __skb_dequeue(&offload->skb_irq_queue)))
+> +			__skb_queue_add_sort(&queue->skb_queue, skb,
+> +					     can_rx_offload_compare);
+
+[Severity: Medium]
+Does this really keep the timestamp order over all sources?
+
+__skb_queue_add_sort() only orders the frames that are in queue->skb_queue
+at the moment of the merge. can_rx_offload_napi_poll() drains that queue
+independently of the producers:
+
+drivers/net/can/dev/rx-offload.c:can_rx_offload_napi_poll() {
+    ...
+	while ((work_done < quota) &&
+	       (skb = skb_dequeue(&queue->skb_queue))) {
+		...
+		netif_receive_skb(skb);
 	}
-
-	switch (urb->status) {
-	case 0: /* success */
-		break;
-
-	case -ENOENT:
-	case -EPIPE:
-	case -EPROTO:
-	case -ESHUTDOWN:
-		return;
     ...
 }
 
-Suppose the URB completes with one of these error codes and actual_length
-is 0. Won't it take the goto resubmit_urb path and never reach the
-return?
+With two sources on different CPUs:
 
-On every ndo_stop, this call chain completes the interrupt URB with
--ENOENT and 0 bytes:
+CPU0 (source A)                  CPU1 (source B)
+                                 reads frame ts=10 into skb_irq_queue
+                                 still busy in RX loop, TX complete or
+                                 ESR handling
+reads frame ts=20
+can_rx_offload_irq_finish()
+  merges ts=20, napi_schedule()
+NAPI delivers ts=20
+                                 can_rx_offload_irq_finish()
+                                   merges ts=10
+NAPI delivers ts=10
 
-f81604_close()->f81604_unregister_urbs()->usb_kill_anchored_urbs()
+Can CAN frames reach the stack out of timestamp order this way?
 
-The callback would then log a false "short int URB" warning. The
-resubmit would fail with -EPERM because usb_kill_urb() has set
-urb->reject, and that logs "failed to resubmit int urb".
+With the next patch in the series, S32G2 in timestamp mode runs all four
+flexcan sources through flexcan_irq() concurrently. That configuration
+meets the queue->source_cnt > 1 && queue->sort condition.
 
-On -EPIPE (endpoint stall) or -EPROTO, the URB would be resubmitted at
-interval 1 instead of stopping. Each failing completion then logs
-netdev_info and netdev_warn messages with no rate limit.
+skb_queue.lock only serializes the list manipulation. Nothing holds back
+delivery until the other sources have merged their older frames.
 
-This ordering came from 7299b1b39a25, the commit this patch fixes. This
-patch doesn't change the behaviour, since 0 < 9 just as 0 < 12.
+If full ordering isn't achievable here, should the comment and the commit
+message describe the narrower guarantee?
 
-Could the length check be applied only when urb->status is 0?
+> +	} else {
+> +		skb_queue_splice_tail_init(&offload->skb_irq_queue,
+> +					   &queue->skb_queue);
+> +	}
 
-Discovered by: gpt-6-astra =C2=B7 Missed by: opus-5-5, sashiko-gemini =C2=
-=B7 Confirmed by: opus-5-5 =C2=B7 Ranked Critical by: gpt-6-astra
-This is a pre-existing issue, but this patch makes it reachable again.
-f81604_close() cancels clear_reg_work before it kills the interrupt URBs
-that can queue that work:
+[Severity: Low]
+Only can_rx_offload_add_timestamp() sets queue->sort. With several
+FIFO-mode or manual-mode sources, each skb_irq_queue is therefore just
+appended here. That happens even when a driver ordered its frames with
+can_rx_offload_queue_timestamp().
 
-drivers/net/can/usb/f81604.c:f81604_close() {
-    ...
-	netif_stop_queue(netdev);
-	cancel_work_sync(&priv->clear_reg_work);
-	close_candev(netdev);
+The commit message documents this ("Otherwise they append it").
 
-	f81604_unregister_urbs(priv);
-    ...
-}
+At the end of the series, the only in-tree FIFO multi-source user is
+flexcan on mcf5441x (FLEXCAN_QUIRK_NR_IRQ_3). That part is uniprocessor
+m68k, so its handlers never run in parallel.
 
-What if an interrupt URB completes after cancel_work_sync() returns but
-before usb_kill_anchored_urbs() runs? Can f81604_handle_can_bus_errors()
-then queue the work again after a bus error, arbitration loss or overrun?
+Would it make sense to state in the kerneldoc of
+can_rx_offload_add_source() that ordering across sources is not kept in
+FIFO and manual mode, for future SMP users?
 
-drivers/net/can/usb/f81604.c:f81604_handle_can_bus_errors() {
-    ...
-	if (priv->clear_flags)
-		schedule_work(&priv->clear_reg_work);
-    ...
-}
+[ ... ]
 
-On unbind or disconnect, f81604_disconnect() does this:
+> @@ -350,6 +369,16 @@ void can_rx_offload_threaded_irq_finish(struct can_rx_offload *offload)
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_finish);
+>  
+> +static void can_rx_offload_link_source(struct can_rx_offload_queue *queue,
+> +				       struct can_rx_offload *offload)
+> +{
+> +	offload->queue = queue;
+> +	__skb_queue_head_init(&offload->skb_irq_queue);
+> +
+> +	list_add_tail(&offload->node, &queue->sources);
+> +	queue->source_cnt++;
+> +}
 
-	unregister_netdev(priv->netdev[i]);
-	free_candev(priv->netdev[i]);
+[Severity: Low]
+Nothing here checks whether offload is already on a sources list.
 
-Nothing cancels or flushes clear_reg_work again before free_candev().
-f81604_clear_reg_work() gets priv via container_of() and then calls
-f81604_sja1000_read() and f81604_sja1000_write() on it.
+Suppose can_rx_offload_add_source() is called twice for the same source
+with no can_rx_offload_del() in between. Wouldn't that reinitialize a live
+skb_irq_queue, count the source twice in source_cnt, and call
+list_add_tail() on a node that is already linked? The node could end up
+pointing at itself, and then the list_for_each_entry_safe() loop in
+can_rx_offload_del() would never finish.
 
-Would this be a use-after-free of the netdev private data and of the
-embedded work_struct?
+No in-tree path does this. At the end of the series, flexcan calls
+can_rx_offload_del(&priv->offload) in flexcan_close() and on every failure
+path before flexcan_open() adds the sources again. can_rx_offload_init_queue()
+also resets the list.
 
-This ordering has been there since the driver was added in 88da17436973.
-After 7299b1b39a25, every 9-byte interrupt failed the < 12 check, so this
-schedule_work() call was effectively never reached. With this patch,
-valid interrupts are handled again.
+Would a defensive check against adding the same source twice be worth
+having?
 
-Could f81604_close() kill the anchored URBs before cancel_work_sync()?
-Alternatively, could f81604_disconnect() cancel the work again before
-free_candev()?
+[ ... ]
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+> @@ -357,41 +386,65 @@ static int can_rx_offload_init_queue(struct net_device *dev,
 
---bqgah23wjv3jb3mn
-Content-Type: application/pgp-signature; name="signature.asc"
+[ ... ]
 
------BEGIN PGP SIGNATURE-----
+> -int can_rx_offload_add_timestamp(struct net_device *dev,
+> -				 struct can_rx_offload *offload)
+> +static int can_rx_offload_init_mb_range(struct can_rx_offload *offload,
+> +					unsigned int *weight)
+>  {
+> -	unsigned int weight;
+> -
+>  	if (offload->mb_first > BITS_PER_LONG_LONG ||
+> -	    offload->mb_last > BITS_PER_LONG_LONG || !offload->mailbox_read)
+> +	    offload->mb_last > BITS_PER_LONG_LONG)
+>  		return -EINVAL;
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCasDq4wAKCRDMOmT6rpmt
-0qtCAQCHh5XSGyLvu1S2W64qEJ8RCvD+vGOcy9sXKfh/OK9DDgD/aQv2SH1IsvnI
-pNFRlw0/hkgjXfyswC0GVrSkPa4Evgs=
-=khbf
------END PGP SIGNATURE-----
+[Severity: Low]
+This isn't a bug introduced by this patch, but the bound check moved here
+accepts mb_first or mb_last equal to BITS_PER_LONG_LONG (64).
+can_rx_offload_irq_offload_timestamp() walks the range inclusively and
+does:
 
---bqgah23wjv3jb3mn--
+		if (!(pending & BIT_ULL(i)))
+			continue;
+
+so i == 64 would be an out-of-range shift. Should these checks use >=?
+
+No in-tree driver passes 64 today. flexcan uses mb_count - 2, at91 uses
+rx_last, and ti_hecc uses at most HECC_MAX_MAILBOXES - 1.
+
+[ ... ]
+
+> @@ -416,6 +469,46 @@ int can_rx_offload_add_manual(struct net_device *dev,
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_add_manual);
+>  
+> +/**
+
+[ ... ]
+
+> +int can_rx_offload_add_source(struct can_rx_offload *primary,
+> +			      struct can_rx_offload *source)
+> +{
+
+[Severity: Low]
+This isn't a bug, but the commit message describes a live S32G2 flexcan
+problem, while nothing in this commit calls can_rx_offload_add_source()
+and there is no Fixes: tag.
+
+This is resolved later in the series. The next patch, "can: flexcan: use
+one rx-offload source per IRQ line", does the following:
+
+- adds the extra sources in flexcan_rx_offload_setup()
+- picks the source per IRQ via flexcan_get_offload()
+- switches flexcan_mailbox_read() to netdev_priv(offload->dev)
+- carries Fixes: 8503a4b1a24d ("can: flexcan: add NXP S32G2/S32G3 SoC
+  support")
+
+So adding the infrastructure first and the user next looks fine.
+
+> +	struct can_rx_offload_queue *queue = primary->queue;
+> +	unsigned int weight;
+> +	int err;
+> +
+> +	if (queue != &primary->own_queue || !queue->source_cnt ||
+> +	    source == primary)
+> +		return -EINVAL;
+> +
+> +	if (queue->sort) {
+> +		err = can_rx_offload_init_mb_range(source, &weight);
+> +		if (err)
+> +			return err;
+> +	}
+> +
+> +	source->dev = primary->dev;
+> +	source->mailbox_read = primary->mailbox_read;
+> +	source->skb_queue_len_max = primary->skb_queue_len_max;
+
+[Severity: Low]
+The weight that can_rx_offload_init_mb_range() computes for source is
+never used. skb_queue_len_max is copied from the primary, and the shared
+NAPI weight is not adjusted. So the drop limit and the NAPI weight depend
+only on the primary's mailbox range.
+
+This matches the commit message ("inherits the mode, netdev, queue length
+limit and mailbox_read() of the primary"). Later in the series,
+flexcan_rx_offload_add_source() copies the primary's mb_first and mb_last
+into every source, so the limit fits there.
+
+A driver that split its mailboxes into a small primary range and a larger
+secondary range would get an undersized shared limit, though.
+
+Should the unused weight be dropped, or is it meant to feed into
+skb_queue_len_max?
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261002071203.1287650-1-ciprianmarian.costea%40oss.nxp.com
