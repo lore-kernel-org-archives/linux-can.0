@@ -1,32 +1,32 @@
 Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8B13009F6
-	for <linux-can@vger.kernel.org>; Sun,  4 Oct 2026 11:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 940791DDA18
+	for <linux-can@vger.kernel.org>; Sun,  4 Oct 2026 11:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.181.97.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791114283; cv=none; b=cV/G3bJFtnx/Wf9cfJ1skSBYW1RvgOkoxtdVQHvUUShMiiQ1Mzi41Eu43wKzkgGluVVPjynIYse/ofojdo+wSoO12f1xLVyXxXByOa2r4oLMG7ORdE0CTcgjt9Tmxnw6IQK3sdPyReE0/SZQpNR3Oyn2Cn5ARfBHaosCLJLseBY=
+	t=1791114470; cv=none; b=m7M7naE4ChSZ8VdSmBV+O2STxmlYZYphQdkjU2E5RPeLMrNpXlljVPRmXyeI4vFiGyYtcYvZA0W/YOaitACHNfa4v2UgAlYbPPPDffGJbLiCdc5+DvAJqoRacqwAMLEnEWojYG/g4ByDAcLlXT0Gq8IdCzo1EdOjEFQ9tK4WC8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791114283; c=relaxed/simple;
-	bh=lX0X8BaX72urDaVdrPYg598wh6mW2sk2Rkrif1pZ/Is=;
-	h=Content-Type:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To; b=LZFfqgb9xLIqGdpFqmYAbZ18zNXs9wCv9OIMGNBFm3WpWs/mHVq7GRL/z5JiUx7k1xTUhhzAoqFwBzmDQBNOnwy2I+igefBuw5psad6Qz2iqLJJL8VbFnf1h5YDu+ReJ+wzKOyao6ix07cLUmm/PIBxBMEdZi4yaMpT7bgbukZM=
+	s=arc-20240116; t=1791114470; c=relaxed/simple;
+	bh=IkcVNVDOWAVMjOn+Co7h79jrCCz6DrAQFgrH+PkoTJU=;
+	h=Content-Type:Message-ID:Date:MIME-Version:Subject:From:To:
+	 References:In-Reply-To; b=uKuhWX8OXC1cLwHdfSAwlUefN1ihxUMyysij8tVI1gz7eMHKwqzIOYuIrKTzRis/yhJoIX41vylKWWAYKGXcngADVxgjMSaKe1Wr7a3WN0Xjlfdc9GcrP7A55aZyMEAjFAUEIEeNpzyjF3Y7cgf1Gq5h12db2IIFLYDK1hGm25w=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp; arc=none smtp.client-ip=202.181.97.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
 Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 694BiMIT076113;
-	Sun, 4 Oct 2026 20:44:22 +0900 (JST)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 694BlPQJ076881;
+	Sun, 4 Oct 2026 20:47:25 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
 Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
 	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 694BiM6Z076110
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 694BlP7O076878
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 4 Oct 2026 20:44:22 +0900 (JST)
+	Sun, 4 Oct 2026 20:47:25 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Content-Type: multipart/mixed; boundary="------------9av9CEdamI3OzCLPoQ2BROxe"
-Message-ID: <c58c0c97-d3fd-4589-bb21-a0752be96866@I-love.SAKURA.ne.jp>
-Date: Sun, 4 Oct 2026 20:44:22 +0900
+Content-Type: multipart/mixed; boundary="------------dR9te2b6TlOchidKufYNoSa4"
+Message-ID: <4ebfa1e1-0f8b-4848-8b12-6311f63eaf0f@I-love.SAKURA.ne.jp>
+Date: Sun, 4 Oct 2026 20:47:25 +0900
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -34,104 +34,82 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 06/22] can: j1939: j1939_sk_bind(): fix j1939_ecu leak
- when re-bind failed
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org,
-        syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com,
-        Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20260928193312.553632-1-mkl@pengutronix.de>
- <20260928193312.553632-7-mkl@pengutronix.de>
- <20260929-private-shellfish-from-mars-caa38b-mkl@pengutronix.de>
-Content-Language: en-US
+Subject: Re: [PATCH v3] can: j1939: cancel pending address claim timers from
+ j1939_ecu_unmap_all()
 From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-In-Reply-To: <20260929-private-shellfish-from-mars-caa38b-mkl@pengutronix.de>
+To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+References: <9ba38419-967a-4d47-bcdf-bbb2fa7d3e9f@I-love.SAKURA.ne.jp>
+Content-Language: en-US
+In-Reply-To: <9ba38419-967a-4d47-bcdf-bbb2fa7d3e9f@I-love.SAKURA.ne.jp>
 X-Virus-Status: clean
-X-Anti-Virus-Server: fsav415.rs.sakura.ne.jp
+X-Anti-Virus-Server: fsav414.rs.sakura.ne.jp
 
 This is a multi-part message in MIME format.
---------------9av9CEdamI3OzCLPoQ2BROxe
+--------------dR9te2b6TlOchidKufYNoSa4
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2026/09/29 17:56, Marc Kleine-Budde wrote:
-> On 28.09.2026 20:45:13, Marc Kleine-Budde wrote:
->> From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
->>
->> syzbot is reporting "struct j1939_ecu" refcount leak, which occurs when
->> netdev_hold() is called during ECU creation but the corresponding
->> netdev_put() is never executed because the parent "struct j1939_ecu"
->> object is leaked.
->>
->>   unregister_netdevice: waiting for vxcan1 to become free. Usage count = 3
->>   ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
->>        __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
->>        netdev_hold include/linux/netdevice.h:4525 [inline]
->>        j1939_ecu_create_locked+0x1c9/0x400 net/can/j1939/bus.c:159
->>        j1939_local_ecu_get+0xeb/0x220 net/can/j1939/bus.c:293
->>        j1939_sk_bind+0x70a/0xc60 net/can/j1939/socket.c:529
->>        __sys_bind_socket net/socket.c:1920 [inline]
->>        __sys_bind+0x2e3/0x410 net/socket.c:1951
->>        __do_sys_bind net/socket.c:1956 [inline]
->>        __se_sys_bind net/socket.c:1954 [inline]
->>        __x64_sys_bind+0x7a/0x90 net/socket.c:1954
->>        do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->>        do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
->>        entry_SYSCALL_64_after_hwframe+0x77/0x7f
->>
->>   ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
->>        __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
->>        netdev_hold include/linux/netdevice.h:4525 [inline]
->>        j1939_priv_create net/can/j1939/main.c:140 [inline]
->>        j1939_netdev_start+0x387/0xb20 net/can/j1939/main.c:268
->>        j1939_sk_bind+0x946/0xc60 net/can/j1939/socket.c:506
->>        __sys_bind_socket net/socket.c:1920 [inline]
->>        __sys_bind+0x2e3/0x410 net/socket.c:1951
->>        __do_sys_bind net/socket.c:1956 [inline]
->>        __se_sys_bind net/socket.c:1954 [inline]
->>        __x64_sys_bind+0x7a/0x90 net/socket.c:1954
->>        do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->>        do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
->>        entry_SYSCALL_64_after_hwframe+0x77/0x7f
->>
->> The root cause lies in the error handling of j1939_sk_bind() during a
->> re-bind operation (binding an already bound socket to the same interface).
->> Currently, the function prematurely drops the old ECU references by calling
->> j1939_local_ecu_put() before verifying whether the new configuration can be
->> successfully acquired via j1939_local_ecu_get().
->>
->> If j1939_local_ecu_get() subsequently fails, the function unconditionally
->> calls j1939_netdev_stop() and clears jsk->priv. This leaves the socket in a
->> half-broken state where the old ECU's refcount has already been decremented
->> incompletely, but the socket destruct pathway (j1939_sk_sock_destruct) can
->> no longer perform proper cleanup because jsk->priv is NULL. As a result,
->> the old "struct j1939_ecu" remains orphaned on the priv->ecus list,
->> permanently leaking both the ECU object and the net_device reference held
->> inside it.
->>
->> Fix this by deferring the removal and release of the old ECU references
->> until after j1939_local_ecu_get() has successfully acquired the new
->> resources. As a side effect of this change, the socket's state no longer
->> changes when the re-bind operation failed.
->>
->> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
->> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
->> Assisted-by: Gemini-Pro
->> Fixes: f214744c8a27 ("can: j1939: j1939_sk_bind(): call j1939_priv_put() immediately when j1939_local_ecu_get() failed")
->> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
->> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
->> Link: https://patch.msgid.link/deb3ac27-5eaf-406a-9bf4-733cc43ecaba@I-love.SAKURA.ne.jp
->> Cc: stable@vger.kernel.org
->> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+On 2026/09/29 20:47, Tetsuo Handa wrote:
+> syzbot is reporting "struct j1939_ecu" refcount leak, for
 > 
-> I've dropped the patch for now, the netdev bots gave the following
-> review:
+>   j1939_ecu_get(ecu);
+>   priv->ents[ecu->addr] = ecu;
 > 
+> in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
+> even after
+> 
+>   priv->ents[ecu->addr] = NULL;
+>   j1939_ecu_put(ecu);
+> 
+> in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
+> __j1939_rx_release() from j1939_netdev_stop() has completed.
+> 
+>   unregister_netdevice: waiting for vxcan1 to become free. Usage count = 3
+>   ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
+>        __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
+>        netdev_hold include/linux/netdevice.h:4525 [inline]
+>        j1939_ecu_create_locked+0x1c9/0x400 net/can/j1939/bus.c:159
+>        j1939_local_ecu_get+0xeb/0x220 net/can/j1939/bus.c:293
+>        j1939_sk_bind+0x70a/0xc60 net/can/j1939/socket.c:529
+>        __sys_bind_socket net/socket.c:1920 [inline]
+>        __sys_bind+0x2e3/0x410 net/socket.c:1951
+>        __do_sys_bind net/socket.c:1956 [inline]
+>        __se_sys_bind net/socket.c:1954 [inline]
+>        __x64_sys_bind+0x7a/0x90 net/socket.c:1954
+>        do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>        do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+>        entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+>   ref_tracker: netdev@ffff8880710f0700 has 1/2 users at
+>        __netdev_tracker_alloc include/linux/netdevice.h:4496 [inline]
+>        netdev_hold include/linux/netdevice.h:4525 [inline]
+>        j1939_priv_create net/can/j1939/main.c:140 [inline]
+>        j1939_netdev_start+0x387/0xb20 net/can/j1939/main.c:268
+>        j1939_sk_bind+0x946/0xc60 net/can/j1939/socket.c:506
+>        __sys_bind_socket net/socket.c:1920 [inline]
+>        __sys_bind+0x2e3/0x410 net/socket.c:1951
+>        __do_sys_bind net/socket.c:1956 [inline]
+>        __se_sys_bind net/socket.c:1954 [inline]
+>        __x64_sys_bind+0x7a/0x90 net/socket.c:1954
+>        do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+>        do_syscall_64+0x174/0x580 arch/x86/entry/syscall_64.c:94
+>        entry_SYSCALL_64_after_hwframe+0x77/0x7f
+> 
+> Fix this race condition by canceling address claim timers from
+> j1939_ecu_unmap_all().
+> 
+> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
+> Link: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260928193312.553632-1-mkl%40pengutronix.de # [PATCH net 06/22]
+> Assisted-by: Gemini-Pro gpt-6-astra opus-5-5
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+syzbot found a reproducer, and I confirmed that this patch fixes this issue. 
+Please apply this patch.
 
-syzbot found a reproducer, and I confirmed that this patch cannot fix this issue. 
-Please drop this patch.
-
---------------9av9CEdamI3OzCLPoQ2BROxe
+--------------dR9te2b6TlOchidKufYNoSa4
 Content-Type: text/plain; charset=UTF-8; name="repro.c"
 Content-Disposition: attachment; filename="repro.c"
 Content-Transfer-Encoding: base64
@@ -235,4 +213,4 @@ CgkJaW50IHBpZCA9IGZvcmsoKTsKCQlpZiAocGlkIDwgMCkKCQkJZXhpdCgxKTsKCQlpZiAo
 cGlkID09IDApIHsKCQkJZXhlY3V0ZV9vbmUoKTsKCQkJZXhpdCgwKTsKCQl9Cgl9CglyZXR1
 cm4gMDsKfQo=
 
---------------9av9CEdamI3OzCLPoQ2BROxe--
+--------------dR9te2b6TlOchidKufYNoSa4--
