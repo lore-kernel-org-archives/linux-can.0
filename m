@@ -1,44 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47E647F76A;
-	Mon,  5 Oct 2026 12:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E25947F789;
+	Mon,  5 Oct 2026 12:13:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791202440; cv=none; b=pA7sZH+SBqScXQeU3e6/Bz9Vkoa0m0FvpJqPVcvPfdIhrIL3tfeiIGiHCaCKu+++9czowAFn4nOJrA0ulFfTIaNkdTUy9ICKMPCCkyTI93waMqV2mnDdPYompbdgduNf0S9mLNzesP5IPCJZ+RnicPU9PpudsBnJ6NKgJRkHIsw=
+	t=1791202444; cv=none; b=E3RR+OplcYsSGplTdccuEZc7WYrGFIcic0zx87F/zPhInTPC0RILuNJIlBJgKg1i7cdplmDOo69hMK8FQdseA3IG8wo5T2mVU64OhpaDesvOJWvpq5H52Z0biL1fLnH+uHD+5PrDwgQ2VO3h4mn7jBv+g4BQkXXlAHXSMgL/UM4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791202440; c=relaxed/simple;
-	bh=CMLYsUFen46WF4cVmtYxCWRanAtq6UJ2jTVFPfKu6bg=;
+	s=arc-20240116; t=1791202444; c=relaxed/simple;
+	bh=4ZoA1gLbgmDQx+LLpMBYJ2NX0ra88ZCtd7DgXxTfnwE=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VcjYdjtbiAo1jtwlalUHoCUHP3m6CTkZU+DXdN4cckJJk6tP6CtwJtDUVgDc8WnS4FiU9LBG808cygNMC5teIeM6/zXyZuoY9uDPkqHb0KC2KZ/S0CqlZPSGO4WJGTducPPcwswjFcPCWT/2jkBgEqZNOLF8vHM+HD91EyWX/yQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MgRge8l0; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=Cv0eCZVyyhUpQFpB8sASM4K3fj81S4wY8WGrh6Q+EbIzasfL3UZT0puFqTFvx9gt7R7qnbS1r+SIkQUGJrmEQLGXciYns6UTOY6mMa6v4XVr6fgbSnPZ1vurgxRMLvsZEIkV2V7GhEPoGUghdyqdjWR25rcOWVhwXmneILp1Q60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ndnKKSS5; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MgRge8l0"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A8F1F000FF;
-	Mon,  5 Oct 2026 12:13:58 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ndnKKSS5"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF6A1F00893;
+	Mon,  5 Oct 2026 12:13:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791202438;
-	bh=DYpk9WY4SQbcuVOEQYZQLiDh/O7aM3qTQqeXViVQKKg=;
+	s=k20260515; t=1791202439;
+	bh=xbhkAptlgTy/9+0hDYr4hF0rdbDX15vCYGCaXXOOWB8=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=MgRge8l0I0FivhU4xivYDp81Fb0RQvR8KvqPRHhoWlJXmi2wmWLFjViHL8jUb0YOi
-	 nCTyBaCM+msJVVM5z8SBdlw4Kpk6NKKyn3bgMbls0RKLdWeI5GMnrn6bqGM/tLlBVT
-	 ITnDY6QGsBbZSXbov1Vm1cxr2WMSzQBHNG61bKJs1Exg5nUKnyUp4M6CCNrVJa86kw
-	 aVARmWQCXeuHsnlCu/4R79nAu8/Gi1ejDw8RLMR3vfrB9ok8Sn1gLNf2FAxLziHLwt
-	 1P0WxifDWJ83FPcYnwM7OCmAI/IWLxRWwKynCgvjNm1tDqHw3JUIcipjO4I2PTIAxB
-	 S3ftLHbvv86xA==
-Subject: Re: [PATCH can-next 07/10] can: gs_usb:
- gs_usb_receive_bulk_callback(): report channel number out of range error
+	b=ndnKKSS5QwpTfrnFD3YI69YLKAQAtBOSog2xdLihVEw/RytXJcIVtTtQENIYSLFbq
+	 ekSiJMDxXRJ6kxF3jyWgsHyrTO+3OyXz1e3k+ZLqJVQgBiBGmDMmo/AOobjDNXqDoR
+	 JuoVk7ctzho4lHndLeQFYXwQKdxMk5FbHjqHfrh5wd0pseTVQ+xcYjInanMR5dsD1H
+	 jQ6WxxOJAWPBEnEjgQLgMtn4Fv+rWSjlvy6cxx5r7p4cHkieIEsHiYoTEYQg6ssMf7
+	 rqLdyYbGhaKflTEyzDblSt9HjIYw2sTh+Tsqp6B+EAIHNezkBcDQR3h4G6umDFRPOg
+	 sSZFgrnKzkJyg==
+Subject: Re: [PATCH can-next 10/10] can: gs_usb:
+ gs_usb_get_minimum_rx_length(): enforce data_length of 8 bytes for CAN error
+ frames
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: mailhol@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Mon, 05 Oct 2026 12:13:57 +0000
-Message-ID: <179120243766.1406898.6206255223558959543@kernel.org>
+Date: Mon, 05 Oct 2026 12:13:58 +0000
+Message-ID: <179120243869.1406898.4158875985954430301@kernel.org>
 In-Reply-To:
- <20261004-gs_usb-cleanups-and-fixes-v1-7-7b4b06244a77@pengutronix.de>
+ <20261004-gs_usb-cleanups-and-fixes-v1-10-7b4b06244a77@pengutronix.de>
 References:
- <20261004-gs_usb-cleanups-and-fixes-v1-7-7b4b06244a77@pengutronix.de>
-X-sashiko-severity: Low
+ <20261004-gs_usb-cleanups-and-fixes-v1-10-7b4b06244a77@pengutronix.de>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -48,111 +49,154 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 1 · Medium: 0 · Low: 2 (1)
 
-- [Low] The commit message body of "can: gs_usb:
-  gs_usb_receive_bulk_callback(): report channel number out of range…
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [High] The patch fixes the error-frame check for one flag combination
+  but misses another.
+- [Low] For classic error frames, gs_usb_get_minimum_rx_length() now
+  returns data_length = CAN_ERR_DLC (8), and…
+- [Low] The commit fixes a regression but has no Fixes: tag.
 
 Pre-existing issues:
-- [High] In gs_usb_receive_bulk_callback()
-  (drivers/net/can/usb/gs_usb.c), the channel check only tests the upper…
+- [Low] This problem wasn't introduced by this patch.
 
 --
 
-can: gs_usb: gs_usb_receive_bulk_callback(): report channel number out of range error
+can: gs_usb: gs_usb_get_minimum_rx_length(): enforce data_length of 8 bytes for CAN error frames
 
-If the USB device sends a frame with an out of range channel number,
-gs_usb_receive_bulk_callback() now logs a rate limited error before it
-jumps to the device_detach label. Before this patch it detached without
-logging anything. Nothing else changes.
+This patch changes gs_usb_get_minimum_rx_length() so that classic CAN
+error frames received from the device use a data_length of CAN_ERR_DLC (8)
+instead of the length derived from the DLC. With that change, both the
+minimum URB length check and the copy into cf->data cover the error frame
+payload that gs_update_state() reads.
 
-> If the USB device sends an invalid channel, the device should not be
-> silently detached; instead, the display an error message before detaching.
+> therefore, for error frames increase the value of data_length in
+> gs_usb_get_minimum_rx_length() to CAN_ERR_DLC.
+>
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
 [Severity: Low]
-This isn't a bug, but "instead, the display an error message" reads
-wrong. Maybe "instead, display an error message before detaching"?
+Should this have a Fixes: tag?
+
+Commit 395d988f9386 ("can: gs_usb: gs_usb_receive_bulk_callback(): check
+actual_length before accessing data") changed the classic copy from this:
+
+    memcpy(cf->data, hf->classic_can->data, 8);
+
+to a copy based on data_length. After that change, gs_update_state() reads
+a zeroed cf->data[1] for error frames with can_dlc < 2.
+
+395d988f9386 has its own Fixes: tag and is a stable candidate. Would adding
+the following help stable trees pick up this correction too?
+
+Fixes: 395d988f9386 ("can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing data")
 
 > diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 9a0635b9c2d44..85a10c43b6f73 100644
+> index 3d49a73446927..dd01fd22510e2 100644
 > --- a/drivers/net/can/usb/gs_usb.c
 > +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -627,8 +627,13 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
->  	}
->  
->  	/* device reports out of range channel id */
-> -	if (hf->channel >= parent->channel_cnt)
-> +	if (hf->channel >= parent->channel_cnt) {
-> +		dev_err_ratelimited(&parent->udev->dev,
-> +				    "channel number out of range (channel=%u, channel_cnt=%u)\n",
-> +				    hf->channel, parent->channel_cnt);
-> +
->  		goto device_detach;
-> +	}
->  
->  	dev = parent->canch[hf->channel];
+> @@ -576,8 +576,12 @@ gs_usb_get_minimum_rx_length(const struct gs_can *dev, const struct gs_host_fram
+>  			minimum_length = sizeof(hf->header) + data_length;
+>  	} else {
+>  		if (hf->echo_id == GS_HOST_FRAME_ECHO_ID_RX &&
+> -		    !(hf->can_id & cpu_to_le32(CAN_RTR_FLAG)))
+> -			data_length = can_cc_dlc2len(hf->can_dlc);
+> +		    !(hf->can_id & cpu_to_le32(CAN_RTR_FLAG))) {
+> +			if (hf->can_id & cpu_to_le32(CAN_ERR_FLAG))
 
 [Severity: High]
-This isn't a bug introduced by this patch, but this check only tests the
-upper bound. Can parent->canch[hf->channel] still be NULL when it is read
-here?
+Does a frame with both CAN_ERR_FLAG and CAN_RTR_FLAG set still end up with
+data_length == 0 here?
 
-The code right after this does:
+The new CAN_ERR_FLAG test sits inside the !CAN_RTR_FLAG condition. A
+classic RX frame from the device with both flags set in can_id therefore
+gets data_length = 0. Without GS_CAN_FEATURE_HW_TIMESTAMP, minimum_length
+is then just sizeof(hf->header).
 
-	dev = parent->canch[hf->channel];
+gs_usb_receive_bulk_callback() then copies nothing. It still calls
+gs_update_state(), because that call only tests CAN_ERR_FLAG:
 
-	netdev = dev->netdev;
+    memcpy(cf->data, hf->classic_can->data, data_length);
 
-gs_usb_probe() sets channel_cnt to cover all channels before any slot is
-filled:
+    /* ERROR frames tell us information about the controller */
+    if (le32_to_cpu(hf->can_id) & CAN_ERR_FLAG)
+        gs_update_state(dev, cf);
 
-	parent->channel_cnt = icount;
-	...
-	for (i = 0; i < icount; i++) {
-		...
-		parent->canch[i] = gs_make_candev(i, intf, &dconf);
+If CAN_ERR_CRTL is also set, gs_update_state() reads cf->data[1]. That
+byte is the zero fill from alloc_can_skb(), not data from the device, so
+the code takes this branch:
 
-gs_make_candev() calls register_candev() before it returns. That means
-can0 is visible to userspace while probe is still running the control
-transfers for channel 1. Each transfer can take up to 1000 ms, and the
-device decides how long it takes to answer.
+    } else {
+        dev->can.state = CAN_STATE_ERROR_ACTIVE;
+    }
 
-If userspace brings can0 up in that window, gs_can_open() submits the RX
-URBs:
+The driver then reports error active instead of the warning or passive
+state the device sent. It also skips the error_warning and error_passive
+counters.
 
-	if (!parent->active_channels) {
-		...
+With GS_CAN_FEATURE_HW_TIMESTAMP enabled, the URB must already contain the
+full data field, but those bytes are still not copied.
 
-A device that reports icount >= 2 could then send a bulk-IN frame with
-channel=1. The check above passes because 1 < channel_cnt. dev is then
-NULL, and dev->netdev is dereferenced in URB completion context.
+Before 395d988f9386 the classic path always copied 8 bytes, so this flag
+combination is still a regression after this patch. Could CAN_ERR_FLAG be
+tested before the RTR exclusion, or could ERR|RTR frames be rejected?
 
-There is a related case when gs_make_candev() fails for a later channel.
-The ERR_PTR is stored in the slot first:
+> +				data_length = CAN_ERR_DLC;
 
-	parent->canch[i] = gs_make_candev(i, intf, &dconf);
-	if (IS_ERR_OR_NULL(parent->canch[i])) {
+[Severity: Low]
+For classic error frames the copy length is now CAN_ERR_DLC. However,
+gs_usb_receive_bulk_callback() still sets cf->len from the device's
+hf->can_dlc:
 
-The rollback kills the RX URBs only when it destroys the earlier
-channels. Until then, a frame for that channel would dereference the
-ERR_PTR.
+    can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
 
-The device_detach loop has the same gap. Its test lets an ERR_PTR
-through:
+    memcpy(cf->data, hf->classic_can->data, data_length);
 
-	if (parent->canch[rc])
-		netif_device_detach(parent->canch[rc]->netdev);
+can_frame_set_cc_len() only clamps the value to CAN_MAX_DLEN. Suppose a
+device sends an error frame with can_dlc < 8. Would userspace then get a
+frame with cf->len < CAN_ERR_DLC, while the driver has copied and acted on
+bytes past cf->len? Since 395d988f9386 the copy length and cf->len always
+matched.
 
-Should this path also reject an empty slot, for example with
-!parent->canch[hf->channel]? Another option is to stop storing ERR_PTR
-values in canch[]. A third is to create all channels before any of them
-is registered.
+The commit message says "By definition, CAN error frames have a length of
+CAN_ERR_DLC (= 8) bytes". Should cf->len also be set to CAN_ERR_DLC for
+error frames?
 
-This check is still unchanged at the end of the series.
+> +			else
+> +				data_length = can_cc_dlc2len(hf->can_dlc);
+> +		}
+
+[ ... ]
+
+[Severity: Low]
+This is a pre-existing issue, not one introduced by this patch.
+gs_usb_receive_bulk_callback() passes the raw hf->can_dlc from the device
+to can_frame_set_cc_len() without checking its range:
+
+    can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
+
+The helper in include/linux/can/length.h expects the caller to have
+checked the value already:
+
+    /* the caller already ensured that dlc is a value from 0 .. 15 */
+    if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
+        cf->len8_dlc = dlc;
+
+gs_make_candev() advertises CAN_CTRLMODE_CC_LEN8_DLC. With cc-len8-dlc
+enabled, can a device that sends can_dlc > 15 pass a len8_dlc value of up
+to 255 to raw socket readers?
+
+In-kernel users read the value through can_get_cc_dlc(), which rejects
+values above CAN_MAX_RAW_DLC.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77%40pengutronix.de
