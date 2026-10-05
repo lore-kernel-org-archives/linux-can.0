@@ -1,46 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B40B4078E8
-	for <linux-can@vger.kernel.org>; Mon,  5 Oct 2026 10:52:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A7B84078E8
+	for <linux-can@vger.kernel.org>; Mon,  5 Oct 2026 10:53:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791197559; cv=none; b=DUwH/49smROSKRgRa2A5FqUhigsVEABudTEac69QBtIuGJ1l8gH6ItT2sg0sZ5xqQRcSq+2w6GJGY0x5yqWtKN4E5vQDWdpLTYu/6ajEx8V8oX3FyL/3E4rgiXKPC+zk7sk/f5Wu+sJRicE2GMj0Y7IOui9NGkjueaW9Ifvi7zY=
+	t=1791197590; cv=none; b=uj76tY2xh0C+5IOehulbJcKDLfISdcL6oBfFPIylmVcxQ/QsNn+4uGxMY1h87nEuud0FegvfDYu7lx7r5sWmIxZmy5Oi6/b8KLB0fpm4NrzZ/PyCvSqUrEt+xYLHVY03UKPVKOJhJU7SLdjYT8NmEyj2bPFfnwHNgrHSUJPpmmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791197559; c=relaxed/simple;
-	bh=6rAW56aJzeCMtUKYVi40T4uwwNiNHC46o8/m4FwVqEs=;
+	s=arc-20240116; t=1791197590; c=relaxed/simple;
+	bh=+2AZV5eqNe+CELWCkuSSO3OM/t7t8ia3HN0Qk+V+tWY=;
 	h=From:Subject:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-Id; b=C/hGUDXtza0QnupkF1Xn8GegH1t7O6Y0MOWuvF558oOKdhKa6EtDPgJW9mnvVSors9PlHM2Q9zsJAE1kQUQ2ZDEHntv/rbodTkAjYm4H01zKrSiRAHds/TwUONSEyCCvPdTOr6r0K9D9dIILXoXr+Tv3DXQtp9sKopkwKZ8u+I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqAWV2lZ; arc=none smtp.client-ip=100.103.45.18
+	 Message-Id; b=XRV/mh5G+3Jp+s2iaROG0/bEiOfSuumsYybzv45cOsZbywJ9J305AY4RXs6DDk3HgPay5rO6SHsiW2IRsZO1Rxe4zBorcYaPpPgMbFnmYfKRvulLntxeGm8Hi4nzvFKYQ1hx8UrqiJlwzCJ3LzyLzjY4mKLjUThOvaD/LXhnE0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=guk/uhUB; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqAWV2lZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47C731F000FF;
-	Mon,  5 Oct 2026 10:52:37 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="guk/uhUB"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 878221F000FF;
+	Mon,  5 Oct 2026 10:53:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791197557;
-	bh=zLl2TIDIVTsec/eXhn8UUcXL3kzDAYjyZYZioEnbejc=;
+	s=k20260515; t=1791197588;
+	bh=wvetuNgAAitShDtKmRX6XV/Kh6jP/iDX11K/f0mq658=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=dqAWV2lZYsJ3VSuSSU52TM9vCXltAmECuAZOk2/g8VwlsQVjCVi1vgXUDgNgRZgii
-	 /nTWed8mgOzKG0Var9mkIWejBQlyULb9QSH7AijHcUeTSuU5hmmMaGWaYFGcrc37i9
-	 tmfV6tMEqoT9hz+SqYXBgp/2uREWN/VwJE2gUMQrn2GIfJv31siev35L+/lARvq6Ji
-	 63lBcqpt7n0LC2pMFk7EPt++q76DtoLQxVsdfeZ/P4jWBGtpvPY5bDcyn+S9dT7aDr
-	 yGurtun9n0Z99us6nPMvZgZguWkz2udaeWSy4kS4Rd2kz5oL975mYt7niOhhGHX7hv
-	 xD9JwS7kCiYiw==
+	b=guk/uhUBvpasAR3Voeikkxs6nlLbDcY3PyWIfUvLCQVZLAj3/CIWb3QeJVqKNNhwP
+	 4ovV+nMBkiiOYEAAil+wnTdmw2KXGJflJRW5Zy/smE1MzYaql1ZtHpJsy1dJqI/xaD
+	 uJhXU4/p6pBwCEwmOQwfgLGyKbESZyc5I8BTsSObO279jb2xXwQWz6FGfY8DKzlHhE
+	 P8arboaOrdADtzE0OLIB1EQEc+7eTjBM8pHgoFTY5+Bj1/yQ8J6kTpWsBegeThSf7F
+	 StF5u0oF3cS6tilKKz8NeAl6MzBJZrIhkx+bv4KTr10QTGqdIZMLdKSbmvDQ+CDwtm
+	 EPhgyQ/3TCtgQ==
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RFC 2/2] can: mcp251xfd: mcp251xfd_irq(): add call to
- can_rx_offload_threaded_irq_flush()
+Subject: Re: [PATCH RFC 1/2] can: rx-offload:
+ can_rx_offload_threaded_irq_flush(): add newfunction to be called from
+ within loop of threaded interrupt handlers
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, "Vincent Mailhol" <mailhol@kernel.org>, "Marc
- Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20261005-upstream-can-rx-offload-batching-alternative-v1-2-4c08ccb516ec@pengutronix.de>
+Cc: "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, linux-can@vger.kernel.org
+In-Reply-To: <20261005-upstream-can-rx-offload-batching-alternative-v1-1-4c08ccb516ec@pengutronix.de>
 References: <20261005-upstream-can-rx-offload-batching-alternative-v1-0-4c08ccb516ec@pengutronix.de>
- <20261005-upstream-can-rx-offload-batching-alternative-v1-2-4c08ccb516ec@pengutronix.de>
+ <20261005-upstream-can-rx-offload-batching-alternative-v1-1-4c08ccb516ec@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Mon, 05 Oct 2026 10:52:36 +0000
-Message-Id: <20261005105237.47C731F000FF@smtp.kernel.org>
+Date: Mon, 05 Oct 2026 10:53:08 +0000
+Message-Id: <20261005105308.878221F000FF@smtp.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,101 +49,125 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [Critical] can: mcp251xfd: crash in __skb_cut_position() due to out-of-or=
-der timestamps
+- [High] can: stale flush_len causes skb_queue.qlen underflow and permanent=
+ packet drops
 --
 
-commit b3d8ad3e6e4f0483e24aef1e8fa597af3b315e6a
+commit eec89aef49a7f405effd6fda359db0f458f6f4df
 Author: Marc Kleine-Budde <mkl@pengutronix.de>
 
-can: mcp251xfd: mcp251xfd_irq(): add call to can_rx_offload_threaded_irq_fl=
-ush()
+can: rx-offload: can_rx_offload_threaded_irq_flush(): add newfunction to be=
+ called from within loop of threaded interrupt handlers
 
-Under certain load situations, the threaded IRQ handler will not exit
-the while loop, resulting in unlimited growth of the skb_irq_queue.
-This commit adds a call into the newly added function
-can_rx_offload_threaded_irq_flush() to flush parts of the queue.
+This commit introduces can_rx_offload_threaded_irq_flush() to prevent
+unlimited growth of the IRQ skb queue during heavy load. It partially flush=
+es
+skb_irq_queue to the NAPI skb_queue when it reaches 3/4 of its maximum
+capacity. A portion of the elements are left behind to accommodate older
+out-of-order CAN frames.
 
-> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net=
-/can/spi/mcp251xfd/mcp251xfd-core.c
-> index f441f2265299e..208595c0cc469 100644
-> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
-> @@ -1615,6 +1615,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev=
-_id)
->  			}
->  		}
+> diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-of=
+fload.c
+> index 46e7b6db4a1ef..9f494ab7561ef 100644
+> --- a/drivers/net/can/dev/rx-offload.c
+> +++ b/drivers/net/can/dev/rx-offload.c
+[ ... ]
+> @@ -349,6 +351,90 @@ void can_rx_offload_threaded_irq_finish(struct can_r=
+x_offload *offload)
+>  }
+>  EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_finish);
 > =20
-> +		can_rx_offload_threaded_irq_flush(&priv->offload);
+> +/**
+> + * __skb_cut_position - cut a skb list into two
+[ ... ]
+> + */
+> +static inline void __skb_cut_position(struct sk_buff_head *list,
+> +				      struct sk_buff_head *head,
+> +				      struct sk_buff *entry,
+> +				      __u32 qlen)
+> +{
+> +	struct sk_buff *new_first =3D entry->next;
+> +	struct sk_buff *first =3D head->next;
+> +
+> +	WRITE_ONCE(list->next, first);
+> +	WRITE_ONCE(list->next->prev, (struct sk_buff *)list);
+> +	WRITE_ONCE(list->prev, entry);
+> +	WRITE_ONCE(entry->next, (struct sk_buff *)list);
+> +	list->qlen =3D qlen;
+> +
+> +	WRITE_ONCE(head->next, new_first);
+> +	WRITE_ONCE(new_first->prev, (struct sk_buff *)head);
+> +	head->qlen -=3D qlen;
 
-[Severity: Critical]
-Does this new loop expose a regression in the flushing logic when dealing w=
-ith
-out-of-order timestamps?
+[Severity: High]
+Could this lead to list->qlen undercounting the elements passed to NAPI?
 
-The mcp251xfd_irq threaded handler iterates over multiple RX FIFOs
-sequentially. Packets from different FIFOs can overlap chronologically,
-meaning a newly read packet from FIFO 1 may have an older timestamp than
-a previously read packet from FIFO 0.
+If an older out-of-order CAN frame is inserted into skb_irq_queue before
+offload->flush_skb after flush_len has been cached, the physical list
+splice moves more than qlen elements up to entry. Statically updating the
+length counters using the stale qlen will cause an eventual underflow in NA=
+PI
+dequeue.
 
-When can_rx_offload_queue_timestamp() is called, __skb_queue_add_sort()
-inserts this older packet before the newer one in the skb_irq_queue:
+> +}
+> +
+> +/**
+> + * can_rx_offload_threaded_irq_flush() - partially flush the rx_offload =
+queue
+[ ... ]
+> + */
+> +void can_rx_offload_threaded_irq_flush(struct can_rx_offload *offload)
+> +{
+> +	struct sk_buff_head tmp_queue;
+> +	unsigned long flags;
+> +	u32 irq_queue_len, queue_len;
+> +
+> +	irq_queue_len =3D skb_queue_len(&offload->skb_irq_queue);
+> +	if (irq_queue_len < offload->skb_queue_len_max / 2)
+> +		return;
+> +
+> +	if (!offload->flush_skb) {
+> +		offload->flush_skb =3D skb_peek_tail(&offload->skb_irq_queue);
+> +		offload->flush_len =3D irq_queue_len;
 
-drivers/net/can/dev/rx-offload.c:__skb_queue_add_sort() {
-    ...
-    __skb_queue_after(head, insert, new);
-    ...
-}
+[Severity: High]
+Is it possible for the number of elements preceding the tail to change after
+being cached here?
 
-However, can_rx_offload_threaded_irq_flush() caches flush_skb and flush_len
-as a snapshot:
+The commit message mentions that older out-of-order CAN frames may arrive f=
+rom
+independent mailboxes and be sorted into skb_irq_queue. If an older frame is
+subsequently received, it would be inserted before flush_skb, physically
+increasing the number of elements before flush_skb to flush_len + 1.
 
-drivers/net/can/dev/rx-offload.c:can_rx_offload_threaded_irq_flush() {
-    ...
-    if (!offload->flush_skb) {
-        offload->flush_skb =3D skb_peek_tail(&offload->skb_irq_queue);
-        offload->flush_len =3D irq_queue_len;
-    }
-    ...
-}
+> +	}
+> +
+> +	if (irq_queue_len < offload->skb_queue_len_max * 3 / 4)
+> +		return;
+> +
+> +	__skb_cut_position(&tmp_queue, &offload->skb_irq_queue,
+> +			   offload->flush_skb, offload->flush_len);
 
-If an older packet is subsequently inserted before flush_skb, the physical
-number of elements from the head to flush_skb will exceed the cached
-flush_len.
+[Severity: High]
+Does passing the stale flush_len to the slice operation hide out-of-order
+inserted frames from queue length accounting?
 
-When __skb_cut_position() slices the queue, it uses the stale flush_len:
+When __skb_cut_position is called, it physically moves flush_len + 1
+elements into tmp_queue, but assigns tmp_queue.qlen the stale flush_len.
+After splicing, skb_queue receives flush_len + 1 elements but its qlen
+only increases by flush_len.
 
-drivers/net/can/dev/rx-offload.c:__skb_cut_position() {
-    ...
-    list->qlen =3D qlen;
+When NAPI dequeue consumes all elements, skb_queue.qlen would drop below 0
+and underflow to 0xFFFFFFFF. Since this exceeds skb_queue_len_max, would all
+future frames be permanently rejected with -ENOBUFS?
 
-    WRITE_ONCE(head->next, new_first);
-    WRITE_ONCE(new_first->prev, (struct sk_buff *)head);
-    head->qlen -=3D qlen;
-    ...
-}
-
-This leaves skb_irq_queue.qlen under-decremented. Over multiple iterations
-of this new while loop, qlen grows artificially large.
-
-Eventually, irq_queue_len exceeds the flush threshold even when the queue is
-physically empty, causing skb_peek_tail() to return NULL for flush_skb.
-__skb_cut_position() then dereferences entry->next where entry is NULL:
-
-drivers/net/can/dev/rx-offload.c:__skb_cut_position() {
-    ...
-    struct sk_buff *new_first =3D entry->next;
-    ...
-}
-
-Can a remote attacker trigger this kernel panic by flooding the CAN bus
-with traffic to distribute packets across multiple FIFOs, creating the
-out-of-order timestamp scenario?
-
->  		handled =3D IRQ_HANDLED;
->  	} while (1);
->
+> +
+> +	spin_lock_irqsave(&offload->skb_queue.lock, flags);
+> +	skb_queue_splice_tail_init(&tmp_queue, &offload->skb_queue);
+> +	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
+> +
+> +	offload->flush_skb =3D NULL;
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261005-upstream-c=
-an-rx-offload-batching-alternative-v1-0-4c08ccb516ec@pengutronix.de?part=3D2
+an-rx-offload-batching-alternative-v1-0-4c08ccb516ec@pengutronix.de?part=3D1
