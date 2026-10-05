@@ -1,202 +1,283 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E25947F789;
-	Mon,  5 Oct 2026 12:13:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+Received: from smtpfb1-g21.free.fr (smtpfb1-g21.free.fr [212.27.42.9])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241004A341D;
+	Mon,  5 Oct 2026 14:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791202444; cv=none; b=E3RR+OplcYsSGplTdccuEZc7WYrGFIcic0zx87F/zPhInTPC0RILuNJIlBJgKg1i7cdplmDOo69hMK8FQdseA3IG8wo5T2mVU64OhpaDesvOJWvpq5H52Z0biL1fLnH+uHD+5PrDwgQ2VO3h4mn7jBv+g4BQkXXlAHXSMgL/UM4=
+	t=1791210169; cv=none; b=X1+L2EZUUEfwLhZ1NEgbNoqwk1BgpUT4FNAp35pcU2PRrIL1ZucUEQB4BS3PPR2Xrks3SFdspzDfPC3O/K6ad6mJCnBIDPlTx9FHsxE6wCe1+WjZx59n3amAfz42FzMivXq5gv8fy43imWrL8JCOxp4s+uEPV8yfRphmIS3jHEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791202444; c=relaxed/simple;
-	bh=4ZoA1gLbgmDQx+LLpMBYJ2NX0ra88ZCtd7DgXxTfnwE=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Cv0eCZVyyhUpQFpB8sASM4K3fj81S4wY8WGrh6Q+EbIzasfL3UZT0puFqTFvx9gt7R7qnbS1r+SIkQUGJrmEQLGXciYns6UTOY6mMa6v4XVr6fgbSnPZ1vurgxRMLvsZEIkV2V7GhEPoGUghdyqdjWR25rcOWVhwXmneILp1Q60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ndnKKSS5; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791210169; c=relaxed/simple;
+	bh=PxpMxYtO9jOTvLd9gPf9HskQg0Y1AaKEfqBx8ttbcig=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:Subject:MIME-Version:
+	 Content-Type; b=n4/cJjA8dPlLquqUEqctNg0vBmepcmG53qqNpGATXWzvxMwEJfTnCRswYeXRJuTpI6+Lo/xP1J+6g6/EiBQzy8DXaGvah3KmlP4l8yunNx84QqSlXliaNrOKQJvqCevx49X8gvzm5obfdLcuC2UiRu75HMMCISXG1Np+uM89T4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=TjZFngIf; arc=none smtp.client-ip=212.27.42.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ndnKKSS5"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1BF6A1F00893;
-	Mon,  5 Oct 2026 12:13:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791202439;
-	bh=xbhkAptlgTy/9+0hDYr4hF0rdbDX15vCYGCaXXOOWB8=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=ndnKKSS5QwpTfrnFD3YI69YLKAQAtBOSog2xdLihVEw/RytXJcIVtTtQENIYSLFbq
-	 ekSiJMDxXRJ6kxF3jyWgsHyrTO+3OyXz1e3k+ZLqJVQgBiBGmDMmo/AOobjDNXqDoR
-	 JuoVk7ctzho4lHndLeQFYXwQKdxMk5FbHjqHfrh5wd0pseTVQ+xcYjInanMR5dsD1H
-	 jQ6WxxOJAWPBEnEjgQLgMtn4Fv+rWSjlvy6cxx5r7p4cHkieIEsHiYoTEYQg6ssMf7
-	 rqLdyYbGhaKflTEyzDblSt9HjIYw2sTh+Tsqp6B+EAIHNezkBcDQR3h4G6umDFRPOg
-	 sSZFgrnKzkJyg==
-Subject: Re: [PATCH can-next 10/10] can: gs_usb:
- gs_usb_get_minimum_rx_length(): enforce data_length of 8 bytes for CAN error
- frames
-From: netdev-bot+sashiko@kernel.org
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="TjZFngIf"
+Received: from smtp2-g21.free.fr (smtp2-g21.free.fr [212.27.42.2])
+	by smtpfb1-g21.free.fr (Postfix) with ESMTP id EA9AFDF8A03;
+	Mon,  5 Oct 2026 16:22:20 +0200 (CEST)
+Received: from zimbra65-e11.priv.proxad.net (unknown [172.20.243.215])
+	by smtp2-g21.free.fr (Postfix) with ESMTP id B2295200410;
+	Mon,  5 Oct 2026 16:22:12 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1791210132;
+	bh=PxpMxYtO9jOTvLd9gPf9HskQg0Y1AaKEfqBx8ttbcig=;
+	h=Date:From:To:Cc:In-Reply-To:Subject:From;
+	b=TjZFngIfVc408y9R0ACJj7zGvxMmgAlx+E2skaCwNyLGjvvtN9fWhjrnX17jHAE2Y
+	 6z0Zw8XnAzssPXkHEQvoc108OzuoInhdcp/LuZ85tlHzJW5XhufgQ+Q4TyPsW5TgW6
+	 StWfBBQVPfUE55WRUpUSAdeauf+V/cTdHgukWUVFa2xqK0glaV2NDLdTkazxgZyQxI
+	 SphVB471qEy6o6LJNMtcColR5cRQKTMcY2GESV1YAqZiA1IgAXm5dgHSTMpnJQSv/d
+	 JYM+878LgPzMYpGGEaqjVFNGrlmWmgzlaDWeQGdo5W/9atp7BEILmhWIb1UzZlQJg7
+	 18lATZgVfocDQ==
+Date: Mon, 5 Oct 2026 16:22:12 +0200 (CEST)
+From: =?utf-8?Q?St=C3=A9phane?= Grosjean <stephane.grosjean@free.fr>
 To: mkl@pengutronix.de
-Cc: mailhol@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Mon, 05 Oct 2026 12:13:58 +0000
-Message-ID: <179120243869.1406898.4158875985954430301@kernel.org>
-In-Reply-To:
- <20261004-gs_usb-cleanups-and-fixes-v1-10-7b4b06244a77@pengutronix.de>
-References:
- <20261004-gs_usb-cleanups-and-fixes-v1-10-7b4b06244a77@pengutronix.de>
-X-sashiko-severity: High
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Cc: mailhol@kernel.org, s grosjean <s.grosjean@peak-system.fr>, 
+	kernel@pengutronix.de, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, kuba@kernel.org
+Message-ID: <1730786945.910525984.1791210132571.JavaMail.root@zimbra65-e11.priv.proxad.net>
+In-Reply-To: <179106844116.1406898.10605612528694983606@kernel.org>
+Subject: Re: [PATCH can-next 6/7] can: peak_usb: Add bus error reporting for
+ the PCAN-USB FD family
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 7.2.0-GA2598 (ZimbraWebClient - GC151 (Linux)/7.2.0-GA2598)
+X-Authenticated-User: stephane.grosjean@free.fr
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider.
+Hello Marc,
 
-Critical: 0 · High: 1 · Medium: 0 · Low: 2 (1)
+Can you let me know if I need to make changes myself to these patches you s=
+ent, and if so, how? (Should the new requested changes=E2=80=94which are un=
+related to the original patch=E2=80=94be included in a new version? Or in a=
+ different series?...)
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+Thank you for your help!
 
-- [High] The patch fixes the error-frame check for one flag combination
-  but misses another.
-- [Low] For classic error frames, gs_usb_get_minimum_rx_length() now
-  returns data_length = CAN_ERR_DLC (8), and…
-- [Low] The commit fixes a regression but has no Fixes: tag.
+Best regards,
 
-Pre-existing issues:
-- [Low] This problem wasn't introduced by this patch.
+-- St=C3=A9phane
 
---
-
-can: gs_usb: gs_usb_get_minimum_rx_length(): enforce data_length of 8 bytes for CAN error frames
-
-This patch changes gs_usb_get_minimum_rx_length() so that classic CAN
-error frames received from the device use a data_length of CAN_ERR_DLC (8)
-instead of the length derived from the DLC. With that change, both the
-minimum URB length check and the copy into cf->data cover the error frame
-payload that gs_update_state() reads.
-
-> therefore, for error frames increase the value of data_length in
-> gs_usb_get_minimum_rx_length() to CAN_ERR_DLC.
->
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
-[Severity: Low]
-Should this have a Fixes: tag?
-
-Commit 395d988f9386 ("can: gs_usb: gs_usb_receive_bulk_callback(): check
-actual_length before accessing data") changed the classic copy from this:
-
-    memcpy(cf->data, hf->classic_can->data, 8);
-
-to a copy based on data_length. After that change, gs_update_state() reads
-a zeroed cf->data[1] for error frames with can_dlc < 2.
-
-395d988f9386 has its own Fixes: tag and is a stable candidate. Would adding
-the following help stable trees pick up this correction too?
-
-Fixes: 395d988f9386 ("can: gs_usb: gs_usb_receive_bulk_callback(): check actual_length before accessing data")
-
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 3d49a73446927..dd01fd22510e2 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -576,8 +576,12 @@ gs_usb_get_minimum_rx_length(const struct gs_can *dev, const struct gs_host_fram
->  			minimum_length = sizeof(hf->header) + data_length;
->  	} else {
->  		if (hf->echo_id == GS_HOST_FRAME_ECHO_ID_RX &&
-> -		    !(hf->can_id & cpu_to_le32(CAN_RTR_FLAG)))
-> -			data_length = can_cc_dlc2len(hf->can_dlc);
-> +		    !(hf->can_id & cpu_to_le32(CAN_RTR_FLAG))) {
-> +			if (hf->can_id & cpu_to_le32(CAN_ERR_FLAG))
-
-[Severity: High]
-Does a frame with both CAN_ERR_FLAG and CAN_RTR_FLAG set still end up with
-data_length == 0 here?
-
-The new CAN_ERR_FLAG test sits inside the !CAN_RTR_FLAG condition. A
-classic RX frame from the device with both flags set in can_id therefore
-gets data_length = 0. Without GS_CAN_FEATURE_HW_TIMESTAMP, minimum_length
-is then just sizeof(hf->header).
-
-gs_usb_receive_bulk_callback() then copies nothing. It still calls
-gs_update_state(), because that call only tests CAN_ERR_FLAG:
-
-    memcpy(cf->data, hf->classic_can->data, data_length);
-
-    /* ERROR frames tell us information about the controller */
-    if (le32_to_cpu(hf->can_id) & CAN_ERR_FLAG)
-        gs_update_state(dev, cf);
-
-If CAN_ERR_CRTL is also set, gs_update_state() reads cf->data[1]. That
-byte is the zero fill from alloc_can_skb(), not data from the device, so
-the code takes this branch:
-
-    } else {
-        dev->can.state = CAN_STATE_ERROR_ACTIVE;
-    }
-
-The driver then reports error active instead of the warning or passive
-state the device sent. It also skips the error_warning and error_passive
-counters.
-
-With GS_CAN_FEATURE_HW_TIMESTAMP enabled, the URB must already contain the
-full data field, but those bytes are still not copied.
-
-Before 395d988f9386 the classic path always copied 8 bytes, so this flag
-combination is still a regression after this patch. Could CAN_ERR_FLAG be
-tested before the RTR exclusion, or could ERR|RTR frames be rejected?
-
-> +				data_length = CAN_ERR_DLC;
-
-[Severity: Low]
-For classic error frames the copy length is now CAN_ERR_DLC. However,
-gs_usb_receive_bulk_callback() still sets cf->len from the device's
-hf->can_dlc:
-
-    can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
-
-    memcpy(cf->data, hf->classic_can->data, data_length);
-
-can_frame_set_cc_len() only clamps the value to CAN_MAX_DLEN. Suppose a
-device sends an error frame with can_dlc < 8. Would userspace then get a
-frame with cf->len < CAN_ERR_DLC, while the driver has copied and acted on
-bytes past cf->len? Since 395d988f9386 the copy length and cf->len always
-matched.
-
-The commit message says "By definition, CAN error frames have a length of
-CAN_ERR_DLC (= 8) bytes". Should cf->len also be set to CAN_ERR_DLC for
-error frames?
-
-> +			else
-> +				data_length = can_cc_dlc2len(hf->can_dlc);
-> +		}
-
-[ ... ]
-
-[Severity: Low]
-This is a pre-existing issue, not one introduced by this patch.
-gs_usb_receive_bulk_callback() passes the raw hf->can_dlc from the device
-to can_frame_set_cc_len() without checking its range:
-
-    can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
-
-The helper in include/linux/can/length.h expects the caller to have
-checked the value already:
-
-    /* the caller already ensured that dlc is a value from 0 .. 15 */
-    if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
-        cf->len8_dlc = dlc;
-
-gs_make_candev() advertises CAN_CTRLMODE_CC_LEN8_DLC. With cc-len8-dlc
-enabled, can a device that sends can_dlc > 15 pass a len8_dlc value of up
-to 255 to raw socket readers?
-
-In-kernel users read the value through can_get_cc_dlc(), which rejects
-values above CAN_MAX_RAW_DLC.
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77%40pengutronix.de
+----- Mail original -----
+> Thank you for your contribution! Sashiko AI review found 3 potential
+> issue(s) to consider.
+>=20
+> Critical: 0 =C2=B7 High: 1 =C2=B7 Medium: 1 (1) =C2=B7 Low: 1
+>=20
+> If you believe none of the issues are legitimate, please reply to
+> each
+> issue of Medium severity or higher and explain why the AI is wrong.
+> If any of them are legitimate and you plan to respin, please let
+> patchwork
+> know by including "pw-bot: cr" as a separate line at the end of your
+> reply
+> (one such reply per series is enough).
+>=20
+> - [High] The invalid-channel guard is incomplete.
+> - [Medium] pcan_usb_fd_start() now calls `err =3D
+>   pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR, usb_opts);`
+>   (line=E2=80=A6
+> - [Low] The new `if (!dev)` check in pcan_usb_fd_decode_error() fixes
+> an
+>   existing NULL pointer dereference, but the fix is folded into a=E2=80=
+=A6
+>=20
+> Pre-existing issues:
+> - [Medium] This problem wasn't introduced by this patch, but when
+>   peak_usb_start() fails at dev_set_bus(dev, 1) after=E2=80=A6
+>=20
+> --
+>=20
+> can: peak_usb: Add bus error reporting for the PCAN-USB FD family
+>=20
+> This patch adds CAN bus error reporting for the PEAK-System
+> USB-to-CAN FD
+> devices. pcan_usb_fd_start() now enables PUCAN_OPTION_ERROR for each
+> channel, pcan_usb_fd_decode_error() turns firmware error records into
+> CAN
+> error frames, and the adapters now advertise
+> CAN_CTRLMODE_BERR_REPORTING.
+> It also adds a NULL check for an invalid channel in
+> pcan_usb_fd_decode_error().
+>=20
+> > diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> > b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> > index 82502594a4092..9081f30e3d356 100644
+> > --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> > +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> > @@ -661,17 +661,73 @@ static int pcan_usb_fd_decode_error(struct
+> > pcan_usb_fd_if *usb_if,
+> >  =09struct pucan_error_msg *er =3D (struct pucan_error_msg *)rx_msg;
+> >  =09struct pcan_usb_fd_device *pdev;
+> >  =09struct peak_usb_device *dev;
+> > +=09struct can_frame *cf;
+> > +=09struct sk_buff *skb;
+> > +=09u8 can_err_tx =3D 0;
+> > =20
+> >  =09if (pucan_ermsg_get_channel(er) >=3D ARRAY_SIZE(usb_if->dev))
+> >  =09=09return -EINVAL;
+> > =20
+> > +=09/* Guard against bogus channel 1 reports from single-channel
+> > adapters.
+> > +=09 * Treat the entire URB as invalid in that case.
+> > +=09 */
+> >  =09dev =3D usb_if->dev[pucan_ermsg_get_channel(er)];
+> > +=09if (!dev)
+> > +=09=09return -EINVAL;
+> > +
+>=20
+> [Severity: High]
+> This check covers pcan_usb_fd_decode_error(). Do the other decoders
+> that
+> read a channel from the same URB need it too?
+>=20
+> On PCAN-USB FD and PCAN-Chip USB, ctrl_count is
+> PCAN_USBFD_CHANNEL_COUNT
+> (1). pcan_usb_fd_init() therefore sets only usb_if->dev[0], and
+> dev[1]
+> stays NULL. The ARRAY_SIZE(usb_if->dev) bound is PCAN_USB_MAX_CHANNEL
+> (2),
+> so channel 1 passes that check.
+>=20
+> The other three decoders still dereference without a NULL check:
+>=20
+> pcan_usb_fd_decode_canmsg():
+> =09dev =3D usb_if->dev[pucan_msg_get_channel(rm)];
+> =09netdev =3D dev->netdev;
+>=20
+> pcan_usb_fd_decode_status():
+> =09dev =3D usb_if->dev[pucan_stmsg_get_channel(sm)];
+> =09pdev =3D container_of(dev, struct pcan_usb_fd_device, dev);
+> =09netdev =3D dev->netdev;
+>=20
+> pcan_usb_fd_decode_overrun():
+> =09dev =3D usb_if->dev[pufd_omsg_get_channel(ov)];
+> =09netdev =3D dev->netdev;
+>=20
+> Suppose the firmware sends the bogus channel 1 described in the new
+> comment
+> on a CAN_RX, STATUS or OVERRUN record. Wouldn't that dereference NULL
+> in
+> peak_usb_read_bulk_callback()->pcan_usb_fd_decode_buf()?
+>=20
+> The commit message says "Parsing of the entire URB is aborted if the
+> firmware reports an invalid channel". As far as I can tell, that only
+> holds
+> for error records. The later loopback patch in this series doesn't
+> seem to
+> change these decoders either.
+>=20
+> [Severity: Low]
+> The code itself is fine, but this check also fixes an existing NULL
+> pointer
+> dereference. Before this patch, pcan_usb_fd_decode_error() did:
+>=20
+> =09dev =3D usb_if->dev[pucan_ermsg_get_channel(er)];
+> =09pdev =3D container_of(dev, struct pcan_usb_fd_device, dev);
+> =09pdev->bec.txerr =3D er->tx_err_cnt;
+>=20
+> PUCAN_OPTION_ERROR was already enabled on first open, so a channel 1
+> error
+> record on a single-channel adapter could already fault there.
+>=20
+> Could this fix be split out with a Fixes: tag and Cc: stable, as was
+> done
+> for the earlier "fix missing CAN_ERR_FLAG ..." patch in this series?
+> That
+> way stable trees would pick it up.
+>=20
+> [ ... ]
+>=20
+> > @@ -912,12 +969,17 @@ static int pcan_usb_fd_start(struct
+> > peak_usb_device *dev)
+> >  =09=09peak_usb_init_time_ref(&pdev->usb_if->time_ref,
+> >  =09=09=09=09       &pcan_usb_pro_fd);
+> > =20
+> > -=09=09/* enable USB calibration messages */
+> > -=09=09err =3D pcan_usb_fd_set_options(dev, 1,
+> > -=09=09=09=09=09      PUCAN_OPTION_ERROR,
+> > -=09=09=09=09=09      PCAN_UFD_FLTEXT_CALIBRATION);
+> > +=09=09/* enable USB calibration messages (needed only once for the
+> > +=09=09 * entire interface)
+> > +=09=09 */
+> > +=09=09usb_opts |=3D PCAN_UFD_FLTEXT_CALIBRATION;
+> >  =09}
+> > =20
+> > +=09/* set channel device options: always asks for bus error
+> > notifications
+> > +=09 * to get (at least) rxerr/txerr, as well as any USB-specific
+> > option.
+> > +=09 */
+> > +=09err =3D pcan_usb_fd_set_options(dev, 1, PUCAN_OPTION_ERROR,
+> > usb_opts);
+> > +
+> >  =09pdev->usb_if->dev_opened_count++;
+>=20
+> [Severity: Medium]
+> Can dev_opened_count end up one too high here?
+>=20
+> pcan_usb_fd_set_options() now runs on every open. If it fails, the
+> counter
+> is still incremented before err is returned. peak_usb_start() then
+> takes
+> the err_adapter path:
+>=20
+> =09if (dev->adapter->dev_start) {
+> =09=09err =3D dev->adapter->dev_start(dev);
+> =09=09if (err)
+> =09=09=09goto err_adapter;
+> =09}
+>=20
+> err_adapter frees the tx URBs and kills the rx URBs, but it never
+> calls
+> adapter->dev_stop(). ndo_stop isn't called after a failed open
+> either.
+>=20
+> With the count stuck too high:
+>=20
+> - the =3D=3D 0 check here no longer resets time_ref or re-enables
+> calibration
+>   on the next first open
+> - the =3D=3D 1 check in pcan_usb_fd_stop() never matches, so calibration
+>   messages are never turned off
+> - the > 0 check in pcan_usb_fd_exit() gives the wrong result
+>=20
+> Before this patch, a non-first open could only fail in
+> pcan_usb_fd_set_filter_std(), which returns before the increment.
+> Should
+> the increment be skipped when pcan_usb_fd_set_options() fails?
+>=20
+> [Severity: Medium]
+> This is a pre-existing issue and was not introduced by this patch,
+> but a
+> related path exists when pcan_usb_fd_start() succeeds and bus-on then
+> fails
+> in peak_usb_start():
+>=20
+> =09err =3D dev->adapter->dev_set_bus(dev, 1);
+> =09if (err)
+> =09=09goto err_adapter;
+>=20
+> err_adapter doesn't call dev_stop() here either. dev_opened_count
+> stays
+> incremented and the firmware notification options stay enabled. With
+> this
+> patch, the per-channel PUCAN_OPTION_ERROR is also left armed in that
+> case.
+>=20
+> Should peak_usb_start() undo dev_start() on this path?
+>=20
+> [ ... ]
+>=20
+> --
+> Sashiko AI review =C2=B7
+> https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261002-peak_usb_enh=
+ancements-v1-0-50e965755c06%40pengutronix.de
+>=20
+>=20
