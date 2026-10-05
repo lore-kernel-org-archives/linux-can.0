@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9E6547CC61;
-	Mon,  5 Oct 2026 12:13:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C47E647F76A;
+	Mon,  5 Oct 2026 12:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791202438; cv=none; b=NPVFVY28+mPB/agDVb74DfpwPsut9vLvaFhq7GhBPMX3R+RwJ3V14x8Z5qPEDDzwC6a5bgYnIqjTm9uDWnpbUKL5wCUZge+2AHuxxGYfve67Ge2qN6mK5/luaxtKhK7nzuBvJg4a9QsT0uzDk/0ZaECR5Pl6FyVFLGbZ8zzk/VI=
+	t=1791202440; cv=none; b=pA7sZH+SBqScXQeU3e6/Bz9Vkoa0m0FvpJqPVcvPfdIhrIL3tfeiIGiHCaCKu+++9czowAFn4nOJrA0ulFfTIaNkdTUy9ICKMPCCkyTI93waMqV2mnDdPYompbdgduNf0S9mLNzesP5IPCJZ+RnicPU9PpudsBnJ6NKgJRkHIsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791202438; c=relaxed/simple;
-	bh=OZdyrZOK2xUn1je1OQUMStdNQ/ua1+6/hCRqUgLzCq8=;
+	s=arc-20240116; t=1791202440; c=relaxed/simple;
+	bh=CMLYsUFen46WF4cVmtYxCWRanAtq6UJ2jTVFPfKu6bg=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XBuONd6NbPs/8UIl0ySjkd/t+OXD+m1uHG0NJ6k0IaBoltbIHMtja3Vxv9YpfqUm/igUFLQb34aFBvqfjiLkcsP9D+HXStYd9iA1xEPSXwMU4vbgW5IHhM37KbSwaYZMujAlQrCLpTj7/zOGSmnZoTQ9/JxPdwkNVLGq+lGpuqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=icKkfGQd; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=VcjYdjtbiAo1jtwlalUHoCUHP3m6CTkZU+DXdN4cckJJk6tP6CtwJtDUVgDc8WnS4FiU9LBG808cygNMC5teIeM6/zXyZuoY9uDPkqHb0KC2KZ/S0CqlZPSGO4WJGTducPPcwswjFcPCWT/2jkBgEqZNOLF8vHM+HD91EyWX/yQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MgRge8l0; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="icKkfGQd"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2102E1F00893;
-	Mon,  5 Oct 2026 12:13:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MgRge8l0"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25A8F1F000FF;
+	Mon,  5 Oct 2026 12:13:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791202437;
-	bh=Dhk/iCQ57gq4ae6wQBVbZpHMPriGe2/uYAANPXTXcH0=;
+	s=k20260515; t=1791202438;
+	bh=DYpk9WY4SQbcuVOEQYZQLiDh/O7aM3qTQqeXViVQKKg=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=icKkfGQd9OYtPHVjJwhvPVMzhus6cNawwQAy1pvjaEq58px6uN4NQr9FEWccHoLeK
-	 /UsazQSYzFHS0g4jCHHgjX+OhNMJ6NvZx6Ec5PW+MeUUtRNT2dJjg67v7XXkIWH6yb
-	 TIfVdfv07LMSe/sDkVdjSYsmv9z46SJ2eW8FjjREpkRT2gALCK5i6oXK0qm1QDaoCb
-	 a3Zx0lGdr/7F1iZGeygPsxj/sMdGX+sMdkoL8rtdNtHoVLWaAE0DvgM9UkIQlm7ZZt
-	 yoL1efsLSy9P8Pe6ZjucnICbuCgVN4LLS1cJySIGs+4HpUjVCP+aowyQPKQa0NWcr4
-	 kr+iWTAqvRdVw==
-Subject: Re: [PATCH can-next 06/10] can: gs_usb:
- gs_usb_receive_bulk_callback(): add missing call to can_rx_offload_irq_finish
+	b=MgRge8l0I0FivhU4xivYDp81Fb0RQvR8KvqPRHhoWlJXmi2wmWLFjViHL8jUb0YOi
+	 nCTyBaCM+msJVVM5z8SBdlw4Kpk6NKKyn3bgMbls0RKLdWeI5GMnrn6bqGM/tLlBVT
+	 ITnDY6QGsBbZSXbov1Vm1cxr2WMSzQBHNG61bKJs1Exg5nUKnyUp4M6CCNrVJa86kw
+	 aVARmWQCXeuHsnlCu/4R79nAu8/Gi1ejDw8RLMR3vfrB9ok8Sn1gLNf2FAxLziHLwt
+	 1P0WxifDWJ83FPcYnwM7OCmAI/IWLxRWwKynCgvjNm1tDqHw3JUIcipjO4I2PTIAxB
+	 S3ftLHbvv86xA==
+Subject: Re: [PATCH can-next 07/10] can: gs_usb:
+ gs_usb_receive_bulk_callback(): report channel number out of range error
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: mailhol@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Mon, 05 Oct 2026 12:13:56 +0000
-Message-ID: <179120243664.1406898.1673520278617887925@kernel.org>
+Date: Mon, 05 Oct 2026 12:13:57 +0000
+Message-ID: <179120243766.1406898.6206255223558959543@kernel.org>
 In-Reply-To:
- <20261004-gs_usb-cleanups-and-fixes-v1-6-7b4b06244a77@pengutronix.de>
+ <20261004-gs_usb-cleanups-and-fixes-v1-7-7b4b06244a77@pengutronix.de>
 References:
- <20261004-gs_usb-cleanups-and-fixes-v1-6-7b4b06244a77@pengutronix.de>
+ <20261004-gs_usb-cleanups-and-fixes-v1-7-7b4b06244a77@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -54,57 +54,105 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The commit fixes a real bug introduced by commit 24bc41b45583
-  ("can: gs_usb: convert to NAPI/rx-offload to avoid OoO reception"),…
+- [Low] The commit message body of "can: gs_usb:
+  gs_usb_receive_bulk_callback(): report channel number out of range…
+
+Pre-existing issues:
+- [High] In gs_usb_receive_bulk_callback()
+  (drivers/net/can/usb/gs_usb.c), the channel check only tests the upper…
 
 --
 
-can: gs_usb: gs_usb_receive_bulk_callback(): add missing call to can_rx_offload_irq_finish
+can: gs_usb: gs_usb_receive_bulk_callback(): report channel number out of range error
 
-The patch fixes one error path in gs_usb_receive_bulk_callback(). That path
-runs when the host frame has GS_CAN_FLAG_OVERFLOW set and alloc_can_err_skb()
-fails. It now jumps to a new can_rx_offload_irq_finish label instead of going
-straight to resubmit_urb.
+If the USB device sends a frame with an out of range channel number,
+gs_usb_receive_bulk_callback() now logs a rate limited error before it
+jumps to the device_detach label. Before this patch it detached without
+logging anything. Nothing else changes.
 
-> If the overflow flag is set for a host frame and the allocation of the
-> error SKB fails, the URB should not be resubmitted immediately; instead,
-> can_rx_offload_irq_finish() should be called, since an SKB may have been
-> added to rx-offload.
->
-> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> If the USB device sends an invalid channel, the device should not be
+> silently detached; instead, the display an error message before detaching.
 
 [Severity: Low]
-The code change looks right. Should the commit message also have a Fixes
-tag, so the fix gets backported to stable?
+This isn't a bug, but "instead, the display an error message" reads
+wrong. Maybe "instead, display an error message before detaching"?
 
-The regression appears to come from:
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index 9a0635b9c2d44..85a10c43b6f73 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+> @@ -627,8 +627,13 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+>  	}
+>  
+>  	/* device reports out of range channel id */
+> -	if (hf->channel >= parent->channel_cnt)
+> +	if (hf->channel >= parent->channel_cnt) {
+> +		dev_err_ratelimited(&parent->udev->dev,
+> +				    "channel number out of range (channel=%u, channel_cnt=%u)\n",
+> +				    hf->channel, parent->channel_cnt);
+> +
+>  		goto device_detach;
+> +	}
+>  
+>  	dev = parent->canch[hf->channel];
 
-Fixes: 24bc41b45583 ("can: gs_usb: convert to NAPI/rx-offload to avoid OoO reception")
+[Severity: High]
+This isn't a bug introduced by this patch, but this check only tests the
+upper bound. Can parent->canch[hf->channel] still be NULL when it is read
+here?
 
-That commit changed gs_usb_rx_offload() and gs_usb_get_echo_skb() to queue
-SKBs on offload->skb_irq_queue. Only can_rx_offload_irq_finish() moves those
-SKBs to skb_queue and calls napi_schedule(). The same commit added the
-can_rx_offload_irq_finish() call just above resubmit_urb.
+The code right after this does:
 
-The goto resubmit_urb on the overflow path is older (from d08e973a77d1).
-After 24bc41b45583, that goto started skipping the new
-can_rx_offload_irq_finish() call.
+	dev = parent->canch[hf->channel];
 
-The commit message could also say what the user sees. Here is the sequence:
+	netdev = dev->netdev;
 
-gs_usb_receive_bulk_callback()
-    gs_usb_rx_offload() or gs_usb_get_echo_skb()
-        __skb_queue_tail(&offload->skb_irq_queue, skb)
-    hf->flags & GS_CAN_FLAG_OVERFLOW
-        alloc_can_err_skb() returns NULL
-        goto resubmit_urb  /* skips can_rx_offload_irq_finish() */
+gs_usb_probe() sets channel_cnt to cover all channels before any slot is
+filled:
 
-The RX frame or TX echo frame queued earlier stays on skb_irq_queue, and
-NAPI is not scheduled. It is only delivered when a later URB completion calls
-can_rx_offload_irq_finish(). On a quiet bus, that could take a long time.
+	parent->channel_cnt = icount;
+	...
+	for (i = 0; i < icount; i++) {
+		...
+		parent->canch[i] = gs_make_candev(i, intf, &dconf);
 
-Would it help to mention this delayed delivery in the commit message, along
-with the Fixes tag?
+gs_make_candev() calls register_candev() before it returns. That means
+can0 is visible to userspace while probe is still running the control
+transfers for channel 1. Each transfer can take up to 1000 ms, and the
+device decides how long it takes to answer.
+
+If userspace brings can0 up in that window, gs_can_open() submits the RX
+URBs:
+
+	if (!parent->active_channels) {
+		...
+
+A device that reports icount >= 2 could then send a bulk-IN frame with
+channel=1. The check above passes because 1 < channel_cnt. dev is then
+NULL, and dev->netdev is dereferenced in URB completion context.
+
+There is a related case when gs_make_candev() fails for a later channel.
+The ERR_PTR is stored in the slot first:
+
+	parent->canch[i] = gs_make_candev(i, intf, &dconf);
+	if (IS_ERR_OR_NULL(parent->canch[i])) {
+
+The rollback kills the RX URBs only when it destroys the earlier
+channels. Until then, a frame for that channel would dereference the
+ERR_PTR.
+
+The device_detach loop has the same gap. Its test lets an ERR_PTR
+through:
+
+	if (parent->canch[rc])
+		netif_device_detach(parent->canch[rc]->netdev);
+
+Should this path also reject an empty slot, for example with
+!parent->canch[hf->channel]? Another option is to stop storing ERR_PTR
+values in canch[]. A third is to create all channels before any of them
+is registered.
+
+This check is still unchanged at the end of the series.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77%40pengutronix.de
