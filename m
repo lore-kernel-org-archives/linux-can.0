@@ -1,45 +1,44 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770D938759C;
-	Tue,  6 Oct 2026 23:52:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87BF6381E92;
+	Tue,  6 Oct 2026 23:52:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791330754; cv=none; b=qQ+H9PEox368XJ9qmwnBUfSXSlWZnEJ3vTiZ95WkTkoj+64v0UoXEDIAlIRTXIphAbzo6ckPtGuo3KLpuDncDGRj1LsZOAJwfRsw1HVzV7V4uzXjrcD2nhqTX1H8RaxM5nB/+BqE9AseYxIplvC++Oq5QdbWF4a6/4PTtJDO10s=
+	t=1791330755; cv=none; b=g7XMAB5CX3695cfGmfOuMYVDBceK+qbOK97J57A6ZOO0UY69Myn7sk0N/52FX1SbX77uyWVnpi+gkgdGkhScDcNUFiX2mX4bTFs4pK/NnQLlUJmq9hXgYKAYEh/VQGtM0y4bQnHS3TErrPhukW5T87P2TS7cAQD2CHOkzb+MgY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791330754; c=relaxed/simple;
-	bh=kYaJffDJSL6bZqHpdRnq76CSoS1L0JWPoKE5+np6XRE=;
+	s=arc-20240116; t=1791330755; c=relaxed/simple;
+	bh=bagGNJDCMi2lj5pkMFgWwfbItScCQcAO4V8tv93nSdo=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=R0PFqnObuK9dPDZ1zkB3tA2cDfkmOTuuDVDo2avvqFAgzifb3y2QgzCZRz0JT+LJ6g3llI/oqir8cPicSt7jxhAgJj9amAOx1jMxi6vNAr/ZAlGPdZB8YDQGXzibxT4ej+W/5AD0qTmdGw3YurjKdDtpUS8WYGQnPw+d9hkWPRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l5nZbeSR; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=b/HDZnbtd/8qUYwMTIKxk0bIQuRXtwfUy93XbBRGUOF2RAMvKvLZLqNYbGdKE/dJUIBFws4AGIf5EAS+Zft7rlmfAS43yxXJWYTpEF32zgLyfyUqWt8i96cVqSDlK7+0dd3gLaUjvsqHEdJHIadC8OBx6Bl65XUH8UETerxbRBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IrE4j/rr; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l5nZbeSR"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88C141F0089B;
-	Tue,  6 Oct 2026 23:52:32 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IrE4j/rr"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8E491F0089C;
+	Tue,  6 Oct 2026 23:52:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791330753;
-	bh=VVVTL9TnjojHdLNO45G7TSwXPo64BAyexoRfRfxBu5Q=;
+	s=k20260515; t=1791330754;
+	bh=uRYyWJzC9kDxB04vAfaScQPuymABU053QnX0SMRlcIM=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=l5nZbeSRezoFGkMjGpuUQ4N5OoZqfl7QB4Ul6dTisRuZqdtjhUjG6+EeoZ72Vpvql
-	 FI8Z86604pZXV+1jHrTul6zDcLj5C7X/S/7OtqT6aeq+wNg/6OafdDQEB5oi9w1iiu
-	 Fl3ybB/bhUFowDMxYvwwu0CIBgBOAg6UO/yGx5/ttBgpBf9i8HXomdLboTrmLyKqdi
-	 DXTvI144ZzGGWCgNJzO7nEl1WYKTC7t2If7ESIpDrMaEBI0tetJvPnn00/r5f+Dof4
-	 bxqfCNhPTK0wdNamAy/qGHiM/MqpLhfretCqlAi5R1J9Ls61k/OXmDadn7L3OPhuCb
-	 COIkSpxmueenw==
-Subject: Re: [PATCH RFC 1/2] can: rx-offload:
- can_rx_offload_threaded_irq_flush(): add newfunction to be called from within
- loop of threaded interrupt handlers
+	b=IrE4j/rrtW6TOvK/LGxyIBqmrTgkvhf+CtNOCxa9y7MrMKq3b5WuIqwIQwOsJwRj7
+	 itik1qf7K+YFv/v4WnAtyu1LZBu0HrmaBiYxbx+Fcw7RJQ/EVZnkIaMFVIlgu6TtAD
+	 EMFzoUkbx0lwujFQTea+E0Z0Y1A94cdmrKLccwHQsdc1cGoT6YaEy2F673q7FVBqa/
+	 PJdBn7IC16biHsBaIxk4zWCa+tSrHNRJ/9YjJZp+gRsgCqFwrO4cps/uIM1nXILAUt
+	 Ns1rFOHd8qPlmFG1pecnS0g2+aTeuaxCHoP/FV2Ql5T/1XtvkOnldi4O8wT9JircH7
+	 VCOS2L6r299VA==
+Subject: Re: [PATCH RFC 2/2] can: mcp251xfd: mcp251xfd_irq(): add call to
+ can_rx_offload_threaded_irq_flush()
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: ciprianmarian.costea@oss.nxp.com, mailhol@kernel.org, mani@kernel.org,
  thomas.kopp@microchip.com, kernel@pengutronix.de, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Tue, 06 Oct 2026 23:52:32 +0000
-Message-ID: <179133075200.1406898.16219878816979050518@kernel.org>
+Date: Tue, 06 Oct 2026 23:52:33 +0000
+Message-ID: <179133075328.1406898.10468739053467692064@kernel.org>
 In-Reply-To: =?utf-8?q?=3C20261005-upstream-can-rx-offload-batching-alternat?=
- =?utf-8?q?ive-v1-1-4c08ccb516ec=40pengutronix=2Ede=3E?=
+ =?utf-8?q?ive-v1-2-4c08ccb516ec=40pengutronix=2Ede=3E?=
 References: =?utf-8?q?=3C20261005-upstream-can-rx-offload-batching-alternati?=
- =?utf-8?q?ve-v1-1-4c08ccb516ec=40pengutronix=2Ede=3E?=
+ =?utf-8?q?ve-v1-2-4c08ccb516ec=40pengutronix=2Ede=3E?=
 X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,7 +52,7 @@ MIME-Version: 1.0
 Thank you for your contribution! Sashiko AI review found 5 potential
 issue(s) to consider.
 
-Critical: 0 · High: 2 · Medium: 1 · Low: 2
+Critical: 0 · High: 2 · Medium: 0 · Low: 3
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -61,126 +60,71 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] The unbounded skb_irq_queue growth that this commit sets out to
-  stop can still happen at the end of the series, so the fix is…
-- [High] can_rx_offload_threaded_irq_flush() corrupts the qlen counters
-  when frames are sorted in ahead of the saved marker.
-- [Medium] The kernel-doc for can_rx_offload_threaded_irq_flush() says
-  that when skb_irq_queue 'exceeds 3/4' of the max, the function will…
-- [Low] The kernel-doc for the new static helper __skb_cut_position() in
-  drivers/net/can/dev/rx-offload.c says '@entry: an entry within head,…
-- [Low] In can_rx_offload_threaded_irq_flush(), queue_len is declared as
-  u32 (line 404) but printed with "%s: queue_len=%d\n" in netdev_dbg()…
+- [High] The fix is incomplete.
+- [High] This patch adds the first and only caller of
+  can_rx_offload_threaded_irq_flush(), in a driver whose producers all…
+- [Low] The commit fixes a user-visible defect (unbounded growth of
+  offload->skb_irq_queue in the mcp251xfd threaded IRQ handler under bus…
+- [Low] The kernel-doc of the new __skb_cut_position()
+  (drivers/net/can/dev/rx-offload.c:354-368, added in the preceding…
+- [Low] The kernel-doc of can_rx_offload_threaded_irq_flush() (rx-
+  offload.c:388-399) says that once skb_irq_queue exceeds 3/4 of…
 
 --
 
-can: rx-offload: can_rx_offload_threaded_irq_flush(): add newfunction to be called from within loop of threaded interrupt handlers
+can: mcp251xfd: mcp251xfd_irq(): add call to can_rx_offload_threaded_irq_flush()
 
-This adds can_rx_offload_threaded_irq_flush(), which is meant to be called
-from inside the loop of a threaded IRQ handler. When skb_irq_queue reaches
-1/2 of skb_queue_len_max, it saves the current tail. When the queue reaches
-3/4, it moves everything up to that saved skb into skb_queue and schedules
-NAPI, so the newest entries stay behind for later reordering.
+This patch adds a call to can_rx_offload_threaded_irq_flush() at the end
+of each pass through the main status-register loop in mcp251xfd_irq().
+The goal is to stop offload->skb_irq_queue from growing without bound when
+the threaded IRQ handler never leaves its loop under load.
 
-> diff --git a/drivers/net/can/dev/rx-offload.c b/drivers/net/can/dev/rx-offload.c
-> index 46e7b6db4a1ef..9f494ab7561ef 100644
-> --- a/drivers/net/can/dev/rx-offload.c
-> +++ b/drivers/net/can/dev/rx-offload.c
+> Under certain load situations, the threaded IRQ handler will not exit
+> the while loop, resulting in unlimited growth of the
+> offload->skb_irq_queue.
 
 [ ... ]
 
-> @@ -349,6 +351,90 @@ void can_rx_offload_threaded_irq_finish(struct can_rx_offload *offload)
->  }
->  EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_finish);
->  
-> +/**
-> + * __skb_cut_position - cut a skb list into two
-> + * @list: a new list to add all removed entries
-> + * @head: a list with entries
-> + * @entry: an entry within head, could be the head itself
-> + *	and if so we won't cut the list
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
 [Severity: Low]
-Does this helper actually handle entry == head? This text seems to be copied
-from list_cut_position(), where the wrapper has the checks that make the
-statement true:
+This fixes a user-visible problem, so should it carry a Fixes: tag and
+possibly a stable annotation?
 
-include/linux/list.h:list_cut_position() {
-	if (list_empty(head))
-		return;
-	if (list_is_singular(head) && !list_is_head(entry, head) && (entry != head->next))
-		return;
-	if (list_is_head(entry, head))
-		INIT_LIST_HEAD(list);
-	else
-		__list_cut_position(list, head, entry);
-}
+The skb_irq_queue design and the threaded finish call in mcp251xfd_irq()
+come from these commits:
 
-__skb_cut_position() has none of these checks. It always does the cut and
-adjusts both qlen values. If entry is the head, or head is empty, both lists
-come out malformed.
+c757096ea103 ("can: rx-offload: add skb queue for use during ISR")
+30bfec4fec59 ("can: rx-offload: can_rx_offload_threaded_irq_finish(): add new function to be called from threaded interrupt")
 
-The only caller passes the result of skb_peek_tail(), so this path is not
-reachable today. Could the comment be corrected, though?
+Either one looks like a reasonable Fixes: target.
 
-This isn't a bug, but the __skb_ prefix makes a private CAN helper look like
-a core skbuff API, and it could clash with a future core helper of the same
-name.
+This patch also depends on the preceding commit, which adds
+can_rx_offload_threaded_irq_flush() and the flush_skb/flush_len fields.
+Neither commit records that dependency, and this patch will not build if
+it is backported on its own.
 
-> + * @qlen: length up to @entry in @head
-> + *
-> + * This helper moves the initial part of @head, up to and including
-> + * @entry, from @head to @list. You should pass on @entry an element
-> + * you know is on @head and @qlen being the position of that element
-> + * on @head. @list should be an empty list or a list you do not care
-> + * about losing its data.
-> + *
-> + */
-> +static inline void __skb_cut_position(struct sk_buff_head *list,
-> +				      struct sk_buff_head *head,
-> +				      struct sk_buff *entry,
-> +				      __u32 qlen)
-> +{
-> +	struct sk_buff *new_first = entry->next;
-> +	struct sk_buff *first = head->next;
-> +
-> +	WRITE_ONCE(list->next, first);
-> +	WRITE_ONCE(list->next->prev, (struct sk_buff *)list);
-> +	WRITE_ONCE(list->prev, entry);
-> +	WRITE_ONCE(entry->next, (struct sk_buff *)list);
-> +	list->qlen = qlen;
-> +
-> +	WRITE_ONCE(head->next, new_first);
-> +	WRITE_ONCE(new_first->prev, (struct sk_buff *)head);
-> +	head->qlen -= qlen;
-> +}
-> +
-> +/**
-> + * can_rx_offload_threaded_irq_flush() - partially flush the rx_offload queue
-> + * @offload: pointer to rx_offload context
-> + *
-> + * If can_rx_offload->skb_irq_queue exceeds 3/4 of the maximal queue
-> + * length (can_rx_offload->skb_queue_len_max) flush about 1/2 of the
-> + * maximal queue length to NAPI.
-> + *
-> + * This function is intended to be called within the loop of threaded
-> + * IRQ handlers, which run until all IRQs have been served.
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> index f441f2265299e..208595c0cc469 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> @@ -1615,6 +1615,7 @@ static irqreturn_t mcp251xfd_irq(int irq, void *dev_id)
+>  			}
+>  		}
+>  
+> +		can_rx_offload_threaded_irq_flush(&priv->offload);
 
 [Severity: High]
-Can skb_irq_queue still grow without bound once the series is applied?
+Does this also cover the RX-INT loop at the top of mcp251xfd_irq()?
 
-This patch adds no caller. The follow-up commit "can: mcp251xfd:
-mcp251xfd_irq(): add call to can_rx_offload_threaded_irq_flush()" adds one,
-but only in the main intf loop of mcp251xfd_irq().
+The new flush runs only in the second loop, the one that reads the
+status registers. When the microchip,rx-int GPIO is present and
+rx_ring_num == 1, the first loop keeps running for as long as the RX-INT
+pin is asserted:
 
-mcp251xfd_irq() also has an rx_int GPIO fast-path loop, and that loop never
-calls the new helper:
-
-drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:mcp251xfd_irq() {
+mcp251xfd_irq() {
 	if (priv->rx_int)
 		do {
-			int rx_pending;
-
 			rx_pending = gpiod_get_value_cansleep(priv->rx_int);
 			if (!rx_pending)
 				break;
@@ -191,148 +135,142 @@ drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c:mcp251xfd_irq() {
 	...
 }
 
-Each frame read in that loop goes through can_rx_offload_queue_timestamp().
-That function only compares skb_queue, not skb_irq_queue, against
-skb_queue_len_max. NAPI is not scheduled until
-can_rx_offload_threaded_irq_finish() runs.
+Each pass goes through
+mcp251xfd_handle_rxif_one()->can_rx_offload_queue_timestamp(), which adds
+the skb to offload->skb_irq_queue. The only admission check there looks
+at skb_queue, not at skb_irq_queue:
 
-With microchip,rx-int-gpios and a single RX ring, wouldn't the case the
-commit message describes ("the threaded IRQ handler will not exit the while
-loop") still leave skb_irq_queue growing without limit?
-
-> + *
-> + */
-> +void can_rx_offload_threaded_irq_flush(struct can_rx_offload *offload)
-> +{
-> +	struct sk_buff_head tmp_queue;
-> +	unsigned long flags;
-> +	u32 irq_queue_len, queue_len;
-> +
-> +	irq_queue_len = skb_queue_len(&offload->skb_irq_queue);
-> +	if (irq_queue_len < offload->skb_queue_len_max / 2)
-> +		return;
-> +
-> +	if (!offload->flush_skb) {
-> +		offload->flush_skb = skb_peek_tail(&offload->skb_irq_queue);
-> +		offload->flush_len = irq_queue_len;
-> +	}
-> +
-> +	if (irq_queue_len < offload->skb_queue_len_max * 3 / 4)
-> +		return;
-
-[Severity: Medium]
-What happens when flush_skb is NULL and irq_queue_len is already at or above
-3/4 of skb_queue_len_max on the first call?
-
-In that case, the same call sets flush_skb to the current tail and
-flush_len to the full queue length. It then skips this return and cuts the
-entire skb_irq_queue.
-
-That doesn't match the kernel-doc above ("flush about 1/2 of the maximal
-queue length") or the commit message ("leave about 1/4 of the maximum queue
-length in offload->skb_irq_queue").
-
-This looks reachable in mcp251xfd. The rx_int loop in mcp251xfd_irq() fills
-skb_irq_queue without calling the helper, so the first call from the main
-loop can already see 384 or more entries (weight 32, max 512). Older frames
-read afterwards from another RX ring or the TEF would then be delivered
-after newer ones.
-
-Should saving the marker be kept separate from making the cut?
-
-As a minor point, the doc says "exceeds", but the early returns use <. That
-means the code triggers at exactly 1/2 and exactly 3/4.
-
-> +
-> +	__skb_cut_position(&tmp_queue, &offload->skb_irq_queue,
-> +			   offload->flush_skb, offload->flush_len);
-
-[Severity: High]
-Is offload->flush_len still the position of flush_skb at this point?
-
-flush_len is saved once, when the queue reaches 1/2. After that, the IRQ
-loop keeps adding frames through __skb_queue_add_sort(), which walks
-backwards from the tail and inserts by timestamp:
-
-drivers/net/can/dev/rx-offload.c:__skb_queue_add_sort() {
-	skb_queue_reverse_walk(head, pos) {
-		...
-		if (compare(pos, new) < 0)
-			continue;
-		insert = pos;
-		break;
-	}
-	...
-}
-
-Any frame older than flush_skb is therefore inserted in front of it. In
-mcp251xfd, this can be a TEF echo skb queued with
-can_rx_offload_get_echo_skb_queue_timestamp(), or a frame from another RX
-ring. That is the late, older-frame case the commit message describes.
-
-If N such frames were inserted, the cut moves flush_len + N skbs, but
-__skb_cut_position() does:
-
-	list->qlen = qlen;
-	...
-	head->qlen -= qlen;
-
-As a result, skb_queue.qlen ends up N too low and skb_irq_queue.qlen ends up
-N too high.
-
-Once NAPI drains skb_queue, __skb_unlink() decrements qlen once per real
-skb. skb_queue.qlen (a u32) then wraps to about 2^32 - N. After that, this
-check always fires:
-
-drivers/net/can/dev/rx-offload.c:can_rx_offload_queue_timestamp() {
+can_rx_offload_queue_timestamp() {
 	if (skb_queue_len(&offload->skb_queue) >
 	    offload->skb_queue_len_max) {
 		dev_kfree_skb_any(skb);
 		return -ENOBUFS;
 	}
 	...
+	__skb_queue_add_sort(&offload->skb_irq_queue, skb,
+			     can_rx_offload_compare);
 }
 
-can_rx_offload_queue_tail() and can_rx_offload_offload_one() have the same
-check. Every RX frame and every TX echo skb would then be dropped.
+Nothing in this loop moves skbs to skb_queue or schedules NAPI, so the
+check never fires.
 
-If no frame was queued after flush_skb, the cut leaves skb_irq_queue
-physically empty with qlen == N. can_rx_offload_threaded_irq_finish() then
-returns early on skb_queue_empty_lockless() and never splices the counts
-back. New frames are dropped before they reach skb_irq_queue.
+rx_ring_num is 1 whenever rx_obj_num <= MCP251XFD_FIFO_DEPTH, for example
+after "ethtool -G rx 32". If back-to-back frames on the bus keep the RX
+FIFO non-empty, can skb_irq_queue still grow without bound here? That is
+the problem the commit message describes.
 
-Could RX then stay dead until the driver is unbound? mcp251xfd only calls
-can_rx_offload_del() in remove.
+Would it make sense to call can_rx_offload_threaded_irq_flush() inside
+the RX-INT loop as well, or to count skb_irq_queue in the admission check?
 
-There may also be a NULL dereference. If skb_irq_queue is empty but its qlen
-is at or above 3/4 of the max, skb_peek_tail() returns NULL, and
-__skb_cut_position() would then dereference entry->next on that NULL
-flush_skb.
+[Severity: High]
+This is the first caller of can_rx_offload_threaded_irq_flush(), and every
+producer in this driver inserts into skb_irq_queue in timestamp order.
+Can the saved flush_skb/flush_len pair go stale between the 1/2 call and
+the 3/4 call?
 
-> +
-> +	spin_lock_irqsave(&offload->skb_queue.lock, flags);
-> +	skb_queue_splice_tail_init(&tmp_queue, &offload->skb_queue);
-> +	spin_unlock_irqrestore(&offload->skb_queue.lock, flags);
-> +
-> +	offload->flush_skb = NULL;
-> +
-> +	queue_len = skb_queue_len(&offload->skb_queue);
-> +	if (queue_len > offload->skb_queue_len_max / 8)
-> +		netdev_dbg(offload->dev, "%s: queue_len=%d\n",
-> +			   __func__, queue_len);
+can_rx_offload_threaded_irq_flush() {
+	...
+	if (!offload->flush_skb) {
+		offload->flush_skb = skb_peek_tail(&offload->skb_irq_queue);
+		offload->flush_len = irq_queue_len;
+	}
+	...
+	__skb_cut_position(&tmp_queue, &offload->skb_irq_queue,
+			   offload->flush_skb, offload->flush_len);
+	...
+}
+
+__skb_cut_position() cuts by pointer, but it takes both qlen values from
+the caller and never counts the list:
+
+	list->qlen = qlen;
+	...
+	head->qlen -= qlen;
+
+Between the two calls, __skb_queue_add_sort() puts a new skb in front of
+flush_skb whenever its timestamp is older. In mcp251xfd this seems to
+happen routinely:
+
+- mcp251xfd_handle_rxovif() queues an error skb stamped with a live TBC
+  read from mcp251xfd_alloc_can_err_skb(). On the next pass, the frames
+  still in the full RX FIFO sort in front of it.
+- With TX IRQ coalescing, TEF echo skbs from mcp251xfd_handle_tefif_one()
+  carry older TX timestamps.
+- With multiple RX FIFOs, frames from another ring can be older than the
+  saved tail.
+
+The preceding commit's own description expects older frames to be "added
+to the queue at the correct position in the next loop".
+
+If k skbs land in front of flush_skb, the cut moves flush_len + k skbs
+but counts only flush_len. skb_irq_queue.qlen ends up k too high and
+skb_queue.qlen k too low. Once NAPI drains skb_queue with skb_dequeue(),
+skb_queue.qlen wraps to about 2^32 - k.
+
+>From then on, can_rx_offload_queue_timestamp() sees
+skb_queue_len(&offload->skb_queue) > skb_queue_len_max and frees every new
+RX, TEF echo and error skb, even though skb_queue is actually empty.
+
+If the cut left the skb_irq_queue list empty,
+can_rx_offload_threaded_irq_finish() returns early:
+
+	if (skb_queue_empty_lockless(&offload->skb_irq_queue))
+		return;
+
+skb_queue_empty_lockless() checks only the pointers, so the wrong qlen is
+never handed back. Nothing else resets qlen, because
+can_rx_offload_enable() only calls napi_enable().
+
+Would this leave the interface unable to receive until the driver is
+unbound?
+
+There is also a possible NULL dereference. If a stale skb_irq_queue.qlen
+on an empty list ever reached 3/4 of the max, skb_peek_tail() would
+return NULL and __skb_cut_position() would dereference entry->next. That
+needs k >= 384, which the FIFO depths make unlikely.
 
 [Severity: Low]
-This isn't a bug, but queue_len is a u32 here, while the copy in
-can_rx_offload_threaded_irq_finish() is an int. Should this use %u?
+This isn't a bug, but the kernel-doc of __skb_cut_position(), added in
+the preceding commit, doesn't match the function body:
 
-> +
-> +	local_bh_disable();
-> +	napi_schedule(&offload->napi);
-> +	local_bh_enable();
-> +}
-> +EXPORT_SYMBOL_GPL(can_rx_offload_threaded_irq_flush);
+ * @entry: an entry within head, could be the head itself
+ *	and if so we won't cut the list
 
-[ ... ]
+The body has no entry == head check. If entry == (struct sk_buff *)head,
+@list is left with list->next pointing at the first element and
+list->prev pointing at head, while list->qlen is 0. skb_queue_empty(list)
+then returns false for a list that isn't valid. list_cut_position(), where
+this comment was copied from, handles that case with INIT_LIST_HEAD(list).
+
+The only caller passes skb_peek_tail(), so this can't happen today. Could
+the comment be corrected, or the check added?
+
+[Severity: Low]
+The kernel-doc of can_rx_offload_threaded_irq_flush() says that once
+skb_irq_queue exceeds 3/4 of the maximum it will "flush about 1/2 of the
+maximal queue length". The code instead flushes whatever was queued when
+flush_skb was first saved:
+
+	if (!offload->flush_skb) {
+		offload->flush_skb = skb_peek_tail(&offload->skb_irq_queue);
+		offload->flush_len = irq_queue_len;
+	}
+
+	if (irq_queue_len < offload->skb_queue_len_max * 3 / 4)
+		return;
+
+If the first call with qlen >= 1/2 max already sees qlen >= 3/4 max,
+flush_skb is the current tail and the whole queue goes to NAPI.
+
+One pass of the main loop can't cross both thresholds. It adds at most
+about 112 skbs, and the gap between 256 and 384 is 128.
+
+The RX-INT loop with rx_ring_num == 1, however, can queue any number of
+skbs without flushing. The first flush from this call site in
+mcp251xfd_irq() can then send everything to NAPI.
+
+Would older TEF echo or error frames handled after that point then be
+delivered after newer RX frames?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261005-upstream-can-rx-offload-batching-alternative-v1-0-4c08ccb516ec%40pengutronix.de
