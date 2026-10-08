@@ -1,39 +1,38 @@
 Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D6E1A6823;
-	Thu,  8 Oct 2026 09:24:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A41047C10D;
+	Thu,  8 Oct 2026 09:24:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791451484; cv=none; b=dpGCdUmNYncs3yw+ByDbWvadP5RZIkzhRkfyaAC3adkj1k9I0myf+EyoU/SGAYNwaBAZ/4MRs29Tjph+eZMgITaPplaqcmEjz8Aq10k73GD8erwVuwWN30dHCvjvf4xWvYD9x5xs4atqN5SFE6WW9bww6pqJyyDtETZtbQ4Au00=
+	t=1791451490; cv=none; b=uueMOtka32tcWGcsTlWQD0nr7yzMVjmrf46EPcol1FwfCBQ8RLeQSjj5IHWghRwXT6zWowqVIUbMxgVC9Cfipr6Ec3cMeOtdeZMKS4l5WlZnsLIs7xk7DxuGKHKh7WYIsnh8DThnhDM9qfPIMQuC0lv00/Ds6EewV6O+xQaqTdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791451484; c=relaxed/simple;
-	bh=GPGOdaWdplu01K3aIn+73Fq/nmgtxNm+riSMwWIit4k=;
+	s=arc-20240116; t=1791451490; c=relaxed/simple;
+	bh=O9s27VibkIo7lHHqWauRJ+HphousqPu0rpu7b46lFrg=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=D1OgZ3XmePIh9YuYPqUlBQUaF3fWM13zRrh4KlDhng1U8AJf79PxGkcN+Si8hyvA5R7Bdn9Z5fWvHkSbJGp+9pzmCKeuKMx370dZMiElBeO1vE3dWIXVSfMUdJPT24lv3U/KabQILf/ioZiDCs21xtqesyeTpicBNGL3N9SU12Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=AFqTecPA; arc=none smtp.client-ip=212.27.42.6
+	 In-Reply-To:To:Cc; b=P13vkR2bM1tXh/6B7ONJO6mzabYxRx9ktG4f5uAHoJJsMebgkbcG0NXIBzvZNxyuvp5sP548uUk16k5JR0LWjJkM8MShfL+mkUH+ytC9TvwJHSfwmd/yAfEbmLlaSrmDhRDVmImLKAa7ILi/hUDsKHv0D0in/Wr7yu9b8vxVRCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=oXjK3eWd; arc=none smtp.client-ip=212.27.42.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="AFqTecPA"
+	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="oXjK3eWd"
 Received: from localhost.localdomain (unknown [82.96.140.143])
 	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp6-g21.free.fr (Postfix) with ESMTPSA id B637D780331;
-	Thu,  8 Oct 2026 11:24:26 +0200 (CEST)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id 9EBD078034D;
+	Thu,  8 Oct 2026 11:24:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1791451476;
-	bh=GPGOdaWdplu01K3aIn+73Fq/nmgtxNm+riSMwWIit4k=;
+	s=smtp-20201208; t=1791451484;
+	bh=O9s27VibkIo7lHHqWauRJ+HphousqPu0rpu7b46lFrg=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=AFqTecPADd9m+f0GaSCay4eDH9kXKAEZzoIgBsKxw1aDisiQxDnx52E1W2PpqqHBh
-	 kyWaR2n46tqmQE5Gz2f4kagWspOggSvgjLjBbq6coPjOjKg4YSX3+HKt9EQXZ5VU48
-	 R2ilFfUCh3WORhO6u9bAOskjV1BMR4OsnjtSh0PGeIn8QeXj6ZnXtOnUyCD3V6Xwm0
-	 54LpBUTK8zrZZH5yhjhqN1MPM8bjsYT+tgQG5d9Xv8FYxQe5BYvWJKiDwzJeRlnaaj
-	 F02/wImEp9aXyfARZ5ocIWLtnLGAXuoXo/E+Nc7k9C5zbP0oOZwvODUExf4twCCMY2
-	 F8eL3oB2W0nQQ==
+	b=oXjK3eWdYZnYmMLBgYTnfiA0pToVRR6Ekcniho8DcwanIOMM9++VE8yKJSyCaZmz4
+	 EHP1iXLARdD3/evKJAAfZW059msIAMTjGRuazah2LLwSS+6D1ljs0UNxAucbLItVED
+	 +j35Fo0ohfAVSAo7fUUboBXX7PJ/K99kTIeAoZ6VDZMszccpZbliVqIBe92/XaJH/h
+	 rn/iaFtoDUH0g+AOFR+lchHlCYsHPrXdERy9bZQwBot/6jemhb906mPeSChgSfG1g/
+	 3fBVtBFcASdt/1eQaWoGjAf1IqVPhuFs7If8K7A5Af6GSekWYKtlojOpsyhtfZM0/D
+	 omt4T01F0jDhA==
 From: =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@free.fr>
-Date: Thu, 08 Oct 2026 11:14:55 +0200
-Subject: [PATCH 1/5] can: peak_usb: fix missing CAN_ERR_FLAG when reporting
- error counters
+Date: Thu, 08 Oct 2026 11:14:56 +0200
+Subject: [PATCH 2/5] can: peak_usb: add missing includes
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -41,48 +40,44 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20261008-canfd_check_channel_idx-v1-1-0a3bb82f4e09@peak-system.fr>
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261008-canfd_check_channel_idx-v1-2-0a3bb82f4e09@peak-system.fr>
 References: <20261008-canfd_check_channel_idx-v1-0-0a3bb82f4e09@peak-system.fr>
 In-Reply-To: <20261008-canfd_check_channel_idx-v1-0-0a3bb82f4e09@peak-system.fr>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
  Vincent Mailhol <mailhol@kernel.org>, Dan Carpenter <error27@gmail.com>, 
  Wolfgang Grandegger <wg@grandegger.com>
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
- =?utf-8?q?Stefan_G=C3=BCnther?= <stefangun@pm.me>, stable@vger.kernel.org
+ =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
 X-Mailer: b4 0.16.0
 
-From: Stefan Günther <stefangun@pm.me>
+From: Marc Kleine-Budde <mkl@pengutronix.de>
 
-When the device reports error counters, the driver incorrectly uses an
-assignment (=) instead of a bitwise OR (|=) for CAN_ERR_CNT. This wipes
-out the CAN_ERR_FLAG and CAN_ERR_CRTL flags, causing the error frame to
-be sent to userspace as a regular CAN frame with ID 0x200.
+To make the header self contained, so that LSP servers don't throw errors,
+make the header file self contained and include all needed header files.
 
-Fix this by using a bitwise OR to preserve the flags.
-
-Signed-off-by: Stefan Günther <stefangun@pm.me>
-Cc: stable@vger.kernel.org
-Fixes: 3e5c291c7942 ("can: add CAN_ERR_CNT flag to notify availability of error counter")
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_core.h | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 8fd058c32856..785224e00c4e 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -526,7 +526,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
- 			/* Supply TX/RX error counters in case of
- 			 * controller error.
- 			 */
--			cf->can_id = CAN_ERR_CNT;
-+			cf->can_id |= CAN_ERR_CNT;
- 			cf->data[6] = mc->pdev->bec.txerr;
- 			cf->data[7] = mc->pdev->bec.rxerr;
- 		}
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.h b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+index 65999f04f4b7..9ad7d31d2720 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_core.h
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.h
+@@ -11,6 +11,12 @@
+ #ifndef PCAN_USB_CORE_H
+ #define PCAN_USB_CORE_H
+ 
++#include <linux/can/dev.h>
++#include <linux/can/netlink.h>
++#include <linux/skbuff.h>
++#include <linux/types.h>
++#include <linux/usb.h>
++
+ /* PEAK-System vendor id. */
+ #define PCAN_USB_VENDOR_ID		0x0c72
+ 
 
 -- 
 2.43.0
