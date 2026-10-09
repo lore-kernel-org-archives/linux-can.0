@@ -1,84 +1,84 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D25E4E4C2A;
-	Fri,  9 Oct 2026 13:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C5C4E4332;
+	Fri,  9 Oct 2026 13:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791553425; cv=pass; b=dW68Ed5puLYbDUjjKgwF0Bx8LoC8euf+rFyR0LdLUCRdkPMH85meYoNRNBzu26QisqTFGXiCoID9pOfr3U6L3dsItfWClqUepi1N77rdtvYvkngvNNdfw8UTwqeNEo+vN614RLDkr01z7wjjbFOEKnsN1m7GVNGkDKJG/D/pFdE=
+	t=1791553425; cv=pass; b=f0s88Sq8cL+EBkx2VWoVOM1tyyKBjTXa5F6vUvwbCh0Y5VlLSvXoOVYmtVtoCdAUlY0RVgETtCDxLvHYajASzda0jv1CUsLlXz8CWRH+sc8Fivp6SYDM79nHFq9KO7GZPoTqWwn0heLO1fF02q/4S9/Vh3aGY5gbYUAOSM6n3w8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791553425; c=relaxed/simple;
-	bh=x1Nd4vRT2xLszxVwrgyCu+Sd6j9q1rdp2tu4kVuYVB8=;
+	bh=848LzRvnlnQzlqeA+kBmcLmF8BouHfWSkPJntA0ExHI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VQcezAYuhL77qOJ6MNARKtgFXPoiAvbBlDiqIk9kfrr5zxRZemxLpRXAMoFaiJ+AMbJaToXBTru4QFROSZRE9iuPBh5WO8zOckJ0Ox2ARf+TeDLkuVygmC+5ZTubXcktnzoJPwUa/nZZG4AlQa8oxh/p+C9874fhii/Z2VuoaKA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=IpdljkBB; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=OPFZnYnRynlRdHQQ/+jhak8yhrqz5qFzwPe5zX9VLU11gw8eWfSGc2ldAbIXsx1g9cruU2VU8XTkIu4JRhE4kkmSUrBBRbPdimx4uJtQHPMLj7pViRCX77zAqgywkQLrmDJJeh2cjFOwG20g2W0WsTN/8Bru/elh26etczSQk2U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=WKDx1+VD; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="IpdljkBB"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="WKDx1+VD"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 08A4E20261E;
-	Fri, 09 Oct 2026 15:43:40 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 77ABD20266A;
+	Fri, 09 Oct 2026 15:43:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791553420;
+	s=20260414; t=1791553419;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yYLAgGO5ns+ZsMHHqCh6jyF6z5CM4Swh1FlK9fiv+e0=;
-	b=IpdljkBB99QN0c/mcJFmMN+umVKfiuQCx0Drs/lnB+Dt1dN6+u+5VBOQckqgAHXN/2yp+B
-	o8dSU37hCs6WC2Oo3fZzv28gKCwVlbga+MgIQttDcqkWtuyAppGZ0dMc8xfJbTlcfHfwhI
-	TspH9AUoiArKhXypm3w05B6e3rLmYsRyseLVowV7PCf9vFkr5//Cf9HiLVJAcgKm5e7x0n
-	49gKzQJBHv2ZOiSUPUJUGVBLOOFbIz9r71O963gJ22CGSkJB9Mtti/gAyohSf+qFt8D+cH
-	WEzycGdu8nQNda+S/SiJN+BEhqjIOAHAKMi3urDvEBbBvEhaCwct132dcmwNQg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553420; a=rsa-sha256;
+	bh=SSadS0UA+Oi+k7qAj5ETX1kfD9e7tPd6g1V6+n52G4k=;
+	b=WKDx1+VDfbP0xp4S3nndSpT3w9rWyVosA8bPCjsuHsp03dhKjMpGFnI7ob8z0SASuVIWHN
+	/TTrd6Dvi7kCIHQ4377o/7ivQ/YTxOQPeBTwd6vdMqs/QOm+j7tsQ5N5q9YOgaAmzID6mw
+	WpA6ewuhAiHz9/OxWAEB9VPDIwqdVdTawdeEH8S0zluFeU4T1smW+DtBgynm3B6mtjQBjU
+	+wthK+6f9o3A9vhV5KQJ2AZ8L2ZqJw1m+JZo7f1oMZ79lpLVZxc68PNdW8MWMuNZtXFQYJ
+	Hbs885UGyXG4h0JAevVbFLPQ/kNor8rt19utnJIGSgOKY2BsXgMZ2apLoFS0nA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553419; a=rsa-sha256;
 	cv=none;
-	b=JpOJTn/l2lFYH2IUKsX9g/IR35LgWzGNhFBRkUy6gy0EDFe6+i3xSTECOqtgYBfn4XB5Ky
-	TXDvm409KGh2xpo7+7an9hS6zzqa77ym+CcSStlynIkT/8cDnvrEKxJ2+NV4TqnOYMsydO
-	CMjNbXQWwszUQVMJ84xiyrD1iRDajn/Y7R5EnLQDPvIaYEvrFpLF7mNf26PQC7wXa5Yxml
-	L1cS8e45T0g+9k9Hugf13toDcyL9GnOjCcr0enjfesWyRFhTqzzo7YfzSfHD/jqXScinTi
-	oUZn3riH2TPdLKsa5aD78uWeODO/BetmyDBh47mvrQ8pXeYB2KLo2NGITnl15A==
+	b=UoGdGDWQfe7WsGpe6YiE2Zje10fs+33HyoGNORJjvb63dnaMZCpE0fpiFMPDn6bPhmzxYq
+	Rk36ZN6zMKV0hLtZBHP04Ebgth9byAf6CZN7dICUGr93TwQvVfmztsjcSezrIzv9Y2piXv
+	OKHIOvbKKB+7WF8HER6YiKagRnSRr0/PIlyH0xdVMW3mDDSBj8ZHXrr7WNt5Ifm6GbiV2C
+	hEDlTxTfpheE0qnQXnmDxBoTC6AqbCkqcPMYhANZRPsQVipWBhR8uJuWeph6tR1CMqoFc3
+	BfnvdrRLGC7KjAT5UG+iWmj3+rqtGq3qnCsq2fUhsLwx+i/9ffsG8fCsSGAzBA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791553420;
+	s=20260414; t=1791553419;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=yYLAgGO5ns+ZsMHHqCh6jyF6z5CM4Swh1FlK9fiv+e0=;
-	b=GCKMr6hdznxhXDsocm3FvrBlY0TNlsExDxk04dgzrons2rtJKrSO8mXIKE4DqOcY2uEHP4
-	LOt2zSFLJLNBsTEDlviRzXRj2ELSc6HAFRHcmEoXfRSwkrKgKinmFC7HXnbKsKt4cv+Og4
-	McgHCqiyMz/eyrU7wSspyJlpEGDinTcc0vOz32alB6ePDY6ZsLcsDuqPNIsDmUNbCWRT9E
-	+YajAicU8f/gm3+wVL4i1Y8ydxAfTXGXMbCaRnx76Cc374qGhqgt9is3CtBUYCRJPG64k3
-	QTTM1opoD8XRAQfbndbMXwWLZgZH7RD9fJkxiRYcoa/DmsFiFLNWl4QsBm6qhw==
+	bh=SSadS0UA+Oi+k7qAj5ETX1kfD9e7tPd6g1V6+n52G4k=;
+	b=U9cbrKi71TQMB7QHyXPEDoQwOgcg0kBCnR65tTlIQ5pUqxILbztlXMoJQsMjtwN1gTQXW7
+	RMHNpQhj6GGq1yixXPC6RcZU8Lvh9Mt2+HoKzYN650nfBzSxeAwfV1D0O0/zhjW5rWpP4z
+	3hf6DE2Z5p/QLj4au2eI6bSgArp4235QPbnx1a1mHt/Q4+j5f9PWfVtm0IH/2ShPJrrDob
+	xJSHTuQSvM9/8iGt659BIRJojDODfLdmWbUCR9P3PTHJMu9k43Us9BUoVHBgRwhuJr5rJw
+	PXKIAWrK3jogC5lavEmvH1rpNBDmbmeVU8rfVixFMJSOk5Q5Bs/X1wvywLsEjQ==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xFAst-0053TQ-31;
+	id 1xFAst-0053TI-1G;
 	Fri, 09 Oct 2026 15:43:39 +0200
 Received: from blackshift.org (90-182-211-1.rcp.o2.cz [90.182.211.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7F6625BD8E1;
-	Fri, 09 Oct 2026 13:43:39 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EE9365BD8DC;
+	Fri, 09 Oct 2026 13:43:38 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	Wentao Liang <vulab@iscas.ac.cn>,
 	stable@vger.kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 30/37] can: hi311x: drop hi3110_lock before free_irq() on open failure
-Date: Fri,  9 Oct 2026 15:28:02 +0200
-Message-ID: <20261009134323.64064-31-mkl@pengutronix.de>
+Subject: [PATCH net-next 28/37] can: flexcan: flexcan_setup_stop_mode_gpr: fix OF node reference leak
+Date: Fri,  9 Oct 2026 15:28:00 +0200
+Message-ID: <20261009134323.64064-29-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261009134323.64064-1-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
@@ -90,45 +90,37 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Runyu Xiao <runyu.xiao@seu.edu.cn>
+From: Wentao Liang <vulab@iscas.ac.cn>
 
-hi3110_open() requests a threaded IRQ and then performs hardware
-setup while holding priv->hi3110_lock. If reset, setup, or
-normal-mode entry fails, the error path calls free_irq() while still
-holding that mutex.
+of_find_node_by_phandle() takes a reference on the GPR node and the error
+path releases it through out_put_nodeq. The success path returns before
+reaching that label, so the reference is leaked every time the stop mode is
+set up successfully, and the node can never be freed.
 
-The threaded handler takes priv->hi3110_lock before checking
-force_quit, while free_irq() waits for the threaded handler to finish.
-That can deadlock the open() rollback path against a pending IRQ
-thread.
+Release the node reference before returning.
 
-Set force_quit, drop hi3110_lock before free_irq(), and take the
-mutex again for the remaining hardware cleanup.
-
-Fixes: 57e83fb9b746 ("can: hi311x: Add Holt HI-311x CAN driver")
+Fixes: e9f2a856e102 ("can: flexcan: fix an use-after-free in flexcan_setup_stop_mode()")
 Cc: stable@vger.kernel.org
-Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
-Link: https://patch.msgid.link/20260820020631.316418-1-runyu.xiao@seu.edu.cn
+Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
+Link: https://patch.msgid.link/20260917095302.2145506-1-vulab@iscas.ac.cn
+[mkl: update Fixes: tag]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/spi/hi311x.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/net/can/flexcan/flexcan-core.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index 076a3efa1bff..927555b5d581 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -787,7 +787,10 @@ static int hi3110_open(struct net_device *net)
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 86b40abe9e76..30ae7c344a05 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -1986,6 +1986,7 @@ static int flexcan_setup_stop_mode_gpr(struct platform_device *pdev)
+ 		"gpr %s req_gpr=0x02%x req_bit=%u\n",
+ 		gpr_np->full_name, priv->stm.req_gpr, priv->stm.req_bit);
+ 
++	of_node_put(gpr_np);
  	return 0;
  
-  out_free_irq:
-+	priv->force_quit = 1;
-+	mutex_unlock(&priv->hi3110_lock);
- 	free_irq(spi->irq, priv);
-+	mutex_lock(&priv->hi3110_lock);
- 	hi3110_hw_sleep(spi);
-  out_close:
- 	hi3110_power_enable(priv->transceiver, 0);
+ out_put_node:
 -- 
 2.53.0
 
