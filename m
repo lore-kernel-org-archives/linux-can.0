@@ -1,116 +1,170 @@
-Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4893B47B408;
-	Fri,  9 Oct 2026 07:32:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.27.42.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD9544998E
+	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 07:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791531129; cv=none; b=Y23FNZ7mV5GhZpZXgiKOyNhhEK+9/h0Re/3MhXcsoT+i/y4+4+g+RLjSMlIf4aFnXZ5TkhaOCU6VHElfVQUEEpfAZsh/dlgXJEjAjQaaM6j/jAmPRTTeCONsbTQUzUwC688o7J1JSKXpkH7fw4Me7Y3x+ojqOO/sUd9E8JD/VH4=
+	t=1791531995; cv=none; b=Yn1eEh1KJiodmV1Isl0upMAIKHj9SK5Q90XFMsEFR0bm5can3752uxedRNA6/94G18mkUAicvVU4eRnTqEmaKeqI0A2bqDf5WY3aQcXe2dnGRDuXbmkaKR/TmXMpDfxjf9p4vK5Ea/38J02Axq3ccf5MODde2XK2UU2gmV8o+BA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791531129; c=relaxed/simple;
-	bh=iqEVRbNqXgm8zNUzNvU+XWKuws1AVnSCpm5ngtXncdQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jKpRqUC2D7i0XhewXEvFJjGwqUuAPhMzCOEnwDBuUgEso5ULu5saATuePGAW5OfnsJlED05ThKCIgt8Ub1imIbZPo1vIoI01RpUaGWcaSxy+KVnkbgQsDo/TYslNPwbu7T3fk8jhozekCpFyq2fofLASN5vnZleNZjCaO4u2Vu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr; spf=pass smtp.mailfrom=free.fr; dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b=q0BQvJWa; arc=none smtp.client-ip=212.27.42.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+	s=arc-20240116; t=1791531995; c=relaxed/simple;
+	bh=a9YGZZqIn7zWlUyQKA83kzTexIMxrbcDQ+/Xl3fnBYY=;
+	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
+	 Date; b=B6ZkU316yTD8V/nT1NNhQiWz2PCFhe8dcYDLIWCYp8VymICs6bWX2nWD0BgSGI1oki9lX/n8qNk7x11rWQJjEde0xzxS5+2oCeboSZqyLAmn4hdYmsxsrTVC6YhGJR3ZCtjTay7vNT9Ke2MYfdMdYst5aEMXoLD9WFGj1/vbpU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FuILD9bl; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=free.fr header.i=@free.fr header.b="q0BQvJWa"
-Received: from localhost.localdomain (unknown [82.96.140.143])
-	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp6-g21.free.fr (Postfix) with ESMTPSA id 97828780371;
-	Fri,  9 Oct 2026 09:31:58 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1791531126;
-	bh=iqEVRbNqXgm8zNUzNvU+XWKuws1AVnSCpm5ngtXncdQ=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=q0BQvJWaTCRTYxYGJ6fGrTp454XXnWZcNhI6Rz4AQDC0mhFMXh+ajOt/NVyEiTQf5
-	 aSrND7zX0o+WfHRkmaIJGqIB0IcfS+qOqknSSwpXHkRH0SGLC+AsH7m/BRICjOboDf
-	 0lSfeA8f4DsXvlBiTybukNRbOzkzklCLkdh/IqMbGWC/h6dSGCTr25BFa4Yp6h7S3Z
-	 tKAJFZ0ZPc/rBGC8pgmTWQXwxdBN7+nljy4AFEsCJgl2v8VwIa1PQ4lLGMGaepH5Vt
-	 P5Flpy+dFD6fZU8o83NRJA5RIQTEkbuItAUo6rEMrYPdV0fu0vai10dYWYPDmIJzsa
-	 qOfwmw7ep+Huw==
-From: =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@free.fr>
-Date: Fri, 09 Oct 2026 09:30:32 +0200
-Subject: [PATCH v2 5/5] can: peak_usb: harden PCAN-USB message validation
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FuILD9bl"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE6D11F000FF;
+	Fri,  9 Oct 2026 07:46:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1791531994;
+	bh=O0q1TzXZkLBboyeH1ro5z/7E6eXhofr/hEkeXLx6Xsg=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=FuILD9blPvN3fDv+tUCdidJxIGotkYWn43PJ1LVRE9zb09YXOuPtTTzUsFvcmmLQp
+	 aZZ0NBT2OX9MZ6CVAuEeiI6T/Q7KQRN2hvb8LkRWpcY09z+Elbjy9BRxuuWNX9+Z4O
+	 V+3mzS+yViN/33pKvo2/Otl/u6K4DTDQNTO1pHUJzOAxHrLTHR13OqnxhiO9+Ae1fF
+	 XlWYHeVyVPoCQCZ/NJVpu/x+a6CxNA/vxX9fi0ILoBcf1OIyplAu301e8huFwcunj3
+	 8grbqrTv8nTH3PI7I+44FMsOCmgMfIJzrO9SbgGM7rfFTXl7yxZcbvpwtBzf4xTasm
+	 BQJHccXucY3Gw==
+Message-ID: <sashiko-outbox-165031@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2 4/5] can: peak_usb: validate channel numbers in
+ PCAN-USB FD
+Reply-To: sashiko-reviews@lists.linux.dev
+To: =?utf-8?b?U3TDqXBoYW5lIEdyb3NqZWFu?= <stephane.grosjean@free.fr>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20261009-canfd_check_channel_idx-v2-4-f7b772929791@peak-system.fr>
+References: <20261009-canfd_check_channel_idx-v2-0-f7b772929791@peak-system.fr>
+ <20261009-canfd_check_channel_idx-v2-4-f7b772929791@peak-system.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 09 Oct 2026 07:46:33 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20261009-canfd_check_channel_idx-v2-5-f7b772929791@peak-system.fr>
-References: <20261009-canfd_check_channel_idx-v2-0-f7b772929791@peak-system.fr>
-In-Reply-To: <20261009-canfd_check_channel_idx-v2-0-f7b772929791@peak-system.fr>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Vincent Mailhol <mailhol@kernel.org>, Dan Carpenter <error27@gmail.com>, 
- Wolfgang Grandegger <wg@grandegger.com>
-Cc: =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
- linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.16.0
 
-From: Stéphane Grosjean <s.grosjean@peak-system.fr>
+Thank you for your contribution! Sashiko AI review found 3 potential issue(=
+s) to consider:
+- [High] can: peak_usb: TOCTOU race in peak_usb_disconnect() allows UAF of =
+sibling devices
+- [High] can: peak_usb: UAF in RX path due to dangling sibling pointer on p=
+robe failure
+- [Medium] net/can: undocumented structural fix in disconnect path
+--
 
-Add boundary checks when parsing PCAN-USB messages and reject
-malformed buffers whose contents would otherwise lead to accesses
-outside the received USB data area.
+commit 5ae27b339d4e54171f73db600b5e74ef68206d48
+Author: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
 
-This prevents potential out-of-bounds memory accesses caused by
-corrupted or malicious device messages.
+can: peak_usb: validate channel numbers in PCAN-USB FD
 
-Fixes: 46be265d3388 ("can: usb: PEAK-System Technik PCAN-USB specific part")
-Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
----
- drivers/net/can/usb/peak_usb/pcan_usb.c | 24 ++++++++++++++++--------
- 1 file changed, 16 insertions(+), 8 deletions(-)
+The PCAN-USB FD family encodes the CAN channel number in messages
+received from the device. This value is used as an index into the
+adapter CAN device table. This commit validates the channel number
+against the number of CAN controllers supported by the adapter before
+performing the lookup.
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 169c00d93463..56ddd134bae0 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -696,8 +696,11 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
- 		mc->ptr += rec_len;
- 
- 		/* Ignore next byte (client private id) if SRR bit is set */
--		if (can_id_flags & PCAN_USB_TX_SRR)
-+		if (can_id_flags & PCAN_USB_TX_SRR) {
-+			if ((mc->ptr + 1) > mc->end)
-+				goto decode_failed;
- 			mc->ptr++;
-+		}
- 
- 		/* update statistics */
- 		mc->netdev->stats.rx_bytes += cf->len;
-@@ -733,14 +736,19 @@ static int pcan_usb_decode_msg(struct peak_usb_device *dev, u8 *ibuf, u32 lbuf)
- 	int err;
- 
- 	for (err = 0; mc.rec_idx < mc.rec_cnt && !err; mc.rec_idx++) {
--		u8 sl = *mc.ptr++;
--
--		/* handle status and error frames here */
--		if (sl & PCAN_USB_STATUSLEN_INTERNAL) {
--			err = pcan_usb_decode_status(&mc, sl);
--		/* handle normal can frames here */
-+		/* check if status_len byte can be read next */
-+		if (mc.ptr >= mc.end) {
-+			err = -EINVAL;
- 		} else {
--			err = pcan_usb_decode_data(&mc, sl);
-+			u8 sl = *mc.ptr++;
-+
-+			/* handle status and error frames here */
-+			if (sl & PCAN_USB_STATUSLEN_INTERNAL) {
-+				err = pcan_usb_decode_status(&mc, sl);
-+			/* handle normal can frames here */
-+			} else {
-+				err = pcan_usb_decode_data(&mc, sl);
-+			}
- 		}
- 	}
- 
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/c=
+an/usb/peak_usb/pcan_usb_core.c
+> index 55aad01cd8cac..751cd52cb5486 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -1038,7 +1038,17 @@ static void peak_usb_disconnect(struct usb_interfa=
+ce *intf)
+>  	struct peak_usb_device *dev;
+>  	struct peak_usb_device *dev_prev_siblings;
+> =20
+> -	/* unregister as many netdev devices as siblings */
+> +	/* First, kill all pending RX URBs. usb_kill_anchored_urbs() waits
+> +	 * until all completion handlers have completed, ensuring that no
+> +	 * decode_buf() callback can access usb_if->dev[] after this point.
+> +	 */
+> +	for (dev =3D usb_get_intfdata(intf); dev; dev =3D dev->prev_siblings)
+> +		usb_kill_anchored_urbs(&dev->rx_submitted);
 
--- 
-2.43.0
+[Severity: Medium]
+The commit message states the patch only adds channel number validation to =
+the
+PCAN-USB FD receive path. However, this diff introduces a concurrency fix in
+peak_usb_disconnect() that kills all pending RX URBs across all channels be=
+fore
+unregistering devices.
 
+Should this structural fix be documented in the commit message or split int=
+o a
+separate patch?
+
+[Severity: High]
+This added loop drains RX URBs to prevent UAFs, but runs without holding
+rtnl_lock or updating state that would prevent new URB submissions.
+
+Could a concurrent `ifconfig up` call peak_usb_start(), allocating and
+submitting new RX URBs that bypass this kill loop?
+
+> +
+> +	/* All RX URBs have been drained before reaching this point. No
+> +	 * decode_buf() callback can access usb_if->dev[] anymore, making it
+> +	 * safe to unregister and free the associated netdevs.
+> +	 */
+>  	for (dev =3D usb_get_intfdata(intf); dev; dev =3D dev_prev_siblings) {
+>  		struct net_device *netdev =3D dev->netdev;
+>  		char name[IFNAMSIZ];
+
+[ ... ]
+
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can=
+/usb/peak_usb/pcan_usb_fd.c
+> index 82502594a4092..71ac6fdcd99be 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+
+[ ... ]
+
+> @@ -536,10 +537,19 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_us=
+b_fd_if *usb_if,
+>  	struct sk_buff *skb;
+>  	const u16 rx_msg_flags =3D le16_to_cpu(rm->flags);
+> =20
+> -	if (pucan_msg_get_channel(rm) >=3D ARRAY_SIZE(usb_if->dev))
+> -		return -ENOMEM;
+> +	/* Reject invalid channel numbers reported by the firmware */
+> +	if (pucan_msg_get_channel(rm) >=3D usb_if->adapter->ctrl_count)
+> +		return -EINVAL;
+> =20
+>  	dev =3D usb_if->dev[pucan_msg_get_channel(rm)];
+> +
+> +	/* This should never happen during normal operation. However, do not
+> +	 * trust the device and reject records targeting a valid channel
+> +	 * without an associated netdev.
+> +	 */
+> +	if (!dev)
+> +		return -EINVAL;
+
+[Severity: High]
+If new RX URBs bypass the kill loop in peak_usb_disconnect() as mentioned
+above, they could remain active while sibling devices are sequentially free=
+d.
+
+If one of those URBs receives a packet targeting an already-freed sibling,
+does it result in a use-after-free here, since usb_if->dev[] is never clear=
+ed?
+
+Also, could this check fail to protect against a dangling pointer left by a
+probe failure?
+
+For example, pcan_usb_fd_init() populates the shared array with the device
+pointer. If peak_usb_create_dev() then fails for a sibling device, its error
+path frees the device but does not clear the usb_if->dev[] entry. Since this
+check assumes unassociated slots are NULL, could an RX packet targeting the
+failed channel result in a use-after-free?
+
+> +
+>  	netdev =3D dev->netdev;
+> =20
+>  	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN) {
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261009-canfd_chec=
+k_channel_idx-v2-0-f7b772929791@peak-system.fr?part=3D4
