@@ -1,71 +1,71 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26EA34E3ED9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EB74E3EFB;
 	Fri,  9 Oct 2026 13:43:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791553423; cv=pass; b=rvdsg+Yc8yfcZo5lGkdtzw9nXUWGoB3a7f9BlmHKQRWqxy5RHhoe2q6YXh+uT1tw8tDyKnWcM0w2zeRlqNCjXrI6tjzRdXaZKJXS8WqeKNSJHgSuSNf+x0Vs+2RlfHp7sgOmPs3Wbcymqu/4BL3EwE/VdoV6S6G73gkuUMOEba8=
+	t=1791553423; cv=pass; b=dOpbUub69Z/rBLJTkzlAkN42cIS/9nkc/dl96PDUV6L5reTeNICw9sNN/BnslAeamF6LmbVrngO2mvr56wVOK5yImAFZMN/3g152VXh2i0SxjpqKGuyfP134WSaqs22hmv4qhH3ZoUo6DgNk9yj2AsXPnIpj/3mtwKXvXMZsY6c=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791553423; c=relaxed/simple;
-	bh=L4b77WGngEL/FWpF9iRAHfE9+k/sNz06Qmqdpp6bneI=;
+	bh=fwBT7oJptnof8QQ2fqMUv0jW8BE1O0h7Z0Gsq5ashYU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=kkczvhEcDfnJnBXxp/FBHaqYgl0dmeFcw2+p+3DEs/HOcES6+sohLnPQ3zpN4X0E47LmYI2phKFWc6ZVNAPi+MKeEe/FjpXfXMRiz2d4X7aj/EP6xoau9itsqGzAyH90RupObyij599a+FGadTiVPKaNoN7C+65DNBAk3ZIXniM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=RMG+7Tcb; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=MznGjoNGo3bZjFhRk6rpxCIsDTzXUwzOyKn53P3yT3dv3egVMgd9DGirnIYzummWLG1NLNSivaJTidZWgNi8qeOo6/T6VolkHeUq2kX2SLG5OV0kLIWb1QSCN+VUgvr8BwXGVMSbs3+tVs1JKF0Q/waqPqDJ4t/lvkq3WfD51ss=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=VQ9P4lQY; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="RMG+7Tcb"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="VQ9P4lQY"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id EC33C202622;
-	Fri, 09 Oct 2026 15:43:35 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 3921B201CFE;
+	Fri, 09 Oct 2026 15:43:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791553415;
+	s=20260414; t=1791553416;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=d4HNy9wJpg90Hhz9sk2AWur8gvwMQKYnAUoHhj+Xys8=;
-	b=RMG+7TcbWZsIt8n9tV0S+tcdJl9NQ1ZpHi5g2oj44rZtTdEVuWJsftv28dR+ytGSrsQLNH
-	FRQWat7IbQSbwb6AqeTtRuzKUWzxfEk6LSOn4Ls6XPg6cQQDFtLbiqWfCJmGHs5zLUR2UA
-	BNHigozj84AnucVmHI5uNU5bA3pwpBPaXoyYiIXy9In/5BQRXD6oCp1B9upJxWvZn4GdxJ
-	odzJxvyq0Tb9PpeyssVAOp+jPXBmF7rXw4r9hns/urJEwQvmfoaKydTz4EDAoizGbhy6/1
-	7+BoekaE1kJJvmwpk9SznRfqVWX+mYBaUILyiR4TCcBujmYrcZsGkKyr+nVWhA==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553415; a=rsa-sha256;
+	bh=553R12nP08CYMv930kDDoHha3RmvYHCeyeQdl4a7nqw=;
+	b=VQ9P4lQYxv/XLejauya/KCchN0fCr9QT8JALisjpWDekv1d+GdgYtBqghVcJD6ffwJcPOl
+	mnxL+3ihPza9MFcwMN5AAiWjpgqYSvCIm3JxXdp6TZ/3HnmqcaK6G6e823CKzIQ9Qv4YmG
+	nB5j5ptVJd7mLHmCGKwOtIbKdk3L03L2lr4HGWQlXlGAuITvp6DUIzTlvHBGbwkNiRVLmh
+	u7yrHdVo8N9QJ4I/YVQjI//qxV8B+M/qu9vEE39AriY4+68yR/Y3CWSzzqnGvW+QUdIO0r
+	PbEnRevPm2fB4iAqxPIkVlwPhCgVC6oSNenvY1S3QDi5pzRZM6OULxEFdb+5uw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553416; a=rsa-sha256;
 	cv=none;
-	b=Dpupu6ldRV6k73k01723Tf5BG93xkvIyya4ETAwXk/jwCn2h6xrKX25zPGEERcSpC64Ktv
-	d6UvWrOnQu66QlHAtpo25spAyNmh6iziPFc7yDJl9uPfpeZZgc8FiQDkLUnu73YuCL31cv
-	Wm5gvstcB4VSmq8hWtxj083VmAAV4kf6i1xyvOlsGUgbWaH/Gy18yqC2FYSFrAGnqF6XeJ
-	FMvt9SPiKyGa5afM3SVx4XZ1/dFEgFFy6ZI+wtpYGDZJ3aSBhMyH7V/EMxMSUAB4ECF17I
-	HMgDhSyQOrO1rgX0vjsoKiEjXSc8gws33JL9YAnzpwaqfJmm6Q+3bmat1koF8A==
+	b=HRYORJDgl/mJGVQXrXrSf3+puv0I1fBL5+WtfCFKfksAr++ot/KYyHK10aExNBOkpq2dxS
+	U5Kiijg2BKS60DCpLbvApbMHo96xTKjIyv1IVdzxNleF+ideDFhQxuOy8YhlgBo1gEIaXp
+	ILaC4xeB8b/ILR6pALjXqo7hk867UMH7ArJjaHXbtSnsl6obKl1/8h2m0lxsJ+bSqBMYis
+	PhvkoVZRQyvVU0jx5NDTkCkEqoWb9bPbxuRQ6VrFipx5gxJe2/Ul2Eo5djOBQOeTSnc3N8
+	PdsEygh/ucCff6Kus3Rs3/jsyCq11USlHO+pHAdIck9PvQNPmPG4k4m2sohNCQ==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791553415;
+	s=20260414; t=1791553416;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=d4HNy9wJpg90Hhz9sk2AWur8gvwMQKYnAUoHhj+Xys8=;
-	b=czu5rY/gysdPHVMZYNH7GPx9c4xl83QtQ85x+iDq+H1/264KfWWx/HYAIW+adfoJWKdePi
-	1TNi8xVhl6GybmuQIZlEsEesoi+O7GMxli7jaAZd5Z6o+zOXQqwGttsABrQHLBAuCfX9Dc
-	PaHCzaLY5LT/2YnbQn1eniN23NRn1gGrFIzVvtd/Q9ncamYwiY3+IG03mYQhNvM8TFQROu
-	CeG128dBWdmXeVb7L7fQZzEOlsqaJjaMr6xkKj52wHp87J8sbJDNAKAK1A6DQpxWHL4Wgk
-	lkZBiEgFlUc/dXxq3iQXEK+yKlcopx4t2iN2eav6E86Tg/OdCD3o5Gie+3kpuQ==
+	bh=553R12nP08CYMv930kDDoHha3RmvYHCeyeQdl4a7nqw=;
+	b=NI848Xt3OD1BZe8vBcFE16J6ZPy+GlAkxyLi8NVt7wF21uBxA4c71hsDHGiZ0VeTDyTb5M
+	qP2csPvV5JtLUoWq0zVUg/9ceSaYXgBwHgeaDSKn6QLtXR5acQp9WfyXr9DMMAGwbBybgy
+	0xGQ1LOw5lje73vbrMGoQrLJZvSv59S7+YdVcMJwhJqABbCMsYT7BfLbct/z/HyCoCe2IO
+	1pYpmFPE4rC1TR1uDQDNkhy/tU9+9X+ivLuR8OhYLfXAZigacfAKPRTX0IL8LRbnyusi4x
+	tk8zrl6wDiS6c2MUpknrGofcZ8RdE5n0v4vmrtKmcgQRRGaGsIKr+5JhJK+cOQ==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xFAsp-0053SS-2l;
-	Fri, 09 Oct 2026 15:43:35 +0200
+	id 1xFAsq-0053SW-0R;
+	Fri, 09 Oct 2026 15:43:36 +0200
 Received: from blackshift.org (90-182-211-1.rcp.o2.cz [90.182.211.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 6BA9E5BD8BB;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id B05315BD8BE;
 	Fri, 09 Oct 2026 13:43:35 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -73,13 +73,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
 	Biju Das <biju.das.jz@bp.renesas.com>,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 15/37] can: rcar_canfd: Add support for Renesas RZ/G3S
-Date: Fri,  9 Oct 2026 15:27:47 +0200
-Message-ID: <20261009134323.64064-16-mkl@pengutronix.de>
+Subject: [PATCH net-next 16/37] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
+Date: Fri,  9 Oct 2026 15:27:48 +0200
+Message-ID: <20261009134323.64064-17-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261009134323.64064-1-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
@@ -91,69 +91,72 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Add support for Renesas RZ/G3S
+Document the RZ/G3L (R9A08G046) SoC support.
 
-The Renesas RZ/G3S CAN-FD controller is largely compatible with the
-variant found on the Renesas RZ/G3E. The main differences are:
-- the RZ/G3S provides 16 AFL pages
-- the RZ/G3S supports only two channels
-- the RZ/G3S supports only CAN-FD operation and does not implement the
-  bits used to select between classical CAN-only and CAN FD-only modes.
-- the RZ/G3S includes an internal divider that allows the peripheral
-  clock to be used as the CAN FD clock source.
+RZ/G3L has 11 interrupts and 3 CANFD channels compared to 8 interrupts
+and 2 CANFD channels on RZ/G3S. RZ/G3L has 288 buffers in total
+compared to 192 buffers in RZ/G3S.
 
-Add support for the Renesas RZ/G3S.
-
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Link: https://patch.msgid.link/20260902141544.565763-6-claudiu.beznea+renesas@tuxon.dev
+Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+Link: https://patch.msgid.link/20261001075742.21961-2-biju.das.jz@bp.renesas.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+ .../bindings/net/can/renesas,rcar-canfd.yaml  | 24 ++++++++++++++++++-
+ 1 file changed, 23 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index ac5d5959d8e4..74c3c3f20991 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -661,6 +661,26 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
- 	.fixed_canfd = 0,
- };
+diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+index 1a7a9ce45e97..4b94bc8d911b 100644
+--- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+@@ -14,6 +14,7 @@ properties:
+     oneOf:
+       - enum:
+           - renesas,r9a08g045-canfd        # RZ/G3S
++          - renesas,r9a08g046-canfd        # RZ/G3L
+           - renesas,r9a09g047-canfd        # RZ/G3E
+           - renesas,r9a09g077-canfd        # RZ/T2H
  
-+static const struct rcar_canfd_hw_info r9a08g045_hw_info = {
-+	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
-+	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
-+	.tdc_const = &rcar_canfd_gen4_tdc_const,
-+	.regs = &rcar_gen4_regs,
-+	.sh = &rcar_gen4_shift_data,
-+	.rnc_field_width = 16,
-+	.max_aflpn = 15,
-+	.max_cftml = 31,
-+	.max_channels = 2,
-+	.postdiv = 2,
-+	.shared_global_irqs = 0,
-+	.multi_channel_irqs = 1,
-+	.ch_interface_mode = 1,
-+	.shared_can_regs = 1,
-+	.external_clk = 1,
-+	.fcan_pclk = 1,
-+	.fixed_canfd = 1,
-+};
+@@ -294,6 +295,25 @@ allOf:
+       patternProperties:
+         "^channel[6-7]$": false
+ 
++  - if:
++      properties:
++        compatible:
++          contains:
++            const: renesas,r9a08g046-canfd
++    then:
++      properties:
++        interrupts:
++          minItems: 11
 +
- static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
- 	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
- 	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
-@@ -2383,6 +2403,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(rcar_canfd_pm_ops, rcar_canfd_suspend,
- 
- static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
- 	{ .compatible = "renesas,r8a779a0-canfd", .data = &rcar_gen4_hw_info },
-+	{ .compatible = "renesas,r9a08g045-canfd", .data = &r9a08g045_hw_info },
- 	{ .compatible = "renesas,r9a09g047-canfd", .data = &r9a09g047_hw_info },
- 	{ .compatible = "renesas,r9a09g077-canfd", .data = &r9a09g077_hw_info },
- 	{ .compatible = "renesas,rcar-gen3-canfd", .data = &rcar_gen3_hw_info },
++        interrupt-names:
++          minItems: 11
++
++        resets:
++          minItems: 2
++
++      patternProperties:
++        "^channel[3-7]$": false
++
+   - if:
+       properties:
+         compatible:
+@@ -358,7 +378,9 @@ allOf:
+       properties:
+         compatible:
+           contains:
+-            const: renesas,r9a08g045-canfd
++            enum:
++              - renesas,r9a08g045-canfd
++              - renesas,r9a08g046-canfd
+     then:
+       properties:
+         renesas,no-can-fd: false
 -- 
 2.53.0
 
