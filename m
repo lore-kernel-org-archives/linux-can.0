@@ -1,139 +1,122 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.221])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DDE4D598B
-	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 14:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D74174EB870
+	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 16:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791557393; cv=pass; b=HYas6zjnl1oZcBJeyuUvEIstDgvWHnFl8LxgBDraUR1j5cogugOvIrIikN5dRwo6lIkv2z1GY00Pw06cm5xHVxsNDecVZ6lH1RMdGfREZfSbfeDRXolIjCFu7mHL/B4Yx0P64eDpSquZA9v2Qpmrj895sWxKhZT+LW2KGZz1zIY=
+	t=1791563535; cv=pass; b=GHb5MEBr3lkaHZI96LixEJ6vHeAZUSErIe2oD7He8L/o9Z2xWDaMD/2RHQG80QIAi5m1MtKdpC1+tAgCd04pUX4praLi1HOvRGUEXcm8g26TI3JfIo/Elg1N58ixjeIGAvwWbABceUThRugKB808BWXY3Z5woUPlPn8AQRvVyx8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791557393; c=relaxed/simple;
-	bh=XmyT51B1vAeaGig1MdEnmdA0dmnji7b7qeOSMgYiIYI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=QIf1Ldijb88WT1+vdbvv1aqXpzvoZ51WSmtj43AVCXZh0rBAGGN83kaPP+u79IeoKO3pVoHMC71sJc5AQ+Vg0MVmDpWMdZRAJmGPWr2rvyjx+obcE0PkIUDbjqmgT5liNtSK5qdWIHhPK/8YbfEwiWm89EpOPIGIiGlKvkBTPr4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=ZUClg/ho; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=35jTeFCX; arc=pass smtp.client-ip=81.169.146.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	s=arc-20240116; t=1791563535; c=relaxed/simple;
+	bh=ARK8Z7CWrZm0enQ2bSKHny4R6W8HB/4PyCF+eVEJD9c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lm5ODSTQ05DzYeyY+pd0Z+eINMimEumo1Xq8wQ4hQirqb9RppKs1/r4TpPqSmamODlXzUKXfcKKcinpNlBLY33o51CFAPr3aRargL+VJd9Cp78ZhPW39yHlC4FN68pOsOQ1bGCJQb3ZxWKn8P81FuWj6ya6ZBPw5xQHJofmGa3Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=VAgYv6sd; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="ZUClg/ho";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="35jTeFCX"
-ARC-Seal: i=1; a=rsa-sha256; t=1791557199; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=MJl5NA5RDe6cxJaqc+GlNiFZ8WvUCh6N9Kz3u6O19qfATix+ElaLqACcA9fQBWQ+UW
-    1fHKd0XSN8AxPkiXAJeDg6BKWyWhkjS94GgIsTYgxKqwY7ix0OBqy+b1zQTyWAILEAUg
-    ak3ySXLYZPyWQHfAPbVZ0/bNMwyg+d8FuErDACZVzKS2GOEcj4/IpuDfRa9PFsTdb7U9
-    mI8U6oDoSnmJQ8U9TD30/Tp32YXRDiJPPYm97efqQTeiP+69r31GzdBEsX34CEGkOXlv
-    XzBa7666TNKIxvglCeSEa4c1Cy5md2AxYFKAsmzC77IAFNciSGVY41RZwtM9d3uNvTNO
-    d52Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791557199;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zwRr8mwXFShNYbRubE/7ivQr3Z47XmbaIGb++3v3rcM=;
-    b=Tk+BPFVGR3Sl7Ecn7RrvOPJyUQqiHiysypOGQtNNJycyXxXWcOSuJH01mBbVGUxhM4
-    WB+X5waQLRV6tOApR0ynj6dEDWEH0HJaQw9DUGAB6s+0aak8Icq+8aE483Cc8uLDdpnh
-    BpEo7TmsXSjPXFHb6UAR9BwmzqCc4h0UkYMPgf4S5uNjmjk9VggLKpmzDx5eIM0ofL+K
-    KzmiAVFGvO8eQkayk1zNEtNU6XHniknUHHvV/PrVYzLl17x/G7kDkMaLSxeipqkzZwha
-    pQJT4NuosDe1Qzv3kMYUbU2XrOfOT7M715tVkHhz86W8uBP5gHLgSJI/ElmMWQwRJTgX
-    91Ng==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791557199;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zwRr8mwXFShNYbRubE/7ivQr3Z47XmbaIGb++3v3rcM=;
-    b=ZUClg/hog+vzGNc5SjGsf9vOzcI5LU/Kv0jJXtxiI/aGWwhy+stmVGflF4nQBJjkUa
-    8RlkU+i7qLXM9C24NYt3AOi61BO14oIAjNqUeLBNAUk1fppUmsTJpRWc8qSBvUGHKsEJ
-    RgBt7fM8VOdfY9CmxjyUOo5wA4H+WsExl6m0CpeAoK55nvqFvRphC3DD0/dTi2vdgsuK
-    fqgmKfyrcU9tlFi4XGFmjc4yjD/ngUr9+/PldYfg9VWooZYAp7yJyY5FAJYzuQofJTat
-    lYdhKIsHN0nnwMljWHB9JTwRz/ZaGy568a3qYAs54r9d/pTtFQkF1PIwSx2JEvj45fln
-    /s5Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791557199;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zwRr8mwXFShNYbRubE/7ivQr3Z47XmbaIGb++3v3rcM=;
-    b=35jTeFCXxqrcCP1nawwnX38+LYzzAqXBZy2AcmtxPzZ/dHbOZWOnhGX7KcBscevcwG
-    FWe08BGyy1+etNuNlYCg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K04b9a299EkdVdx
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 9 Oct 2026 16:46:39 +0200 (CEST)
-Message-ID: <14f90123-382a-42fe-942a-b62f14307c85@hartkopp.net>
-Date: Fri, 9 Oct 2026 16:46:39 +0200
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="VAgYv6sd"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 5733B200582;
+	Fri, 09 Oct 2026 18:32:08 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791563528;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aPJbdGX5owxOF85vQInDKUxTlzYvWO7jsz+08TamSug=;
+	b=VAgYv6sdoQkOB72Ibb6OEJIFWhFuH2yJBHX8dWLHAcL/Vw71DWOngrCPMTYNXPL7xCfWmk
+	9qFejsv3W/p1q1G+nNECJ3OIatzz4rhf/iW9ku4uS91Y0SSmgB5DUaLUF2dqornJf0I/iU
+	/zL7Y5t57/aTY5t6TbhiaBHwH0DsoAx9kigKrNduxnNnpETTumKl2x5rIk5GroCMjX1+jy
+	5Ker7EkJKbKg9aMYd675wDDhzzRCALdqGI7EpX+lHGVoRwIyjxZo09oiGDrczezAIl8LzN
+	uqYimbBVrfU2oBK0wvxmmMKWQJjEQODbGZRUxYPzVekOZUa98G2rrbIjGdEGvw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791563528; a=rsa-sha256;
+	cv=none;
+	b=YkyAgFE9UVTDdYT1Damw+pvXZFsk3AsyyvtCSvHJZXYS2Uhlt+B2a6u4lNYlRhNOqmKWmY
+	FuIFJnqbyd0NfWGQFaFoQohRp/lbw4MFroeuxvPs7SEpJUbEwF8CN6MOGShL6a9W3f9CZ9
+	weKhvir+gz/9Aq3vf5mfci1rp0tT6+5NekqqAMLII5fCI/RMNBRy5O8X64C40SVDWWVknm
+	hFV9RzoFUMTItNWuwjHwnTzM3bfgwOMPBvUmnplnoAMgtVcQ2k16cxTElE8MxccTllO8mZ
+	R0pEoy1h5Wn9a/Tx1whJOp4PY5myZ0JzslKDjun0wJBosyIMPu0crWiawdYIKw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791563528;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aPJbdGX5owxOF85vQInDKUxTlzYvWO7jsz+08TamSug=;
+	b=AkeIHWHea89v+UwkrcUnDG6NHl8BZdC30/9MYgKSbq/qhvI5iNLYKHDe5c/o4P8k3y73ZX
+	Ih6yyLODTbshBuE393GtFCtATaL9hMU0uJCkknL9gEuP47DZJZPpa61CNUKZTkGAtsoa7Y
+	yrR0Y1KrMRNPTGaLagPm2BKweYAwLi8VPm5xxSPiyCUPrhRuToDocgmrUGqC2zQXyGywKd
+	4EOUHhh8XYhF3xCg59hLgAf8uC/GUtGRCavDt/a2pzS+5hdrhFYrMQ32oDtEzZM1T7Qo20
+	8Q36gQThGQIn/ksHCpN8eka9Pnk6trub2e+nT0b7qMNPxpK8EpQ7UW+/LOuf5A==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xFDVw-0054er-0g;
+	Fri, 09 Oct 2026 18:32:08 +0200
+Received: from pengutronix.de (unknown [185.249.113.225])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id DA77A5BDB99;
+	Fri, 09 Oct 2026 16:32:07 +0000 (UTC)
+Date: Fri, 9 Oct 2026 18:32:07 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+Subject: Re: [PATCH net-next 0/37] pull-request: can-next 2026-10-09
+Message-ID: <20261009-merciful-certain-dogfish-2c497c-mkl@pengutronix.de>
+References: <20261009134323.64064-1-mkl@pengutronix.de>
+ <20261009-bulky-normal-collie-00a67a-mkl@pengutronix.de>
+ <14f90123-382a-42fe-942a-b62f14307c85@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ghnijld2hh6unwtp"
+Content-Disposition: inline
+In-Reply-To: <14f90123-382a-42fe-942a-b62f14307c85@hartkopp.net>
+
+
+--ghnijld2hh6unwtp
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH net-next 0/37] pull-request: can-next 2026-10-09
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-References: <20261009134323.64064-1-mkl@pengutronix.de>
- <20261009-bulky-normal-collie-00a67a-mkl@pengutronix.de>
-Content-Language: en-US
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261009-bulky-normal-collie-00a67a-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 
-Can you please push the testing branch?
+On 09.10.2026 16:46:39, Oliver Hartkopp wrote:
+> Can you please push the testing branch?
 
-Thanks,
-Oliver
+You could also use the tag mentioned in the PR, but I've force pushed
+the testing branch. Sorry for the delay.
 
-On 09.10.26 15:57, Marc Kleine-Budde wrote:
-> On 09.10.2026 15:27:32, Marc Kleine-Budde wrote:
->> Hello netdev-team,
->>
->> this is a pull request of 37 patches for net-next/main.
->>
->> The first patch is by Vincent Mailhol and drops CAN-XL frames on non
->> CAN-XL devices.
->>
->> A patch by Sang-Heon Jeon removes a redundant NULL check before
->> netdev_hold() in the CAN RAW protocol.
->>
->> Oliver Hartkopp's patch converts the unreliable ARPHRD_CAN type check
->> to the robust can_get_ml_priv().
->>
->> A patch by Runyu Xiao for CAN proc resets the pkg_stats using atomics
->> individually. Oliver Hartkopp also contributes a patch for the CAN
->> proc to remove kernel pointers from the output.
->>
->> Tetsuo Handa's patch cancels pending address claim timers in
->> j1939_ecu_unmap_all().
->>
->> A patch by Kaixuan Li for the CAN ISOTP protocol improves the check
->> for the correct CAN CC/FD frames.
->>
->> The next 3 patches are by Cunhao Lu and make CAN skb freeing safe in
->> any context in several CAN helper functions.
->>
->> Claudiu Beznea contributes 5 patches for the rcar_canfd driver to add
->> support for Renesas RZ/G3S.
->>
->> Krzysztof Kozlowski's patch updates the renesas,rcar-canfd DT bindings
->> to restrict the resets in top-level.
->>
->> Biju Das's series of 3 patches add support for Renesas RZ/G3L CANFD to
->> the rcar_canfd driver.
->>
->> Quchaosheng contributes 2 patches to convert the gr_can DR bindings to
->> DT schema.
-> 
-> Forgot to mention, that a patch by Oliver Hartkopp removes the Softing
-> CANcard driver.
-> 
-> regards,
-> Marc
-> 
+regards,
+Marc
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--ghnijld2hh6unwtp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaskXBAAKCRDMOmT6rpmt
+0qleAQDJy8HaP2xN05cjzGi0hiaNgsmECvWNt8iduq+YsUL6tAD/Qt8vs6bgjbS0
++gGsUc31mWVh6/wTCQUnZoRWhtoElQc=
+=ZUnV
+-----END PGP SIGNATURE-----
+
+--ghnijld2hh6unwtp--
