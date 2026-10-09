@@ -1,41 +1,42 @@
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9764CB8A1;
-	Fri,  9 Oct 2026 10:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A7E34B2044;
+	Fri,  9 Oct 2026 10:56:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.2
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791543383; cv=none; b=E3nahe8uO5/+iH5YFA8Xlj8F2QxlRHLoII1sDsYE+Cii2fC2qsf3Qhs4g1zluu8KBd2lgS69whhne5yTfEgqMHttqdqYTs9rCp5AnyK7/I8bGKRxFvC0irEyoaLsKuCS8PfgOYsl8R5Q6y/TbDZAgocXDKXjizaPHv8MrcYcYok=
+	t=1791543391; cv=none; b=J/2eCb70DveHjp8xyEWCPChryURTD7TzEzQTVtGJm01FE4IcbYTGJikYCC9KfJAjSRqMHRA181kohkaBWbQHhitlT00DEzm6xmajxJG/nUqPT3a28xryqtcqvZmoWZXmCzCGQ+dZEaoo0RhqN7gf83LiURC/yBMAjiF7sHR+MU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791543383; c=relaxed/simple;
-	bh=sI5us47mzgoN+k0s3b3gUXo1lUt8hbdUvGNorxTwv5A=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pAcvVBz+bMGVgalxYU60MG9JlkJcdKLJtJIR99TYXglYdpP3Azd6fYBavxXMOeR/XQGm433ACzwfOmUmj7KJDolE2aKKYj1GyBo5l59BkCG79hEKpmE3sbmeeUNjhUOku2AliPRUYhP8IMbTkOWGvdyPINSzQ4PZdeRL+5Ma5XA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=IUuXim9F; arc=none smtp.client-ip=220.197.31.3
+	s=arc-20240116; t=1791543391; c=relaxed/simple;
+	bh=zoDfHhtgvunMEO6H66ZDuNue7sAMTEp60qQm8ISmNKs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dFjAu7ckxHD0pZiXqnbQ1tRVzBo33QMvfrE7j+XpvH2y7tMBGct7i0gx9N9CAO8Ab8YX+SJ68Uu9vyVI8J+0RsVjaKfftlyrIJmFBsegnf1VvnMCyaJv3hv8rcEdZKkk4h+vv8hNkZ8twPfSgFPYuuGJdHh+bfta5/JFIFL2p/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=RwIOVRyo; arc=none smtp.client-ip=117.135.210.2
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="IUuXim9F"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="RwIOVRyo"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=rK
-	c4iRyy1NfaB3eGQJkucmqGRWy63t6X3MuOXYYmfPI=; b=IUuXim9FHiW4Ezot/6
-	yOfP80N+lVTeI3xUsSYDQk+/XDCR+ukz/nvFXl4yh5N86+I7cOMSMOjO19Se5+GE
-	nI4nsAz5uPd8Wyh517Js4BcYX7v8/sN4mNFSHhsDqiQZTd+bRQMi5LpHuiTEmRm5
-	tKMfDHgiC1H66ZQkQ9StcrhF0=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=m2
+	mtN8IO16pWKO7OBR+wjeUWK9kQFnaSKWG9bvyX9rk=; b=RwIOVRyogkjLc9g57q
+	JJRFAQSc8wU/elDLO+37TFCUELq6W52DMZsi4sMIdZ0hu6cVZy0Wu9u1suPoFby3
+	58+/vlJrxnkcgS7hUPRM+c3OGuXtHz2oJ7zi6WBhYjgG/iepNN8Q3PK61AqKeXoZ
+	T3v+m7vyrYILUzXTwFmBE7TTo=
 Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzsmtp3 (Coremail) with SMTP id PigvCgCnjIU9yMhqOLqzDg--.17067S2;
-	Fri, 09 Oct 2026 18:55:58 +0800 (CST)
+	by gzga-smtp-mtada-g1-3 (Coremail) with SMTP id _____wD3n1Y_yMhqseiPDg--.63984S2;
+	Fri, 09 Oct 2026 18:56:00 +0800 (CST)
 From: Quchaosheng <quchaosheng000406@163.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>
-Cc: linux-can@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	Chaosheng Qu <quchaosheng000406@163.com>
-Subject: [PATCH 0/2] dt-bindings: net: can: cc770: convert the binding, fix the driver comment
-Date: Fri,  9 Oct 2026 18:55:55 +0800
-Message-ID: <20261009105557.301855-1-quchaosheng000406@163.com>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Chaosheng Qu <quchaosheng000406@163.com>,
+	Sashiko <sashiko-bot@kernel.org>
+Subject: [PATCH net v3] can: j1939: validate the EDPO packet number
+Date: Fri,  9 Oct 2026 18:55:59 +0800
+Message-ID: <20261009105559.301873-1-quchaosheng000406@163.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
@@ -44,36 +45,130 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PigvCgCnjIU9yMhqOLqzDg--.17067S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr4DZF1rWw4xCr4UCF4Durg_yoWDKFbE9a
-	ykAay5J3Z3CFnxKay5Ar47ZrySya1kZrWru3Z8Jw4aq34xWrWDJFn7Jr45Wr1xWFW5ZFnx
-	AFyUJay8Cw1agjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRAnYrDUUUUU==
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAB4Og2rIyD7AdQAA3y
+X-CM-TRANSID:_____wD3n1Y_yMhqseiPDg--.63984S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxuF1xGFWxAFW8WFyxtFWxXrb_yoW7Jry7pF
+	W3Kry5GrnrJrn7Aws3trZ8X34Yyws3JryrGF9Fq3s3Cw45CF45tF98tryxWayqy395u3ya
+	gF1qqa1UKr4vq37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pRCzuJUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5AAPhGrIyEBTAwAA3V
 
 From: Chaosheng Qu <quchaosheng000406@163.com>
 
-Krzysztof dropped the whole thread from the DT patchwork on 09-15: four
-patches went out in one thread and confused the tooling.  This is the
-same work, sent as one two-patch series with a cover letter, which is
-what Marc asked for on the CAN side.
+ETP.CM_DPO is peer controlled and its packet number is accepted without
+any validation.  It names the packet a transmission window starts at, and
+j1939_xtp_rx_dat_one() places incoming data at "dat[0] - 1 + pkt.dpo", so
+a value past the end of the message moves pkt.dpo beyond the reassembled
+buffer.
 
-  [1/2] converts cc770.txt to DT schema.
-  [2/2] updates the file name in the comment at the top of the platform
-        driver, now that the text binding is gone.
+The transfer still completes normally in that case.  With
+pkt.dpo == pkt.total, a closing ETP.DT frame with dat[0] == 0 evaluates to
+packet pkt.total - 1, which is the last in-order packet, so pkt.rx reaches
+pkt.total and the receiver emits its own EOMA.  The local loopback of that
+EOMA runs j1939_session_completed(), which asks
+j1939_session_skb_get() for offset "pkt.dpo * 7" -- one full packet past
+the end of the queued skb -- gets NULL, and passes it straight to
+j1939_sk_recv(), which dereferences oskb->sk.
 
-Both carry Assisted-by: LLM, which the first posting was missing, and
-neither has been reviewed by anyone yet -- the previous thread was
-dropped before that could happen.
+Reaching the dereference needs two things, and this patch keeps them as
+two separate changes because neither is sufficient alone:
 
-Chaosheng Qu (2):
-  dt-bindings: net: can: bosch,cc770: Convert to DT schema
-  net: can: cc770: update the binding file reference in the driver comment
+  - the range check in j1939_xtp_rx_dpo_one(), which stops pkt.dpo from
+    leaving the message
+  - the NULL guard in j1939_session_completed(), which covers the offset
+    lookup coming up empty for any other reason
 
- Documentation/devicetree/bindings/net/can/bosch,cc770.yaml | 158 +++++++++++++++++++++++++++++++++
- .../devicetree/bindings/net/can/cc770.txt                  | 109 ----------------------
- drivers/net/can/cc770/cc770_platform.c                     |   4 +-
- 3 files changed, 155 insertions(+), 57 deletions(-)
+The reproducer in the link was run three times in each configuration: the
+unpatched kernel panics 3/3, a kernel with only the NULL guard still
+panics 3/3, and this patch gives 0/3.  The middle result is the point --
+it shows the guard does not close this hole on its own, so the range check
+is not redundant with it.
+
+Nothing on the path checks a capability: net/can has no CAP_NET_RAW check
+at all, CAN_J1939 does not require one, and the only capability gate
+nearby is SO_J1939_SEND_PRIO < 2, which asks for CAP_NET_ADMIN and is not
+needed here.  The vcan interface used by the reproducer has to be created
+first, which normally needs privileges; given the interface, any user can
+reach this.
+
+  ETP.CM_RTS (size 1786)  -> total = 256 packets
+  ETP.CM_DPO (packet 0)
+  ETP.DT seq 1..255       -> packets 0..254, pkt.rx = 255
+  ETP.CM_DPO (packet 256) -> pkt.dpo = 256, unvalidated
+  ETP.DT seq 0            -> packet 255 == pkt.rx, completes the transfer
+
+J1939_XTP_ABORT_BAD_EDPO_OFFSET and its "Bad EDPO offset" string are
+already in the tree and have no caller; the range check uses that abort.
+
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutronix.de?part=3
+Assisted-by: LLM
+Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
+---
+ net/can/j1939/transport.c | 37 +++++++++++++++++++++++++++++++++----
+ 1 file changed, 33 insertions(+), 4 deletions(-)
+
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8fcfd13e5e6f..065b4f71e9af 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1243,9 +1243,18 @@ static void j1939_session_completed(struct j1939_session *session)
+ 
+ 	if (!session->transmission) {
+ 		se_skb = j1939_session_skb_get(session);
+-		/* distribute among j1939 receivers */
+-		j1939_sk_recv(session->priv, se_skb);
+-		consume_skb(se_skb);
++
++		/* The offset "pkt.dpo * 7" is not necessarily covered by a
++		 * queued skb, e.g. when a peer names a packet past the end of
++		 * the message in an EDPO.  j1939_simple_txnext() already
++		 * guards its call the same way; dropping the message is
++		 * better than handing a NULL skb to j1939_sk_recv().
++		 */
++		if (se_skb) {
++			/* distribute among j1939 receivers */
++			j1939_sk_recv(session->priv, se_skb);
++			consume_skb(se_skb);
++		}
+ 	}
+ 
+ 	j1939_session_deactivate_activate_next(session);
+@@ -1823,14 +1832,34 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
+ 				 struct sk_buff *skb)
+ {
+ 	const u8 *dat = skb->data;
++	unsigned int dpo;
+ 
+ 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+ 		return;
+ 
+ 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+ 
++	dpo = j1939_etp_ctl_to_packet(dat);
++
++	/*
++	 * EDPO is peer controlled.  It names the packet the announced window
++	 * starts at, and j1939_xtp_rx_dat_one() places data at
++	 * "dat[0] - 1 + pkt.dpo", so it has to stay inside the message.  A
++	 * value past the end moves pkt.dpo beyond the reassembled buffer and
++	 * makes the ETP completion path look up offset "pkt.dpo * 7", which is
++	 * no longer covered by any queued skb.
++	 */
++	if (dpo >= session->pkt.total) {
++		netdev_warn(session->priv->ndev,
++			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
++			    __func__, session, dpo, session->pkt.total);
++		j1939_session_timers_cancel(session);
++		j1939_session_cancel(session, J1939_XTP_ABORT_BAD_EDPO_OFFSET);
++		return;
++	}
++
+ 	/* transmitted without problems */
+-	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
++	session->pkt.dpo = dpo;
+ 	session->last_cmd = dat[0];
+ 	j1939_tp_set_rxtimeout(session, 750);
+ 
 -- 
 2.43.0
 
