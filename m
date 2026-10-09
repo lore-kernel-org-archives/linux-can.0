@@ -1,71 +1,71 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EEE4E2F2F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C07094D4871;
 	Fri,  9 Oct 2026 13:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791553419; cv=pass; b=Ab2BsvWjiv1StI+wyc24vSiwNoUaLyx2V/4T04qqtoFK5m7JKRI7q1wZHouUx7wLFB6GUo9Q/XizZPY6z7az7WBuZBIGPwBs1+MnjIHXMilBjqGbQhHRwhT13RQP94mjp0uEHRy58ZixIYasodomsdJPHS4MQKdIi44t0E6YiKg=
+	t=1791553419; cv=pass; b=Z3SCo7hA0mofD8jlCSY/f+I6F9G2p0FRpJXUo8lj90QKCYgJd7mqh0t2csWI5MT1uAOiAiSw8moQZeU3ZCzGAn0I4rCcviAY8KCEK/yzK29nMyM4QS+sO2hw7FhxV6O15aL/UkgrrzXCr2aMCIowwCN7yW331aXeLNq8WVjdugs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791553419; c=relaxed/simple;
-	bh=ph1yhgKmMs07jPx/aKo8aSzP5TqmgDyOVWjpnp8k3Dc=;
+	bh=AbxJxoTVIhvCpWJsLf6tZMM9u2wYpJiWkTyXJGA1TNQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pcsP7u4YwJ43X/Z6T7iaMAWB3Q/Qo8UFgaAhri/WshY+1olD7mqcV1lP1ecAnS3X0GSnTedM+hGWJemZNm94EGZv60srCIEuSaz6cinjjsGmsSn5uQ0GCZWZgGv6Nbr1NMTQuzGtGoRz3z5IGP98frud7gzXiEGMnspLnpG1lh0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=CXSfts8g; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=KIruIKFf13RhtYW5hEggngGnDXa6Dxn/WIs00ysgOB+BxelkGE3wddn4z4KnB7GP7A8PmKbvew2ErlrJYY9CrVipTQCKNTDwxo3TVgjFEjjGk8BbUfljcVwBfAM2QOd1MzhWVAL6I9Z6BeOT+X8iZly54zcOGrZQ+JyfdAHPzsw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=OTVjVDbY; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="CXSfts8g"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="OTVjVDbY"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id B104220261B;
-	Fri, 09 Oct 2026 15:43:33 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0573D20261E;
+	Fri, 09 Oct 2026 15:43:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791553413;
+	s=20260414; t=1791553414;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=70FZAdqXRNeEEFdzAhRSGjcBRqa6k6oWcQHFeb6UwF4=;
-	b=CXSfts8gvJi4Ma+0jwQ82AP0h+kVGEZrdyPGlrTlhCTen4lqURxLxaeAeIeeF7gmSUD7R4
-	QWGejnyyTmcKjebXPOBQ18rISXvDQI5sU25FYv6Qq7275xCENIKt8eZOmoXz9Ay77tK+Cd
-	gXQQxh2Rlbev90y6OJDp9IczTejiT4fCZ0FFxSz+GocFftz4tOmNq+9fY5V0kreKHgObaJ
-	i7AnFdGsrhFqKnOYG+RcEykQOe8vSILZx5gUORDtq0fBVT22qw18aQB4Kob1fpL6eTOpUt
-	TWHzaRa1V0TFDZxxp1pmA5CXdVGr1GLsOCxNULIO9Bn6ucrVvPKb7n1oMdHqug==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553413; a=rsa-sha256;
+	bh=lCs3jym0XNFnfrLFXL0S112gkjhJSSwjd7o96tiFaSM=;
+	b=OTVjVDbYdECqBhFvDN8J6Mt7XYhkIg5nj8imrAYtsqpSXAzRQgfufYOYNlDHYc3Z7rNkc7
+	NPqGKGMU6mYL1qSbtpolcM/jGXaAwm+fVKxIv3LxKekIAB4pn2R2TswAqx4Muzz70gc8DV
+	aVYdYCYZqCQbMnYJ5kONl4VVP8BvWLvGP6EsLdXw/n3dRJrdS8ixxVrM7bTv1NfRagorOg
+	OBUxxahmpkMKQdtbry3qHGB0LUq+ri0C91Dwjhhd0ODVTcGFQZh7jipTOnO5Nik+plPEKk
+	KvBxGyXffRQWx5QCoA/S67nGJfvyrsPWLaIQuK74UggBz2O0X99JV/piGWY+Ew==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553414; a=rsa-sha256;
 	cv=none;
-	b=chvcziPmGPpp/dIDgbcZC93ERd46oQUfpduwh0YyFn2KJyLfRuHqOUS3iDZgMIoMRx5fjf
-	hWGBHrLr2ewLbZPfYJAoFeAewxXCNcb+AW46yFJE/G4S4x/TXg5twb2Uomosob17jzXVyw
-	xVTqn7QNRP481HaD+l5cTo+V91a/6z+LcVDE7l6udedD4mPFbeTGS4HWta4zNi1LjLovB7
-	bghBvWWOhi4j/U4QcTEMxNsIbooLnK95z3sEwg71wTD7n8WgFJX958IKXDg2ckvIz/X59T
-	rPTxiG/EReTBgyWkAkhttRY+QB+f2E2AvlDDRRNyzwAmeXQUf/s4vita2BoaVQ==
+	b=JrmJafzZmAlLdLuz7LeQzEM5MQ9NSiQ5EObGUSy4p8sS80xYMeM6ZbW66Fi7Yaea4nGwXs
+	ymOMG539Q6Pqyho/tNtVPHf9Hr1Cx+HVwqcj/CTP7r9GxqJRNv8iJr1iEmnHJBtTW7x1Ua
+	bbou+ZA/wxlfA0qDMGr4JD5ZMo9aGvarUCMj1IYMiba7JfZiuqdhQHJtU3LmMwYKIrk6GC
+	JLVY+ytjyKrhFXjoNo1rj0DWcZ7uPsjg1ufg3pztSEAYvTABG6x2+vhGrW71qQoZaNFfiI
+	VVdJc0hMNT3arBhAO6zqdNZ9Aqx5Nh6Hs4bDiA4dKz/2WzD0HBs1EBK8D7W2+g==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791553413;
+	s=20260414; t=1791553414;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=70FZAdqXRNeEEFdzAhRSGjcBRqa6k6oWcQHFeb6UwF4=;
-	b=Quj3Bld/b5LIZulW8R209K2L+b3ie1Sh1WMo6Tcnp7dDo8Ri51pJgv3CIqQs3roHPj2QAL
-	NqQLnfmfuDSsHDZLVVg131iuaU/ZeEx20+g8slXtApTzM1QDqn9dCZKeshl7Y/eH3uNZH6
-	AuEKegOKKu30A7C/F4gWwSX4ojzoI0gQocfgna75mXInutPcZEXJlExBeFXygyOHGIPBNH
-	c/Ga4mNIZ9Sh8tGntYSzeQ0H9FoqmMAn1YbLH9wH2DgU/d/XitJ08CPre+/K6tzCgYPRfA
-	oPD9P4CPFOW+RaAMv3mEzGMAUvL70NO7pkaVKTfuJfdTdJQOqt2UGH5Yv1JeJw==
+	bh=lCs3jym0XNFnfrLFXL0S112gkjhJSSwjd7o96tiFaSM=;
+	b=f11+HhYH3ChdLZ7MMlmFuS+wuYCweLF9gQlEek6AXLaWBCjQU8WvFtJaBGYqzZS6V9e4Y/
+	hBuJCewvoCLJ3dnbjTzuOcRwdoTYXdvzPQMbYpGZbNNp+fCvpbTA5ityY/jSESA2j7u7n4
+	/B+l57GQ6z4Miczu7wgTJbEI2U81G1aX9GBM+DFtVNU9o9LPse05qp4j/83JLHJoXd64UU
+	TzbWF3xI+GyIEGU+et3EccDxslsREEIm0mnVGFnNINVJa0KqiBb4HN/2qvJV71J+5lJ3XI
+	J+tR+4jl2vISAEF6sq2jeOTCFGH1qbaCFhW87FiMrLuCnSAZqKxjTaqh8j7I9A==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xFAsn-0053S0-21;
+	id 1xFAsn-0053S4-2y;
 	Fri, 09 Oct 2026 15:43:33 +0200
 Received: from blackshift.org (90-182-211-1.rcp.o2.cz [90.182.211.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 341825BD8A8;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 774315BD8AA;
 	Fri, 09 Oct 2026 13:43:33 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -74,12 +74,12 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	"Rob Herring (Arm)" <robh@kernel.org>,
+	Biju Das <biju.das.jz@bp.renesas.com>,
 	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/37] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
-Date: Fri,  9 Oct 2026 15:27:40 +0200
-Message-ID: <20261009134323.64064-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 09/37] can: rcar_canfd: Fix typos in macro names
+Date: Fri,  9 Oct 2026 15:27:41 +0200
+Message-ID: <20261009134323.64064-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261009134323.64064-1-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
@@ -93,111 +93,62 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-The CAN FD controller found on the Renesas RZ/G3S SoC is largely compatible
-with the variant present on the RZ/G3E SoC. The main differences are:
-- the RZ/G3S provides only two CAN FD channels
-- the RZ/G3S supports only CAN FD operation; the Channel n CAN FD
-  Configuration Register does not implement the bits used to select
-  classical CAN-only mode (bit 30) or CAN FD-only mode (bit 28);
-  consequently, bit 31 (CAN FD Frame Distinction Enable) of the same
-  register is also not implemented
-- some bits in several registers (mainly reserved or status bits) are
-  read-write on the RZ/G3S but read-only on the RZ/G3E; their behavior is
-  otherwise identical: the bits read back as 0 on both SoCs and software
-  is allowed to write only 0 to them on the RZ/G3S
-- the RZ/G3S provides 256 acceptance filters, compared to 768 on the
-  RZ/G3E
-- the RZ/G3S can use PCLK clock as the CAN FD clock source through an
-  internal clock divider, while also supporting an external CAN FD clock
-  source
+The bits 1..0 of the Channel n Control Register are named CHMDC (Channel
+Mode select). Fix typos in macro names by replacing DMC with MDC.
 
-Since:
-- the SoC clock generator provides to the CAN IP only the peripheral and
-  the RAM clocks
-- when sourced from the peripheral clock, the CAN-FD clock is obtained
-  inside the IP itself by dividing the peripheral clock
-- the assigned-clocks and assigned-clock-rates properties are specific to
-  the CAN-FD clock
-the assigned-clocks and assigned-clock-rates properties were dropped from
-the required properties list of the Renesas RZ/G3S SoC.
-
-Add documentation for the Renesas RZ/G3S SoC.
-
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Link: https://patch.msgid.link/20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev
+Link: https://patch.msgid.link/20260902141544.565763-3-claudiu.beznea+renesas@tuxon.dev
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 20 +++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-index b9d9dd7a7967..bbaaef8f4282 100644
---- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-+++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-@@ -13,6 +13,7 @@ properties:
-   compatible:
-     oneOf:
-       - enum:
-+          - renesas,r9a08g045-canfd        # RZ/G3S
-           - renesas,r9a09g047-canfd        # RZ/G3E
-           - renesas,r9a09g077-canfd        # RZ/T2H
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index fcc37b73ed43..b7c4fe3477ac 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -132,9 +132,9 @@
+ #define RCANFD_CCTR_BEIE		BIT(8)
+ #define RCANFD_CCTR_CSLPR		BIT(2)
+ #define RCANFD_CCTR_CHMDC_MASK		(0x3)
+-#define RCANFD_CCTR_CHDMC_COPM		(0x0)
+-#define RCANFD_CCTR_CHDMC_CRESET	(0x1)
+-#define RCANFD_CCTR_CHDMC_CHLT		(0x2)
++#define RCANFD_CCTR_CHMDC_COPM		(0x0)
++#define RCANFD_CCTR_CHMDC_CRESET	(0x1)
++#define RCANFD_CCTR_CHMDC_CHLT		(0x2)
  
-@@ -185,8 +186,6 @@ required:
-   - clocks
-   - clock-names
-   - power-domains
--  - assigned-clocks
--  - assigned-clock-rates
-   - channel0
-   - channel1
+ /* RSCFDnCFDCmSTS / RSCFDnCmSTS */
+ #define RCANFD_CSTS_COMSTS		BIT(7)
+@@ -828,7 +828,7 @@ static int rcar_canfd_reset_controller(struct rcar_canfd_global *gpriv)
  
-@@ -198,6 +197,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - renesas,r9a08g045-canfd
-               - renesas,rzg2l-canfd
-     then:
-       properties:
-@@ -266,6 +266,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - renesas,r9a08g045-canfd
-               - renesas,r9a09g077-canfd
-               - renesas,rcar-gen3-canfd
-               - renesas,rzg2l-canfd
-@@ -330,6 +331,7 @@ allOf:
-         compatible:
-           contains:
-             enum:
-+              - renesas,r9a08g045-canfd
-               - renesas,r9a09g047-canfd
-               - renesas,rzg2l-canfd
-     then:
-@@ -350,6 +352,20 @@ allOf:
-       properties:
-         reset-names: false
+ 		rcar_canfd_update_bit(gpriv->base, RCANFD_CCTR(ch),
+ 				      RCANFD_CCTR_CHMDC_MASK,
+-				      RCANFD_CCTR_CHDMC_CRESET);
++				      RCANFD_CCTR_CHMDC_CRESET);
  
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            const: renesas,r9a08g045-canfd
-+    then:
-+      properties:
-+        renesas,no-can-fd: false
-+        renesas,fd-only: false
-+    else:
-+      required:
-+        - assigned-clocks
-+        - assigned-clock-rates
-+
- unevaluatedProperties: false
+ 		/* Ensure Channel reset mode */
+ 		err = readl_poll_timeout((gpriv->base + RCANFD_CSTS(ch)), sts,
+@@ -1504,7 +1504,7 @@ static int rcar_canfd_start(struct net_device *ndev)
  
- examples:
+ 	/* Set channel to Operational mode */
+ 	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
+-			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_COPM);
++			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHMDC_COPM);
+ 
+ 	/* Verify channel mode change */
+ 	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
+@@ -1578,7 +1578,7 @@ static void rcar_canfd_stop(struct net_device *ndev)
+ 
+ 	/* Transition to channel reset mode  */
+ 	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
+-			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_CRESET);
++			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHMDC_CRESET);
+ 
+ 	/* Check Channel reset mode */
+ 	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
 -- 
 2.53.0
 
