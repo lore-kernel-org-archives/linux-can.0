@@ -1,29 +1,28 @@
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.5])
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB9B4C7546;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9764CB8A1;
 	Fri,  9 Oct 2026 10:56:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.5
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791543382; cv=none; b=ccRkgVllakblsM312bR5YU7vV21o1xEpYTZzZbeaOXgiegYDI/u10hkwggk2/yjhHaXoaJKZQfCpPLmprfWn1csrjVtm9eEcs6ZgADDCQo52SlQHR1O57kBigdl25q1RCVgwLw8NAi/E2TEh0qpuF2P1ieYVQ2ED6RQ7mI0B+Yo=
+	t=1791543383; cv=none; b=E3nahe8uO5/+iH5YFA8Xlj8F2QxlRHLoII1sDsYE+Cii2fC2qsf3Qhs4g1zluu8KBd2lgS69whhne5yTfEgqMHttqdqYTs9rCp5AnyK7/I8bGKRxFvC0irEyoaLsKuCS8PfgOYsl8R5Q6y/TbDZAgocXDKXjizaPHv8MrcYcYok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791543382; c=relaxed/simple;
-	bh=5VU7HqjPEa77d0VUAbkLVJusTLKsMcLGuR3lOxf49Fs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f5s6O5cSPMjXqYjiJYlVxnc4YNjfPX06B1WbUBWtJsWWdK5LsHbQMo1TYR69xgZjfF/lkbp1J8UsZYalPGyZsU4uUnT6rugaTsX/3x7Hw2sebHOf5Ze1LKe32dCEfEWYK9jtm+wTj+b9x8DaXgiXwZES1ELdp8F9soApYjUx3V0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=R3UBSPZc; arc=none smtp.client-ip=117.135.210.5
+	s=arc-20240116; t=1791543383; c=relaxed/simple;
+	bh=sI5us47mzgoN+k0s3b3gUXo1lUt8hbdUvGNorxTwv5A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=pAcvVBz+bMGVgalxYU60MG9JlkJcdKLJtJIR99TYXglYdpP3Azd6fYBavxXMOeR/XQGm433ACzwfOmUmj7KJDolE2aKKYj1GyBo5l59BkCG79hEKpmE3sbmeeUNjhUOku2AliPRUYhP8IMbTkOWGvdyPINSzQ4PZdeRL+5Ma5XA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=IUuXim9F; arc=none smtp.client-ip=220.197.31.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="R3UBSPZc"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="IUuXim9F"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=bC
-	/IzZtIEKcCyjNQfGUVUSYmx/YfXjUhGTQtwBORh+M=; b=R3UBSPZcjVV2XVcQrE
-	rXlNClYZlHQXDojVXvdFK8GEz7XVpdz+Cu4zsfvKJ3dv/SyMG+phTD3ttUDAycTi
-	I0PcGZwUmkcCRXIAwOHmXsxZjaYN7WY5oQ1t5PNo3W/7Nk8ZHVe5SnNz/ZQJ324q
-	PRjzq5LipHCTvtpq1EOrju6Tg=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=rK
+	c4iRyy1NfaB3eGQJkucmqGRWy63t6X3MuOXYYmfPI=; b=IUuXim9FHiW4Ezot/6
+	yOfP80N+lVTeI3xUsSYDQk+/XDCR+ukz/nvFXl4yh5N86+I7cOMSMOjO19Se5+GE
+	nI4nsAz5uPd8Wyh517Js4BcYX7v8/sN4mNFSHhsDqiQZTd+bRQMi5LpHuiTEmRm5
+	tKMfDHgiC1H66ZQkQ9StcrhF0=
 Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzsmtp3 (Coremail) with SMTP id PigvCgCnjIU9yMhqOLqzDg--.17067S3;
+	by gzsmtp3 (Coremail) with SMTP id PigvCgCnjIU9yMhqOLqzDg--.17067S2;
 	Fri, 09 Oct 2026 18:55:58 +0800 (CST)
 From: Quchaosheng <quchaosheng000406@163.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -34,12 +33,10 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc: linux-can@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	Chaosheng Qu <quchaosheng000406@163.com>
-Subject: [PATCH 1/2] dt-bindings: net: can: bosch,cc770: Convert to DT schema
-Date: Fri,  9 Oct 2026 18:55:56 +0800
-Message-ID: <20261009105557.301855-2-quchaosheng000406@163.com>
+Subject: [PATCH 0/2] dt-bindings: net: can: cc770: convert the binding, fix the driver comment
+Date: Fri,  9 Oct 2026 18:55:55 +0800
+Message-ID: <20261009105557.301855-1-quchaosheng000406@163.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20261009105557.301855-1-quchaosheng000406@163.com>
-References: <20261009105557.301855-1-quchaosheng000406@163.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -47,216 +44,36 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PigvCgCnjIU9yMhqOLqzDg--.17067S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW3Ww1rXrWUuF48tFykuw4DArb_yoWxWrWfpF
-	Z3Kws7JFsYqF13WwsrKF18Zr13WFs3uF45Gr9Fvr15AryrGF1vga1akryYqFWUCr97Xa1j
-	vr18Wa9Fga1DZw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pEZXo5UUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC-x8Og2rIyD+3xQAA3K
+X-CM-TRANSID:PigvCgCnjIU9yMhqOLqzDg--.17067S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Wr4DZF1rWw4xCr4UCF4Durg_yoWDKFbE9a
+	ykAay5J3Z3CFnxKay5Ar47ZrySya1kZrWru3Z8Jw4aq34xWrWDJFn7Jr45Wr1xWFW5ZFnx
+	AFyUJay8Cw1agjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sRAnYrDUUUUU==
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAB4Og2rIyD7AdQAA3y
 
 From: Chaosheng Qu <quchaosheng000406@163.com>
 
-Convert the Bosch CC770 and Intel AN82527 controller binding from
-free-form text to DT schema, and reference the common can-controller.yaml
-schema.
+Krzysztof dropped the whole thread from the DT patchwork on 09-15: four
+patches went out in one thread and confused the tooling.  This is the
+same work, sent as one two-patch series with a cover letter, which is
+what Marc asked for on the CAN side.
 
-The driver reads one more property than the old text documented:
-"bosch,no-comperator-bypass", which is checked at cc770_platform.c:94.
-It is documented here so that it can be used. Its spelling is kept as
-the driver spells it.
+  [1/2] converts cc770.txt to DT schema.
+  [2/2] updates the file name in the comment at the top of the platform
+        driver, now that the text binding is gone.
 
-The interrupt is obtained with platform_get_irq(), so interrupts is
-required. The register window is described with the chip select, the
-address offset and the size, as the original text and the existing
-device trees on the local bus use three cells. The size is usually 0x80.
+Both carry Assisted-by: LLM, which the first posting was missing, and
+neither has been reviewed by anyone yet -- the previous thread was
+dropped before that could happen.
 
-unevaluatedProperties is used rather than additionalProperties so that
-properties provided by can-controller.yaml, such as termination-gpios,
-remain usable.
+Chaosheng Qu (2):
+  dt-bindings: net: can: bosch,cc770: Convert to DT schema
+  net: can: cc770: update the binding file reference in the driver comment
 
-Assisted-by: LLM
-Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
----
- .../bindings/net/can/bosch,cc770.yaml         | 109 ++++++++++++++++++
- .../devicetree/bindings/net/can/cc770.txt     |  53 ---------
- 2 files changed, 109 insertions(+), 53 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/cc770.txt
-
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
-new file mode 100644
-index 000000000000..448d5b4f74b5
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
-@@ -0,0 +1,109 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/bosch,cc770.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Bosch CC770 and Intel AN82527 CAN controllers
-+
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
-+
-+description:
-+  The CC770 is a CAN controller from Bosch which is 100% compatible with the
-+  older AN82527 from Intel, except that some bugs have been fixed.
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    enum:
-+      - bosch,cc770
-+      - intc,82527
-+
-+  reg:
-+    description:
-+      Register window of the controller. On a PowerPC system the controller
-+      sits on the local bus and the property describes the chip select, the
-+      address offset and the size, the size usually being 0x80.
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  bosch,external-clock-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Frequency of the external oscillator clock in Hz. The internal clock
-+      frequency used by the controller is half of this value.
-+    default: 16000000
-+
-+  bosch,clock-out-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Clock frequency in Hz on the CLKOUT pin. If not specified or if the
-+      value is 0 the CLKOUT pin is disabled.
-+    default: 0
-+
-+  bosch,slew-rate:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Slew rate of the CLKOUT signal. If not specified a reasonable value
-+      is calculated. Only used when bosch,clock-out-frequency is set.
-+
-+  bosch,divide-memory-clock:
-+    description: Divide the memory clock for slower memories.
-+    type: boolean
-+
-+  bosch,iso-low-speed-mux:
-+    description: Use the ISO low speed multiplexed bus configuration.
-+    type: boolean
-+
-+  bosch,no-comperator-bypass:
-+    description:
-+      Disable the comparator bypass. When this property is absent the
-+      comparator bypass is enabled.
-+    type: boolean
-+
-+  bosch,disconnect-rx0-input:
-+    description: Disconnect the RX0 input.
-+    type: boolean
-+
-+  bosch,disconnect-rx1-input:
-+    description: Disconnect the RX1 input.
-+    type: boolean
-+
-+  bosch,disconnect-tx1-output:
-+    description: Disconnect the TX1 output.
-+    type: boolean
-+
-+  bosch,polarity-dominant:
-+    description: Use dominant polarity on the bus.
-+    type: boolean
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    localbus {
-+        #address-cells = <2>;
-+        #size-cells = <1>;
-+
-+        can@2,100 {
-+            compatible = "bosch,cc770";
-+            reg = <2 0x100 0x100>;
-+            interrupts = <4 1>;
-+            interrupt-parent = <&mpic>;
-+            bosch,external-clock-frequency = <16000000>;
-+            bosch,disconnect-rx1-input;
-+            bosch,disconnect-tx1-output;
-+            bosch,iso-low-speed-mux;
-+        };
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/net/can/cc770.txt b/Documentation/devicetree/bindings/net/can/cc770.txt
-deleted file mode 100644
-index 042200cf4419..000000000000
---- a/Documentation/devicetree/bindings/net/can/cc770.txt
-+++ /dev/null
-@@ -1,53 +0,0 @@
--Memory mapped Bosch CC770 and Intel AN82527 CAN controller
--
--Note: The CC770 is a CAN controller from Bosch, which is 100%
--compatible with the old AN82527 from Intel, but with "bugs" being fixed.
--
--Required properties:
--
--- compatible : should be "bosch,cc770" for the CC770 and "intc,82527"
--	for the AN82527.
--
--- reg : should specify the chip select, address offset and size required
--	to map the registers of the controller. The size is usually 0x80.
--
--- interrupts : property with a value describing the interrupt source
--	(number and sensitivity) required for the controller.
--
--Optional properties:
--
--- bosch,external-clock-frequency : frequency of the external oscillator
--	clock in Hz. Note that the internal clock frequency used by the
--	controller is half of that value. If not specified, a default
--	value of 16000000 (16 MHz) is used.
--
--- bosch,clock-out-frequency : slock frequency in Hz on the CLKOUT pin.
--	If not specified or if the specified value is 0, the CLKOUT pin
--	will be disabled.
--
--- bosch,slew-rate : slew rate of the CLKOUT signal. If not specified,
--	a reasonable value will be calculated.
--
--- bosch,disconnect-rx0-input : see data sheet.
--
--- bosch,disconnect-rx1-input : see data sheet.
--
--- bosch,disconnect-tx1-output : see data sheet.
--
--- bosch,polarity-dominant : see data sheet.
--
--- bosch,divide-memory-clock : see data sheet.
--
--- bosch,iso-low-speed-mux : see data sheet.
--
--For further information, please have a look to the CC770 or AN82527.
--
--Examples:
--
--can@3,100 {
--	compatible = "bosch,cc770";
--	reg = <3 0x100 0x80>;
--	interrupts = <2 0>;
--	interrupt-parent = <&mpic>;
--	bosch,external-clock-frequency = <16000000>;
--};
+ Documentation/devicetree/bindings/net/can/bosch,cc770.yaml | 158 +++++++++++++++++++++++++++++++++
+ .../devicetree/bindings/net/can/cc770.txt                  | 109 ----------------------
+ drivers/net/can/cc770/cc770_platform.c                     |   4 +-
+ 3 files changed, 155 insertions(+), 57 deletions(-)
 -- 
 2.43.0
 
