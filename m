@@ -1,110 +1,202 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4052447F3DC
-	for <linux-can@vger.kernel.org>; Thu,  8 Oct 2026 09:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF3B18C332;
+	Fri,  9 Oct 2026 00:30:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791452215; cv=none; b=otB/KXcmYUVMeX1/OkCtV03U6FZgKmBib7X66urWdGH2WN/AJfcyXEqqHOPsmFGwjFS0aMmzqiiJ+1J37NS9cEZH4rjNAVFZ3x5u6rtOewScql/9hINxrMyjcYHoCvu+OCAGVlJvb3BlzpFZiy2pB6CYo5z8PFU2PwhFzLHb6DU=
+	t=1791505839; cv=none; b=b5swAX7B/u08Fyzdx0gNry4xLzA0CDuyebOEyuDoZHdiZ2EWIQiuBTS3HN9Bon61bXEwDNbLlf96xEBFzu3NGFjNTbi6SjMVlYvJ7mQaz/6Kxq9Vn/RUajBa6m3xlYbY6cihKcbKPBCS/fHXyQXh0SXSWWT8/s3haDjmtus+mJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791452215; c=relaxed/simple;
-	bh=GMDJBoHE4iwhFFerlAQ0uwhC+xQNNzr6ZQ0KDIzFBjU=;
-	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=ezu8xp5u9S10iZb9K3ohaIFsowDEtJTzq2K7elY7EVz3QRSGYICyiTtQT7JZvqcDW2mAm50W1K0EKqVIpGR3oCFfp78wy7SyCXCEPUKNVbx/RT1QtwfNVdYXSgCfq6636yJJsxOiT5pfLG+qlW6yJQcL/XsxMX0DV37PSzA0hXs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WV9eUlBe; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791505839; c=relaxed/simple;
+	bh=URRvgDBplzN3sqMnTx/dAfUQXrmvhIRimPvbRCKl7OM=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=FcehiaXr74YGVGshh+zWjiuHK5yx0SYQ7+hJo+PQxZ2wbSHE7VX+xTp27cSkYDvL/1HhzvgzetdEbvmQmXTQ9foBf9njXo4b6QRH0gWpGcr+BJEKMyG1RTJwVeNKK2g+rko/J+Rsh1R6DIO+0rN9c9r1LJF7Wu7RN1PQWLS4AQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bKYzVVEu; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WV9eUlBe"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 67E6B1F000FF;
-	Thu,  8 Oct 2026 09:36:53 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bKYzVVEu"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22E6E1F000FF;
+	Fri,  9 Oct 2026 00:30:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791452213;
-	bh=rzsYtF/HgZNorC25jqL7l1VA1dc8wnborSHKBNijo0I=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=WV9eUlBekFxFYA3dTEMlKB6dJHtu0ummTItfqhKrMXEsAtVv7oPFnE5Dc8Y+0MZ9+
-	 JQThEHrWB5fh9kJgisGngYGPjh/I5q+zEENBnduNfkdvN+nZEieB5ctOjgicmRV+JL
-	 2Z8yLQBTJcF5GErD2ju1/ybgY4jTrsXtc9C7IMUBfGQXdX7JOH24YVGW0k5S24ubpy
-	 VMg4r9JQasyVJQfgL1ZYgaR6AvxHvZvKi3cOdq7nl5Wrj/h2H4JE0YRi5TsCC4EQ9d
-	 8V2Ghaz7esq7a3aubftS4SuMLjfzz03GwxW+FfS13/pKiEd/bEcAPXkYT6Z28L1Tht
-	 VFLniFX1sJKdA==
-Message-ID: <sashiko-outbox-163954@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 4/5] can: peak_usb: validate channel numbers in PCAN-USB
- FD
-Reply-To: sashiko-reviews@lists.linux.dev
-To: =?utf-8?b?U3TDqXBoYW5lIEdyb3NqZWFu?= <stephane.grosjean@free.fr>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20261008-canfd_check_channel_idx-v1-4-0a3bb82f4e09@peak-system.fr>
-References: <20261008-canfd_check_channel_idx-v1-0-0a3bb82f4e09@peak-system.fr>
- <20261008-canfd_check_channel_idx-v1-4-0a3bb82f4e09@peak-system.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 08 Oct 2026 09:36:52 +0000
+	s=k20260515; t=1791505837;
+	bh=JZzHSdvSKNduzkcGnAy9HI6B6lQJhJSfLNRHSEEf5xw=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=bKYzVVEum/tR+9LUkIaUzH02HwQWekm5Ui6L1sstxMdCxRtM5b9XnfH/KiKX5WxNH
+	 T+viX3nDAzKs/mRXxGw2O8jaH6+U75Rz/0nqSzdeb2fzvabiWi0yaY55hOAbAI8m8g
+	 HWa67thfQBjPIjX4OFC+uwQ2d94eXXdgQL1pzMmhjrLNQqhisbHy1NEedVXJSkPJId
+	 dfhV0k1uYN4fnslbErKm/SGfN8SSaln+UyTtHK+dQC16Kitu2+5wAfaXLUmhwMkiAf
+	 bJeQsM+HlkDsTiVznQmo5KR/PQgdQOt8n1RV8LPPLGGlDhSyKACJmhP4rlP4Ul+zVO
+	 yNZ4pu8z8j2RQ==
+Subject: Re: [PATCH] can: vcan: use per-CPU device stats
+From: netdev-bot+sashiko@kernel.org
+To: yogeshgaur.83@gmail.com
+Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ syzbot+937a3a1fbfbc99d6fcaf@syzkaller.appspotmail.com, kuba@kernel.org
+Date: Fri, 09 Oct 2026 00:30:36 +0000
+Message-ID: <179150583668.1406898.16297101260619649490@kernel.org>
+In-Reply-To: <20261007113611.2082-1-yogeshgaur.83@gmail.com>
+References: <20261007113611.2082-1-yogeshgaur.83@gmail.com>
+X-sashiko-severity: High
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] can: peak_usb: missing NULL check on sibling channels leads to UAF=
- and NULL deref
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
+
+Critical: 0 · High: 1 · Medium: 0 (1) · Low: 2
+
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [High] The fix is incomplete.
+- [Low] The commit message gets the cause wrong: 'vcan does not implement
+  get_num_tx_queues(), so rtnl_create_link() honours IFLA_NUM_TX_QUEUES'.
+- [Low] The patch fixes a syzbot-reported data race (it has Reported-by:
+  syzbot+937a3a1fbfbc99d6fcaf and a Closes: link) that loses tx/rx…
+
+Pre-existing issues:
+- [Medium] This problem wasn't introduced by this patch, but the sibling
+  driver vxcan (drivers/net/can/vxcan.c) has the same multi-queue stats…
+
 --
 
-commit bb6a3841806ddddd6a5d411fd8594a762ea452bd
-Author: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
+can: vcan: use per-CPU device stats
 
-can: peak_usb: validate channel numbers in PCAN-USB FD
+The patch moves the vcan tx/rx packet and byte counters off dev->stats,
+where they were plain increments, and onto the core per-CPU dstats. It
+sets pcpu_stat_type to NETDEV_PCPU_STAT_DSTATS and uses
+dev_dstats_rx_add() and dev_dstats_tx_add(). This addresses a KCSAN data
+race that syzbot reported on vcan devices with several tx queues.
 
-This patch adds validation for CAN channel numbers encoded in messages
-received from PCAN-USB FD devices. The channel number is checked against
-the number of controllers supported by the adapter to prevent out-of-bounds
-array accesses.
+Closes: https://syzkaller.appspot.com/bug?extid=937a3a1fbfbc99d6fcaf
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can=
-/usb/peak_usb/pcan_usb_fd.c
-> index 82502594a4092..ddbb2be1de0dd 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+> single tx queue.  vcan does not implement get_num_tx_queues(), so
+> rtnl_create_link() honours IFLA_NUM_TX_QUEUES and a vcan device can be
+> created with several queues, each with its own xmit lock.
+
+[Severity: Low]
+Is this cause and effect accurate? rtnl_create_link() uses
+IFLA_NUM_TX_QUEUES whenever the attribute is present. It only falls back
+to ops->get_num_tx_queues() when the attribute is absent:
+
+net/core/rtnetlink.c:rtnl_create_link() {
+    ...
+	if (tb[IFLA_NUM_TX_QUEUES])
+		num_tx_queues = nla_get_u32(tb[IFLA_NUM_TX_QUEUES]);
+	else if (ops->get_num_tx_queues)
+		num_tx_queues = ops->get_num_tx_queues();
+    ...
+}
+
+So adding get_num_tx_queues() to vcan would not prevent a multi-queue
+device.
+
+Could the wording be changed so it does not suggest that?
+
+> Reported-by: syzbot+937a3a1fbfbc99d6fcaf@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=937a3a1fbfbc99d6fcaf
+> Assisted-by: LLM
+> Signed-off-by: Yogesh Gaur <yogeshgaur.83@gmail.com>
+
+[Severity: Low]
+This isn't a bug, but this patch fixes a data race reported by syzbot.
+Should it carry a Fixes: tag naming the commit that introduced the
+problem? That would let stable and backport tooling tell which trees need
+the fix.
+
+> diff --git a/drivers/net/can/vcan.c b/drivers/net/can/vcan.c
+> index 76e6b7b5c6a11..2ff90cb7eee9e 100644
+> --- a/drivers/net/can/vcan.c
+> +++ b/drivers/net/can/vcan.c
+
 [ ... ]
-> @@ -536,8 +537,12 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb=
-_fd_if *usb_if,
->  	struct sk_buff *skb;
->  	const u16 rx_msg_flags =3D le16_to_cpu(rm->flags);
-> =20
-> -	if (pucan_msg_get_channel(rm) >=3D ARRAY_SIZE(usb_if->dev))
-> -		return -ENOMEM;
-> +	/* Reject invalid channel numbers reported by the firmware.
-> +	 * Any channel below ctrl_count is guaranteed to have a valid
-> +	 * entry in usb_if->dev[].
-> +	 */
-> +	if (pucan_msg_get_channel(rm) >=3D usb_if->adapter->ctrl_count)
-> +		return -EINVAL;
-> =20
->  	dev =3D usb_if->dev[pucan_msg_get_channel(rm)];
->  	netdev =3D dev->netdev;
+
+> @@ -93,8 +89,7 @@ static netdev_tx_t vcan_tx(struct sk_buff *skb, struct net_device *dev)
+>  		return NETDEV_TX_OK;
+>  
+>  	len = can_skb_get_data_len(skb);
+> -	stats->tx_packets++;
+> -	stats->tx_bytes += len;
+> +	dev_dstats_tx_add(dev, len);
 
 [Severity: High]
-Does this actually guarantee that the usb_if->dev[] entry is valid?
+Does this fully close the race described in the commit message?
 
-Since sibling channels are initialized sequentially during device probe, can
-this lead to a NULL pointer dereference? For example, if can0 is brought up
-and receives a message from the shared USB endpoint with a channel number
-for can1 before can1 completes its initialization, usb_if->dev[channel]
-might still be NULL, causing a crash when accessing dev->netdev.
+vcan_tx() still calls can_dropped_invalid_skb() first. That helper's drop
+path does a plain increment on the shared dev->stats:
 
-Additionally, what happens during device disconnect? If peak_usb_disconnect=
-()
-frees sibling channels in reverse order (e.g., can1 then can0), the freed
-channel's pointer seems to remain in the shared usb_if->dev[] array. If can0
-is still active and receives a message for the freed channel, could this
-result in a use-after-free?
+drivers/net/can/dev/skb.c:can_dropped_invalid_skb() {
+    ...
+inval_skb:
+	kfree_skb(skb);
+	dev->stats.tx_dropped++;
+	return true;
+}
 
-This same pattern appears to be repeated in pcan_usb_fd_decode_status(),
-pcan_usb_fd_decode_error(), and pcan_usb_fd_decode_overrun() modified
-further down in this patch.
+Take a vcan created with IFLA_NUM_TX_QUEUES > 1. Two CPUs send invalid
+frames on different tx queues, for example via AF_PACKET with a non-CAN
+skb->protocol. Each CPU holds only its own queue's xmit lock:
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261008-canfd_chec=
-k_channel_idx-v1-0-0a3bb82f4e09@peak-system.fr?part=3D4
+__dev_direct_xmit()
+    HARD_TX_LOCK(dev, txq, smp_processor_id());
+    netdev_start_xmit()
+        vcan_tx()
+            can_dropped_invalid_skb()
+                dev->stats.tx_dropped++;
+
+Can these tx_dropped increments still be lost? Could KCSAN still report a
+data-race in vcan_tx / vcan_tx on this path?
+
+The commit message says tx_dropped "is still reported" because
+dev_get_dstats64() folds in dev->stats. The field itself is still updated
+without any shared lock, though.
+
+Would it make sense to use DEV_STATS_INC(dev, tx_dropped) in
+can_dropped_invalid_skb(), which would cover every CAN driver? Another
+option is for vcan to count drops with dev_dstats_tx_dropped().
+
+[ ... ]
+
+> @@ -185,6 +179,7 @@ static void vcan_setup(struct net_device *dev)
+>  	dev->netdev_ops		= &vcan_netdev_ops;
+>  	dev->ethtool_ops	= &vcan_ethtool_ops;
+>  	dev->needs_free_netdev	= true;
+> +	dev->pcpu_stat_type	= NETDEV_PCPU_STAT_DSTATS;
+>  }
+
+[Severity: Medium]
+This isn't a bug introduced by this patch, but the sibling driver vxcan
+seems to have the same multi-queue stats race. vxcan_xmit() in
+drivers/net/can/vxcan.c does plain increments on both the local and the
+peer device stats:
+
+drivers/net/can/vxcan.c:vxcan_xmit() {
+    ...
+		srcstats->tx_packets++;
+		srcstats->tx_bytes += len;
+		peerstats = &peer->stats;
+		peerstats->rx_packets++;
+		peerstats->rx_bytes += len;
+    ...
+}
+
+It also does dev->stats.tx_dropped++ when the peer is gone.
+
+rtnl_create_link() also honours IFLA_NUM_TX_QUEUES for a vxcan pair, and
+vxcan does not set pcpu_stat_type. Concurrent xmits on different tx
+queues can lose these increments, including the updates to the peer's rx
+counters.
+
+Should vxcan get the same conversion?
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261007113611.2082-1-yogeshgaur.83%40gmail.com
