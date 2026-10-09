@@ -1,170 +1,113 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD9544998E
-	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 07:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791531995; cv=none; b=Yn1eEh1KJiodmV1Isl0upMAIKHj9SK5Q90XFMsEFR0bm5can3752uxedRNA6/94G18mkUAicvVU4eRnTqEmaKeqI0A2bqDf5WY3aQcXe2dnGRDuXbmkaKR/TmXMpDfxjf9p4vK5Ea/38J02Axq3ccf5MODde2XK2UU2gmV8o+BA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791531995; c=relaxed/simple;
-	bh=a9YGZZqIn7zWlUyQKA83kzTexIMxrbcDQ+/Xl3fnBYY=;
-	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=B6ZkU316yTD8V/nT1NNhQiWz2PCFhe8dcYDLIWCYp8VymICs6bWX2nWD0BgSGI1oki9lX/n8qNk7x11rWQJjEde0xzxS5+2oCeboSZqyLAmn4hdYmsxsrTVC6YhGJR3ZCtjTay7vNT9Ke2MYfdMdYst5aEMXoLD9WFGj1/vbpU4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FuILD9bl; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E1C43712D
+	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 10:18:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.217
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791541111; cv=pass; b=ArH2vGNlloGiyU/+af56qKGi79jkRAkfgm7a/FtqcWhyxORGaoQWlsWR+Hj68tQYkNR0FI3ROYQwxAR0HsNe+eQ+y2Ghq48CRa3BgnCHJxy5IZTv6UD9diE+8K+he3JKob+U0j7EwHaEplkhHIwSdqYuT1iLFPeiQebpNw49eWU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791541111; c=relaxed/simple;
+	bh=lydgbnjAt5H5bGeGXUKImcvvbWgf/oYt6BrCC/2ceZM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=vEH5mgZ9avrPVv3d/dYxsKi6/11Y7Qo90dqhDqdqo/huw2MPWTJSV/bX1EzkHGwzhIESpNQwms32buvMcgYHF+NZ5wSKuq6WqBKg+rle26y30vED7jxFthK/QlehdUN75jS2Dhi3m0XNBtFayXNW9RsOFWaEAlDrirVwAxqvIo0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=b5o0bt4M; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+ndIQzVx; arc=pass smtp.client-ip=81.169.146.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FuILD9bl"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE6D11F000FF;
-	Fri,  9 Oct 2026 07:46:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791531994;
-	bh=O0q1TzXZkLBboyeH1ro5z/7E6eXhofr/hEkeXLx6Xsg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=FuILD9blPvN3fDv+tUCdidJxIGotkYWn43PJ1LVRE9zb09YXOuPtTTzUsFvcmmLQp
-	 aZZ0NBT2OX9MZ6CVAuEeiI6T/Q7KQRN2hvb8LkRWpcY09z+Elbjy9BRxuuWNX9+Z4O
-	 V+3mzS+yViN/33pKvo2/Otl/u6K4DTDQNTO1pHUJzOAxHrLTHR13OqnxhiO9+Ae1fF
-	 XlWYHeVyVPoCQCZ/NJVpu/x+a6CxNA/vxX9fi0ILoBcf1OIyplAu301e8huFwcunj3
-	 8grbqrTv8nTH3PI7I+44FMsOCmgMfIJzrO9SbgGM7rfFTXl7yxZcbvpwtBzf4xTasm
-	 BQJHccXucY3Gw==
-Message-ID: <sashiko-outbox-165031@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 4/5] can: peak_usb: validate channel numbers in
- PCAN-USB FD
-Reply-To: sashiko-reviews@lists.linux.dev
-To: =?utf-8?b?U3TDqXBoYW5lIEdyb3NqZWFu?= <stephane.grosjean@free.fr>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
-In-Reply-To: <20261009-canfd_check_channel_idx-v2-4-f7b772929791@peak-system.fr>
-References: <20261009-canfd_check_channel_idx-v2-0-f7b772929791@peak-system.fr>
- <20261009-canfd_check_channel_idx-v2-4-f7b772929791@peak-system.fr>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 09 Oct 2026 07:46:33 +0000
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="b5o0bt4M";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+ndIQzVx"
+ARC-Seal: i=1; a=rsa-sha256; t=1791539305; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=WYn0VW7IFa1ZThL4FrKj2BPJuctUYcyZNgPrWBMvPnMNgfTBhA2J2QqRrV3UxBEfbr
+    FbpbyQQ06CONYoVqWyQL7ZmooaglEm3fOnVX1K5UfUHpw5FasfemN4P4vrahW1pimvb0
+    4tgefRCrT+Yv+xCn6ogDDlr6gqjdEZSg833ew0VGf5+4RGaHk/fgnadIk0ypN6TXt9y/
+    UAFEkLj3xanDeajZli7MwJFbpuEH0enSk7kq6nID/RgRzLMn4kay9Nas74n6yjUh+dSF
+    qIcIsgftBC2qkBK1bscZgWBgKteWVvOaNlQhctgvx2fcLhYp7ZYFz/kUyKY19Da4XLpc
+    8VZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791539305;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=KcWqvHp3bHDAccrOLsi9vZRh2sQO99iMykq5gg1p0mA=;
+    b=hXwA6SVGCNsIEgdpCDl0McNhl4dPlpnwLQ8pnVSFtuH3nTTZ98ytkFYCTLASGsRo5e
+    1s2VgX/qYdNHCd0vitPJFA3/7G/jicZa6avd5kmRBE6VNe+ZsEdlhvObZ3CfmQG7QkVY
+    MjyOM/LgGkoWP4pCkMAFoooPniGQ4aVATvhWfaamlMqfnwZcCaGPd0kiBebpiagmI5Ly
+    J3kWbehRFyvGfVZWr02B7JLje9iu1l2XOE9QiCHTl50LvZcyTmDnf33zzuxlz6iJjeZu
+    7u7KlRYhdkEhuZBmDpJO/adWwgNM7JMOAi+FNJrT4qBvhtkyeTaNsp3U9SraSny8Zryh
+    FfXw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791539305;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=KcWqvHp3bHDAccrOLsi9vZRh2sQO99iMykq5gg1p0mA=;
+    b=b5o0bt4MaUMgrVMtd9WwoWpZ5KDdwDbw19ffI8mdJFIvm7iIZxe/KFSG2ZJoQxhnSg
+    9nnnz3fl5Zyc5SKP0kLYvkefNSIRjE177SO0Y9bQ8Psn+Xo7c4Yr2pEdvcJZKd3Z66yH
+    Zbj5E8ZilKtcrvQgxa10b581M3EKK+FGdXcYQsDEGjRJOxE6fEXQw33rkt0dQmNmBMnZ
+    x2YDXa68LSZzk0W1wu62IYaOvSbozDfBgQjDx+rR2V6ZQxNVgYMPLiud64zhx1n1GX7W
+    t0vJu5gTfsGMISRvXgVicvCeTsP54MmMy8VcIcXxPinEF2RnNiu53KPpWaYnT/0cO5YV
+    Oxtg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791539305;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=KcWqvHp3bHDAccrOLsi9vZRh2sQO99iMykq5gg1p0mA=;
+    b=+ndIQzVxXxkMvhezZM1wn2OZs++NvmVsmLfNY1jsre/k+qkdm5d+bPpvt9r830CrCd
+    S1Xuk51lddAFpZfe86Bw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K04b9a2999mOSXU
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 9 Oct 2026 11:48:24 +0200 (CEST)
+Message-ID: <a5860c87-b034-4cb2-9995-763c6b2cf58b@hartkopp.net>
+Date: Fri, 9 Oct 2026 11:48:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: can-next - Re: [GIT PULL] Networking for v7.3-rc7
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+References: <20261008192253.574195-1-kuba@kernel.org>
+ <179152126269.566079.1895099510348236501.pr-tracker-bot@kernel.org>
+Content-Language: en-US
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <179152126269.566079.1895099510348236501.pr-tracker-bot@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 3 potential issue(=
-s) to consider:
-- [High] can: peak_usb: TOCTOU race in peak_usb_disconnect() allows UAF of =
-sibling devices
-- [High] can: peak_usb: UAF in RX path due to dangling sibling pointer on p=
-robe failure
-- [Medium] net/can: undocumented structural fix in disconnect path
---
+Hello Marc,
 
-commit 5ae27b339d4e54171f73db600b5e74ef68206d48
-Author: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
+now that the latest real CAN fixes are in Linus' tree and I can re-spin 
+e.g. the patch to use ml_priv instead of ARPHRD_CAN:
 
-can: peak_usb: validate channel numbers in PCAN-USB FD
+What is the status if your can-next tree? Which patches have been 
+already applied (e.g. my Softing PCMCIA driver removal)?
 
-The PCAN-USB FD family encodes the CAN channel number in messages
-received from the device. This value is used as an index into the
-adapter CAN device table. This commit validates the channel number
-against the number of CAN controllers supported by the adapter before
-performing the lookup.
+Against which tree do you want can-next patches to be sent? can-next or 
+net-next?
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/c=
-an/usb/peak_usb/pcan_usb_core.c
-> index 55aad01cd8cac..751cd52cb5486 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -1038,7 +1038,17 @@ static void peak_usb_disconnect(struct usb_interfa=
-ce *intf)
->  	struct peak_usb_device *dev;
->  	struct peak_usb_device *dev_prev_siblings;
-> =20
-> -	/* unregister as many netdev devices as siblings */
-> +	/* First, kill all pending RX URBs. usb_kill_anchored_urbs() waits
-> +	 * until all completion handlers have completed, ensuring that no
-> +	 * decode_buf() callback can access usb_if->dev[] after this point.
-> +	 */
-> +	for (dev =3D usb_get_intfdata(intf); dev; dev =3D dev->prev_siblings)
-> +		usb_kill_anchored_urbs(&dev->rx_submitted);
+Best regards,
+Oliver
 
-[Severity: Medium]
-The commit message states the patch only adds channel number validation to =
-the
-PCAN-USB FD receive path. However, this diff introduces a concurrency fix in
-peak_usb_disconnect() that kills all pending RX URBs across all channels be=
-fore
-unregistering devices.
 
-Should this structural fix be documented in the commit message or split int=
-o a
-separate patch?
+On 09.10.26 06:47, pr-tracker-bot@kernel.org wrote:
+> The pull request you sent on Thu,  8 Oct 2026 12:22:53 -0700:
+> 
+>> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-7.3-rc7
+> 
+> has been merged into torvalds/linux.git:
+> https://git.kernel.org/torvalds/c/af32da41b0327b9c6a37856ba82b6760d6c8d10e
+> 
+> Thank you!
+> 
 
-[Severity: High]
-This added loop drains RX URBs to prevent UAFs, but runs without holding
-rtnl_lock or updating state that would prevent new URB submissions.
-
-Could a concurrent `ifconfig up` call peak_usb_start(), allocating and
-submitting new RX URBs that bypass this kill loop?
-
-> +
-> +	/* All RX URBs have been drained before reaching this point. No
-> +	 * decode_buf() callback can access usb_if->dev[] anymore, making it
-> +	 * safe to unregister and free the associated netdevs.
-> +	 */
->  	for (dev =3D usb_get_intfdata(intf); dev; dev =3D dev_prev_siblings) {
->  		struct net_device *netdev =3D dev->netdev;
->  		char name[IFNAMSIZ];
-
-[ ... ]
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can=
-/usb/peak_usb/pcan_usb_fd.c
-> index 82502594a4092..71ac6fdcd99be 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-
-[ ... ]
-
-> @@ -536,10 +537,19 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_us=
-b_fd_if *usb_if,
->  	struct sk_buff *skb;
->  	const u16 rx_msg_flags =3D le16_to_cpu(rm->flags);
-> =20
-> -	if (pucan_msg_get_channel(rm) >=3D ARRAY_SIZE(usb_if->dev))
-> -		return -ENOMEM;
-> +	/* Reject invalid channel numbers reported by the firmware */
-> +	if (pucan_msg_get_channel(rm) >=3D usb_if->adapter->ctrl_count)
-> +		return -EINVAL;
-> =20
->  	dev =3D usb_if->dev[pucan_msg_get_channel(rm)];
-> +
-> +	/* This should never happen during normal operation. However, do not
-> +	 * trust the device and reject records targeting a valid channel
-> +	 * without an associated netdev.
-> +	 */
-> +	if (!dev)
-> +		return -EINVAL;
-
-[Severity: High]
-If new RX URBs bypass the kill loop in peak_usb_disconnect() as mentioned
-above, they could remain active while sibling devices are sequentially free=
-d.
-
-If one of those URBs receives a packet targeting an already-freed sibling,
-does it result in a use-after-free here, since usb_if->dev[] is never clear=
-ed?
-
-Also, could this check fail to protect against a dangling pointer left by a
-probe failure?
-
-For example, pcan_usb_fd_init() populates the shared array with the device
-pointer. If peak_usb_create_dev() then fails for a sibling device, its error
-path frees the device but does not clear the usb_if->dev[] entry. Since this
-check assumes unassociated slots are NULL, could an RX packet targeting the
-failed channel result in a use-after-free?
-
-> +
->  	netdev =3D dev->netdev;
-> =20
->  	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN) {
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261009-canfd_chec=
-k_channel_idx-v2-0-f7b772929791@peak-system.fr?part=3D4
