@@ -1,24 +1,24 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F04364949;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C31254DBD75;
 	Fri,  9 Oct 2026 13:43:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791553419; cv=pass; b=rX3NcM8neWsfe26cjdAqwwR295mDfi/SDcsEMmkKvN+2EplcUjL530KHajvD0QJj0GlTxfNBNIN3ab3fxhKSwxg44j1BOfffzRoQuP3rYYRBjY801KUZV74ZW6aBVAEAfbLGRKCgur560N3aFrDG6rGdkJrkj8IfXJhiyRxVty8=
+	t=1791553420; cv=pass; b=I1uIQDKFh1bAwGQsgcm2jJ8ZMd9YqZH/NPjPAK6AUUHiVZ0Tgz83eGp0Si8y9EiuZr0idmPESSee8HFttu02Eep+kjLTyVVA/3UEccWOpSGtgAjIfpl56NL3fqORJ4CYz6iIkYyv3AhNxME8NU7I3OvV58OrHl4TZapc+fNzcG4=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791553419; c=relaxed/simple;
-	bh=sFiy1qfhumLK4uWzPt/3LOQEc18konFIxAyBF/XLK+A=;
+	s=arc-20240116; t=1791553420; c=relaxed/simple;
+	bh=QDA22K5MHvsxu3CEFiNsEX12Eu7hlcDqJ/tm5qtqfvo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lOYV2lm5mgosLf+ncftlrbByf4Y1AVMwUvbRfnXpjW3cizfWa5P0AmQh74xZBqSyp5ttotQ4avkyMVHob1En1uAPqySuhCOpD+YYplR0HEAr+A0fk7ZtIwljwjwjUkYG7rPAuMIb6dR7A7oJw98UkOF0FrB1EW0zaAPri8hIDEc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Ma1AIBOS; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=JGFnZqOj3VTK3/27gWdOxBsCOoy5h09y2utTIgXoPiePZR9WgqkcCGAWVud8ileNXPE/Up7AioZgsTkElqnMtDyBdJYCEpOV075gEnXkjnAugpadug5FaKlhK8EWFdj8WAVznaOomAPxl385eF54nJPOTwdR3YSfkYUpaoxxgNU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=NpT5h3MH; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Ma1AIBOS"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="NpT5h3MH"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7593120261F;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C41F9202620;
 	Fri, 09 Oct 2026 15:43:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1791553414;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qtAEIFtkl1+1S1oO5IpfaZTGUQN3NgM9Hbtv/PYjQY0=;
-	b=Ma1AIBOSazOKbNx3yG8shXIC+Gck4Hlc7Wd0zGcFTrvD9AYjy+lfcH81C6d0rjaGk4wY17
-	GUPUvwBs0lSAahYlfXjqDMQj6YWlujYCgMzPWMvgmQvZrjPkX0GE//bLfCdg1KyH7ejyKz
-	z7FYBa58kThqgJ5r8Av09DK77pjsNMLeqMl134EhpgdHzA1JdF+9wwQs14kcv1cS7KEP5A
-	UypEyBuC8SxrGkJSP9zpw1yLmq9g1ov8pBMZ3qYUzee3L9v6Tw8orje6uAhHxPUwwlZTD8
-	XlTEYTqseTow39+VIYsPCFl3n9ClYJ0C7mpwCK/vijIPywH2y7L3N5opZx07wg==
+	bh=HeKQzPg/aVpLDedaTA7bbIaAs6J6oT+5PKGC9Pd/Vlg=;
+	b=NpT5h3MH9iIJmS1e+TmMZBOpdZzNiWn8Mqpp5hxemd1b8J/jslQVlNX1mCGyy+KLHkmLPv
+	8fH6emnMDyF+BIjwCVq30/GCcZhSD8dglJg42HS0oGiwuk5Lk17nFDcCtNGsizw7Vm3h4A
+	uGTc5z65nFLvZUeKDIbDTsUoo1+JhMLs4PPDNbDwSJp32TM1hUAZST/tvrLVCYFf7zuocF
+	6ZvdEDuHyphniAnD34O+R71YXHojNDs0z1LVr74qJDZGyUlc9sxHOmgBpJaW2nvb+/MPs7
+	Lt34LwjgZgZv4XefYVINiiQ+Cjo97ztvp2YfPz/hEP3nEK0SbM+RrORwNHGEKA==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791553414; a=rsa-sha256;
 	cv=none;
-	b=dHnk0QBa/8kQ99abrkB/dCvua8UjYrMG0LwGq+vVUN6YkIuWVemsjeaRwaQNB9id7d2Zn2
-	h2fY85pQcEShZlwRdeO8PG2oRHuLh8UiA5nWWj6GyZP9jHr9lGaPnReR35Ia0CB73EUhnw
-	00FvsREOQhjlicvdso5UuFEc1f6Xv7krqLy31wGgYwCzItct3S0LcCOmHRvLZDLZUyAsxi
-	u9BtNabkmi5wFX15kxnDiAVr0yliSGWVH54l2mtb/qaFNfzlRxT8PTniLHPqWpa5ty0k2V
-	EAw2mKQ/0DK2W6/BXBZEsP695pP6w+/IZ5cCZMeVCIpMceY3xPz84KJFYp5LrQ==
+	b=gv6EgeSFz4N968vrTnTbZkwOdyrHK9ofbeSqlSJyZ9zOMfJmIg0TdEiKLrLyGcx1uK/ubm
+	jwMElwMZ4sUmubsxCH5EwuGYdh9V9py3X+C5XMY+Nq5RELk8SxXseY0UicOiKXWcxrBabg
+	pv/H1Rnh2c70cnf7L01qzJEiOv9BmZmGuuZ3emmaSEND4i/ee7nAQd6YmacUCPkC2ibquw
+	wGSWP4e/uyk6DzLb6gqMs+lQaMBgqYL584AfVn+gQp3jZJATXBJ0/jWdC7Y8L7O3rurAPB
+	JqzckKLz8q+X7mppUvsxFksW3KDzDHNwkEivbabBC3PYVNjKndCBF7NW7YyMnw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -48,36 +48,37 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qtAEIFtkl1+1S1oO5IpfaZTGUQN3NgM9Hbtv/PYjQY0=;
-	b=bJtR3+qLwnCWDfAS0DJtfJ0v69pm7Xxr4aMCQVtc4/BgGkxcCUzzz75Cd4fFSstH6ZOrXJ
-	HnzSuTA65HKJMcUt8BFoQku8n88CC1png51pgHgzcgAO+XrRWOn4tSQmJiauC8kDmKuTkn
-	jeoaBN1Pj/8J6I2ATFKbPmJdD8Uyf1VsBQypRfI7N5jdReFwSpMBDOlu5GYxsyjLFnI9tX
-	VfwPsXG9gU/9kZlRGfYElKgoJJ70bPHVoSwiiQKkpDwNR0hZxNaGv7mcrxdLtdujLiK6le
-	qf6uwbGbD1Tu6SkuZwT2WaPcfKOVrbwi7RdvBzq3ymD7U6pvdqcfma+D33qpMw==
+	bh=HeKQzPg/aVpLDedaTA7bbIaAs6J6oT+5PKGC9Pd/Vlg=;
+	b=CrM9XrffMtG+5HB1EcklhN3wb/OC77rm+9IrabpcktAu1ptpJSD83WoIvfRcOZQD5pRVAh
+	9SzNVVEmP9Wagrbmy86Vy6LbQ02JcDGSpCu27/fx/PTu47kWjA0Px8Q3b0TWb3GTREi0Cb
+	6ClWgFSXxG4qZLeray6/BpCXB3m+kEp7Bq+jbmhj6c/91uXQeMBTKHfnQK/qh7KG2DHJTO
+	UipJjSymHDfH4IrpSRm34c9aT51mOcqgESS1mhBQ1hSNf+R0L8Erp1rC/LPiTVbN0w/VZL
+	H1SKrScn3PCbCZ3tm5cxDXendhTb0Ipumud5lXoEtklaZrfdMI93vkwfl85wcw==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xFAso-0053S9-1E;
+	id 1xFAso-0053SC-2F;
 	Fri, 09 Oct 2026 15:43:34 +0200
 Received: from blackshift.org (90-182-211-1.rcp.o2.cz [90.182.211.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C1A085BD8AC;
-	Fri, 09 Oct 2026 13:43:33 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 3E1635BD8B0;
+	Fri, 09 Oct 2026 13:43:34 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Cunhao Lu <1579567540@qq.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 10/37] can: skb: make echo skb freeing safe in any IRQ context
-Date: Fri,  9 Oct 2026 15:27:42 +0200
-Message-ID: <20261009134323.64064-11-mkl@pengutronix.de>
+Subject: [PATCH net-next 11/37] can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
+Date: Fri,  9 Oct 2026 15:27:43 +0200
+Message-ID: <20261009134323.64064-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261009134323.64064-1-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
@@ -89,90 +90,104 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Cunhao Lu <1579567540@qq.com>
+From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-can_put_echo_skb() can be called with hardware interrupts disabled. Its
-direct drop paths use kfree_skb(), while can_create_echo_skb() uses
-kfree_skb() when cloning fails and consume_skb() after a successful clone.
-None of these helpers is safe in every IRQ context.
+On the Renesas RZ/G3S, the CAN FD clock can be sourced either from fck
+(the peripheral clock) or from an external clock (can_clk). When fck is
+used, it is divided internally by the CAN FD controller.
 
-Use dev_kfree_skb_any() for all drop paths and dev_consume_skb_any() when
-consuming a successfully cloned skb. This preserves the respective skb drop
-and consumed semantics regardless of the caller IRQ context.
+Adjust the existing canfd clock handling code to support the RZ/G3S CAN.
 
-Signed-off-by: Cunhao Lu <1579567540@qq.com>
-Link: https://patch.msgid.link/tencent_E84809CF236D0137885E7E4E4D58340B3208@qq.com
-[mkl: also convert can_dropped_invalid_skb(), can_dev_dropped_skb()]
+The existing struct rcar_canfd_hw_info instances were updated to address
+the request in the Link discussion.
+
+Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wanadoo.fr
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Link: https://patch.msgid.link/20260902141544.565763-4-claudiu.beznea+renesas@tuxon.dev
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 6 +++---
- include/linux/can/dev.h   | 2 +-
- include/linux/can/skb.h   | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 23 ++++++++++++++++++-----
+ 1 file changed, 18 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index bc0787535b52..46c151eece8f 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -63,7 +63,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	    (skb->protocol != htons(ETH_P_CAN) &&
- 	     skb->protocol != htons(ETH_P_CANFD) &&
- 	     skb->protocol != htons(ETH_P_CANXL))) {
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return 0;
- 	}
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index b7c4fe3477ac..f9173774387f 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -444,6 +444,7 @@ struct rcar_canfd_hw_info {
+ 	unsigned ch_interface_mode:1;	/* Has channel interface mode */
+ 	unsigned shared_can_regs:1;	/* Has shared classical can registers */
+ 	unsigned external_clk:1;	/* Has external clock */
++	unsigned fcan_pclk:1;		/* Has fcan sourced from pclk. */
+ };
  
-@@ -91,7 +91,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ /* Channel priv data */
+@@ -617,6 +618,7 @@ static const struct rcar_canfd_hw_info rcar_gen3_hw_info = {
+ 	.ch_interface_mode = 0,
+ 	.shared_can_regs = 0,
+ 	.external_clk = 1,
++	.fcan_pclk = 0,
+ };
+ 
+ static const struct rcar_canfd_hw_info rcar_gen4_hw_info = {
+@@ -634,6 +636,7 @@ static const struct rcar_canfd_hw_info rcar_gen4_hw_info = {
+ 	.ch_interface_mode = 1,
+ 	.shared_can_regs = 1,
+ 	.external_clk = 1,
++	.fcan_pclk = 0,
+ };
+ 
+ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
+@@ -651,6 +654,7 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
+ 	.ch_interface_mode = 0,
+ 	.shared_can_regs = 0,
+ 	.external_clk = 1,
++	.fcan_pclk = 0,
+ };
+ 
+ static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
+@@ -668,6 +672,7 @@ static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
+ 	.ch_interface_mode = 1,
+ 	.shared_can_regs = 1,
+ 	.external_clk = 0,
++	.fcan_pclk = 0,
+ };
+ 
+ static const struct rcar_canfd_hw_info r9a09g077_hw_info = {
+@@ -685,6 +690,7 @@ static const struct rcar_canfd_hw_info r9a09g077_hw_info = {
+ 	.ch_interface_mode = 1,
+ 	.shared_can_regs = 1,
+ 	.external_clk = 1,
++	.fcan_pclk = 0,
+ };
+ 
+ /* Helper functions */
+@@ -2190,13 +2196,20 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 	 */
+ 	gpriv->can_clk = devm_clk_get(dev, "can_clk");
+ 	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
+-		gpriv->can_clk = devm_clk_get(dev, "canfd");
+-		if (IS_ERR(gpriv->can_clk))
+-			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+-					     "cannot get canfd clock\n");
++		if (info->fcan_pclk) {
++			fcan_freq = clk_get_rate(gpriv->clkp);
++			gpriv->can_clk = NULL;
++		} else {
++			gpriv->can_clk = devm_clk_get(dev, "canfd");
++			if (IS_ERR(gpriv->can_clk))
++				return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
++						     "cannot get canfd clock\n");
++
++			fcan_freq = clk_get_rate(gpriv->can_clk);
++		}
+ 
+ 		/* CANFD clock may be further divided within the IP */
+-		fcan_freq = clk_get_rate(gpriv->can_clk) / info->postdiv;
++		fcan_freq /= info->postdiv;
  	} else {
- 		/* locking problem with netif_stop_queue() ?? */
- 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return -EBUSY;
- 	}
- 
-@@ -403,7 +403,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- 	return false;
- 
- inval_skb:
--	kfree_skb(skb);
-+	dev_kfree_skb_any(skb);
- 	dev->stats.tx_dropped++;
- 	return true;
- }
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 6d0710d6f571..346faddee02e 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -176,7 +176,7 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
- 	return can_dropped_invalid_skb(dev, skb);
- 
- invalid_skb:
--	kfree_skb(skb);
-+	dev_kfree_skb_any(skb);
- 	dev->stats.tx_dropped++;
- 	return true;
- }
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 5d27843862fc..87ace09c0d8b 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -78,12 +78,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- 
- 	nskb = skb_clone(skb, GFP_ATOMIC);
- 	if (unlikely(!nskb)) {
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return NULL;
- 	}
- 
- 	can_skb_set_owner(nskb, skb->sk);
--	consume_skb(skb);
-+	dev_consume_skb_any(skb);
- 	return nskb;
- }
- 
+ 		fcan_freq = clk_get_rate(gpriv->can_clk);
+ 		gpriv->extclk = gpriv->info->external_clk;
 -- 
 2.53.0
 
