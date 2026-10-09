@@ -1,113 +1,83 @@
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.217])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E1C43712D
-	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 10:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.217
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791541111; cv=pass; b=ArH2vGNlloGiyU/+af56qKGi79jkRAkfgm7a/FtqcWhyxORGaoQWlsWR+Hj68tQYkNR0FI3ROYQwxAR0HsNe+eQ+y2Ghq48CRa3BgnCHJxy5IZTv6UD9diE+8K+he3JKob+U0j7EwHaEplkhHIwSdqYuT1iLFPeiQebpNw49eWU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791541111; c=relaxed/simple;
-	bh=lydgbnjAt5H5bGeGXUKImcvvbWgf/oYt6BrCC/2ceZM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
-	 In-Reply-To:Content-Type; b=vEH5mgZ9avrPVv3d/dYxsKi6/11Y7Qo90dqhDqdqo/huw2MPWTJSV/bX1EzkHGwzhIESpNQwms32buvMcgYHF+NZ5wSKuq6WqBKg+rle26y30vED7jxFthK/QlehdUN75jS2Dhi3m0XNBtFayXNW9RsOFWaEAlDrirVwAxqvIo0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=b5o0bt4M; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+ndIQzVx; arc=pass smtp.client-ip=81.169.146.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B084C9DF0;
+	Fri,  9 Oct 2026 10:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791543259; cv=none; b=R1UDQuNHpQ+Eo/jYSLROzQSKI9CgBoNY/UTa86COLkej4rEDsfrn5fT+qHeo01Q4DF65IbgixpWPM4ZKUO4w7JlWz7U+KpZczlsyNYLJkamaX7eOGCdPjH0m6BqyOCxrv/fKRYDQIioawedurEYnrxbIv4Vl6Sx5yw18boPoYD8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791543259; c=relaxed/simple;
+	bh=ZwGtM1ckU4atMsC4xjOcWSfgWOoUD3QCZ55YPZTBdXA=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=f8OkwEMoD9V+PgbD+tTvk+jaIf/1wq/D7BJYPYpXuWXkzhw84htsbJ8dCtUUHrnc1BXS0l2PpMm2EBjbaQnYcdfYmDubwcfk4oTtCw5qs40Jc5TYel3YdFcSxjvIixWHY2OVxUCJzRebHFyr88rFX2FqsENR9/UcxAPfKXfNTx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=RIl8e2P0; arc=none smtp.client-ip=117.135.210.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="b5o0bt4M";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+ndIQzVx"
-ARC-Seal: i=1; a=rsa-sha256; t=1791539305; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=WYn0VW7IFa1ZThL4FrKj2BPJuctUYcyZNgPrWBMvPnMNgfTBhA2J2QqRrV3UxBEfbr
-    FbpbyQQ06CONYoVqWyQL7ZmooaglEm3fOnVX1K5UfUHpw5FasfemN4P4vrahW1pimvb0
-    4tgefRCrT+Yv+xCn6ogDDlr6gqjdEZSg833ew0VGf5+4RGaHk/fgnadIk0ypN6TXt9y/
-    UAFEkLj3xanDeajZli7MwJFbpuEH0enSk7kq6nID/RgRzLMn4kay9Nas74n6yjUh+dSF
-    qIcIsgftBC2qkBK1bscZgWBgKteWVvOaNlQhctgvx2fcLhYp7ZYFz/kUyKY19Da4XLpc
-    8VZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791539305;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=KcWqvHp3bHDAccrOLsi9vZRh2sQO99iMykq5gg1p0mA=;
-    b=hXwA6SVGCNsIEgdpCDl0McNhl4dPlpnwLQ8pnVSFtuH3nTTZ98ytkFYCTLASGsRo5e
-    1s2VgX/qYdNHCd0vitPJFA3/7G/jicZa6avd5kmRBE6VNe+ZsEdlhvObZ3CfmQG7QkVY
-    MjyOM/LgGkoWP4pCkMAFoooPniGQ4aVATvhWfaamlMqfnwZcCaGPd0kiBebpiagmI5Ly
-    J3kWbehRFyvGfVZWr02B7JLje9iu1l2XOE9QiCHTl50LvZcyTmDnf33zzuxlz6iJjeZu
-    7u7KlRYhdkEhuZBmDpJO/adWwgNM7JMOAi+FNJrT4qBvhtkyeTaNsp3U9SraSny8Zryh
-    FfXw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791539305;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=KcWqvHp3bHDAccrOLsi9vZRh2sQO99iMykq5gg1p0mA=;
-    b=b5o0bt4MaUMgrVMtd9WwoWpZ5KDdwDbw19ffI8mdJFIvm7iIZxe/KFSG2ZJoQxhnSg
-    9nnnz3fl5Zyc5SKP0kLYvkefNSIRjE177SO0Y9bQ8Psn+Xo7c4Yr2pEdvcJZKd3Z66yH
-    Zbj5E8ZilKtcrvQgxa10b581M3EKK+FGdXcYQsDEGjRJOxE6fEXQw33rkt0dQmNmBMnZ
-    x2YDXa68LSZzk0W1wu62IYaOvSbozDfBgQjDx+rR2V6ZQxNVgYMPLiud64zhx1n1GX7W
-    t0vJu5gTfsGMISRvXgVicvCeTsP54MmMy8VcIcXxPinEF2RnNiu53KPpWaYnT/0cO5YV
-    Oxtg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791539305;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=KcWqvHp3bHDAccrOLsi9vZRh2sQO99iMykq5gg1p0mA=;
-    b=+ndIQzVxXxkMvhezZM1wn2OZs++NvmVsmLfNY1jsre/k+qkdm5d+bPpvt9r830CrCd
-    S1Xuk51lddAFpZfe86Bw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K04b9a2999mOSXU
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 9 Oct 2026 11:48:24 +0200 (CEST)
-Message-ID: <a5860c87-b034-4cb2-9995-763c6b2cf58b@hartkopp.net>
-Date: Fri, 9 Oct 2026 11:48:16 +0200
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="RIl8e2P0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=7p
+	cleMH7f1jVKXJZ7O7LrSDIwG8VTMI45esOZ/lKRqs=; b=RIl8e2P0Eutbl4VoWR
+	R3n2QUPwMGLDxtt0hmbcdoN933N4mm82geoglpSB9AI64ZUKlYzfFLy8TokJwwuJ
+	cmNLNh+lHWimULNJN4kexElbV6WJJlLAwNz5nzooBvHyZPXJF/QoKaXKqxwNRAnG
+	SCR+fzU0OITfD4+fFzfauKkxg=
+Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
+	by gzga-smtp-mtada-g1-4 (Coremail) with SMTP id _____wDXX8S8x8hqZHAsDg--.36732S4;
+	Fri, 09 Oct 2026 18:53:51 +0800 (CST)
+From: Quchaosheng <quchaosheng000406@163.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>
+Cc: linux-can@vger.kernel.org,
+	devicetree@vger.kernel.org
+Subject: [PATCH 2/2] net: can: cc770: update the binding file reference in the driver comment
+Date: Fri,  9 Oct 2026 18:53:48 +0800
+Message-ID: <20261009105348.300114-3-quchaosheng000406@163.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261009105348.300114-1-quchaosheng000406@163.com>
+References: <20261009105348.300114-1-quchaosheng000406@163.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: can-next - Re: [GIT PULL] Networking for v7.3-rc7
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-References: <20261008192253.574195-1-kuba@kernel.org>
- <179152126269.566079.1895099510348236501.pr-tracker-bot@kernel.org>
-Content-Language: en-US
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179152126269.566079.1895099510348236501.pr-tracker-bot@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDXX8S8x8hqZHAsDg--.36732S4
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Xr1fXFyxur45WFy8CF4rKrg_yoWfCFgEka
+	n7CF45Jay5Crn2yw4FkrWxXFy3Aa4rZr1kuFn3t34aqa48Zr95trnYvw13Gwn5WF40vFn5
+	AF9rAry0k3sxKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU0RMKJUUUUU==
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAB-tY2rIx7+4zAAA3-
 
-Hello Marc,
+The cc770 binding was converted from cc770.txt to bosch,cc770.yaml, so
+update the path mentioned in the comment at the top of the platform
+driver.
 
-now that the latest real CAN fixes are in Linus' tree and I can re-spin 
-e.g. the patch to use ml_priv instead of ARPHRD_CAN:
+Assisted-by: LLM
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+---
+ drivers/net/can/cc770/cc770_platform.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-What is the status if your can-next tree? Which patches have been 
-already applied (e.g. my Softing PCMCIA driver removal)?
-
-Against which tree do you want can-next patches to be sent? can-next or 
-net-next?
-
-Best regards,
-Oliver
-
-
-On 09.10.26 06:47, pr-tracker-bot@kernel.org wrote:
-> The pull request you sent on Thu,  8 Oct 2026 12:22:53 -0700:
-> 
->> git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git tags/net-7.3-rc7
-> 
-> has been merged into torvalds/linux.git:
-> https://git.kernel.org/torvalds/c/af32da41b0327b9c6a37856ba82b6760d6c8d10e
-> 
-> Thank you!
-> 
+diff --git a/drivers/net/can/cc770/cc770_platform.c b/drivers/net/can/cc770/cc770_platform.c
+index b6c4f02ffb97..b690167c454f 100644
+--- a/drivers/net/can/cc770/cc770_platform.c
++++ b/drivers/net/can/cc770/cc770_platform.c
+@@ -30,8 +30,8 @@
+  *           bosch,external-clock-frequency = <16000000>;
+  *   };
+  *
+- * See "Documentation/devicetree/bindings/net/can/cc770.txt" for further
+- * information.
++ * See "Documentation/devicetree/bindings/net/can/bosch,cc770.yaml" for
++ * further information.
+  */
+ 
+ #include <linux/kernel.h>
+-- 
+2.43.0
 
