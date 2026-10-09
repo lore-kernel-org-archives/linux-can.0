@@ -1,76 +1,82 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E23B34DF4D7
-	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 12:33:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39BD43D5227
+	for <linux-can@vger.kernel.org>; Fri,  9 Oct 2026 12:35:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791549229; cv=pass; b=UzEBjkBL4R/A3EHpsn4hWZ8H5gWpnjjtW8Izi8ZFnnbBYmplLA3kEWiAMZdlL9BecJBAPIcMpa2iIu0vvdRcrqKEiho7Tf7rL0ss11TRf177SwY9NBbdMPKzjZOgj5ePZFu+2AKvl0hv6ayuZYLzz8koYzbmXUXREkb9iTozRTc=
+	t=1791549360; cv=pass; b=FHKkP1sW8iCoFhBXeQTEPs7CyaCPESeOVAeISsUq/ZVCFOGBGaV5TkLvC9HgnSBYQ2p9u9x3OWhAfBNwl5dvlpab845wAynFFE7b2uBjHt2FJBGhceFdmeBKki72NPm6/sqnexgjy1uIJuXcg8MUYNx1KfpH1ZdLrRlqlDqmCoY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791549229; c=relaxed/simple;
-	bh=hRBwgteDkPw16J8Tb6MYbkV7EB3GpQCMRRO+6KTah2c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lHPgr6c3DDzkqPgZ2glk80gYt2gAwx6dGnePA6smEEE7I4N1JVk+e3WTLmuFTiiWuGKYKNhfBqTgxrKx9DXicSZDu6kUZvdoyr4Hwqr0YWnl9K+5Yprxp1Si0SEVTBGCaAQstWrtr8Zz7DBsSxdnW+93wD8Ei9z/7uXf/G+rwTE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=d3c9eRuN; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	s=arc-20240116; t=1791549360; c=relaxed/simple;
+	bh=nAT2MiyccIy/Awtz2HEw+yDQLW8aMA85naVUsCKkusY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=uYuebLWw5cC3G5PZ92eWpPNi/HU3X1JXTh4I78d7lEkTKXZdKN1GBP1eJiDgaqy8TvNt52kRwP284BxQX+2wPMRlKNbxj+yL6kdthHrFRBX3glvvnMxa0uOMQZnuMFzzRyI0610yoNImRipy2C+ACp2YMewEpS41qj77zF02DRs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=U2yvamj1; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=+v6ZbMKX; arc=pass smtp.client-ip=85.215.255.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="d3c9eRuN"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E78702004FC;
-	Fri, 09 Oct 2026 14:33:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791549221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cdFzt0Qe3aynQbmqFvJLUDvEu+owmcJs7/zMVh9266o=;
-	b=d3c9eRuNyxq60529C0aH9+xzQoLGF5QoLfgWQjMPjyrngIPREwiNF8j1zFJWDanFZNpeNS
-	JyRKZPNTVcV4exWChQy0zKt9p+i51yP66yx0a6c/9dcPAdMReg6eIXfWfbMheN0TCjX86u
-	22hhuctYeUzH8jAb9AcDvZ9fwpMTPHU7xOGRr8HLvoGqf0udUwrghg5FxFeE87GmW2cnAC
-	dz3Sc4Dh6R/9LSHitfI4K+YFShL+6g+CIcumHHGRUWA0BZ6dgSzjj/0WCogVCvpVOj0U4J
-	vNlpMIGEbCO0wIIuD5YYQG2FBKhQCqapuyXZsuu5ricyituWB8SZ7372rlq0FQ==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791549221; a=rsa-sha256;
-	cv=none;
-	b=FuBDeqEW45gXrfqc9TGjmLB7ZBRhsUxaX9r2UEWS9t0One6fPjVFgyzAsYBZT9uI/GltP6
-	UEEB/Zj3KtMYdrpCFlCEagHvhmWEEv8JLJIi+zaqaFuR37IPnhfXd2JyMBGrgPvZuXabIg
-	mJ7wqZdYXExqweD1qU3J36FVIj4JRj663d5MdG1grC29CEXNvbhctGJ06YNNP4NdhO807X
-	zSF5Jgys2W2wzzEt93FGXVBVwUYA/+6Uz59NBW8FRj4ImHmBoQ/1q/SjX/KzgFCbS5KKGE
-	h3Vs6s4vr5Gd+0bnMmwGQs55IDDO4vi5VcVJUekOxOBh2ns4hqJDkUghH5WnxQ==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1791549221;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=cdFzt0Qe3aynQbmqFvJLUDvEu+owmcJs7/zMVh9266o=;
-	b=X/q3CMKpgQAiRC1J22A4JNSzJCOhg+s5jURFe3FJZIRdHZsDPoUZwdywAPw1CkrNyJc74u
-	zBqML7QLXXAbCf7bCzzierWLDDbqqF3Odq8uWeFzUd9DQnZYqvJqbOgd7DZat9reSc72b1
-	rIdC06AN5AncZpbuciYOj2PoZ+IC8L0xEVZxt7pgjpZEGJqVwmU09t8y76ksZGFMJp8R2m
-	B0NNM5q4zoSKIAZlgYrbkrksaYMDo/NvEo/99R93UHr37fXuzJ2AIB+TXgvo0WNoPMJRAz
-	WXsWKiF3YHN7TmpTKQGm89iVz86qaiL6ej5TYLi44jDTW7ZlJu0yPv5WKukXbw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xF9nB-0052n5-2k;
-	Fri, 09 Oct 2026 14:33:41 +0200
-Received: from pengutronix.de (90-182-211-1.rcp.o2.cz [90.182.211.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 8CB4B5BD794;
-	Fri, 09 Oct 2026 12:33:41 +0000 (UTC)
-Date: Fri, 9 Oct 2026 14:33:41 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="U2yvamj1";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="+v6ZbMKX"
+ARC-Seal: i=1; a=rsa-sha256; t=1791549346; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=sSU8O7r61m09ed7gqhH/mp49qX2GFpEtgwqmM+JpH/+PMJh3Vi3xrvZp7JjCky6Bu2
+    1op8T8cysrFkuRULGJ2mpAikmj64jSgzJsDcmd9tDH3wsOI12s0TazS3YD4R3ury+eNz
+    i4AFtRgxIEP2N3Pz51g8py9/Ek8qksRjvFR1v466JKC1/6ZDNffbgOI2aoTfm6VJFcq7
+    4yGWGFwBrjXeXCGTyYE93y3bIIpvHDzJ96uVsDhAs8Amw755OkyjK+EhwUlXxRt0SQit
+    fwT/uuQPjusQ8KhaajWsPAkeH5ZjW/9678n68ToozFQrtlJS3AvIFnkI8eIk9GiPz9QR
+    8uiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791549346;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=gwDrUqSSOgm20hW21WaOHuf3qiJwRWWlXZce/HbaDRI=;
+    b=qAM4UvvtiptUn9XRegJIwJDx39yC1AWn0fSAM2fMuBXkXDASdWyuYEgcgYhVx5aJ5l
+    SE0FdTKf+EL3/NAZC/t34On/eUWi9W3efUv6t42aBeA0yYSDufYrCT/9U+nJK8Jm+BzJ
+    HefLwNBmkfX/Y/z5LvC1i/3A3gM19bbANcRPPn8Tp703xeAtv+lau/myALV5FACVd2qB
+    wGx5qN12JVfa3ypPi4Y+xZLNI2HfioycL7p3+irKnYoXdlBG+ZbKigbjQ3rlnuapE37d
+    A/dSQiBzLiXB3HvXsxyeBPEVd+2VhDDqqfTmwe/aq9/gjN3+UprAOI8iDiQzS2wqslVn
+    WJbg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791549346;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=gwDrUqSSOgm20hW21WaOHuf3qiJwRWWlXZce/HbaDRI=;
+    b=U2yvamj1xDc4uIcO92UYSzYejZq69uKVZbwVl6PtIed+DO+h6s0DpM/qEoCYIPDWJB
+    bJTlnrEhGOunI2jXM7ZOb1yQo4b3vlQUJkCm32C0IRI4j5nOLFl7C0d/TUS7e7oPilfA
+    DDXN4mnvE55vQQRQfLuWfr4PLimZbN9TxUF6oA6jCFBatLokwGum1cKH7/yVwsNsEYlS
+    W8w6ZxSPVH4qoyqlt4DopXppflYBpp9GXQm4l0yxV/8lqNrUdnyovFREb4oYeFL5QUPj
+    E9DvW9WRcqRBxQi3qMN3Kp1zj9FNnZnilh9pn7kxVNC4YRq9O6C5K8ewWjUrcehMaUf4
+    gBrg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791549346;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=gwDrUqSSOgm20hW21WaOHuf3qiJwRWWlXZce/HbaDRI=;
+    b=+v6ZbMKX/gwAOcXYkAeyUpA9sYAQ+Xn+sBUYNogwFKg9901nErznCnwpg+SXTVufHg
+    Wbx1m5PNB7R+0mU88nAw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.2 AUTH)
+    with ESMTPSA id K04b9a299CZkV5M
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 9 Oct 2026 14:35:46 +0200 (CEST)
+Message-ID: <3d368341-1fa9-417e-9d9b-e7b4227e76f3@hartkopp.net>
+Date: Fri, 9 Oct 2026 14:35:46 +0200
+Precedence: bulk
+X-Mailing-List: linux-can@vger.kernel.org
+List-Id: <linux-can.vger.kernel.org>
+List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: can-next - Re: [GIT PULL] Networking for v7.3-rc7
-Message-ID: <20261009-exotic-tremendous-vulture-225cab-mkl@pengutronix.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
 References: <20261008192253.574195-1-kuba@kernel.org>
  <179152126269.566079.1895099510348236501.pr-tracker-bot@kernel.org>
  <a5860c87-b034-4cb2-9995-763c6b2cf58b@hartkopp.net>
@@ -79,50 +85,21 @@ References: <20261008192253.574195-1-kuba@kernel.org>
  <20261009-noble-straight-eel-4a729b-mkl@pengutronix.de>
  <df3da1ab-9a03-4720-9486-f5c5902cb9b6@hartkopp.net>
  <20261009-furry-coucal-of-rain-04a98c-mkl@pengutronix.de>
-Precedence: bulk
-X-Mailing-List: linux-can@vger.kernel.org
-List-Id: <linux-can.vger.kernel.org>
-List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="dcnn5gmjzqfilbhj"
-Content-Disposition: inline
-In-Reply-To: <20261009-furry-coucal-of-rain-04a98c-mkl@pengutronix.de>
+ <20261009-exotic-tremendous-vulture-225cab-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20261009-exotic-tremendous-vulture-225cab-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---dcnn5gmjzqfilbhj
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: can-next - Re: [GIT PULL] Networking for v7.3-rc7
-MIME-Version: 1.0
 
-On 09.10.2026 14:32:54, Marc Kleine-Budde wrote:
-> > > > Do you want to apply my ml_priv patch - or do you want it me to do =
-the next
-> > > > 5 minutes bevore the PR?
+On 09.10.26 14:33, Marc Kleine-Budde wrote:
+> On 09.10.2026 14:32:54, Marc Kleine-Budde wrote:
+>>>>> Do you want to apply my ml_priv patch - or do you want it me to do the next
+>>>>> 5 minutes bevore the PR?
+> 
+> I'll send a PR now. I suspect we have to work on it anyways :)
 
-I'll send a PR now. I suspect we have to work on it anyways :)
+Let's give it a try :-D
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---dcnn5gmjzqfilbhj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCasjfIgAKCRDMOmT6rpmt
-0voaAQC96SOQZFsH6iDBECkrkC/au69WMG+vj7V0hoXn1Am6qwD6AkOAXOEWsy5M
-Ak4uitVcEBWBiKkTuHcgE3Z/zLZNTAQ=
-=fCPb
------END PGP SIGNATURE-----
-
---dcnn5gmjzqfilbhj--
