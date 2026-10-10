@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37622381AF4;
-	Sat, 10 Oct 2026 14:03:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FEBD491589;
+	Sat, 10 Oct 2026 14:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791640987; cv=none; b=R8uGrrp44fuzUdBQgOyb3kZQ8DECp+K8sRaBsSEk6v0YO1IalN9tsaLKaUvEhontptv2zSG9xneEVyP79kFupz48vyf4IBj2M1jTE4Blf1/mk0UeMrOLfXbkY2Ip2m9ESU3v34IoCxNlDAHIgePyEP7ycCiYBGUnzvikvt09eXY=
+	t=1791640988; cv=none; b=kHw7UmJt3gUE12WA8tEnWSebD5V8wCqd4yFv9out1LnsozM32Vg8f4OChs8IVnfJdaLAXMwyq7C05Epi2rm72c6MwuUB2Pw1HZbS+RJE/xjga2pycJm034biLKAKc5GjjK2t0/IDChPaufy62mF54AEb1QcdLZPAo94BJ5z6s+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791640987; c=relaxed/simple;
-	bh=es79TXoawW+F1N/FRg5YauBC2p5mOCxCYb3/Hz6XO2c=;
+	s=arc-20240116; t=1791640988; c=relaxed/simple;
+	bh=qggvPQxcDzvEOuiDCydvy615d4PAoOna+6c2TYmqAfA=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=i1i1dOCfobhERAfk41zOy/GwHjH/KSsxalFoDTxh0JLprh264KmsgLMStjQVkymRI5sYsjQ6uaR6nPrnsNGvvuI24xHKzYQXO3iLwXW6JZryDePbbiMU3yCru5v+9fE095XDbziCR9BsEgF4eYYaOMkkvgG4MEGiHX3kFIk2uHI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HATwK/QI; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=izMtYv5HTrPpqjTBpbgZFBoEt1LFGIOESzkkvLAdjT7Sb5RIMeKcNKYoxxzMxYnsgjfD+n60TUfKXsVzIFKhBq4U3IXtNufqbUbP4M+mP2lRDglZxRV7Rb7XGtyBlD3oAfdTllo7K697GTDtBtJgdZs+/boETDQ9uvtgLAQSsw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U+OIlg0i; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HATwK/QI"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A56C51F00898;
-	Sat, 10 Oct 2026 14:03:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U+OIlg0i"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3F271F00899;
+	Sat, 10 Oct 2026 14:03:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791640986;
-	bh=oubQDfOR44OlLpqw5alvLpPZA1BJGJ68oC4bs2Lq+lk=;
+	s=k20260515; t=1791640987;
+	bh=lJCM6ItxUFXkobuyLb6qkYSaLoqavOepAX6IHlI2FzI=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=HATwK/QISyntihps8k3a6EdDpJDf1kcCjGtiQFacTjfbIgPFRN4dymeB+cSgTDV0o
-	 GdAopuYEKVZgGotC6Bun7UvKz0VC3Sns/YDC+zEFSVjl0pNzU6bOUscw7xWrgNPaG7
-	 O5wQ0tQJ7dVQ8MdpoWjF0t0m+8nsl9sy6j0aOpsdqoxvXYWOIft/n6dhJFURn9Y2nt
-	 YBlWBX3cxe05C1fjpiDuf8khHUmzUiCB45ZtpgSiKjnvWKOFZ+W4AOSceVUiRHD3bO
-	 9K4f2RW4RozkkAWiRVPSmdpCpbGMKATPI+YmjYX8cWQdE428jSJraAUk4pdMJhrJmm
-	 I1wFkK5Vb4Dbg==
-Subject: Re: [PATCH net-next 29/37] can: f81604: f81604_close(): fix
- use-after-free on disconnect
+	b=U+OIlg0iEev5LtxF7lQ0gLOrCTVfo/UeLo2zbSQubmBUm4tIvitIK5pBR8kFTnplO
+	 RHVoWBtWr8Jpb1lU2ZCTFv9naIH/Bn9lDsr2oM7TEhYBjBxw5O4I7PoB7jIhdYfq8D
+	 7v9EtN5kyKBY7U6iceEHmOQZpZ+pGhVhdHToJRI/vl1y2oL2E5VImhIDJ2kJrk9iFU
+	 o3YH3hcAlAhvJ/W81Q6Qbm3S8JFHmtCnDOQhzZ+m4QGXGeCweQ1E8RaZ1Jiy3b7zVt
+	 dyfNPV1sj2Ho629q66+/8v17i4G0JPmHi8xjRA7Qn8iPF50l/H9ekh+VwK2A9WD+A8
+	 VvP4in/byTouQ==
+Subject: Re: [PATCH net-next 30/37] can: hi311x: drop hi3110_lock before
+ free_irq() on open failure
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, hemanth.selam@gmail.com
-Date: Sat, 10 Oct 2026 14:03:05 +0000
-Message-ID: <179164098515.434549.1408950687154523342@kernel.org>
-In-Reply-To: <20261009134323.64064-30-mkl@pengutronix.de>
-References: <20261009134323.64064-30-mkl@pengutronix.de>
-X-sashiko-severity: High
+Date: Sat, 10 Oct 2026 14:03:06 +0000
+Message-ID: <179164098630.434549.4478960548038882608@kernel.org>
+In-Reply-To: <20261009134323.64064-31-mkl@pengutronix.de>
+References: <20261009134323.64064-31-mkl@pengutronix.de>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -46,10 +46,10 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 3 potential
+Thank you for your contribution! Sashiko AI review found 1 potential
 issue(s) to consider.
 
-Critical: 0 · High: 2 (2) · Medium: 0 (1) · Low: 1
+Critical: 0 · High: 0 · Medium: 1 (1) · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -57,196 +57,130 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] The fix only covers ndo_stop.
-- [High] The fix reorders only one of the two works that the int URB
-  completion handler can schedule.
-- [Low] The patch fixes a use-after-free and carries 'Cc:
-  stable@vger.kernel.org', but the commit message has no Fixes: tag.
+- [Medium] The rollback in hi3110_open() (drivers/net/can/spi/hi311x.c,
+  lines 789-794) sets priv->force_quit = 1 and drops hi3110_lock before…
 
 Pre-existing issues:
-- [High] Each bus-off restart submits a new set of URBs on top of the
-  ones that are already running.
-- [High] f81604_close() calls close_candev() -> can_flush_echo_skb()
-  (line 1078) while URB completions can still use priv->echo_skb[0].
-- [Medium] f81604_close() puts the controller into reset mode with IER
-  off (f81604_set_reset_mode(), line 1075) before it stops the async…
+- [Medium] This problem wasn't introduced by this patch, but the driver's
+  own restart_work is never cancelled or flushed during shutdown.
 
 --
 
-can: f81604: f81604_close(): fix use-after-free on disconnect
+can: hi311x: drop hi3110_lock before free_irq() on open failure
 
-This commit moves cancel_work_sync(&priv->clear_reg_work) in f81604_close()
-to after f81604_unregister_urbs(). After that change, an URB completion
-handler can no longer schedule clear_reg_work once the cancel has returned.
-The goal is to stop the work from running after the netdev and private data
-are freed.
+This patch changes the hi3110_open() error path. It now sets force_quit
+and drops hi3110_lock before calling free_irq(), then takes the mutex
+again for the remaining hardware cleanup. This avoids a deadlock against
+the threaded IRQ handler, which takes hi3110_lock before it checks
+force_quit.
 
-Closes: https://lore.kernel.org/all/20260824133009.CF85A1F00A3A@smtp.kernel.org/
-Link: https://patch.msgid.link/20260901-f81604-fix-v1-1-c55b5178f9f8@fintek.com.tw
+Link: https://patch.msgid.link/20260820020631.316418-1-runyu.xiao@seu.edu.cn
 
-> Cc: stable@vger.kernel.org
-
-[Severity: Low]
-This isn't a bug, but should this have a Fixes: tag next to the stable Cc?
-The teardown order in f81604_close() looks unchanged since the driver was
-added, so the tag would be:
-
-Fixes: 88da17436973 ("can: usb: f81604: add Fintek F81604 support")
-
-> diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
-> index 4c147b9d6d690..bb155b8769245 100644
-> --- a/drivers/net/can/usb/f81604.c
-> +++ b/drivers/net/can/usb/f81604.c
-> @@ -1075,10 +1075,10 @@ static int f81604_close(struct net_device *netdev)
->  	f81604_set_reset_mode(priv);
+> diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
+> index 076a3efa1bfff..927555b5d581e 100644
+> --- a/drivers/net/can/spi/hi311x.c
+> +++ b/drivers/net/can/spi/hi311x.c
+> @@ -787,7 +787,10 @@ static int hi3110_open(struct net_device *net)
+>  	return 0;
+>  
+>   out_free_irq:
+> +	priv->force_quit = 1;
+> +	mutex_unlock(&priv->hi3110_lock);
+>  	free_irq(spi->irq, priv);
 
 [Severity: Medium]
-This is a pre-existing issue, but can a bus-off restart running at the same
-time undo this reset? can_restart_work()->can_restart() does not take RTNL.
-The restart_work timer could fire while f81604_set_reset_mode() is doing
-its control transfers:
+Can this rollback turn the old deadlock into an IRQ storm when
+hi3110_set_normal_mode() fails?
 
-can_restart()
-  f81604_set_mode(CAN_MODE_START)
-    f81604_start()
-      f81604_set_normal_mode()
-        clears MOD.RM, writes IER = IRQ_ALL & ~RI
+The IRQ is requested with IRQF_ONESHOT | IRQF_TRIGGER_HIGH. Before
+hi3110_set_normal_mode() returns -EBUSY, it has already armed the chip:
 
-In that case, cancel_delayed_work_sync() in close_candev() only waits for
-the restart to finish. f81604_unregister_urbs() then kills the URBs the
-restart submitted, but nothing puts the chip back into reset mode.
+drivers/net/can/spi/hi311x.c:hi3110_set_normal_mode() {
+    hi3110_write(spi, HI3110_WRITE_INTE, HI3110_INT_BUSERR |
+                 HI3110_INT_RXFIFO | HI3110_INT_TXCPLT);
+    hi3110_write(spi, HI3110_WRITE_CTRL1, HI3110_CTRL1_TXEN);
+    ...
+    hi3110_write(spi, HI3110_WRITE_CTRL0, reg);
+    mdelay(HI3110_OST_DELAY_MS);
+    reg = hi3110_read(spi, HI3110_READ_CTRL0);
+    if ((reg & HI3110_CTRL0_MODE_MASK) != reg)
+        return -EBUSY;
+    ...
+}
 
-Would ndo_stop then return with the SJA1000 core still in operating mode on
-the bus while the netdev is down?
+A received frame or a bus error during the mdelay() window can assert
+INT. Once force_quit is set, hi3110_can_ist() skips the whole
+while (!priv->force_quit) loop. It never reads STATF, the FIFO or INTF,
+but it still returns IRQ_HANDLED.
 
->  
->  	netif_stop_queue(netdev);
-> -	cancel_work_sync(&priv->clear_reg_work);
->  	close_candev(netdev);
+irq_finalize_oneshot() then unmasks the line, which is still asserted.
+The interrupt fires again right away, so the SCHED_FIFO IRQ thread spins
+until free_irq() finally shuts the line down.
 
-[Severity: High]
-This reorders clear_reg_work, but doesn't restart_work have the same
-problem? close_candev() runs cancel_delayed_work_sync(&priv->restart_work)
-here, but the int URB stays live until f81604_unregister_urbs() below.
+If the IRQ thread was blocked on hi3110_lock, the new mutex_unlock()
+wakes it. On the same CPU (always the case on UP), it can preempt the
+opener, which holds RTNL, before the opener reaches free_irq().
 
-Suppose an int URB completes in that window with F81604_SJA1000_IRQ_EI and
-SR.BS set. f81604_handle_can_bus_errors() then does:
+The opener then only runs again through RT throttling or the fair
+dl_server. That bounds the stall to about one RT period by default, but
+the stall can be indefinite if those safeguards are disabled.
 
-	if (data->sr & F81604_SJA1000_SR_BS)
-		can_state = CAN_STATE_BUS_OFF;
-	...
-		if (can_state == CAN_STATE_BUS_OFF)
-			can_bus_off(netdev);
+Would it be better to quiet the chip while still holding the mutex,
+before force_quit is set and the lock is dropped? That could mirror
+what hi3110_stop() does:
 
-If restart_ms is set, can_bus_off() re-arms the work:
+    hi3110_write(spi, HI3110_WRITE_CTRL1, 0x0);
+    hi3110_write(spi, HI3110_WRITE_INTE, 0x0);
+    hi3110_read(spi, HI3110_READ_INTF);
 
-	if (priv->restart_ms)
-		schedule_delayed_work(&priv->restart_work,
-				      msecs_to_jiffies(priv->restart_ms));
+Another option is calling disable_irq_nosync() before mutex_unlock().
 
-The interrupt report could be a buffered or in-flight one, or come from a
-malicious device. It can also arrive if the IER-off write in
-f81604_set_reset_mode() failed, because f81604_close() ignores its return
-value.
+hi3110_stop() already uses the same force_quit then free_irq() ordering
+while INTE is still enabled, so the same hazard exists there. In the
+open() rollback path, though, it is new with this patch.
 
-Nothing cancels restart_work after that. When it fires,
-can_restart()->f81604_set_mode()->f81604_start() puts the chip back into
-normal mode, resubmits the URBs and wakes the queue on an interface that is
-down.
+> +	mutex_lock(&priv->hi3110_lock);
+>  	hi3110_hw_sleep(spi);
+>   out_close:
+>  	hi3110_power_enable(priv->transceiver, 0);
 
-If the device is unplugged before restart_ms expires,
-f81604_disconnect()->unregister_netdev() skips ndo_stop because the device
-is already down. free_candev() then frees can_priv while the restart_work
-timer is still armed.
+[Severity: Medium]
+This is a pre-existing issue that this patch did not introduce, but is
+priv->restart_work ever cancelled or flushed on shutdown?
 
-Would it be better to call f81604_unregister_urbs() before close_candev(),
-as gs_usb and peak_usb do?
+hi3110_do_set_mode() queues it for CAN_MODE_START:
 
-[Severity: High]
-This is a pre-existing issue, but can close_candev()->can_flush_echo_skb()
-race here with URB completions that use priv->echo_skb[0]?
+drivers/net/can/spi/hi311x.c:hi3110_do_set_mode() {
+    ...
+    priv->restart_tx = 1;
+    if (priv->can.restart_ms == 0)
+        priv->after_suspend = HI3110_AFTER_SUSPEND_RESTART;
+    queue_work(priv->wq, &priv->restart_work);
+    ...
+}
 
-The int URB is only killed later, by f81604_unregister_urbs(). The TX URBs
-from f81604_start_xmit() are never anchored, so they are never killed or
-waited for:
+hi3110_stop() calls close_candev(), which only cancels the CAN core's
+delayed restart_work. It never calls
+cancel_work_sync(&priv->restart_work), and neither does the hi3110_open()
+rollback.
 
-f81604_start_xmit()
-	can_put_echo_skb(skb, netdev, 0, 0);
+If the work is still pending at ifdown or during a failed open(),
+hi3110_restart_work_handler() can run after cleanup. It takes
+hi3110_lock and calls hi3110_hw_reset(), hi3110_setup() and
+hi3110_set_normal_mode(), which re-arms INTE, TXEN and normal mode. It
+then clears force_quit and calls netif_wake_queue() on the downed
+interface.
 
-	ret = usb_submit_urb(write_urb, GFP_ATOMIC);
+The controller would then be back on the bus while the interface is
+administratively down.
 
-can_flush_echo_skb() checks and frees echo_skb[i] without a lock.
-f81604_handle_tx() does the same through can_get_echo_skb() and
-can_free_echo_skb(). f81604_write_bulk_callback() does it through
-can_free_echo_skb() on error statuses. Both run in completion context.
+The new unlocked window around free_irq() in hi3110_open() gives the
+worker one more place to run. It does not seem to make things worse than
+the existing post-stop case, because free_irq() still completes and the
+rollback then calls hi3110_hw_sleep().
 
-If both sides see a non-NULL echo_skb[0], could the skb be freed twice? Or
-could __can_get_echo_skb() read it after the flush has freed it?
-
-Killing all URBs, including TX, before close_candev() looks like it would
-avoid this.
-
->  
->  	f81604_unregister_urbs(priv);
-> +	cancel_work_sync(&priv->clear_reg_work);
-
-[Severity: High]
-This covers ndo_stop, but can clear_reg_work still be left pending after a
-failed open? In f81604_start(), the URBs are already live when
-f81604_set_normal_mode() runs:
-
-	ret = f81604_register_urbs(priv);
-	if (ret)
-		return ret;
-
-	ret = f81604_set_normal_mode(priv);
-	if (ret) {
-		f81604_unregister_urbs(priv);
-		return ret;
-	}
-
-The int URB may complete with error bits in isrc during
-f81604_set_normal_mode(). If so, f81604_handle_can_bus_errors() calls
-schedule_work(&priv->clear_reg_work).
-
-If f81604_set_normal_mode() then fails (for example -ENODEV during
-hot-unplug), the error path kills the URBs but does not cancel the work.
-f81604_open() then only calls close_candev().
-
-Since the open failed, IFF_UP is never set, so on disconnect:
-
-f81604_disconnect()
-  unregister_netdev()
-    netif_close_many() skips ndo_stop for devices without IFF_UP
-  free_candev()
-    frees the netdev and the embedded f81604_port_priv
-
-Could f81604_clear_reg_work() then run on the freed priv?
-
-Would adding cancel_work_sync() to the f81604_start() error path, or
-calling it unconditionally in f81604_disconnect() before free_candev(),
-cover this case?
-
-[Severity: High]
-This is a pre-existing issue, but does each bus-off restart submit another
-set of URBs on top of the ones already running?
-
-can_restart()->f81604_set_mode() calls f81604_start(). f81604_start() then
-calls f81604_register_urbs() without calling f81604_unregister_urbs()
-first. The completion callbacks resubmit on success, so nothing kills the
-open-time URBs at bus-off.
-
-Each restart would then leave another F81604_MAX_RX_URBS bulk URBs plus an
-int URB in flight, with their buffers, until ndo_stop.
-
-Also, if f81604_set_normal_mode() fails during a restart, the error path
-calls f81604_unregister_urbs(), which kills every anchored URB, including
-the open-time set. Would the interface then stay up with no RX or int URBs
-until the next down/up?
-
->  
->  	return 0;
->  }
+There is no use-after-free here, because hi3110_can_remove() runs
+destroy_workqueue() before free_candev().
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261009134323.64064-2-mkl%40pengutronix.de
