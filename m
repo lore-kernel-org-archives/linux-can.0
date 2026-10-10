@@ -1,122 +1,140 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0440C497399
-	for <linux-can@vger.kernel.org>; Sat, 10 Oct 2026 13:43:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023AD372EE2
+	for <linux-can@vger.kernel.org>; Sat, 10 Oct 2026 13:43:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791639839; cv=none; b=ofN3Mg+r18dLYue/44+BpjS87Fm3JEXW/hG4AAvUuQhaXUx8nD4EhbWaiy7T64JVD694AqugxEUgk4ZhNOG8aLU5BdsACBTRmXd8kcr7YdWCp9iP6h55CQW295FILn8bl+s3GGHH71ZXhwLxSzqIg2G22mBAvXgsqdaxbshnMlg=
+	t=1791639840; cv=none; b=eLo9UScIgFlEGFlfwFXWizzF90x11t1mUSJoQ1BHpYTafZsJV3ZdeZ395RXe8vUUHfV8ItnX3Mfi4CM8wJCMoA29TZYp1RKGuw1FZUxme7mDHr4/1q98moXVnxNYeD3UvxHlNmhrnEc7tc/lEF3Tyb/qEImU0GeRZlvk+h+1RUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791639839; c=relaxed/simple;
-	bh=2bJduQHwRw5S8brZodpJUy/6yVmDVVw8gdoMg3D5GOA=;
+	s=arc-20240116; t=1791639840; c=relaxed/simple;
+	bh=B0ssl/JwQRRVGzCQVd9sZLqbh5cBQsg8cPg0bHribSI=;
 	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=bPHpMHLTFG0f8oEHE3ua/5xG91J1eddf7cTH6mOuj8JZZ/YPombguypFQuMxvGXK30osZpSd0lYNG912wd2NQzUqsaswIupMmWHQWAG23nMlrH+i+d9ka3ntE6J2WZaFv/tr6/sX2C14QAajrcLXc/ZI6tz5+lvJ+8E7pqRQdt4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YxjJOqUX; arc=none smtp.client-ip=100.103.45.18
+	 Date; b=Z07JHsteWWTXt5xG98JvCSNSu60/8+Lt937dtDi+FdENdL78xJohV+rhYAawepq4lxvohN3s0oLm1He2Lz+ubYy5iI+QymEtDCycYp8CvtGUGYcrdxhodnwo+kpxUHYEAxBNeza4k0kFY+eQ576jc22+UW+UgwPZNbSmstHMJl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MR+vNvYh; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YxjJOqUX"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 418761F000FF;
-	Sat, 10 Oct 2026 13:43:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MR+vNvYh"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 474EF1F00893;
+	Sat, 10 Oct 2026 13:43:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791639837;
-	bh=fdwuD7UfcDFVb/eA30lK1vRRVCr3eHwj5yKPpv1z4zA=;
+	s=k20260515; t=1791639838;
+	bh=92nD4XZqZ5YrNzoemJVInCvs0/555ntcPjbCSawH1kg=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=YxjJOqUXxBsTH2d1a1aJX++l8VrFXw0d9mr9Wt/xMQWA73lczY9IBZFTNYHJ3gFn2
-	 Ei+lgyOC5ishrXQ8Kq1GQ18bc4qSXuSgSWmpSwlUECtis3BM43Z3zx0gMQYCnxtnly
-	 RimSBN10YRb2nHty09HdHFLeIwiiFYIZrM+dwmt59y3YSMSzCcd59EorJp20RL0VXP
-	 kga1zvHs1f+PLjAFv/6h6zQWBhP819TH+wQeWxw31lrrfwcdMYwHclfVGYfGFVR3Wd
-	 3q5UUiZmwSaR7H4KxTVByoExuarIORPcbcVjChRqsVf0dQ1uditlo5yF1OC4U5cvhA
-	 QYoMBaeMQIdJg==
-Message-ID: <sashiko-outbox-166601@kernel.org>
+	b=MR+vNvYhbCZr21i2vcPDsm+GYDmn6k9WQnUAvR1OsL5a2B2Bsk5y6PoEzz19IBLtO
+	 l2vxX+ELDOsNsjQqGZg8uyR0epZvD7qKfqyztot3QiMolrLASaP6o2DFEJ4xBhXtjP
+	 0+GAY0p/uXTiTBnum/oUN3b9lB80u4Nqp20PDFp6WDvuntAz6MYTjHDc3C341PIRYx
+	 re0aNxY9NszRUX3X2Ouzoz07sb8jnXwjrRTWv1TQ2VuEQHcHyOcJ4x7DespMRmO4Gd
+	 tOJQQAOeUXyW+oL3SpdaVfx76dR23poz2Qy9mbgfpGJHDU2kwvgGY6fX7tx45Ej31t
+	 I0YPa0jWF0G+g==
+Message-ID: <sashiko-outbox-166606@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 11/37] can: rcar_canfd: Allow the CAN FD clock
- to be sourced from fck
+Subject: Re: [PATCH net-next 16/37] dt-bindings: can: renesas,rcar-canfd:
+ Document RZ/G3L SoC
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261009134323.64064-12-mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>
+In-Reply-To: <20261009134323.64064-17-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
- <20261009134323.64064-12-mkl@pengutronix.de>
+ <20261009134323.64064-17-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Sat, 10 Oct 2026 13:43:56 +0000
+Date: Sat, 10 Oct 2026 13:43:57 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
-- [Medium] can: rcar_canfd: silent override of -EPROBE_DEFER for can_clk
+- [Medium] dt-bindings: missing resets requirement for renesas,r9a08g046-ca=
+nfd
+- [Low] dt-bindings: can: missing maxItems constraint for r9a08g046-canfd i=
+nterrupts
 --
 
-commit 5f73d63bd97b58e10882cb62531a376bbe264f50
-Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+commit 36441ccce0b87ca8f2e74ff4324b679b4b9479d1
+Author: Biju Das <biju.das.jz@bp.renesas.com>
 
-can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
+dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
 
-This patch allows the Renesas RZ/G3S CAN FD clock to be sourced from either
-the peripheral clock (fck) or an external clock (can_clk). It adjusts the
-rcar_canfd_hw_info configurations and the probe function to support this
-fallback routing.
+This commit documents the RZ/G3L (R9A08G046) SoC support. It specifies the
+new compatible string along with its unique hardware constraints, including
+limits for interrupts and CANFD channels.
 
-Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wana=
-doo.fr
-Link: https://patch.msgid.link/20260902141544.565763-4-claudiu.beznea+renes=
-as@tuxon.dev
+Link: https://patch.msgid.link/20261001075742.21961-2-biju.das.jz@bp.renesa=
+s.com
 
-> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
-r_canfd.c
-> index b7c4fe3477ac5..f9173774387fa 100644
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd=
+.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> index bbaaef8f4282e..cef20f0403715 100644
+> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
 
 [ ... ]
 
-> @@ -2190,13 +2196,20 @@ static int rcar_canfd_probe(struct platform_devic=
-e *pdev)
->  	 */
->  	gpriv->can_clk =3D devm_clk_get(dev, "can_clk");
->  	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) =3D=3D 0)) {
-> -		gpriv->can_clk =3D devm_clk_get(dev, "canfd");
-> -		if (IS_ERR(gpriv->can_clk))
-> -			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
-> -					     "cannot get canfd clock\n");
-> +		if (info->fcan_pclk) {
-> +			fcan_freq =3D clk_get_rate(gpriv->clkp);
-> +			gpriv->can_clk =3D NULL;
+> @@ -292,6 +293,25 @@ allOf:
+>        patternProperties:
+>          "^channel[6-7]$": false
+> =20
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: renesas,r9a08g046-canfd
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 11
+> +
+> +        interrupt-names:
+> +          minItems: 11
+> +
+
+[Severity: Low]
+Does this block also need maxItems: 11 for interrupts and interrupt-names?
+
+The root schema defines a list of up to 20 interrupt items. Without an
+explicit maxItems constraint in this conditional block, it appears device
+trees could define up to 20 interrupts and still pass validation, missing
+the enforcement of the 11-interrupt hardware limit.
+
+> +        resets:
+> +          minItems: 2
+> +
 
 [Severity: Medium]
-Does this unintentionally swallow -EPROBE_DEFER if the external clock
-provider is simply not ready yet?
+Since this variant specifies resets constraints, should
+renesas,r9a08g046-canfd also be added to the existing allOf block that
+enforces resets and reset-names as required properties?
 
-If devm_clk_get() for "can_clk" returns -EPROBE_DEFER, IS_ERR() will evalua=
-te
-to true. For devices where info->fcan_pclk is true, this error appears to be
-silently discarded since gpriv->can_clk is set to NULL.
+There is an existing conditional block in this file that requires these
+properties for related variants:
 
-Could this cause the CAN controller to incorrectly bind to the peripheral
-clock (clkp) with the wrong frequency, rather than deferring the probe to w=
-ait
-for the intended external clock?
+  - if:
+      properties:
+        compatible:
+          contains:
+            enum:
+              - renesas,r9a08g045-canfd
+              - renesas,r9a09g047-canfd
+              - renesas,rzg2l-canfd
+    then:
+      required:
+        - resets
+        - reset-names
 
-> +		} else {
-> +			gpriv->can_clk =3D devm_clk_get(dev, "canfd");
-> +			if (IS_ERR(gpriv->can_clk))
-> +				return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
-> +						     "cannot get canfd clock\n");
-> +
-> +			fcan_freq =3D clk_get_rate(gpriv->can_clk);
-> +		}
-> =20
->  		/* CANFD clock may be further divided within the IP */
-> -		fcan_freq =3D clk_get_rate(gpriv->can_clk) / info->postdiv;
-> +		fcan_freq /=3D info->postdiv;
->  	} else {
->  		fcan_freq =3D clk_get_rate(gpriv->can_clk);
->  		gpriv->extclk =3D gpriv->info->external_clk;
+Omitting the new variant from this shared block means device tree nodes for
+the RZ/G3L variant missing the mandatory resets and reset-names properties
+will silently pass schema validation.
+
+> +      patternProperties:
+> +        "^channel[3-7]$": false
+
+[ ... ]
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261009134323.6406=
-4-1-mkl@pengutronix.de?part=3D11
+4-1-mkl@pengutronix.de?part=3D16
