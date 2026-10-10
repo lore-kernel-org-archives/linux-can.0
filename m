@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC4E535AC14;
-	Sat, 10 Oct 2026 14:02:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62C7380FF4;
+	Sat, 10 Oct 2026 14:02:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791640970; cv=none; b=vEx+EYm83sBbkH8kSyx1eDqNmjTkRwNtrVypjEdyptYJvkYBhw1uDcOrj5//0hdV6AppbC7ELQPmNdGF+3CpK/2QtVAHpBKiaScWrP+eFXg5Ck8PXWBORDkgwHj8J/4gHrnz3DZ/gdJ3WelAvW2aCSeCblTF4Vr+kqmXxDLmRps=
+	t=1791640971; cv=none; b=Jt0nlz8FYjBBgjCSt0zlXPr23uo0idXRKTKnPzAA5i4HsZTyDhFGVj+/NDA+hFkp9Fpbs0mJFqETsTEevQrlwkXyvi4DSDpOVtteRQtCBqUiUA0cE8rJxvEKPdeIW34BM1/KL6LVmdy56m5umqnxy96kZ++QEvlYnUOnfXrA0aE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791640970; c=relaxed/simple;
-	bh=uz+ZmIakBkUVkStOGP3IGDRq8w+uxpnV+jkP9VS9LwQ=;
+	s=arc-20240116; t=1791640971; c=relaxed/simple;
+	bh=aB4WjRCDG9m2F9NeUE7VoRFz8OaqQR50l293JV0whkY=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dBr36uu3otjU5tOTulPcIQWrQYHNqrOnbxfdc8PAZC90Li8/rXzEossY3Nt91Tc8yyHh2PXiIFfAbCtyWlPeRBtBac3WBy6o1DN03yKTZvt3P12zfz8K4k+y1NfXNy32J4B16P/Ctaay0lDhPo0sM87HgTm2u/OQuP4bfXL2III=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=apFNrgDn; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=p1QZ9O8XhtgIyUhpUy69u18YEvAb9JculHUdhWikYrNB8uzQ5lfyI8HD7nJnOqIn4Iw9T1tJAseFZNiLWQUSkrJhrVRWhh49T3bnILe/GYodaDYHBP1gqvyHrUSbIE4Nmx0ITVk4yHygwsNG9UaWiulb77qb020nI4DOs4ydoIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=N7bzP3Tn; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="apFNrgDn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E423A1F000FF;
-	Sat, 10 Oct 2026 14:02:48 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="N7bzP3Tn"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0EEEC1F00893;
+	Sat, 10 Oct 2026 14:02:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791640969;
-	bh=O4hzZrNbh8yaR5MMGy/JhFNOtVUr4m1LHYTRlOkUwv8=;
+	s=k20260515; t=1791640970;
+	bh=+T0IC1u0ZcbC1ZTR766vG8nVIotZiLxAA+HEGaD6ieI=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=apFNrgDn2zDMcT/rEzYF9s7YhKeq4nYIkyhY4zK+2JhcSO009+c29ERthyA//gtsi
-	 VSmdAwHdrgei1IHA99QKL8z5DpFlz1MZV3nByqNfqiv+QoZuQAmrLhWgVF0/q72QfY
-	 IBot+/liffzmo1Sk3dzD09zia+0rb/vWh46r260ygu7U6IHvv25x4rsTcTA2Bnat4e
-	 x4rbPA++Wk+lt0cuGTgCmP+9kq0x/B96vAgHnF/7xIoYr2vINEHfDVkm7M1hNanZmW
-	 bO0aUA/AHDlyvl+Qc5rDfendcCK6X9PRVcJFBah90OaAUhI/5MLr+QK19vL5wJiizg
-	 mVOzd/0Mqv1SQ==
-Subject: Re: [PATCH net-next 03/37] can: convert unreliable ARPHRD_CAN type
- checks to robust can_get_ml_priv()
+	b=N7bzP3TnmndPCLfQKcYi5vQ1HZAyMdoU83I9yGBYLEH/drvBjHB56dOGlp6859WYH
+	 Vy7zYIuLmiV1IyOPvl6Cdg7RbLzvp2CIGJti2fgaKLr4F+frpHlacvXGfrrAmld5Zb
+	 jjzSnIC3nUWJE26m+Pz4Hkx8fmPtXChsCkKfWElbdjGSTHsLgDuo0CE9pvxzOm4NYo
+	 gZLwb5EegxKlVbKukI0rFxrSNN8BHV3foMvvAS0h0LGFHFUT2pxVxLDmXXBsyN1TPK
+	 24fxCEZ8CmyCQVJY6fQ8P3iXi/jdXScbnTf6EjL7nsz2/k9voEHFz9orf5b41+UhJD
+	 4JzgKdNlzTKmA==
+Subject: Re: [PATCH net-next 05/37] can: proc: remove pointers from CAN
+ specific proc output
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, hemanth.selam@gmail.com
-Date: Sat, 10 Oct 2026 14:02:48 +0000
-Message-ID: <179164096840.434549.11863787117718202775@kernel.org>
-In-Reply-To: <20261009134323.64064-4-mkl@pengutronix.de>
-References: <20261009134323.64064-4-mkl@pengutronix.de>
-X-sashiko-severity: Low
+Date: Sat, 10 Oct 2026 14:02:49 +0000
+Message-ID: <179164096953.434549.17541028335124817965@kernel.org>
+In-Reply-To: <20261009134323.64064-6-mkl@pengutronix.de>
+References: <20261009134323.64064-6-mkl@pengutronix.de>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -46,128 +46,130 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 1 · Medium: 0 · Low: 1
 
-- [Low] The commit message calls the change a conversion of 'unreliable'
-  ARPHRD_CAN checks to 'robust' can_get_ml_priv() checks.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Pre-existing issues:
-- [Medium] This problem wasn't introduced by this patch, but isotp_bind()
-  in net/can/isotp.c ignores the return values of both can_rx_register()…
+- [High] The commit says it stops /proc/net/can/ from leaking kernel
+  pointers, but on some builds it now leaks a raw kernel text address.
+- [Low] The procfs example in Documentation/networking/can.rst was
+  replaced, but the text around it was not updated.
 
 --
 
-can: convert unreliable ARPHRD_CAN type checks to robust can_get_ml_priv()
+can: proc: remove pointers from CAN specific proc output
 
-This patch replaces the remaining dev->type != ARPHRD_CAN checks in
-af_can, bcm, gw, isotp and raw with can_get_ml_priv(). The reason given is
-that TUNSETLINK can switch a down TUN/TAP device to ARPHRD_CAN while its
-ml_priv stays NULL.
+This patch stops printing kernel pointers in /proc/net/can/rcvlist_* and
+/proc/net/can-bcm/. It prints socket inode numbers and %ps callback names
+instead. The ident string argument of can_rx_register() becomes a u64
+inode number, and the bcm proc file name is now the inode number in hex.
 
-Link: https://patch.msgid.link/20261009121115.61012-1-socketcan@hartkopp.net
+Link: https://patch.msgid.link/20260815103400.117175-1-socketcan@hartkopp.net
 
-> diff --git a/net/can/af_can.c b/net/can/af_can.c
-> index 34fe3b28d576f..dc27ace43719d 100644
-> --- a/net/can/af_can.c
-> +++ b/net/can/af_can.c
-
-[ ... ]
-
-> @@ -519,7 +519,7 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
->  	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
->  	struct can_dev_rcv_lists *dev_rcv_lists;
+> diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+> index 536ff411da1d1..7bdb27a22a0ea 100644
+> --- a/Documentation/networking/can.rst
+> +++ b/Documentation/networking/can.rst
+> @@ -1042,15 +1042,15 @@ receive lists, their filters and the count of filter matches can be
+>  checked in the appropriate receive list. All entries contain the
+>  device and a protocol module identifier::
 >  
-> -	if (dev && dev->type != ARPHRD_CAN)
-> +	if (dev && !can_get_ml_priv(dev))
->  		return;
+> -    foo@bar:~$ cat /proc/net/can/rcvlist_all
+> +    foo@bar:~$ cat /proc/net/can/rcvlist_fil
+>  
+> -    receive list 'rx_all':
+> -      (vcan3: no entry)
+> -      (vcan2: no entry)
+> -      (vcan1: no entry)
+> -      device   can_id   can_mask  function  userdata   matches  ident
+> -       vcan0     000    00000000  f88e6370  f6c6f400         0  raw
+> +    receive list 'rx_fil':
+>        (any: no entry)
+> +      device   can_id   can_mask   matches     sock_inode     function
+> +       vcan0  80000123  c00007ff         0  000000000000f862  raw_rcv [can_raw]
+> +      (vcan1: no entry)
+> +      (vcan2: no entry)
+> +      (vcan3: no entry)
+>  
+>  In this example an application requests any CAN traffic from vcan0::
 
 [Severity: Low]
-The commit message describes this change as replacing "unreliable" checks
-with "robust" ones. Should it also say that the change closes a NULL
-pointer dereference that a user can trigger?
+This isn't a bug, but the text around the new example still describes the
+old one. The sentence after the example says:
 
-Before this patch, the sequence looks like this:
+  In this example an application requests any CAN traffic from vcan0::
 
-  ioctl(TUNSETLINK, ARPHRD_CAN) on a down tun device
-    tun->dev->type = (int) arg;      /* ml_priv stays NULL */
-  isotp_bind()
-    old dev->type != ARPHRD_CAN check passes
-    can_rx_register() returns -ENODEV, return value ignored
-    so->bound = 1; so->dev = dev;
-  isotp_release() or isotp_notify()
-    can_rx_unregister(net, so->dev, ...)
-      old dev->type != ARPHRD_CAN guard passes
-      can_dev_rcv_lists_find()
-        can_ml = can_get_ml_priv(dev);   /* NULL */
-        return &can_ml->dev_rcv_lists;
-      hlist_for_each_entry_rcu() walks the near-NULL pointer
+That matched the old rx_all entry, which had can_id 000 and mask 00000000.
+The new entry is in rx_fil with can_id 80000123 and can_mask c00007ff. It
+only matches non-RTR EFF frames whose low 11 ID bits are 0x123.
 
-dev_rcv_lists sits at offset 0 of struct can_ml_priv, so the returned
-pointer is near-NULL and the list walk oopses.
+The sentence before the example also still says every entry contains "a
+protocol module identifier". The new function column is the %ps name of
+the callback. It only shows a "[can_raw]" style tag when the protocol is
+built as a module, and it is a plain number on !KALLSYMS builds.
 
-Triggering this only requires owning a tun device, or CAP_NET_ADMIN inside
-an unprivileged user namespace.
-
-The patch carries a Cc: stable tag. Could the message name the oops in
-can_rx_unregister() (reached through isotp_release() or isotp_notify()) and
-the privilege needed to trigger it?
+Should this text be updated to match the new output?
 
 [ ... ]
 
-> diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index f5dc9d04bd686..6c28802c0605f 100644
-> --- a/net/can/isotp.c
-> +++ b/net/can/isotp.c
+> diff --git a/net/can/proc.c b/net/can/proc.c
+> index 64b3bdc2fa7e0..33d99543e3fe2 100644
+> --- a/net/can/proc.c
+> +++ b/net/can/proc.c
+> @@ -215,25 +215,21 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
+>  
+>  	hlist_for_each_entry_rcu(r, rx_list, list) {
+>  		char *fmt = (r->can_id & CAN_EFF_FLAG)?
+> -			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
+> -			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
+> +			"  %6s  %08x  %08x  %8ld  %016llx  %ps\n" :
+> +			"  %6s     %03x    %08x  %8ld  %016llx  %ps\n";
+>  
+>  		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
+> -			   r->func, r->data, atomic_long_read(&r->matches),
+> -			   r->ident);
+> +			   atomic_long_read(&r->matches), r->ino, r->func);
+>  	}
+>  }
+
+[Severity: High]
+On CONFIG_KALLSYMS=n builds, does can_print_rcvlist() now print a raw
+kernel text address?
+
+The old format printed r->func with %pK. %pK follows kptr_restrict, so
+unprivileged readers saw a hashed or zeroed value. With %ps, symbol_string()
+falls back to the raw value when kallsyms is not built in:
+
+lib/vsprintf.c:symbol_string() {
+    ...
+#else
+	return special_hex_number(buf, end, value, sizeof(void *));
+#endif
+}
+
+In that case the plain address of raw_rcv, bcm_rx_handler, isotp_rcv,
+isotp_rcv_echo, can_can_gw_rcv or j1939_can_recv would be printed.
+
+can_init_proc() creates the rcvlist_* files with mode 0644. An unprivileged
+user can also add an entry by opening a CAN_RAW socket, through
+raw_enable_filters()->can_rx_register(). CAN has no KALLSYMS dependency in
+net/can/Kconfig, and KALLSYMS can be turned off under EXPERT.
+
+Those builds also lose the old r->ident string ("raw", "bcm", "isotp",
+"gw", "j1939"). The column then shows only a number, not a protocol
+identifier.
+
+Would a fixed per-protocol name work better here? Another option is to
+print a placeholder, or keep %pK, when CONFIG_KALLSYMS is off.
 
 [ ... ]
-
-> @@ -1610,7 +1611,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
->  		err = -ENODEV;
->  		goto out;
->  	}
-> -	if (dev->type != ARPHRD_CAN) {
-> +	if (!can_get_ml_priv(dev)) {
->  		err = -ENODEV;
->  		goto out_put_dev;
->  	}
-
-[Severity: Medium]
-This is a pre-existing issue, not one introduced by this patch. Further
-down, isotp_bind() still ignores the return values of both
-can_rx_register() calls:
-
-	if (isotp_register_rxid(so))
-		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
-				isotp_rcv, sk, ...);
-	...
-	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
-			isotp_rcv_echo, sk, ...);
-
-	/* switch to new settings */
-	...
-	so->bound = 1;
-
-The can_get_ml_priv() check above now rules out -ENODEV. Using
-dev_get_by_index(net, ...) also guarantees the netns matches. That leaves
-one possible failure: -ENOMEM from can_rx_register():
-
-	rcv = kmem_cache_alloc(rcv_cache, GFP_KERNEL);
-	if (!rcv)
-		return -ENOMEM;
-
-If that allocation fails, bind() still returns 0. The socket then never
-receives flow control frames, or never receives its own TX echoes.
-
-Transfers would stall until the hrtimers fire. Later, isotp_release() or
-isotp_notify() would hit the "receive list entry not found" warning in
-can_rx_unregister().
-
-Should isotp_bind() check these return values, and unwind the first
-registration if the second one fails?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261009134323.64064-2-mkl%40pengutronix.de
