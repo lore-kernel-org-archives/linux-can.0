@@ -1,46 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB656459AEB
-	for <linux-can@vger.kernel.org>; Sat, 10 Oct 2026 13:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E14C4372EE2
+	for <linux-can@vger.kernel.org>; Sat, 10 Oct 2026 13:44:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791639840; cv=none; b=VqkoO0Bgx2UmW2AErnfu/cj+pNTQXnvKQaM6vsapO5Ps9kXQwsrOyF2A2SmKQn0FDbLcMz+5k+o3OPTi9q/rcXdVuxtLqJ+9XFjtn71ECqLwfNHl7CagM2J/kgx/9+alXTgEx6Eld7TLPkQbzo7S3KLwOeF0HPOJtlHAz2uk0XM=
+	t=1791639841; cv=none; b=Xv+MgfdnHWul/HEuXNhPVcS3Y+K+Hc/gOoMe0Tog/qkpj3SXtd8/ENzcrmVDvjdti2Nw2xQ8Gpkwq7kLo1IZXqVdutmNhVgaETa4Ut7MxY/OgZbLoO/ngFDa1MXOKLbgqXRV6f9pz5IrcDboTBoG3vsTacxKprLvtDLaIzAcRbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791639840; c=relaxed/simple;
-	bh=tMum/qmkRi4NlZd7iHm+DMSmLZrzibCyoVzV+0UqnQw=;
+	s=arc-20240116; t=1791639841; c=relaxed/simple;
+	bh=Sjpc1prBJTww9g86OkSf7n3QQ6XmztgEKvaOQgrHXwA=;
 	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=VDYVTFGjkRSQCVwdv5a85DkfGytXlJZgivruqsIHd3LSKr1G2xHkb9rxuflJX2qEjl2owA5wWplLzvU71DJicfEZUxKpQWbByGdIGsI37gIsIcH7gDLAnrEp9Xv6aRhXwfvTn3Y3B4eJi0m7zR3wMtV4NibbNazuzv4PC2kDkbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G1dO/LWn; arc=none smtp.client-ip=100.103.45.18
+	 Date; b=rqSHwosdvH/cO6km6juvYmHm48fF5Ke/tlg5FjhbWnzN6QLsoQ4Wv8vi46g0/55/cmCAFjwGVe0MJdHbRcI5vhCyN1nqO9HA9b7AlZEpj71Ja1uoY3qSt2YxBhWw5P37CtHsvo9z2JoUZkqzVbuy+Jp19kJBBVKOcu1rAsryB0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fNrR+A9a; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G1dO/LWn"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A9361F000FF;
-	Sat, 10 Oct 2026 13:43:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fNrR+A9a"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 604351F00893;
+	Sat, 10 Oct 2026 13:44:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791639839;
-	bh=hzgDi1dozKtVBSKVguVEIk32Cc5DZdNjl5/EG6rdXo0=;
+	s=k20260515; t=1791639840;
+	bh=v7c5yVMeNhfwq8bgto1dfws3xB/b3gDkqYNIozRYjpE=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=G1dO/LWnLvc0YXTHemear3km0XqDceVTs808ORBy1/u8j9RXc/LEKUSYcnEq44y+E
-	 M5GMCMHwZ+BBJcxQuPNl+T1bGDm4d80+fPLuqx0+RtIZq9/7430exaHxIuW2YNi64t
-	 XUHjQZ2+KpA84mpBF3qVjFHjrKacNeV+89dxM70gpYdID/H74elk+OcWIRrzvCZwyz
-	 /jVDvt4LSOTuqVegenrQWvkZFL+oK1oQTounVaypDz38YzPWsU+FidXs+KlI4mt7hA
-	 6unpJjyYK3ipjeRJ3EyOINpyqcRNU7u1bTZ7jnixKmYK6TNZRqEGQRs+CaKJVvYr0B
-	 +BjPrsBCvvGEQ==
-Message-ID: <sashiko-outbox-166607@kernel.org>
+	b=fNrR+A9a6ZVUtKTlqZVoDwR03UZ2btrhRQEq7R8eObVziA+5OMcCairjBAPe5U0jG
+	 n0YS+Q6uC6ojQmzqv7x5AGLKxVsEWOmEWmdd+Ohwdva648cRecUZCISqRKwQZrodbR
+	 THGPDsNFO9LClGFxXO4t9twwU+ihgl8Eag2NjQVpv7/eCOsNUqXUBtFVrcvq+zK9+s
+	 lqLDAawzb10VnBhyhytoMhU8V4pvJwLmGRuaNNbxjcyWr4xNd+huHILfAvJ8zJ4l9E
+	 2VPlb14gPJRwfGe7L9YRt9jC4czAdm9JjkRTd38cC60JSw06PU5+DUa/gcecEx2UGY
+	 jYFy02fpx3cHQ==
+Message-ID: <sashiko-outbox-166613@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 17/37] can: rcar_canfd: Derive max_channels
- from the device tree
+Subject: Re: [PATCH net-next 23/37] can: Convert to
+ DEFINE_SIMPLE_DEV_PM_OPS()
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Vincent
- Mailhol" <mailhol@kernel.org>
-In-Reply-To: <20261009134323.64064-18-mkl@pengutronix.de>
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org
+In-Reply-To: <20261009134323.64064-24-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
- <20261009134323.64064-18-mkl@pengutronix.de>
+ <20261009134323.64064-24-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Sat, 10 Oct 2026 13:43:58 +0000
+Date: Sat, 10 Oct 2026 13:43:59 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,81 +48,93 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [High] can: rcar_canfd: out-of-bounds MMIO and broken sparse DTs
+- [High] can: m_can/bxcan: bus fault on shared IRQ during suspend
 --
 
-commit a1d79c18cfbc6d4e1569e45058d228d182b10de9
-Author: Biju Das <biju.das.jz@bp.renesas.com>
-can: rcar_canfd: Derive max_channels from the device tree
+commit 67e577fb01461ec0237b4358b708fb235942190b
+Author: Triet Hoang <triet.hoang.dev@gmail.com>
 
-This commit modifies the driver to obtain the maximum number of channels
-dynamically from the device tree child count rather than hardcoding it
-per SoC in struct rcar_canfd_hw_info.
+    can: Convert to DEFINE_SIMPLE_DEV_PM_OPS()
+   =20
+    Convert the deprecated SIMPLE_DEV_PM_OPS to DEFINE_SIMPLE_DEV_PM_OPS and
+    pm_sleep_ptr().
+   =20
+    This lets us drop the __maybe_unused annotations from the suspend and
+    resume callbacks, also reduces kernel size in case CONFIG_PM or
+    CONFIG_PM_SLEEP is disabled.
+   =20
+    Link: https://patch.msgid.link/20260822074701.22856-1-triet.hoang.dev@g=
+mail.com
 
-Link: https://patch.msgid.link/20261001075742.21961-3-biju.das.jz@bp.renesa=
-s.com
-
-> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
-r_canfd.c
-> index 74c3c3f20991f..41c3951189490 100644
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-> @@ -436,7 +436,6 @@ struct rcar_canfd_hw_info {
->  	u8 rnc_field_width;
->  	u8 max_aflpn;
->  	u8 max_cftml;
-> -	u8 max_channels;
-
-[Severity: High]
-Does removing the structural enforcement of the hardware capability limit
-allow the device tree to dictate bounds for MMIO register access? The
-driver should enforce physical hardware limits independently of the device
-tree to prevent out-of-bounds access.
-
->  	u8 postdiv;
->  	/* hardware features */
-
+> diff --git a/drivers/net/can/bxcan.c b/drivers/net/can/bxcan.c
+> index 4bddd015775bc..622c5d73e33a8 100644
+> --- a/drivers/net/can/bxcan.c
+> +++ b/drivers/net/can/bxcan.c
+> @@ -1042,20 +1042,19 @@ static void bxcan_remove(struct platform_device *=
+pdev)
 [ ... ]
-
-> @@ -2145,14 +2139,18 @@ static int rcar_canfd_probe(struct platform_devic=
-e *pdev)
->  	bool fdmode =3D true;			/* CAN FD only mode - default */
->  	char name[9] =3D "channelX";
->  	u32 ch, fcan_freq;
-> +	u8 max_channels;
->  	int i;
+> -static int __maybe_unused bxcan_suspend(struct device *dev)
+> +static int bxcan_suspend(struct device *dev)
+>  {
+>  	struct net_device *ndev =3D dev_get_drvdata(dev);
+>  	struct bxcan_priv *priv =3D netdev_priv(ndev);
 > =20
->  	info =3D of_device_get_match_data(dev);
-> +	max_channels =3D of_get_child_count(dev->of_node);
-> +	if (max_channels > RCANFD_NUM_CHANNELS)
-> +		return -EINVAL;
+>  	if (!netif_running(ndev))
+>  		return 0;
 > =20
->  	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
->  		fdmode =3D false;			/* Classical CAN only mode */
+>  	netif_stop_queue(ndev);
+>  	netif_device_detach(ndev);
 > =20
-> -	for (i =3D 0; i < info->max_channels; ++i) {
-> +	for (i =3D 0; i < max_channels; ++i) {
+>  	bxcan_enter_sleep_mode(priv);
+>  	priv->can.state =3D CAN_STATE_SLEEPING;
+>  	clk_disable_unprepare(priv->clk);
+        ^^^^
 
 [Severity: High]
-Is the child node count wrongly used as an absolute channel limit and
-upper bound for iteration here?
+Is it possible for the shared IRQ to fire after the clocks are disabled her=
+e?
 
-Conflating the child population count with the maximum channel index
-breaks sparse device trees. If a device tree explicitly omits an
-intermediate channel (for example, via /delete-node/ channel1), the child
-count shrinks. For a 3-channel SoC where channel1 is omitted, max_channels
-becomes 2, causing this loop to terminate before discovering channel2.
+If another device sharing the same IRQ line triggers an interrupt before the
+suspend_noirq phase, or if the interrupt is configured as a wakeup source, =
+the
+kernel will invoke bxcan_rx_isr().
 
-Also, if a malformed device tree specifies more channels than the SoC
-physically supports, the driver will attempt to configure non-existent
-channels since the SoC-specific limit was removed. Accessing unmapped
-or reserved MMIO registers for those extra channels could cause a
-synchronous external abort.
+Since bxcan_rx_isr() reads MMIO registers (like rf0r =3D readl(&regs->rf0r))
+unconditionally when called, could this cause a bus fault and system crash =
+if
+the clock is stopped?
 
->  		name[7] =3D '0' + i;
->  		of_child =3D of_get_available_child_by_name(dev->of_node, name);
->  		if (of_child) {
+>  	return 0;
+>  }
+
+> diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_=
+can_pci.c
+> index d11a7c88fc32f..d31179312026b 100644
+> --- a/drivers/net/can/m_can/m_can_pci.c
+> +++ b/drivers/net/can/m_can/m_can_pci.c
+> @@ -169,17 +169,17 @@ static void m_can_pci_remove(struct pci_dev *pci)
+[ ... ]
+> -static __maybe_unused int m_can_pci_suspend(struct device *dev)
+> +static int m_can_pci_suspend(struct device *dev)
+>  {
+>  	return m_can_class_suspend(dev);
+        ^^^^
+
+[Severity: High]
+Does this suspend path have a similar regression with shared IRQs?
+
+m_can_class_suspend() calls m_can_clk_stop() which disables the peripheral
+clocks, but the shared IRQ is left registered. If the interrupt fires
+subsequently, m_can_interrupt_handler() will execute.
+
+While m_can_interrupt_handler() checks pm_runtime_suspended(), this evaluat=
+es
+to false during system suspend if the device was active prior to sleep. The
+handler will then attempt an MMIO read via m_can_read(cdev, M_CAN_IR), which
+could cause a bus fault on an unclocked peripheral.
+
+>  }
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261009134323.6406=
-4-1-mkl@pengutronix.de?part=3D17
+4-1-mkl@pengutronix.de?part=3D23
