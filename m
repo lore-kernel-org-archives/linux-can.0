@@ -1,46 +1,46 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2BA374A05
-	for <linux-can@vger.kernel.org>; Sat, 10 Oct 2026 13:44:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12DAA372EE2
+	for <linux-can@vger.kernel.org>; Sat, 10 Oct 2026 13:44:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791639843; cv=none; b=am/dCs/RIxxU48HyOqRhqIdVubopALaMxY2hrxkDtZTgM5cS0cWKIcpHDRLemvf3dOSWh4FILID0ukft/MHJXFjaM3EmGGAznZ9Y7zvdHNQ+b2G9OdBs7RbsAd+bk7ijaT3c6Pe+iTAsgJ+AFAW+2fEh75xGrjnO8lpSbBYzNoE=
+	t=1791639844; cv=none; b=lkn69lFxcWIaX661CHCZTqKSb9FkbwS05V9pxeWi234VgDvk6KoGjiqiWdBxhpDJWKzYH4qWR6kG4AhQ9E91WO98S/k2xnhBDTzr2zBpce5/0HkvKxHi4n0w7zHtRGXH/cnHWtv+autuGD5DVzYvwNhgv4OTdgMv/Z4pBDj12mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791639843; c=relaxed/simple;
-	bh=Z7ZVjvVq5jgYuJH2JbZqTjqHQLkqeNEgq7g+J+yJh1M=;
+	s=arc-20240116; t=1791639844; c=relaxed/simple;
+	bh=Pe3es7lr4qDNNJUusWrRGLL76/d2rT3RV/wFPaaDGuE=;
 	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=MMZkzEJek7XSfin95FSCtz0neN0gWYAHvownzveEgxI5KbAykKHC1JQ5lFg5Rvku4C/0ACtOONdC0dbCamJqhgbI+nthsVCDroTCexUWLJ5HZqwXE3xJ5bfw04d0q/E4BskCM5aWcZgbWMjcxaUGUWZ0EP2bACl+JqqOXmoqJgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Lw7FT6Tu; arc=none smtp.client-ip=100.103.45.18
+	 Date; b=r2v01OEvsyJALHgsPyzjX8FX+p6+kOnlxCHWe9mk/KxUc1+7Y2TIqkNprE6kLe/b8OpRv+CzECBgkGVZBS7rB1s7il6nI0WinrO6qtgncbla9mFV2+8AF8xJXmEuNst5hD+TnXkv2L89J3r/leOzalBuDTsXPbGDhCKifDxskU4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=J0x6eBJ/; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Lw7FT6Tu"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 695F81F000FF;
-	Sat, 10 Oct 2026 13:44:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="J0x6eBJ/"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 858C71F00893;
+	Sat, 10 Oct 2026 13:44:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791639841;
-	bh=MoEsPUt6WvyI5aXp5L43HojhGRb95bcBYLE4i8aHE70=;
+	s=k20260515; t=1791639843;
+	bh=islDv6xBbWe7NQraAfPp1pRx/zkVKrsaGtpJ7LR5gVA=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Lw7FT6TuOifk+h14083VZA7kjaEnT8AkZTC1VjWe8kozshydrHM1Qk41B8V8cE3o2
-	 DrsPpnwExIPFwbUFcwWo9hqzY5M0W2Y87KTW4e2CIXi7cZLtCi1eL2gavSZ3SbeVxI
-	 syO4N5cYePEx6WcGMqSEIWHsIixfLV2O6ePjpCIVXul1ahjVLQKy7QqZxf0jx984zZ
-	 aIrnOloDrP90DtKhAIYTZv8h6wsAK6oCJldw5R/OCynGqGk64seIHf+A7PdcyZv3y6
-	 JmPJdsGFc5f6SmYFSYhQ5Y1ligXYBSHqWsGYz06jpfbvY8IAZQMcpx44ooJskXXm8V
-	 wj4lyk2CK0dzw==
-Message-ID: <sashiko-outbox-166619@kernel.org>
+	b=J0x6eBJ/Xt1RCvDf9QeB6tqV6O63V8oEhSsT3aoi3Jjz2Wu1XQ820a4TmzccCiWZj
+	 dmB+txcPjUgINFoxiSgg7PMGY18wxf1X2CsrKSkQYEALXA6Golx0cpu09phNqdWo8+
+	 1+kJOYNDkJAk0xIfIlebKApPtj+wujiwtVs9gyINCySyxpJgdcBoIhWgOIUMYkmLzt
+	 yeJmuIVMA6s+g9Sy/VqOaxGe+IDihxgHUoSJdTE/sVjTHTxFjDa6qQOgT0KiJj+w2/
+	 CZmfl+SOixNaRSxdNcxNx6IWJP+uShX+DmdG5FC8NTmiI4A07uY+rYyph1UpTRGonj
+	 ZEmU70SrzdBVw==
+Message-ID: <sashiko-outbox-166621@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 29/37] can: f81604: f81604_close(): fix
- use-after-free on disconnect
+Subject: Re: [PATCH net-next 31/37] can: kvaser_usb: refactor endpoint
+ lookup
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
+Cc: "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, "Marc
+ Kleine-Budde" <mkl@pengutronix.de>, linux-can@vger.kernel.org, "Oliver
  Hartkopp" <socketcan@hartkopp.net>
-In-Reply-To: <20261009134323.64064-30-mkl@pengutronix.de>
+In-Reply-To: <20261009134323.64064-32-mkl@pengutronix.de>
 References: <20261009134323.64064-1-mkl@pengutronix.de>
- <20261009134323.64064-30-mkl@pengutronix.de>
+ <20261009134323.64064-32-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Sat, 10 Oct 2026 13:44:00 +0000
+Date: Sat, 10 Oct 2026 13:44:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,73 +49,71 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [High] can: f81604: TOCTOU double-free in echo_skb array during f81604_cl=
-ose()
+- [High] can: kvaser_usb: infinite loop when bulk-in wMaxPacketSize is 0
 --
 
-commit 169687a41025adccdc4855da35895fe6f761e8b9
-Author: Ji-Ze Hong (Peter Hong) <peter_hong@fintek.com.tw>
+commit b4168d21a894a8ed379ae53431fcd63f4de542bb
+Author: Anton Olsson <anol@kvaser.com>
 
-can: f81604: f81604_close(): fix use-after-free on disconnect
+can: kvaser_usb: refactor endpoint lookup
 
-This commit fixes a use-after-free by unregistering URBs before cancelling
-the clear_reg_work in f81604_close().
+This patch moves kvaser_usb_leaf_setup_endpoints() to kvaser_usb_core()
+so it can be used by both the mhydra and leaf sub-drivers. It also
+removes dev_setup_endpoint() from struct kvaser_usb_dev_ops.
 
-Link: https://patch.msgid.link/20260901-f81604-fix-v1-1-c55b5178f9f8@fintek=
-.com.tw
+Link: https://patch.msgid.link/20260817112052.1477126-1-anol@kvaser.com
 
-> diff --git a/drivers/net/can/usb/f81604.c b/drivers/net/can/usb/f81604.c
-> index 4c147b9d6d690..bb155b8769245 100644
-> --- a/drivers/net/can/usb/f81604.c
-> +++ b/drivers/net/can/usb/f81604.c
-> @@ -1075,10 +1075,10 @@ static int f81604_close(struct net_device *netdev)
->  	f81604_set_reset_mode(priv);
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/n=
+et/can/usb/kvaser_usb/kvaser_usb_core.c
+> index d0a2a2a33c1c8..9687dfb89b4cc 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
+[ ... ]
+> @@ -926,6 +926,23 @@ static int kvaser_usb_init_one(struct kvaser_usb *de=
+v, int channel)
+>  	return err;
+>  }
 > =20
->  	netif_stop_queue(netdev);
-> -	cancel_work_sync(&priv->clear_reg_work);
->  	close_candev(netdev);
-> =20
->  	f81604_unregister_urbs(priv);
+> +static int kvaser_usb_setup_endpoints(struct kvaser_usb *dev)
+> +{
+> +	struct usb_host_interface *iface_desc;
+> +	int ret;
+> +
+> +	iface_desc =3D dev->intf->cur_altsetting;
+> +
+> +	/* use first bulk endpoint for in and out */
+> +	ret =3D usb_find_common_endpoints(iface_desc, &dev->bulk_in,
+> +					&dev->bulk_out, NULL, NULL);
+> +
+> +	if (ret)
+> +		return -ENODEV;
+> +
 
 [Severity: High]
-Can this ordering cause a double-free if an URB completion handler runs
-concurrently with close_candev()?
+Does this code need to validate that dev->bulk_in->wMaxPacketSize !=3D 0?
 
-When f81604_close() invokes close_candev() before unregistering in-flight
-URBs, close_candev() calls can_flush_echo_skb() which iterates over
-priv->echo_skb[] to free pending skbs locklessly:
+If a malicious USB device presents a bulk-in endpoint with a wMaxPacketSize
+of 0, the USB core does not reject it. Later, in
+kvaser_usb_leaf_read_bulk_callback() and kvaser_usb_leaf_wait_cmd(), if a
+zero-length command is received (cmd->len =3D=3D 0), the driver advances the
+position using:
 
-drivers/net/can/dev/skb.c:can_flush_echo_skb() {
-	...
-	if (priv->echo_skb[i]) {
-		kfree_skb(priv->echo_skb[i]);
-		priv->echo_skb[i] =3D NULL;
-	...
-}
+    pos =3D round_up(pos + 1, le16_to_cpu(dev->bulk_in->wMaxPacketSize));
 
-Concurrently, an active URB completion can trigger f81604_handle_tx() and
-invoke can_get_echo_skb(). Because __can_get_echo_skb() also tests the skb
-pointer locklessly:
+When wMaxPacketSize is 0, round_up(pos + 1, 0) evaluates to 0 because
+__round_mask(x, 0) becomes -1. This endlessly resets pos to 0, resulting in
+an infinite loop and a CPU hang.
 
-drivers/net/can/dev/skb.c:__can_get_echo_skb() {
-	...
-	if (priv->echo_skb[idx]) {
-		struct sk_buff *skb =3D priv->echo_skb[idx];
-		...
-		priv->echo_skb[idx] =3D NULL;
-		...
-		dev_consume_skb_any(skb);
-	...
-}
+Could we add a check here during endpoint initialization to reject endpoints
+with a zero wMaxPacketSize?
 
-If both threads observe a non-NULL pointer for the same index, could this
-result in the same skb being freed twice?
-
-> +	cancel_work_sync(&priv->clear_reg_work);
-> =20
->  	return 0;
->  }
+> +	return 0;
+> +}
+> +
+>  static int kvaser_usb_probe(struct usb_interface *intf,
+>  			    const struct usb_device_id *id)
+>  {
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261009134323.6406=
-4-1-mkl@pengutronix.de?part=3D29
+4-1-mkl@pengutronix.de?part=3D31
