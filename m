@@ -1,191 +1,151 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DCB2448B84
-	for <linux-can@vger.kernel.org>; Mon, 12 Oct 2026 17:01:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C81894BAA0C
+	for <linux-can@vger.kernel.org>; Mon, 12 Oct 2026 17:33:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791824505; cv=pass; b=N6Ajx6MubNxIYRlafjYOCYbEt0TVnmUhcHTI7bCNbthDtLApqFVVtM7Y3mtCL3HcQ4Yc/hrRxTZtScNTsCTPCDLgTN3WoP3pVskkzZcthKLubTX/sWl+i3GaXYd2Euak6Dw9qdh8aHU1tFrCRFvmS2cEzs8ZMnkHidzzqVQZpYk=
+	t=1791826427; cv=pass; b=qb0skJ0p7m+GPgH4Skc8YUlGorRV8IQmLRJO397FkJ5oNh/DkezjLMHAh5sIRrbHGj/Zmz1fq/ZtaEsSYyWb+iJDucfsq8B3jUgMUdPE9UFSHkQjXKmXN9KmT5njd5iRHfouiPo2G/J46o7QbP7b1a62wJ6NhyvMKbdMbtXNbEU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791824505; c=relaxed/simple;
-	bh=1JaUqE0BIXVdwJ+pOEtdXO5TMmFn/29y7fnq9sJMcwY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IJD8cp+oem+I7CH5KdPkb66GR7O6u03nnh0pn3jJe46QnkkQur0c7qo0OPBqgQsxFlrhrja9LIACuoGp/WDWIxEbmCWZHmTXE/k0ExVRpaj0I4twW3iNP9HjoVQLLYVB45xWnNBjh0MPiNOSorLBsFoztSN6syf5Tz7SjOEf9Ds=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=M3omISVW; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=LOGfxW6p; arc=pass smtp.client-ip=81.169.146.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	s=arc-20240116; t=1791826427; c=relaxed/simple;
+	bh=KgOIDLUvSf0WwxNmDrnCeIH6I1JKg5xvPW+fRCXmHvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=vDE1TyeL7brjBMSKDZGZrZeXmgra4L9cqVkI2+wKUzOTn6YDH9G8zLVZdAruis8gNzpVQJvaRzuFnPJYAf6dtlmE5dN+AE9LIb9XPDNkq/1+QGNdLSAncXpPuLVuYE9qNUagpiS6xCgmohqGb0qcC1Fy5WUw3WVJJXLsNlN+vxM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=ef0M/pyv; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="M3omISVW";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="LOGfxW6p"
-ARC-Seal: i=1; a=rsa-sha256; t=1791824314; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Cb6nR4pFVZH6nF62Tx7S69EQ4XLhnqOyy2a0XUDdLGQersr3ZGVvAfCoz7txaUJOLs
-    5mG3t9BOcENbn9pTbCQBpDaiMcCQVkFydIfalvRvt6YIE3SIw0pmZhBrCJDxUIDz5fc3
-    EAK61vBMMUqchMfOKVWsbcE4m2rASkGH+jSr0vUlyEECxSYIctMYg2MIjHm7dnFVloZy
-    eDzEJ50Kux9aSjmuAu+JuqIxgGiHffSR4q5ejcokk9x7tELPaInJzV7SBaE9vRaFf0HQ
-    PTG+QuqAPuevwx6B7Y2RYzZIYmNXiLwPsq/nxo6F+Htvq9aIpNvY1Ez8yGE/2RC114RS
-    oi/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791824314;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zJASvIU8iuERjTtBwNFw1UGzs5hhmUwu7w3pQHSQmfs=;
-    b=RfNlFzJ7FtBAH8UNrwKnvpefKfEQmNR4Nn4LMVHFJyvKZvR945ABlKnaCCnhEY3O31
-    BJVMS1iRuMDwDXZ+en94gC9oV5uqvOvjxf76Yiox5Psc4TGAmRq4HG8r/wgyyxJUExNe
-    z+Dfg6UM5S6IygOcYYH9dvm60kxOrjySKZCE+ggsZdYlk1/8HL6bpiAbQrkC/a+z6RrH
-    ZTGu6QcIquKUDmMSj7y4eztoxkCkR3eHQgNvF98TOWqqw5Z8shqSSlGNNT0GQ0UnyztX
-    cqQy0lNIW4zZ7CjpsnX5CCVLZasM4ql72FEH8MlH0AwBD/qNdnoE1yTWCnCYKsUBRVls
-    rmiQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791824314;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zJASvIU8iuERjTtBwNFw1UGzs5hhmUwu7w3pQHSQmfs=;
-    b=M3omISVW3VRsc/zhYZZBZlnTE1kT33Kq15WcBKSjfJMX50NJMI6waqFlDKFZ9jrRTn
-    gK9GvQWU6aokvASPS8SpnNh25DL1iqO3thbSRwXTwEPQ3YvAt3XqeuZBzjgkP3VOrd5M
-    9SYw37Cm1EXcEhEfEXE0aZSurD/ELa/geh4ho2t80+Ky0hj1hNaqNbui+NKtkERFk6E/
-    rfRDYul5yAmHSQ+pG0r7qvIav2LN85ykZ24pFV6N11TU0arP3v3uZ5352XVZQe43ogE+
-    AOC6NUv1jpzxO5kYPLU33TT6pwUh7RwA+/Dik9LlRr4BsiYVmukA6x+Ds0GlOBBEfc0X
-    KI5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791824314;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=zJASvIU8iuERjTtBwNFw1UGzs5hhmUwu7w3pQHSQmfs=;
-    b=LOGfxW6plwWPPvEow7BqcpM82193pvwMujnpISGcGASmiI6pJqQT1w9+EavqmromHP
-    6wHZXweKkTD5NkwfPCAg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29CGwY1va
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 12 Oct 2026 18:58:34 +0200 (CEST)
-Message-ID: <4d1bada6-03d5-4f84-b675-984333e2a841@hartkopp.net>
-Date: Mon, 12 Oct 2026 18:58:28 +0200
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="ef0M/pyv"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 701B72018A0;
+	Mon, 12 Oct 2026 19:33:38 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791826418;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r+1tbnGrduBYHCZ4/SURJV41tMopC2rLPNt0nfu+7eE=;
+	b=ef0M/pyvFnJ3P/FNmrSRAO0WBy0PQwcTi+Un8hUaSf9uUGLb3T8oFHMbWF5o57FRH2LzMm
+	t1zK1WxQeLbjIRjBjFBl2lTJeUG/3KcxO3aooU8/+gnJ66XjpgNMqMdGt1+TqbCkQjzQ7c
+	1FQqZCeurce69esD1+sekqXi/4Q+CohMQHQXxcdp0h+f28ecYbfAJacU8p4zOhXxCE6P03
+	l6UBpF8jaeyjU/kQ4p+KQv2Jdmh+XJ7l9WN0e+Tyx9KXAlpZUiRX83lbnYAL9MUC0cVJkv
+	E9lCCMnpn3rhMDXqedKx/9oAGIiU2V9XOHe/+gxUigVsA+dc9dPWRmc/9/4Aug==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791826418; a=rsa-sha256;
+	cv=none;
+	b=a3NkKC0TRpZj+yjBnXeukItxkiMbYYtLmWw55VauazQ3z+HRfl84q20EyZ3OMRbE4eaOFP
+	3oAGZKHAgCmzrZ9PR78iYftxKT8BhWMO2Wrw3SpJzHoDaOeU5URDaQ2f4dLaLPP4OpvhY2
+	llpJiE0Yg3aflbmuU5I1MvyRD//kkcQapiV29mWVis2/Ti8yykRcp66YU9/fECI5HhL0CG
+	eale3p08IZRlBTUA3dbqOGwOTn8l7R2mViVeHDMZB7wi9UXCOZ3JwalMoUWd9AaoQFkNJl
+	2Js14VHfVLE13uXsI8+/2W2j2dcbARqT5aLoIigvPRM0KtW6Uzkjldnp6i3vPg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791826418;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=r+1tbnGrduBYHCZ4/SURJV41tMopC2rLPNt0nfu+7eE=;
+	b=dKVsCQBHfIUcf1ZGZ7o2ToII/wVQcHdY3BT7U3+2bVfEe8BubeTnDqI+LH2drb4W7WKFhk
+	LY+XUcqUv1nEIS5reGKZQ0UDrgcQdAdptMIC3fPnsu5IlEyR9BwOfLibRLigc3+YRpp6hK
+	BsfKTmAQ6ATKcOERAP8jhDhWOTf5aagiEDc0TjO5xapOERau4p2KA8NAtdOGljJS/tmd0G
+	drfsHzTwC8kcz5MB5Jnh5wa9WwE/kW4QyjTmjQZKWvuJnHny+Ewx73bkJbAvFxhfQBZUqX
+	8NjAZYQmluQTWGQHS7FtSBqEbr0oDQwRTiaR3VogIC2IQIPe3ECoRLnyI0mS5Q==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xGJu6-005YsB-19;
+	Mon, 12 Oct 2026 19:33:38 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 1A0685C249D;
+	Mon, 12 Oct 2026 17:33:38 +0000 (UTC)
+Date: Mon, 12 Oct 2026 19:33:37 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, stable@kernel.org, 
+	Oleksij Rempel <o.rempel@pengutronix.de>
+Subject: Re: [can-next v2] can: replace ARPHRD_CAN type checks with
+ can_get_ml_priv()
+Message-ID: <20261012-vehement-serpent-of-expression-8b5bfe-mkl@pengutronix.de>
+References: <20261012164802.94113-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 07/37] can: isotp: check the frame type, not just
- the length
-To: sashiko-reviews@lists.linux.dev, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org
-References: <20261009134323.64064-1-mkl@pengutronix.de>
- <20261009134323.64064-8-mkl@pengutronix.de>
- <sashiko-outbox-166595@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <sashiko-outbox-166595@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="rh6miuvwl5xxng47"
+Content-Disposition: inline
+In-Reply-To: <20261012164802.94113-1-socketcan@hartkopp.net>
 
 
+--rh6miuvwl5xxng47
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [can-next v2] can: replace ARPHRD_CAN type checks with
+ can_get_ml_priv()
+MIME-Version: 1.0
 
-On 10.10.26 15:43, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
-> - [High] can: out-of-bounds read and info leak due to missing pskb_may_pull()
-> --
-> 
-> commit 4554c7ecb146245b9cdb1ec3080629015d6b848e
-> Author: Kaixuan Li <kaixuanli0131@gmail.com>
-> 
-> can: isotp: check the frame type, not just the length
-> 
-> This commit updates isotp_rcv to check for correct CAN CC or CAN FD frame
-> content, rather than relying solely on the skb length. This prevents CAN XL
-> frames from being misidentified and processed improperly.
-> 
-> Link: https://patch.msgid.link/20260920035626.2581040-1-kaixuanli0131@gmail.com
-> 
->> diff --git a/net/can/isotp.c b/net/can/isotp.c
->> index 1a272ce6a2bde..5e1c3971ebfce 100644
->> --- a/net/can/isotp.c
->> +++ b/net/can/isotp.c
->> @@ -756,6 +756,14 @@ static void isotp_rcv(struct sk_buff *skb, void *data)
->>   	if (skb->len != so->ll.mtu)
->>   		return;
->>   
->> +	/* check for correct CAN CC/FD frame content */
->> +	if (so->ll.mtu == CAN_MTU) {
->> +		if (!can_is_can_skb(skb))
->> +			return;
->> +	} else if (!can_is_canfd_skb(skb)) {
->> +		return;
->> +	}
->> +
-> 
-> [Severity: High]
-> Could this lead to an out-of-bounds read and information leak if the skb is
-> fragmented?
-> 
-> If a local user with CAP_NET_RAW sets up an AF_PACKET socket with a
-> memory-mapped TX ring (PACKET_TX_RING) and sends a CAN or CAN FD frame,
-> tpacket_fill_skb() can place the entire payload into page fragments, leaving
-> the linear portion empty.
-> 
-> Because there is no call to pskb_may_pull() to ensure the header is in the
-> linear area before accessing it, when the new code calls can_is_can_skb()
-> (or can_is_canfd_skb()), it casts skb->data and reads cf->len:
-> 
-> include/linux/can/skb.h:can_is_can_skb() {
->      struct can_frame *cf = (struct can_frame *)skb->data;
->      
->      /* the CAN specific type of skb is identified by its data length */
->      return (skb->len == CAN_MTU && cf->len <= CAN_MAX_DLEN);
-> }
-> 
-> This reads uninitialized memory and beyond skb->tail into skb_shared_info.
-> Later in the receive path, isotp_rcv_sf() copies this out-of-bounds memory
-> into a new skb:
-> 
-> net/can/isotp.c:isotp_rcv_sf() {
->      ...
->      memcpy(skb_put(nskb, len), &cf->data[pcilen], len);
->      ...
-> }
-> 
-> This delivers potentially sensitive kernel memory to the receiving socket.
-> 
->>   	cf = (struct canfd_frame *)skb->data;
->>   
->>   	/* if enabled: check reception of my configured extended address */
-> 
+On 12.10.2026 18:48:02, Oliver Hartkopp wrote:
+> Commit 4e096a18867a ("net: introduce CAN specific pointer in the struct
+> net_device") introduced an explicit way to assign the midlayer private
+> pointer (dev->ml_priv) to named users like ML_PRIV_CAN. A valid pointer
+> returned by can_get_ml_priv() therefore identifies a real CAN device.
+>
+> The referenced commit only converted the j1939 and proc code to this
+> check, while the other parts of the CAN subsystem still rely on
+> dev->type =3D=3D ARPHRD_CAN.
+>
+> The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
+> type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
+> netdevice passes the ARPHRD_CAN checks and triggers a NULL pointer
+> dereference when CAN filters are created and when they are removed,
+> e.g. by the CAN protocols' netdevice notifier handlers. This only
+> requires owning a TUN/TAP device or CAP_NET_ADMIN in an unprivileged
+> user namespace.
+>
+> Convert the remaining ARPHRD_CAN checks in af_can, bcm, gw, isotp and
+> raw to can_get_ml_priv().
+>
+> Fixes: 4e096a18867a ("net: introduce CAN specific pointer in the struct n=
+et_device")
+> Cc: stable@kernel.org
+> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> ---
+> v2: rephrased the commit message due to sashiko-bot feedback
+> ---
 
-I believe sashiko produced a false positive here.
+Replaced patch.
 
-1. The patch does not introduce a new access to skb->data.
-    isotp_rcv() already casts skb->data to struct canfd_frame and
-    reads cf->data[] right after the added check. The new
-    can_is_can_skb()/can_is_canfd_skb() calls only read cf->len,
-    which is within the range accessed by the existing code anyway.
+Thanks,
+Marc
 
-2. The same checks are already performed earlier in the receive
-    path. Before a frame reaches isotp_rcv(), it passes
-    can_rcv()/canfd_rcv() in net/can/af_can.c, which call
-    can_is_can_skb()/can_is_canfd_skb() on skb->data as well.
-    If a non-linear skb could reach this point, the issue would be
-    located at the entry of the CAN stack, not in isotp.
+pw-bot: accepted
 
-3. Non-linear skbs do not reach CAN devices in the described
-    scenario. Frames sent via AF_PACKET (including PACKET_TX_RING
-    and PACKET_QDISC_BYPASS) go through validate_xmit_skb(), which
-    linearizes the skb via __skb_linearize() if the device does not
-    advertise NETIF_F_SG. No CAN driver sets NETIF_F_SG
-    (grep -r NETIF_F_SG drivers/net/can returns nothing), so the
-    frame is linear when it reaches the driver and when it is
-    echoed back via netif_rx() into the CAN stack.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-Therefore no pskb_may_pull() is needed here and the patch can stay
-as is.
+--rh6miuvwl5xxng47
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Best regards,
-Oliver
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCas0Z7gAKCRDMOmT6rpmt
+0pTEAP4oBKZjQvTTAJBgOC8Bk+D6+T3m+VLsSxlbAFRqn876ggEA9R6yKPWLO34k
+TW039ZRdgEa3JDJK6t9EARnldhYFIgQ=
+=ye2Y
+-----END PGP SIGNATURE-----
+
+--rh6miuvwl5xxng47--
