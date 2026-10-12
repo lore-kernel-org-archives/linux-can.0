@@ -1,226 +1,137 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E69D6469843;
-	Mon, 12 Oct 2026 12:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54486477293
+	for <linux-can@vger.kernel.org>; Mon, 12 Oct 2026 12:21:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791806745; cv=pass; b=lI7f/GxL88yfQCQiLpUdQEXYCMTOtlqaI57Td8xhQNyNUCaZFOh7GnzVerSAZFOwxKdU+bEm2dHMPcy3eKOS90Vl/xnnYcmDT51bY4gHMXx2r22NDJZKcTY4eFYVRInpk4IwA53IiuDqyRMcGvssGq6zR724zTrhyCurGKul91I=
+	t=1791807689; cv=pass; b=ewmc5CMoPYiF4g56+YTv3g34ZT5KD4gcQ+9S+N3MTjq/XBBWhL8zSNgqybk4wS7lUFN5lS422jhaB0fxRcaWr3cOxpa6hasoOz70SS8vKWIk0OrIz3NpqoOmasqDiomucSyhW0gIV127qY6qxl66Zs9Ep+zq4IfF+Ss+3INfdBc=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791806745; c=relaxed/simple;
-	bh=ZdaWLGjj0j927i3ZlmQ/nvl2sv+OqepwgzTatYNlrqU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BwGA9oc4h5ZV1WVcD2wgTqPFbitv/EDlGZDYHITN25vuI32KrakHIBHo0SpzN/cm3KSjK/DcOy4q+uRkttPq2S/8rIbao3YCChQYfbVcpty9nP5euIHK/lGSnV7qkfmuHTgWywnjd9nskMOQiM018Upn0bQI7C3tVQlMFbSqPIs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=gXEw2o04; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=P/UB28fI; arc=pass smtp.client-ip=85.215.255.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	s=arc-20240116; t=1791807689; c=relaxed/simple;
+	bh=FQKnbRYUa++SOc+P4t3M9r0z2RSpEe89Pdwvc0+HBag=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NFBrOkkOtXQTWHDjjGKyTKKUABhgxbCycsxA8atOnrGragiEO5jj8tmiSj7TDuC6lxG7Nttrs3VkubSHk7sW6L+OPoPTziX3jXn0B7yPCo9rIyCMEnvJ3FB/JfCSEm8DGCLjZfBdB7G/cdx0GN4VpoNNR3Md+c/Rq2K7V0VDiUw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=ZxYJD1Zu; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="gXEw2o04";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="P/UB28fI"
-ARC-Seal: i=1; a=rsa-sha256; t=1791806556; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=VeskxLpsCfSiDfJ4ir+17k7wOiZS06RHYGHNtbBjAIcL0NC8O7rwnYx2KVjeU4N8iS
-    SSNh/flGWc2sXtANnzQUQmXs688itwTZSW9jtJWRvrz9eKsOlblwX9fXJCvoRR8C17sI
-    QZgKZtETnCt+bUa5vUGT78k2wQTOhI4H4q4/urUhncqTb57Fv3XkwaC3XJXI+0sw/Swk
-    w0jVXTj5AA4zLH3HJBcwDb1n2d597VB+RdWHgEfuLIsApLSu/Tk37bTcAuPR/i5gUcD9
-    UmGF4ODbIAscjhC7HxLIOzkcoleCcfi/nL3mOtajPW/XqSVgvOQwq3VVDqsz8UK90+Ea
-    /MHA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791806556;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qCGVGbZ2bz6RgZqBwNPxwKhB503I0EyZMWKRFMFUhkQ=;
-    b=gHJ7UCQdC67l+9MvYf+Hpc+2HASOgCKafjipzG/PNxxODjk2dg2PbDPtTP5Pvk2LA0
-    wncPZO+36qSqA+tr4t6SkubgxW1B4CczYlLDr02w7db49+eNQoTnycDlQkz8yuLedG1Q
-    /wN1xOQnH4hfsCg0p6wgsDFqNkhSBB1z08295Cic1oV2fzslbZzZ+7PehLaFSxICCcAz
-    kECTFP4ljgcF5SWzJd+alRrNYIY37ShRbZN32y8cu1oqao9pP9f7CZY4a9dVq8YiLER1
-    DfX0NEhd5/OS/TWNQg4Fj6lsY8CaLF1Oi7OJgXjo0NRjiLJzxojacS7GTv67XE0o2dZ3
-    YWDQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791806556;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qCGVGbZ2bz6RgZqBwNPxwKhB503I0EyZMWKRFMFUhkQ=;
-    b=gXEw2o04RkguMi9Ar8hynGNi6A9TDgPDfbOeXZr5qFvK6z28XGFKG5WLvn8EuYWgME
-    8nT0Po2UwdmOU/KnvDuvMidqxdhEVZ1yXrlWM/tHqHD74cz2e8V/7U2N7E3Qxo0THHzJ
-    uEGr9SG1Uqu3+7SeRq0qYqIXxNsqC14rsmRwUxDAKBObjpCMjjr1+6QoJVeNF/KXF7Jr
-    +A/xnlLyJqXtqX+A4wMLO+P/DFLGR6MGxgk8LSKzUSCH72SIP74DGmAytInOmUTbQax5
-    kQeHUdYEIZhkv8ZqtFZc+1C/G5FAVa5fHxvjuOxKIJ0qSuaBaqCdL2kM/ZzbSbuzwH8N
-    L+8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791806556;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=qCGVGbZ2bz6RgZqBwNPxwKhB503I0EyZMWKRFMFUhkQ=;
-    b=P/UB28fI66JNvFSB8dVytx8yioIl0cYG/eGLfvQH8lVk2cptHfn3C384GK7+fE+Imv
-    NbsqJtaUxFBeEJ3HByCg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.2 AUTH)
-    with ESMTPSA id K04b9a29CC2Zf1F
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 12 Oct 2026 14:02:35 +0200 (CEST)
-Message-ID: <4dcf22bb-7d0b-444d-9449-e4bd3a3aab6b@hartkopp.net>
-Date: Mon, 12 Oct 2026 14:02:30 +0200
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="ZxYJD1Zu"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 10E87200153;
+	Mon, 12 Oct 2026 14:21:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791807684;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LXAldbxIyhG+3WZtLQf42ZTGbnb9GQrrDD4OxxQ2LuI=;
+	b=ZxYJD1ZuBxu5yTRj2WzAwz0gc2mmTl+LWWELB07+A+9gHJgPghlaYR2Jaq828a1WAvVik+
+	44t20MuBmclM55jsjBIaj76vt+jlmUSetq3ql8vSPWr4p5DJD6mEhoNQSyqfB9bFItL6uH
+	PyBGGKgRNCXzDyTy8hRNuVy+lSduETFD1MGzsVqLCUr7Ubsothe15WQnUJsGSA3niHFP73
+	dljui7zqD9qhseLwQb1T5kXTPVAsh/T7yE/+e0khLcoaoYLGLQkQkSk/7YFYJvW9ChrP5T
+	yN8hSv1A1Uoc6w6Ts0EgLX4XoTq6Hk05ghyE3Rm/CJVMubed4lGM2ZG9+g8Alg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791807684; a=rsa-sha256;
+	cv=none;
+	b=HHtHEeOLMJRu73FR6xIDBsYpnLUREOqF7uIv3/0+OQuzlxhSpZGm2NXJwX23UgQyZ6yAua
+	7sndvsS6kNNbSV/f5MnAp3C2dmtPjKn5NhkBwe56sZQ05qD8rZeFbWK+b7Qb+6emj9AJEP
+	4H1Z7Bd+2weNooM7GrsAWEF+jTFAxSihKiopgkjr5KwUwpj19+hoiH2WnPC1Xxq6L7FZmQ
+	NOf8oyZTCJR37AYtEex3JVMoo0I4xySN+H8JaBGgVV17R0Hwt1w5SUUn8+BXuXIQNR7FeU
+	9NGcHQB7NqLLGCO2QrsNzE28BuWEpA5oFNndEcT9Wov5gh5H/JAo4c+XwIleZw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791807684;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LXAldbxIyhG+3WZtLQf42ZTGbnb9GQrrDD4OxxQ2LuI=;
+	b=f4YtWuUcSY4i+lhA59sGqqxiokyY3NOBp5Qbv4kD/s16iDjxeEFrmxZ27n1FAjbUJhFzor
+	66WZghth5s6dTL94zUfmkmT8/baNhIe8XZUPX3XhE1QdXp9DR974LwiBM5jTARisC2cUrJ
+	/eF5FJswlR50myZVkkHlHczAYHE5z/oM1/XBDl/93C4AGsZMTRF3pvDHYZcdFoVXr4Q9K9
+	3JiH1+H3zjQBvmrFs6aOKNXj3ohWHvMKwaGKC6xCnTAoQ1QrvEMTauMJKxXacSmH7fOT6C
+	Ah23asoGsbW0mnXAyeLf8rK5ILioVGOi1oIKz7f06Wluw6VDbPGS26ez7pQMww==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xGF1v-005WY4-2x;
+	Mon, 12 Oct 2026 14:21:23 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A58765C2002;
+	Mon, 12 Oct 2026 12:21:23 +0000 (UTC)
+Date: Mon, 12 Oct 2026 14:21:23 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [can-next v2] can: proc: remove pointers from CAN specific proc
+ output
+Message-ID: <20261012-fresh-anteater-of-artistry-864958-mkl@pengutronix.de>
+References: <20261012115851.3412-1-socketcan@hartkopp.net>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 05/37] can: proc: remove pointers from CAN
- specific proc output
-To: netdev-bot+sashiko@kernel.org, mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, hemanth.selam@gmail.com
-References: <20261009134323.64064-6-mkl@pengutronix.de>
- <179164096953.434549.17541028335124817965@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179164096953.434549.17541028335124817965@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="7gmus2tq6y35f4dw"
+Content-Disposition: inline
+In-Reply-To: <20261012115851.3412-1-socketcan@hartkopp.net>
 
 
+--7gmus2tq6y35f4dw
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [can-next v2] can: proc: remove pointers from CAN specific proc
+ output
+MIME-Version: 1.0
 
-On 10.10.26 16:02, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 2 potential
-> issue(s) to consider.
-> 
-> Critical: 0 · High: 1 · Medium: 0 · Low: 1
-> 
-> If you believe none of the issues are legitimate, please reply to each
-> issue of Medium severity or higher and explain why the AI is wrong.
-> If any of them are legitimate and you plan to respin, please let patchwork
-> know by including "pw-bot: cr" as a separate line at the end of your reply
-> (one such reply per series is enough).
-> 
-> - [High] The commit says it stops /proc/net/can/ from leaking kernel
->    pointers, but on some builds it now leaks a raw kernel text address.
-> - [Low] The procfs example in Documentation/networking/can.rst was
->    replaced, but the text around it was not updated.
-> 
-> --
-> 
-> can: proc: remove pointers from CAN specific proc output
-> 
-> This patch stops printing kernel pointers in /proc/net/can/rcvlist_* and
-> /proc/net/can-bcm/. It prints socket inode numbers and %ps callback names
-> instead. The ident string argument of can_rx_register() becomes a u64
-> inode number, and the bcm proc file name is now the inode number in hex.
-> 
-> Link: https://patch.msgid.link/20260815103400.117175-1-socketcan@hartkopp.net
-> 
->> diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
->> index 536ff411da1d1..7bdb27a22a0ea 100644
->> --- a/Documentation/networking/can.rst
->> +++ b/Documentation/networking/can.rst
->> @@ -1042,15 +1042,15 @@ receive lists, their filters and the count of filter matches can be
->>   checked in the appropriate receive list. All entries contain the
->>   device and a protocol module identifier::
->>   
->> -    foo@bar:~$ cat /proc/net/can/rcvlist_all
->> +    foo@bar:~$ cat /proc/net/can/rcvlist_fil
->>   
->> -    receive list 'rx_all':
->> -      (vcan3: no entry)
->> -      (vcan2: no entry)
->> -      (vcan1: no entry)
->> -      device   can_id   can_mask  function  userdata   matches  ident
->> -       vcan0     000    00000000  f88e6370  f6c6f400         0  raw
->> +    receive list 'rx_fil':
->>         (any: no entry)
->> +      device   can_id   can_mask   matches     sock_inode     function
->> +       vcan0  80000123  c00007ff         0  000000000000f862  raw_rcv [can_raw]
->> +      (vcan1: no entry)
->> +      (vcan2: no entry)
->> +      (vcan3: no entry)
->>   
->>   In this example an application requests any CAN traffic from vcan0::
-> 
-> [Severity: Low]
-> This isn't a bug, but the text around the new example still describes the
-> old one. The sentence after the example says:
-> 
->    In this example an application requests any CAN traffic from vcan0::
-> 
-> That matched the old rx_all entry, which had can_id 000 and mask 00000000.
-> The new entry is in rx_fil with can_id 80000123 and can_mask c00007ff. It
-> only matches non-RTR EFF frames whose low 11 ID bits are 0x123.
-> 
-> The sentence before the example also still says every entry contains "a
-> protocol module identifier". The new function column is the %ps name of
-> the callback. It only shows a "[can_raw]" style tag when the protocol is
-> built as a module, and it is a plain number on !KALLSYMS builds.
-> 
-> Should this text be updated to match the new output?
-> 
-> [ ... ]
-> 
->> diff --git a/net/can/proc.c b/net/can/proc.c
->> index 64b3bdc2fa7e0..33d99543e3fe2 100644
->> --- a/net/can/proc.c
->> +++ b/net/can/proc.c
->> @@ -215,25 +215,21 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
->>   
->>   	hlist_for_each_entry_rcu(r, rx_list, list) {
->>   		char *fmt = (r->can_id & CAN_EFF_FLAG)?
->> -			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
->> -			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
->> +			"  %6s  %08x  %08x  %8ld  %016llx  %ps\n" :
->> +			"  %6s     %03x    %08x  %8ld  %016llx  %ps\n";
->>   
->>   		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
->> -			   r->func, r->data, atomic_long_read(&r->matches),
->> -			   r->ident);
->> +			   atomic_long_read(&r->matches), r->ino, r->func);
->>   	}
->>   }
-> 
-> [Severity: High]
-> On CONFIG_KALLSYMS=n builds, does can_print_rcvlist() now print a raw
-> kernel text address?
-> 
-> The old format printed r->func with %pK. %pK follows kptr_restrict, so
-> unprivileged readers saw a hashed or zeroed value. With %ps, symbol_string()
-> falls back to the raw value when kallsyms is not built in:
-> 
-> lib/vsprintf.c:symbol_string() {
->      ...
-> #else
-> 	return special_hex_number(buf, end, value, sizeof(void *));
-> #endif
-> }
-> 
-> In that case the plain address of raw_rcv, bcm_rx_handler, isotp_rcv,
-> isotp_rcv_echo, can_can_gw_rcv or j1939_can_recv would be printed.
-> 
-> can_init_proc() creates the rcvlist_* files with mode 0644. An unprivileged
-> user can also add an entry by opening a CAN_RAW socket, through
-> raw_enable_filters()->can_rx_register(). CAN has no KALLSYMS dependency in
-> net/can/Kconfig, and KALLSYMS can be turned off under EXPERT.
-> 
-> Those builds also lose the old r->ident string ("raw", "bcm", "isotp",
-> "gw", "j1939"). The column then shows only a number, not a protocol
-> identifier.
-> 
-> Would a fixed per-protocol name work better here? Another option is to
-> print a placeholder, or keep %pK, when CONFIG_KALLSYMS is off.
-> 
-> [ ... ]
-> 
+On 12.10.2026 13:58:50, Oliver Hartkopp wrote:
+> The proc content in /proc/net/can/ and /proc/net/can-bcm/ is intended to
+> check the internal filter lists (af_can, can_raw) and the efficiency and
+> functionality of can_bcm jobs. While exposing kernel addresses was
+> acceptable when this code was written the times have changed and multiple
+> attempts have been made to hash or remove such now sensitive data.
+>
+> This patch removes the disclosure of pointers and instead provides the
+> function names and sock inode numbers when available. In the case of
+> KALLSYMS=3Dn (EXPERT setting) the function names can not be resolved and
+> (unknown) is printed instead. As there's no known tooling around the CAN
+> specific proc output breaking the ABI with this rework creates no issue.
+>
+> Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Addressed all sashiko-bot findings in a v2 patch here:
+I've replaced the v1.
 
-https://lore.kernel.org/linux-can/20261012115851.3412-1-socketcan@hartkopp.net/
+Thanks,
+Marc
 
-Best regards,
-Oliver
+pw-bot: accepted
 
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
+--7gmus2tq6y35f4dw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaszQwAAKCRDMOmT6rpmt
+0uTLAP96D2J69pmRvJjCPNoUQhUVMEw5Z8bav4nThdwI2ssH5QD/W0SSD8ZZeSCl
+vtKyNCZzUIw3HvaeXZVoQbSDBHingQo=
+=Z0a5
+-----END PGP SIGNATURE-----
+
+--7gmus2tq6y35f4dw--
