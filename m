@@ -1,304 +1,294 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29FE03C07A;
-	Tue, 13 Oct 2026 04:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88DDF4BB80D
+	for <linux-can@vger.kernel.org>; Tue, 13 Oct 2026 06:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791867373; cv=none; b=mO/yKPNE7M3CXuiEcaZQCXO8plE1kkqkshLaECPd8bbLwiq99reg5nVtZ7ljzgX46Pdkeurq2RFrfhpV/Ub/5fz71GgkVdQl/oivMq+EaDwSZDr06XVR8RpNE2qpRJNyH2gsD7HtZzvPHJCRflwJehtzntanwx/P0oH4quq9EHg=
+	t=1791873236; cv=none; b=LDpPLO5tQg0RM8x/X7KtjMkKaDF+d52IOnsuqDkOBYdDKsg88lpAPPIGSOn3HbdHuO/GrWHv+J2Sa3SpWBjMrItvGnZOwn3CtdT0TYKgK0YeLdnUFOg0oamQdofas+/8Fe9EtblJ1NoVev8a8Ua4BTohKj6z69xe5xi8X44blac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791867373; c=relaxed/simple;
-	bh=niEQADnWy5nSyvj1GZdVw4oCuzIbgdIszJ6wI/WXklk=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=b5oglDeOj7i8G6qj+jyPKSCUSNMuTKYLjImRGGIXQgyPw+avhgE81OEMwYnH4KVYu5VdAIDvcxn/hElVloSbov677+lI70VJro2Rk/6rL2JCDgv9ltX05f5FDrQMLsI5naFaAugQVNR8JHyIonZ6QzSCzgKxdHQioj0ULioNCyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kDnBnyY/; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1791873236; c=relaxed/simple;
+	bh=PKDt9a17x5JwDBBG2cr351fvRdaGcmqb74KmAxG/+jI=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=DOgvOb7IOzhmaogLQZvjnfA+312A80t73v4mDwWcSZrewoli+mPXvVDL2xHzZKwUhHK5sdTZJSaqdcYlzE+kNVYDHFOO58tVItDoW+b7dk09b+I43Ky9Gt0tTS2xK+hbZsRCMNhxqxwUV+0HKVkqXiqiB8UprOs6+uhn7oJxCgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=myzr4P6w; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kDnBnyY/"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35E391F000FF;
-	Tue, 13 Oct 2026 04:56:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1791867371;
-	bh=EvQHcMj8d3foWz+Mob6vBi4q2cLgPonIWsgQ2rwVgTA=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=kDnBnyY/W5m8T8w0Fv2qWyycHcQERYccJ95t4QIBwQl1ouVge1VPoGkdNjB+8XXi+
-	 YwGLrJ1ssIfpFvfutGYibBRhoVpau05sK3+DFur/pwxgmQAphChlw4wEPtpM/z7J86
-	 1lSHZbI3sKLQYMpKQGdyYjOBOdpIeo0TdkyXOPoZeCFsdDglqlfCVN60t98J2+nEf6
-	 vt7sbRgwUdcDUGsVyA3jKNrkT9Px7mtGhUQqHgQplY2vMtlU3NQvD8Syc5g6gw4gUx
-	 vjGiyLWnq7veDtTCQY+3ci9jNy4FAF/qEgnizaRYOTLGKPtEi9mlsxjWdPrcnUQAT4
-	 CI98bbLZrKfGA==
-Subject:
- Re: [PATCH v3] can: j1939: fix potential race condition in BAM segmentation
-From: netdev-bot+sashiko@kernel.org
-To: alexander.hoelzl@gmx.net
-Cc: o.rempel@pengutronix.de, robin@protonic.nl, linux-kernel@vger.kernel.org,
- kernel@pengutronix.de, linux-can@vger.kernel.org, kuba@kernel.org
-Date: Tue, 13 Oct 2026 04:56:10 +0000
-Message-ID: <179186737069.1406898.4501392866752412525@kernel.org>
-In-Reply-To: <20261011153119.120302-1-alexander.hoelzl@gmx.net>
-References: <20261011153119.120302-1-alexander.hoelzl@gmx.net>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="myzr4P6w"
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-cc4dbda1e5dso792548a12.2
+        for <linux-can@vger.kernel.org>; Mon, 12 Oct 2026 23:33:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1791873234; x=1792478034; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=oTNsy5m2fl3FNNHCS2M1Dkdj9lpqET4GIobo7b5ehNE=;
+        b=myzr4P6wCvoZJlBMOFMxmkdSIEPnMsg6M4vjI+H+7NW2TPn0QXtMC5IBAzW1QRId2J
+         XJE09aNDoZsJQqoZLoR7UfRaP2SXqjc0K4TuV7i2scG4fWwcsg2xHwtWYyduxm7QUvvv
+         Ba5kC7IAZCDUYHYN4Z0TBWGv88XsIYhNa9ESxsqCsjBlICkpXRMSgyp1hjHTlk/+e6mO
+         HkP+xaP9nlpkU21qHiKpO2NMr8zjCRzE5jeILBJUTgQTcvG9nVLMLQMpynjz3w0HNbSe
+         7hkotiRDIXagzJ+5T1eBADkm2Vpk7/JvzZ+s3vMH+WCbH27ScyFS31mqLXGdQGdXIFin
+         HNUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1791873234; x=1792478034;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=oTNsy5m2fl3FNNHCS2M1Dkdj9lpqET4GIobo7b5ehNE=;
+        b=ghHDz3y7iy5ZAj0cYYakHSSoxBADE/2Vz4VsBsIvIqKrdHO/MVErUmmZ+rJJuOY051
+         5gOfgSTB6PbyOHXvgh45H9vNXcTt114gSq2Qhh25Gduv2vNq3J093XH5anFoW1P2yz/K
+         KvAt4hGKSgMS3SDkbvG2Uf7tw1tGYyCZJyV1M0vijjqa0jBy1F9x4VHWS89i/MI7AmWX
+         QSz0WWN/p2K+z6vUbQhl870Fkc7hp/U38+fPM19qacIkv1zLYJSCSnpJATPkZ2VHJ2T+
+         nC0eTszrX0Ld/4wgrlWtWoTO60Lj4TM0YjmLC+YrT44C/osbUI7DkvxV0ogCNqO06kmY
+         quGA==
+X-Forwarded-Encrypted: i=1; AKwUvBz0s9HRpUR1RBHrQd7annoFhiTiw9M505VwZ1AWjX8RAEl/04UTC5u9jc4u1enKcjB+r8jJhkz6wpY=@vger.kernel.org
+X-Gm-Message-State: AFq9FYK8k0eOXMZ6njqR6b5iOkn1jj0zEw6Gszj3TsDZG1op970mqPfO
+	g7HrDXmSt7rvG+CrQQGMi8ygeLRVvpo59UdvsxqHapQdJa8UOagvk7f9
+X-Gm-Gg: AYBFou23WljwidmyPMLt6T2DyulYah57N8NAAnZecFT0XJIWm/vmG/jGwer4HxMEs+P
+	Syomo9qOUl6djXTcporhjRYBC+vIA0yWX0v46EXt1vtqAar3RnipmZ30LABYQRYkpIF+obHzNzJ
+	8Z1I5RFIS1sxAEwjL1hW0aHBRZc9hllFWFHJxjQkQdpi/PbfP5L0pV7CmsoLo7FKloliceAHz4n
+	QD0dgt3AYUz7o/GpCzixn+XzgyibZJTYq4BV4+X+pmqSawnH+wFjXm0qlEroUe1nr4vxxNjgB8h
+	oxv7RZUNKrx5y42Do3rOSz3KLH9EU/h2rlpDx5XaKfXc8Lcl78Iwd1yjgQg9UIjr9hnwEgxHMjZ
+	Q+6h7kznawQExj1z/wSBlw4PPrVBif+rgNRRQ8jLBTKRz6ooO7rn/AS798I5qyLlIUiObPBNGOi
+	gn5baMooKI98j2ksMJJQ9x+7OYambxfCE7mtwX8Qb6PRhGaAHaubyx5Ju+9RdL6BfEI+JLoEVeT
+	amyiEbid7t+MsIA0gCjIvg7LDmlPb/1ezuygwoYnzh0yLass74=
+X-Received: by 2002:a17:90b:1dc1:b0:39e:4c7f:7304 with SMTP id 98e67ed59e1d1-3ab3ac9f622mr8108214a91.27.1791873233720;
+        Mon, 12 Oct 2026 23:33:53 -0700 (PDT)
+Received: from hcdev-d520mt2.. (60-250-196-139.hinet-ip.hinet.net. [60.250.196.139])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3ab38f4863esm23169595a91.11.2026.10.12.23.33.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 12 Oct 2026 23:33:53 -0700 (PDT)
+From: a0282524688@gmail.com
+To: lee@kernel.org,
+	Ming Yu <tmyu0@nuvoton.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc: linux-kernel@vger.kernel.org,
+	Ming Yu <a0282524688@gmail.com>,
+	linux-gpio@vger.kernel.org,
+	linux-hwmon@vger.kernel.org,
+	linux-i2c@vger.kernel.org,
+	linux-can@vger.kernel.org,
+	linux-rtc@vger.kernel.org,
+	linux-watchdog@vger.kernel.org,
+	mfd@lists.linux.dev
+Subject: [PATCH v9 05/12] mfd: nct6694: Move module type macros to shared header
+Date: Tue, 13 Oct 2026 14:32:51 +0800
+Message-Id: <20261013063259.2734757-6-a0282524688@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20261013063259.2734757-1-a0282524688@gmail.com>
+References: <20261013063259.2734757-1-a0282524688@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 5 potential
-issue(s) to consider.
+From: Ming Yu <a0282524688@gmail.com>
 
-Critical: 0 · High: 0 · Medium: 3 · Low: 2
+Each sub-device driver defines the module type used by its own
+commands. The upcoming HIF transport also needs to recognise
+NCT6694_RPT_MOD, as report accesses are served from a separate
+register space rather than through the command mailbox.
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+Move all module types into the shared header so that the transports
+and the sub-device drivers use a single set of definitions.
 
-- [Medium] The new BAM-transmitter echo branches can bring an aborted
-  session back to life.
-- [Medium] Forged TP.DT frames can stall a BAM transmission for as long
-  as they keep coming, and it never times out.
-- [Medium] The new re-arm in the RX path (cancel, then schedule) is not
-  atomic and holds no lock, so it can leak session references.
-- [Low] The commit message understates the bug and has no Fixes: tag.
-- [Low] The new J1939_TP_BAM_ECHO_TIMEOUT_MS (250) constant does not
-  control the timeouts that actually wait for an echo.
+No functional change.
 
---
+Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+Signed-off-by: Ming Yu <a0282524688@gmail.com>
+---
+Changes in v9:
+- Added Andi's Reviewed-by.
 
-can: j1939: fix potential race condition in BAM segmentation
+Changes in v8:
+- Reworded the commit message to explain why the transport needs the
+  module types.
 
-This patch moves txtimer scheduling for BAM transmissions out of the
-transmit path and into the echo (tx ack) handlers. The 50ms frame spacing
-timer is now armed in j1939_xtp_rx_rts() and j1939_xtp_rx_dat_one() when
-the looped back BAM or DT frame arrives, instead of in
-j1939_session_tx_rts() and j1939_session_tx_dat().
+Changes in v7:
+- None.
 
-> If there is a high busload and the BAM frame is stuck in the controller
-> for some time, the txtimer might elapse before the looped back frame is
-> received and the session will stall.
+Changes in v6:
+- None.
 
-[Severity: Low]
-Is "stall" the right word for what happens before this patch?
+Changes in v5:
+- Split from the monolithic v4 patch to follow the single logical change
+  principle.
 
-If the 50ms txtimer fires before the BAM echo arrives, last_cmd is still 0.
-j1939_xtp_txnext_transmiter() then calls j1939_session_tx_rts() again, and
-that call returns early:
+ drivers/gpio/gpio-nct6694.c         |  7 -------
+ drivers/hwmon/nct6694-hwmon.c       | 21 ---------------------
+ drivers/i2c/busses/i2c-nct6694.c    |  7 -------
+ drivers/net/can/usb/nct6694_canfd.c |  6 ------
+ drivers/rtc/rtc-nct6694.c           |  7 -------
+ drivers/watchdog/nct6694_wdt.c      |  7 -------
+ include/linux/mfd/nct6694.h         |  9 +++++++++
+ 7 files changed, 9 insertions(+), 55 deletions(-)
 
-	if (dat[0] == session->last_txcmd)
-		/* done already */
-		return 0;
-
-Nothing re-arms the txtimer after that. The 250ms rxtimer armed in
-j1939_session_tx_rts() then fires, and j1939_tp_rxtimer() aborts the
-session:
-
-	__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-
-So user space sees the transfer aborted with EHOSTUNREACH, not a stall.
-Could the commit message describe that?
-
-This also fixes behaviour that goes back to the original J1939 code. Should
-it carry this tag so stable picks it up?
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..c61a021880c01 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-
-[ ... ]
-
-> @@ -26,6 +25,9 @@
->  #define J1939_TP_CMD_BAM 0x20
->  #define J1939_TP_CMD_ABORT 0xff
->  
-> +#define J1939_TP_BAM_FRAME_SPACING_MS 50
-> +#define J1939_TP_BAM_ECHO_TIMEOUT_MS 250
-
-[Severity: Low]
-This isn't a bug, but J1939_TP_BAM_ECHO_TIMEOUT_MS does not seem to set the
-timeouts that actually wait for an echo. Those still use a bare 250.
-
-In j1939_session_tx_rts(), after the BAM is sent:
-
-	if (dat[0] == J1939_TP_CMD_BAM) {
-		j1939_tp_set_rxtimeout(session, 250);
-
-In j1939_session_tx_dat(), after each DT frame:
-
-	if (pkt_done)
-		j1939_tp_set_rxtimeout(session, 250);
-
-The macro is only used in j1939_xtp_rx_rts() and j1939_xtp_rx_dat_one().
-Both run after the echo has already arrived, and j1939_session_tx_dat()
-overwrites that rxtimer about 50ms later.
-
-Should the echo wait sites use the macro instead?
-
-> +
->  #define J1939_ETP_CMD_RTS 0x14
-
-[ ... ]
-
-> @@ -1806,8 +1814,13 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
->  	session->last_cmd = cmd;
->  
->  	if (cmd == J1939_TP_CMD_BAM) {
-> -		if (!session->transmission)
-> +		if (!session->transmission) {
->  			j1939_tp_set_rxtimeout(session, 750);
-> +		} else {
-> +			j1939_session_txtimer_cancel(session);
-> +			j1939_tp_schedule_txtimer(session, J1939_TP_BAM_FRAME_SPACING_MS);
-> +			j1939_tp_set_rxtimeout(session, J1939_TP_BAM_ECHO_TIMEOUT_MS);
-> +		}
-
-[Severity: Medium]
-Can a late echo bring an aborted session back to life here? The same
-question applies to the new branch in j1939_xtp_rx_dat_one().
-
-Both branches re-arm the txtimer and rxtimer without
-active_session_list_lock and without checking session->state. Under the
-bus load this patch targets, a BAM or DT echo can arrive more than 250ms
-late. By then j1939_tp_rxtimer() has already taken the abort path under the
-list lock:
-
-j1939_tp_rxtimer()
-    j1939_session_list_lock(session->priv);
-    ...
-        hrtimer_start(&session->rxtimer,
-                      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
-                      HRTIMER_MODE_REL_SOFT);
-        __j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-
-That sets J1939_SESSION_WAITING_ABORT, sets err to EHOSTUNREACH and arms
-the forced deactivation timer.
-
-The session is still on active_session_list, so the late echo is still
-delivered here. j1939_tp_set_rxtimeout() then cancels the abort rxtimer and
-replaces it with a normal 250ms one. The txtimer fires 50ms later:
-
-j1939_tp_txtimer()
-  j1939_xtp_txnext_transmiter()
-    j1939_session_tx_dat()
-
-None of these check session->state. More DT frames therefore go out for a
-session that was already reported as aborted.
-
-Each of those echoes goes through the same re-arm in
-j1939_xtp_rx_dat_one(), which pushes the forced deactivation back again.
-The session can even reach j1939_session_completed() after user space was
-told the transfer was aborted.
-
-There also seems to be a narrower window against
-j1939_cancel_active_session() (socket close or NETDEV_DOWN). It cancels the
-timers under active_session_list_lock:
-
-	if (hrtimer_try_to_cancel(&session->txtimer) == 1)
-		j1939_session_put(session);
-
-The RX path still holds the reference from j1939_session_get_by_addr(). If
-it re-arms after this point, one more frame is sent for a session in
-J1939_SESSION_DONE.
-
-Before this patch, the BAM transmitter echo path only updated last_cmd and
-pkt.rx. Should these new branches check session->state under the list lock
-before re-arming?
-
-[ ... ]
-
-> @@ -1961,6 +1974,12 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
->  	} else if (remain) {
->  		if (!session->transmission)
->  			j1939_tp_set_rxtimeout(session, 750);
-> +		else if (j1939_cb_is_broadcast(&session->skcb)) {
-> +			/* cancel the txtimer to avoid leaking session references */
-> +			j1939_session_txtimer_cancel(session);
-> +			j1939_tp_schedule_txtimer(session, J1939_TP_BAM_FRAME_SPACING_MS);
-> +			j1939_tp_set_rxtimeout(session, J1939_TP_BAM_ECHO_TIMEOUT_MS);
-> +		}
-
-[Severity: Medium]
-Can forged TP.DT frames hold off a BAM transmission indefinitely here?
-
-j1939_can_recv() sets J1939_ECU_LOCAL_SRC based only on the SA:
-
-	if (j1939_address_is_unicast(skcb->addr.sa) &&
-	    priv->ents[skcb->addr.sa].nusers)
-		skcb->flags |= J1939_ECU_LOCAL_SRC;
-
-So j1939_xtp_rx_dat() routes any TP.DT frame with the host's SA and DA 0xff
-to the transmitter session's j1939_xtp_rx_dat_one(). That frame can come
-from another node on the bus or from a local CAN_RAW socket.
-
-A frame with packet != session->pkt.rx (for example, dat[0] = 1 sent
-repeatedly) does not advance pkt.rx:
-
-	if (packet == session->pkt.rx)
-		session->pkt.rx++;
-
-It still sets remain, though, so this branch cancels and re-arms the 50ms
-txtimer and the 250ms rxtimer. The memcmp mismatch is only logged once.
-
-Suppose such a frame arrives at least every 50ms. The txtimer never fires,
-so no data goes out. The rxtimer never fires either, so the session is never
-aborted. Later BAM transfers queued for that SA would hang behind it as
-well.
-
-Before this patch, the transmitter paced itself with its own txtimer, and
-this branch ignored transmitter sessions.
-
-Should this branch re-arm only when the frame is the echo of the packet
-just sent (packet == session->pkt.tx - 1), or when pkt.rx actually
-advanced?
-
-[Severity: Medium]
-Could this cancel then re-arm sequence leak session references if two DT
-frames for the same BAM session are processed at the same time?
-
-j1939_tp_schedule_txtimer() always takes a reference:
-
-	j1939_session_get(session);
-	hrtimer_start(&session->txtimer, ms_to_ktime(msec),
-		      HRTIMER_MODE_REL_SOFT);
-
-Nothing serialises j1939_xtp_rx_dat_one() calls for the same session.
-j1939_session_get_by_addr() holds active_session_list_lock only during the
-lookup.
-
-Two CPUs could handle TP.DT frames for this session at once. One example is
-the af_can loopback netif_rx() for a device without IFF_ECHO, racing a
-frame from the bus or an injected one. Another is two CAN_RAW injectors on
-vcan. The interleaving would be:
-
-CPU1                              CPU2
-j1939_session_txtimer_cancel()
-  hrtimer_cancel() == 1, put
-                                  j1939_session_txtimer_cancel()
-                                    hrtimer_cancel() == 0
-j1939_tp_schedule_txtimer()
-  j1939_session_get()
-  hrtimer_start()
-                                  j1939_tp_schedule_txtimer()
-                                    j1939_session_get()
-                                    hrtimer_start()
-
-When the timer fires, only one reference is dropped. The rxtimer has the
-same problem through j1939_tp_set_rxtimeout().
-
-A leaked session never reaches j1939_session_destroy(). Its j1939_priv
-reference and priv_dev_tracker netdev reference are then never released,
-and unregistering the CAN netdev would hang waiting for the device to
-become free.
-
-j1939_xtp_rx_cts_one() already uses the same unlocked pattern for directed
-sessions. Before this patch, though, the RX path never touched the txtimer
-for BAM transmitter sessions.
-
+diff --git a/drivers/gpio/gpio-nct6694.c b/drivers/gpio/gpio-nct6694.c
+index a8607f0d9915..53bfc5983648 100644
+--- a/drivers/gpio/gpio-nct6694.c
++++ b/drivers/gpio/gpio-nct6694.c
+@@ -13,13 +13,6 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+-/*
+- * USB command module type for NCT6694 GPIO controller.
+- * This defines the module type used for communication with the NCT6694
+- * GPIO controller over the USB interface.
+- */
+-#define NCT6694_GPIO_MOD	0xFF
+-
+ #define NCT6694_GPIO_VER	0x90
+ #define NCT6694_GPIO_VALID	0x110
+ #define NCT6694_GPI_DATA	0x120
+diff --git a/drivers/hwmon/nct6694-hwmon.c b/drivers/hwmon/nct6694-hwmon.c
+index 9a9a4db434c4..bd4c106305c7 100644
+--- a/drivers/hwmon/nct6694-hwmon.c
++++ b/drivers/hwmon/nct6694-hwmon.c
+@@ -15,13 +15,6 @@
+ #include <linux/platform_device.h>
+ #include <linux/slab.h>
+ 
+-/*
+- * USB command module type for NCT6694 report channel
+- * This defines the module type used for communication with the NCT6694
+- * report channel over the USB interface.
+- */
+-#define NCT6694_RPT_MOD			0xFF
+-
+ /* Report channel */
+ /*
+  * The report channel is used to report the status of the hardware monitor
+@@ -38,13 +31,6 @@
+ #define NCT6694_TIN_STS(x)		(0x6A + (x))
+ #define NCT6694_FIN_STS(x)		(0x6E + (x))
+ 
+-/*
+- * USB command module type for NCT6694 HWMON controller.
+- * This defines the module type used for communication with the NCT6694
+- * HWMON controller over the USB interface.
+- */
+-#define NCT6694_HWMON_MOD		0x00
+-
+ /* Command 00h - Hardware Monitor Control */
+ #define NCT6694_HWMON_CONTROL		0x00
+ #define NCT6694_HWMON_CONTROL_SEL	0x00
+@@ -53,13 +39,6 @@
+ #define NCT6694_HWMON_ALARM		0x02
+ #define NCT6694_HWMON_ALARM_SEL		0x00
+ 
+-/*
+- * USB command module type for NCT6694 PWM controller.
+- * This defines the module type used for communication with the NCT6694
+- * PWM controller over the USB interface.
+- */
+-#define NCT6694_PWM_MOD			0x01
+-
+ /* PWM Command - Manual Control */
+ #define NCT6694_PWM_CONTROL		0x01
+ #define NCT6694_PWM_CONTROL_SEL		0x00
+diff --git a/drivers/i2c/busses/i2c-nct6694.c b/drivers/i2c/busses/i2c-nct6694.c
+index 1413ab6f9462..ef3329f34246 100644
+--- a/drivers/i2c/busses/i2c-nct6694.c
++++ b/drivers/i2c/busses/i2c-nct6694.c
+@@ -12,13 +12,6 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ 
+-/*
+- * USB command module type for NCT6694 I2C controller.
+- * This defines the module type used for communication with the NCT6694
+- * I2C controller over the USB interface.
+- */
+-#define NCT6694_I2C_MOD			0x03
+-
+ /* Command 00h - I2C Deliver */
+ #define NCT6694_I2C_DELIVER		0x00
+ #define NCT6694_I2C_DELIVER_SEL		0x00
+diff --git a/drivers/net/can/usb/nct6694_canfd.c b/drivers/net/can/usb/nct6694_canfd.c
+index e5f7f8849a73..262b4c26c9d4 100644
+--- a/drivers/net/can/usb/nct6694_canfd.c
++++ b/drivers/net/can/usb/nct6694_canfd.c
+@@ -18,12 +18,6 @@
+ 
+ #define DEVICE_NAME "nct6694-canfd"
+ 
+-/* USB command module type for NCT6694 CANfd controller.
+- * This defines the module type used for communication with the NCT6694
+- * CANfd controller over the USB interface.
+- */
+-#define NCT6694_CANFD_MOD			0x05
+-
+ /* Command 00h - CAN Setting and Initialization */
+ #define NCT6694_CANFD_SETTING			0x00
+ #define NCT6694_CANFD_SETTING_ACTIVE_CTRL1	BIT(0)
+diff --git a/drivers/rtc/rtc-nct6694.c b/drivers/rtc/rtc-nct6694.c
+index 35401a0d9cf5..c06902f150c9 100644
+--- a/drivers/rtc/rtc-nct6694.c
++++ b/drivers/rtc/rtc-nct6694.c
+@@ -14,13 +14,6 @@
+ #include <linux/rtc.h>
+ #include <linux/slab.h>
+ 
+-/*
+- * USB command module type for NCT6694 RTC controller.
+- * This defines the module type used for communication with the NCT6694
+- * RTC controller over the USB interface.
+- */
+-#define NCT6694_RTC_MOD		0x08
+-
+ /* Command 00h - RTC Time */
+ #define NCT6694_RTC_TIME	0x0000
+ #define NCT6694_RTC_TIME_SEL	0x00
+diff --git a/drivers/watchdog/nct6694_wdt.c b/drivers/watchdog/nct6694_wdt.c
+index bc3689bd4b6b..4c06ac105562 100644
+--- a/drivers/watchdog/nct6694_wdt.c
++++ b/drivers/watchdog/nct6694_wdt.c
+@@ -20,13 +20,6 @@
+ 
+ #define NCT6694_WDT_MAX_DEVS		2
+ 
+-/*
+- * USB command module type for NCT6694 WDT controller.
+- * This defines the module type used for communication with the NCT6694
+- * WDT controller over the USB interface.
+- */
+-#define NCT6694_WDT_MOD			0x07
+-
+ /* Command 00h - WDT Setup */
+ #define NCT6694_WDT_SETUP		0x00
+ #define NCT6694_WDT_SETUP_SEL(idx)	(idx ? 0x01 : 0x00)
+diff --git a/include/linux/mfd/nct6694.h b/include/linux/mfd/nct6694.h
+index 69e4652cf16c..d46ae34a497e 100644
+--- a/include/linux/mfd/nct6694.h
++++ b/include/linux/mfd/nct6694.h
+@@ -8,6 +8,15 @@
+ #ifndef __MFD_NCT6694_H
+ #define __MFD_NCT6694_H
+ 
++#define NCT6694_HWMON_MOD	0x00
++#define NCT6694_PWM_MOD		0x01
++#define NCT6694_I2C_MOD		0x03
++#define NCT6694_CANFD_MOD	0x05
++#define NCT6694_WDT_MOD		0x07
++#define NCT6694_RTC_MOD		0x08
++#define NCT6694_RPT_MOD		0xFF
++#define NCT6694_GPIO_MOD	NCT6694_RPT_MOD
++
+ #define NCT6694_VENDOR_ID	0x0416
+ #define NCT6694_PRODUCT_ID	0x200B
+ #define NCT6694_INT_IN_EP	0x01
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261011153119.120302-1-alexander.hoelzl%40gmx.net
+2.34.1
+
