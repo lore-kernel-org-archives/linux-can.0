@@ -1,94 +1,185 @@
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.48])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9573C502D4A;
-	Tue, 13 Oct 2026 13:06:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.48
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791896796; cv=none; b=Ct1U/h9ALcS+3sRiaw50cZWD5uMWe8g61b5UG+91gLonsmuBii1xg1gx5T1wd7SUJZ5Q8mCMinjGzObxUv+U9en0pP8ugrDLO+7FBXTv0oIH3vS9pnE63oAxjj+BSC+NM36JV+Gt0bYVRBftzPxQ918XEgLYx1WhQD2l0FsE2A8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791896796; c=relaxed/simple;
-	bh=YA58kepF5/oFO2hgjwCX+vvSGiubieaYMrE8JCbPGRE=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=RACLa3+JO7E7pSaVEEdeGYe7wNOCVi72YtQsF+cNYfAOcPwe3YYRPGRdfmLkloCgoveltte+l+E6TYnrgMyEeWAtZGFfpOpMb7xI2MUlA++6ZjImHRdarqOIvDk+iAdkYTSvzyOcsA2e7YYlm5VH1+NXQxG6m7aPG/SGHm9jS44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=j7IsN8VB; arc=none smtp.client-ip=43.163.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35D73F39ED;
+	Tue, 13 Oct 2026 14:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791901643; cv=pass; b=VsHC5qYshIEZRu6DZcayQlCCkixgKrqtg6aRQu26qRdQIJnoREUv48u3AjVdsr49HQQDNYiEHVjKHsUMCvG6dJytRv7NGBO2PPDJbbj6GEhNtMfzo866WNfmjhiOENgC1i4DO0tCFix7ELZXtAGWhx9/JtYYAyj3WpOBdXuNi48=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791901643; c=relaxed/simple;
+	bh=H+/6flN6EIebDL8txC+8pIK+BNBctC4gEmFyLzzRBh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cQXmOdJGnAylZZE31W+1sGQotaTnjxIcZyhvaRS4RYIVshH6An0EpK2mxtNPc1VPheogY6rU2RS9fAAqLZ2zXyA2ge7P87MGR6gNO4HSiXhTxu+vnYUk1ru+b1puAKSXLB9G1+nlGB2uIr/U1vxIsJJPEtuhNwKxIBCCp9PrrvU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=gmAViN1S; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="j7IsN8VB"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1791896783; bh=YA58kepF5/oFO2hgjwCX+vvSGiubieaYMrE8JCbPGRE=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=j7IsN8VBWg65+eB3yIn/pY/Cp7UuHAS1ElrRYG3zZ7ZDXhi4M7thr2ZTlxwosL0Rx
-	 fPD04FsKz1HocQJoipo0t6fXxf7LfpjkHyJSjBmW5xK3+MJ2cvCHSei91HaqsooCo9
-	 Dl7wl9Kkd0V4VH9581K0y75223OkCnoIsP+AzcaQ=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-XMAILINFO: OTkXlZHit/HDB8lz4bZyda8RXw5N5T4WHY6SL+WkAwI1CMWbvphDjR94zYpnKl
-	 w9w2c0/v1h6QRIPtC/NIc30bOguGfgMYpH+00L7Qsis+xUpA8Nv+/wuo62ZbSP3XKzEG8uYQVh5DV
-	 yok+v9e6ywQ9rWYWeEKwQnhLd2FBs/4ZCSw5Jjf7OCHKIj8cfHpYPJFjwldV6hlDsa84AHGsZpm/a
-	 WrQ7bMmfodY02zY0+KHnCfF7q2t+jk3kL0ltDxzU6lqeGHMu1RXJW5QqRACnN3w2UltfYuFlgV4OX
-	 N8h/k/ddOQsVYO+J02HXIY95WzCaQub8DB/9KemcUbV7hEjCmlqQ7EVNMdajoct92kC+sJM7kNamx
-	 1aE7mDpyf177tcaFixVmtjLQ29Lii7uS3GCMZkNYqSW1L6LBmWXdb6IHRR5MyxStYo38Hm49qFqcm
-	 AWAODyxYB/E8n0hAkvlmjShx23PmPggxbzVDcP524fSzoD0CPyLU9+RGVCXoh2k+ANhWnoiluu8/S
-	 vgLMF+Kq1kYqdXLdh49+8TnNStwsGtuhEd/iPWQw9Ny7SXxql05T0uPQzac983mEHKD/d3GQeiomp
-	 JMl0Cxxk5NTdiOziSbcq6K0OCEjMjOypdYY3K1AWjJcXQAIzHL2Nl5Wsk0YYJv7eeCmPB3oZo+DVl
-	 0Vn1E6BVcR/Jd/j5Cc/l7kUEiupH4YunRfFHliQq5jXRuNoZPmvuwqfW16wqTIlrxRsccA75k49SI
-	 V2N+NyLy1wpCp3zBNXlsEaa+dDrsKnkZuxPQut0knJM31hCQvTZVX5583eXF2RLgPNrAqB0Qv9H9u
-	 i5gcgt2CETH8w7OErtDpFPFTeJOhIN5CWcryAde4jIEKFCwo7eXX5avKAmuFdtSyZXjwd23l0rgBq
-	 KwitEBIvRHOhzLvIubCJbpLJ1Oh1hDSmmBSOg6DMCW3xuyAuu1PfIZXKX+p8TBOlIVLnI6z/uWiZA
-	 BLGQa5RMF/4qBGUIZJHF3vKGbSnP1CHfUqO6p6hbMxeFyp3djE6SyG23n6H7IIkcbXqpgp/n2zGyX
-	 CSm8Y2+bLzij19n+LvRGR5GrnLK3U7I6blTB81jpzuBJxkyg=
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>
-Cc: "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?U2ViYXN0aWFuIEFuZHJ6ZWogU2lld2lvcg==?=" <bigeasy@linutronix.de>, "=?utf-8?B?Q2xhcmsgV2lsbGlhbXM=?=" <clrkwllms@kernel.org>, "=?utf-8?B?U3RldmVuIFJvc3RlZHQ=?=" <rostedt@goodmis.org>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re: [PATCH net] can: rockchip_canfd: stop bus-off restart before closing the device
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="gmAViN1S"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 805422018C1;
+	Tue, 13 Oct 2026 16:27:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791901637;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ApdHT9jlstoFu3E8M4KUrdFK8TNXHrk50WUdd+Ue74E=;
+	b=gmAViN1StYgezRvrnW2kU8LQG8nMplvHkIg+MierkaxjevnZyfzwz2xBT3bQZ/Lx2On66e
+	CxZEqSRp7QUJczqg6DXtuwRFjWeUrdY9yxtUsaNcvLXqkBXvfekIH5AXc8P5+EoBIO/cCR
+	CLMiMhVkysMTlrD5KKWKWyxlB317sBBB69hXj/EfsbTvMeldaOAc/qFbkT+sB/7gIh1I1s
+	IrEgx+oQ8a03xHgo4L/dYoxwcSEGq1gxQ1OSl19BJ3FOAFfVFw6QbGscuqQ2siuorLz8tI
+	DOm9vTThYYK8qVtXI/CkZlMfYsvXF1GLy5frs94qdDe3W/zF6nT9VVTfFKRaTQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791901637; a=rsa-sha256;
+	cv=none;
+	b=BDXTtdWUkb9ZmZKI6YGH0IyAPrPSXhaar59i2sS6xaP2XB3PAz9yy/y+eEYlzp/3kKG3Lb
+	/GHldNmy/YDouinmqqgbO5+qvEwMf37IWsHG60/cvIGFunGXArKj+y0zmUtARQbf5oEw2g
+	aOX8ok8x+G7ujGhJnTOyBCggpNnMk8fZuruZ74RAwT0rl+mS5CB8OK3PeHgh7dW+Eh928z
+	QDB3FdSTFBff8M/pWw2CI8saJnAK0/4OPtea59luZ5UnNvsU3EqP6QU3ikOx82H+Ye2l1E
+	sHF29Jj1xEbX51X652LMo81vWn4NZfEw3OfSxPtV63h+lUrjRzGglIkeQGN8Ug==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791901637;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ApdHT9jlstoFu3E8M4KUrdFK8TNXHrk50WUdd+Ue74E=;
+	b=f1QeBoW0Ze/ClU7CMtKhrNIi3ByiryX7MiewNu1+Sdzb+h3dJ9+7RT7HD1Z4Fu2PLkn8ND
+	T8zWl1BCf6IZCvaiIN1vAWqtvpmvHBhx89nvOv1w6SHBNd7UIKKb2Bxxqjut93IJE3w4Oz
+	n9uUASxmUnDTHoMIzEoYr9mdPTrVQH8/TrzqNoQx8Xdey7KU+DGe+618tczic++uLL8fQ2
+	SuevtlTvbvVPLKsjW0P1Lzd9qaj9jDf68eqI3sqVQvbe2kF/nUGF7dNE6j0pJ4zvjeebRg
+	kPr2tp8PUecAK1nDJF5VX2KeahtdWU018s7EAwvdyFDDF0t913j+l1uLgjAFUQ==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xGdTJ-005hqR-1L;
+	Tue, 13 Oct 2026 16:27:17 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 191795C31D7;
+	Tue, 13 Oct 2026 14:27:17 +0000 (UTC)
+Date: Tue, 13 Oct 2026 16:27:16 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Cunhao Lu <1579567540@qq.com>
+Cc: Vincent Mailhol <mailhol@kernel.org>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
+	Steven Rostedt <rostedt@goodmis.org>, linux-can <linux-can@vger.kernel.org>, 
+	netdev <netdev@vger.kernel.org>, kernel <kernel@pengutronix.de>, Heiko Stuebner <heiko@sntech.de>, 
+	linux-rockchip <linux-rockchip@lists.infradead.org>, linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, 
+	linux-kernel <linux-kernel@vger.kernel.org>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH net] can: rockchip_canfd: stop bus-off restart before
+ closing the device
+Message-ID: <20261013-tricky-piculet-of-ampleness-cada4c-mkl@pengutronix.de>
+References: <tencent_5802EE88434010229EDF7A53084D994C6106@qq.com>
+ <20261013-hissing-saiga-of-endeavor-ef5e03-mkl@pengutronix.de>
+ <tencent_F9D491A400474428BFE7262F1A1799A88407@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Tue, 13 Oct 2026 21:06:21 +0800
-X-Priority: 3
-Message-ID: <tencent_F9D491A400474428BFE7262F1A1799A88407@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <tencent_5802EE88434010229EDF7A53084D994C6106@qq.com>
-	<20261013-hissing-saiga-of-endeavor-ef5e03-mkl@pengutronix.de>
-In-Reply-To: <20261013-hissing-saiga-of-endeavor-ef5e03-mkl@pengutronix.de>
-X-QQ-mid: xmsezb41-0t1791896781t2k02as9b
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="p2fdgwty2yztquzs"
+Content-Disposition: inline
+In-Reply-To: <tencent_F9D491A400474428BFE7262F1A1799A88407@qq.com>
 
-SGkgTWFyYywKCj4gQUZBSUNTIHRoaXMgaXMgYSBzeXN0ZW1hdGljIHByb2JsZW0gYW5kIHNo
-b3VsZCBJTUhPIG5vdCB3b3JrZWQgYXJvdW5kIGluCj4gb25lIGRyaXZlciBvbmx5LgoKQWdy
-ZWVkLiBJIGluaXRpYWxseSBvbmx5IG5vdGljZWQgdGhlIHByb2JsZW0gaW4gdGhlIFJvY2tj
-aGlwIENBTi1GRApkcml2ZXIgYW5kIGRpZCBub3QgY29uc2lkZXIgdGhlIGNvbW1vbiBDQU4g
-Y29kZS4KCj4gbmV0aWZfcnVubmluZygpIHRlc3RzIF9fTElOS19TVEFURV9TVEFSVCwgd2hp
-Y2ggaXMgcmVtb3ZlZCBpbgo+IF9fZGV2X2Nsb3NlX21hbnkoKSBwcmlvciB0byBjYWxsaW5n
-IHRoZSBkcml2ZXIncyBuZG9fc3RvcCgpLgo+Cj4gQ2FuIHdlIG1ha2UgdXNlIG9mIG5ldGlm
-X3J1bm5pbmcoKSBwcmlvciB0byBjYWxsaW5nIGRvX3NldF9tb2RlKGRldiwKPiBDQU5fTU9E
-RV9TVEFSVCk/IGZyb20gY2FuX3Jlc3RhcnQoKT8KCklmIHlvdSBoYXZlIG5vIG9iamVjdGlv
-bnMsIEkgdGhpbmsgaXQgd291bGQgYmUgYmV0dGVyIHRvIHB1dCB0aGUKbmV0aWZfcnVubmlu
-ZygpIGNoZWNrIGFmdGVyIHRoZSBleGlzdGluZyAhcHJpdi0+ZG9fc2V0X21vZGUgY2hlY2sg
-YW5kCmJlZm9yZSBuZXRpZl9jYXJyaWVyX29rKCk6CgogICAgICAgIGlmICghcHJpdi0+ZG9f
-c2V0X21vZGUpCiAgICAgICAgICAgICAgICByZXR1cm4gLUVPUE5PVFNVUFA7CgogICAgICAg
-IGlmICghbmV0aWZfcnVubmluZyhkZXYpKQogICAgICAgICAgICAgICAgcmV0dXJuIC1FTkVU
-RE9XTjsKClRoaXMgd291bGQgcHJlc2VydmUgdGhlIGV4aXN0aW5nIGVycm9yIHByZWNlZGVu
-Y2UgZm9yIGRldmljZXMgdGhhdCBkbwpub3Qgc3VwcG9ydCByZXN0YXJ0LgoKPiBjYW5fYnVz
-X29mZigpIHNob3VsZCBub3Qgc2NoZWR1bGVfZGVsYXllZF93b3JrKCkgaWYgIW5ldGlmX3J1
-bm5pbmcoKS4KCkFncmVlZC4gQWx0aG91Z2ggdGhpcyB3b3VsZCBjaGFuZ2UgdGhlIGJlaGF2
-aW9yIG9mIHNvbWUgZHJpdmVycywgSSB0aGluawppdCBzaG91bGQgaGVscCBpbXByb3ZlIHN0
-YWJpbGl0eS4KCj4gV2Ugc3RpbGwgaGF2ZSB0byBjYWxsIGNhbmNlbF9kZWxheWVkX3dvcmtf
-c3luYygmcHJpdi0+Y2FuLnJlc3RhcnRfd29yaykKPiBmcm9tIGVhY2ggZHJpdmVyLCB0aG91
-Z2guCgpJIGNhbiBtYWtlIGNoYW5nZXMgdG8gdGhlIG90aGVyIGRyaXZlcnMuIEhvd2V2ZXIs
-IEkgZG8gbm90IGhhdmUgdGhlCmNvcnJlc3BvbmRpbmcgaGFyZHdhcmUgYW5kIHdvdWxkIG5v
-dCBiZSBhYmxlIHRvIHRlc3QgdGhlIGNoYW5nZXMgb24KcmVhbCBkZXZpY2VzLCBzbyBJIGFt
-IGNvbmNlcm5lZCBhYm91dCB0aGUgcmlzay4gSSB3b3VsZCBsaWtlIHRvIGNvbmZpcm06CmRv
-IEkgbmVlZCB0byBhdWRpdCBhbmQgZml4IHRoZSByZXN0YXJ0IGJlaGF2aW9yIG9mIGV2ZXJ5
-IENBTiBkZXZpY2UKZHJpdmVyPwoKPiBXaGF0IGRvIHlvdSB0aGluaz8KCkkgd2lsbCBhZGRy
-ZXNzIHRoZXNlIGNvbW1lbnRzIGluIHYyLiBUaGFua3MgZm9yIHlvdXIgcmV2aWV3LgoKUmVn
-YXJkcywKQ3VuaGFvIEx1Cg==
 
+--p2fdgwty2yztquzs
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net] can: rockchip_canfd: stop bus-off restart before
+ closing the device
+MIME-Version: 1.0
+
+On 13.10.2026 21:06:21, Cunhao Lu wrote:
+> Hi Marc,
+>
+> > AFAICS this is a systematic problem and should IMHO not worked around in
+> > one driver only.
+>
+> Agreed. I initially only noticed the problem in the Rockchip CAN-FD
+> driver and did not consider the common CAN code.
+
+Thanks to your analysis, it was easy to reach that conclusion. :)
+
+> > netif_running() tests __LINK_STATE_START, which is removed in
+> > __dev_close_many() prior to calling the driver's ndo_stop().
+> >
+> > Can we make use of netif_running() prior to calling do_set_mode(dev,
+> > CAN_MODE_START)? from can_restart()?
+>
+> If you have no objections, I think it would be better to put the
+> netif_running() check after the existing !priv->do_set_mode check and
+> before netif_carrier_ok():
+>
+>         if (!priv->do_set_mode)
+>                 return -EOPNOTSUPP;
+>
+>         if (!netif_running(dev))
+>                 return -ENETDOWN;
+>
+> This would preserve the existing error precedence for devices that do
+> not support restart.
+
+ACK
+
+> > can_bus_off() should not schedule_delayed_work() if !netif_running().
+>
+> Agreed. Although this would change the behavior of some drivers, I think
+> it should help improve stability.
+
+ok
+
+> > We still have to call cancel_delayed_work_sync(&priv->can.restart_work)
+> > from each driver, though.
+
+Let's wrap that into a function and put this into linux/can/dev.h. It's
+name could be something like close_candev_cancel_restart_sync().
+
+> I can make changes to the other drivers. However, I do not have the
+> corresponding hardware and would not be able to test the changes on
+> real devices, so I am concerned about the risk. I would like to confirm:
+> do I need to audit and fix the restart behavior of every CAN device
+> driver?
+
+I think it's OK to fix the rockchip driver only.
+
+> > What do you think?
+>
+> I will address these comments in v2. Thanks for your review.
+
+Please split the changes into several patches:
+- fix the existing infrastructure
+- add new close_candev_cancel_restart_sync() function
+- use this function in the rockchip driver
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--p2fdgwty2yztquzs
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCas4/wQAKCRDMOmT6rpmt
+0sMkAP9SLysRPyc/bN1kfprQlX5GQAMSIsfWuKXrKvknT5XDYQD/fce1XVIeVE/g
+Wu3BWgWdmmI0Sq7/V4pT4SEDHKDXXQM=
+=J0Bg
+-----END PGP SIGNATURE-----
+
+--p2fdgwty2yztquzs--
