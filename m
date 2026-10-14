@@ -1,81 +1,75 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.166])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEEA85448B4;
-	Wed, 14 Oct 2026 14:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347BF55C332;
+	Wed, 14 Oct 2026 15:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791987707; cv=pass; b=ZZgrBY6xykxoPTIYoGt+Gvms0FOUGIQaotrQ1MkPa3Kr31kuJeqbP5meZgiv/2LXjm6ewDG50ZBnOKy3HB3hidrEROxIYj/06/9JhpfJfi4sDED1qf0A/c4ll7dOfWopZp0QQzllJkIR32mS1xZRm14eg77pkQuDnBug2APY/w0=
+	t=1791992682; cv=pass; b=tUaMKGsc/CI2Xk1P5iLyc5XU77gazWjmod1bOOtqMGUZldc1dsoc6wvZBuhkuEAIF3S8zNJGBN05Nm9LZ96iZKb2LA1MxrddbDg8cItic1EjBBpaqC5O4mUSZguiBRwaib7RzHZTwXm5+ory+tARwtIjDHAbW4C4zNPCqU7/dQs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791987707; c=relaxed/simple;
-	bh=2jURpkQ6RMlfWLazkOtFpPk/yBhNRhc4MHgkQrd0W8M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=gf5uk/gMMjG88tY0dW6urGd8pU8QTZelUm3A+6QkW0Y3wdPZFXilYrLk0tLGOy0aS4E9ryqM46Cc1ir/6qzWc+f6KWllDiFASaYxmlOuWUUlP1tdJRnlHBhMReiH1S8ldDjDZ8gO2oEXmxafcyn4QNddg6/bsi3I45Rewkj/qTw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=nO21Y0M2; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=O48OSf2n; arc=pass smtp.client-ip=81.169.146.166
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	s=arc-20240116; t=1791992682; c=relaxed/simple;
+	bh=//6/Yppifp2lpbUNKplhyz67WHLAKWi+fnh2ND58wJI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h2My9cfCvKGObsuOuMYaDA83VEzL3jx1gqetCre4G6d0qZ1BQTuklsodcEL5lwwI1eFSlwleFnxLWW7Sa06YnGYLQAN3h65/sdjwfthJ8Z7R2LiDvNod//fbzv2H20e+TEjCRtqzv3EdFoizITkjuJFqwBWvJP0LGkbUHvAGCQc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=DUqOZ+Ma; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="nO21Y0M2";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="O48OSf2n"
-ARC-Seal: i=1; a=rsa-sha256; t=1791987696; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=A75v7wsjrif8ZQYCMozmrKSGFdGwvRE8k5vYiRzAGlfySfQJzMVMCvrrhLTIq3TyNY
-    pHemABg3k8Y/QegBJQB8W0an59OaJKAv/bMUNb27qRwt84YnlDhtJNb74JfyDjQmquBI
-    6oxsTn1cB88K1U6f4C/HBCJnw7PLxiPypfHpwc8GhB66zbGPg2PbuDCqgEPcWb2aBOTx
-    uQM0xlZslpXD1xP7zQhDhNRzQXmDs5HQhxswh6QE4icQWvr8COMhZ8NHE7wUeoSD5djW
-    HREI8p/8rX1iDSFoX67r7+WkM82kX6JQsZGT1V1qlTL/bGnFl2LNWpE9fcyxvgd9XKup
-    2cAg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1791987696;
-    s=strato-dkim-0002; d=strato.com;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=WQIWkhAEJUThg9RPUogsiW1tQocn+N+9ezp+2pACGWw=;
-    b=BOa9oBg6ScSza+UJsL1j6I8X99DCqf4y6lSppsWo9lmZOTVy6ERx3Cf6UCxZ/ErNo8
-    zkDj8Rug/8c6eCG6KIOChahMFfwCjhqve/mK7tpPPeY8bPSkc72dBYUPhmtIZDyuU1X3
-    4a59NLHN82Koth4Tw+S1+qqeK9Nrts5jt2gqmLTsplYDkYxjjRHJ6GBgSP/W00y8zcPV
-    mSUBhcCfKTwuSGztf3KQ8s7/aPbuiJNWDvxN8mrncU1JOQQ7xPTpjybZjj2GDNC0uElA
-    TRRFC++edKt0JjpT004m/VbE20NopgQEEM6Zp+q56Oq+KuVzRhkSl72RyuwRSLmhz4H/
-    NuWw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1791987696;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=WQIWkhAEJUThg9RPUogsiW1tQocn+N+9ezp+2pACGWw=;
-    b=nO21Y0M2O/nXdwfZ0HFq3GpsJT4zPwkHDNIKPnmkXYbJtGK4eNNvPdDYrCL1EuzKtw
-    sZXwMfvJw7RRuVfs3R8P6DpxJjmrBj4hqaH9OI+HjS9EUnzdZHKDcXkYk++DfWcfxvsv
-    H2tFvS+dDmelFgpgodPOC7JoxXvHGhgwDWmxMOmKWOO5J82VX7Z2RKSI7QKttWltImgN
-    5OTvCp6yotNOCNDjas1h4huoJQ8HyO/mTZq5TLSs0lw3A14AwNFWWttrLxOIqMrCrNaQ
-    RiOd+SrzI0A/oHXJh2QmkhzIUQ/tr0VngEMB+wR/u5fOILJuAX7LGFaZ1M8M7Ce64lR4
-    wKaA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1791987696;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
-    From:Subject:Sender;
-    bh=WQIWkhAEJUThg9RPUogsiW1tQocn+N+9ezp+2pACGWw=;
-    b=O48OSf2nimJYcxRJ8c1/G/v/nVSMHtqLsoU4OAOvXdd16HfTQ4ni7XpAidh2F0v2uy
-    QSBBKF1gl8GWG1ZnmcDw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from vivo.lan
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29EELaDZZ
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 14 Oct 2026 16:21:36 +0200 (CEST)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Norbert Szetei <norbert@doyensec.com>,
-	stable@vger.kernel.org
-Subject: [PATCH can-next v2 2/3] can: bcm: fix filter removal race between release and netns change
-Date: Wed, 14 Oct 2026 16:21:13 +0200
-Message-ID: <20261014142114.280279-3-socketcan@hartkopp.net>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261014142114.280279-1-socketcan@hartkopp.net>
-References: <20261014142114.280279-1-socketcan@hartkopp.net>
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="DUqOZ+Ma"
+Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.4.pengutronix.de [10.17.1.12])
+	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0CA1A2004FC;
+	Wed, 14 Oct 2026 17:44:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791992677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=3ykxcgn7EkB9Mckt1qKuKY8PIkRTTdUuMMlIkNr4F5A=;
+	b=DUqOZ+Ma/SCj1XB1Vbl6CJKnkZ1JaQ1BwgSGNjgVoiMgQlzDhZQ2yXqc3Nv/jCy9DcpMp1
+	hQe/buikxlCwIPu/ucusaj4FsX894N/hxc2s9KOdiQ7ejXCf+EjKQROc6FGh7QqkYImWgo
+	0SVxrLJ3zf0xX8gVTarCtzwT5GeV7FcqSH6dTMY/c67HojHSRUvzetk7ngDd2yZOJ+x5vQ
+	lcMykTkggQ3QVwInQKzXvHHT2wsVPTESA7FdhTWKNBsIMmqhvHxKI+nTBG9KBemDOOMHRq
+	Re0n3MooR7z9gDlVO4izbqUsqnN0HWLFlnT+hsF8FvhSi3FJyaUuKhfnwzvpuQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791992677; a=rsa-sha256;
+	cv=none;
+	b=Xe/ecYgeZJUlRjt1z42Vzmtfw42QcIb+vgoxx4oh/sVJKi9eG0idi/UJjTWO1VOn/s7IdY
+	zMZCuzQXcJ2ujtPKV5NvjIBp0U+LRRfgiWFU+rJ9E+8xFwN98+fjCznMo3T2nN4nAjPI44
+	gpM9qHMMT0Mcflj10u8OQlVQUCg9i20uwoBHDqTg8vIrcw/PiiRyFRPKWk3Lyo+Ivj9Vn2
+	c0NTP/YD0aIlREqJiEPQ+c+NyWUxWqftJ0pv+GjgnKAvF0f2UGBkOcLn06Soxlda1mW/wj
+	aFZOdVAU/2fCJ3ytXaTX+r8pSUabWUBm6sM0wU16DuBXCj75ILI1RCPPRAxdIw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791992677;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=3ykxcgn7EkB9Mckt1qKuKY8PIkRTTdUuMMlIkNr4F5A=;
+	b=RAixPj5scwEfR2Dq/Z0ZCaEDqJkPgcz2n34m/fgWlBxncbhKnlCBogDwhHih5kSeDcGAka
+	XN2yH/5tPy2RoouQbdjJu17XWWN0iidVyHQuXaw6yoMXd8xeksIBQrWfRSAsNYwQ9g73y1
+	AT5xh7V40Yjd+pZAXWjZ0RRUycOkq8UzJOwNgkbU3VV3C87WuAME4j6eKNJ56/HaGhDR6c
+	GQvU4YAyuzdghNcue+MOpfZCqUeICEaCC9zlXTorbUZH2ciwH87zY0NpE0pCv4dWdlE3fF
+	t8g/24LlaIcSx7Pog99gzmZ9uctztDY+ry3DfKoPcNTFqZ9MjhwSGxRxC5wStQ==
+Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
+	id F4186380BA7; Wed, 14 Oct 2026 17:44:36 +0200 (CEST)
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Shuah Khan <shuah@kernel.org>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	=?UTF-8?q?Alexander=20H=C3=B6lzl?= <alexander.hoelzl@gmx.net>,
+	Quchaosheng <quchaosheng000406@163.com>,
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH can-next v1 0/8] selftests: can: add J1939 socket and transport tests
+Date: Wed, 14 Oct 2026 17:44:26 +0200
+Message-ID: <20261014154435.3577983-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -83,116 +77,55 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset="us-ascii"
 
-bcm_release() removes the socket from bcm_notifier_list before it takes
-any lock that serializes against the netdev notifier chain, which runs
-under RTNL. A socket that leaves the list in this window is skipped by
-bcm_notify() and has to remove its CAN filters itself.
+net/can/j1939 has had no in-tree selftests. This series adds a kselftest
+suite for the J1939 socket layer and the TP/ETP transport, run on vcan with
+a CAN_RAW socket as an independent on-the-wire peer.
 
-This fails when the bound device is moved to another network namespace
-in this window: bcm_rx_unreg() reads dev_net(dev) without holding RTNL,
-and can_rx_unregister() silently returns when this namespace does not
-match dev_net(dev) anymore. The op is freed anyway and the remaining
-receiver leads to a use-after-free in bcm_rx_handler().
+The whole suite runs on vcan under QEMU and passes. Two limits span the
+series and are left for follow-up: the transport timers are checked only
+with wide windows, not tight bounds, and the ETP abort/timeout edge cases
+are not covered yet (the abort/timeout tests are TP only).
 
-Take rtnl_lock() before removing the socket from the notifier list, so
-that bcm_release() and bcm_notify() can not both skip the removal and
-dev_net(dev) is stable while the filters are removed. RTNL is dropped
-before synchronize_rcu(). As the notifier chain is always invoked under
-RTNL, bcm_busy_notifier can not point to the released socket anymore.
-Replace the now dead busy-wait loop with a WARN_ON_ONCE().
+Oleksij Rempel (8):
+  selftests: can: add J1939 test helper header and library
+  selftests: can: add J1939 base functional tests
+  selftests: can: add J1939 socket option and metadata tests
+  selftests: can: add J1939 addressing and concurrency tests
+  selftests: can: add J1939 wire-format tests against CAN_RAW
+  selftests: can: add J1939 TP/ETP multi-frame tests against CAN_RAW
+  selftests: can: cover J1939 transport abort and timeout paths
+  selftests: can: check SO_J1939_PROMISC receive effect
 
-RTNL is only needed for the notifier list removal and the rx_ops
-unregistration. Remove the procfs entry and the tx_ops before taking
-RTNL, as remove_proc_entry() waits for concurrent readers of the
-world-readable procfs entry, which could otherwise stall RTNL from a
-plain close(). bo->bcm_proc_read is cleared so that a NETDEV_UNREGISTER
-in bcm_notify() does not remove the entry a second time.
+ tools/testing/selftests/net/can/.gitignore    |   5 +
+ tools/testing/selftests/net/can/Makefile      |  20 +-
+ tools/testing/selftests/net/can/config        |   2 +
+ tools/testing/selftests/net/can/j1939_lib.sh  |  74 ++
+ tools/testing/selftests/net/can/j1939_tests.h | 460 +++++++++++++
+ .../selftests/net/can/test_j1939_addr.c       | 336 +++++++++
+ .../selftests/net/can/test_j1939_addr.sh      |   5 +
+ .../selftests/net/can/test_j1939_base.c       | 160 +++++
+ .../selftests/net/can/test_j1939_base.sh      |   5 +
+ .../selftests/net/can/test_j1939_multi.c      | 638 ++++++++++++++++++
+ .../selftests/net/can/test_j1939_multi.sh     |   5 +
+ .../selftests/net/can/test_j1939_opts.c       | 347 ++++++++++
+ .../selftests/net/can/test_j1939_opts.sh      |   5 +
+ .../selftests/net/can/test_j1939_wire.c       | 170 +++++
+ .../selftests/net/can/test_j1939_wire.sh      |   5 +
+ 15 files changed, 2235 insertions(+), 2 deletions(-)
+ create mode 100644 tools/testing/selftests/net/can/j1939_lib.sh
+ create mode 100644 tools/testing/selftests/net/can/j1939_tests.h
+ create mode 100644 tools/testing/selftests/net/can/test_j1939_addr.c
+ create mode 100755 tools/testing/selftests/net/can/test_j1939_addr.sh
+ create mode 100644 tools/testing/selftests/net/can/test_j1939_base.c
+ create mode 100755 tools/testing/selftests/net/can/test_j1939_base.sh
+ create mode 100644 tools/testing/selftests/net/can/test_j1939_multi.c
+ create mode 100755 tools/testing/selftests/net/can/test_j1939_multi.sh
+ create mode 100644 tools/testing/selftests/net/can/test_j1939_opts.c
+ create mode 100755 tools/testing/selftests/net/can/test_j1939_opts.sh
+ create mode 100644 tools/testing/selftests/net/can/test_j1939_wire.c
+ create mode 100755 tools/testing/selftests/net/can/test_j1939_wire.sh
 
-Fixes: 8e8cda6d737d ("can: initial support for network namespaces")
-Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-Cc: Norbert Szetei <norbert@doyensec.com>
-Cc: stable@vger.kernel.org
-Assisted-by: Claude:claude-opus-5-5
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
----
- net/can/bcm.c | 35 +++++++++++++++++++++++++----------
- 1 file changed, 25 insertions(+), 10 deletions(-)
-
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3d637a1e0ac1..f439bdbf37b1 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1924,32 +1924,45 @@ static int bcm_release(struct socket *sock)
- 	net = sock_net(sk);
- 	bo = bcm_sk(sk);
- 
- 	/* remove bcm_ops, timer, rx_unregister(), etc. */
- 
--	spin_lock(&bcm_notifier_lock);
--	while (bcm_busy_notifier == bo) {
--		spin_unlock(&bcm_notifier_lock);
--		schedule_timeout_uninterruptible(1);
--		spin_lock(&bcm_notifier_lock);
--	}
--	list_del(&bo->notifier);
--	spin_unlock(&bcm_notifier_lock);
--
-+	/* Remove the procfs entry and the tx_ops before taking RTNL:
-+	 * remove_proc_entry() waits for concurrent readers of the entry and
-+	 * must not hold up RTNL for them. Clear bo->bcm_proc_read so that
-+	 * bcm_notify() does not remove the entry a second time.
-+	 */
- 	lock_sock(sk);
- 
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	/* remove procfs entry */
--	if (net->can.bcmproc_dir && bo->bcm_proc_read)
-+	if (net->can.bcmproc_dir && bo->bcm_proc_read) {
- 		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
-+		bo->bcm_proc_read = NULL;
-+	}
- #endif /* CONFIG_PROC_FS */
- 
- 	list_for_each_entry_safe(op, next, &bo->tx_ops, list) {
- 		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
- 	}
- 
-+	release_sock(sk);
-+
-+	rtnl_lock();
-+
-+	/* The netdev notifier chain runs under RTNL, so bcm_notifier() can't
-+	 * be walking bcm_notifier_list and point to this socket. The spinlock
-+	 * is still needed as bcm_init() adds sockets without holding RTNL.
-+	 */
-+	spin_lock(&bcm_notifier_lock);
-+	WARN_ON_ONCE(bcm_busy_notifier == bo);
-+	list_del(&bo->notifier);
-+	spin_unlock(&bcm_notifier_lock);
-+
-+	lock_sock(sk);
-+
- 	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
- 		/*
- 		 * Don't care if we're bound or not (due to netdev problems)
- 		 * can_rx_unregister() is always a save thing to do here.
- 		 */
-@@ -1971,10 +1984,12 @@ static int bcm_release(struct socket *sock)
- 					  REGMASK(op->can_id),
- 					  bcm_rx_handler, op);
- 
- 	}
- 
-+	rtnl_unlock();
-+
- 	synchronize_rcu();
- 
- 	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
- 		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
--- 
-2.53.0
+--
+2.47.3
 
