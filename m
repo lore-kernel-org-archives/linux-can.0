@@ -1,152 +1,169 @@
-Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C952C21D0;
-	Wed, 14 Oct 2026 05:07:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.240
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791954428; cv=none; b=T4kV+lmgioBjpXp1xktjO2o9jnjdkGmnc/hlhuF4d1h0upJeTDxFt+x6Keal/+wjwMGHF1eLoncqNcClpG+DcjmF5iGgvtl3cQSP5e40gXgu0PG77EkZfUmpDpNrFVWfluvujChkXmge+BS/kiiLgHJLLbDngNCiBHVJf6wua/8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791954428; c=relaxed/simple;
-	bh=5uIkWpaIYy1KePSTnW91xhwZ5sNP8TP3tpIZTScI8Vw=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=QUN9erNkWhoTJ0NrSvBFx3ND3ZLr00PvvVaHWunB9JCPzNMS56lnIem4sBJoV6vKMYloxqNoRu1ExNGpwRY6qlsh7cGnZ1VojGum4uANuwq9/GZ5Eajkg1GfxDU7LvrUMFmS60Vddh/dYJaepEB+WdtZLoUP8jhLUU6Fdo6mToQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=f1nG6eUv; arc=none smtp.client-ip=203.205.221.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6AE3CFF65;
+	Wed, 14 Oct 2026 05:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1791956679; cv=pass; b=p+JEsz6vU2tR07AldMJ72vzcUuHxmvdR3Fu4/P5H4EnK1zU2sK5+2ReNuom2kKQSf8VcMJzqYAPYU57aGOBIogOazcmptIu47RBSXCPS/f/EGpDAzQIxWOcAVXl5LVufP5BvGzqfPil08CD6ETpil5f6WTIwAM7i0Jn6HJAVYl0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1791956679; c=relaxed/simple;
+	bh=fXtoNcOdvkomLJmBNUK2gtCZe5Vc4SS2qMz1wIvAufA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JGI1sd2bRcQA9+Oh8HV4Lm2x26DsmCSVNtl9PGc2xDSWfERgvHkT1jA1k37O3niOJ8LuMe4yq4p/FBiXpy2HYe1kqMqBEpgjxAZJMPkfk0Tgo/POPrlXXbf7TJx3as9j+kwhfOO3qMEY+5lJNNhGB6edihWZKkfMzBnkMHj610U=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Z7iy8eqd; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="f1nG6eUv"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1791954417; bh=5uIkWpaIYy1KePSTnW91xhwZ5sNP8TP3tpIZTScI8Vw=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=f1nG6eUvuUaWNcX55pHDBeDE05P7ukJjUriNaxP7W53Uxq2DERJMI+CHZss9bMEUF
-	 0JDP7CrwH4IUdFs02suogZQzSW5Fp9gP+TkS8hggKBcAKUq5orGaR220rGSeIgzNd/
-	 7wPHyBF3jsfI2SenIn5/CicQTxaAtWYUFrPrXlfg=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-XMAILINFO: N/Vcqssfup8JUGdPU3KjzrD6L48Qsc+XeK+cFwyDFvTsE7eDMU0YJu9qLZH5qe
-	 pMZSp3drrYCKaeN8uJcDat/2ZTprScxwK4seUeEPUj0Iyx4zF0x/afx/UgPRuAtpX+H3Ucvf37Pd4
-	 0fzukyCQsV+2Vzk9wKtx3bGRC/TWb4C6QlGBbO1TpsiorXlA8W1L1BOL4sU1cE0A7HyfiyAMqAswu
-	 hnYuYVV/chcmlZOZ+D9acU4Q+lnaSmOQg2T/CFZkrguVoRZl6+qVCEWvScPxd5OW2eJ9Xl/XbWR5U
-	 jQkVgJUudJJcnbLvgMG2DU1Lo04COn59IS/XhDF9zGXTkXrlYrYhIzyYhRVfBacRetAtyEVjlZ8TE
-	 LRttzyOanaWuYs1Mmnt9LVFwScOs9jwMQzYlxJDQgyU49BTo0tQbPmr6CclGPN8kV1AZ9KBgcIY4A
-	 GPFybcKYySsy3/CN5kKawcSbP4uBH8fYSOH+4hCO+ZyF4PR7GdSrdtJZwBaf/GCDqv3/YJbkxfCpa
-	 EJ2A+N2BdaNxayHUzrEaQXEer8twYzA+vDdN3vBZK2Q8+7nSfQgYkSDOoOsOBw5s7KmX3O3zNP6tU
-	 ZGJV1/R5yIW+Haes9kCRzRTqidjRJjY/yiRqbXUTMfINQEzck5AbEZef9/9bFzdw7Lt/z8Ibzer8H
-	 5NISZAWmWTVccgThVXQJ9iwPaWidJwe7zM+WmNSZSUuROWKhs4tpvYdAH+JMw1P9clFRJJHu5ejSq
-	 k8mlMNkgH16qqLO0MPoR6FNtj++nDgYy4uqMsXpZVtfhBTmpu7O8CUFeWBAG4UWp3ozIQ2nR8fMZ9
-	 tEnh/EAa1MdHrMwIq0WF1Z6cVivF5LLkpcbVRVoow0lytBcH/rTRfshIcmX/zqOVxDPgJZFtYNG9t
-	 PrKeUSl2x81G8GRNWOX0gAStWub5BDbAMBjiqMm0dSKLObDKLclGlmT0nFm97Qi+wPb4AO8q2qcs6
-	 xfCKNHkqMUt+kWprtDoZqeijwP2N1gjdG1xbnswHjeU+R4r3NAynjlWtawVueKX5BFH6E8R6GWW1d
-	 lT8FU4aYMp+Ac9bXlmuemYAkRXRmBD7G/crPW7WVr7D9zL0j66jsnvE74qNw6eY8cYLvfd0C5d5nx
-	 +yPXt+Xi2KRKGSsy7+y50R01fL47HOt9uUi5jp8dVrXKYNwT3DCmYRgTf8MjEMK2beRNWUFW99HBo
-	 zYWrzW8OW7U9u+AdW43G1DpZlIdieEFkBVFk4wEwOAwFGY3ZLJiw+CnWh4+V+MDVSZEKHFA6OXORo
-	 uYrdDJfmg=
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?RGF2aWQgUy4gTWlsbGVy?=" <davem@davemloft.net>, "=?utf-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?=" <wg@grandegger.com>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>
-Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>, "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Z7iy8eqd"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 378EC201E03;
+	Wed, 14 Oct 2026 07:44:34 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791956674;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6uza6PpaZ0+pqzEIwL1v815myEpERgJfMgVOiQgMLXo=;
+	b=Z7iy8eqdt4Xwc/8pa1pG56CDteTKtxLTTDy+XHUNbWzcLdMzLFID7jA4M9u3cp+wm0+Aoy
+	2qDi7C6t5uwr0Y9VtaxzDquvLdUljsuTvUZCXPf2XsZ5Ddb0g8vBvFYsgp3XNbbHGkDcGp
+	RcrOgSBte1u+WbrbjAuHTAZEKeJ75wezQW1Ue9KLPAvk8xn3dm4WAjmIlWTBaIL6mX2Oem
+	aDqaZnnPM362B8fI5jTYvff0mKWru7ZdLlIZJh3zGAS1/O9ZmYQ4FOASuKKdvYQ9NHY9E4
+	x2ci91YQzrITMwoc575+9Qkkxrv30H0VHdkCqQAEEpEOg6cdemXx/OEkp49i7w==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791956674; a=rsa-sha256;
+	cv=none;
+	b=D+1+pzwVsOXpM00YnX3qkn6ZXhrgU7141hXDfAFYeBbih0nzUInirL2XJbZLej+5/dMbnt
+	h0U3mxE8BGyOZixSJKpkGR7A1TRZmWX4EJvp5J4TVT/nX3wKD1bK6ZfkiAOWnlVu0xYTVo
+	0w0ZHXtQcX0wuNsu4senb/9fCKPcWMuzg033+orMiOFEdJqRDTQsSy568nXCaPXjNacqqv
+	fvhUVvM3+0hwxa5GnECLhh/tP9UWiSPO6gDA/o260h+IZ9lqAz1Je+3YTSAEqs//T5Fu/y
+	y3OT/7Q+zn65UoxYWzvu1xj+pYAJjopP7jk4qej/MhOgGh9GGmXba2l7nTgeDQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1791956674;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6uza6PpaZ0+pqzEIwL1v815myEpERgJfMgVOiQgMLXo=;
+	b=XDS0MXgmxUfdVwuJa6uIhIKpZOBlf30xJYPj81Na4i31QHWZrKjGILr7dYToAQ4du0Vaa5
+	vc9uzCLRPkz98DwmLqOO7gapM7vHxp/0Xat6pNUZ3KSEKOtOX6z+/xwW75sLAQvFtw91pr
+	7et1mPzgKlI+utJu+ACXowbeKROIgVTLCinx0H3j/XRjYOm1Pc1/OwQ8j9iKrE0uNyuQL1
+	DGRclsaUnG50NWIgvJm6gMaU+ibXKS99COl6H+3HmuHJlKCq0ElAlpNWDCo2TAtWkI4hTC
+	7tLB3jjALtZ6mmOLUQSsv2Mwf5LpU1jd3bchQVRMyDmHFnpbC2Uye3woEzuT7A==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xGrn0-005o3A-0N;
+	Wed, 14 Oct 2026 07:44:34 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C416B5C39D3;
+	Wed, 14 Oct 2026 05:44:33 +0000 (UTC)
+Date: Wed, 14 Oct 2026 07:44:32 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Cunhao Lu <1579567540@qq.com>
+Cc: Vincent Mailhol <mailhol@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+	"David S. Miller" <davem@davemloft.net>, Wolfgang Grandegger <wg@grandegger.com>, 
+	Oliver Hartkopp <socketcan@hartkopp.net>, kernel@pengutronix.de, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+	linux-rockchip@lists.infradead.org, stable@vger.kernel.org
 Subject: Re: [PATCH net v2 0/3] can: fix bus-off restart during device close
+Message-ID: <20261014-solid-slug-of-tempering-22b862-mkl@pengutronix.de>
+References: <tencent_82C93561D200C84C24608C80049C23EEF80A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Wed, 14 Oct 2026 13:06:54 +0800
-X-Priority: 3
-Message-ID: <tencent_04B66976651812A847AC03C610D9FC809A09@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <tencent_82C93561D200C84C24608C80049C23EEF80A@qq.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="iqvdsuvim664ntyz"
+Content-Disposition: inline
 In-Reply-To: <tencent_82C93561D200C84C24608C80049C23EEF80A@qq.com>
-X-QQ-mid: xmsezb41-0t1791954414t6uc91w1n
 
-PiBUaGlzIHdvcmsgc3RhcnRlZCBmcm9tIGEgcmVhbCBmYWlsdXJlIG9uIGEgcHJvZHVjdGlv
-biByb2JvdCB1c2luZyBhCj4gTHViYW5DYXQtNUlPIHdpdGggYW4gUkszNTg4LiBSWCBjb250
-aW51ZWQsIGJ1dCB0aGUgVFggcXVldWUgcmVtYWluZWQKPiBzdG9wcGVkIGFuZCBzdWJzZXF1
-ZW50IHNlbmRzIHJldHVybmVkIEVOT0JVRlMuIFRoZSBpbnRlcmZhY2Ugc3RpbGwKPiByZXBv
-cnRlZCBFUlJPUi1BQ1RJVkUsIGFuZCB0aGUgaGFyZHdhcmUgaW5kaWNhdGVkIG5laXRoZXIg
-YSBidXMtb2ZmCj4gY29uZGl0aW9uIG5vciBhIHBlbmRpbmcgVFggcmVxdWVzdC4KPiAKPiBX
-aGlsZSB0ZXN0aW5nIHRoZSBlY2hvLWxvc3MgZml4IHdpdGggZmF1bHQgaW5qZWN0aW9uLCBJ
-IGRpc2NvdmVyZWQgYQo+IHNlcGFyYXRlIHJhY2UgYmV0d2VlbiBidXMtb2ZmIHJlc3RhcnQg
-YW5kIGRldmljZSBjbG9zZS4gVGhpcyBzZXJpZXMgZml4ZXMKPiB0aGF0IHJhY2U7IHRoZSBm
-aXggZm9yIHRoZSBvcmlnaW5hbCBUWCBzdGFsbCB3aWxsIGZvbGxvdyBzZXBhcmF0ZWx5Lgo+
-IAo+IFdoZW4gYXV0b21hdGljIGJ1cy1vZmYgcmVjb3ZlcnkgaXMgZW5hYmxlZCwgYnJpbmdp
-bmcgdGhlIGludGVyZmFjZSBkb3duCj4gY2FuIHJhY2Ugd2l0aCBhIHBlbmRpbmcgb3IgcnVu
-bmluZyByZXN0YXJ0LiBUaGUgUm9ja2NoaXAgZHJpdmVyIGN1cnJlbnRseQo+IHJlbGllcyBv
-biBjbG9zZV9jYW5kZXYoKSB0byBjYW5jZWwgcmVzdGFydF93b3JrLCBidXQgY2FsbHMgaXQg
-b25seSBhZnRlcgo+IGZyZWVpbmcgdGhlIElSUSwgZGlzYWJsaW5nIFJYIG9mZmxvYWQsIGFu
-ZCBzdG9wcGluZyB0aGUgY29udHJvbGxlci4gQQo+IHJlc3RhcnQgaW4gdGhhdCBpbnRlcnZh
-bCBjYW4gcmUtZW5hYmxlIHRoZSBjb250cm9sbGVyIGFuZCBpdHMgaW50ZXJydXB0cwo+IGFm
-dGVyIElSUSB0ZWFyZG93biwgYW5kIHJlcXVldWUgdGltZXN0YW1wIHdvcmsgYWZ0ZXIgaXQg
-aGFzIGJlZW4gc3RvcHBlZC4KPiBUaGF0IHdvcmsgY2FuIHN1YnNlcXVlbnRseSBhY2Nlc3Mg
-cmVnaXN0ZXJzIGFmdGVyIHJ1bnRpbWUgc3VzcGVuZAo+IGRpc2FibGVzIHRoZSBjb250cm9s
-bGVyIGNsb2Nrcy4KPiAKPiBUaGUgbmV0d29ya2luZyBjb3JlIGNsZWFycyB0aGUgcnVubmlu
-ZyBmbGFnIGJlZm9yZSBjYWxsaW5nIG5kb19zdG9wKCkuCj4gVGhlIGZpcnN0IHBhdGNoIHVz
-ZXMgdGhhdCBmbGFnIHRvIGF2b2lkIHNjaGVkdWxpbmcgb3Igc3RhcnRpbmcgYnVzLW9mZgo+
-IHJlY292ZXJ5IG9uY2UgdGhlIGludGVyZmFjZSBpcyBvYnNlcnZlZCB0byBiZSBubyBsb25n
-ZXIgcnVubmluZy4gVGhlCj4gc2Vjb25kIHBhdGNoIGFkZHMgY2xvc2VfY2FuZGV2X2NhbmNl
-bF9yZXN0YXJ0X3N5bmMoKSBzbyBkcml2ZXJzIGNhbiB3YWl0Cj4gZm9yIHJlY292ZXJ5IHNl
-cGFyYXRlbHkgZnJvbSB0aGUgZWNobyBjbGVhbnVwIGluIGNsb3NlX2NhbmRldigpLiBUaGUK
-PiB0aGlyZCBwYXRjaCB1c2VzIHRoaXMgaGVscGVyIGF0IHRoZSBzdGFydCBvZiB0aGUgUm9j
-a2NoaXAgY2xvc2UgcGF0aC4KPiAKPiBUaGUgcnVubmluZy1zdGF0ZSBjaGVja3MgZG8gbm90
-IHJlcGxhY2Ugc3luY2hyb25pemF0aW9uIHdpdGggYSByZXN0YXJ0Cj4gdGhhdCBoYXMgYWxy
-ZWFkeSBwYXNzZWQgdGhlIGNoZWNrLiBSb2NrY2hpcCB3YWl0cyBmb3IgdGhhdCB3b3JrIGJl
-Zm9yZQo+IHRlYXJpbmcgZG93biBpdHMgcmVzb3VyY2VzLCBhbmQga2VlcHMgY2xvc2VfY2Fu
-ZGV2KCkgYXQgdGhlIGVuZCBmb3IgdGhlCj4gZmluYWwgY2FuY2VsbGF0aW9uIGFuZCBlY2hv
-IGNsZWFudXAuIElSUSBleGNsdXNpb24gZHVyaW5nIGhhcmR3YXJlCj4gcmVpbml0aWFsaXph
-dGlvbiBpcyByZXRhaW5lZDsgdGhlIHNoYXJlZCBJUlEgaXMgbm90IGRpc2FibGVkIHdoaWxl
-IHRoZQo+IGNsb3NlIHBhdGggd2FpdHMgZm9yIHJlc3RhcnQgd29yay4KPiAKPiBJIHRlc3Rl
-ZCB2MiBvbiBhIEx1YmFuQ2F0LTVJTyBydW5uaW5nIGEgUFJFRU1QVF9SVCBrZXJuZWwsIHVz
-aW5nIHRoZSBzYW1lCj4gc2V0dXAgYW5kIHByb2NlZHVyZSBhcyB2MS4gVGhlIDEgTWJpdC9z
-IENBTiBidXMgd2FzIGNvbm5lY3RlZCB0byBmb3VyCj4gQ0FOb3BlbiBtb3RvcnMgb3BlcmF0
-aW5nIGF0IDEwMCBIeiBhbmQgZm91ciBzZW5zb3JzIG9wZXJhdGluZyBhdCAyMCBIei4KPiBB
-IGJpdHJhdGUgbWlzbWF0Y2ggZm9yY2VkIGJ1cy1vZmYgd2l0aCBhdXRvbWF0aWMgcmVzdGFy
-dCBzZXQgdG8gMTAwIG1zLgo+IFRoZSB2MiBjYW1wYWlnbiBjb21wbGV0ZWQgMzgwIHZhbGlk
-IGJ1cy1vZmYgaXRlcmF0aW9ucywgY292ZXJpbmcgYXV0b21hdGljCj4gcmVjb3ZlcnksIGNs
-b3NlIHdoaWxlIHJlY292ZXJ5IHdhcyBwZW5kaW5nLCBjbG9zZSBuZWFyIHRocmVlIGRlbGF5
-IHBvaW50cywKPiAyMDAgcmFuZG9taXplZCBzdHJlc3MgaXRlcmF0aW9ucywgbWFudWFsIHJl
-Y292ZXJ5LCBhbmQgcmVvcGVuIGFmdGVyIGNsb3NlLgo+IEFsbCAzODAgaXRlcmF0aW9ucyBy
-ZWFjaGVkIGJ1cy1vZmYgYW5kIHNjaGVkdWxlZCByZWNvdmVyeS4KPiAKPiAtLS0KPiBDaGFu
-Z2VzIGluIHYyOgo+IC0gU3BsaXQgdGhlIHNlcmllcyBpbnRvIHRoZSBjb21tb24gY2hlY2tz
-LCB0aGUgY2FuY2VsbGF0aW9uIGhlbHBlciwgYW5kCj4gICBpdHMgdXNlIGluIFJvY2tjaGlw
-Lgo+IC0gQ2hlY2sgbmV0aWZfcnVubmluZygpIGFmdGVyIHRoZSBkb19zZXRfbW9kZSBjYXBh
-YmlsaXR5IGNoZWNrIGFuZCBiZWZvcmUKPiAgIHRoZSByZXN0YXJ0IG5vdGlmaWNhdGlvbiwg
-ZWNobyBjbGVhbnVwLCBhbmQgY2FycmllciB1cGRhdGUuCj4gLSBPbmx5IHF1ZXVlIGF1dG9t
-YXRpYyByZWNvdmVyeSBmb3IgYSBydW5uaW5nIGludGVyZmFjZTsga2VlcCByZXBvcnRpbmcK
-PiAgIGJ1cy1vZmYgYW5kIG1ha2UgdGhlIGxvZyBtZXNzYWdlIG1hdGNoIHRoZSBzY2hlZHVs
-aW5nIGRlY2lzaW9uLgo+IC0gQWRkIGNsb3NlX2NhbmRldl9jYW5jZWxfcmVzdGFydF9zeW5j
-KCkgaW4gbGludXgvY2FuL2Rldi5oIGFuZCB1c2UgaXQgaW4KPiAgIGNsb3NlX2NhbmRldigp
-IHdpdGhvdXQgY2hhbmdpbmcgdGhlIGV4aXN0aW5nIGNsZWFudXAgb3JkZXIuCj4gLSBSZXBs
-YWNlIHRoZSBSb2NrY2hpcCBtdXRleCBhbmQgY2xvc2luZyBmbGFnIHdpdGggYW4gZWFybHkg
-Y2FsbCB0byB0aGUKPiAgIGhlbHBlci4gRHJvcCB0aGUgZXh0cmEgY2xvc2UtcGF0aCBJUlEg
-c3luY2hyb25pemF0aW9uIGFuZCBtYXNrIHJlYWRiYWNrLgo+IC0gUmV0YWluIElSUSBleGNs
-dXNpb24gYXJvdW5kIGhhcmR3YXJlIHJlaW5pdGlhbGl6YXRpb24gaW4gdGhlIHJlc3RhcnQK
-PiAgIGNhbGxiYWNrLgo+IC0gTGluayB0byB2MToKPiAgIGh0dHBzOi8vbG9yZS5rZXJuZWwu
-b3JnL2xpbnV4LWNhbi90ZW5jZW50XzU4MDJFRTg4NDM0MDEwMjI5RURGN0E1MzA4NEQ5OTRD
-NjEwNkBxcS5jb20vCj4gCj4gVG86IE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9u
-aXguZGU+Cj4gVG86IFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPgo+IFRv
-OiBIZWlrbyBTdHVlYm5lciA8aGVpa29Ac250ZWNoLmRlPgo+IFRvOiAiRGF2aWQgUy4gTWls
-bGVyIiA8ZGF2ZW1AZGF2ZW1sb2Z0Lm5ldD4KPiBUbzogV29sZmdhbmcgR3JhbmRlZ2dlciA8
-d2dAZ3JhbmRlZ2dlci5jb20+Cj4gVG86IE9saXZlciBIYXJ0a29wcCA8c29ja2V0Y2FuQGhh
-cnRrb3BwLm5ldD4KPiBUbzoga2VybmVsQHBlbmd1dHJvbml4LmRlCj4gQ2M6IGxpbnV4LWNh
-bkB2Z2VyLmtlcm5lbC5vcmcKPiBDYzogbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZwo+
-IENjOiBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJhZGVhZC5vcmcKPiBDYzogbGludXgt
-cm9ja2NoaXBAbGlzdHMuaW5mcmFkZWFkLm9yZwo+IAo+IC0tLQo+IEN1bmhhbyBMdSAoMyk6
-Cj4gICAgICAgY2FuOiBkZXY6IHByZXZlbnQgYnVzLW9mZiByZWNvdmVyeSB3aGVuIHRoZSBp
-bnRlcmZhY2UgaXMgbm90IHJ1bm5pbmcKPiAgICAgICBjYW46IGRldjogYWRkIGNsb3NlX2Nh
-bmRldl9jYW5jZWxfcmVzdGFydF9zeW5jKCkKPiAgICAgICBjYW46IHJvY2tjaGlwX2NhbmZk
-OiBjYW5jZWwgYnVzLW9mZiByZXN0YXJ0IGJlZm9yZSBjbG9zaW5nIHRoZSBkZXZpY2UKPiAK
-PiAgZHJpdmVycy9uZXQvY2FuL2Rldi9kZXYuYyAgICAgICAgICAgICAgICAgICAgICB8IDEy
-ICsrKysrKystLS0tLQo+ICBkcml2ZXJzL25ldC9jYW4vcm9ja2NoaXAvcm9ja2NoaXBfY2Fu
-ZmQtY29yZS5jIHwgIDMgKysrCj4gIGluY2x1ZGUvbGludXgvY2FuL2Rldi5oICAgICAgICAg
-ICAgICAgICAgICAgICAgfCAxMiArKysrKysrKysrKysKPiAgMyBmaWxlcyBjaGFuZ2VkLCAy
-MiBpbnNlcnRpb25zKCspLCA1IGRlbGV0aW9ucygtKQo+IC0tLQo+IGJhc2UtY29tbWl0OiAy
-NGExOWI5NTNlMmEzZDBlYTVhOGM0OTUxYTBhYjhmMzI3MjBjOTA3Cj4gY2hhbmdlLWlkOiAy
-MDI2MTAxMy1yb2NrY2hpcC1jYW5mZC1yZXN0YXJ0LWNsb3NlLWViZGU1OTU0ZjFiZgo+IAo+
-IEJlc3QgcmVnYXJkcywKPiAtLSAgCj4gQ3VuaGFvIEx1IDwxNTc5NTY3NTQwQHFxLmNvbT4K
-CnB3LWJvdDogY3I=
 
+--iqvdsuvim664ntyz
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net v2 0/3] can: fix bus-off restart during device close
+MIME-Version: 1.0
+
+On 14.10.2026 10:54:21, Cunhao Lu wrote:
+> This work started from a real failure on a production robot using a
+> LubanCat-5IO with an RK3588. RX continued, but the TX queue remained
+> stopped and subsequent sends returned ENOBUFS. The interface still
+> reported ERROR-ACTIVE, and the hardware indicated neither a bus-off
+> condition nor a pending TX request.
+>
+> While testing the echo-loss fix with fault injection, I discovered a
+> separate race between bus-off restart and device close. This series fixes
+> that race; the fix for the original TX stall will follow separately.
+>
+> When automatic bus-off recovery is enabled, bringing the interface down
+> can race with a pending or running restart. The Rockchip driver currently
+> relies on close_candev() to cancel restart_work, but calls it only after
+> freeing the IRQ, disabling RX offload, and stopping the controller. A
+> restart in that interval can re-enable the controller and its interrupts
+> after IRQ teardown, and requeue timestamp work after it has been stopped.
+> That work can subsequently access registers after runtime suspend
+> disables the controller clocks.
+>
+> The networking core clears the running flag before calling ndo_stop().
+> The first patch uses that flag to avoid scheduling or starting bus-off
+> recovery once the interface is observed to be no longer running. The
+> second patch adds close_candev_cancel_restart_sync() so drivers can wait
+> for recovery separately from the echo cleanup in close_candev(). The
+> third patch uses this helper at the start of the Rockchip close path.
+>
+> The running-state checks do not replace synchronization with a restart
+> that has already passed the check. Rockchip waits for that work before
+> tearing down its resources, and keeps close_candev() at the end for the
+> final cancellation and echo cleanup. IRQ exclusion during hardware
+> reinitialization is retained; the shared IRQ is not disabled while the
+> close path waits for restart work.
+>
+> I tested v2 on a LubanCat-5IO running a PREEMPT_RT kernel, using the same
+> setup and procedure as v1. The 1 Mbit/s CAN bus was connected to four
+> CANopen motors operating at 100 Hz and four sensors operating at 20 Hz.
+> A bitrate mismatch forced bus-off with automatic restart set to 100 ms.
+> The v2 campaign completed 380 valid bus-off iterations, covering automatic
+> recovery, close while recovery was pending, close near three delay points,
+> 200 randomized stress iterations, manual recovery, and reopen after close.
+> All 380 iterations reached bus-off and scheduled recovery.
+
+FYI: The threading of your series is broken, due to wrong/changes
+"Message-ID".
+
+You can use the b4 "web submission" instead? It bypasses any mail system
+completely.
+
+| https://b4.docs.kernel.org/en/latest/contributor/send.html
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--iqvdsuvim664ntyz
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCas8WvgAKCRDMOmT6rpmt
+0sJeAPwIvBNFwhbZe95g0ffTZF+mL/ZK566Mh4xHIsWt+4rCsQEAmjSMcdiy8FPc
+/izydOSxmmTTbZZLa2AspdMyIYHI0Qk=
+=Q/RN
+-----END PGP SIGNATURE-----
+
+--iqvdsuvim664ntyz--
