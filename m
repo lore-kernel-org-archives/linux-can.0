@@ -1,24 +1,24 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C31D55D895;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B6455D88D;
 	Wed, 14 Oct 2026 15:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791992682; cv=pass; b=trRCveDKhszTfuvVdmtf+wAER+N0oe1bdDsMUniG8H0VX/xjPndWwkvdPKlTcPhuSavzzW8dSZ8sp7KiEDfgrU9etecSAkeQECLDOFMgiT/6SiLUkM0DoemobpxOK3oB9tEcYT1jlraga3gRqwho+Cl4h3cKMCgHRL2ssfyxYzk=
+	t=1791992682; cv=pass; b=pkimUOxEbQAMqZECtKnRT7vzTo2KkEcRJoeXPg9yNmcuECnk3yQJAWe/ioAPKZyven5LkE1Y+bjwZaKnTUH4EK7yWsEUvmfeyYYwBpRQs49v2VCQfu8MjrMtiByo4aKqQMCf590Rw5L2JSJuXLkNXWx4m7XxkxLVGyx3CHpRWx0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1791992682; c=relaxed/simple;
-	bh=qz6/MQm80SbuNM3A8i61ctkYwMubUAHIDb6ptEs5ai8=;
+	bh=DeNL2OTPtjlMKP7KufnVCpmok83W9jAxWC+rjZT1XQk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P8XUd2VR6tgdTuX+6gXrBceLJkvOVpLfn2l5DjzW/A6je3uKh/zo+eRohRYOtmNsc+KgKx44h7Z6M7ovaWh6AstUSNA4jDrlsKv45wQ76j7KQ1QlBIUaPrw9tF5YI7HbY2cR5hqRA94keP4D8l5BCuR3I7vyGDr/lFupaXVNO1U=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=LmyS0Vzy; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=aVk//ne8miH2h3s1IVLpCSYuQn846cOsT30UrOI4MLuW1VAmPtrHe/nDIHn9l99Jy7Dm5/11jafwFEdbMTkBX2LwoHpEAcJ2b7kpv4IhAcq7dfTIX55bN0Nckb0/2uK1WL0gF7RT9X7nMTspipkn/IsZZPMzW8KfPpsnJvfo0O8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=CWUfAWGS; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="LmyS0Vzy"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="CWUfAWGS"
 Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.4.pengutronix.de [10.17.1.12])
 	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 2FC92201F04;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 2715D201D58;
 	Wed, 14 Oct 2026 17:44:37 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1791992677;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dkR8HBcbgFqaNrkNAMX+CuL+Pc92QLmewtfTX3Z9TMk=;
-	b=LmyS0VzyAGnRF16+rG4Hbwqkn7rQOb+ku6Pmz+feCvuiHU7NKKjw7pwMh7rLuB3bywd0hL
-	ZaEtAcoCsLmL+jPOD5FhdWroXZ4cjcArarGhTKUrrR9sFA0aVTud99Z0z9aMp6Vm/l0BQj
-	dleJHmcZJWWKpkvlYJ5JoY8c4yYkgknKcsDlVvNFEtcBgUdtlF2iFtgSM8u2fWjErJjjM5
-	hmAm7DDanl8/tigARHZ2G3gGn5VuwvnYcMpL1FIo/N5fyNEDsImDm4gU/E6VaKk3hnX6BB
-	679C6JUWnrS4FVRA8XvtinS/af0j+a/kmtiVkhSee5By4zGkbdBRPbD8vGi2uA==
+	bh=RcbnqA/Bukux1RL876/g7/qEteC0Lkt18DrWrFo7pNE=;
+	b=CWUfAWGS9snzFn0mXMYVIzLAPv+kvfNSgpfasWWLJz8Nbmz/JWatHx8HNeBnCjnWJcRhly
+	idj391T6R2+o6NnJDl1UQEx/TX11wF+jgrtyR+yNNeLAfGtVgyp6EBuvlTRsHvWgf1Vqsk
+	3449iMMOpDPrsNV1i67EPIJsDu+s5OXDcMKc2uAp5WEpjcIm3uIyatm56qAxPkZTSdTLgK
+	iQ8f3PdETHa/GUuMm6acpu/NnGkJnOHsTI3pm3cl4iESzsI90A0lNYg6urF4fv0/wmOaGk
+	QBKS8CDRatfiQmZ2/u57bilvpFq/mLpL16iY5o7o77WbrZopDdb/98B/242Igw==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1791992677; a=rsa-sha256;
 	cv=none;
-	b=TxjUMt49mj0NIvMCn5quBc0nKTtW/M94aHuJD2aUdjpiqWUoOrL+i9uZH450vWxAf5xFDu
-	u+yEt2qZ0mXwARt+FzlCx+Ib2z9ERXB/ZLfuQzMXhpWEp75VOOobVfnITKIk0vl0XHqquN
-	rZOg1Z3C3jxFuZT61uX+LYXlnYDojKQl5KQeobiZi1gX3zBvn3G53eQORnhZG07Xsh5mcc
-	+b4XPvAfWIX3LzwGlbAsgybLoQWmeHya+ISD0t7F7MAeOlZ41iR4an7aR71xmdREDpDP9S
-	6SORSmXiDaPM6gfQtJXh67dQV8Ce319CBfw40uQXiFe7ld0mzPFLZF5FLx4fHg==
+	b=I/MLfKOBMi/WiOhwPZ1891z3fkkuFlQK6Lz/v+ktHofo1b9vsbE40tZVDgo8pC0Y8uN7oa
+	SKrmEp+fwWMQBsfsZ9g+NisQM0J+PsJGSmeS1ITU5hFaxawpfDYgwjGa1Z4wZFvN/p6edE
+	U4XkpxXGqJaBtY8v8pLQGDEAIrDmaqt3qnHN0K3/tZsUroqOcHFIk2/jVS3zUboeNlFIRh
+	RN134BLQ+/umQIQCK529yfEgfZ8ECsLBTl/ad9n5sIQNLUWrCcMyHMT2dQ0aYwMIQSkkct
+	ADBBHURcMmr/OdOHB9MknAjm83aJ1luq4LyoEzWOnuHOi0AUMuA8w5jD5/w8Eg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
@@ -48,14 +48,14 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dkR8HBcbgFqaNrkNAMX+CuL+Pc92QLmewtfTX3Z9TMk=;
-	b=gl7PKG2s07OBOD8kj8TINbe1d2OSxcPBMeWg2i6Fo3gQ9OVSGhklAdB64zahwEe5mBYYDi
-	8bWX1wPvS5c0P1iaFHCx4EqerUA2EVDKydFyDBuMbUW0sm65OuRvuQSwWq/5AXiq5fkV3q
-	ol4bZjnu7dZnEXRNscDarkxTK980DKvZy1NCYyTzhh5ovW9vuGaIuoCTnQ6OuuGqhxaJyn
-	N/hb8TwGZWI1LQqLiQINOybBGCuHXR75+kmwrhaflaeSShecR0fdAoXChlQAhq2rUFewdW
-	sucDQSG6otcPv/gMO0zCoR8QWOUcT7/RUBnwejKBAKLxuJO8qNoBUjlySrUIgg==
+	bh=RcbnqA/Bukux1RL876/g7/qEteC0Lkt18DrWrFo7pNE=;
+	b=SLwvVGBUPIJTPAfXzSFVGDviCzdILDP1XPzLDW4whHKRi70bSiVEh+NnbwzbrJ7ltVwneW
+	yOoHBeparnSOOLXGeO5L31lGda59g1fqsLIoCMmuz2DMMyWDasKs4Vrdjel3kvrVFvHF1I
+	MLV14rwwzw94EmDBTqd6wWXtC4hM2gc/lLhX/Gc93iZdMkvw99SBQ2A8RR55WkWRTktWqs
+	C7fmQ8PEdlKHQZVuYIX2cTWEj+e5CHQOql0vWYCa1bz+Y+kbVSbe7WURAMMTDCeuRqd88m
+	INKY4h6T43n5JziLNvLq0YjFsxsOPsmJpBaus1RQaCKqj8e7cS8duEoBWLqIqQ==
 Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
-	id 181E338786B; Wed, 14 Oct 2026 17:44:37 +0200 (CEST)
+	id 1349138505D; Wed, 14 Oct 2026 17:44:37 +0200 (CEST)
 From: Oleksij Rempel <o.rempel@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
@@ -69,9 +69,9 @@ Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
 	=?UTF-8?q?Alexander=20H=C3=B6lzl?= <alexander.hoelzl@gmx.net>,
 	Quchaosheng <quchaosheng000406@163.com>,
 	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH can-next v1 4/8] selftests: can: add J1939 addressing and concurrency tests
-Date: Wed, 14 Oct 2026 17:44:30 +0200
-Message-ID: <20261014154435.3577983-5-o.rempel@pengutronix.de>
+Subject: [PATCH can-next v1 3/8] selftests: can: add J1939 socket option and metadata tests
+Date: Wed, 14 Oct 2026 17:44:29 +0200
+Message-ID: <20261014154435.3577983-4-o.rempel@pengutronix.de>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261014154435.3577983-1-o.rempel@pengutronix.de>
 References: <20261014154435.3577983-1-o.rempel@pengutronix.de>
@@ -83,144 +83,129 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a selftest for J1939 NAME-based addressing and address claiming:
-binding and reading back a NAME, the source address seen on the wire,
-NAME-addressed transfers (with a forged Address Claimed), the Address
-Claimed a socket emits, and address-claim conflicts where the contender
-with the higher NAME loses and the one with the lower NAME keeps the
-address. It also runs several concurrent transport sessions as a stress
-check.
+Add a selftest covering the J1939 socket options and send metadata: the
+PGN filter (SO_J1939_FILTER), the send priority (SO_J1939_SEND_PRIO,
+observed on the wire via a CAN_RAW peer), the promisc flag, destination
+addressing via sendto(), a wrong-family bind, and the TX-completion
+error-queue notification (SO_J1939_ERRQUEUE / SO_TIMESTAMPING), including
+that it is labelled SCM_TSTAMP_ACK. setsockopt values are also read back
+with getsockopt.
 
-The NAME is serialized onto the wire byte-wise (put_name) so the tests
-behave the same on big- and little-endian hosts.
+This is the first J1939 test to open a CAN_RAW socket, so enable
+CONFIG_CAN_RAW in the test config.
 
 Assisted-by: LLM
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
  tools/testing/selftests/net/can/.gitignore    |   1 +
  tools/testing/selftests/net/can/Makefile      |   2 +
- .../selftests/net/can/test_j1939_addr.c       | 336 ++++++++++++++++++
- .../selftests/net/can/test_j1939_addr.sh      |   5 +
- 4 files changed, 344 insertions(+)
- create mode 100644 tools/testing/selftests/net/can/test_j1939_addr.c
- create mode 100755 tools/testing/selftests/net/can/test_j1939_addr.sh
+ tools/testing/selftests/net/can/config        |   1 +
+ .../selftests/net/can/test_j1939_opts.c       | 305 ++++++++++++++++++
+ .../selftests/net/can/test_j1939_opts.sh      |   5 +
+ 5 files changed, 314 insertions(+)
+ create mode 100644 tools/testing/selftests/net/can/test_j1939_opts.c
+ create mode 100755 tools/testing/selftests/net/can/test_j1939_opts.sh
 
 diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
-index 427eed83e49e..7ca63a19472c 100644
+index 0ab563fe9ddf..427eed83e49e 100644
 --- a/tools/testing/selftests/net/can/.gitignore
 +++ b/tools/testing/selftests/net/can/.gitignore
-@@ -2,3 +2,4 @@
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
  test_raw_filter
  test_j1939_base
- test_j1939_opts
-+test_j1939_addr
++test_j1939_opts
 diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
-index 24a57edb912c..6e4176a1b985 100644
+index cf4bd2461a6c..24a57edb912c 100644
 --- a/tools/testing/selftests/net/can/Makefile
 +++ b/tools/testing/selftests/net/can/Makefile
-@@ -10,6 +10,7 @@ TEST_PROGS := \
+@@ -9,11 +9,13 @@ LOCAL_HDRS := j1939_tests.h
+ TEST_PROGS := \
  	test_raw_filter.sh \
  	test_j1939_base.sh \
- 	test_j1939_opts.sh \
-+	test_j1939_addr.sh \
++	test_j1939_opts.sh \
  
  TEST_FILES := j1939_lib.sh
  
-@@ -17,5 +18,6 @@ TEST_GEN_FILES := \
+ TEST_GEN_FILES := \
  	test_raw_filter \
  	test_j1939_base \
- 	test_j1939_opts \
-+	test_j1939_addr \
++	test_j1939_opts \
  
  include ../../lib.mk
-diff --git a/tools/testing/selftests/net/can/test_j1939_addr.c b/tools/testing/selftests/net/can/test_j1939_addr.c
+diff --git a/tools/testing/selftests/net/can/config b/tools/testing/selftests/net/can/config
+index 52a186bd1055..908342600101 100644
+--- a/tools/testing/selftests/net/can/config
++++ b/tools/testing/selftests/net/can/config
+@@ -2,3 +2,4 @@ CONFIG_CAN=m
+ CONFIG_CAN_DEV=m
+ CONFIG_CAN_VCAN=m
+ CONFIG_CAN_J1939=m
++CONFIG_CAN_RAW=m
+diff --git a/tools/testing/selftests/net/can/test_j1939_opts.c b/tools/testing/selftests/net/can/test_j1939_opts.c
 new file mode 100644
-index 000000000000..8b1b093f0839
+index 000000000000..f761a42db213
 --- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_addr.c
-@@ -0,0 +1,336 @@
++++ b/tools/testing/selftests/net/can/test_j1939_opts.c
+@@ -0,0 +1,305 @@
 +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
 +/*
-+ * J1939 addressing and concurrency selftests.
++ * J1939 socket option and metadata selftests.
 + *
-+ * Cover NAME-based addressing and address claiming: binding a NAME and reading
-+ * it back, the bound source address appearing in the CAN id, a sender reaching a
-+ * peer by NAME, address-claim contention where the lower NAME wins, and a stress
-+ * run of many concurrent transport sessions.
++ * On top of the basic transport, cover the user-visible J1939 socket options and
++ * addressing: the SO_J1939_FILTER PGN whitelist, the SO_J1939_SEND_PRIO send
++ * priority seen in the CAN id (via a CAN_RAW peer, including the default of 6),
++ * unconnected sendto(2), a wrong-family bind rejection, and SO_J1939_ERRQUEUE
++ * TX-completion notifications.
 + *
-+ * The vcan interface is set up by the caller (see test_j1939_addr.sh); its name
++ * The vcan interface is set up by the caller (see test_j1939_opts.sh); its name
 + * is passed via the CANIF environment variable.
 + */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
 +#include <errno.h>
-+#include <sys/wait.h>
++#include <time.h>
 +
 +#include "kselftest_harness.h"
 +#include "j1939_tests.h"
 +
++#include <linux/net_tstamp.h>
++#include <linux/errqueue.h>
++
 +#define SA_TX			0x80
 +#define SA_RX			0x90
-+#define NAME_TX			0x00000000c0ffee01ULL
-+#define NAME_RX			0x00000000c0ffee02ULL
-+#define PGN_TEST		0x0ab00
-+#define STRESS_N		8	/* arbitrary test tuning */
-+#define STRESS_SIZE		128	/* arbitrary test tuning */
-+#define ACLAIM_SETTLE_US	300000	/* settle: empirical, not spec */
-+
-+/* Open a J1939 socket bound to (name, sa, pgn). */
-+static int j1939_open_name(int ifindex, name_t name, uint8_t sa, pgn_t pgn)
-+{
-+	return j1939_open_flags(ifindex, name, sa, pgn, 0);
-+}
-+
++#define PGN_A			0x0ab00
++#define PGN_B			0x0cd00
++#define PRIO_SET		3
 +/*
-+ * Inject an Address Claimed message (PGN 0xee00, global destination) for the
-+ * given source address and NAME via a raw socket, so the kernel learns the
-+ * NAME <-> address mapping. The kernel does not claim addresses itself.
++ * Worst-case error-queue drain budget: each iteration can block up to
++ * J1939_RECV_TIMEOUT_MS, so this bounds the drain time. A generous cap; only one
++ * ACK is expected.
 + */
-+static int forge_address_claim(int raw, uint8_t sa, name_t name)
-+{
-+	uint8_t nb[8];
++#define ERRQUEUE_POLL_RETRIES	8
 +
-+	put_name(nb, name);
-+	if (send_raw8(raw, J1939_PRIO_DEFAULT, J1939_PGN_ADDRESS_CLAIMED,
-+		      J1939_NO_ADDR, sa, nb))
++/* Read the next CAN frame from a raw socket and return its J1939 priority. */
++static int raw_prio(int raw, int timeout_ms)
++{
++	struct can_frame frame;
++
++	if (recv_timeout(raw, &frame, sizeof(frame), timeout_ms) < 0)
 +		return -1;
-+	/* give the kernel RX path a moment to process the claim */
-+	usleep(ACLAIM_SETTLE_US);
-+	return 0;
++	return (int)J1939_ID_PRIO(frame.can_id & CAN_EFF_MASK);
 +}
 +
-+/* One independent transport-protocol round-trip; returns 0 on success. */
-+static int stress_child(int ifindex, uint8_t sa_tx, uint8_t sa_rx)
++/* Set an int J1939 sockopt, read it back, and return the value (or -1). */
++static int sockopt_roundtrip(int s, int optname, int val)
 +{
-+	uint8_t tx_buf[STRESS_SIZE];
-+	int tx, rx, rc = 1;
++	int got = -1;
++	socklen_t len = sizeof(got);
 +
-+	fill_pattern(tx_buf, sizeof(tx_buf));
-+
-+	rx = j1939_open_name(ifindex, J1939_NO_NAME, sa_rx, PGN_TEST);
-+	tx = j1939_open_name(ifindex, J1939_NO_NAME, sa_tx, J1939_NO_PGN);
-+	if (rx < 0 || tx < 0)
-+		goto out;
-+	if (j1939_connect_name(tx, ifindex, J1939_NO_NAME, sa_rx, PGN_TEST))
-+		goto out;
-+
-+	if (send_recv_verify(tx, rx, tx_buf, sizeof(tx_buf),
-+			     J1939_RECV_TIMEOUT_MS) == 0)
-+		rc = 0;
-+out:
-+	if (rx >= 0)
-+		close(rx);
-+	if (tx >= 0)
-+		close(tx);
-+	return rc;
++	if (setsockopt(s, SOL_CAN_J1939, optname, &val, sizeof(val)) < 0)
++		return -1;
++	if (getsockopt(s, SOL_CAN_J1939, optname, &got, &len) < 0)
++		return -1;
++	return got;
 +}
 +
-+FIXTURE(j1939_addr)
++FIXTURE(j1939_opts)
 +{
 +	int ifindex;
 +	int tx;
@@ -228,16 +213,18 @@ index 000000000000..8b1b093f0839
 +	int raw;
 +};
 +
-+FIXTURE_SETUP(j1939_addr)
++FIXTURE_SETUP(j1939_opts)
 +{
 +	self->tx = -1;
 +	self->rx = -1;
 +	self->raw = -1;
 +
 +	J1939_SETUP_IFINDEX(self);
++
++	J1939_SETUP_RAW(self, 0);
 +}
 +
-+FIXTURE_TEARDOWN(j1939_addr)
++FIXTURE_TEARDOWN(j1939_opts)
 +{
 +	if (self->tx >= 0)
 +		close(self->tx);
@@ -247,244 +234,235 @@ index 000000000000..8b1b093f0839
 +		close(self->raw);
 +}
 +
-+/* bind with a NAME and read it back with getsockname(2). */
-+TEST_F(j1939_addr, name_bind_getsockname)
++/* SO_J1939_FILTER whitelists PGN_A; PGN_A is received, PGN_B is dropped. */
++TEST_F(j1939_opts, filter_pgn)
 +{
-+	struct sockaddr_can addr = {};
-+	socklen_t len = sizeof(addr);
-+
-+	self->tx = j1939_open_name(self->ifindex, NAME_TX, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0)
-+		TH_LOG("bind with NAME failed: %d", errno);
-+
-+	ASSERT_EQ(getsockname(self->tx, (struct sockaddr *)&addr, &len), 0);
-+	EXPECT_EQ(addr.can_addr.j1939.name, NAME_TX);
-+	EXPECT_EQ(addr.can_addr.j1939.addr, SA_TX);
-+}
-+
-+/* the bound source address is used as source address on the wire. */
-+TEST_F(j1939_addr, source_sa_on_wire)
-+{
-+	uint8_t buf[8] = {};
-+	struct can_frame frame;
-+	int ret;
-+
-+	self->raw = open_raw(self->ifindex);
-+	ASSERT_GE(self->raw, 0);
-+
-+	/* static source address: no address claim needed to transmit */
-+	self->tx = j1939_open_name(self->ifindex, J1939_NO_NAME, SA_TX,
-+			      J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	ASSERT_EQ(j1939_connect_name(self->tx, self->ifindex, J1939_NO_NAME,
-+				SA_RX, PGN_TEST), 0);
-+
-+	ASSERT_EQ(send(self->tx, buf, sizeof(buf), 0), (int)sizeof(buf));
-+
-+	ret = recv_timeout(self->raw, &frame, sizeof(frame), J1939_RECV_TIMEOUT_MS);
-+	ASSERT_GT(ret, 0);
-+	EXPECT_EQ((int)J1939_ID_SA(frame.can_id), SA_TX)
-+		TH_LOG("source address on wire is 0x%02x, expected 0x%02x",
-+		       (unsigned int)J1939_ID_SA(frame.can_id), SA_TX);
-+}
-+
-+/*
-+ * NAME based addressing reaches the socket bound to that NAME.
-+ *
-+ * The peer must have claimed its address before it is reachable by NAME, so
-+ * inject an Address Claimed message for (SA_RX, NAME_RX) first. The sender
-+ * uses a static source address and resolves the destination by NAME.
-+ */
-+TEST_F(j1939_addr, name_addressing)
-+{
++	struct j1939_filter filt = {
++		.pgn = PGN_A,
++		.pgn_mask = J1939_PGN_MAX,
++	};
 +	uint8_t tx_buf[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
 +	uint8_t rx_buf[8];
++	int ret;
 +
-+	/* static receiver on SA_RX; the forged claim maps NAME_RX -> SA_RX */
-+	self->rx = j1939_open_name(self->ifindex, J1939_NO_NAME, SA_RX, PGN_TEST);
++	self->rx = j1939_open(self->ifindex, SA_RX, J1939_NO_PGN);
 +	ASSERT_GE(self->rx, 0);
++	ASSERT_EQ(setsockopt(self->rx, SOL_CAN_J1939, SO_J1939_FILTER,
++			     &filt, sizeof(filt)), 0)
++		TH_LOG("SO_J1939_FILTER failed: %d", errno);
 +
-+	self->raw = open_raw(self->ifindex);
-+	ASSERT_GE(self->raw, 0);
-+	ASSERT_EQ(forge_address_claim(self->raw, SA_RX, NAME_RX), 0)
-+		TH_LOG("failed to inject address claim: %d", errno);
-+
-+	self->tx = j1939_open_name(self->ifindex, J1939_NO_NAME, SA_TX,
-+			      J1939_NO_PGN);
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
 +	ASSERT_GE(self->tx, 0);
-+	ASSERT_EQ(j1939_connect_name(self->tx, self->ifindex, NAME_RX,
-+				J1939_NO_ADDR, PGN_TEST), 0)
-+		TH_LOG("connect to peer NAME failed: %d", errno);
 +
-+	ASSERT_EQ(send(self->tx, tx_buf, sizeof(tx_buf), 0),
-+		  (int)sizeof(tx_buf))
-+		TH_LOG("send to peer NAME failed: %d", errno);
++	/* PGN_A must pass the filter */
++	ret = j1939_sendto(self->tx, tx_buf, sizeof(tx_buf), self->ifindex,
++			   J1939_NO_NAME, SA_RX, PGN_A);
++	ASSERT_EQ(ret, (int)sizeof(tx_buf))
++		TH_LOG("sendto PGN_A failed: %d", errno);
++	EXPECT_EQ(recv_timeout(self->rx, rx_buf, sizeof(rx_buf),
++			       J1939_RECV_TIMEOUT_MS), (int)sizeof(tx_buf))
++		TH_LOG("PGN_A was not received despite matching filter");
++
++	/* PGN_B must be dropped by the filter */
++	ret = j1939_sendto(self->tx, tx_buf, sizeof(tx_buf), self->ifindex,
++			   J1939_NO_NAME, SA_RX, PGN_B);
++	ASSERT_EQ(ret, (int)sizeof(tx_buf))
++		TH_LOG("sendto PGN_B failed: %d", errno);
++	EXPECT_EQ(recv_timeout(self->rx, rx_buf, sizeof(rx_buf),
++			       J1939_NEG_RECV_TIMEOUT_MS), -1)
++		TH_LOG("PGN_B was received but should have been filtered out");
++}
++
++/* without SO_J1939_SEND_PRIO the J1939 default priority (6) is used. */
++TEST_F(j1939_opts, send_prio_default)
++{
++	uint8_t buf[8] = {};
++
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++
++	ASSERT_EQ(j1939_sendto(self->tx, buf, sizeof(buf), self->ifindex,
++			       J1939_NO_NAME, SA_RX, PGN_A),
++		  (int)sizeof(buf));
++
++	EXPECT_EQ(raw_prio(self->raw, J1939_RECV_TIMEOUT_MS), J1939_PRIO_DEFAULT);
++}
++
++/* SO_J1939_SEND_PRIO changes the priority carried in the CAN id. */
++TEST_F(j1939_opts, send_prio_set)
++{
++	int prio = PRIO_SET;
++	uint8_t buf[8] = {};
++
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++	ASSERT_EQ(setsockopt(self->tx, SOL_CAN_J1939, SO_J1939_SEND_PRIO,
++			     &prio, sizeof(prio)), 0)
++		TH_LOG("SO_J1939_SEND_PRIO failed: %d", errno);
++
++	ASSERT_EQ(j1939_sendto(self->tx, buf, sizeof(buf), self->ifindex,
++			       J1939_NO_NAME, SA_RX, PGN_A),
++		  (int)sizeof(buf));
++
++	EXPECT_EQ(raw_prio(self->raw, J1939_RECV_TIMEOUT_MS), PRIO_SET);
++}
++
++/* an unconnected socket can address a peer via sendto(2). */
++TEST_F(j1939_opts, sendto_unconnected)
++{
++	uint8_t tx_buf[8] = { 9, 8, 7, 6, 5, 4, 3, 2 };
++	uint8_t rx_buf[8];
++
++	self->rx = j1939_open(self->ifindex, SA_RX, PGN_A);
++	ASSERT_GE(self->rx, 0);
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++
++	ASSERT_EQ(j1939_sendto(self->tx, tx_buf, sizeof(tx_buf), self->ifindex,
++			       J1939_NO_NAME, SA_RX, PGN_A),
++		  (int)sizeof(tx_buf));
++
 +	ASSERT_EQ(recv_timeout(self->rx, rx_buf, sizeof(rx_buf),
 +			       J1939_RECV_TIMEOUT_MS), (int)sizeof(tx_buf));
 +	EXPECT_EQ(memcmp(tx_buf, rx_buf, sizeof(tx_buf)), 0);
 +}
 +
-+/* many concurrent transport-protocol sessions run without corruption. */
-+TEST_F(j1939_addr, stress_concurrent_sessions)
++/* bind(2) with a wrong address family is rejected. */
++TEST_F(j1939_opts, bind_wrong_family)
 +{
-+	pid_t pids[STRESS_N];
-+	int i, failed = 0;
-+
-+	for (i = 0; i < STRESS_N; i++) {
-+		pids[i] = fork();
-+		ASSERT_GE(pids[i], 0);
-+		if (pids[i] == 0)
-+			_exit(stress_child(self->ifindex, 0x40 + i, 0x20 + i));
-+	}
-+
-+	for (i = 0; i < STRESS_N; i++) {
-+		int status;
-+
-+		if (waitpid(pids[i], &status, 0) < 0 ||
-+		    !WIFEXITED(status) || WEXITSTATUS(status) != 0)
-+			failed++;
-+	}
-+
-+	EXPECT_EQ(failed, 0)
-+		TH_LOG("%d of %d concurrent sessions failed", failed, STRESS_N);
-+}
-+
-+#define SA_CLAIM		0x50
-+#define SA_DST			0x60
-+#define NAME_CLAIM		0x00000000c0ffee10ULL
-+#define NAME_LOWER		0x00000000c0ffee00ULL	/* higher priority */
-+#define NAME_HIGHER		0x00000000c0ffee20ULL	/* lower priority */
-+
-+/*
-+ * Claim an address the way j1939acd would: bind a NAME to an address and send
-+ * an Address Claimed message, then wait for the claim to settle. Returns the
-+ * (still open) socket on success.
-+ */
-+static int claim_addr(int ifindex, name_t name, uint8_t sa)
-+{
-+	uint8_t nb[8];
++	struct sockaddr_can addr = {
++		.can_family = AF_INET,
++		.can_ifindex = self->ifindex,
++	};
 +	int s;
 +
-+	s = j1939_open_flags(ifindex, name, sa, J1939_NO_PGN, J1939_OPEN_BCAST);
-+	if (s < 0)
-+		return -1;
++	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
++	ASSERT_GE(s, 0);
++	EXPECT_LT(bind(s, (struct sockaddr *)&addr, sizeof(addr)), 0)
++		TH_LOG("bind with AF_INET unexpectedly succeeded");
++	close(s);
++}
 +
-+	put_name(nb, name);
-+	if (j1939_sendto(s, nb, 8, ifindex, J1939_NO_NAME, J1939_NO_ADDR,
-+			 J1939_PGN_ADDRESS_CLAIMED) != 8) {
-+		close(s);
-+		return -1;
++/* SO_J1939_ERRQUEUE delivers TX completion notifications for a TP send. */
++TEST_F(j1939_opts, errqueue_tx_completion)
++{
++	int enable = 1;
++	int ts = SOF_TIMESTAMPING_TX_ACK | SOF_TIMESTAMPING_TX_SCHED |
++		 SOF_TIMESTAMPING_OPT_ID;
++	uint8_t tx_buf[128], rx_buf[128];
++	int got_ack = 0, i;
++
++	memset(tx_buf, 0x5a, sizeof(tx_buf));
++
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++	/*
++	 * setsockopt(SO_J1939_ERRQUEUE) returns the flag value (1) on success
++	 * rather than 0, so only check for a non-negative result.
++	 */
++	ASSERT_GE(setsockopt(self->tx, SOL_CAN_J1939, SO_J1939_ERRQUEUE,
++			     &enable, sizeof(enable)), 0)
++		TH_LOG("SO_J1939_ERRQUEUE failed: %d", errno);
++	ASSERT_EQ(setsockopt(self->tx, SOL_SOCKET, SO_TIMESTAMPING,
++			     &ts, sizeof(ts)), 0)
++		TH_LOG("SO_TIMESTAMPING failed: %d", errno);
++
++	/* A receiver lets the TP session complete and be acknowledged. */
++	self->rx = j1939_open(self->ifindex, SA_RX, PGN_A);
++	ASSERT_GE(self->rx, 0);
++
++	ASSERT_EQ(j1939_sendto(self->tx, tx_buf, sizeof(tx_buf), self->ifindex,
++			       J1939_NO_NAME, SA_RX, PGN_A),
++		  (int)sizeof(tx_buf));
++
++	ASSERT_EQ(recv_timeout(self->rx, rx_buf, sizeof(rx_buf),
++			       J1939_RECV_TIMEOUT_MS), (int)sizeof(tx_buf));
++
++	/*
++	 * Collect the TX-completion (ACK) from the error queue. Allow a few extra
++	 * iterations because other control messages may arrive before the ACK.
++	 */
++	for (i = 0; i < ERRQUEUE_POLL_RETRIES && !got_ack; i++) {
++		struct pollfd pfd = { .fd = self->tx, .events = POLLERR };
++		union {
++			char buf[CMSG_SPACE(sizeof(struct sock_extended_err)) +
++				 CMSG_SPACE(sizeof(struct scm_timestamping))];
++			struct cmsghdr align;	/* portable cmsg alignment */
++		} ctrl;
++		char data[128];
++		struct iovec iov = { .iov_base = data, .iov_len = sizeof(data) };
++		struct msghdr msg = {
++			.msg_iov = &iov,
++			.msg_iovlen = 1,
++			.msg_control = ctrl.buf,
++			.msg_controllen = sizeof(ctrl.buf),
++		};
++		struct cmsghdr *cmsg;
++
++		if (poll(&pfd, 1, J1939_RECV_TIMEOUT_MS) <= 0)
++			break;
++		if (recvmsg(self->tx, &msg, MSG_ERRQUEUE) < 0)
++			break;
++
++		for (cmsg = CMSG_FIRSTHDR(&msg); cmsg;
++		     cmsg = CMSG_NXTHDR(&msg, cmsg)) {
++			struct sock_extended_err *serr;
++
++			if (cmsg->cmsg_level != SOL_CAN_J1939 ||
++			    cmsg->cmsg_type != SCM_J1939_ERRQUEUE)
++				continue;
++			serr = (struct sock_extended_err *)CMSG_DATA(cmsg);
++			if (serr->ee_origin != SO_EE_ORIGIN_TIMESTAMPING)
++				continue;
++			/* The TX-completion notification must be SCM_TSTAMP_ACK. */
++			if (serr->ee_info == SCM_TSTAMP_ACK)
++				got_ack = 1;
++		}
 +	}
 +
-+	usleep(ACLAIM_SETTLE_US);	/* settling time */
-+	return s;
++	EXPECT_EQ(got_ack, 1)
++		TH_LOG("no SCM_TSTAMP_ACK TX completion on the error queue");
 +}
 +
-+/* Send a single data frame from a socket to (SA_DST, PGN_TEST). */
-+static int send_data(int s, int ifindex)
++/* getsockopt reads back SO_J1939_SEND_PRIO. */
++TEST_F(j1939_opts, getsockopt_send_prio)
 +{
-+	uint8_t data[8] = {};
-+
-+	return j1939_sendto(s, data, sizeof(data), ifindex, J1939_NO_NAME,
-+			    SA_DST, PGN_TEST);
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_SEND_PRIO, PRIO_SET),
++		  PRIO_SET)
++		TH_LOG("SO_J1939_SEND_PRIO round-trip failed: %d", errno);
 +}
 +
-+static bool match_addr_claimed(canid_t id, const void *ctx)
++/* getsockopt reads back the SO_J1939_PROMISC flag. */
++TEST_F(j1939_opts, getsockopt_promisc)
 +{
-+	(void)ctx;
-+	return J1939_ID_PF(id) == J1939_PF(J1939_PGN_ADDRESS_CLAIMED) &&
-+	       J1939_ID_SA(id) == SA_CLAIM;
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_PROMISC, 1), 1)
++		TH_LOG("SO_J1939_PROMISC round-trip failed: %d", errno);
 +}
 +
-+/* sending an Address Claimed message puts it on the wire and claims. */
-+TEST_F(j1939_addr, address_claim_send)
++/* getsockopt reads back the SO_J1939_ERRQUEUE flag. */
++TEST_F(j1939_opts, getsockopt_errqueue)
 +{
-+	struct can_frame frame;
-+
-+	self->raw = open_raw(self->ifindex);
-+	ASSERT_GE(self->raw, 0);
-+
-+	self->tx = claim_addr(self->ifindex, NAME_CLAIM, SA_CLAIM);
-+	ASSERT_GE(self->tx, 0)
-+		TH_LOG("address claim failed: %d", errno);
-+
-+	/* the Address Claimed frame must have appeared on the wire */
-+	EXPECT_EQ(recv_match(self->raw, ACLAIM_SETTLE_US / 1000, &frame,
-+			     match_addr_claimed, NULL), 0)
-+		TH_LOG("no Address Claimed frame seen on the wire");
-+
-+	/* with the address claimed, the socket can transmit */
-+	EXPECT_EQ(send_data(self->tx, self->ifindex), 8)
-+		TH_LOG("transmit from claimed address failed: %d", errno);
-+}
-+
-+/*
-+ * Shared address-claim arbitration setup for the win/lose conflict tests.
-+ * Claim SA_CLAIM with NAME_CLAIM, confirm we own it, then let a contender with
-+ * @contender claim the same SA. On success stores the result of transmitting
-+ * after the contention in *tx_ret (errno is left as that send set it) and
-+ * returns 0; returns -1 if any setup step failed. Each caller asserts its own
-+ * win/lose outcome on *tx_ret.
-+ */
-+static int ac_conflict_probe(FIXTURE_DATA(j1939_addr) *self, name_t contender,
-+			     int *tx_ret)
-+{
-+	self->raw = open_raw(self->ifindex);
-+	if (self->raw < 0)
-+		return -1;
-+	self->tx = claim_addr(self->ifindex, NAME_CLAIM, SA_CLAIM);
-+	if (self->tx < 0)
-+		return -1;
-+
-+	/* baseline: we own the address and can transmit */
-+	if (send_data(self->tx, self->ifindex) != 8)
-+		return -1;
-+
-+	/* let the contender claim our SA */
-+	if (forge_address_claim(self->raw, SA_CLAIM, contender))
-+		return -1;
-+
-+	*tx_ret = send_data(self->tx, self->ifindex);
-+	return 0;
-+}
-+
-+/* a higher-priority competing claim takes the address away from us. */
-+TEST_F(j1939_addr, ac_conflict_lose)
-+{
-+	int tx_ret;
-+
-+	/* a contender with a lower NAME (higher priority) claims our SA */
-+	ASSERT_EQ(ac_conflict_probe(self, NAME_LOWER, &tx_ret), 0);
-+
-+	/* we must have lost the address */
-+	EXPECT_LT(tx_ret, 0)
-+		TH_LOG("transmit still succeeded after losing the address");
-+	EXPECT_EQ(errno, EADDRNOTAVAIL);
-+}
-+
-+/* a lower-priority competing claim does not take our address. */
-+TEST_F(j1939_addr, ac_conflict_defend)
-+{
-+	int tx_ret;
-+
-+	/* a contender with a higher NAME (lower priority) must not win */
-+	ASSERT_EQ(ac_conflict_probe(self, NAME_HIGHER, &tx_ret), 0);
-+
-+	EXPECT_EQ(tx_ret, 8)
-+		TH_LOG("lost the address to a lower-priority claim");
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
++	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_ERRQUEUE, 1), 1)
++		TH_LOG("SO_J1939_ERRQUEUE round-trip failed: %d", errno);
 +}
 +
 +J1939_TEST_MAIN();
-diff --git a/tools/testing/selftests/net/can/test_j1939_addr.sh b/tools/testing/selftests/net/can/test_j1939_addr.sh
+diff --git a/tools/testing/selftests/net/can/test_j1939_opts.sh b/tools/testing/selftests/net/can/test_j1939_opts.sh
 new file mode 100755
-index 000000000000..e611fe211c6d
+index 000000000000..5d76c56f24a4
 --- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_addr.sh
++++ b/tools/testing/selftests/net/can/test_j1939_opts.sh
 @@ -0,0 +1,5 @@
 +#!/bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +
-+J1939_TEST_PROG=test_j1939_addr
++J1939_TEST_PROG=test_j1939_opts
 +source "$(dirname "$0")/j1939_lib.sh"
 -- 
 2.47.3
