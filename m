@@ -1,47 +1,47 @@
-Received: from out203-205-221-155.mail.qq.com (out203-205-221-155.mail.qq.com [203.205.221.155])
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362362D5925
-	for <linux-can@vger.kernel.org>; Wed, 14 Oct 2026 04:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FF8E361651;
+	Wed, 14 Oct 2026 05:03:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1791952546; cv=none; b=jiJ3lA0AIX8sRsmrcgZj9tnxM4PclstbFAxDmmURjVTDX5BWX5tbV5lWctm7O8A6KMUkJ7DtoVlgOSvp3tsYDi8ft/TIuiAL6pbNMx3AwBcu3SeAC0IKY9Sz3Huu+GfTYpBfEFRFeLq2wSUbli24wwduZY7vpPQA+VO7mqsoX+g=
+	t=1791954191; cv=none; b=DQl/eq7XwzUVwEm3r2iraVkYbusKE6t53CB+gSR9SRIMlup67/BXPHJYboIY3SdXyedsY/DdsC3Z50oSXexH35C7oFfW4qQWN9IwO7qX0UGwC844kQ7nkvMXkwMKzhzjHmAd90D8aj3La7z3id4CDxNUXnCnj1mL8TdtlSe9ZOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1791952546; c=relaxed/simple;
-	bh=6ujtAJlGmqR5wqVhWDRituefF2TemEcF244dZ9ui1nk=;
+	s=arc-20240116; t=1791954191; c=relaxed/simple;
+	bh=0T0zreJEKXCOs2vAHy9C7aS+rC0OoUQsDz7CaxsQtfg=;
 	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=S01dSz1ZkxCkeVyu1gSMzjf6iagV9Me5cx1Gg6R9ch0yCm8ECyK5BiA8EqRiERpf/kOEeaXLmeCyhlP20Qfs39x7NfyT1rx70luQSYDNYo1wg+j0yAGcf+i/pt2SDSVWzGtO+cAf7q4eAPfeYd0yDCT+iwvuNqNd5tVlQtLlDMI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=bhCSWMmZ; arc=none smtp.client-ip=203.205.221.155
+	 References:In-Reply-To; b=kgHrTA4FRIOuGbQKYgTfQZLVqG2ettteKOqAYaSLp4CLpN4rhZPDsnOoNAb5+RJdAhsKA29T25/kGkC4UFDHP7CfAtcUX6YSAdujME/Us6mLdzKYilK3ZgCQ/Bxxgxj3hoEuT/uO375eewMUmWy1I+q4cbePx3IyXp6Xl5O+/BA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=No67Yb89; arc=none smtp.client-ip=162.62.58.216
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="bhCSWMmZ"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="No67Yb89"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1791952535; bh=6ujtAJlGmqR5wqVhWDRituefF2TemEcF244dZ9ui1nk=;
+	t=1791954184; bh=0T0zreJEKXCOs2vAHy9C7aS+rC0OoUQsDz7CaxsQtfg=;
 	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=bhCSWMmZrMh46WAZ4Zn+/7n+5VMA9aygPQKNpJv8jLqgAFi33zkvF4d2CkpRNvgGS
-	 ttkE3TzEDT4UUJ3tF7BGxW79hFeVtxk5v+C/6JwBSfxCNru9BD2MFLl8KO1jNkdwob
-	 Nit9volqUEYpu1RZ7ZzUiRm3jeOSN1WMFylCbW+4=
+	b=No67Yb899+Gy5k0t1WYRFaEiPXQEASN0lMGBncIbU4m8e4fnqLIm+fEXsR5UfuJwp
+	 yIrJoSxF4pMNGBdwDfBBn0Us2aUNEJN7/ZgcQUsN+oVjkPNya/0lvb6FO+i0L9mCfm
+	 /mPcwbtyc9mJSpxq3lCWtLVMGaJYR9gTtyyChNfg=
 X-QQ-XMRINFO: M/715EihBoGS47X28/vv4NpnfpeBLnr4Qg==
-X-QQ-XMAILINFO: M7n9VusxZAlPbKpGXT+gLDlP4d9Xq1lq4eob0AwV0Sb0fVjn/OilceMXWXZ2um
-	 r1pFtgqOs6ss+cOji0kTbqdQ2CebYmuL2d+hj1hDWffek7Gl0KcvIAMJ4AezGW6FqkqKLUN/08QKN
-	 PBLmdAnsdAUy/DLepnCsbdts2M+UFcx18/YhCkVsR5nZwWjwqdvJd4yT8VHlKXXPvm2+j4aV8AmIW
-	 96L3fON5LMxktnLV7UL4GdAGigBNd2Tttfu+a209v7V9+use+XWSsJVbH6MmZGUBNroT4UQUscSwQ
-	 6TCzBQZSTZXamvMkQmW42vLxTsboRGLKzIOPk8pCfhbNLmDlOXgfT2AmtYjOknGMlO77c3sEgd5Vp
-	 +1hSLGdqvMa8mCLEj5jU2RkTr1tbobWrM67OwFpEgeXMzxnOuAaEZzdj881jin8BH7NYqYoQ++que
-	 BZzpuG+CUKU1qYTDajP1UOF8RiBiWrpPzXXjOEHw+pOBHdBFr6AfBquyo7GOyEzBuNVARG9vwBREd
-	 0JH8yrl34VAs2CaRUfxNCIOGvvw0cxlJN723HO8ExPNQYIM5NEvTDgp2qMcIiz0pFFE25CSjWvSGp
-	 w6xhce5TTO98Yd+LHSciiI9lg/zS/gNeNIsvJzjKoUZTqEl/zOOnKr94rsrcp4EBio4B2cZcXpE3p
-	 Cw3PyvnVwKTtJKSRWB7GksM7dAzegHqWcOjZ7I1ZBhgVXxQBFfFsUOgy1z21qTTB8aEC53GAy4kHm
-	 0XwazqM57t0Fg4xAtM3daOf7kT6y1xIfNALRDsK44CWjoTXhSFKAkCpPOuyVkk3Uvpjd/MYj3tzCD
-	 luesG5vhZ7FpWNhMQdgZ2TtbPAVVUFlMNbBFNGdPGQyKYIWnHqu/alK/dNDkLKatuEDy45pSSMzDb
-	 9TQKK+wTQrPRWzBpcCdE+5WXS/vMqYOsFLI7Agh2iCujmAbT6DqMJMBtev6diGbidolFdVghEQQfO
-	 swp0nyj5MYElCZMOUAbnTvPr74TchqH5r3Uj0LXPNnf7/u8QQLECvpgJqVb2VNUKmrCTAJRul2EYK
-	 YYp2dIi7VIt3exkYzQoEbSZ12+NFgjgLLBoQPuAt7jBnzdesACZPEH27ia3bQsb/c6MY4
+X-QQ-XMAILINFO: MxLtP9q6S0tzjLKUKgJphWdmcFHfNjQ+Kg7zfilYfOVLccuCtqBLPDXOU/0AG3
+	 hDL/EKnlaE/4Unw/PfxELEMPmMENAGsqik9zbXx65JLzWq3V7par2z3s3fqP0lxb/tS+BeO5Gu3p6
+	 /wENtOGv41KbVGOZvRDWC5xLa0bWnalLVMpTNobxlr34gAcXwFbcU7+sEKEqpKvYZhrYrs4ouvi+Y
+	 4gECnxuN4+7fD8JXAslDJG/R1qwFg+HuvSXHoXQMTV1CDamooQqWma0WMIq7K1/QMDbprIc9G2jEs
+	 e3GD5a8sGYDS6FXCJa7xby38XshjdgNZecatCej30e/sCQZhPQokFNeC1AMMD/7G6JldqgGDQcEpR
+	 8r54+y0EGdWvHX9h82jppGKe1BGXL0Xkxwtc9NUf65rTbBddyTkpkbZ0+9vw5IZzLq8XHXVpN9GkO
+	 9YOpkySIos4xtYfpPTiCPH8B3NGGzjAlD1UhaTekAD70mundIhUfgbKT7H704tZBLpl5eaqEJwJKY
+	 eFHlJZwlxKGagWjnLISVdl0iXGBA+ke6RjWRgx1dv2RlhC3oV9j5RZHKafNToNomSwaZVRP/bot8C
+	 LVa1y9inpdOh49gA5e/mHAIHF471W6INM6UsSfdqMuPD4jThwep0vFAVYo7U+EfX3DkFA0OIv5vPO
+	 2+4gqjwQ0Qihoujov7LQknNJ7Lg1QU+/2cv/hnHaSayki3+8PWY2vGb5cBeSloV09+kzMqngrEaF5
+	 yMX45PfBtrNQeUqcJe83PMsreIHn8irfvpXCJtg8SBCyGHoDq0eyPQSlatJ9OefP1CYtj6hQjr5X4
+	 WtplOcUl0FDukpST5Aov9n0Fv8mnYeYvSyp/FMmmog7ajNe90P6m51FWmx3gW8J3hiw6v33G2ihwt
+	 SRjJwSTVa2kZ+qW0oJ4GM883eF3s0/Zz+GYQDsh16RPZvPlAG0jO8dHG2LSYxuRr6yzJnLB3O9nID
+	 4mPLuNj3oH8wOXjcEChVobv2ru0XNLfM6Jw83mCNqK/XGWC+Sot4MbqME0At8ZvTDGNQegoW9MMWu
+	 29dv36fwBYAFDYJgSlKIrftX3a8AIGo5TYxKVh22MaBVmKqs=
 From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?c2FzaGlrby1yZXZpZXdz?=" <sashiko-reviews@lists.linux.dev>
-Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?T2xla3NpaiBSZW1wZWw=?=" <o.rempel@pengutronix.de>
-Subject: Re: [PATCH net v2 3/3] can: rockchip_canfd: cancel bus-off restart before closing the device
+To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
+Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?YmlnZWFzeQ==?=" <bigeasy@linutronix.de>, "=?utf-8?B?Y2xya3dsbG1z?=" <clrkwllms@kernel.org>, "=?utf-8?B?cm9zdGVkdA==?=" <rostedt@goodmis.org>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>
+Subject: Re: [PATCH net] can: rockchip_canfd: stop bus-off restart before closing the device
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -51,37 +51,44 @@ Mime-Version: 1.0
 Content-Type: text/plain;
 	charset="utf-8"
 Content-Transfer-Encoding: base64
-Date: Wed, 14 Oct 2026 12:35:33 +0800
+Date: Wed, 14 Oct 2026 13:03:02 +0800
 X-Priority: 3
-Message-ID: <tencent_B9EC467C023611B7FC189AA06892648C1209@qq.com>
+Message-ID: <tencent_D5994C4DC2CF087A800762B3DF5F53010D06@qq.com>
 X-QQ-MIME: TCMime 1.0 by Tencent
 X-Mailer: QQMail 2.x
 X-QQ-Mailer: QQMail 2.x
-References: <20261014-rockchip-canfd-restart-close-v2-0-c8fbdfad1803@qq.com>
- <tencent_B15E13184DA04C4382F48848C006A2B51F06@qq.com>
-	<sashiko-outbox-170754@kernel.org>
-In-Reply-To: <sashiko-outbox-170754@kernel.org>
-X-QQ-mid: xmsezb41-0t1791952533td804daax
+References: <tencent_5802EE88434010229EDF7A53084D994C6106@qq.com>
+	<179194843570.434549.16906326776857003512@kernel.org>
+In-Reply-To: <179194843570.434549.16906326776857003512@kernel.org>
+X-QQ-mid: xmsezb41-0t1791954182tg1aae6rv
 
-SGksCgo+IFtTZXZlcml0eTogTWVkaXVtXQo+IElzIGl0IHNhZmUgdG8gY2FsbCBkaXNhYmxl
-X2lycSgpIGhlcmUgb24gYSBzaGFyZWQgaW50ZXJydXB0IGxpbmU/Cj4gCj4gSW4gcmtjYW5m
-ZF9vcGVuKCksIHRoZSBJUlEgaXMgZXhwbGljaXRseSByZWdpc3RlcmVkIGFzIHNoYXJlZDoK
-PiAKPiAgICAgZXJyID0gcmVxdWVzdF9pcnEobmRldi0+aXJxLCBya2NhbmZkX2lycSwgSVJR
-Rl9TSEFSRUQsIG5kZXYtPm5hbWUsIHByaXYpOwo+IAo+IE1hc2tpbmcgYSBzaGFyZWQgSVJR
-IGxpbmUgZ2xvYmFsbHkgZGVsYXlzIG9yIGRyb3BzIGludGVycnVwdHMgZm9yIGFsbCBvdGhl
-cgo+IGRldmljZXMgc2hhcmluZyB0aGF0IGxpbmUuCj4gCj4gQ291bGQgdGhpcyBkcml2ZXIg
-aW5zdGVhZCB1c2UgYSBzb2Z0d2FyZSBmbGFnIHBhaXJlZCB3aXRoIHN5bmNocm9uaXplX2ly
-cSgpCj4gb3Igc3BpbmxvY2tzIHRvIGV4Y2x1ZGUgdGhlIGhhbmRsZXIsIHJhdGhlciB0aGFu
-IGRpc2FibGluZyB0aGUgcGh5c2ljYWwgbGluZT8KPiAKPiA+ICAgcmtjYW5mZF9jaGlwX3N0
-YXJ0KHByaXYpOwo+ID4gICBya2NhbmZkX2NoaXBfaW50ZXJydXB0c19lbmFibGUocHJpdik7
-Cj4gPiArIGVuYWJsZV9pcnEobmRldi0+aXJxKTsKPiA+ICAgbmV0aWZfd2FrZV9xdWV1ZShu
-ZGV2KTsKPiA+ICAgYnJlYWs7CgpJIGFncmVlIHRoYXQgZGlzYWJsZV9pcnEoKSBhZmZlY3Rz
-IGFsbCB1c2VycyBvZiB0aGUgc2hhcmVkIElSUSBhbmQKc2hvdWxkIGJlIGF2b2lkZWQgaGVy
-ZS4KClRoZSBpbnRlbnQgd2FzIHRvIGV4Y2x1ZGUgdGhlIElSUSBoYW5kbGVyIHdoaWxlIHJl
-aW5pdGlhbGl6aW5nIHRoZQpjb250cm9sbGVyLiBNYXNraW5nIHRoZSBjb250cm9sbGVyJ3Mg
-b3duIGludGVycnVwdCBzb3VyY2VzIGFuZCBjYWxsaW5nCnN5bmNocm9uaXplX2lycSgpIGFs
-b25lIHdvdWxkIG5vdCBiZSBzdWZmaWNpZW50OiBhbm90aGVyIGRldmljZSBvbiB0aGUKc2hh
-cmVkIGxpbmUgY291bGQgc3RpbGwgaW52b2tlIHJrY2FuZmRfaXJxKCkgZHVyaW5nIHJlaW5p
-dGlhbGl6YXRpb24uCgpJIHdpbGwgZml4IHRoaXMgaXNzdWUgaW4gdjMuCgpSZWdhcmRzLApD
-dW5oYW8gTHUK
+SGksCgpJIGNoZWNrZWQgYWxsIGZvdXIgZmluZGluZ3MgYWdhaW5zdCB0aGUgY3VycmVudCBi
+cmFuY2guCgo+IC0gW01lZGl1bV0gVGhlIHBhdGNoIG5vdyBoYXMgcmtjYW5mZF9zZXRfbW9k
+ZSgpIHJldHVybiAtRU5FVERPV04gd2hlbiBpdAo+ICAgc2VlcyBwcml2LT5jbG9zaW5nLgo+
+IC0gW01lZGl1bV0gcmtjYW5mZF9zdG9wKCkgcHVibGlzaGVzIHByaXYtPmNsb3NpbmcgPSB0
+cnVlIChsaW5lIDc3NikKPiAgIGJlZm9yZSBpdCBtYXNrcyB0aGUgY29udHJvbGxlciBpbnRl
+cnJ1cHRzIHdpdGjigKYKClRoZSB0d28gaXNzdWVzIGludm9sdmluZyBjbG9zaW5nIHdlcmUg
+YWRkcmVzc2VkIGluIHYyLgoKPiBbU2V2ZXJpdHk6IEhpZ2hdCj4gVGhpcyBpc24ndCBhIGJ1
+ZyBpbnRyb2R1Y2VkIGJ5IHRoaXMgcGF0Y2gsIGJ1dCB0aGlzIHBhdGNoIGhhcmRlbnMgdGhl
+Cj4gcmVzdGFydCBwYXRoLCBzbyBpcyBpdCBzYWZlIHRvIHJlaW5pdGlhbGl6ZSB0aGUgdGlt
+ZXN0YW1wIGRlbGF5ZWRfd29yawo+IGhlcmU/Cj4gLi4uCj4gV291bGQgaXQgd29yayB0byBj
+YWxsIElOSVRfREVMQVlFRF9XT1JLKCkgb25jZSBhdCBwcm9iZSB0aW1lLCBhbmQgdG8gY2Fs
+bAo+IGNhbmNlbF9kZWxheWVkX3dvcmtfc3luYygmcHJpdi0+dGltZXN0YW1wKSBpbiB0aGUg
+cHJvY2Vzcy1jb250ZXh0IHJlc3RhcnQKPiBwYXRoIGJlZm9yZSB0aGUgdGltZWNvdW50ZXIg
+aXMgcmVpbml0aWFsaXplZD8KCkFncmVlZC4gRXhjbHVkaW5nIHRoZSBJUlEgaGFuZGxlciBk
+b2VzIG5vdCBzdG9wIHRoZSB0aW1lc3RhbXAgd29ya2VyLgpJIHdpbGwgaW5pdGlhbGl6ZSB0
+aGUgZGVsYXllZF93b3JrIG9uY2UgYXQgcHJvYmUgdGltZSBhbmQgc3luY2hyb25vdXNseQpj
+YW5jZWwgaXQgaW4gdGhlIHByb2Nlc3MtY29udGV4dCByZXN0YXJ0IHBhdGgsIGFmdGVyIGV4
+Y2x1ZGluZyB0aGUgSVJRCmhhbmRsZXIgYW5kIGJlZm9yZSBya2NhbmZkX2NoaXBfc3RhcnQo
+KSByZWluaXRpYWxpemVzIHRoZSB0aW1lc3RhbXAKc3RhdGUuIFRoZSBidXMtb2ZmIElSUSBw
+YXRoIHdpbGwga2VlcCBpdHMgbm9uLXN5bmNocm9ub3VzIGNhbmNlbGxhdGlvbi4KCgo+IFtT
+ZXZlcml0eTogSGlnaF0KPiBUaGlzIGlzIGEgcHJlLWV4aXN0aW5nIGlzc3VlLCBidXQgdGhp
+cyBodW5rIHRvdWNoZXMgdGhlIHJlcXVlc3RfaXJxKCkKPiBwYXRoIGluIHJrY2FuZmRfb3Bl
+bigpLiBXaGF0IGhhcHBlbnMgdG8gTkFQSSBpZiByZXF1ZXN0X2lycSgpIGZhaWxzPwo+IC4u
+Lgo+IFNob3VsZCBjYW5fcnhfb2ZmbG9hZF9kaXNhYmxlKCZwcml2LT5vZmZsb2FkKSBiZSBh
+ZGRlZCB0byB0aGlzIGVycm9yIHBhdGg/CgpZZXMuIEkgd2lsbCBhZGQgaXQgdG8gdGhlIHJl
+cXVlc3RfaXJxKCkgZmFpbHVyZSBwYXRoLCBiZWZvcmUgc3RvcHBpbmcgdGhlCmNvbnRyb2xs
+ZXIsIHRvIGJhbGFuY2UgY2FuX3J4X29mZmxvYWRfZW5hYmxlKCkuIEkgd2lsbCBhZGRyZXNz
+IHRoaXMgYW5kCnRoZSB0aW1lc3RhbXAgd29yayBpc3N1ZSBpbiBzZXBhcmF0ZSBwYXRjaGVz
+LgoKSSB3aWxsIGZpeCB0aGVzZSBidWdzIGluIHYzLgoKUmVnYXJkcywKQ3VuaGFvIEx1
 
