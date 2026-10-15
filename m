@@ -1,24 +1,24 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F196547063;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A20EE28B7C8;
 	Thu, 15 Oct 2026 01:53:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792029223; cv=pass; b=o1VkCSfWPYB3MNjorsxMj0fNlfUenS3PqfdDxi82JFUftG/V8a8qEYfPj+vPWvBabKJCHlOM+iqGTJ8wQ+ukI5upwvYS2KIjmHC0bKXdsqiLp9QJnnHjwzFwNnIA3MmpWNlO8lnHiMpLxW5phiocosMkyUMUuwxXonODaPD1lfI=
+	t=1792029223; cv=pass; b=YQ3u1YTJP30eGxZLdA3W8JdNXaHOwnMCy7/AqSjp22TQZOx4SF7J8bEnww+aWudQvSAqNXmO8I7WdbfxtsC8IaAWr6WN0asNL7e6sTVW36aDLQJXOdsHClLqL+SjElHTBxVY6/ZMck8Z1EqCOYaYe/JGi3c8fdJgzhvOm0QJn5g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1792029223; c=relaxed/simple;
-	bh=icwttVp/gpJ9Ow/0dJ5cGcW3oVQP3H8pD+33rsf3U90=;
+	bh=4WqM4KHYIgPp50VhN6Z5H13Wq1tP06LU0DmWZcAnruA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=N47zNfyN+vYyqTICbvI6M/cmysR/X+n7lZvyTG6U4KUxBhz/TYdbY/iPzGl3Wy1fjdhvrEhqh5VIUJaTmmOmOmnmecpqWmwurqMH6YJpziK/cXag7QjISqP9Z02sPo8NkLtm+wwufpgQtKxbu60F6+KxvBd1+e92I8x7meyaHt4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=awIbH+1v; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=PzrMaedReLcb4zh7ecvohCKVxpYYa2x46hUQdz6AmT5hsM1S3HVP4k4/i/1s2b2el+pgW8AAwLR1Rnz9N3wm9B7LYVBfSR+ZiDSLxufZk/NoW/qXt2WACayvj2KooUf8WGkpTY0Cg8H7h1ouWrXOSyvJnjxXgGO8HYJncFpbZoI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=AfbsD1ef; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="awIbH+1v"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="AfbsD1ef"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id B9DB1201E7D;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id D1237202339;
 	Thu, 15 Oct 2026 03:53:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792029219;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GuuCj5FgUwZxYjIYXBjDzyPTNHukyGNgbaxYgigr4OE=;
-	b=awIbH+1viQ29r2rs2wRhZHkHX6YVkdtMHZ7eBG31lxbW0p6vCEKGCz/9OeIEeBgknWHnPu
-	XMqEnBxh/sS4ttuMloNUZeSx25It4Jehoh+q7/Q6MJz/5EC53yLz2FjiDYP4zibIyTbMCz
-	LUhyezobGAEb58ZOeIi8Gx1+a+ou+Wc5EBOWChNlKZkeCuP1BBxL48ra/uQyEDVhmkbgHR
-	uLqHr+HEiUtU/eT0EqSbfKErpc8AuLMQx0TVf+P0cd0cXh4T68F777dF5FRbO+jPR/70dR
-	+MHgF5/ynQEgzCDi9ZTmLKq2y8dPMSxUEl5bPiP9d7FWfhF0qXnZyFgq668uog==
+	bh=5L68qtM2YInkegYSK2OIj8sTeZLAq4KkF25qopMAdno=;
+	b=AfbsD1efKYZCI+m+RAULzBDpfHjb29fdcZ831M9SAtl3bQxFBYfHtJX1GdzpXi8u7MHRrz
+	yeLAyhejW7Xqv0RRLVGhYEWiNvLgWp/m8sbP3WbLD9cQi5HWuLWcC3oHWU0T1nyNbVgC4Q
+	ghdw2PvX5AR2TBWT+mlHI//BTGkbLHH9p0ZsOOoBnoDRcmLvmncr5La1HSb/VFur15NOKZ
+	qzC/cWaDr4+h9Lg7QCGfxRzN7oYJX7kuhlN7pXlLE7NtXVctpqbFqjea3r1baqwVbQEh1l
+	ihNBprpG7n0RajTDTQwe8vxaKX3nbQp4GYEhYad31xZMxo+w0riKZtOvZON+Wg==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792029219; a=rsa-sha256;
 	cv=none;
-	b=EbHAf2RiS5aRK4ZXff1R3V2MOBv4msPA9pe7iVI/AbwhQwPcEO/P7+awBNnoGkN79IaBki
-	oCOrigNOaN0pw6BcFV7BKttQch4rBS/JYvtenVUmHggsD37E1a1XZhWYmPoBuBwnAxk36z
-	XpIauVFye3tKPxJ07kcttbGGw4CfUoRWazw6NvjtUsYH1ldI+QYUSCX1dQDWxzIImxZoKM
-	dWkJ4Akv0XbjcDQByy0/8oOfQYPsuflEvfdyfGCvc8wJbe2Ebvb3mQT4XrdtnuaPlb4Lxw
-	XJXwnMceVYQ+jOQ7pgB5bZA6OYOBDspL+0PsJHGUB9DRlPsuWtsKe4JS9P8XsQ==
+	b=ZJYVZQVQ2PNYIpK+JYYtZ3LRhJ4v9qHGC3lehRY+eiWgxfGm68CS356u5Ea/6WXJ8ElZhW
+	J/VzqLLTNGSsAFI9lqMBCzaUwnM4GfqBOGw0upggO8nAJ6Qbc5SB7qsKzYqA4+6tKTo0r/
+	cQAuDtP3oPYAHonkV2JOH1ZqasLw+4fpy/V4M/h168Ro+qwgEzIk0eKvtZtyw5FNC6klGh
+	V0BwPpqe3ccl4C5uSPETUqr0EP319ASZ/AOONVjEnJbi6cLsWAdaNafz/RV0nZIxdetKtE
+	xjlq9RXSn/YhHaElXqOv0yezRgLD1AjIB3OTu0zINGPLEArM+a/HgGfZD56TmA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -48,24 +48,24 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GuuCj5FgUwZxYjIYXBjDzyPTNHukyGNgbaxYgigr4OE=;
-	b=HeIRcctTs60Lh3hZlYuiZ4NFqwnkYN2gjC6zRfkY6ufhgnHUgRVby8mlEtcNAPDt17M10n
-	esGCqsRizbHaFTMjqKlqCUCXuoXFMyTrS24tPMmbpBGBbGkTGxEQaxhIU5kH861Zr3Gd35
-	+SI0WeyLePPP60xmPxZCzl6vAfFIwevdW36Deo98BdslyG74/mGyi38JsoGO/YEhVdZQJY
-	WocXHI6mi5r1mDR5HSNNWQaP1uwY9tmIxIPIsWyGjO9g1eipg/DT4Wj9A8E0Sfr5g5xFfy
-	TMP4d8t6StbqvGi0Nsn5Xpcqaz3B4yEsQqCOGsPQhM/ywQG/MuTqWvwvx2v41A==
+	bh=5L68qtM2YInkegYSK2OIj8sTeZLAq4KkF25qopMAdno=;
+	b=M34dwwdbBL/JYDwfzFYU+io6pwS2qchXTZA8JZg2fzLfHa7NiB4OYEr1TrZwl4aKB9UjYR
+	Z5jk5EV0YKj7Q3IrTJvDVeOkNms3I7+0UC3vjSxVdgKiFYgHJp8i8lJ6JJrWRE6Yc+/TAM
+	ADSqtqYos9xiWGrks4SJ4SM1+e30zZ3Ja7nSHo9qDOOF6uZvq+NBuChpl7EnJCEtuXlq7+
+	AXXfQLwONssftfjKjRVFCIlW4kfdBlDMCAon6/smHGGKjAKBGGiHYvTTPL8yj4saX5FPPg
+	ej/pdsm/dR4w+Tycr91162X2dIJ4/gVUAnKP/EmkbG39A6iBNLeOS2e//mwzjA==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xHAf5-005wpj-24;
+	id 1xHAf5-005wpn-2Q;
 	Thu, 15 Oct 2026 03:53:39 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 5F2A05C4775;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7C5B25C4777;
 	Thu, 15 Oct 2026 01:53:39 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -73,12 +73,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Sang-Heon Jeon <ekffu200098@gmail.com>,
+	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	stable@vger.kernel.org,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 02/37] can: raw: remove redundant NULL check before netdev_hold()
-Date: Thu, 15 Oct 2026 03:40:00 +0200
-Message-ID: <20261015015336.816543-3-mkl@pengutronix.de>
+Subject: [PATCH net-next 04/37] can: proc: reset pkg_stats atomics individually
+Date: Thu, 15 Oct 2026 03:40:02 +0200
+Message-ID: <20261015015336.816543-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261015015336.816543-1-mkl@pengutronix.de>
 References: <20261015015336.816543-1-mkl@pengutronix.de>
@@ -90,39 +91,92 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Sang-Heon Jeon <ekffu200098@gmail.com>
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
 
-netdev_hold() does nothing if dev is NULL, so the check before the call
-is redundant.
+Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+converted several members of struct can_pkg_stats to atomic_long_t and
+updated the hot TX/RX and procfs read paths to use atomic_long_*()
+helpers. However, can_init_stats() still clears the whole struct with
+memset().
 
-So remove it. No functional change.
+can_init_stats() is reached from can_stat_update() in timer context and
+also from the procfs reset path. Those paths can run while the TX/RX hot
+paths are concurrently updating rx_frames, tx_frames, matches and their
+*_delta counters. Hitting the whole-struct memset() in that window
+performs plain writes to fields that otherwise follow an atomic_long_t
+access contract, which can lose or mix live statistics updates.
 
-This is the result of running the Coccinelle script from
-scripts/coccinelle/free/ifnulldev_put.cocci after commit f83b8a58695c
-("coccinelle: ifnulldev_put: update outdated helper names").
+This issue was found by source-level API-misuse analysis looking for
+whole-object resets left behind after atomic_long_t conversions, then
+manually audited on Linux v6.18.21.
 
-Signed-off-by: Sang-Heon Jeon <ekffu200098@gmail.com>
+Replace the whole-struct memset() with a helper that resets the
+atomic_long_t counters via atomic_long_set() and clears the derived
+scalar statistics explicitly. This preserves the existing reset
+semantics for scalar fields while restoring atomic access discipline for
+the live counters.
+
+Build-tested by compiling net/can/proc.o on x86_64 netdev/main.
+Runtime-tested with a QEMU + vcan setup on Linux v6.18.21 by driving
+concurrent traffic and reset_stats reads, which reproduced inconsistent
+exported statistics before the fix.
+
+Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+Cc: stable@vger.kernel.org
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
 Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20260831052031.902699-1-ekffu200098@gmail.com
+Link: https://patch.msgid.link/20260512133937.21957-1-runyu.xiao@seu.edu.cn
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/raw.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ net/can/proc.c | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 0acd4f6c6dd6..6944ebab3feb 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -529,8 +529,7 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
- 		ro->bound = 1;
- 		/* bind() ok -> hold a reference for new ro->dev */
- 		ro->dev = dev;
--		if (ro->dev)
--			netdev_hold(ro->dev, &ro->dev_tracker, GFP_KERNEL);
-+		netdev_hold(ro->dev, &ro->dev_tracker, GFP_KERNEL);
- 	}
+diff --git a/net/can/proc.c b/net/can/proc.c
+index de4d05ae3459..64b3bdc2fa7e 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -76,16 +76,39 @@ static const char rx_list_name[][8] = {
+  * af_can statistics stuff
+  */
  
- out_put_dev:
++static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
++{
++	atomic_long_set(&pkg_stats->rx_frames, 0);
++	atomic_long_set(&pkg_stats->tx_frames, 0);
++	atomic_long_set(&pkg_stats->matches, 0);
++
++	pkg_stats->total_rx_rate = 0;
++	pkg_stats->total_tx_rate = 0;
++	pkg_stats->total_rx_match_ratio = 0;
++
++	pkg_stats->current_rx_rate = 0;
++	pkg_stats->current_tx_rate = 0;
++	pkg_stats->current_rx_match_ratio = 0;
++
++	pkg_stats->max_rx_rate = 0;
++	pkg_stats->max_tx_rate = 0;
++	pkg_stats->max_rx_match_ratio = 0;
++
++	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->matches_delta, 0);
++}
++
+ static void can_init_stats(struct net *net)
+ {
+ 	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 	/*
+-	 * This memset function is called from a timer context (when
++	 * This stats reset is called from a timer context (when
+ 	 * can_stattimer is active which is the default) OR in a process
+ 	 * context (reading the proc_fs when can_stattimer is disabled).
+ 	 */
+-	memset(pkg_stats, 0, sizeof(struct can_pkg_stats));
++	can_reset_pkg_stats(pkg_stats);
+ 	pkg_stats->jiffies_init = jiffies;
+ 
+ 	rcv_lists_stats->stats_reset++;
 -- 
 2.53.0
 
