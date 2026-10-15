@@ -1,176 +1,90 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+Received: from out203-205-221-173.mail.qq.com (out203-205-221-173.mail.qq.com [203.205.221.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F16E74AA004
-	for <linux-can@vger.kernel.org>; Thu, 15 Oct 2026 07:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=81.169.146.167
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792048312; cv=pass; b=ag/h9R5+3tXujcaH2REHAyUEnw+0P7PqshM8Bst3uh4D2KTC5aTjF1Z7AC78JDDxXDtWVjk8zuQ5Rns0M7uXCdLr4x1Yr3xvIiAoGS30u/AqYLHazQEls1iVU5fdCRWkoD4umSCdrSVnVIXXfR24OaPvLjqwCHt1vu40UbpBdsE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792048312; c=relaxed/simple;
-	bh=jq+zfJ3ECLVr3biYxfSr8PI9fNDQc9f/cLsYaUwEbnY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qYo8FWSj8Fn5kMbJNq15RrWEvX2kmfsz6Mg345drou3GqBrllWoXla7jZQGSpcrWdEKEhaVRsBs4stbOQlJgxSwB7niKXsNBOtoppmYF1f+9O0knYpwVccqgdD6PCF3wd0eiBQcXfsWcMt0cSFtszRUk+g46JmGQdfjjUKRP+pY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=QJPhavDm; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=iIV1m2V7; arc=pass smtp.client-ip=81.169.146.167
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E061F938
+	for <linux-can@vger.kernel.org>; Thu, 15 Oct 2026 07:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792049652; cv=none; b=V+eyArwnjONbxryLMdARVjlHDHo6r1RpOWhuW/S/6C6s65x9yMn3zLnTR7IIp/I/1jGMvk3VmA4vIJIK1x91cBmu0yspZWJLKI395WTQDn+lwA9jqybodBb6taJhghq02xwqU1Oc/wuvVyX4IZgAldILXw+9pfjlWOXczkxmOrA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792049652; c=relaxed/simple;
+	bh=4CKK7lAR49O9SI1kJP4IT8U/pMoZQR2byuCm1R2pMnU=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=EQ0IobkoFHgvrc0wvCbSjCJIkQSvNqrv5631AlafzU2otnV74eSmU7iwRIHPXWIdfvtgNCRdK4qAy0/5306v3XvlK9Yl/DqPHcsUq0t5oDorX0p6ND1DtKpuKHPdxHwJmZ+n0cHJNsuEpsmSWEPM5FUcPXOrGQ8vN+j+rFQPwMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=q/KQYozg; arc=none smtp.client-ip=203.205.221.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="QJPhavDm";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="iIV1m2V7"
-ARC-Seal: i=1; a=rsa-sha256; t=1792048294; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=Gk5XXpyH/v5CkOSfNrS4dkL7toLAE899uzaenjfvHl7u/niNc+HwleOcUIForz5kk0
-    HPYGE+dbcY8kIuIse3cwwg9bOTlegJVLNOCrzyyuAnkwWFwob0ern8l3bcOtXLwyVm8y
-    NgbW5OJWlV/s3dubM12eL0Phz3nhqltqB43hOC61NoCaMqayWd8XQgFh28M/gXBxALQ0
-    RyKBUygNXvdTZbxVTC0sT3EC8FGF0IyKjcIFgxZWwtjeaDUo8V4d9DKD3i3vcfJw9Nla
-    zUPMlzccLOYH70ZBVtQtyNymd8GT8O5Klah8tZU9xDEIl/zAIAIvge/KW9Mmors7Zk38
-    S5EQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792048294;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=IrPI34EuSJU59TiXBScTBwjaHWq9aiMaP7e2zoIGVWM=;
-    b=gSSMYY+JNCTzpqy69fgqK7Cv6Dw3LTaDFWol0SX6fXKUsQCiEL1Gs1e54al9ilL70D
-    JGdDpPEl5LIyRWglIuYVJqNy/gwHzHWphDS9zDLRGVZ2E4XGTgDyLuz0BFWxIhfFIYT0
-    Lwa+CuL3sxkNQsbKQMXDWPTubPAhkh+5O7TdwFKgOZhyuESkp5pL7lwqESWyAesjeSMP
-    wKWmz1p+vCVnSeW43+0ynAM0AJpTGuSSco6wsqmk7tAdc/y5C3pkKL45Y2uaTT2ee5pZ
-    0OkyczsF6W6/wCfVJisfhDeIWM3UXKX+9SDEvsO7MZ1AaSR6vgIpGcqcTWmt0sWyciqT
-    AlKQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792048294;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=IrPI34EuSJU59TiXBScTBwjaHWq9aiMaP7e2zoIGVWM=;
-    b=QJPhavDmWjiaXI35E27w64ssXVWRG/9F9ypyNp646b466Tp7tr87p6mXxJtsmA0+U0
-    TO/HNOIOBQXsvs7qu3ivLU/kNQIGUf1AHfP9QsvnSdGfql0kjLPQ/sZ2P9LHB9KKXPM6
-    GZCqX+Qusp5j+ACUXd0XUz1AZ8KDFzehoMDnvpifdCGHtMQ9ka3ddq3Uxwv2auc9waj6
-    KFNWjq4pfIkhfLRbMV51FrcbwMJHP+p0ukX5Jd47p3y8j2OJIF5EX/EMnhhu4bbHabs6
-    4XuhXDVVummKaoisihxNB7AptanJvgOxpdSdaVnEWfbiVOSOqr5XDWvg7P186s9mLJ/g
-    tXBw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792048294;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=IrPI34EuSJU59TiXBScTBwjaHWq9aiMaP7e2zoIGVWM=;
-    b=iIV1m2V7XhLh7VM+2hkctK26Uk4x9if3KWEfcYuFJa7L395uYUIZfvzNx3iQ0H3fgL
-    iGkegw3m148LHbli5DAg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29F7BYG8c
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 15 Oct 2026 09:11:34 +0200 (CEST)
-Message-ID: <b97d2d43-9b2a-4091-a019-aea6b990341a@hartkopp.net>
-Date: Thu, 15 Oct 2026 09:11:34 +0200
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="q/KQYozg"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1792049640; bh=4CKK7lAR49O9SI1kJP4IT8U/pMoZQR2byuCm1R2pMnU=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=q/KQYozgK/N0D9Vq3SpfiEx9S2o8mZND17p7qWWt7jIuYph5KMkMOfkMoibK2M7cN
+	 HmmuhLD5B1kg7RJiEbqGmsen96ZzmWh2kUOU4UQix+e1+ZmI0Z3kfPJa/v7hgDl3bx
+	 V3LDfJFlcxQJugb+vJ1eSqKVKazLSIY5skSmcsKg=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
+X-QQ-XMAILINFO: M3Z880YfHp5ouZC8Q6hdtDabPM5zOpEXmAFdt/lAOopz69ksKEpVkV9eq9xoz2
+	 BCetcnyU5Yym8A6e/SuzjUjvtWzXzCL85PAnysSiEBAEq7zQlWnTCmBUbhXs4I3mwAXAy97qgygfL
+	 O0fbPBGDxCGwPeyTIkQqeXE5XqRL/jQXduh38mzL9DX+6stlTdbM4nwGs6u86RPCRhxfEo0F4c4i+
+	 egLl4FRjl7hLJEA7yR/Uqs1+C8gyN2wcZPKWtkFa1vvF1dh//nISG6nG7K1KQiaSnEyCCtalt9Cpe
+	 zXlbwWjj6+ahTpbeZkbjNVyrowzm2pHyMM8bp8PaxkPS+LtfnulagXjIbniOpA/LYIqe57ocHd3Ki
+	 IF/f9H7dfWqT9IcI8rzUth163WGs8r61i9NqUOaWU9kanUtQFW2lSRok4hAH9f8P6Gp+LA7GC7IFV
+	 BwgAOAZv7P6zmpQBLHIHmcEfpLh7VBnVtSjQx6/dMR8imfx+/T68V80K0Q5R1O5/YZ166skJscZkc
+	 ktEALx3Ig9/qG4uLXHJRS2mufhePxeImSl3IamPjNCx1fSWrfr58zypvvCJnh/EdBb1cxlod/03jL
+	 7dIwIb4Zm78Oh5u7+JzvHvZ7avUFr4aWAr06A0r3JHeT/1z9BoTFAIc67xvXeSpzSzoz1iFDKdyCG
+	 zz1cjgS47cxGBg52VIpAgJ14tO4xENQXUo2giCi1h6BGi9wMLQ9NCsAeZww0cLsc0lsQp7OuqSL7Q
+	 5XVgkz8Y51Pftl55aLEaoE7CG1Zt18jdgZs7wn5TLpnh4pLpd3MCAAyeipYwJF2Ff/Vo2fY/oEeGI
+	 3DDhUeqlYiUSsbD9fsKe/OFK1HTLKZ8Y6IwMwdv1gBZ7CsFXeaF8lquKeT6Il58FNQya6/iefZ0Ps
+	 UCvpjMzdpkIl35PdQmMdDbFigWbRhhTHg08WWXmsY2D9Nz+Uf6gooPRX+xxGcKbPlMRBsP2rpGvYF
+	 GR4OWWcmurNMO3/DlgoJmxuupy23f79axPhwLTRqYHZSRZ+P6Y53hInq+y9EGp1DfTmElz4qODAY9
+	 +spkTo3Mp0mRWHe9CHPHNHUY3A8+cQqEWeJ/i
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?c2FzaGlrby1yZXZpZXdz?=" <sashiko-reviews@lists.linux.dev>
+Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?T2xla3NpaiBSZW1wZWw=?=" <o.rempel@pengutronix.de>
+Subject: Re: [PATCH net v4 5/6] can: rockchip_canfd: serialize TX with bus-off and restart
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH can-next] can: raw: take rtnl_lock() before leaving the
- notifier list
-To: netdev-bot+sashiko@kernel.org
-Cc: linux-can@vger.kernel.org, kuba@kernel.org
-References: <20261013115557.114582-1-socketcan@hartkopp.net>
- <179202612843.1406898.1976844402266899912@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179202612843.1406898.1976844402266899912@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Thu, 15 Oct 2026 15:33:58 +0800
+X-Priority: 3
+Message-ID: <tencent_5B20023C10F7FC6C9ADE688C648A13004709@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20261015-rockchip-canfd-restart-close-v4-0-ad149ff79450@qq.com>
+ <20261015-rockchip-canfd-restart-close-v4-5-ad149ff79450@qq.com>
+	<sashiko-outbox-172325@kernel.org>
+In-Reply-To: <sashiko-outbox-172325@kernel.org>
+X-QQ-mid: xmsezb41-0t1792049638trelfzn48
 
-This is an old feedback.
-
-Corrected patch based on this sashiko review is already on its way:
-
-https://lore.kernel.org/linux-can/20261014142114.280279-4-socketcan@hartkopp.net/
-
-On 15.10.26 03:02, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential
-> issue(s) to consider.
-> 
-> Critical: 0 · High: 0 · Medium: 1 · Low: 0
-> 
-> If you believe none of the issues are legitimate, please reply to each
-> issue of Medium severity or higher and explain why the AI is wrong.
-> If any of them are legitimate and you plan to respin, please let patchwork
-> know by including "pw-bot: cr" as a separate line at the end of your reply
-> (one such reply per series is enough).
-> 
-> - [Medium] The commit message for raw_release() (net/can/raw.c) says the
->    change is meant to "Align raw_release() with the isotp and bcm fixes…
-> 
-> --
-> 
-> can: raw: take rtnl_lock() before leaving the notifier list
-> 
-> This commit moves rtnl_lock() in raw_release() so it runs before the
-> socket is removed from raw_notifier_list. A concurrent netdev notifier
-> then can't skip a socket that is being released. Under RTNL,
-> raw_busy_notifier can't point to the released socket, so the busy-wait
-> loop is replaced with a WARN_ON_ONCE().
-> 
->> Align raw_release() with the isotp and bcm fixes for the same window and
->> take rtnl_lock() before removing the socket from the notifier list. As
->> raw_busy_notifier can not point to the released socket under RTNL,
->> replace the busy-wait loop with a WARN_ON_ONCE().
-> 
-> [Severity: Medium]
-> Which isotp and bcm fixes does this refer to? The message has no commit
-> ids or Link: tags. In this tree, both of those release paths still look
-> the way raw_release() looked before this patch.
-> 
-> isotp_release() in net/can/isotp.c still calls list_del() before it takes
-> RTNL:
-> 
-> net/can/isotp.c:isotp_release() {
->      ...
-> 	spin_lock(&isotp_notifier_lock);
-> 	while (isotp_busy_notifier == so) {
-> 		spin_unlock(&isotp_notifier_lock);
-> 		schedule_timeout_uninterruptible(1);
-> 		spin_lock(&isotp_notifier_lock);
-> 	}
-> 	list_del(&so->notifier);
-> 	spin_unlock(&isotp_notifier_lock);
-> 
-> 	rtnl_lock();
-> 	lock_sock(sk);
->      ...
-> }
-> 
-> bcm_release() in net/can/bcm.c has the same busy-wait loop. It calls
-> list_del(&bo->notifier) without holding RTNL at all.
-> 
-> For isotp, this window also seems to matter more than it does for raw.
-> Suppose dev_change_net_namespace() runs in the window (for example,
-> ip link set <candev> netns X). isotp_notifier() skips the socket,
-> because it is already off isotp_notifier_list. isotp_release() then
-> calls can_rx_unregister() with net = sock_net(sk), and that returns
-> early once the device has moved:
-> 
-> net/can/af_can.c:can_rx_unregister() {
->      ...
-> 	if (dev && !net_eq(net, dev_net(dev)))
-> 		return;
->      ...
-> }
-> 
-> Wouldn't that leave receivers with data == sk on the device's receive
-> lists after sock_put() frees the socket? raw avoids this only because
-> raw_release() passes dev_net(ro->dev) instead of sock_net(sk).
-> 
-> Could the commit message name the isotp and bcm commits it relies on?
-> Alternatively, it could be reworded so it doesn't suggest isotp and bcm
-> are already fixed for this window. As written, the isotp and bcm
-> changes that are still needed could be missed in review or stable
-> backporting.
-> 
+SGksCgo+IFtTZXZlcml0eTogTWVkaXVtXQo+IENvdWxkIHRoaXMgbGVhayBlY2hvIGZyYW1l
+cyBhcyBSWCBmcmFtZXMgb24gYSBidXMtb2ZmIGV2ZW50Pwo+IAo+IFdoZW4gcHJpdi0+dHhf
+ZW5hYmxlZCBpcyBmYWxzZSwgdGhlIGNvZGUgc2tpcHMgY2FsbGluZyBya2NhbmZkX3J4c3R4
+X2ZpbHRlcigpLAo+IGxlYXZpbmcgdHhfZG9uZSBhcyBmYWxzZS4gVGhpcyBieXBhc3NlcyB0
+aGUgZWFybHkgcmV0dXJuIGZvciBlY2hvIGZyYW1lcy4KPiBTaW5jZSB0aGUgaGFyZHdhcmUg
+cHVzaGVzIHNlbGYtdHJhbnNtaXR0ZWQgZnJhbWVzIHRvIHRoZSBSWCBGSUZPLCB3b3VsZG4n
+dAo+IGFueSBlY2hvIGZyYW1lcyBhbHJlYWR5IHByZXNlbnQgaW4gdGhlIFJYIEZJRk8gdGhl
+biBmYWxsIHRocm91Z2ggYW5kIGJlCj4gYWxsb2NhdGVkIGFuZCBxdWV1ZWQgYXMgcmVndWxh
+ciBSWCBmcmFtZXM/CgpJIHdpbGwgZml4IHRoaXMgaW4gdjUuCgo+IFtTZXZlcml0eTogTWVk
+aXVtXQo+IElzIHRoZXJlIGEgZGF0YSByYWNlIG9uIHRoZSBwcml2LT5iZWMgc3RhdGlzdGlj
+cyBoZXJlPwo+IAo+IFRoaXMgcGF0Y2ggaW50cm9kdWNlcyB0eF9sb2NrIGFyb3VuZCBwYXJ0
+cyBvZiB0aGUgSVJRIGhhbmRsZXIsIGJ1dCBsZWF2ZXMgdGhlCj4gdXBkYXRlcyB0byBwcml2
+LT5iZWMgb3V0c2lkZSB0aGUgbG9jay4gVGhlIG5ldGxpbmsgY29tbWFuZAo+IGNhbl9nZXRf
+YmVycl9jb3VudGVyKCkgaW52b2tlcyBya2NhbmZkX2dldF9iZXJyX2NvdW50ZXJfY29ycmVj
+dGVkKCksIHdoaWNoCj4gYWNjZXNzZXMgcHJpdi0+YmVjIGZyb20gcHJvY2VzcyBjb250ZXh0
+IHdpdGhvdXQgZHJpdmVyLXNwZWNpZmljCj4gc2VyaWFsaXphdGlvbi4gQ29uY3VycmVudGx5
+LCBOQVBJIGxvb3AgZXhlY3V0aW9uIGRlY3JlbWVudHMgcHJpdi0+YmVjLnJ4ZXJyCj4gYW5k
+IHByaXYtPmJlYy50eGVyciByaWdodCBiZWxvdyB0aGlzIGJsb2NrLgo+IAo+IENvdWxkIHRo
+aXMgcmVzdWx0IGluIHRvcm4gcmVhZHMgb3IgbG9zdCB1cGRhdGVzIHRvIHRoZSBlcnJvciBj
+b3VudGVycyBiZWluZwo+IHJlcG9ydGVkIHRvIHVzZXJzcGFjZT8KClllcywgdGhpcyBpcyBh
+biBleGlzdGluZyBpc3N1ZS4gVGhpcyBwYXRjaCBkb2VzIG5vdCBtYWtlIGl0IHdvcnNlLgpJ
+IHdpbGwgbGVhdmUgaXQgb3V0IG9mIHRoaXMgc2VyaWVzIGZvciBub3cuIElmIEkgaGF2ZSB0
+aW1lIGxhdGVyLApJIHdpbGwgc2VuZCBhIHNlcGFyYXRlIHBhdGNoIHRvIGZpeCBpdC4KClJl
+Z2FyZHMsCkN1bmhhbyBMdQoKcHctYm90OiBjcgo=
 
