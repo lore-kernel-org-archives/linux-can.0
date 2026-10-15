@@ -1,111 +1,85 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31DB1379C32
-	for <linux-can@vger.kernel.org>; Thu, 15 Oct 2026 09:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C8652857F0
+	for <linux-can@vger.kernel.org>; Thu, 15 Oct 2026 10:13:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792058238; cv=none; b=IySAkMnLpPU29URHbTmfNDbZiC7pUjv4p4WuxSlmiT7KNeSsQsBFN7svZ9ZI/A2FsGyffFC3Ju9Mm3CtEFBMG63frMw/Q/41R5cfmqgMaX8R18bySHbYgMYMB3CBsAjYX0cZSqu+fZyGYal7HPd0/tAxwqy/7ifdJUNwi2Ov6Qo=
+	t=1792059221; cv=none; b=u6Xe+NwY1yw7OpEVBkmtHmm6y5HnuJoRMUG/5VwlW8VEA8aBZwobG2Jm0zOyZ3WQsWAO7bVvxKEj9qtJVjPlZCjHWNa9LYSuP0/rLlkD9NZRwLpoRkGgx+jrm+eUozSjmOgU6AXUE7nElTOzgFfA6eZuLUrbTtyRyZgMoIOk9GY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792058238; c=relaxed/simple;
-	bh=Wp9eG9ZcjZzJ4j1MQM5lSaaQwodclVRDoGbAju+Id0o=;
-	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=qI4t6MVBVIr0qCXoVaju2qbq5qLWsxE31YwjmjXS0o733hZlzSAPCJmUfPYWqvW9fgk+P3PnlgxOPuxwCVHiQcAnhV8Qay/bp+BVtQqBodccnVjbYdQtRZPTJIxBixEJMH2N/m7SAe3p6veRUMBCNHjTSxDPd3HJDI7hxq0pZt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZzYHq+sB; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792059221; c=relaxed/simple;
+	bh=MMlRXSAS2923dKkz9CNJnOAq1/1JxcvHXhLKFq46OcM=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=foC0CEpayJOQrs7It7fi7KY9joQzk8VXdMJ1YoGbO4gGOElGi6G9/vY7QwSiU0gggghIUKAeT4q9Qz+nSS67UwAD9Y1gbY5DBUQXTNCK2LMRPd9xCj/hB7MckfeIpynedosBOJL+0/v+lhWZEp/2IjiEL4TylfIIRWk8uUWHlpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=IVgv/a7y; arc=none smtp.client-ip=162.62.57.210
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZzYHq+sB"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 127551F000C4;
-	Thu, 15 Oct 2026 09:57:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792058236;
-	bh=S0Vi7m6/uHrkQ8yVrFGR4mFnQY5vxSbE4JjSQh9p7tc=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ZzYHq+sBn+bT8Nfabme5rCy8HZZNY1lzPskR2wEmp5DoxArXKfglq4efx0w/F9St2
-	 gLGlWzoaXNa+JKELQo4IUDoZdvMd2yVrA35xVfOwLjlY/ivkaDqTJ2MGwLn5/G+fsh
-	 KegPCaUZLZ+/x5Zjdibn8pNt/9K31RUoIUrfUpq0doURYSqbpGEMWaKj9eRWx1tAys
-	 IWpm9pBPpbY7sp84Vw3Fkztd8Qhk7GjFpa0EpfHx4I2K0O6WnCnGKySSYBDqOR9sFX
-	 qwzMhyfqLUAkfunhYF454GYAmCM9clyb5aayG8fThoI7NDQ+3TsiuZJAh1PUGC6Lpt
-	 DhMiF54+04Vnw==
-Message-ID: <sashiko-outbox-172613@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net v5 3/6] can: rockchip_canfd: cancel bus-off restart
- before closing the device
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Cunhao Lu" <1579567540@qq.com>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261015-rockchip-canfd-restart-close-v5-3-ae77327037c9@qq.com>
-References: <20261015-rockchip-canfd-restart-close-v5-0-ae77327037c9@qq.com>
- <20261015-rockchip-canfd-restart-close-v5-3-ae77327037c9@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 15 Oct 2026 09:57:15 +0000
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="IVgv/a7y"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1792059213; bh=MMlRXSAS2923dKkz9CNJnOAq1/1JxcvHXhLKFq46OcM=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=IVgv/a7y/he0GTNv5G7BZFIJcyfjoenClG2fYeqLV3feIG19WE2ASpWiSLPBVOJTl
+	 CDJzdtiX9S/PsmOFOy0NztmOmOI7sTENmGxo6JuZ8h8QjpgVRokZafTuGut322JaXP
+	 6dwUuxkPdu39eFi2FmufTHbrLt4ZqJQ7PDLTgftQ=
+X-QQ-XMRINFO: MPJ6Tf5t3I/ylTmHUqvI8+Wpn+Gzalws3A==
+X-QQ-XMAILINFO: MyUpnyPwWZhGr2AovVLd2l3avmgw3ofQgmI7yHqE1KR6nEdW1DMKGzdjdBHaNX
+	 Io9JAV2hfW7EbNWVuaBZ2Qrpa5Kk1sRhRVwxeEYf/rUgtxWV1ayjwpsYyi7bStPoN78EN3/ldA1Fv
+	 BT+8X/NMWj2S/NwKqFkNLFs1VlawMLciHQY3ZJq4+sUvBDJ3afYcyNov0z4130ku4ueerzCR0dFx/
+	 ZeVtGgIENdAfH6Xs2W8cs7r2HcD4JPwX9agf4YL8RKJ2wWY9DilBcHybt0/KaJBm5oD/3irf6CtP3
+	 z2j6Y2bH5SkuAO6ggVEPCgFTMW59vqNcL6gq1E4Y+725sMCjt1s1VQ/+VV5pZ1LSHpy6kUrWEjHsa
+	 kENewPqSsTm9x2UUAbqHADg5O6wLXOlizwmlGoPltBh2mIB/+LO/VCD7bAOa9sCcPrf3Q9m5ap+Ib
+	 S+bILUBEgpP+WQ9+/V3X30DKwFkgbcVA9MkPk1mH1bZgd8PJ+bFnBiI15WAmyOkg+HOS2Rjjme5pU
+	 kIkPtXNT25RpZZwDMQ6A6EiTtME1cTgNhMHMv333jXha7wbMx/axjsH4YmpVaB/799srVdmJvNKCB
+	 2T3khwcPa8A+eDhoHFuc2Z6DiHcHCSEUtfR2rhW2lEyJkdG8W7LkCWVwo9+CDq6S1QgL716zLegQu
+	 L440vUj361Vgo9t+kQhjuqeUY0CQMl5sGU+Zt2RSKG0v+XM0yVyEQQ7bqXFQVCLIy+3esUxFyM80d
+	 4wftLMrzogu6/mZY1+cjUIXykEBcsK3fajIckMOn8xmnkuvR1XaQs409tNXQbyYC+ZLDOzpEwiGA5
+	 m0IJmAfXFOR1bLF61FzP9bJSupG40Uy8XX4VtfZYicgMFJYx/5ANwJCAStwjsXf1/66aiqK7LlYdO
+	 YH0oSvVazZA62feYmJOMNzoP84uLO39ScLmr1s/C9kclp7VFRjRVNJMcPGH0ex16VgAkMlFwGb719
+	 Fx/WHwl7RdVl4sFUlkfrMzBPFAHFeytSTnCB4J2So0VZqiYQyfsNESUJ+H7EKQtvDKKuFocZqmBOK
+	 YQcw33+efjABMIHKABCiqFA055t5TO3tIBzkJ
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?c2FzaGlrby1yZXZpZXdz?=" <sashiko-reviews@lists.linux.dev>
+Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?T2xla3NpaiBSZW1wZWw=?=" <o.rempel@pengutronix.de>
+Subject: Re: [PATCH net v5 3/6] can: rockchip_canfd: cancel bus-off restart before closing the device
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Thu, 15 Oct 2026 18:13:31 +0800
+X-Priority: 3
+Message-ID: <tencent_8C34600511CC8FB1699A864BE621016BC405@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20261015-rockchip-canfd-restart-close-v5-0-ae77327037c9@qq.com>
+ <20261015-rockchip-canfd-restart-close-v5-3-ae77327037c9@qq.com>
+	<sashiko-outbox-172613@kernel.org>
+In-Reply-To: <sashiko-outbox-172613@kernel.org>
+X-QQ-mid: xmsezb41-0t1792059211tklax5wa2
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] can: rockchip_canfd: missing mask flush before free_irq() risks st=
-orm
---
+SGksCgo+IFtTZXZlcml0eTogSGlnaF0KPiBEb2VzIHJrY2FuZmRfc3RvcCgpIGFsc28gbmVl
+ZCBhIHJlYWRiYWNrIGZsdXNoIGFmdGVyIGRpc2FibGluZyBoYXJkd2FyZQo+IGludGVycnVw
+dHMsIHNpbWlsYXIgdG8gdGhlIG9uZSBhZGRlZCBhYm92ZSBpbiBya2NhbmZkX3NldF9tb2Rl
+KCk/Cj4KPiBXaXRob3V0IGEgcmVhZGJhY2sgZmx1c2ggYmVmb3JlIHRoZSBzdWJzZXF1ZW50
+IGZyZWVfaXJxKCkgY2FsbCwgaWYgdGhlCj4gc2hhcmVkIElSUSBsaW5lIHJlY2VpdmVzIGFu
+IGludGVycnVwdCBiZWZvcmUgdGhlIHBvc3RlZCB3cml0ZSByZWFjaGVzCj4gdGhlIGJ1cywg
+dGhlIENQVSBjb3VsZCByZWNlaXZlIHRoZSBpbnRlcnJ1cHQgYWZ0ZXIgdGhlIGhhbmRsZXIg
+aGFzIGJlZW4KPiBkZXJlZ2lzdGVyZWQuIENvdWxkIHRoaXMgY2F1c2UgYW4gdW5oYW5kbGVk
+IGludGVycnVwdCBzdG9ybSB0aGF0IGRpc2FibGVzCj4gdGhlIHNoYXJlZCBJUlEgbGluZSBl
+bnRpcmVseT8KClRoZSBtaXNzaW5nIHJlYWRiYWNrIGluIHJrY2FuZmRfc3RvcCgpIGlzIGEg
+cHJlLWV4aXN0aW5nIGlzc3VlLAppbmRlcGVuZGVudCBvZiB0aGUgcmVzdGFydC9jbG9zZSBy
+YWNlIGFkZHJlc3NlZCBieSB0aGlzIHBhdGNoLiBUaGUKaW50ZXJydXB0LW1hc2sgd3JpdGUg
+Zm9sbG93ZWQgYnkgZnJlZV9pcnEoKSwgd2l0aG91dCBhIHJlYWRiYWNrLCBoYXMKYmVlbiBw
+cmVzZW50IHNpbmNlIGZmNjBiZmJhZjY3ZiAoImNhbjogcm9ja2NoaXBfY2FuZmQ6IGFkZCBk
+cml2ZXIgZm9yClJvY2tjaGlwIENBTi1GRCBjb250cm9sbGVyIikuIFRoaXMgcGF0Y2ggZG9l
+cyBub3QgY2hhbmdlIHRoYXQgc2VxdWVuY2UuCgpJIHdpbGwgbGVhdmUgdGhpcyBpc3N1ZSBv
+dXQgb2YgdGhlIGN1cnJlbnQgc2VyaWVzLiBXaGVuIEkgaGF2ZSB0aW1lLApJIHdpbGwgZm9s
+bG93IHVwIHdpdGggYSBzZXBhcmF0ZSBwYXRjaCB0byBmaXggaXQuCgpSZWdhcmRzLApDdW5o
+YW8gTHUK
 
-commit 761946c971cc50dc5c7a42016ab27b61a872001e
-Author: Cunhao Lu <1579567540@qq.com>
-
-can: rockchip_canfd: cancel bus-off restart before closing the device
-
-This patch fixes issues in the driver's close and restart paths by reorderi=
-ng
-operations in ndo_stop(). It synchronously cancels restart work earlier, ma=
-sks
-device interrupts, and synchronizes IRQs without disabling the shared IRQ l=
-ine.
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net=
-/can/rockchip/rockchip_canfd-core.c
-> index 37c1c22c40c9f..4b3db07242395 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-[ ... ]
-> @@ -356,7 +357,18 @@ static int rkcanfd_set_mode(struct net_device *ndev,
-> =20
->  	switch (mode) {
->  	case CAN_MODE_START:
-> +		rkcanfd_chip_interrupts_disable(priv);
-> +		/* Flush the interrupt mask write before suspending the handler. */
-> +		rkcanfd_read(priv, RKCANFD_REG_INT_MASK);
-> +		/* Keep shared IRQs from accessing the device during restart. */
-> +		WRITE_ONCE(priv->irq_suspended, true);
-> +		/* Wait for handlers that already passed the suspended check. */
-> +		synchronize_irq(ndev->irq);
-> +		rkcanfd_timestamp_stop_sync(priv);
-> +
->  		rkcanfd_chip_start(priv);
-[ ... ]
-> @@ -758,6 +775,7 @@ static int rkcanfd_stop(struct net_device *ndev)
->  {
->  	struct rkcanfd_priv *priv =3D netdev_priv(ndev);
-> =20
-> +	close_candev_cancel_restart_sync(ndev);
->  	netif_stop_queue(ndev);
-> =20
->  	rkcanfd_chip_interrupts_disable(priv);
-        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-[Severity: High]
-Does rkcanfd_stop() also need a readback flush after disabling hardware
-interrupts, similar to the one added above in rkcanfd_set_mode()?
-
-Without a readback flush before the subsequent free_irq() call, if the
-shared IRQ line receives an interrupt before the posted write reaches
-the bus, the CPU could receive the interrupt after the handler has been
-deregistered. Could this cause an unhandled interrupt storm that disables
-the shared IRQ line entirely?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261015-rockchip-c=
-anfd-restart-close-v5-0-ae77327037c9@qq.com?part=3D3
