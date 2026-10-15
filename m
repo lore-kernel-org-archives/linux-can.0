@@ -1,44 +1,44 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D9C379C22;
-	Thu, 15 Oct 2026 01:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4622137882A;
+	Thu, 15 Oct 2026 01:53:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792029227; cv=pass; b=Gsdgb1zF/I2sbK1ntFY4nxqnqpiOAemsmWzSmklUfBnGLYOl9BcwxIJ9apBR806yCqBb5P42GTuNorlcFTHegSEvpmC2iWaskvOygnbfldmvvXStLpQ/Rraq1NBhXkbZ9+0pMRQgsKTI5qNdUUNeYU/3GbrTGwAizS3rfEjPc1A=
+	t=1792029227; cv=pass; b=EQAX/LQq1ZSAdlXDF5dGfKI+8rA31sCfov50f2TtXJGmviD/qvg4b9m+VuJkrNwbKXHb6fRZowz3raaPl3rG1P2524yWZ2nW+3LCjkvjq4y8ag0u8vXXpA9+tWXsmYIixT7OGpbX7GE4m8gi8mp/BHtc5ctkC8Nwe2iqmdoqFYk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1792029227; c=relaxed/simple;
-	bh=AbxJxoTVIhvCpWJsLf6tZMM9u2wYpJiWkTyXJGA1TNQ=;
+	bh=lN+w9Hb50Sosh/5aDDQ9VPpOvAOfZv4llV6ijMEIaow=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h7yWeBmbs0jRu8QyqkJ7kMkgbmdjF+aQp7ZkhFNVZyefXGY4ihGpPemW8f9JbbQrqN384bEXMJqwq7/r3JJI0DXWIpBkgomy+VPDp36DRp+dCpyM11FGEr+Hlf81TbR2jCGJL/92qmrqNJz4FASdqQ5ExnuhtVvl22yLKXHi0uU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=V24f7jjT; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=Q3+Wv06M3UYyGkRbjpFEmCQheFXeAN5ZdDDDZL2EnStoL6Rx3SxYUAZ6w7CqGuPqJmPeS4h1HeAu/3BZ0cMnM0AAnWbqY4JSf6lpHxeZ9tPioBGPDGrIwk2c0dxZOl2AzU0LDlCYqqsMESTKto4Co2mRRNkAJYdKDYvhhiFbcMQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=JOmjlDHO; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="V24f7jjT"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="JOmjlDHO"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 8C6802027D4;
-	Thu, 15 Oct 2026 03:53:40 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 00216202381;
+	Thu, 15 Oct 2026 03:53:39 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792029220;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lCs3jym0XNFnfrLFXL0S112gkjhJSSwjd7o96tiFaSM=;
-	b=V24f7jjTHLzmVOMKUYYQsd9TKDXypcvMQCu9LrbhILbGuYyP6f0BKq/t2broibY+tWCHye
-	hGvKx6gbgRZuf4HGNbP4216Z7lQSFbe1jfx6bVhbnERzjYfSoJfpE/58ioItlRQz19mSDE
-	hxjDNqi9jzieSARY5dzAoc7wYIjWnvHulzcUBlnwSs2rtzYE4bO75kZbDCAyI3QMs4WYpi
-	ir5k/geFvkpfuuvnOBwth8qUTBaVBZG+QGIie0y4bOfS0toaZ/Ivdb08VI1RAFOOUTS8i9
-	tykpH141nO9CWYphr56UjhcyJays8k4kACQa8JCpMoRaho2AoUopXWBN5xZlig==
+	bh=VDV5MA7YZtqhfRoQgg1SF3NmmVl5fJKMmfmIpU00WlM=;
+	b=JOmjlDHO6gcd8rlelKe+VBzJvnMCPPITrGmDU66oQULRu5li4glSUriiwb5QZWafZj4/lT
+	ThAFPsMqkg5bvBH24fpRH2MdA+CNciKG5KYZTToTlkFV+tDudI5yCLD3qRtFVDw6T9EA8K
+	hUmHP0ROGGY/vA9MhtvSremVUBDBPgYQjGDBmNYZA/PA5Q7BlYgYPVw5z7cYPhoHSMi4n6
+	fZKCLbQnwp3wXFKJfgMhXmSByN4uH5RndlhklIah316FcH/X+P/tjr7spSR/sW/Obi2gOW
+	YcVmp6pNGZU+AowGzGrTO0tIZNxu0U4imx1vyj3EewzDxOrR3atkWaiNf/AqRg==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792029220; a=rsa-sha256;
 	cv=none;
-	b=ESTaOP99cEvAhTOuf6/jjd2u/Dhy7NkKRsfCrfCHyt+dAxmjd17KF86RYOmXjt9YXrtVjy
-	Z9cBuQQTA2VCBpPWzZKO+n7dKIdCDON9SbtEhSnrKDyqM2uyWp9HMHzJyqT4xAp2rZWSx8
-	XaACEZwBZh5j2Z95UrjHthGes9hMHUc4aiffiEfwx+X7XB58J9psxQJTAsYGpdcMMN8J7+
-	wTAln0Og6/9aMI/5cU0g5lRlVSX8pL9DP6h/W+qTW6mkP6VNMfCPZCTcxA4FXTg2fUKLeJ
-	9a45h/6Z8o0cUC3xLH3rXjzxTpVtQMLfl2WMgp9RJ8OmZw/dsfdjMhZhuutzAA==
+	b=EEIf+4sXqgsUuC1zahqhmholjd2o23xxoLN+78o5uPJZq5ZhXj9DUINHoD5wjH6UwnZRru
+	IxXAvZ+t1AoUKqW4OHisobgHJCnKV+UgG7Mvm9So58I0W5E5aJg8E8TsbzRCWQI0lHAiGT
+	QxzVAG3qozX0nwFx29dLH6Q0OPAAv3uvz5MAdxTYhxLMGMesTaH4OEO3txBdxbHjAKfweR
+	VbPV9p0V/RrwUcZM6va6eIrG/YJOmDdBbYJ7MtDLPjnvkDR8PNR6BWJmUKczxwuy7/JmDB
+	b3UP6FgTZ0PrIvRCsXSeQdWIGhHfmnecwLfZbHmQibdFt/0IhFK8Br1ceSweyQ==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -48,38 +48,39 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=lCs3jym0XNFnfrLFXL0S112gkjhJSSwjd7o96tiFaSM=;
-	b=Wo828AyAxkmbdUxdDXGyPkz0LTxP9sZrn8vhgc7ncNrlI090VyGPI64haJFRAmExEp1Amw
-	xqE9St8ecXXpseRcdBUx0V/+E5Yd/k/nuB0LafRaOm1ipYjXLZbobQBDlnGNctmXpT4VWo
-	DW7JJcwbOzwWDfxMBQDLeQsfPlFAwtXKQhJUwTbHyf/I+pSLvaUlPmMl1a/UdDoOJbHw5e
-	NHYGEQpWtyywYn34ir9usq/oJSWwR/d8UEhzCJ1IQa4u55l5EEFM075aKkgn3xfFycsXvh
-	hnLbmAw+TlKJwYhPAxxLH1OiVTKMJKm50pNDgSHbsrOlnCkI/ILWWCmUi+oPeg==
+	bh=VDV5MA7YZtqhfRoQgg1SF3NmmVl5fJKMmfmIpU00WlM=;
+	b=NNFilGi3ds70ukwEaiwPyhkwEzN1dgfvuNH+HxmdoOM6u9lVIbZBtdBJfNH37cBYz/Dhhb
+	prxiy3wKJ6kAWbBxi/EZL77NqEcoC39a2XAvq2DSHVuhJLXyuFaH8ah5mBBjZ8WUrB1k9p
+	zf5z0lHX4SXV/sU1rxwcL1GALYzwjalRGdDIytGshNHJx3KDzJ8ClU+Iw4sBZy/w/VZlqf
+	vuEvrq3wI4knQEz+M5DvUYDKFSX7JIiP9s9Bb9TJjS6EMCxDq5vpei+Bcg9TB/w+0JCE/o
+	NUGbqL+Gjgx1Ke8wUkXSo6Qjd8aPI9MIIhOGVHN1+mxLIp2HNVrejOXBSpGdVA==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xHAf6-005wqQ-1X;
-	Thu, 15 Oct 2026 03:53:40 +0200
+	id 1xHAf5-005wpu-2s;
+	Thu, 15 Oct 2026 03:53:39 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 3A9265C4780;
-	Thu, 15 Oct 2026 01:53:40 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 990625C4779;
+	Thu, 15 Oct 2026 01:53:39 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>,
-	Biju Das <biju.das.jz@bp.renesas.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Kaixuan Li <kaixuanli0131@gmail.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Quchaosheng <quchaosheng000406@163.com>,
+	stable@vger.kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 13/37] can: rcar_canfd: Fix typos in macro names
-Date: Thu, 15 Oct 2026 03:40:11 +0200
-Message-ID: <20261015015336.816543-14-mkl@pengutronix.de>
+Subject: [PATCH net-next 06/37] can: isotp: check the frame type, not just the length
+Date: Thu, 15 Oct 2026 03:40:04 +0200
+Message-ID: <20261015015336.816543-7-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261015015336.816543-1-mkl@pengutronix.de>
 References: <20261015015336.816543-1-mkl@pengutronix.de>
@@ -91,64 +92,58 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+From: Kaixuan Li <kaixuanli0131@gmail.com>
 
-The bits 1..0 of the Channel n Control Register are named CHMDC (Channel
-Mode select). Fix typos in macro names by replacing DMC with MDC.
+isotp_rcv() separates Classic CAN from CAN FD by skb->len alone:
 
-Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Link: https://patch.msgid.link/20260902141544.565763-3-claudiu.beznea+renesas@tuxon.dev
+	if (skb->len != so->ll.mtu)
+		return;
+
+	cf = (struct canfd_frame *)skb->data;
+
+A CAN XL frame with cxl->len 4 is CAN_MTU bytes, so it passes, and is then
+read as a canfd_frame whose len comes out of canxl_frame.flags: at least
+0x80.
+
+Of the paths that follow, only the flow control one uses that length
+without bounding it first, so check_pad() walks to 255 over a 16-byte
+frame and the caller reports EBADMSG on an unrelated socket.
+
+bcm_rx_handler(), j1939_can_recv(), can_can_gw_rcv() and raw_rcv() check
+the frame type here, and can_dropped_invalid_skb() switches on
+skb->protocol on the transmit side. isotp_rcv() is the gap.
+
+Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
+Signed-off-by: Kaixuan Li <kaixuanli0131@gmail.com>
+Reviewed-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Reviewed-by: Quchaosheng <quchaosheng000406@163.com>
+Link: https://patch.msgid.link/20260920035626.2581040-1-kaixuanli0131@gmail.com
+Cc: stable@vger.kernel.org
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+ net/can/isotp.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index fcc37b73ed43..b7c4fe3477ac 100644
---- a/drivers/net/can/rcar/rcar_canfd.c
-+++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -132,9 +132,9 @@
- #define RCANFD_CCTR_BEIE		BIT(8)
- #define RCANFD_CCTR_CSLPR		BIT(2)
- #define RCANFD_CCTR_CHMDC_MASK		(0x3)
--#define RCANFD_CCTR_CHDMC_COPM		(0x0)
--#define RCANFD_CCTR_CHDMC_CRESET	(0x1)
--#define RCANFD_CCTR_CHDMC_CHLT		(0x2)
-+#define RCANFD_CCTR_CHMDC_COPM		(0x0)
-+#define RCANFD_CCTR_CHMDC_CRESET	(0x1)
-+#define RCANFD_CCTR_CHMDC_CHLT		(0x2)
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 1a272ce6a2bd..5e1c3971ebfc 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -756,6 +756,14 @@ static void isotp_rcv(struct sk_buff *skb, void *data)
+ 	if (skb->len != so->ll.mtu)
+ 		return;
  
- /* RSCFDnCFDCmSTS / RSCFDnCmSTS */
- #define RCANFD_CSTS_COMSTS		BIT(7)
-@@ -828,7 +828,7 @@ static int rcar_canfd_reset_controller(struct rcar_canfd_global *gpriv)
++	/* check for correct CAN CC/FD frame content */
++	if (so->ll.mtu == CAN_MTU) {
++		if (!can_is_can_skb(skb))
++			return;
++	} else if (!can_is_canfd_skb(skb)) {
++		return;
++	}
++
+ 	cf = (struct canfd_frame *)skb->data;
  
- 		rcar_canfd_update_bit(gpriv->base, RCANFD_CCTR(ch),
- 				      RCANFD_CCTR_CHMDC_MASK,
--				      RCANFD_CCTR_CHDMC_CRESET);
-+				      RCANFD_CCTR_CHMDC_CRESET);
- 
- 		/* Ensure Channel reset mode */
- 		err = readl_poll_timeout((gpriv->base + RCANFD_CSTS(ch)), sts,
-@@ -1504,7 +1504,7 @@ static int rcar_canfd_start(struct net_device *ndev)
- 
- 	/* Set channel to Operational mode */
- 	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
--			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_COPM);
-+			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHMDC_COPM);
- 
- 	/* Verify channel mode change */
- 	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
-@@ -1578,7 +1578,7 @@ static void rcar_canfd_stop(struct net_device *ndev)
- 
- 	/* Transition to channel reset mode  */
- 	rcar_canfd_update_bit(priv->base, RCANFD_CCTR(ch),
--			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHDMC_CRESET);
-+			      RCANFD_CCTR_CHMDC_MASK, RCANFD_CCTR_CHMDC_CRESET);
- 
- 	/* Check Channel reset mode */
- 	err = readl_poll_timeout((priv->base + RCANFD_CSTS(ch)), sts,
+ 	/* if enabled: check reception of my configured extended address */
 -- 
 2.53.0
 
