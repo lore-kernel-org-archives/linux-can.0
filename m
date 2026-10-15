@@ -1,24 +1,24 @@
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF66D3890F8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D391E388E7A;
 	Thu, 15 Oct 2026 01:53:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792029232; cv=pass; b=Ll3hv4hkCB/Pbj0hNohzq60C5+lBu6nzZb9guIxet1dLiGhelkpfjHx0m5B0AaNhp0ynBx6Wojf+nMNV4z3rIVPLk+TPkLwOntWcWxm0TcMIxhy6uiJ9PWwRaC615KKqvKXmyCf7XgTPjNI4ypL9gkjhuqB8PuAsoL8VD8lGLm0=
+	t=1792029233; cv=pass; b=oHTxUanHS8MWGEV4IaIdHto6A5BRa8FGyq52j8RtxjceJpNJry5Vm98iCVcDTAq1X6zVQFG6p2kvOFdo4zDpzq0RkSXg6KmrEY7o4rsfoe23J4Ru8Ef405+BcSRVubmhOA89jJgx9svTduEEJNsxSSN7aNy24WrfzTVuscU5X68=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792029232; c=relaxed/simple;
-	bh=qW8KL3iPmYGlea5Fvr4VXTyjiVX52Fmuqw1cqN4beyU=;
+	s=arc-20240116; t=1792029233; c=relaxed/simple;
+	bh=BESL33sk3k1xclMOoMRpgLNVC45Kv63CRKha9knGykw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=oSU5vmsNFSj6ShqHpL7zn6XU/TXebxr8L6L3DTYwyRfTz5jllu50gG5hm1XLcjRkB6gxBkqW3IN9ic0oMk4Z/QDf6KMoF3eQCBZpjBTAsLKSQh77I3Wxas3VLcKpQpyVFM3WsZglqMOMaRFQLV7Rq1zJD2Uxd6x06FqOZ1+7XEI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=UTINhmXa; arc=pass smtp.client-ip=185.203.200.13
+	 MIME-Version; b=AzvcWbdYza7bRFJptZ6sWe5EBc+LHuAQGrDWIN/SNbGe7FMPS79fYfu8KyW2BV9mTshmuT+UwiwNV9ydEctj01ASyESCSqA/LgOJEE50ApHRF0NwIl4GRGzoTXK7NEfzmiMeYAdIOfu+Nmp7b/jjdcyiNUe0123isqseTOS3zHk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=d4rz1260; arc=pass smtp.client-ip=185.203.200.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="UTINhmXa"
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="d4rz1260"
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7C2D92027DE;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 526A82027E7;
 	Thu, 15 Oct 2026 03:53:42 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792029222;
@@ -26,19 +26,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BfKTybRYJTcaZB+HtTPO3tHMeIDwhMAh4+QGFozXbxo=;
-	b=UTINhmXaPWeoQzZgIl1/0cuCk2riF1+HJZnXVF7ilEH+3m/qM84aOosVSzCGZO0w00jt//
-	NjhACD1ENKdexD2ldwx++bCpzHNiB2GrQ2HUm0k5dGSbn9G+7q5kHDnVRKys2vNxPQme7P
-	uLXtvHRKncxUMNuUpMRp9+JsNy23weR78C5GO7FkBlrVmP969IoDcgxAx2qH15ILiqah9w
-	MfJUQk2KIUZ8XEuKIl9bVUEEpez0E9+GwD6cX2dqKvfyWr8R7ygKEKJBuIBxP3bmxERHBB
-	gF1AfaC8Yu9nPzEM5SE3UWGSmDEVFzJBBcoJwM810oqTjgnVb5nIKTjwRgkP5w==
+	bh=6G+/AuoMi7sn+vQXqcaOUcrwvr1jRSmQH82PqRnpUv0=;
+	b=d4rz12605r0GqE/0GQf+qXdTB3X6ARWtU5z0iDmTd0tyCYbSC1g1Z20mXmkst3lZ8g0NqY
+	cnY5Fs+efNkot3tSYzwZMDuwrNwxAS3U3M4KHinwUJ8lfYNBfF5ZRrfzKQJn/mvlqVbSXf
+	XA15n0shXB+CkixGVegkUlFWbP4bBb+eJedkqXpRsPcvzcL4DMaIOBtT9L6r1025JLJGTG
+	gUYC/LD7wP8j2qvdQ6HQBvhjCjCpDiuNeguoYQYH9R3mr8h/DS9AeovA4QJzWGYwNzicAW
+	uZO4RY4GenI4g4HeiULv783hTCTTpESAt4UwxaLftqt4xjh2hPhkKp6m1E0Qbw==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792029222; a=rsa-sha256;
 	cv=none;
-	b=dbfnB7SqVBMqW7cUUez/EioZDL/cSbicc9oRjtlqhUaGlLv6dJDqYFW2dpYUrnRwsXSTB0
-	gD8YR+9UfpvrwQT6ISyP4ml+Gt5kgn+rtcIpnsFqu6e6xVO6gxDTQpfR87SwCU9PrkmY9k
-	SLvUTmITapkqA9BnNnUu7/lXEp3xctgGCR82z/UKjlMKRSU0r+FVCEeuR7s7Te9dvbFcaW
-	dhhENg748xO2645Clg7rOVZR3o56rfYC7mV0yFcvvfYrYVisGjh66OtySJ3bMi+vasnRX0
-	pbV7rPIeHVArS+Qz9vQ1Vn41SW73/x9kQEZ4jnOXtYRHHWxnsbf2XE4pArVTFQ==
+	b=MyRXi8IgT24TJjzRyJtL+1wZX3m/sfpCV5CB5VrmoCFzYqrAKn6+3W8WpCp79onmsX+sHP
+	n+78c1dQ0CNFLl5dnsqmKBHsTB3i/dudGaWUryoVYYRL/Lei+Uzs+NkE+hqSplJBWadQzR
+	yN1TNzYGT/dKNXKJ6yGblTzUHj2bYbYKLolb4MCFJiBEOkl2tpVOPWveG7+xcR96dOj+bH
+	jQj5UjlQ+0iKhmZSK40wCaqQEiwhL3QyrQRL77NO2iiPMwV6lIftVZmgoGlwUnZGoiNxjJ
+	q2Tz3J3eSbEDjq0gX9Ney5Jh5FSqwYi06P3k06bHlaD4RRJ700n7uifbke3ICg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -48,37 +48,36 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=BfKTybRYJTcaZB+HtTPO3tHMeIDwhMAh4+QGFozXbxo=;
-	b=MyBsJMr8L9AHCzSZE1Hwf7OSM9jO5nh2+xx+6nOMLbMn4rwEg1Qg7NLV5oD/AUX9ihr3IR
-	oLh/8dSLyf30z+L1E0FQLXRO9LQB8gsdwcTkKgubBxq2inU9WD3UjF83mVfP85PrM6mJUY
-	vbzI+ezRj+6basG2GWx2HzCQDj4aVGClt18QAheHXdVu6ZkkHAa3y4doUg2SPrtsC/o14C
-	boHUIrMSo4Mx/25m9ZtQbXzHReLo3YUKUwcVJUbvXb2omGkRJxeLe1U+p2iKn58bHaIONS
-	Gtc/oLJPrjeFNx2+yumFWF5CJoc6c3HXLgJtVOKUWTXs/WA0O+zRPhMFfCV6pg==
+	bh=6G+/AuoMi7sn+vQXqcaOUcrwvr1jRSmQH82PqRnpUv0=;
+	b=aU1nYQd64mYp/EXcG2048ci/6lvVxfsq1ZnRQMAzXP097KzarXhFO9U7xOa6yywGm+trZl
+	ScTpIKNlWCWRcEljo19gQIyrbVQuhlPtadaOXXGgFR74JKW9CQqrV9oMItIjU6GEEOVU8C
+	8jmx7hArQ2V8rvfN6uSGoKS8ONwh0c3GKe/k1lyN5tiJurt+lNTSsXuVC1zhsnGZfhQ+RN
+	juc+9ATs1hBi+T6AGhpURlW1Cy3ZyzexpkJjhwCFRvqIAhwg63m388f6QUxD5cgncIy6rJ
+	7C4qb0N6s6E9jrwc3nWrmBk59DwS6XxcapQ8qq3gGzLQWtO6u0kgmzzLoQps6Q==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xHAf8-005wra-1I;
+	id 1xHAf8-005wrW-0j;
 	Thu, 15 Oct 2026 03:53:42 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2799D5C47B4;
-	Thu, 15 Oct 2026 01:53:42 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EAAFF5C47AB;
+	Thu, 15 Oct 2026 01:53:41 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Anton Olsson <anol@kvaser.com>,
-	Jimmy Assarsson <extja@kvaser.com>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 31/37] can: kvaser_usb: refactor endpoint lookup
-Date: Thu, 15 Oct 2026 03:40:29 +0200
-Message-ID: <20261015015336.816543-32-mkl@pengutronix.de>
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	stable@vger.kernel.org
+Subject: [PATCH net-next 29/37] can: esd: acc_start_xmit(): avoid use-after-free of skb after can_put_echo_skb()
+Date: Thu, 15 Oct 2026 03:40:27 +0200
+Message-ID: <20261015015336.816543-30-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261015015336.816543-1-mkl@pengutronix.de>
 References: <20261015015336.816543-1-mkl@pengutronix.de>
@@ -90,173 +89,65 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Anton Olsson <anol@kvaser.com>
+After the call to can_put_echo_skb() in acc_start_xmit() the skb is invalid
+and not accessed anymore, but acc_txq_put() will access the skb's data.
 
-The check for endpoint addresses in mhydra is redundant as the correct in
-and out endpoints will always be first.
+So far acc_txq_put() first loads the CAN data into the controller then
+starts the TX. Move the start-TX functionality into the acc_txq_start()
+function.
 
-Move kvaser_usb_leaf_setup_endpoints() to kvaser_usb_core() and use with
-both mhydra and leaf. Remove dev_setup_endpoint() from struct
-kvaser_usb_dev_ops.
+In acc_start_xmit(), first load the data into the controller using
+acc_txq_put(), then can_put_echo_skb() and finally start the TX with
+acc_txq_start().
 
-Signed-off-by: Anton Olsson <anol@kvaser.com>
-Reviewed-by: Jimmy Assarsson <extja@kvaser.com>
-Link: https://patch.msgid.link/20260817112052.1477126-1-anol@kvaser.com
+Link: https://patch.msgid.link/20260929-esd-fix-skb-deref-v2-1-542e3e19fb25@pengutronix.de
+Fixes: 9721866f07e1 ("can: esd: add support for esd GmbH PCIe/402 CAN interface family")
+Cc: stable@vger.kernel.org
+[mkl: update subject + commit message]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb.h   |  2 --
- .../net/can/usb/kvaser_usb/kvaser_usb_core.c  | 19 +++++++++++-
- .../net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 30 -------------------
- .../net/can/usb/kvaser_usb/kvaser_usb_leaf.c  | 17 -----------
- 4 files changed, 18 insertions(+), 50 deletions(-)
+ drivers/net/can/esd/esdacc.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-index 46a1b6907a50..2e862120ec3f 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb.h
-@@ -161,7 +161,6 @@ struct kvaser_usb_net_priv {
-  * @dev_get_data_busparams:	readback data busparams
-  * @dev_get_berr_counter:	used for can.do_get_berr_counter
-  *
-- * @dev_setup_endpoints:	setup USB in and out endpoints
-  * @dev_init_card:		initialize card
-  * @dev_init_channel:		initialize channel
-  * @dev_remove_channel:		uninitialize channel
-@@ -189,7 +188,6 @@ struct kvaser_usb_dev_ops {
- 	int (*dev_get_data_busparams)(struct kvaser_usb_net_priv *priv);
- 	int (*dev_get_berr_counter)(const struct net_device *netdev,
- 				    struct can_berr_counter *bec);
--	int (*dev_setup_endpoints)(struct kvaser_usb *dev);
- 	int (*dev_init_card)(struct kvaser_usb *dev);
- 	int (*dev_init_channel)(struct kvaser_usb_net_priv *priv);
- 	void (*dev_remove_channel)(struct kvaser_usb_net_priv *priv);
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index d0a2a2a33c1c..9687dfb89b4c 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -926,6 +926,23 @@ static int kvaser_usb_init_one(struct kvaser_usb *dev, int channel)
- 	return err;
+diff --git a/drivers/net/can/esd/esdacc.c b/drivers/net/can/esd/esdacc.c
+index 73e66f9a3781..05d41ed34a02 100644
+--- a/drivers/net/can/esd/esdacc.c
++++ b/drivers/net/can/esd/esdacc.c
+@@ -62,14 +62,17 @@ static void acc_resetmode_leave(struct acc_core *core)
+ 	acc_resetmode_entered(core);
  }
  
-+static int kvaser_usb_setup_endpoints(struct kvaser_usb *dev)
-+{
-+	struct usb_host_interface *iface_desc;
-+	int ret;
-+
-+	iface_desc = dev->intf->cur_altsetting;
-+
-+	/* use first bulk endpoint for in and out */
-+	ret = usb_find_common_endpoints(iface_desc, &dev->bulk_in,
-+					&dev->bulk_out, NULL, NULL);
-+
-+	if (ret)
-+		return -ENODEV;
-+
-+	return 0;
+-static void acc_txq_put(struct acc_core *core, u32 acc_id, u32 acc_dlc,
+-			const void *data)
++static void acc_txq_put(struct acc_core *core, u32 acc_dlc, const void *data)
+ {
+ 	acc_write32_noswap(core, ACC_CORE_OF_TXFIFO_DATA_1,
+ 			   *((const u32 *)(data + 4)));
+ 	acc_write32_noswap(core, ACC_CORE_OF_TXFIFO_DATA_0,
+ 			   *((const u32 *)data));
+ 	acc_write32(core, ACC_CORE_OF_TXFIFO_DLC, acc_dlc);
 +}
 +
- static int kvaser_usb_probe(struct usb_interface *intf,
- 			    const struct usb_device_id *id)
- {
-@@ -949,7 +966,7 @@ static int kvaser_usb_probe(struct usb_interface *intf,
- 	dev->driver_info = driver_info;
- 	ops = driver_info->ops;
- 
--	err = ops->dev_setup_endpoints(dev);
-+	err = kvaser_usb_setup_endpoints(dev);
- 	if (err) {
- 		dev_err_probe(&intf->dev, err, "Cannot get usb endpoint(s)");
- 		goto free_devlink;
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-index efbb7bed34c9..ad168cad1d78 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-@@ -37,9 +37,6 @@ static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_kcan;
- static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_flexc;
- static const struct kvaser_usb_dev_cfg kvaser_usb_hydra_dev_cfg_rt;
- 
--#define KVASER_USB_HYDRA_BULK_EP_IN_ADDR	0x82
--#define KVASER_USB_HYDRA_BULK_EP_OUT_ADDR	0x02
--
- #define KVASER_USB_HYDRA_MAX_TRANSID		0xff
- #define KVASER_USB_HYDRA_MIN_TRANSID		0x01
- 
-@@ -1733,32 +1730,6 @@ static int kvaser_usb_hydra_get_berr_counter(const struct net_device *netdev,
- 	return 0;
++static void acc_txq_start(struct acc_core *core, u32 acc_id)
++{
+ 	/* CAN id must be written at last. This write starts TX. */
+ 	acc_write32(core, ACC_CORE_OF_TXFIFO_ID, acc_id);
  }
+@@ -287,11 +290,12 @@ netdev_tx_t acc_start_xmit(struct sk_buff *skb, struct net_device *netdev)
+ 		acc_id = cf->can_id & CAN_SFF_MASK;
+ 	}
  
--static int kvaser_usb_hydra_setup_endpoints(struct kvaser_usb *dev)
--{
--	const struct usb_host_interface *iface_desc;
--	struct usb_endpoint_descriptor *ep;
--	int i;
--
--	iface_desc = dev->intf->cur_altsetting;
--
--	for (i = 0; i < iface_desc->desc.bNumEndpoints; ++i) {
--		ep = &iface_desc->endpoint[i].desc;
--
--		if (!dev->bulk_in && usb_endpoint_is_bulk_in(ep) &&
--		    ep->bEndpointAddress == KVASER_USB_HYDRA_BULK_EP_IN_ADDR)
--			dev->bulk_in = ep;
--
--		if (!dev->bulk_out && usb_endpoint_is_bulk_out(ep) &&
--		    ep->bEndpointAddress == KVASER_USB_HYDRA_BULK_EP_OUT_ADDR)
--			dev->bulk_out = ep;
--
--		if (dev->bulk_in && dev->bulk_out)
--			return 0;
--	}
--
--	return -ENODEV;
--}
--
- static int kvaser_usb_hydra_init_card(struct kvaser_usb *dev)
- {
- 	int err;
-@@ -2203,7 +2174,6 @@ const struct kvaser_usb_dev_ops kvaser_usb_hydra_dev_ops = {
- 	.dev_set_data_bittiming = kvaser_usb_hydra_set_data_bittiming,
- 	.dev_get_data_busparams = kvaser_usb_hydra_get_data_busparams,
- 	.dev_get_berr_counter = kvaser_usb_hydra_get_berr_counter,
--	.dev_setup_endpoints = kvaser_usb_hydra_setup_endpoints,
- 	.dev_init_card = kvaser_usb_hydra_init_card,
- 	.dev_init_channel = kvaser_usb_hydra_init_channel,
- 	.dev_get_software_info = kvaser_usb_hydra_get_software_info,
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-index a876c7819b81..00302b5c6223 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_leaf.c
-@@ -1964,22 +1964,6 @@ static int kvaser_usb_leaf_get_berr_counter(const struct net_device *netdev,
- 	return 0;
+-	can_put_echo_skb(skb, netdev, core->tx_fifo_head, 0);
++	acc_txq_put(core, acc_dlc, cf->data);
+ 
++	can_put_echo_skb(skb, netdev, core->tx_fifo_head, 0);
+ 	core->tx_fifo_head = acc_tx_fifo_next(core, tx_fifo_head);
+ 
+-	acc_txq_put(core, acc_id, acc_dlc, cf->data);
++	acc_txq_start(core, acc_id);
+ 
+ 	return NETDEV_TX_OK;
  }
- 
--static int kvaser_usb_leaf_setup_endpoints(struct kvaser_usb *dev)
--{
--	struct usb_host_interface *iface_desc;
--	int ret;
--
--	iface_desc = dev->intf->cur_altsetting;
--
--	/* use first bulk endpoint for in and out */
--	ret = usb_find_common_endpoints(iface_desc, &dev->bulk_in, &dev->bulk_out,
--					NULL, NULL);
--	if (ret)
--		return -ENODEV;
--
--	return 0;
--}
--
- const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
- 	.dev_set_mode = kvaser_usb_leaf_set_mode,
- 	.dev_set_bittiming = kvaser_usb_leaf_set_bittiming,
-@@ -1987,7 +1971,6 @@ const struct kvaser_usb_dev_ops kvaser_usb_leaf_dev_ops = {
- 	.dev_set_data_bittiming = NULL,
- 	.dev_get_data_busparams = NULL,
- 	.dev_get_berr_counter = kvaser_usb_leaf_get_berr_counter,
--	.dev_setup_endpoints = kvaser_usb_leaf_setup_endpoints,
- 	.dev_init_card = kvaser_usb_leaf_init_card,
- 	.dev_init_channel = kvaser_usb_leaf_init_channel,
- 	.dev_remove_channel = kvaser_usb_leaf_remove_channel,
 -- 
 2.53.0
 
