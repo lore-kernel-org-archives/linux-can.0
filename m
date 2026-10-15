@@ -1,218 +1,195 @@
-Received: from out162-62-57-64.mail.qq.com (out162-62-57-64.mail.qq.com [162.62.57.64])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58D4E2931FC;
-	Thu, 15 Oct 2026 02:30:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 580D51A2C0B;
+	Thu, 15 Oct 2026 05:39:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792031417; cv=none; b=Y7f6/mDMwG6amz1ynX/BgUIlWrXJ2WkEVjfKg8FbkzgN2hNpAnREmi2LvJypbFPAmkeDqUbSZ/xN9qSHqtKKcqUbbCNGob5xA/8OZth0Bc8Bn2b78zu9Rwml6hL2t84c65tGcSW4WZ9ZJOvs/d7QRKKGG7NjKgxzivZ/HTt+KhE=
+	t=1792042754; cv=none; b=Rox6erEFTrJNRxtFEDcx9GEZ3Wx4wJB1JqF1DNfSZWqejSCtqFEeBsV/r/WcyUc0tJxV7IEJEhZMTbsAk1ZQ1ir3TqtP9TIPuEsHcE5Pg/MgwZWK7XPHTnkq4b7K1RZDJSgHfRYuZT6mMO3SVeC4O+7e8w04c1mwraIKWvpONE8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792031417; c=relaxed/simple;
-	bh=aPsgyrQgx8lbs9k9uRvgZDnBadMZRc9D5zlTGNgqTsU=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=LWCK6XIIfeXYy2LSamFUNUjD77n3sZui5pIagsvSHnl+au0UsGkFDU3/tfn+3m9RtgDEotF8Ss7tm0P5TYUVJntpLsTOw5Q4apB4bd1wr7qC1vTBKxGfv1cdTI1iqBv9kyslvb470iSNgHNh3tt7HCAr89XwX7Lmfh/YPUKMvsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=hnG+ZI6H; arc=none smtp.client-ip=162.62.57.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1792042754; c=relaxed/simple;
+	bh=1gepIM0sB0EjFVmNm1QpbnGZhia/KKyYokRCJb/3ops=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aSgRfxRf0oX27MD0FachlXifqsw4ADGAj5vG0i43pqofsV5djDlLxupSerJzoWs8eoRQpBx1RpF4UyDZmK80V4hm4DW6oEPX6Wq0hyoVimZGhDyMDC9GRRj5/mAplsdfUJ8/pc4Dxqyhy/Y99c/FOuzMqscxxDR3rGOLO+VS4n0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BLWplQ70; arc=none smtp.client-ip=10.30.226.201
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="hnG+ZI6H"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1792031409; bh=aPsgyrQgx8lbs9k9uRvgZDnBadMZRc9D5zlTGNgqTsU=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=hnG+ZI6HYKmSjYANcbmm1gnhnPuz7XjuK+fZAHkUa4GGbkCQTvOR66fQpmYawH+Eo
-	 Jm6uz3bvjCjWyfo357IikDe6oxY0ldYRYwcea0PNFkX0ysUult/0uc5b13VRVFFc2K
-	 lGVE1Oe6sOp1HNOGu3nRbN/6icbgGC+In/jWnjVA=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-XMAILINFO: MMU9gXtwVdiIw/1k8HFKmeOjfSdaAydiopn0+iCFB9xDQGQH0TlgxfJbrdTz52
-	 Ybms/ln5E+UXzKhWjR2PWiLZarXg8GvUH8XX6zkXNOfeeulGmF080VXXKmFfbegb4Q22RDQpOjRjM
-	 UBGhIKCwYdAX6TDJ3u5HQidfc4YXwONk9dIVuR8r7BpkMKmAYPfMY9E1B56zPGIrChqe22Jk+AoHQ
-	 B9yWgdcWj6wJWZrqPKsoujFkFeqW6p5jk1C5SAtvKvAPMICab1y/zTnm5f8VEIITj/aC7i7v+df+L
-	 dkRhtYm/EIkPOt9I2XaVlT6teKH7PlN1rF8RdAOcQ58a34V1u4eAosRxyqEtueuwrPdQUu+5LjJGU
-	 Hy0FWULfPvv010kOUGg1UPoSfFtmNYl9c6M2dqwkX87llVns76NejuU56NYeMZuaj9nQ5xJezNcP6
-	 K1HsAmKnj3V7NRvoy/4P0VVhyk6gj6t3zQKsHtVSMT1E+irNe4A0RS1wwaIehmjqvcpXjjwkb7MWR
-	 b2c35iJBOvs0JOCxU1RVHVh05ZYfc1MYij2g1RKvVqNFWPevps/9vJxfDjx3x4mzHmDqXSPnOnMXx
-	 YM1T3aGTF+yFDervRL1rXWE4774NytZR47K020AMlk3SrOPreTe6BrqBGZ4HS65XHGGs/oQfSf0Zt
-	 JqdtavdTM4ByaXKUre3ewl7nsffMAm+qhnMSuOTbXog+y94gzZf8lyHOb+JdMuSpyVeiBRGUorbnn
-	 bH33rLumilvwn687PmgYXLp/kA+dxEzHepN/vSDGGtDzpGIQbXr558hntmkmix1NaoZjr5aho9bLL
-	 GtpKxNSQ7fyQxKGIedHDTcFLDvyacszK99YVJHazS57rNsuMg/d0tqg13KclIsah/xZGTqfOVaqam
-	 S++z9tcFZck2DpHc6hmbMHlEsbeNUR06knjEAlSoV17iKKMUwG1jVbncO4tI0tSVq+NhCS5sb7Ckn
-	 OKoi+DVVbaqpH5fL/8zAAzseJ803BVuNB1lhfa9/qAHL2VHL+xlDL+t+/HXxp+zzFCA/gSElqydD6
-	 8YeWMgU16uS1fWJ/51hwhPuam2EpPoagWXHO136I7nGhvfgFH8tc5U717kf3a1U0rWUCbaF4BoNF3
-	 qj/2x3gCPNhMRT0QJ0pEpl9f6UvK1LxVn9BNJDEpBZnkwjgJ5mUraXvRDVPncfLl5S2pq3OizsaIl
-	 OcHRr9dOXPv
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?MTU3OTU2NzU0MA==?=" <1579567540@qq.com>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?RGF2aWQgUy4gTWlsbGVy?=" <davem@davemloft.net>, "=?utf-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?=" <wg@grandegger.com>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>
-Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>, "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-Subject: Re: [PATCH net v3 0/5] can: fix bus-off restart and device close races
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLWplQ70"
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C9CA0C2BCC7;
+	Thu, 15 Oct 2026 05:39:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1792042753;
+	bh=1gepIM0sB0EjFVmNm1QpbnGZhia/KKyYokRCJb/3ops=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=BLWplQ70AjWQJFcVgbbxbaoYnLSSohTm4HolWWVP9pgNZ6SM1R/9wW7He5uhveksX
+	 mGQc2KGxxbo2OlW3oBp6FKOMAlrosVdEQ5qdOSO4wFdBvYNpGwyUMgxOpOqjQRakqL
+	 ra8kgVpluslzCiCGe+6X7jlu1kKfsFUtnAmkyEhjkuJ96jJc50nU710NId8Jg0BFxR
+	 1oCxYm8eP9GpAtILrHgxVT7HOll2cu0W7P/zpYHQFmPa39ip0Z+hWh7KNzKLSseSO6
+	 5/emaXFse/rgWGbGOKlaYH5WQpF3Ov04JvC/7Dk4NLpUEca6f85n4M7Ed+/JvNmFwI
+	 TBXXyA2UmysdA==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 9F989CC6B34;
+	Thu, 15 Oct 2026 05:39:13 +0000 (UTC)
+From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
+Subject: [PATCH net v4 0/6] can: fix bus-off restart and device close races
+Date: Thu, 15 Oct 2026 13:38:54 +0800
+Message-Id: <20261015-rockchip-canfd-restart-close-v4-0-ad149ff79450@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Thu, 15 Oct 2026 10:30:06 +0800
-X-Priority: 3
-Message-ID: <tencent_AB4427E00731CD6FA3698FE64D063A016F05@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261014-rockchip-canfd-restart-close-v3-0-f0eb41090242@qq.com>
-In-Reply-To: <20261014-rockchip-canfd-restart-close-v3-0-f0eb41090242@qq.com>
-X-QQ-mid: xmsezb41-0t1792031406trk87hwn2
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAO5m0GoC/5XOy27CMBAF0F9BXneQX1DSFf+BWNjjGeI+YrBNB
+ EL5d0KQEKzaLu/o6ty5iEI5UhEfs4vI1McSUzcG+zYT2LpuRxDDmIWWeqmkMpATfmEb94Cu4wC
+ ZSnW5An6nQkA+0KJZWFaexUjsM3E8TfxGdFTF9n4sR/9JWG/wrdbGUlM+T0/0air/ba9XoOBdo
+ 0PLjdHI68Nhjuln2un1s2R/kTRIwBX7wC6olTQvkvmPZEaJJXmrZCO11Q9pGIYrEinUx3ABAAA
+ =
+X-Change-ID: 20261013-rockchip-canfd-restart-close-ebde5954f1bf
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ "David S. Miller" <davem@davemloft.net>, 
+ Wolfgang Grandegger <wg@grandegger.com>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>, kernel@pengutronix.de
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org, 
+ stable@vger.kernel.org, Cunhao Lu <1579567540@qq.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1792042751; l=6416;
+ i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
+ bh=1gepIM0sB0EjFVmNm1QpbnGZhia/KKyYokRCJb/3ops=;
+ b=OawGlbw61zj3S3nkWpRVH9hFn3yVRNwQtZWa6rUzwFs1G2Q4Z7T+6lrCsAfxVnv+VextbSefE
+ 6tzvOj++24LAjD5y6Ynf2sa/tYiPT1pXZcLHzmXDDGBWAOJqCMtxfQI
+X-Developer-Key: i=1579567540@qq.com; a=ed25519;
+ pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
+X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
+ auth_id=1177
+X-Original-From: Cunhao Lu <1579567540@qq.com>
+Reply-To: 1579567540@qq.com
 
-PiBUaGlzwqB3b3JrwqBzdGFydGVkwqBmcm9twqBhwqByZWFswqBmYWlsdXJlwqBvbsKgYcKg
-cHJvZHVjdGlvbsKgcm9ib3TCoHVzaW5nwqBhCj4gTHViYW5DYXQtNUlPwqB3aXRowqBhbsKg
-UkszNTg4LsKgUljCoGNvbnRpbnVlZCzCoGJ1dMKgdGhlwqBUWMKgcXVldWXCoHJlbWFpbmVk
-Cj4gc3RvcHBlZMKgYW5kwqBzdWJzZXF1ZW50wqBzZW5kc8KgcmV0dXJuZWTCoEVOT0JVRlMu
-wqBUaGXCoGludGVyZmFjZcKgc3RpbGwKPiByZXBvcnRlZMKgRVJST1ItQUNUSVZFLMKgYW5k
-wqB0aGXCoGhhcmR3YXJlwqBpbmRpY2F0ZWTCoG5laXRoZXLCoGHCoGJ1cy1vZmYKPiBjb25k
-aXRpb27CoG5vcsKgYcKgcGVuZGluZ8KgVFjCoHJlcXVlc3QuCj4gCj4gV2hpbGXCoHRlc3Rp
-bmfCoHRoZcKgZWNoby1sb3NzwqBmaXjCoHdpdGjCoGZhdWx0wqBpbmplY3Rpb24swqBJwqBk
-aXNjb3ZlcmVkwqBhCj4gc2VwYXJhdGXCoHJhY2XCoGJldHdlZW7CoGJ1cy1vZmbCoHJlc3Rh
-cnTCoGFuZMKgZGV2aWNlwqBjbG9zZS7CoFRoaXPCoHNlcmllc8KgZml4ZXMKPiB0aGF0wqBy
-YWNlO8KgdGhlwqBmaXjCoGZvcsKgdGhlwqBvcmlnaW5hbMKgVFjCoHN0YWxswqB3aWxswqBm
-b2xsb3fCoHNlcGFyYXRlbHkuCj4gCj4gV2hlbsKgYXV0b21hdGljwqBidXMtb2ZmwqByZWNv
-dmVyecKgaXPCoGVuYWJsZWQswqBicmluZ2luZ8KgdGhlwqBpbnRlcmZhY2XCoGRvd24KPiBj
-YW7CoHJhY2XCoHdpdGjCoGHCoHBlbmRpbmfCoG9ywqBydW5uaW5nwqByZXN0YXJ0LsKgVGhl
-wqBSb2NrY2hpcMKgZHJpdmVywqBjdXJyZW50bHkKPiByZWxpZXPCoG9uwqBjbG9zZV9jYW5k
-ZXYoKcKgdG/CoGNhbmNlbMKgcmVzdGFydF93b3JrLMKgYnV0wqBjYWxsc8KgaXTCoG9ubHnC
-oGFmdGVyCj4gZnJlZWluZ8KgdGhlwqBJUlEswqBkaXNhYmxpbmfCoFJYwqBvZmZsb2FkLMKg
-YW5kwqBzdG9wcGluZ8KgdGhlwqBjb250cm9sbGVyLsKgQQo+IHJlc3RhcnTCoGluwqB0aGF0
-wqBpbnRlcnZhbMKgY2FuwqByZS1lbmFibGXCoHRoZcKgY29udHJvbGxlcsKgYW5kwqBpdHPC
-oGludGVycnVwdHMKPiBhZnRlcsKgSVJRwqB0ZWFyZG93bizCoGFuZMKgcmVxdWV1ZcKgdGlt
-ZXN0YW1wwqB3b3JrwqBhZnRlcsKgaXTCoGhhc8KgYmVlbsKgc3RvcHBlZC4KPiBUaGF0wqB3
-b3JrwqBjYW7CoHN1YnNlcXVlbnRsecKgYWNjZXNzwqByZWdpc3RlcnPCoGFmdGVywqBydW50
-aW1lwqBzdXNwZW5kCj4gZGlzYWJsZXPCoHRoZcKgY29udHJvbGxlcsKgY2xvY2tzLgo+IAo+
-IFRoZcKgbmV0d29ya2luZ8KgY29yZcKgY2xlYXJzwqB0aGXCoHJ1bm5pbmfCoGZsYWfCoGJl
-Zm9yZcKgY2FsbGluZ8KgbmRvX3N0b3AoKS4KPiBUaGlzwqBzZXJpZXPCoHVzZXPCoHRoYXTC
-oGZsYWfCoHRvwqBhdm9pZMKgc2NoZWR1bGluZ8Kgb3LCoHN0YXJ0aW5nwqBidXMtb2ZmCj4g
-cmVjb3ZlcnnCoG9uY2XCoHRoZcKgaW50ZXJmYWNlwqBpc8Kgb2JzZXJ2ZWTCoHRvwqBiZcKg
-bm/CoGxvbmdlcsKgcnVubmluZy7CoEl0wqBhbHNvCj4gYWRkc8KgY2xvc2VfY2FuZGV2X2Nh
-bmNlbF9yZXN0YXJ0X3N5bmMoKcKgc2/CoGRyaXZlcnPCoGNhbsKgd2FpdMKgZm9ywqByZWNv
-dmVyeQo+IHNlcGFyYXRlbHnCoGZyb23CoHRoZcKgZWNob8KgY2xlYW51cMKgaW7CoGNsb3Nl
-X2NhbmRldigpLsKgUm9ja2NoaXDCoGNhbGxzwqB0aGlzCj4gaGVscGVywqBhdMKgdGhlwqBz
-dGFydMKgb2bCoGl0c8KgY2xvc2XCoHBhdGguCj4gCj4gVGhlwqBydW5uaW5nLXN0YXRlwqBj
-aGVja3PCoGRvwqBub3TCoHJlcGxhY2XCoHN5bmNocm9uaXphdGlvbsKgd2l0aMKgYcKgcmVz
-dGFydAo+IHRoYXTCoGhhc8KgYWxyZWFkecKgcGFzc2VkwqB0aGXCoGNoZWNrLsKgUm9ja2No
-aXDCoHdhaXRzwqBmb3LCoHRoYXTCoHdvcmvCoGJlZm9yZQo+IHRlYXJpbmfCoGRvd27CoGl0
-c8KgcmVzb3VyY2VzLMKgYW5kwqBrZWVwc8KgY2xvc2VfY2FuZGV2KCnCoGF0wqB0aGXCoGVu
-ZMKgZm9ywqB0aGUKPiBmaW5hbMKgY2FuY2VsbGF0aW9uwqBhbmTCoGVjaG/CoGNsZWFudXAu
-Cj4gCj4gRHVyaW5nwqByZXN0YXJ0LMKgUm9ja2NoaXDCoG1hc2tzwqBvbmx5wqBpdHPCoG93
-bsKgaW50ZXJydXB0wqBzb3VyY2VzwqBhbmTCoHJlYWRzCj4gYmFja8KgdGhlwqBtYXNrLsKg
-QcKgc29mdHdhcmXCoGZsYWfCoHByZXZlbnRzwqBhwqBzaGFyZWTCoElSUcKgaW52b2NhdGlv
-bsKgZnJvbQo+IGFjY2Vzc2luZ8KgdGhlwqBjb250cm9sbGVywqB3aGlsZcKgc3luY2hyb25p
-emVfaXJxKCnCoGRyYWluc8KgaGFuZGxlcnPCoHRoYXQKPiBoYXZlwqBhbHJlYWR5wqBlbnRl
-cmVkLsKgVGhlwqBzaGFyZWTCoGludGVycnVwdMKgbGluZcKgcmVtYWluc8KgZW5hYmxlZC7C
-oFRoZQo+IHJlc3RhcnTCoHBhdGjCoGFsc2/CoHN5bmNocm9ub3VzbHnCoGRyYWluc8KgdGlt
-ZXN0YW1wwqB3b3JrwqBiZWZvcmXCoHJlYnVpbGRpbmcKPiB0aGXCoHRpbWVjb3VudGVyLMKg
-YW5kwqBwdWJsaXNoZXPCoHRoZcKgaW5pdGlhbGl6ZWTCoHN0YXRlwqBiZWZvcmXCoGFsbG93
-aW5nwqBJUlEKPiBoYW5kbGluZ8KgYWdhaW4uCj4gCj4gVGltZXN0YW1wwqBkZWxheWVkwqB3
-b3JrwqBpc8KgaW5pdGlhbGl6ZWTCoG9uY2XCoGF0wqBwcm9iZS7CoFRoZcKgb3BlbsKgZXJy
-b3LCoHBhdGgKPiBhbHNvwqBkaXNhYmxlc8KgUljCoG9mZmxvYWTCoGlmwqByZXF1ZXN0X2ly
-cSgpwqBmYWlscy4KPiAKPiBTdG9wcGluZ8KgdGltZXN0YW1wwqB3b3JrwqBub3fCoHByZXZl
-bnRzwqBhwqBydW5uaW5nwqB3b3JrZXLCoGZyb23CoHJlYXJtaW5nCj4gaXRzZWxmwqBhZnRl
-csKgYnVzLW9mZi7CoEHCoGxvY2vCoHNlcmlhbGl6ZXPCoGRlYWN0aXZhdGlvbsKgd2l0aMKg
-dGhlwqB3b3JrZXIncwo+IGFjdGl2ZcKgY2hlY2sswqBjb3VudGVywqByZWFkwqBhbmTCoHNl
-bGYtcmVxdWV1ZS7CoEJvdGjCoGFzeW5jaHJvbm91c8KgYW5kCj4gc3luY2hyb25vdXPCoGNh
-bmNlbGxhdGlvbsKgcmVtYWluwqBvdXRzaWRlwqB0aGXCoGxvY2suCj4gCj4gVGhlwqBidXMt
-b2ZmwqBwYXRowqBub3fCoGRyYWluc8KgVFjCoHN1Ym1pc3Npb27CoGFuZMKgUlgtc2lkZcKg
-ZWNob8KgdXNlcnPCoGJlZm9yZQo+IHB1Ymxpc2hpbmfCoEJVU19PRkYuwqBUaGlzwqBhbHNv
-wqBwcm90ZWN0c8KgbWFudWFswqByZWNvdmVyeTrCoHRoZcKgQ0FOwqBjb3JlCj4gZmx1c2hl
-c8KgZWNob8KgU0tCc8KgYmVmb3JlwqBjYWxsaW5nwqB0aGXCoGRyaXZlcidzwqByZXN0YXJ0
-wqBjYWxsYmFjay7CoEHCoHByaXZhdGUKPiBUWMKgbG9ja8KgYW5kwqBlbmFibGVkwqBmbGFn
-wqBjb3ZlcsKgc3VibWlzc2lvbizCoGNvbXBsZXRpb24swqByZXRyecKgYW5kwqBxdWV1ZQo+
-IHdha2UswqBrZWVwaW5nwqB0aGVzZcKgcGF0aHPCoG91dMKgb2bCoHRoZcKgZWNob8Kgcmlu
-Z8Kgd2hpbGXCoHJlY292ZXJ5wqBvd25zwqBpdC4KPiAKPiBBZnRlcsKgZHJhaW5pbmfCoHRo
-ZcKgb2xkwqBJUlHCoGFuZMKgcmVpbml0aWFsaXppbmfCoHRoZcKgY29udHJvbGxlcizCoHN0
-YXJ0dXAKPiByZXN0b3Jlc8KgY2FycmllcizCoHJlc3VtZXPCoElSUcKgaGFuZGxpbmfCoGFu
-ZMKgd2FrZXPCoHRoZcKgcXVldWXCoHVuZGVywqB0aGXCoFRYCj4gbG9jay7CoFRoaXPCoGNv
-dmVyc8KgbWFudWFswqByZWNvdmVyecKgcmFjaW5nwqB3aXRowqB0aGXCoG9sZMKgYnVzLW9m
-ZsKgSVJRJ3MKPiBjYXJyaWVywqB1cGRhdGXCoGFuZMKgcHJldmVudHPCoHN0YXJ0dXDCoGZy
-b23CoG92ZXJyaWRpbmfCoGHCoG5ld8KgYnVzLW9mZi7CoE9wZW4KPiBhbHNvwqBzdXNwZW5k
-c8Kgc2hhcmVkwqBJUlHCoGhhbmRsaW5nwqB1bnRpbMKgaW5pdGlhbGl6YXRpb27CoGlzwqBj
-b21wbGV0ZS4KPiAKPiBJwqB0ZXN0ZWTCoHYzwqBvbsKgaGFyZHdhcmXCoHdpdGjCoDE4MMKg
-cmVhbMKgcmFuZ2luZ8KgcmVxdWVzdC9yZXNwb25zZcKgZXhjaGFuZ2VzCj4gYW5kwqAyMMKg
-Q0FOwqBpbnRlcmZhY2XCoGRvd24vdXDCoGN5Y2xlcy7CoFRoZXNlwqBjaGVja3PCoHBhc3Nl
-ZCzCoHdpdGjCoHRyYW5zbWl0Cj4gYW5kwqByZWNlaXZlwqB3b3JraW5nwqBhZnRlcsKgZXZl
-cnnCoHJlb3Blbi4KPiAKPiBUaGXCoHJlY292ZXJ5wqBhbmTCoHJhY2XCoHRlc3TCoGNhbXBh
-aWduwqBhbHNvwqBwYXNzZWTCoGFsbMKgNDAwwqBzeW50aGV0aWPCoGJ1cy1vZmYKPiBpdGVy
-YXRpb25zwqBhbmTCoDEwwqBjbGVhbnVwwqB0ZXN0c8KgYWZ0ZXLCoGFjdHVhbMKgcmVxdWVz
-dF9pcnEoKcKgZmFpbHVyZXMuCj4gVHJhY2luZ8KgY2FwdHVyZWTCoDXCoG92ZXJsYXDCoHdp
-bmRvd3PCoGludm9sdmluZ8Kgb2xkwqBJUlHCoGhhbmRsZXJzL3RpbWVzdGFtcAo+IHdvcmvC
-oGFuZMKgMsKgd2luZG93c8Kgd2hlcmXCoHJlY292ZXJ5wqBvdmVybGFwcGVkwqB3aXRowqBk
-ZXZpY2XCoGNsb3NlLgo+IAo+IC0tLQo+IENoYW5nZXPCoGluwqB2MzoKPiAtwqBSZXBsYWNl
-wqBkaXNhYmxlX2lycSgpL2VuYWJsZV9pcnEoKcKgaW7CoFJvY2tjaGlwwqByZXN0YXJ0wqB3
-aXRowqBkZXZpY2UKPiDCoMKgaW50ZXJydXB0wqBtYXNraW5nLMKgbWFza8KgcmVhZGJhY2ss
-wqBpcnFfc3VzcGVuZGVkwqBhbmTCoHN5bmNocm9uaXplX2lycSgpLgo+IC3CoFVzZcKgcmVs
-ZWFzZS9hY3F1aXJlwqBvcmRlcmluZ8Kgd2hlbsKgcmVzdW1pbmfCoHRoZcKgSVJRwqBoYW5k
-bGVyLgo+IC3CoEluaXRpYWxpemXCoHRpbWVzdGFtcMKgZGVsYXllZMKgd29ya8Kgb25jZcKg
-YXTCoHByb2JlwqBhbmTCoHN5bmNocm9ub3VzbHkKPiDCoMKgY2FuY2VswqBpdMKgYmVmb3Jl
-wqByZXN0YXJ0wqByZWluaXRpYWxpemVzwqB0aGXCoHRpbWVjb3VudGVyLgo+IC3CoEJhbGFu
-Y2XCoFJYwqBvZmZsb2FkwqBlbmFibGVtZW50wqB3aGVuwqByZXF1ZXN0X2lycSgpwqBmYWls
-c8KgZHVyaW5nwqBvcGVuLgo+IC3CoFByZXZlbnTCoHRpbWVzdGFtcMKgd29ya8KgZnJvbcKg
-cmVhZGluZ8KgdGhlwqBjb3VudGVywqBvcsKgcmVhcm1pbmfCoGFmdGVyCj4gwqDCoGRlYWN0
-aXZhdGlvbizCoHdpdGjCoGNhbmNlbGxhdGlvbsKgb3V0c2lkZcKgdGhlwqBsb2NrLgo+IC3C
-oERyYWluwqBUWMKgc3VibWlzc2lvbsKgYW5kwqBSWC1zaWRlwqBlY2hvwqB1c2Vyc8KgYmVm
-b3JlwqBwdWJsaXNoaW5nwqBCVVNfT0ZGLAo+IMKgwqBwcm90ZWN0aW5nwqB0aGXCoGNvcmUn
-c8KgcHJlLXJlc3RhcnTCoGVjaG/CoGZsdXNoLgo+IC3CoFNlcmlhbGl6ZcKgY2FycmllcsKg
-cmVzdG9yYXRpb24swqBJUlHCoGVuYWJsZW1lbnTCoGFuZMKgcXVldWXCoHdha2XCoHdpdGjC
-oGHCoG5ldwo+IMKgwqBidXMtb2ZmO8Kgc3VzcGVuZMKgc2hhcmVkwqBJUlHCoGhhbmRsaW5n
-wqBkdXJpbmfCoG9wZW7CoHVudGlswqBzdGFydHVwwqBmaW5pc2hlcy4KPiAtwqBMaW5rwqB0
-b8KgdjI6Cj4gwqDCoGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LWNhbi90ZW5jZW50
-XzgyQzkzNTYxRDIwMEM4NEMyNDYwOEM4MDA0OUMyM0VFRjgwQUBxcS5jb20vCj4gCj4gQ2hh
-bmdlc8KgaW7CoHYyOgo+IC3CoFNwbGl0wqB0aGXCoHNlcmllc8KgaW50b8KgdGhlwqBjb21t
-b27CoGNoZWNrcyzCoHRoZcKgY2FuY2VsbGF0aW9uwqBoZWxwZXIswqBhbmQKPiDCoMKgaXRz
-wqB1c2XCoGluwqBSb2NrY2hpcC4KPiAtwqBDaGVja8KgbmV0aWZfcnVubmluZygpwqBhZnRl
-csKgdGhlwqBkb19zZXRfbW9kZcKgY2FwYWJpbGl0ecKgY2hlY2vCoGFuZMKgYmVmb3JlCj4g
-wqDCoHRoZcKgcmVzdGFydMKgbm90aWZpY2F0aW9uLMKgZWNob8KgY2xlYW51cCzCoGFuZMKg
-Y2FycmllcsKgdXBkYXRlLgo+IC3CoE9ubHnCoHF1ZXVlwqBhdXRvbWF0aWPCoHJlY292ZXJ5
-wqBmb3LCoGHCoHJ1bm5pbmfCoGludGVyZmFjZTvCoGtlZXDCoHJlcG9ydGluZwo+IMKgwqBi
-dXMtb2ZmwqBhbmTCoG1ha2XCoHRoZcKgbG9nwqBtZXNzYWdlwqBtYXRjaMKgdGhlwqBzY2hl
-ZHVsaW5nwqBkZWNpc2lvbi4KPiAtwqBBZGTCoGNsb3NlX2NhbmRldl9jYW5jZWxfcmVzdGFy
-dF9zeW5jKCnCoGluwqBsaW51eC9jYW4vZGV2LmjCoGFuZMKgdXNlwqBpdMKgaW4KPiDCoMKg
-Y2xvc2VfY2FuZGV2KCnCoHdpdGhvdXTCoGNoYW5naW5nwqB0aGXCoGV4aXN0aW5nwqBjbGVh
-bnVwwqBvcmRlci4KPiAtwqBSZXBsYWNlwqB0aGXCoFJvY2tjaGlwwqBtdXRleMKgYW5kwqBj
-bG9zaW5nwqBmbGFnwqB3aXRowqBhbsKgZWFybHnCoGNhbGzCoHRvwqB0aGUKPiDCoMKgaGVs
-cGVyLsKgRHJvcMKgdGhlwqBleHRyYcKgY2xvc2UtcGF0aMKgSVJRwqBzeW5jaHJvbml6YXRp
-b27CoGFuZMKgbWFza8KgcmVhZGJhY2suCj4gLcKgUmV0YWluwqBJUlHCoGV4Y2x1c2lvbsKg
-YXJvdW5kwqBoYXJkd2FyZcKgcmVpbml0aWFsaXphdGlvbsKgaW7CoHRoZcKgcmVzdGFydAo+
-IMKgwqBjYWxsYmFjay4KPiAtwqBMaW5rwqB0b8KgdjE6Cj4gwqDCoGh0dHBzOi8vbG9yZS5r
-ZXJuZWwub3JnL2xpbnV4LWNhbi90ZW5jZW50XzU4MDJFRTg4NDM0MDEwMjI5RURGN0E1MzA4
-NEQ5OTRDNjEwNkBxcS5jb20vCj4gCj4gVG86wqBNYXJjwqBLbGVpbmUtQnVkZGXCoDxta2xA
-cGVuZ3V0cm9uaXguZGU+Cj4gVG86wqBWaW5jZW50wqBNYWlsaG9swqA8bWFpbGhvbEBrZXJu
-ZWwub3JnPgo+IFRvOsKgSGVpa2/CoFN0dWVibmVywqA8aGVpa29Ac250ZWNoLmRlPgo+IFRv
-OsKgIkRhdmlkwqBTLsKgTWlsbGVyIsKgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+Cj4gVG86wqBX
-b2xmZ2FuZ8KgR3JhbmRlZ2dlcsKgPHdnQGdyYW5kZWdnZXIuY29tPgo+IFRvOsKgT2xpdmVy
-wqBIYXJ0a29wcMKgPHNvY2tldGNhbkBoYXJ0a29wcC5uZXQ+Cj4gVG86wqBrZXJuZWxAcGVu
-Z3V0cm9uaXguZGUKPiBDYzrCoGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmcKPiBDYzrCoGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcKPiBDYzrCoGxpbnV4LWFybS1rZXJuZWxAbGlz
-dHMuaW5mcmFkZWFkLm9yZwo+IENjOsKgbGludXgtcm9ja2NoaXBAbGlzdHMuaW5mcmFkZWFk
-Lm9yZwo+IAo+IC0tLQo+IEN1bmhhb8KgTHXCoCg1KToKPiDCoMKgwqDCoMKgwqBjYW46wqBk
-ZXY6wqBwcmV2ZW50wqBidXMtb2ZmwqByZWNvdmVyecKgd2hlbsKgdGhlwqBpbnRlcmZhY2XC
-oGlzwqBub3TCoHJ1bm5pbmcKPiDCoMKgwqDCoMKgwqBjYW46wqBkZXY6wqBhZGTCoGNsb3Nl
-X2NhbmRldl9jYW5jZWxfcmVzdGFydF9zeW5jKCkKPiDCoMKgwqDCoMKgwqBjYW46wqByb2Nr
-Y2hpcF9jYW5mZDrCoGNhbmNlbMKgYnVzLW9mZsKgcmVzdGFydMKgYmVmb3JlwqBjbG9zaW5n
-wqB0aGXCoGRldmljZQo+IMKgwqDCoMKgwqDCoGNhbjrCoHJvY2tjaGlwX2NhbmZkOsKgcHJl
-dmVudMKgdGltZXN0YW1wwqB3b3JrwqBmcm9twqByZWFybWluZ8KgYWZ0ZXLCoGJ1cy1vZmYK
-PiDCoMKgwqDCoMKgwqBjYW46wqByb2NrY2hpcF9jYW5mZDrCoHNlcmlhbGl6ZcKgVFjCoHdp
-dGjCoGJ1cy1vZmbCoGFuZMKgcmVzdGFydAo+IAo+IMKgZHJpdmVycy9uZXQvY2FuL2Rldi9k
-ZXYuY8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqB8wqAxMsKgKystLQo+IMKgZHJpdmVycy9uZXQvY2FuL3JvY2tjaGlwL3JvY2tjaGlwX2Nh
-bmZkLWNvcmUuY8KgwqDCoMKgwqB8wqA2N8KgKysrKysrKysrKysrKysrKysrKystLQo+IMKg
-ZHJpdmVycy9uZXQvY2FuL3JvY2tjaGlwL3JvY2tjaGlwX2NhbmZkLXJ4LmPCoMKgwqDCoMKg
-wqDCoHzCoDIywqArKysrLS0tCj4gwqAuLi4vbmV0L2Nhbi9yb2NrY2hpcC9yb2NrY2hpcF9j
-YW5mZC10aW1lc3RhbXAuY8KgwqDCoMKgfMKgMzjCoCsrKysrKysrKystLQo+IMKgZHJpdmVy
-cy9uZXQvY2FuL3JvY2tjaGlwL3JvY2tjaGlwX2NhbmZkLXR4LmPCoMKgwqDCoMKgwqDCoHzC
-oDE2wqArKysrKy0KPiDCoGRyaXZlcnMvbmV0L2Nhbi9yb2NrY2hpcC9yb2NrY2hpcF9jYW5m
-ZC5owqDCoMKgwqDCoMKgwqDCoMKgwqB8wqDCoDnCoCsrKwo+IMKgaW5jbHVkZS9saW51eC9j
-YW4vZGV2LmjCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoHzCoDEywqArKysrCj4gwqA3wqBmaWxlc8KgY2hhbmdlZCzCoDE1MsKgaW5z
-ZXJ0aW9ucygrKSzCoDI0wqBkZWxldGlvbnMoLSkKPiAtLS0KPiBiYXNlLWNvbW1pdDrCoDI0
-YTE5Yjk1M2UyYTNkMGVhNWE4YzQ5NTFhMGFiOGYzMjcyMGM5MDcKPiBjaGFuZ2UtaWQ6wqAy
-MDI2MTAxMy1yb2NrY2hpcC1jYW5mZC1yZXN0YXJ0LWNsb3NlLWViZGU1OTU0ZjFiZgo+IAo+
-IEJlc3TCoHJlZ2FyZHMsCj4gLS3CoMKgCj4gQ3VuaGFvwqBMdcKgPDE1Nzk1Njc1NDBAcXEu
-Y29tPgoKcHctYm90OsKgY3IK
+This work started from a real failure on a production robot using a
+LubanCat-5IO with an RK3588. RX continued, but the TX queue remained
+stopped and subsequent sends returned ENOBUFS. The interface still
+reported ERROR-ACTIVE, and the hardware indicated neither a bus-off
+condition nor a pending TX request.
+
+While testing the echo-loss fix with fault injection, I discovered a
+separate race between bus-off restart and device close. This series fixes
+that race; the fix for the original TX stall will follow separately.
+
+Rockchip currently cancels restart_work in close_candev(), after freeing
+the IRQ, disabling RX offload and stopping the controller. A concurrent
+restart can re-enable the controller and interrupts after IRQ teardown,
+and requeue timestamp work that accesses registers after runtime suspend
+has disabled the controller clocks.
+
+The CAN core checks netif_running() before scheduling or starting
+recovery. A new close_candev_cancel_restart_sync() helper lets Rockchip
+wait for any restart already in progress before tearing down resources.
+The final close_candev() call retains cancellation and echo cleanup.
+
+Rockchip restart masks the device's interrupts and drains active IRQ
+handlers without disabling the shared interrupt line. It also drains
+timestamp work before reinitializing the controller and timecounter.
+Shared IRQ handling stays suspended until initialization is complete.
+Timestamp locking prevents workers from rearming after deactivation and
+keeps timestamp conversions consistent with timecounter updates.
+
+The bus-off path drains TX submission and RX-side echo users before
+publishing BUS_OFF, protecting the CAN core's echo flush during manual
+recovery. Startup serializes carrier restoration, IRQ resumption and queue
+wake with a new bus-off. The series also fixes RX offload cleanup when
+request_irq() fails during open.
+
+Hardware testing on a LubanCat-5IO running a Linux 6.18 PREEMPT_RT
+kernel covered 2,700 ranging request/response exchanges and 630 seconds
+of continuous traffic, including three naturally scheduled timestamp
+worker runs. RX, TX echo and TX completion hardware timestamps were
+present throughout, with no backward or abnormal jumps.
+
+Recovery tests included 20 automatic and 20 manual restarts, with 100
+synthetic fault iterations in total plus one calibration run. Tracing
+captured 14 overlaps between normal timestamp conversions and the worker,
+and one between close and a running restart. All 20 down/up cycles passed.
+No worker ran during about 300 seconds of observation after close, and no
+deadlocks or WARN/Oops were observed.
+
+---
+Changes in v4:
+- Serialize timecounter_cyc2time() with the worker's timecounter_read()
+  and startup's timecounter_init() using timestamp_lock.
+- Update rkcanfd_skb_set_timestamp() to take a non-const private pointer
+  and document the expanded scope of timestamp_lock.
+- Link to v3:
+  https://patch.msgid.link/20261014-rockchip-canfd-restart-close-v3-0-f0eb41090242@qq.com
+
+Changes in v3:
+- Replace disable_irq()/enable_irq() in Rockchip restart with device
+  interrupt masking, mask readback, irq_suspended and synchronize_irq().
+- Use release/acquire ordering when resuming the IRQ handler.
+- Initialize timestamp delayed work once at probe and synchronously
+  cancel it before restart reinitializes the timecounter.
+- Balance RX offload enablement when request_irq() fails during open.
+- Prevent timestamp work from reading the counter or rearming after
+  deactivation, with cancellation outside the lock.
+- Drain TX submission and RX-side echo users before publishing BUS_OFF,
+  protecting the core's pre-restart echo flush.
+- Serialize carrier restoration, IRQ enablement and queue wake with a new
+  bus-off; suspend shared IRQ handling during open until startup finishes.
+- Link to v2:
+  https://lore.kernel.org/linux-can/tencent_82C93561D200C84C24608C80049C23EEF80A@qq.com/
+
+Changes in v2:
+- Split the series into the common checks, the cancellation helper, and
+  its use in Rockchip.
+- Check netif_running() after the do_set_mode capability check and before
+  the restart notification, echo cleanup, and carrier update.
+- Only queue automatic recovery for a running interface; keep reporting
+  bus-off and make the log message match the scheduling decision.
+- Add close_candev_cancel_restart_sync() in linux/can/dev.h and use it in
+  close_candev() without changing the existing cleanup order.
+- Replace the Rockchip mutex and closing flag with an early call to the
+  helper. Drop the extra close-path IRQ synchronization and mask readback.
+- Retain IRQ exclusion around hardware reinitialization in the restart
+  callback.
+- Link to v1:
+  https://lore.kernel.org/linux-can/tencent_5802EE88434010229EDF7A53084D994C6106@qq.com/
+
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>
+To: Heiko Stuebner <heiko@sntech.de>
+To: "David S. Miller" <davem@davemloft.net>
+To: Wolfgang Grandegger <wg@grandegger.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+To: kernel@pengutronix.de
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-rockchip@lists.infradead.org
+
+---
+Cunhao Lu (6):
+      can: dev: prevent bus-off recovery when the interface is not running
+      can: dev: add close_candev_cancel_restart_sync()
+      can: rockchip_canfd: cancel bus-off restart before closing the device
+      can: rockchip_canfd: prevent timestamp work from rearming after bus-off
+      can: rockchip_canfd: serialize TX with bus-off and restart
+      can: rockchip_canfd: serialize timecounter timestamp conversion
+
+ drivers/net/can/dev/dev.c                          | 12 ++--
+ drivers/net/can/rockchip/rockchip_canfd-core.c     | 67 ++++++++++++++++++++--
+ drivers/net/can/rockchip/rockchip_canfd-rx.c       | 22 ++++---
+ .../net/can/rockchip/rockchip_canfd-timestamp.c    | 43 ++++++++++++--
+ drivers/net/can/rockchip/rockchip_canfd-tx.c       | 16 +++++-
+ drivers/net/can/rockchip/rockchip_canfd.h          | 11 +++-
+ include/linux/can/dev.h                            | 12 ++++
+ 7 files changed, 157 insertions(+), 26 deletions(-)
+---
+base-commit: 24a19b953e2a3d0ea5a8c4951a0ab8f32720c907
+change-id: 20261013-rockchip-canfd-restart-close-ebde5954f1bf
+
+Best regards,
+--  
+Cunhao Lu <1579567540@qq.com>
+
 
