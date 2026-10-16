@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 611A439CCF8;
-	Fri, 16 Oct 2026 02:37:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FFFE391E78;
+	Fri, 16 Oct 2026 02:37:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792118226; cv=none; b=rMwG6bAcrcDFTXMFkG3FvQ+eyycvhUJAFexdQiLUgaQw43g97jmJ0VWv1FFvJJErPj5saAGtMT0S4Qi8raAmJWoNL5KS09vtKw2pHfq1Bl9pdMDLsJGwyFVdNsF0opCoQzjhijEdEIZqvTwdXjWwohXPeUCwcnsXBy5aE99Dxp0=
+	t=1792118227; cv=none; b=Lbwh4rSeJs0X75ohrUk0Xpt81il+AUrg+1/5YE7hOGbB1DRxmseb/U0lr00VCjdRak0chSeAKWBFSHMaRzuqLnamI0+0kQ/Bti7d/RRFCgiseD6uZN5IQHWDU+Q65ETKsPksI2kwWui1R1SlH3ty4nn7AnEkPN/Q0Gnx6T5UeDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792118226; c=relaxed/simple;
-	bh=wPt2RZPQIXJnAUGvMQclOnH5shOqkeKEehrtnCKarPg=;
+	s=arc-20240116; t=1792118227; c=relaxed/simple;
+	bh=bUrLLbqmztpproXjVgTPwqQ8dyDDfMG1UkTzhTJ/GQc=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=VJlsaQSJn47gIPzkiXRZ18kUujW0U6X2sa49AFFaN5HQ4Q1tY/uNQ2t5IqBTGe2YiaOdcczSAKoORfG7EtxsJy1v0Xu2dzngMDRyx038yWAyiiPmrDVpOY85MiCuJDeebXPgMtKW2buqytMmhGq8LGUfpouzLNtl3mw6388Dpq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tc8f1lWy; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=LyGKuh87+ugG44wspHWg35x5y7ph7sNTSvEnvz7iD7ZI1mF7npS+e+aPs2VtaBqHc8fYaRQMpfrSCCfgsR8o1BHp+960hiYnnKICqAFf5FBmNcsBLVsXOEjt22eeb0jX5RUPdHw2x4usOm+7su+DZ0/XhFyQwmnqtlWVAoIBzYA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q1GFCeJF; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tc8f1lWy"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9DB1D1F000C4;
-	Fri, 16 Oct 2026 02:37:04 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q1GFCeJF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FC0F1F000C5;
+	Fri, 16 Oct 2026 02:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792118225;
-	bh=owwLA+k7cnLYtAuDdILFsNmU2kiAx/CAT1qDUgFozOU=;
+	s=k20260515; t=1792118226;
+	bh=ppE64hLvHeym9F2cTK/P6MnoHfNBKh8cbyMY3c0l7+g=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Tc8f1lWy6FPfIFJyWuUDnY92BjjqxxmDJeYMvELqnxY0SCXMIskbyfO+X6O/moucP
-	 CTEO9VTAHoeVQ0oA+C6SYdGh37x1qdUzukv+mu5XzfLNaUECtE27/oZzeFIRqXHQes
-	 etkqm9oTWZUuAB+FahvQ5S+UGLTF8Kr2BGwqxmWfmshf4CA0aj8plTgomjJ0fplrHq
-	 sti56y4U9tS4ZRKg1WXRajiiVpjQYKMeZIMMLk4oDwop+DpL5yOC+PIAtlx1AVOzvn
-	 eQM9AuqASErp8TY9x0zlp5+7X6dLRK1BSFh8EfB386jx5CLWnvwnGiISG1qkIjpn4n
-	 FHLCi9qt+XrxA==
-Subject: Re: [PATCH net-next 05/37] can: proc: remove pointers from CAN
- specific proc output
+	b=Q1GFCeJFtGerNi8OWU5rDIPUO/T766uQ7iOw7wEztaqoY840ukZL1DQVWUhLMiY5U
+	 mgcm7rBQ7hq6pdIBLXoGzR+1NVX2cDD/oTvrmIJnemG24urm3cd8SMbO6p2HcE0iCq
+	 xetrLdTW3I/6wRRQRWNn5979jdDvrGqpWz9+yuCEKRSM0BkZjcx+LjwyNxTeB4Q/+j
+	 832VxS8pTqPSnZLhQyw+FMV/TumRz4ocj/qrtiBDYYZi1ys2opgabhSiIeFJ7ly+vW
+	 uLXCQpB2sYRRowqwKOJiWi1CNYo99D09M3p/L9MYg8VoCxElY1EIygwiCQ0Osg6T6Q
+	 jfxHRtQ5kmXag==
+Subject: Re: [PATCH net-next 08/37] can: bcm: fix filter removal race between
+ release and netns change
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, socketcan@hartkopp.net,
  kurt.van.dijck@eia.be
-Date: Fri, 16 Oct 2026 02:37:04 +0000
-Message-ID: <179211822419.434549.2749733586204077125@kernel.org>
-In-Reply-To: <20261015015336.816543-6-mkl@pengutronix.de>
-References: <20261015015336.816543-6-mkl@pengutronix.de>
+Date: Fri, 16 Oct 2026 02:37:05 +0000
+Message-ID: <179211822523.434549.241636889494644724@kernel.org>
+In-Reply-To: <20261015015336.816543-9-mkl@pengutronix.de>
+References: <20261015015336.816543-9-mkl@pengutronix.de>
 X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -47,10 +47,10 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 2 potential
+Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 1
+Critical: 0 · High: 0 · Medium: 2 · Low: 1
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -58,135 +58,191 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] The new CONFIG_KALLSYMS guard in can_print_rcvlist()
-  (net/can/proc.c) does not stop the receiver callback address from…
-- [Low] The updated text in Documentation/networking/can.rst says every
-  rcvlist entry contains 'the CAN network device and the subscribed…
+- [Medium] The commit moves remove_proc_entry() ahead of rtnl_lock() so
+  that procfs readers cannot stall RTNL from close().
+- [Medium] bcm_release() now holds the global rtnl_mutex across the whole
+  rx_ops unregistration loop (rtnl_lock() at net/can/bcm.c:1951,…
+- [Low] Stale comment in bcm_release().
 
 --
 
-can: proc: remove pointers from CAN specific proc output
+can: bcm: fix filter removal race between release and netns change
 
-This patch stops printing kernel pointers in the /proc/net/can/ and
-/proc/net/can-bcm/ output. The rcvlist entries now show the receiver
-callback name via %ps (or "(unknown)" when CONFIG_KALLSYMS=n) and the
-socket inode number. can_rx_register() now takes an inode number in
-place of the ident string.
+bcm_release() now takes rtnl_lock() before it removes the socket from
+bcm_notifier_list. It holds RTNL across the rx_ops unregistration, so
+bcm_release() and bcm_notify() can no longer both skip filter removal
+while the bound device moves to another netns. The bcm_busy_notifier
+busy-wait becomes a WARN_ON_ONCE(), and the procfs entry and tx_ops are
+now removed before RTNL is taken.
 
-Link: https://patch.msgid.link/20261012115851.3412-1-socketcan@hartkopp.net
+Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+Link: https://patch.msgid.link/20261014142114.280279-3-socketcan@hartkopp.net
 
-> diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-> index 536ff411da1d..908c199cf6ad 100644
-> --- a/Documentation/networking/can.rst
-> +++ b/Documentation/networking/can.rst
-> @@ -1040,17 +1040,17 @@ As described in :ref:`socketcan-receive-lists` the SocketCAN core uses several f
->  lists to deliver received CAN frames to CAN protocol modules. These
->  receive lists, their filters and the count of filter matches can be
->  checked in the appropriate receive list. All entries contain the
-> -device and a protocol module identifier::
-> +CAN network device and the subscribed function name::
-
-[Severity: Low]
-Is this sentence accurate for every configuration?
-
-With CONFIG_KALLSYMS=n, can_print_rcvlist() prints the literal string
-"(unknown)" in place of the function name. The commit message mentions
-this, but the documentation does not.
-
-The new sock_inode column is also not explained. Kernel-internal
-subscribers pass ino=0:
-
-net/can/gw.c:cgw_register_filter()
-    gwj, 0, NULL);
-
-net/can/j1939/main.c:j1939_can_rx_register()
-    j1939_can_recv, priv, 0, NULL);
-
-Could the text mention the "(unknown)" case and say that a sock_inode of
-0 means there is no associated socket?
-
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 6759662e024c..301920011a30 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -1926,21 +1926,19 @@ static int bcm_release(struct socket *sock)
 >  
->      foo@bar:~$ cat /proc/net/can/rcvlist_all
-
-[ ... ]
-
-> diff --git a/net/can/proc.c b/net/can/proc.c
-> index 64b3bdc2fa7e..64994ab48541 100644
-> --- a/net/can/proc.c
-> +++ b/net/can/proc.c
-> @@ -215,25 +215,27 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
+>  	/* remove bcm_ops, timer, rx_unregister(), etc. */
 >  
->  	hlist_for_each_entry_rcu(r, rx_list, list) {
->  		char *fmt = (r->can_id & CAN_EFF_FLAG)?
-> -			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
-> -			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
-> +			"  %6s  %08x  %08x  %8ld  %10llu" :
-> +			"  %6s     %03x    %08x  %8ld  %10llu";
+> -	spin_lock(&bcm_notifier_lock);
+> -	while (bcm_busy_notifier == bo) {
+> -		spin_unlock(&bcm_notifier_lock);
+> -		schedule_timeout_uninterruptible(1);
+> -		spin_lock(&bcm_notifier_lock);
+> -	}
+> -	list_del(&bo->notifier);
+> -	spin_unlock(&bcm_notifier_lock);
+> -
+> +	/* Remove the procfs entry and the tx_ops before taking RTNL:
+> +	 * remove_proc_entry() waits for concurrent readers of the entry and
+> +	 * must not hold up RTNL for them. Clear bo->bcm_proc_read so that
+> +	 * bcm_notify() does not remove the entry a second time.
+> +	 */
+>  	lock_sock(sk);
 >  
->  		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
-> -			   r->func, r->data, atomic_long_read(&r->matches),
-> -			   r->ident);
-> +			   atomic_long_read(&r->matches), r->ino);
-> +
-> +		/* without kallsyms %ps would print the raw text address */
-> +		if (IS_ENABLED(CONFIG_KALLSYMS))
-> +			seq_printf(m, "  %ps\n", r->func);
+>  #if IS_ENABLED(CONFIG_PROC_FS)
+>  	/* remove procfs entry */
+> -	if (net->can.bcmproc_dir && bo->bcm_proc_read)
+> +	if (net->can.bcmproc_dir && bo->bcm_proc_read) {
+>  		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
+> +		bo->bcm_proc_read = NULL;
+> +	}
+>  #endif /* CONFIG_PROC_FS */
 
 [Severity: Medium]
-Can %ps still print the raw callback address when CONFIG_KALLSYMS=y?
+list_del(&bo->notifier) now runs after rtnl_lock(). That means this
+first lock_sock() section runs while the socket is still on
+bcm_notifier_list. Can a procfs reader still stall RTNL here, just
+indirectly through the socket lock?
 
-The IS_ENABLED() check covers only the config option. It does not check
-whether the symbol lookup succeeds. When kallsyms_lookup_buildid()
-fails, the %ps path falls back to an unhashed address:
+Consider this interleaving:
 
-symbol_string()
-  sprint_symbol_no_offset()
-    __sprint_symbol()
-      kallsyms_lookup_buildid()
-        module_address_lookup()
-          find_kallsyms_symbol()
+CPU1 (close)
+bcm_release()
+  lock_sock(sk)
+  remove_proc_entry()
+    proc_entry_rundown()
+      wait_for_completion()      <- waits for the reader on CPU2
 
-kernel/module/kallsyms.c:find_kallsyms_symbol() {
-    ...
-	if (!best)
-		return NULL;
-    ...
-}
+CPU2 (reader of /proc/net/can-bcm/<ino>)
+proc_reg_read()
+  use_pde()
+  pde_read()                     <- copy to a FUSE or userfaultfd
+                                    backed buffer blocks
 
-kernel/kallsyms.c:__sprint_symbol() {
-    ...
-	if (!len)
-		return sprintf(buffer, "0x%lx", address - symbol_offset);
-    ...
-}
+CPU3 (NETDEV_UNREGISTER, RTNL held)
+bcm_notifier()
+  bcm_notify(bo, NETDEV_UNREGISTER, dev)
+    lock_sock(sk)                <- blocks behind CPU1
 
-The callbacks registered here are all static functions in modules:
-raw_rcv, bcm_rx_handler, isotp_rcv, isotp_rcv_echo, can_can_gw_rcv and
-j1939_can_recv.
+bcm_notify() takes lock_sock(sk) before it checks whether any op or the
+binding uses dev. So deleting or moving any CAN device in the socket's
+netns would be enough.
 
-scripts/Makefile.modinst passes custom INSTALL_MOD_STRIP values straight
-to strip, so a module installed with something like
-INSTALL_MOD_STRIP="--strip-unneeded" or "-x" can lose these local
-symbols. If no named symbol comes before the callback in that module's
-text, the lookup fails. This depends on section layout, which has not
-been fully confirmed.
+Before this patch, the socket was unlinked first and the busy-wait made
+sure bcm_notify() was not running for it, so this interleaving was not
+possible.
 
-The rcvlist files are created 0644 in can_init_proc(), so any local user
-can read them. The old %pK output applied kptr_restrict. In this
-configuration the new output would show the real module text address.
+The procfs entry is mode 0644 and is created on any connect(), including
+can_ifindex = 0. With unprivileged user namespaces, a vcan device in a
+user-owned netns can trigger the notifier, and RTNL is global.
 
-Would it be safer to resolve the name explicitly, for example with
-sprint_symbol_no_offset() or lookup_symbol_name(), check that the lookup
-succeeded, and print "(unknown)" on any failure? The commit message says
-the patch "removes the disclosure of pointers", so it seems worth closing
-this case too.
+Does this mean the commit message goal ("which could otherwise stall
+RTNL from a plain close()") is only partly met?
 
-> +		else
-> +			seq_puts(m, "  (unknown)\n");
->  	}
->  }
+There are similar RTNL stall paths already. bcm_sendmsg() holds
+lock_sock() across memcpy_from_msg() in bcm_tx_setup() and
+bcm_rx_setup(), and bcm_notify() itself calls remove_proc_entry() under
+RTNL. This particular ordering is new with this patch, though.
 
 [ ... ]
+
+> @@ -1948,6 +1946,21 @@ static int bcm_release(struct socket *sock)
+>  		bcm_remove_op(op);
+>  	}
+>  
+> +	release_sock(sk);
+> +
+> +	rtnl_lock();
+> +
+> +	/* The netdev notifier chain runs under RTNL, so bcm_notifier() can't
+> +	 * be walking bcm_notifier_list and point to this socket. The spinlock
+> +	 * is still needed as bcm_init() adds sockets without holding RTNL.
+> +	 */
+> +	spin_lock(&bcm_notifier_lock);
+> +	WARN_ON_ONCE(bcm_busy_notifier == bo);
+> +	list_del(&bo->notifier);
+> +	spin_unlock(&bcm_notifier_lock);
+> +
+> +	lock_sock(sk);
+> +
+>  	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
+>  		/*
+>  		 * Don't care if we're bound or not (due to netdev problems)
+
+[Severity: Low]
+This isn't a functional problem, but the comment a bit further down in
+this rx_ops loop in bcm_release() still describes a concurrent
+unregister:
+
+			 * op->rx_reg_dev is a tracked reference taken
+			 * when the subscription was registered, so it
+			 * stays valid here even if a concurrent
+			 * NETDEV_UNREGISTER already unlisted the device.
+
+This loop now runs between rtnl_lock() and rtnl_unlock(), and the socket
+stays on bcm_notifier_list until RTNL is taken. A NETDEV_UNREGISTER has
+either already finished, in which case bcm_notify()->bcm_rx_unreg()
+cleared op->rx_reg_dev, or it runs after this loop, when the socket is
+no longer on the list.
+
+Can a concurrent NETDEV_UNREGISTER still happen at this point? The old
+comment seems to contradict the new comment added above it.
+
+The same comment in bcm_delete_rx_op() is still accurate, because that
+path does not hold RTNL. Should the copy in bcm_release() be updated?
+
+> @@ -1973,6 +1986,8 @@ static int bcm_release(struct socket *sock)
+>  
+>  	}
+>  
+> +	rtnl_unlock();
+> +
+>  	synchronize_rcu();
+
+[Severity: Medium]
+The global rtnl_mutex is now held across the whole rx_ops
+unregistration loop, and userspace decides how long that loop is. Is
+that intended?
+
+bcm_rx_setup() allocates one op per distinct (can_id, ifindex) with
+kzalloc(OPSIZ, GFP_KERNEL). That allocation is not memcg accounted, and
+there is no per-socket limit. bcm_connect() accepts can_ifindex == 0
+without any device, and ANYDEV ops register on the all-devices list
+through:
+
+	err = can_rx_register(sock_net(sk), NULL, op->can_id,
+
+So an unprivileged user with no CAN hardware can create a very large
+number of ops.
+
+On close(), each op calls can_rx_unregister(). That takes
+spin_lock_bh(&net->can.rcvlists_lock) and walks the receiver hlist
+linearly until it finds the match.
+
+A second socket can put M newer entries in front of the victim's
+entries in the same bucket. It can do this with EFF ids that fold to
+the same bucket in effhash(), or with the same SFF id. RTNL would then
+be held for roughly K * M list steps.
+
+Before this patch, the same loop ran only under lock_sock(sk), so only
+the closing task paid for it. Now it would block netlink and netdev
+configuration in every network namespace.
+
+The loop without cond_resched() already existed, and the attacker needs
+a lot of kernel memory. What is new is that RTNL covers the whole loop.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261015015336.816543-2-mkl%40pengutronix.de
