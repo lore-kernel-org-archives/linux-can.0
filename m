@@ -1,122 +1,152 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FE354508E9
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 12:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2E88466AEF
+	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 12:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792152739; cv=pass; b=W0KnQQ5PZ7gUu8xCt0KIg17P29g8M3QvLMHvKqtoZ0NTTxdjnoh+9rmVwOnGYMQXMeKL/eB9AZhP8YZh+9ll0IISUODCXFPAeg3VvtcCxvS62HYomLhygH3ROTW60qQ8VMCo9UCjeVk0y3nCZ7jL14Lc7oTr78kkOP/mUpt8kFU=
+	t=1792152915; cv=pass; b=o76iMaQ1quDBkOqnA+ovQmua6kg4oDwjjSATy6pEfqOMbv/gPFBMIuB1WLw4rWgKZ5aNw/kgDTd37f3Ing0jjyVI+n7ie01vARN8P6xDP9qV6PwP09BPn5uH1d+oq41ycVZPBwAPE/V+AIrnXpx8uxdDSQiSA5fTEqamvWLZ+2g=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792152739; c=relaxed/simple;
-	bh=0WKtCoogSm4qqsG01+jxCzBa69R4zHNIbHhNK+wpj4c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tD9X20G8ul3DUOrbxI8cyCLlHbIKWOgkvGhLJvIrxEWLt0be41jmMmWSbMO+/YDSG6sYuDrRo5ov7C+ipufaYWraXMasCwdW2e4Y9W0OlySF5JpZP+zYjeYx3D1pCvlhS6p5v70Kq/9Usa1nF5D1yZcoLdCaOZmfraH0T9iOBdQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=agK4aYFO; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=iQ6ILBa4; arc=pass smtp.client-ip=85.215.255.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	s=arc-20240116; t=1792152915; c=relaxed/simple;
+	bh=IMcCGJZgqQmkmXW4kDDR77x/Ch0Xv/eEUtva+e899ac=;
+	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
+	 References:Date:Message-Id; b=mAgELzjdSTyOTpQLcJ7+cz7IPzuQpaOWXwx+Jl/E7UetcieFMfIWsPHTtfJoJnEkXzVoaOZMKBVidTNuAi7H0QGLU+SCqPajfPJRzPWM4PINBZJoQA8AS0XJ4fE/3gGoVNM6vGCqNfu92Si8O6M/WqibRpGup4jhTz0mmRddrfA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=Qkd7XmDn; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="agK4aYFO";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="iQ6ILBa4"
-ARC-Seal: i=1; a=rsa-sha256; t=1792152725; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=fRcbdRkjjTiL7Z5JQ1DcYCF10j4FRBWSBB8zwwAwOV60XePlVDjiHMdjHR/o0lU6vX
-    hiUlIiREDHEi+bs02evZbAsjGJbecqWA1F6kbJVOZgVvaB20H+/KYy9O5zF4qKN0eaEb
-    uz43xAvdvCsD/IGoxs9Gy26ZZjoPsk+GU5VPO9qU/JsPJATG7opyzIHmJiOoidgxOBzn
-    1xJqJ2aB/zYFexqaMYftom3+kJ2AKpyyE0NFDPjeKXB8pMuKiPZnE2ikRGkHrgHJvWek
-    4zDyvZvDH3ZvdLY4HrlDQzRYjXuKwHmeDlyMlnJnLil0mtojR0uFuRHH4EcApq4h39WJ
-    awEw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792152725;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=5k3l4U+QMxhR62Fwz7Nw42sHu7yHPuy03vgR3H4peCk=;
-    b=i7ZKx21cdq4lPMrv5uJBoFhaA9nGs/feU6uDZ9F8PNfB36rmRofY0ZE1yVR9mOmR0M
-    F7cSc2eFv7S96zYR/nc8IHbspv+PrcrjO/yw2MSGz81HpzH/s9RRaxFyrXQ93Pun86Ux
-    63jG9et8HURlPR5zWjSpubffuRe7TtnUUZsl+EUqDFdjokQrj0OdbmROxeQ7csu6C7o2
-    VbKRlLOokfo8sMQof+9uql4m60userAIvozRiIzNTIMh30f3fmL9QuSVyBeIAwghSfH7
-    ihgvZCAFXLBJnMZ9s20psnSQwhk073u7w+MVeu0RUhayH8U25WByQUlE1TWy671+/p/d
-    kSPg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792152725;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=5k3l4U+QMxhR62Fwz7Nw42sHu7yHPuy03vgR3H4peCk=;
-    b=agK4aYFOaWLWylWXy1ansQigM7QobtQemmFLLDIepsmIJ3xfP4LLmWfw8Hvuewcquk
-    YaNtLNFNI/wyGOykDMntvofVKGLBK513a8+soJE3k7amz+jXwRWOc0KsImMVVVlm4yTR
-    imSbOxRKpdtNMXtVh1y4BXh4RqnJX2YiNVLa7Q9+4K7Rf5ahpYa3qoJWrPEtAB2TYsr9
-    yKh/wnQdOuanKQ64CJzAhhkedeDE/JWiZXDNhggk92zAJ9b0V1SBeBrk6++R5wFvscCR
-    WBbMx9Ggiv11vczKStElgBJhaGeinGlvS4EEwmKmfIpLHvJbTFZzwqjBua6oNTs2qwfT
-    Tepg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792152725;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=5k3l4U+QMxhR62Fwz7Nw42sHu7yHPuy03vgR3H4peCk=;
-    b=iQ6ILBa4pbw6obNgrRlKsanI5yoNhjlwBzUCd8gNE8AMV63aUnp9an6IAltYdTFP5r
-    XOT/c9NUlLeCIC4vMZCg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29GCC5MF0
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 16 Oct 2026 14:12:05 +0200 (CEST)
-Message-ID: <f2278719-d4a3-49dc-9780-271ae20085c6@hartkopp.net>
-Date: Fri, 16 Oct 2026 14:12:04 +0200
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="Qkd7XmDn"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 8AD07201260;
+	Fri, 16 Oct 2026 14:15:04 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792152904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Werbc4zFTy+P0b8VusJPTvqKs2xzl+rdPJLironlip4=;
+	b=Qkd7XmDnrdETLuEYsphBHPTa1xlvbJKDha5iRuXoDaWWZKDOku1zDuCId5tn371ZwtXZb1
+	9d/CUlRx4V7N3X8V4XGY6HioVRnNs4iZ1d0/447imOk0qNYUPfZq4YQPHbmI8l1efrKRsu
+	BWcU7AYyYya1HImkHsqFK9+l6VbJibK39qJw3e1UaVdwuAo9mWIl2yOC5sjTOOxaQd4LWh
+	HdhLumsDWOf9nqY+5F5mhsgsNJLQYSY74CbvJ3R4asvvHDwOkFBtVhF0Z2jq+NFJMlzoNS
+	ixiaP85zxs4BJ++/J2jcORId4RXExea1cHNlBX69/WITm6t2RfCZ1sKJjtRBeg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792152904; a=rsa-sha256;
+	cv=none;
+	b=Oo8E7NwSCPdJ8N7fc40IZ+QhrMN9E35PnW3aWpK8/nqZJ75py+b+wzlHXbhqoyOzDmBxYQ
+	x1CpaB7zedv4u3o4w9rY9jzNteYDpuxugyQ1iIfzttSamodi+RaiOcyCT8AA5kUP8LuN5P
+	LaUg1gexrvuGD671jxJoeQcZinulhY/UJ590EM1xUY4CpgomAGaazj6BmeHxLUncA2NL9w
+	Q5XBSF/F1D836cB60D7kb+Cfb/C/rNFqKTi/87WGT/10V3U1dC5msf3yYHleyPm3ZAIaLA
+	nzNLp86RJW3Z1eyUMfaQ2kTV/F4Gd9MAdba8ikA6J3eez+TS5sFewyc7NXkbPQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792152904;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Werbc4zFTy+P0b8VusJPTvqKs2xzl+rdPJLironlip4=;
+	b=drWMSXYU9kR2ZGeGzL5zT3SSAYARAI8Zk9XkD7bR4WEdNcbVhB4pox/zbFgYXOidXVBFx2
+	eaXhRouQD11sAuFS17oXkEi0ksIjC+qj3hX9qCuw2zqdmKK6IyfuFqRUVlw8EqTiBNvev4
+	GUGruCiWgj0NYYfR4rJhCCOYF06qwc3mxdBOiUXTgUFIYwgioE2ZrOQjsZNz2yYWGlNflD
+	VoqpvzYzsJCLsTg6nbAG06+t3prDXFNGGD5XQj8deaOBgP4J/fr+ihEHtovXEZXjJKQ0h9
+	vsSFInxq7p23jaE8HZFgVVT2HNQ1C2ig4b5/gfFvX874AoyT4KshnwdrYat3OQ==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xHgq0-006BNF-1P;
+	Fri, 16 Oct 2026 14:15:04 +0200
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 2C5365C6148;
+	Fri, 16 Oct 2026 12:15:04 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Subject: Re: [PATCH can-next v2] can: replace ARPHRD_CAN type checks with
  can_get_ml_priv()
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, stable@kernel.org,
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: sashiko-reviews@lists.linux.dev, linux-can@vger.kernel.org, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
  Oleksij Rempel <o.rempel@pengutronix.de>
+In-Reply-To: <e71563e4-2d8d-4302-a9d1-b0dc34fea3a1@hartkopp.net>
 References: <20261016093525.327367-1-socketcan@hartkopp.net>
- <179215175423.1281414.11369167443665043648.b4-review@b4>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179215175423.1281414.11369167443665043648.b4-review@b4>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+ <sashiko-outbox-174104@kernel.org>
+ <e71563e4-2d8d-4302-a9d1-b0dc34fea3a1@hartkopp.net>
+Date: Fri, 16 Oct 2026 14:15:00 +0200
+Message-Id: <179215290023.1285626.1847782701765808982.b4-reply@b4>
+X-Mailer: b4 0.17-dev-6be7c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1812; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=IMcCGJZgqQmkmXW4kDDR77x/Ch0Xv/eEUtva+e899ac=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsi6JOpSflc3MDqm++6Xb+9f9lYeYIznfdt3wUDp0Y62W
+ GbtGp3NHaUsDGJcDLJiiixLf5xQFAh0KO19mTAJZg4rE8gQBi5OAZhIzQqGf0pTu6oyZl/YVueX
+ nfHBt+2R360tfukVLHv7DvSqJqxY8pWR4VHwKb3mB58nCn71dlynuv2GkM5dr5WR6lc73b0sVkt
+ O5wcA
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+
+On 2026-10-16 12:02 +0200, Oliver Hartkopp wrote:
+> > [Severity: Medium]
+> > A few lines lower in isotp_bind(), the return values of can_rx_register()
+> > are ignored:
+> >
+> > 	if (isotp_register_rxid(so))
+> > 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
+> > 				isotp_rcv, sk, "isotp", sk);
+> >
+> > 	/* no consecutive frame echo skb in flight */
+> > 	WRITE_ONCE(so->cfecho, 0);
+> >
+> > 	/* register for echo skb's */
+> > 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+> > 			isotp_rcv_echo, sk, "isotpe", sk);
+> >
+> > If can_rx_register() fails (for example, returning -ENOMEM due to a failed
+> > kmem_cache_alloc()), bind() will succeed but the socket is not fully
+> > registered to receive CAN frames. This leads to a silent failure where
+> > user-space believes the socket is successfully bound, but no traffic will
+> > ever be received.
+> >
+> > Could this regression be prevented by checking the return values and
+> > propagating the error appropriately, or cleaning up any partial
+> > registrations?
+> >
+> When this patch is applied isotp_bind() can only fail with -ENOMEM and
+> nothing breaks. The socket just becomes unusable. And if we have -ENOMEM
+> we have a big problem anyway.
+>
+
+Please run "b4 prep --check" before sending patches:
 
 
+I've taken the patch and fixed the checkpatch warning, but I suspect the
+netdev sashiko will complain about the missing error handling, too.
 
-On 16.10.26 13:55, Marc Kleine-Budde wrote:
->> Commit 4e096a18867a ("net: introduce CAN specific pointer in the struct
->> net_device") introduced an explicit way to assign the midlayer private
->> pointer (dev->ml_priv) to named users like ML_PRIV_CAN. A valid pointer
->> returned by can_get_ml_priv() therefore identifies a real CAN device.
->>
->> The referenced commit only converted the j1939 and proc code to this
->> check, while the other parts of the CAN subsystem still rely on
->> dev->type == ARPHRD_CAN.
->>
->> The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
->> type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
->> netdevice passes the ARPHRD_CAN checks in the CAN subsystem, which can
->> lead to a NULL pointer dereference of the CAN specific ml_priv. This
->> only requires owning a TUN/TAP device or CAP_NET_ADMIN in an
->> unprivileged user namespace.
->>
->> can_rx_register() already rejects such a device since commit 8aa59e355949
->> ("can: af_can: prevent NULL pointer dereference in can_rx_register()"),
->> but can_rx_unregister() only checks dev->type and dereferences the NULL
->> ml_priv in can_dev_rcv_lists_find().
->>
->> This path is reachable via isotp: isotp_bind() only checked for
->> ARPHRD_CAN and ignored the -ENODEV from can_rx_register(), so the socket
->> was marked as bound to the TUN device. A later isotp_release() or
->> NETDEV_UNREGISTER notification then crashes in can_rx_unregister().
-> 
-> Let's hope the bots will be happy :)
-The crash is fixed. The other stuff is no stable material.
+> If I would provide such a patch the proc pointer removal patch would
+> break next.
 
-;-)
+I think this is not an argument for sashiko :/
+
+> I have ~20 patches for isotp and its CAN XL support. I will add the
+> isotp_bind() error handling there when these current (can-next) fixes
+> are in mainline.
+
+regards,
+Marc
+
+-- 
+Marc Kleine-Budde <mkl@pengutronix.de>
