@@ -1,43 +1,43 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB4339E6FD;
-	Fri, 16 Oct 2026 02:37:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CEE73845AC;
+	Fri, 16 Oct 2026 02:37:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792118237; cv=none; b=OPNl5X23xl0AsCMnYtf1pU+O36bPiDvAIpwGaajqKD+EbsjFL23suPveaJ9U+9iyscCL74QnMrJ4knXI6pdlx3kQRy1Zh/KVsvepOjaPny3HcE0xcnJcIP4fgoiLSCjIELrPB8/TBAAz8RmKBTXTaElFrWu3CT9vRY/PCJXRyYU=
+	t=1792118238; cv=none; b=Kcxl97Tq8JQTJJy4qrhnQ7GA0C5A8zhZrZuh9uIW3qU/BBu01BXcTWjjHxn2YOOS4X2GNN+oHP3QRv6iHqTFeHP3+P8H1wmh/Nk3e9JwB6+mX3u+A4ZFPUKQBnz/zGTgxxHARhug/LI1REqrdm0hGm9pg9/EUc/fKJ+N2hjkxBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792118237; c=relaxed/simple;
-	bh=prrK4/87F9cOi0Xh5RrmtdyCZlfLc4miz434IzGnxfk=;
+	s=arc-20240116; t=1792118238; c=relaxed/simple;
+	bh=NLGXQ6S+UzrGweleq2coDo6hDP7rUjR1GgWAHQcJWeo=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=aCtzkvL22+/6v1fLsPwhgv3Xj8d6xF5jLFBHo89Z9j3soGkNA5WyzWnIFNeXzFmQ5Ias/D9Xb+iPCB5fY5+su9ZEqQ3JvVYemtJ1DfVDSTu5otXovPKBr4y6SwJjY6ww/9WKYbkCvKuNo8O+lmuxC2YGq3ID3B7Ms8TeL8ihDeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XPCd+g+R; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=HegdBV4yyFMSabQwTDHQjdleO8vSfvrG5J2Zs62A/1nLP2xJPsiahERyiOGqHkUX3hqRBEVvIP5cJVQ475pppZ9uuer3RwbY3+8hU3BexONiiTaMO7AgdmzETdHhhGOSHKlucMZCWLj5cGqGnKPTAoU8SdclUvBTp84UhFH8Xcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WaZhC4Kf; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XPCd+g+R"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C97A41F000C5;
-	Fri, 16 Oct 2026 02:37:13 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WaZhC4Kf"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2E591F000C4;
+	Fri, 16 Oct 2026 02:37:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792118234;
-	bh=V0mGf7nIGo0+8JQjApyYrKxE2tHfI6BN8S4R5OWkOvg=;
+	s=k20260515; t=1792118235;
+	bh=noAKhCMP/308XIoU2rOkCFa1m5zPEvdiql5A/84HVao=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=XPCd+g+R3aHuTxngwhc12zAW+tcR3FmA2xbx9TM6ayQMzZa1Pb3eAxaXZPuXXNxA3
-	 GAh8iJD3ytlTUB4mWRWC8qPS6RCaR2Myb9KdWjxqD+PHcK0tj7r0MQTw5AJzwP2jLw
-	 gdYdLCgNRADJS3IYbQaJTy2bB0PgbdPcjNZiV9MJpQQDpsWb2kYx06lNZE9NdulJRD
-	 VNSxmLZkYSxE83yC0o0zAUUOpj4I7CY42XhVsQ+2NyY+xOi2VpdVRaUHUcVkUhZl4a
-	 b87AmXIvNQeJRkD6UYhenT0p9SbhD4JTk8XojpiPI6aFC0DhrH+nsPR8GKas8d19nf
-	 GwbF+1T96S1Fg==
-Subject:
- Re: [PATCH net-next 22/37] can: rcar_canfd: Add support for Renesas RZ/G3L
+	b=WaZhC4KfXg6k68n8r7dhWD1ximVSY6zqUpMSGRDR/JYyDxoC7A/mNopGXJJ+gj/Ew
+	 sM2xFM8jJQuvMKSzIQ/dnKkk8mnN3BXAULzSmUdS89kyPFp65FlXHuRJZiaxeB+3+i
+	 6kXy/UvjrG43Gkx+wKgFjxIdZbrLJuIqEdyxvSZgw+78tIr/1csW0girSjbbZyfrT5
+	 Izq11wvw51oKZcR0ogqsNsKGeuOpCXVuQyhwiTBCV+Rb1kl71AYgCwpqBhJMcT4s9b
+	 hWRSQcROk1sLRkbbIReid+1OkVZf2ZHHjD/H2wPvp/2NPKbDPQh+PbnW6yy1WMQk6g
+	 s+2OG2qD2hGdw==
+Subject: Re: [PATCH net-next 28/37] can: ems_usb: use usb_kill_urb() to stop
+ the intr URB
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, socketcan@hartkopp.net,
  kurt.van.dijck@eia.be
-Date: Fri, 16 Oct 2026 02:37:13 +0000
-Message-ID: <179211823337.434549.12652981577769724778@kernel.org>
-In-Reply-To: <20261015015336.816543-23-mkl@pengutronix.de>
-References: <20261015015336.816543-23-mkl@pengutronix.de>
-X-sashiko-severity: Medium
+Date: Fri, 16 Oct 2026 02:37:14 +0000
+Message-ID: <179211823441.434549.9677243526506061190@kernel.org>
+In-Reply-To: <20261015015336.816543-29-mkl@pengutronix.de>
+References: <20261015015336.816543-29-mkl@pengutronix.de>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -47,174 +47,164 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 0 (1) · Medium: 1 (1) · Low: 0
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [Medium] The RZ/G3L binding never makes resets/reset-names required,
-  but the driver gives RZ/G3L the same reset handling as RZ/G3S.
+- [Low] Now that unlink_all_urbs() stops the intr URB with
+  usb_kill_urb(), there is a new race window on close.
 
 Pre-existing issues:
-- [High] Use-after-free and double free of the channel net_device when
-  register_candev() fails during probe.
-- [Medium] Unbalanced clock disable/unprepare (and register access with
-  the clocks gated) when rcar_canfd_global_init() fails.
+- [Critical] unlink_all_urbs() in drivers/net/can/usb/ems_usb.c (lines
+  755-757) can free the RX coherent buffers twice.
+- [Medium] ems_usb_start() does not undo partial setup when it fails.
 
 --
 
-can: rcar_canfd: Add support for Renesas RZ/G3L
+can: ems_usb: use usb_kill_urb() to stop the intr URB
 
-This patch adds the renesas,r9a08g046-canfd compatible to
-rcar_canfd_of_table and maps it to the existing RZ/G3S hw_info
-(r9a08g045_hw_info). The commit message says RZ/G3L has 3 channels,
-11 interrupts and 288 buffers.
+This commit changes unlink_all_urbs() to stop the intr URB with
+usb_kill_urb() instead of usb_unlink_urb(). The goal is to make sure
+ems_usb_read_interrupt_callback() has returned before
+ems_usb_disconnect() frees dev->intr_in_buffer and the candev.
 
-Link: https://patch.msgid.link/20261001075742.21961-4-biju.das.jz@bp.renesas.com
+Link: https://patch.msgid.link/20260923030522.409344-1-fanwu01@zju.edu.cn
 
-> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-> index 41c395118949..c64387967368 100644
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-> @@ -2403,6 +2403,7 @@ static DEFINE_SIMPLE_DEV_PM_OPS(rcar_canfd_pm_ops, rcar_canfd_suspend,
->  static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
->  	{ .compatible = "renesas,r8a779a0-canfd", .data = &rcar_gen4_hw_info },
->  	{ .compatible = "renesas,r9a08g045-canfd", .data = &r9a08g045_hw_info },
-> +	{ .compatible = "renesas,r9a08g046-canfd", .data = &r9a08g045_hw_info },
+> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
+> index 24cf8f651f8f..2d31f0b86859 100644
+> --- a/drivers/net/can/usb/ems_usb.c
+> +++ b/drivers/net/can/usb/ems_usb.c
+> @@ -748,7 +748,7 @@ static void unlink_all_urbs(struct ems_usb *dev)
+>  {
+>  	int i;
+>  
+> -	usb_unlink_urb(dev->intr_urb);
+> +	usb_kill_urb(dev->intr_urb);
 
-[Severity: Medium]
-With this patch, RZ/G3L probes and resets exactly like RZ/G3S. Should
-the binding also make resets and reset-names required for RZ/G3L?
+[Severity: Low]
+Can this now log a spurious error during a normal ifdown?
 
-In Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml,
-r9a08g046 is missing from the allOf block that requires them:
+usb_kill_urb() raises urb->reject before it unlinks the URB. Suppose the
+intr URB completes with status 0 while ems_usb_close()->unlink_all_urbs()
+is inside usb_kill_urb(). In that case ems_usb_read_interrupt_callback()
+takes the case 0 path and resubmits:
 
-  - if:
-      properties:
-        compatible:
-          contains:
-            enum:
-              - renesas,r9a08g045-canfd
-              - renesas,r9a09g047-canfd
-              - renesas,rzg2l-canfd
-    then:
-      required:
-        - resets
-        - reset-names
-
-The RZ/G3L block only has "resets: minItems: 2", which applies only when
-the property is present. So an RZ/G3L node without resets would pass
-dt_binding_check and dtbs_check.
-
-The driver would not catch this either. rcar_canfd_probe() gets both
-resets as optional:
-
-    gpriv->rstc1 = devm_reset_control_get_optional_exclusive(dev, "rstp_n");
+ems_usb_read_interrupt_callback() {
     ...
-    gpriv->rstc2 = devm_reset_control_get_optional_exclusive(dev, "rstc_n");
+	err = usb_submit_urb(urb, GFP_ATOMIC);
 
-In that case reset_control_reset(NULL) in rcar_canfd_global_init()
-does nothing and returns 0. Could the IP then stay in reset with
-nothing printed to explain it?
-
-The same RZ/G3L block also sets minItems: 11 for interrupts and
-interrupt-names, but has no maxItems: 11. Is that intended?
-
-The schema gap comes from "dt-bindings: can: renesas,rcar-canfd:
-Document RZ/G3L SoC" earlier in this series. It is still there at the
-end of the series.
-
-[Severity: High]
-This isn't a bug introduced by this patch, but RZ/G3L adds a third
-channel, so is the register_candev() failure path in
-rcar_canfd_channel_probe() safe?
-
-gpriv->ch[ch] is set before registration. The failure path then frees
-ndev, and priv with it, without clearing gpriv->ch[ch]:
-
-rcar_canfd_channel_probe() {
-    ...
-	gpriv->ch[priv->channel] = priv;
-	err = register_candev(ndev);
-	if (err) {
-		...
-		goto fail_candev;
-	}
-    ...
-fail_candev:
-	netif_napi_del(&priv->napi);
-fail:
-	free_candev(ndev);
-	return err;
+	if (err == -ENODEV)
+		netif_device_detach(netdev);
+	else if (err)
+		netdev_err(netdev, "failed resubmitting intr urb: %d\n", err);
 }
 
-rcar_canfd_probe() then calls remove for every enabled channel:
+usb_hcd_link_urb_to_ep() in drivers/usb/core/hcd.c then rejects the
+resubmit:
 
-fail_channel:
-	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels)
-		rcar_canfd_channel_remove(gpriv, ch);
-
-The only check in rcar_canfd_channel_remove() is for a NULL priv:
-
-	if (priv) {
-		unregister_candev(priv->ndev);
-		netif_napi_del(&priv->napi);
-		free_candev(priv->ndev);
+	/* Check that the URB isn't being killed */
+	if (unlikely(atomic_read(&urb->reject))) {
+		rc = -EPERM;
+		goto done;
 	}
 
-For the channel that just failed, does this read priv->ndev from freed
-memory? It would also call unregister_candev() on a netdev that was
-never registered, then free_candev() on the same net_device again.
+As a result, "failed resubmitting intr urb: -1" gets printed. The
+netif_device_present() check at the top of the callback doesn't catch
+this, because the device is still present during close. usb_unlink_urb()
+never set reject, so this message couldn't appear here before.
 
-The early assignment to gpriv->ch[] goes back to at least commit
-c5048a7b2c23a.
+The kill itself still completes, so the only effect is log noise. Would it
+make sense to treat -EPERM as an expected result, alongside -ENODEV?
+
+>  
+>  	usb_kill_anchored_urbs(&dev->rx_submitted);
+>  
+
+[Severity: Critical]
+This isn't a bug introduced by this patch, but it is in the same helper
+and the same disconnect teardown. Can unlink_all_urbs() free the RX
+coherent buffers twice?
+
+The loop just below this hunk frees every dev->rxbuf[i] but never clears
+the pointers:
+
+	for (i = 0; i < MAX_RX_URBS; ++i)
+		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
+				  dev->rxbuf[i], dev->rxbuf_dma[i]);
+
+unlink_all_urbs() is called from ems_usb_close() and also unconditionally
+from ems_usb_disconnect():
+
+ems_usb_disconnect() {
+	...
+		unregister_netdev(dev->netdev);
+
+		unlink_all_urbs(dev);
+	...
+}
+
+There are three ways to reach a second free:
+
+If the interface is up at unplug, unregister_netdev() closes it and
+ems_usb_close()->unlink_all_urbs() frees the buffers. ems_usb_disconnect()
+then calls unlink_all_urbs() again on the same pointers.
+
+If the interface was opened and closed earlier and is down at unplug,
+ems_usb_disconnect() frees the stale pointers from the last session a
+second time.
+
+If a later ems_usb_start() breaks out of the RX loop early because an
+alloc or submit fails, the slots it didn't refill still hold pointers that
+the previous close already freed. The next close or disconnect frees them
+again.
+
+usb_free_coherent() only skips a NULL addr, so each stale pointer goes to
+hcd_buffer_free(). Depending on the HCD, that means dma_pool_free(),
+kfree() or gen_pool_free() on memory that was already freed.
+
+This loop appears to date from commit 9969e3c5f40c ("can: ems_usb: fix
+memory leak").
+
+Could dev->rxbuf[i] be set to NULL after each free, or could the extra
+unlink_all_urbs() call in ems_usb_disconnect() be dropped?
 
 [Severity: Medium]
-This is a pre-existing issue, but when rcar_canfd_global_init() fails,
-does rcar_canfd_probe() release the clocks and resets a second time?
+This is a pre-existing issue, not one introduced by this patch. Does
+ems_usb_start() leave URBs in flight when it fails part way through?
 
-rcar_canfd_global_init() already cleans up on its own error paths:
+If usb_submit_urb(dev->intr_urb) fails, ems_usb_start() returns while the
+RX URBs are still anchored on rx_submitted and in flight.
 
-fail_mode:
-	rcar_canfd_disable_global_interrupts(gpriv);
-fail_reset2:
-	reset_control_assert(gpriv->rstc2);
-fail_reset1:
-	reset_control_assert(gpriv->rstc1);
-fail_ram_clk:
-	clk_disable_unprepare(gpriv->clk_ram);
-fail_clk:
-	clk_disable_unprepare(gpriv->clkp);
+If a later ems_usb_control_cmd() or ems_usb_write_mode() call fails, it
+returns with both the RX URBs and the self-resubmitting intr URB still
+active:
+
+failed:
+	netdev_warn(netdev, "couldn't submit control: %d\n", err);
+
 	return err;
 
-But rcar_canfd_probe() still sends every error to fail_mode:
+On this path ems_usb_open() only calls close_candev(). ndo_stop isn't
+called after a failed open, so unlink_all_urbs() never runs.
 
-	err = rcar_canfd_global_init(gpriv);
-	if (err)
-		goto fail_mode;
-    ...
-fail_mode:
-	rcar_canfd_global_deinit(gpriv, false);
+On the next open, ems_usb_start() overwrites dev->rxbuf[], so the earlier
+buffers and URBs leak. usb_fill_int_urb() also rewrites the intr URB while
+it is still active. usb_submit_urb() then hits:
 
-rcar_canfd_global_deinit() calls rcar_canfd_disable_global_interrupts(),
-which writes GCTR/GERFL while clkp is off and the resets are asserted.
-It then asserts the resets again and calls clk_disable_unprepare() on
-clk_ram and clkp a second time.
+	if (urb->hcpriv) {
+		WARN_ONCE(1, "URB %p submitted while active\n", urb);
+		return -EBUSY;
+	}
 
-Would this trigger the clock core's "already disabled" and "already
-unprepared" warnings? If the clocks are shared, could it also remove
-another consumer's enable reference?
+>From then on every open fails until the device is replugged.
 
-Possible triggers are a reset_control_reset() error, or a
-readl_poll_timeout() timeout in rcar_canfd_reset_controller() or in
-the GOPM mode check. The global_init/global_deinit split came from
-commit fa5f4ec8fff8b.
+This doesn't reopen the disconnect use-after-free fixed here, because
+ems_usb_disconnect()->unlink_all_urbs() now kills the leftover intr URB
+before the frees.
+
+Should ems_usb_start() unwind the submitted URBs on these error paths?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261015015336.816543-2-mkl%40pengutronix.de
