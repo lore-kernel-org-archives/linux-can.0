@@ -1,72 +1,71 @@
-Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A2B3955EB;
-	Fri, 16 Oct 2026 06:12:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC30A3B0581;
+	Fri, 16 Oct 2026 06:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792131171; cv=none; b=vEhRLoxS4V5d7ckidIHHf10OifX6bmMHWPwdKHI/fLwX7Tgnq4GzKB21cdZv5lXUpAEShzFyieOxGQYkY/t+t+YdYTxessFUOho5B/R8hJxzofG79TVdcBYX+Fx2RzSM88A3hPfGG3rmqq6Q0hvxn8n842+wavsa4q6XZtFz/Hs=
+	t=1792131317; cv=none; b=YRQ3DlZfhfiizDYV9WW7G8RiE96T8d8xXHJe8kOwH/yGP4gSqcLIBfIXoDp7nE2vLG4HbWlijTuo7LmOpsl4SYzqTKTs/2MmagORlnz/43F+6aS1qpG+TrfrPchj24DzmMDTw4pXaDxI2dzFPH9GEEKXrUydTOxmBHi1033NYo8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792131171; c=relaxed/simple;
-	bh=Pcl2raRurZjpnn71jo5ShnqVzuQQYqLtZN6GcJ3U5JE=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=AA+qzI9rv7NQL65Mn1NGrzcEZqQvIUJvdLwcrzwejNp+iqdcqUwGhmRBXrU2EDtgjQ7TlUyuSzDycWecusQFhQHKQW2IkKzLqggZo5t/MXPZMJG5RCMdVByW4xcdtT6j+2QXjL3iuNSDy9PWJV0bR9vp+wIT4UY+d8NyiN/vpuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=AgUD//DG; arc=none smtp.client-ip=203.205.221.153
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1792131317; c=relaxed/simple;
+	bh=x8GQ9TqAFu5driuvo38kqzYt3n324pebOlaNmEELI+s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=L4x/1I9+/hA3xH/QD5h8jzs1VNExsK6w+1nqxgDptkI+G/iah8OYUSd4qZ3NLOaLmiHcnwJXAVpDj9QmpwiT40yfDC/KB3slEfVUxGk14TDrThlpBVjEHUiW8XtwLwBowGYQ6S6us5vC9QlXgdtjYsCmG8X36W6oYx5rfijSCm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OfAzhktt; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AgUD//DG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1792131166; bh=Pcl2raRurZjpnn71jo5ShnqVzuQQYqLtZN6GcJ3U5JE=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=AgUD//DG+Ve4rkVO5rLSaJ0nFGR4PRADs9+UY8WLOn6FrUgaW971WOkfSUF+jQ6JJ
-	 UW3NApjr0PvEu4vQ9WtUCJjmJu3cxejj9z350qZvjh3TyJRc8S3kHDuUBYNtxYcGUI
-	 f+QIfzLb5jHn6KCpgAVBRdRhGcWg03PnnRlZeefU=
-X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
-X-QQ-XMAILINFO: NX669osvFPDayi99gxpQuJ5Uim9/ETPpsz/R+MRP7zb3FlPNPPqVrV/eiVBKBk
-	 0r937APbrZezjhcDpwft/cUe1KJ2ME0knMVgmKG8IjP4U159evzMO2hDea6wE8x/8I14tAsCc50YZ
-	 BUU4s9LdyZWCNUx1rz2s3X3HYsZ6Cw/kcTUpVcaqyA5IsCl+yJeNxI3iP+1muR4FxGzmaQVU6UX8D
-	 aaN2YXjbJS8IVBuN+XEJ1zG9ohgJxm6q/RaBx0Rzo7X5DKe4MO3XicjJ8jyyr3qZXB6OpjGEqRY/e
-	 g5m+wHv052bM5XAj0Mfx9gBofvroamiCxIrAUAPkYlGNoux5g9AmoAIOWYYIfoyvyiYrrMoHYcMDk
-	 7fxiy3vEUo0GDEEBzJECW+JZfX002qJaI+H/826KKBlixCv6ER1PD24srODetyKd6FCTYiKGIux8f
-	 7Q8Q1ZFFWixaju7lbEI6UFq9trM2hA/D27E/nhX+Hi0ZtCcNlKmbkxE6mIa+ULtBPqw7IaXtdx3Fb
-	 x0mnYcJeCnetApOLKQqMqX3rb6igl+2a9rMSD3yHaEP0zeu9L/CBswbv/OkuS7qNLOD8vvYrwzcTi
-	 mNhMUAysO2LAvs7AskJcYZu11gKXpflgj74g8YT3JmztovAJW3Q9rvgV9pXASJVk0kkRSKP03rvEO
-	 MIHq2hbRSvtV2A9CDjTEqcN5eNQJ5g8ekO1y/Hwp4sh0jitxI4sWe3uKu/Z+pfsZZWo54wr65QaDP
-	 QiWxLNBFEHbPRy5bE9pX68lJdn9dElpuFbie5Z5fqvU5AIZq959ou3ydgUpgtCtW3YfuzoV44++/g
-	 Mn/h/EKeS4dxCd47Et0Lhi+i4h5K7b7c3VM2oAN02ugFF+wo0IUEfhJpTaZ5oBHDo4KeaIt8uyDRu
-	 T/6f/I514tefHRpi10MqhfvR8GPtTlL9K3+Rub8YbldEHwLR9kQ20cFgrYhwJs1IZVur1lLzB09kg
-	 rklYQMyxCDStUfUkQF2v3iHwRXYczulBlB9895sKThQ5ws+ffGFTOHt1XqQUDRMnSUBkL+B4vMwxk
-	 ba3HMKOymbZGtghfAXC6CyUfS8EEiMTXaSNvH9ld33fdLN64=
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
-Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>
-Subject: Re: [PATCH net v2 3/3] can: rockchip_canfd: cancel bus-off restart before closing the device
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OfAzhktt"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A5A71F000C4;
+	Fri, 16 Oct 2026 06:15:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792131316;
+	bh=PJRu7W6/Or1we5Gv3BgoLEtby0D0Y0UGgfjBHfRc5+k=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=OfAzhktt5MRCSrpc3e75DPg3TXV9kQkIpB0THBRYAkkLpXY602JDk1OhBqhVSA3cd
+	 DJLAestRbql6GMjU6+njlzaW6jWVLNJ60OBYmnSwYc8EBszN4ENThmWS9uHJyz/8DL
+	 xJQI87j9BQPqFof1RZxN9/UzR7TtrStTtN6N4DwiislFlEtM5hc3Fd16Orm7+txGsB
+	 9pw8uJkEoHSN3DWduIv3wXqiOP68GJ/7YpvSBUAAln+nTuufmodgVMdCopzOtLkUaX
+	 NZMmWbFi0/5y7im0cwajCSvIvrWqECmMB39hioTZ345KZpq6AIkCTeEGVsgYm5gxhw
+	 rzNj9GTiK/wug==
+From: netdev-bot+sinfo@kernel.org
+To: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>, Chen-Yu Tsai <wens@kernel.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/4] can: don't discard the platform_get_irq()
+ error in probe
+Date: Fri, 16 Oct 2026 06:15:15 +0000
+Message-ID: <179213131512.408196.11368789495251891862@kernel.org>
+In-Reply-To: <cover.1792118040.git.chaosheng.qu.linux@gmail.com>
+References: <cover.1792118040.git.chaosheng.qu.linux@gmail.com>
+Auto-Submitted: auto-generated
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Fri, 16 Oct 2026 14:12:43 +0800
-X-Priority: 3
-Message-ID: <tencent_DD06B1C5CFBB499BE647A639417E0420C005@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <tencent_B15E13184DA04C4382F48848C006A2B51F06@qq.com>
-	<179208227384.1406898.15110321342582191229@kernel.org>
-In-Reply-To: <179208227384.1406898.15110321342582191229@kernel.org>
-X-QQ-mid: xmsezb41-0t1792131163tpme4vw8z
+MIME-Version: 1.0
 
-SGksCgo+IC3CoFtNZWRpdW1dwqBjYW46wqByb2NrY2hpcF9jYW5mZDrCoGRpc2FibGVfaXJx
-KCnCoGNhbGxlZMKgb27CoHNoYXJlZMKgSVJRCj4gCj4gUHJlLWV4aXN0aW5nwqBpc3N1ZXM6
-Cj4gLcKgW0hpZ2hdwqBUaGlzwqBwcm9ibGVtwqB3YXNuJ3TCoGludHJvZHVjZWTCoGJ5wqB0
-aGlzwqBwYXRjaCzCoGJ1dMKgdGhlwqByZXN0YXJ0Cj4gwqDCoGNhbGxiYWNrwqB0aGXCoHBh
-dGNowqBtb2RpZmllc8KgcmUtaW5pdGlhbGl6ZXPCoGHCoGRlbGF5ZWRfd29ya8KgdGhhdMKg
-bWF54oCmCgpCb3RoIGlzc3VlcyB3ZXJlIGFkZHJlc3NlZCBpbiB2MywgYW5kIHRoZSBmaXhl
-cyBhcmUgcmV0YWluZWQgaW4gdjUuCgpSZWdhcmRzLApDdW5oYW8gTHUK
+Hi!
 
+This is an automated message. This series looks like a fix, but its
+commit messages seem to be missing some information:
+
+ - How the issue was discovered, e.g. hit in production, hit during
+   development, syzbot report, manual code inspection, LLM or static
+   analysis tool scan.
+
+Please do not repost the series just to address the above. Instead,
+reply to this email with the missing information, so that reviewers
+can take it into account. If the series needs another revision for
+other reasons, please include the information in the commit messages
+then.
+
+The evaluation is done by an LLM so it may be wrong, if you think
+that is the case please reply and explain.
