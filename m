@@ -1,290 +1,363 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0299F448BAF;
-	Fri, 16 Oct 2026 08:53:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C99E3BADBC;
+	Fri, 16 Oct 2026 09:09:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792140836; cv=pass; b=OA9MAy7hYxMucS48JtPy7leHiXD5kXZsPm8Vpt3X1CGaaR6Uf+ILyu7iT+tEHeZhQPg+1mzWGd058kBzfRRaikWydeuVzd4Yl90qBc8KyzUptejvPy+Kb/x3Miw/e4mOERPRiKKYydHw6JIo2eLLf62A4J5OmfBTBMx9wMZVoSM=
+	t=1792141763; cv=pass; b=Qc6dp4G7MYjzRVq5n3w0WvK7a+aBMszdVempaL0dw+MjNhKNBBO8ig1INtQq7M8SMnbBi8aP+Z+9vajV/1J3OwqcGTH9EJtiN70xKhT6a+lpS79EPLjlY+TnboG5gO4yOwJlSvfMg7T+P+400OxONjESu3hjqBAj32M5Fcx6EsE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792140836; c=relaxed/simple;
-	bh=3wPWHY63AvjS3DrC6i3SxSQskAQTqPqClCMRUm5t4V8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f4rCXJyPyikvPuJCtXJR2RSMID/7mISrm4mzxT+gTXSu/7/AlbTSIj09D6OG4oTlkxCf8N3A3tRLZLbiQs3d5ih6VV+PxhrOWWDSxA/DCZRp0SlofOYAZ58rsYkcQvw8XCdVjn/UklwPvUjcM2laIzjXKc1GKW2lJUdbJGXs5cQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sOsRagb4; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=nFQ9euoW; arc=pass smtp.client-ip=85.215.255.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	s=arc-20240116; t=1792141763; c=relaxed/simple;
+	bh=UgXnxwCLGuvqZOSsU4fy+wfie1bi2sWpkIg2c8gWxmo=;
+	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
+	 References:Date:Message-Id; b=JfuY7C8ojXrLt0jUaXt5WmLRU1MV6nFoSEm4lurr3DuQW1yuvzmLEoF87M/pyNdWDNKWdSJm1MCcyBV6eZlAWJPEmhq05afXngXlfXfvpJwjM1Tt+EjtkZ2cSTy8jIBgDrrfznvpJQLz3LTyjxqEyVPYbszKRDjOV3NqhrH3ots=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=SNfZkt1Q; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sOsRagb4";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="nFQ9euoW"
-ARC-Seal: i=1; a=rsa-sha256; t=1792140695; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=mwFg9U/0DIMcZRWh0Vap25tzaq5cSeVd8Dxw5jl3AfOpqDRflxq1gpNwPor0T8b0BT
-    6JlKFcovB+7TzNiZsqnVN6M033VEyR0gfCvJ31yrQgxkS42IOejICFhdJZlp22oHn8wl
-    lgTnwui5+Cny58HkEdCgfCQAWJCpRTPbe4wIEPLP0CDJR+V9m9x2o5KjVAGBjoCPYR1E
-    S4LzP8hfa13F4mcZ8BdiBB/5sg9xXj8ASdD029QOliDo3fFtgEeGV15SodgjzDp5TFRf
-    bIaWbMo61POk/WJYRriR1mtM/bQDZAkdLAwyikdaWZ12aiLNr3w9pHKba/AOkjxBwzeM
-    e/9Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792140695;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=vfi/EkoIJB8r9e+tAVZTNlXvcWxdjGlCci5n1/TcCjg=;
-    b=m22Ax0Ug1rwRzpd8q8VAKgR5aPQxoKjvhc8EjfnUOjucLF43QdXbCYzN7XnSh2yi4a
-    c674VsGmuH4T9KtTZ/5N9tjik8onaBeEzJNdkx+bFDQl70APWkVAK5obQU+AcT7WP15b
-    05wYdV41v17yvPp6yPCieu1JbVHthl39luNQAmjsiOIQKO/VgKJUPq+uhzPQkiJRDvzb
-    xx7Z2y47/uS4I95JZxwHsIOi2ejBDKeYjfc6P/rU5modHx1jJjGvjGUAuSLjPOtizfOi
-    aFiTIa6zyptFOGLzNUaG+BedcKlyEwJ+wFn5v6sytaUJAfllQNcPembeOLbul36CdCQ5
-    bHTg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792140695;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=vfi/EkoIJB8r9e+tAVZTNlXvcWxdjGlCci5n1/TcCjg=;
-    b=sOsRagb4wuDZ0s1EGs4St7BLSOwkx4rLD11UL89zy/4jDTF1RnMlZQAHXvDw4hoX0c
-    FF1ZkjXeMUj9YKlGSuPVACcZAeJLNN+UeIHpUy7zlZzpaGLKI9GJP9UnAjwdY0+jSXQv
-    ThIR6ldMPJUSbywbVSa/qWY92rGNQC4Pp8l/w3v0iGToxXUibpT8Y1mzdYeIr1yNekS5
-    j0XPw14LYUUgAkKNiLWoP/CrqVZ4USzEgMHUSQSd+9OM6Nzc2bl5rYLM6nRzp0b1Dm/p
-    YCoVMTc/smwhO6oaIC9XRQrSJvlHGvrl9QqThhLqjO361BqQlbtSFkBG3SGoXY2chYBu
-    kUlA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792140695;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=vfi/EkoIJB8r9e+tAVZTNlXvcWxdjGlCci5n1/TcCjg=;
-    b=nFQ9euoWfSEvxU4qbhObChD4+Vohm+YXNhkQdNNS3rzAR/OSZgjJF4V8xgq7EaZZDm
-    iAmEI7gaS0ioCg+xriCQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29G8pYLCk
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 16 Oct 2026 10:51:34 +0200 (CEST)
-Message-ID: <797e174d-cb77-47f8-b56e-c1cfcb1784e4@hartkopp.net>
-Date: Fri, 16 Oct 2026 10:51:30 +0200
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="SNfZkt1Q"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0B35B20191D;
+	Fri, 16 Oct 2026 11:09:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792141758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Gtp5NswhFEl4YgfVOTFchFoV/7fpLXSgI5GX6kOAYdE=;
+	b=SNfZkt1QfAc5uLr7EUQBfbpBaRcAbHw1Yuyt3twRw4YbszCy86yGQqxM3HvZHnboioXDqj
+	RHCtmkjRRcp+GQEc99Y0RZCfnMyzs2NwY1t6HpeGLu7wm/40t/RL8h1IHU7m5MrcwC28i1
+	kgTcDbP/ar8Av/fQmngr1kEOSfyY6U7OZd3nC8zrqXGZi1PSasfXFKpeTx6+Hw86syK7nH
+	Ge6xBpuBPqdBleK6TVR9i464/MQEeV5x8tdpLEwKIkxblwGntC9I20Cr5wkBsryBwAIYZ1
+	BqAkyEYnr6YXpUNAENetyZz9YsbPvZQSPxEaXpTfARrQVhqSESjC3YXa1GnqjQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792141758; a=rsa-sha256;
+	cv=none;
+	b=Pp66GAVX+QW8y0MtmdJzjRbQ4yxZjg84XqkiAH/MJ+a/4KB92SAXhEhvONfpNRxSON9vFK
+	3dDbSFnL7vRQ86SbKlItvIEhggrrBC5SzH8qR5y8mu/wqUAcGli0gxv1QLB7YSi06tyEeu
+	DDgSdR3nP8BlHho6ah2jNk5VMjIFywmEy5BBv2R3ot6Stv5tr1UYlETRfosrCRioMVS5mI
+	gzbjUkmqt0QErI/pqijRQ+6yZnXBzk58EBEBMedf5gemsdv6p/wYW87K8IoyVEDHWSfTSp
+	uHXsNS9cyQir0FziogMNvZi1I9OVacDPTPcyvz5DGq/APvDpq4zMD5ChmQzDKg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792141758;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Gtp5NswhFEl4YgfVOTFchFoV/7fpLXSgI5GX6kOAYdE=;
+	b=aZ7qeMtnQ1UusTO+62J7uEUX5csbh2ka8J3IOtkgFtmXtIdFxwTpUWIK0kVinOrL1ZFqjq
+	a+0/p83PZovGBsoekS0DKbOpK8d89lolwKQMICBF7epif9F+b0Cs9AgVs6y4V9ZgCIi3Ja
+	R7MHZAFRPdfl6RtM3HYqQ+KSa5hA5OfGGMSQPRVhBkWaN8LISMM5DuELxFvJ9IgHJsEajq
+	4YjeNrmx/tXjaVUd1NYxV8W+KOsP8X4hDYqP8UAWzfXRue7E0dhCfMiZspc/AZaoHH8pp3
+	N8b/5AqTdow+WACJUSlZ89bjoTCHlrV3sn7gvShjsEGpqMQox1cBtBRdXTHN0w==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xHdwD-0069xl-2z;
+	Fri, 16 Oct 2026 11:09:17 +0200
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A130C5C5E94;
+	Fri, 16 Oct 2026 09:09:17 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 08/37] can: bcm: fix filter removal race between
- release and netns change
-To: netdev-bot+sashiko@kernel.org, mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, kurt.van.dijck@eia.be
-References: <20261015015336.816543-9-mkl@pengutronix.de>
- <179211822523.434549.241636889494644724@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179211822523.434549.241636889494644724@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH net] can: proc: reset pkg_stats atomics individually
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Runyu Xiao <runyu.xiao@seu.edu.cn>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, jianhao.xu@seu.edu.cn, stable@vger.kernel.org
+In-Reply-To: <20260512133937.21957-1-runyu.xiao@seu.edu.cn>
+References: <20260512133937.21957-1-runyu.xiao@seu.edu.cn>
+Date: Fri, 16 Oct 2026 11:09:14 +0200
+Message-Id: <179214175419.1231518.15412443291350448797.b4-reply@b4>
+X-Mailer: b4 0.17-dev-6be7c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=10686; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=UgXnxwCLGuvqZOSsU4fy+wfie1bi2sWpkIg2c8gWxmo=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsi6+HJX9pfp+/d8q1Lysur/0pR3wnkXF4uUYqzogWoWz
+ a3bMlvudpSyMIhxMciKKbIs/XFCUSDQobT3ZcIkmDmsTCBDGLg4BWAivusZGXbd9xdUVz2We7Jq
+ kZOIjxHvJOG5+4sTelPmvUj1PCg2s4+R4doDxtchi0/N3hL4aLJ7H8+V7L7LAgEzEpNlW+fu55J
+ OZgUA
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-I'm working on an update on this.
+On 2026-05-12 21:39 +0800, Runyu Xiao wrote:
+> Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+> converted several members of struct can_pkg_stats to atomic_long_t and
+> updated the hot TX/RX and procfs read paths to use atomic_long_*()
+> helpers. However, can_init_stats() still clears the whole struct with
+> memset().
+>
+> can_init_stats() is reached from can_stat_update() in timer context and
+> also from the procfs reset path. Those paths can run while the TX/RX hot
+> paths are concurrently updating rx_frames, tx_frames, matches and their
+> *_delta counters. Hitting the whole-struct memset() in that window
+> performs plain writes to fields that otherwise follow an atomic_long_t
+> access contract, which can lose or mix live statistics updates.
+>
+> This issue was found by source-level API-misuse analysis looking for
+> whole-object resets left behind after atomic_long_t conversions, then
+> manually audited on Linux v6.18.21.
+>
+> Replace the whole-struct memset() with a helper that resets the
+> atomic_long_t counters via atomic_long_set() and clears the derived
+> scalar statistics explicitly. This preserves the existing reset
+> semantics for scalar fields while restoring atomic access discipline for
+> the live counters.
+>
+> Build-tested by compiling net/can/proc.o on x86_64 netdev/main.
+> Runtime-tested with a QEMU + vcan setup on Linux v6.18.21 by driving
+> concurrent traffic and reset_stats reads, which reproduced inconsistent
+> exported statistics before the fix.
+>
+> Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
 
-On 16.10.26 04:37, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 3 potential
-> issue(s) to consider.
-> 
-> Critical: 0 · High: 0 · Medium: 2 · Low: 1
-> 
-> If you believe none of the issues are legitimate, please reply to each
-> issue of Medium severity or higher and explain why the AI is wrong.
-> If any of them are legitimate and you plan to respin, please let patchwork
-> know by including "pw-bot: cr" as a separate line at the end of your reply
-> (one such reply per series is enough).
-> 
-> - [Medium] The commit moves remove_proc_entry() ahead of rtnl_lock() so
->    that procfs readers cannot stall RTNL from close().
-> - [Medium] bcm_release() now holds the global rtnl_mutex across the whole
->    rx_ops unregistration loop (rtnl_lock() at net/can/bcm.c:1951,…
-> - [Low] Stale comment in bcm_release().
-> 
-> --
-> 
-> can: bcm: fix filter removal race between release and netns change
-> 
-> bcm_release() now takes rtnl_lock() before it removes the socket from
-> bcm_notifier_list. It holds RTNL across the rx_ops unregistration, so
-> bcm_release() and bcm_notify() can no longer both skip filter removal
-> while the bound device moves to another netns. The bcm_busy_notifier
-> busy-wait becomes a WARN_ON_ONCE(), and the procfs entry and tx_ops are
-> now removed before RTNL is taken.
-> 
-> Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-> Link: https://patch.msgid.link/20261014142114.280279-3-socketcan@hartkopp.net
-> 
->> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index 6759662e024c..301920011a30 100644
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
->> @@ -1926,21 +1926,19 @@ static int bcm_release(struct socket *sock)
->>   
->>   	/* remove bcm_ops, timer, rx_unregister(), etc. */
->>   
->> -	spin_lock(&bcm_notifier_lock);
->> -	while (bcm_busy_notifier == bo) {
->> -		spin_unlock(&bcm_notifier_lock);
->> -		schedule_timeout_uninterruptible(1);
->> -		spin_lock(&bcm_notifier_lock);
->> -	}
->> -	list_del(&bo->notifier);
->> -	spin_unlock(&bcm_notifier_lock);
->> -
->> +	/* Remove the procfs entry and the tx_ops before taking RTNL:
->> +	 * remove_proc_entry() waits for concurrent readers of the entry and
->> +	 * must not hold up RTNL for them. Clear bo->bcm_proc_read so that
->> +	 * bcm_notify() does not remove the entry a second time.
->> +	 */
->>   	lock_sock(sk);
->>   
->>   #if IS_ENABLED(CONFIG_PROC_FS)
->>   	/* remove procfs entry */
->> -	if (net->can.bcmproc_dir && bo->bcm_proc_read)
->> +	if (net->can.bcmproc_dir && bo->bcm_proc_read) {
->>   		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
->> +		bo->bcm_proc_read = NULL;
->> +	}
->>   #endif /* CONFIG_PROC_FS */
-> 
-> [Severity: Medium]
-> list_del(&bo->notifier) now runs after rtnl_lock(). That means this
-> first lock_sock() section runs while the socket is still on
-> bcm_notifier_list. Can a procfs reader still stall RTNL here, just
-> indirectly through the socket lock?
-> 
-> Consider this interleaving:
-> 
-> CPU1 (close)
-> bcm_release()
->    lock_sock(sk)
->    remove_proc_entry()
->      proc_entry_rundown()
->        wait_for_completion()      <- waits for the reader on CPU2
-> 
-> CPU2 (reader of /proc/net/can-bcm/<ino>)
-> proc_reg_read()
->    use_pde()
->    pde_read()                     <- copy to a FUSE or userfaultfd
->                                      backed buffer blocks
-> 
-> CPU3 (NETDEV_UNREGISTER, RTNL held)
-> bcm_notifier()
->    bcm_notify(bo, NETDEV_UNREGISTER, dev)
->      lock_sock(sk)                <- blocks behind CPU1
-> 
-> bcm_notify() takes lock_sock(sk) before it checks whether any op or the
-> binding uses dev. So deleting or moving any CAN device in the socket's
-> netns would be enough.
-> 
-> Before this patch, the socket was unlinked first and the busy-wait made
-> sure bcm_notify() was not running for it, so this interleaving was not
-> possible.
-> 
-> The procfs entry is mode 0644 and is created on any connect(), including
-> can_ifindex = 0. With unprivileged user namespaces, a vcan device in a
-> user-owned netns can trigger the notifier, and RTNL is global.
-> 
-> Does this mean the commit message goal ("which could otherwise stall
-> RTNL from a plain close()") is only partly met?
-> 
-> There are similar RTNL stall paths already. bcm_sendmsg() holds
-> lock_sock() across memcpy_from_msg() in bcm_tx_setup() and
-> bcm_rx_setup(), and bcm_notify() itself calls remove_proc_entry() under
-> RTNL. This particular ordering is new with this patch, though.
-> 
-> [ ... ]
-> 
->> @@ -1948,6 +1946,21 @@ static int bcm_release(struct socket *sock)
->>   		bcm_remove_op(op);
->>   	}
->>   
->> +	release_sock(sk);
->> +
->> +	rtnl_lock();
->> +
->> +	/* The netdev notifier chain runs under RTNL, so bcm_notifier() can't
->> +	 * be walking bcm_notifier_list and point to this socket. The spinlock
->> +	 * is still needed as bcm_init() adds sockets without holding RTNL.
->> +	 */
->> +	spin_lock(&bcm_notifier_lock);
->> +	WARN_ON_ONCE(bcm_busy_notifier == bo);
->> +	list_del(&bo->notifier);
->> +	spin_unlock(&bcm_notifier_lock);
->> +
->> +	lock_sock(sk);
->> +
->>   	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
->>   		/*
->>   		 * Don't care if we're bound or not (due to netdev problems)
-> 
-> [Severity: Low]
-> This isn't a functional problem, but the comment a bit further down in
-> this rx_ops loop in bcm_release() still describes a concurrent
-> unregister:
-> 
-> 			 * op->rx_reg_dev is a tracked reference taken
-> 			 * when the subscription was registered, so it
-> 			 * stays valid here even if a concurrent
-> 			 * NETDEV_UNREGISTER already unlisted the device.
-> 
-> This loop now runs between rtnl_lock() and rtnl_unlock(), and the socket
-> stays on bcm_notifier_list until RTNL is taken. A NETDEV_UNREGISTER has
-> either already finished, in which case bcm_notify()->bcm_rx_unreg()
-> cleared op->rx_reg_dev, or it runs after this loop, when the socket is
-> no longer on the list.
-> 
-> Can a concurrent NETDEV_UNREGISTER still happen at this point? The old
-> comment seems to contradict the new comment added above it.
-> 
-> The same comment in bcm_delete_rx_op() is still accurate, because that
-> path does not hold RTNL. Should the copy in bcm_release() be updated?
-> 
->> @@ -1973,6 +1986,8 @@ static int bcm_release(struct socket *sock)
->>   
->>   	}
->>   
->> +	rtnl_unlock();
->> +
->>   	synchronize_rcu();
-> 
-> [Severity: Medium]
-> The global rtnl_mutex is now held across the whole rx_ops
-> unregistration loop, and userspace decides how long that loop is. Is
-> that intended?
-> 
-> bcm_rx_setup() allocates one op per distinct (can_id, ifindex) with
-> kzalloc(OPSIZ, GFP_KERNEL). That allocation is not memcg accounted, and
-> there is no per-socket limit. bcm_connect() accepts can_ifindex == 0
-> without any device, and ANYDEV ops register on the all-devices list
-> through:
-> 
-> 	err = can_rx_register(sock_net(sk), NULL, op->can_id,
-> 
-> So an unprivileged user with no CAN hardware can create a very large
-> number of ops.
-> 
-> On close(), each op calls can_rx_unregister(). That takes
-> spin_lock_bh(&net->can.rcvlists_lock) and walks the receiver hlist
-> linearly until it finds the match.
-> 
-> A second socket can put M newer entries in front of the victim's
-> entries in the same bucket. It can do this with EFF ids that fold to
-> the same bucket in effhash(), or with the same SFF id. RTNL would then
-> be held for roughly K * M list steps.
-> 
-> Before this patch, the same loop ran only under lock_sock(sk), so only
-> the closing task paid for it. Now it would block netlink and netdev
-> configuration in every network namespace.
-> 
-> The loop without cond_resched() already existed, and the attacker needs
-> a lot of kernel memory. What is new is that RTNL covers the whole loop.
-> 
+The netdev bot has found some issues, can you take care of them?
 
+regards,
+Marc
+
+--- Patch [4]: [PATCH net-next 04/37] can: proc: reset pkg_stats atomics individually ---
+commit efa392826f228e08df66ba3c5bf707d70092f478
+Author: Runyu Xiao <runyu.xiao@seu.edu.cn>
+
+can: proc: reset pkg_stats atomics individually
+
+This patch replaces the whole-struct memset() in can_init_stats() with a
+new helper, can_reset_pkg_stats(). The helper resets the atomic_long_t
+counters of struct can_pkg_stats with atomic_long_set() and clears the
+scalar derived statistics with plain stores.
+
+Link: https://patch.msgid.link/20260512133937.21957-1-runyu.xiao@seu.edu.cn
+
+> diff --git a/net/can/proc.c b/net/can/proc.c
+> index de4d05ae3459..64b3bdc2fa7e 100644
+> --- a/net/can/proc.c
+> +++ b/net/can/proc.c
+> @@ -76,16 +76,39 @@ static const char rx_list_name[][8] = {
+>   * af_can statistics stuff
+>   */
+>
+> +static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
+> +{
+> +	atomic_long_set(&pkg_stats->rx_frames, 0);
+> +	atomic_long_set(&pkg_stats->tx_frames, 0);
+> +	atomic_long_set(&pkg_stats->matches, 0);
+> +
+> +	pkg_stats->total_rx_rate = 0;
+> +	pkg_stats->total_tx_rate = 0;
+> +	pkg_stats->total_rx_match_ratio = 0;
+
+Discovered by: gpt-6-astra, opus-5-5, sonnet-5 · Missed by: sashiko-gemini · Called a false positive by: gpt-6-astra
+
+This isn't a bug introduced by this patch, but these scalar fields are
+still written with plain stores from timer softirq context. The writers
+are can_reset_pkg_stats(), can_init_stats() (for jiffies_init) and
+can_stat_update().
+
+Process context reads the same fields with plain loads, in
+can_stats_proc_show():
+
+	seq_printf(m, " %8ld %% total match ratio (RXMR)\n",
+			pkg_stats->total_rx_match_ratio);
+
+and in can_reset_stats_proc_show():
+
+	if (pkg_stats->jiffies_init != jiffies)
+
+Without READ_ONCE()/WRITE_ONCE() or data_race(), will KCSAN keep
+reporting data races on struct can_pkg_stats? The commit message limits
+its goal to "the live counters", so this is only an observation.
+
+> +
+> +	pkg_stats->current_rx_rate = 0;
+> +	pkg_stats->current_tx_rate = 0;
+> +	pkg_stats->current_rx_match_ratio = 0;
+> +
+> +	pkg_stats->max_rx_rate = 0;
+> +	pkg_stats->max_tx_rate = 0;
+> +	pkg_stats->max_rx_match_ratio = 0;
+> +
+> +	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+> +	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
+> +	atomic_long_set(&pkg_stats->matches_delta, 0);
+> +}
+
+Discovered by: sashiko-gemini, opus-5-5 · Missed by: sonnet-5, gpt-6-astra · Confirmed by: opus-5-5 · Called a false positive by: gpt-6-astra
+This is a pre-existing issue. The commit message says plain writes in
+the reset path "can lose or mix live statistics updates", but the same
+kind of loss remains in the regular timer path after this patch.
+
+can_stat_update() runs once per second from the stats timer. It
+snapshots the delta counters at the top of the function, for example:
+
+	long rx_frames_delta = atomic_long_read(&pkg_stats->rx_frames_delta);
+
+It then derives current_tx_rate, current_rx_rate and
+current_rx_match_ratio from those locals. Only at the very end does it
+clear the counters:
+
+	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+
+While this runs, can_send() and can_receive() keep calling
+atomic_long_inc() on tx_frames_delta, rx_frames_delta and matches_delta
+from other CPUs. An increment that lands between the read and the set
+is lost. It is not in the snapshot used for this interval, and it is
+wiped before the next interval starts. Under load, the current_* rates
+and the current match ratio therefore undercount. The rx_frames,
+tx_frames and matches totals still count the frame.
+
+Switching can_reset_pkg_stats() from memset() to per-field
+atomic_long_set() avoids plain stores to the atomics. It does not turn
+the read and the clear in can_stat_update() into a single atomic step,
+so this window is unchanged by the patch.
+
+Would taking each snapshot with atomic_long_xchg() against 0 at the
+top of can_stat_update(), and dropping the trailing atomic_long_set()
+calls, close the window? Should that be folded into this fix, or sent
+as a separate patch?
+
+Discovered by: gpt-6-astra, opus-5-5 · Missed by: sonnet-5, sashiko-gemini · Called a false positive by: gpt-6-astra
+
+This is a pre-existing issue, but can_stat_update() reads the *_delta
+counters at the top and clears them at the bottom, after the
+calculations and any can_init_stats() calls:
+
+net/can/proc.c:can_stat_update() {
+	...
+	long rx_frames_delta = atomic_long_read(&pkg_stats->rx_frames_delta);
+	long tx_frames_delta = atomic_long_read(&pkg_stats->tx_frames_delta);
+	long matches_delta = atomic_long_read(&pkg_stats->matches_delta);
+	...
+	/* clear values for 'current rate' calculation */
+	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
+	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+	atomic_long_set(&pkg_stats->matches_delta, 0);
+	...
+}
+
+Meanwhile can_send() and can_receive() call atomic_long_inc() on these
+deltas from other CPUs, for example:
+
+	atomic_long_inc(&pkg_stats->tx_frames_delta);
+
+Any increment between the snapshot and the clear is overwritten. It
+never shows up in current_tx_rate, current_rx_rate or
+current_rx_match_ratio, though the totals still count it.
+
+Would taking each snapshot with atomic_long_xchg(&delta, 0) close that
+window?
+
+> +
+>  static void can_init_stats(struct net *net)
+>  {
+
+[ ... ]
+
+> -	memset(pkg_stats, 0, sizeof(struct can_pkg_stats));
+> +	can_reset_pkg_stats(pkg_stats);
+
+Discovered by: gpt-6-astra, opus-5-5 · Missed by: sonnet-5, sashiko-gemini · Called a false positive by: gpt-6-astra
+
+This is a pre-existing issue, but this patch has Fixes: 80b5f90158d1.
+Should the reset in can_stat_update() be handled as well? That commit
+also changed can_stat_update() to snapshot the counters into locals
+before any of the can_init_stats() calls:
+
+net/can/proc.c:can_stat_update() {
+	long rx_frames = atomic_long_read(&pkg_stats->rx_frames);
+	long tx_frames = atomic_long_read(&pkg_stats->tx_frames);
+	long matches = atomic_long_read(&pkg_stats->matches);
+	...
+	/* restart counting in timer context on user request */
+	if (user_reset)
+		can_init_stats(net);
+	...
+	/* matches overflow - very improbable */
+	if (matches > (LONG_MAX / 100))
+		can_init_stats(net);
+
+	/* calc total values */
+	if (rx_frames)
+		pkg_stats->total_rx_match_ratio = (matches * 100) / rx_frames;
+	...
+}
+
+After can_init_stats() returns, the pre-reset locals are still used for
+total_rx_match_ratio, current_rx_match_ratio, current_tx_rate,
+current_rx_rate and the max_* fields. So the values that
+can_reset_pkg_stats() just cleared get refilled from pre-reset data.
+
+With the stats timer enabled (the default), can_reset_stats_proc_show()
+only sets user_reset = 1, so every user requested reset takes this path.
+If no more traffic arrives, total_rx_match_ratio and
+current_rx_match_ratio keep their pre-reset values indefinitely. They
+are only recomputed under if (rx_frames) and if (rx_frames_delta).
+
+The matches > (LONG_MAX / 100) guard is also defeated, because
+(matches * 100) is still computed from the stale copy after the reset.
+On 32-bit with HZ <= 100, rx_frames and matches can both pass
+LONG_MAX / 100 in the same tick. Can this multiplication then overflow a
+signed long and export a garbage ratio?
+
+Before 80b5f90158d1, these expressions read pkg_stats->... after
+can_init_stats() and so saw zeros. Given this, the commit message
+statement "This preserves the existing reset semantics for scalar
+fields" does not hold for the default timer-driven path.
+
+>  	pkg_stats->jiffies_init = jiffies;
+>
+>  	rcv_lists_stats->stats_reset++;
+
+Discovered by: gpt-6-astra, opus-5-5, sonnet-5 · Missed by: sashiko-gemini · Called a false positive by: gpt-6-astra
+
+This isn't a bug introduced by this patch, but user_reset is a single
+file-scope flag shared by every network namespace and accessed with
+plain loads and stores:
+
+static int user_reset;
+
+can_pernet_init() arms a separate can_stat_update() timer for each
+netns. A read of /proc/net/can/reset_stats in netns A sets the global
+flag. Whichever netns timer runs next resets its own stats and clears
+the flag here:
+
+	if (user_reset) {
+		user_reset = 0;
+		rcv_lists_stats->user_reset++;
+	}
+
+reset_stats is created with mode 0644. Can an unprivileged user in one
+netns therefore reset another namespace's statistics, including
+init_net's, while the reset requested for netns A never happens?
+
+Separately, with the stats timer disabled, two concurrent readers of
+reset_stats can both pass the check in can_reset_stats_proc_show():
+
+	if (pkg_stats->jiffies_init != jiffies)
+		can_init_stats(net);
+
+Could they then race on the plain stats_reset++ and user_reset++
+increments and on the user_reset test-and-clear?
+
+pw-bot: cr
+
+-- 
+Marc Kleine-Budde <mkl@pengutronix.de>
