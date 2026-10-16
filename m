@@ -1,114 +1,136 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81DC02F1FE4
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 01:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35CE3515DA
+	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 01:54:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792115644; cv=none; b=R1wz/+fjix+0XmKHYKkK5dhdEaMj5ASwBD42YixqCWSNQmQrKsPr76ZKA5dI2H/fD8CB/qA+HRJifxs2S3JztCThhTlnOad3RUwJpOW1wlOmWL0PDiNdoKKSmhHbUCFPeMLxn/pPl6twItKjMalHSYEXL+tQX0AW4VPW+zWfYD4=
+	t=1792115645; cv=none; b=QGxmh+8Z1zXG/qtR0nAh2GiWyfUtd4sKT9N0a4sdOLv8Ch+sX7BQzWPSdM6A7qqKeYHSOIvNuJ4MXw8lqg3pNkYLO29V69OBG6vgnlePzOHnkgRCRI0eNOeIC1J5KDeuf/SF07LwpBkYGXpopRL1SkDri7CFtuMBYB60S9wlSwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792115644; c=relaxed/simple;
-	bh=urGEYak9/4jR3Xqw7FfNDSRc7R+twbpfZhzdODHm1Lw=;
+	s=arc-20240116; t=1792115645; c=relaxed/simple;
+	bh=P6+TBLapCuFvxNwJhEumYKMmmXE0UFuxCVhSfevKJFQ=;
 	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=ZjSD1WDFPmqQ+dhnpgg+ozSjyWjTrjvMCbJGZMT1TjFZfHyUlSsj6dl8WiytjUIdTOh/WR6ZTNWwkV0qKBSLGq9ELq587PERa8jxWjzlt/HzF6KWOD1yZB7njd9Ia1gBF6Aat7G8BwGQp5v0ha+qORe/9c23iG1fMT0gaOcmeVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kOw1qUBP; arc=none smtp.client-ip=100.103.45.18
+	 Date; b=tDrGpWhDsJtAXZD9aR0lFeRDGPKUbgg4u+v5GuoHHQwprvQxuxamZu0M+/GfsjmCaZLPdUQJ+QIrBxzfeFLFeAdS07yi1hEHw9aV/iCbwncYRaqp/N7dhthnKfnnqRDZieFRZsv/UhvIrKqg9htfcBQwhxOSlCZM9ot56KCuTzg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V+J1gQ7z; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kOw1qUBP"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDE701F000C6;
-	Fri, 16 Oct 2026 01:54:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V+J1gQ7z"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A527E1F000C4;
+	Fri, 16 Oct 2026 01:54:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792115643;
-	bh=PZRRJIGZPkfCWUWYpnLsYQlYCHgY6Ro4kuziuXMWQeM=;
+	s=k20260515; t=1792115644;
+	bh=hdge6Cy2whD6vKB3xY1n/iQ+pKQI3yqIn9wfFUCBWIQ=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=kOw1qUBPJmhZwmPS15JS9dIvraEk1Q0J63buNN9p6IlSz1FoUB/dpcUlxNtFQiGa9
-	 cQlF7JtSErufckfLlIfGVrTIZ+dTvxj3Cf8ofik9m5UNkLxkKdc7up/X1tRSZHZhab
-	 M9FkrHD31cU69/992ohnoB384j66qSmcmTbGvHaqx73diqhDsoD2VJUTz9d1GZkvy1
-	 Ymf9p52nO0G9fELHJIl5P944L5OqgIwIXojUGElvmDT/5VSMoyll+k6MWkejqjkq9p
-	 JOtZoV94iezPnnxeW3iyOwZHd9w4lJBkWLLOreDaOdY8AUU8hkUmyZ8eQKfIzQBX6d
-	 TkttAgq0bBKEA==
-Message-ID: <sashiko-outbox-173575@kernel.org>
+	b=V+J1gQ7zr71ACK0TYCgVwIPB14nfb5gv95xa5X4wnDRbhPaun/RS8XQW/xYe2BimK
+	 m4HpyVbcDnyJZmEjGdRs4QNAO13wGeo48pShjQpdhFQF+xpD0WpXEi+Vaq41HhwhyY
+	 yOyx9hQp4yZS4yzqQ774pNa2c0h5WCWIaP1v0xuDBtT+Ia3P46u4GjNAQxXcfPyarT
+	 WaxOYUYMQV6L278n7yMnoK3MjRmaYJep0rBjvbQ/opgEKtb6jV0U5o0ILbM+DNnBRn
+	 1GE2ATq3BNfETHziaB+B60C4T8Em0JhkYPQquCK5P/yPz4QJEbZucCiVwwYh/skH2H
+	 hQJ6jv2Wo+qFA==
+Message-ID: <sashiko-outbox-173581@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 04/37] can: proc: reset pkg_stats atomics
- individually
+Subject: Re: [PATCH net-next 19/37] dt-bindings: can: renesas,rcar-canfd:
+ Document RZ/G3L SoC
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
  Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261015015336.816543-5-mkl@pengutronix.de>
+In-Reply-To: <20261015015336.816543-20-mkl@pengutronix.de>
 References: <20261015015336.816543-1-mkl@pengutronix.de>
- <20261015015336.816543-5-mkl@pengutronix.de>
+ <20261015015336.816543-20-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Fri, 16 Oct 2026 01:54:02 +0000
+Date: Fri, 16 Oct 2026 01:54:03 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
 s) to consider:
-- [Medium] can: dropped statistics updates due to unprotected atomic_long_s=
-et()
+- [Medium] dt-bindings: missing required resets and reset-names for RZ/G3L
+- [Medium] dt-bindings: missing maxItems constraint for RZ/G3L interrupts
 --
 
-commit a887271f48442196a8a536b23ac554282d14a9f4
-Author: Runyu Xiao <runyu.xiao@seu.edu.cn>
+commit 58ac9c18cd2ddefc0f54df00f420c9a823c995ac
+Author: Biju Das <biju.das.jz@bp.renesas.com>
 
-can: proc: reset pkg_stats atomics individually
+dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
 
-This commit replaces a whole-struct memset() in can_init_stats() with a
-helper that explicitly resets individual fields. The memset() caused
-non-atomic writes to atomic_long_t members when called concurrently with
-hot-path statistics updates.
+Document the RZ/G3L (R9A08G046) SoC support. RZ/G3L has 11 interrupts and
+3 CANFD channels compared to 8 interrupts and 2 CANFD channels on RZ/G3S.
+RZ/G3L has 288 buffers in total compared to 192 buffers in RZ/G3S.
 
-Link: https://patch.msgid.link/20260512133937.21957-1-runyu.xiao@seu.edu.cn
+Link: https://patch.msgid.link/20261001075742.21961-2-biju.das.jz@bp.renesa=
+s.com
 
-> diff --git a/net/can/proc.c b/net/can/proc.c
-> index de4d05ae34597..64b3bdc2fa7e0 100644
-> --- a/net/can/proc.c
-> +++ b/net/can/proc.c
-> @@ -76,16 +76,39 @@ static const char rx_list_name[][8] =3D {
->   * af_can statistics stuff
->   */
+> diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd=
+.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> index 1a7a9ce45e977..4b94bc8d911be 100644
+> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+
+[ ... ]
+
+> @@ -294,6 +295,25 @@ allOf:
+>        patternProperties:
+>          "^channel[6-7]$": false
 > =20
-> +static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
-> +{
-> +	atomic_long_set(&pkg_stats->rx_frames, 0);
-> +	atomic_long_set(&pkg_stats->tx_frames, 0);
-> +	atomic_long_set(&pkg_stats->matches, 0);
-> +
-> +	pkg_stats->total_rx_rate =3D 0;
-> +	pkg_stats->total_tx_rate =3D 0;
-> +	pkg_stats->total_rx_match_ratio =3D 0;
-> +
-> +	pkg_stats->current_rx_rate =3D 0;
-> +	pkg_stats->current_tx_rate =3D 0;
-> +	pkg_stats->current_rx_match_ratio =3D 0;
-> +
-> +	pkg_stats->max_rx_rate =3D 0;
-> +	pkg_stats->max_tx_rate =3D 0;
-> +	pkg_stats->max_rx_match_ratio =3D 0;
-> +
-> +	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
-> +	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
-> +	atomic_long_set(&pkg_stats->matches_delta, 0);
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: renesas,r9a08g046-canfd
+> +    then:
+> +      properties:
+> +        interrupts:
+> +          minItems: 11
 
 [Severity: Medium]
-Does unconditionally clearing the delta counters here drop concurrent
-increments?
+Does this block also need a maxItems constraint?
 
-If a packet is received or transmitted concurrently during a statistics res=
-et
-or during the can_stat_update() calculation window in net/can/proc.c,
-can_receive() in net/can/af_can.c will increment the delta counter via
-atomic_long_inc(&pkg_stats->rx_frames_delta).
+The top-level schema permits up to 20 interrupts by default. While this
+block correctly specifies minItems: 11, it omits maxItems: 11.
 
-If atomic_long_set(..., 0) runs right after that increment, won't it
-unconditionally zero the counter, dropping the increment entirely from both=
- the
-current and next intervals?
+Could a devicetree node providing between 12 and 20 interrupts silently
+pass schema validation instead of being properly rejected?
+
+> +
+> +        interrupt-names:
+> +          minItems: 11
+> +
+> +        resets:
+> +          minItems: 2
+
+[Severity: Medium]
+Should the new compatible string be added to the shared required properties=
+ block?
+
+This block indicates the hardware requires 2 resets. However, the new
+compatible string was not added to the existing shared if-then block that
+enforces resets and reset-names as required properties:
+
+  - if:
+      properties:
+        compatible:
+          contains:
+            enum:
+              - renesas,r9a08g045-canfd
+              - renesas,r9a09g047-canfd
+              - renesas,rzg2l-canfd
+    then:
+      required:
+        - resets
+        - reset-names
+
+Could a devicetree node missing the mandatory resets and reset-names
+properties for RZ/G3L silently pass schema validation, allowing incomplete
+hardware descriptions?
+
+> +
+> +      patternProperties:
+> +        "^channel[3-7]$": false
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261015015336.8165=
-43-1-mkl@pengutronix.de?part=3D4
+43-1-mkl@pengutronix.de?part=3D19
