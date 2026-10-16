@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF1043E51F7;
-	Fri, 16 Oct 2026 07:00:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D2D93E558A;
+	Fri, 16 Oct 2026 07:00:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792134013; cv=none; b=BK2/r3LX0oaHa6O4k5dJfsUMa2rc6spThV4sQjgg4yXN0FVSx9/gXAKqrz8v68OkNQga/Z8DW+uyA81Nppynswd7zRD4vRNp0kwEiqFCdFC9+ajwQIARNvuI24Vvg/UYsWNyJC5MIO9QOBll8MrluuGv9s3qh2VcLogBM0JQRdw=
+	t=1792134015; cv=none; b=uy6CHKVrmzkWXREz4HWO87L22dv3MM4kwHu6SeNBVhouf8bYgfzoyxmXgtJ93dse6Ujo88CtqHquceEM+XYeLmItK7aAgHZToaViCOI+YU5CyIRk9o6nO6TTvEHVFbAIqzY/q/9+FTlP//RPfTMJbXA4GSLmDwKez9up1ipX8HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792134013; c=relaxed/simple;
-	bh=N9OEIDejLgP1mg8ClZhR/OfE44BCp9t+LhoFgG9mzVU=;
+	s=arc-20240116; t=1792134015; c=relaxed/simple;
+	bh=m5RmNVlRhiZHSy0Sd+Dzphi/drTc8/FWs56IG3cLrww=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Ba+GVaI4hab9zWfmQEp46RAqzd3ePiT+d/5HKxm+s1War4g6vN13GK7s2RbyRs0ZvWdupcJihUv17+FZ3CpI/VY3fyZlgFe7Xc+0w4fckeBTAlXKa2hrpiVrJ/+i3y8/4LzKzBugE/N4UHJ4jItNH2bIAMnUhkeSSabSKXc4Nbo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QKSCX5FY; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=aHmxeUye6rt+DBrk2gvC7aiB/RvW8KET7FpKonQoIUeo44Jkve4f4bLOC69l7jcX8kC3ORxaiN2E5MdMTMDj8np84Hn8f5/H3cTEHpiMDEctyowKq6koi8NUbetIcyuc4XSsJNrsO0f0AKBZorjTeGO8EcgEKU3lXtNCQXCWnlI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ftH19gvH; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QKSCX5FY"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 035781F000C5;
-	Fri, 16 Oct 2026 07:00:01 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ftH19gvH"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 54F981F000C4;
+	Fri, 16 Oct 2026 07:00:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792134003;
-	bh=zjSBFayPw/nXlQZbC0GW0Ttenf1/COvhxj288ABy6AQ=;
+	s=k20260515; t=1792134005;
+	bh=iZ0zjSBd5/ua9Opszr8Ahaz/InA7d5FIV/WlSa+YubM=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=QKSCX5FYJH6U8BBuer7NIvvyO6q/FVl4kxqmzwRKOmD1k9TiDflAelxqdMJzcdYno
-	 2NlprRVSEF/haoRSkqYCNHm4U+HskZB/eOcBTFBWfNSGKHlZdLomo13H/2N8p4eAqw
-	 ItZo+Rp4mtK8QRIFqsa4sLvLBok4G8KHT+d6IRcLdsFWXWKBVyQYBU+2neLl/QXHRh
-	 sZPu7spdYsIIkzE7QAhyyxXvaLymVDcA1DUbskCsXW2t9yYWWPY7BiEK95ipsGlPOD
-	 71jTVbbpoiRs6+qYd9fTFH5mMX/ZpWPW2ELYuFwLZVj55muEyG3xf5O+JmhvqALaW0
-	 I/bLA+la9NKkg==
-Subject:
- Re: [PATCH can-next v1 2/8] selftests: can: add J1939 base functional tests
+	b=ftH19gvH/Zi/12yvnWFyZ0uz1l3Nmvg/aqUFSAppkpHPVKMrrOjq+uEEkhQ+cZKd6
+	 NmFmTyQq0N3PU/bvLs+B4yTWQwopmDM9+4ghRcCPWwzvZKq8jijahfdgiS1g6HL2eA
+	 cweGpgxjkG76f+JeCVbiubWmbPR/G4nJcJhc0BHexceBe/eG2ogs1Q10yif5wgNo+L
+	 bRiVd1JXi3fP8Q7bSGC1/5RTRrqhUmAjLOMus5suKwTF2K5ojjcKQd8CJmoKx6Lzg2
+	 GMihlVpxvvdI1zcf22s+cCI0QV0q7pqBbePvv3UZtAIjBRSD6j47/WXax34+gg8eUr
+	 4pz58fzn0AdcQ==
+Subject: Re: [PATCH can-next v1 3/8] selftests: can: add J1939 socket option
+ and metadata tests
 From: netdev-bot+sashiko@kernel.org
 To: o.rempel@pengutronix.de
 Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
@@ -35,10 +35,10 @@ Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
  linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
  alexander.hoelzl@gmx.net, quchaosheng000406@163.com,
  penguin-kernel@I-love.SAKURA.ne.jp, kuba@kernel.org
-Date: Fri, 16 Oct 2026 07:00:00 +0000
-Message-ID: <179213400068.1406898.3869778574324463301@kernel.org>
-In-Reply-To: <20261014154435.3577983-3-o.rempel@pengutronix.de>
-References: <20261014154435.3577983-3-o.rempel@pengutronix.de>
+Date: Fri, 16 Oct 2026 07:00:03 +0000
+Message-ID: <179213400338.1406898.2140966543430053967@kernel.org>
+In-Reply-To: <20261014154435.3577983-4-o.rempel@pengutronix.de>
+References: <20261014154435.3577983-4-o.rempel@pengutronix.de>
 X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -49,10 +49,10 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 4 potential
+Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 3
+Critical: 0 · High: 0 · Medium: 2 · Low: 1
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -60,194 +60,171 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] test_j1939_base.sh breaks when net/can is installed on its
-  own.
-- [Low] roundtrip() in test_j1939_base.c is documented as checking that
-  the payload is "received byte for byte", and size_boundaries claims to…
-- [Low] Baseline decision: false positive for the concrete scenarios
-  given.
-- [Low] roundtrip() in tools/testing/selftests/net/can/test_j1939_base.c
-  (lines 104-106) prints `errno %d` whenever send_recv_verify() fails.
+- [Medium] FIXTURE_SETUP(j1939_opts) always calls J1939_SETUP_RAW(self,
+  0).
+- [Medium] raw_prio() takes the first frame received on the unfiltered
+  CAN_RAW socket and returns J1939_ID_PRIO(frame.can_id & CAN_EFF_MASK).
+- [Low] test_j1939_opts.sh cannot run from a selective install of the CAN
+  selftests (e.g. `make -C tools/testing/selftests TARGETS=net/can…
 
 --
 
-selftests: can: add J1939 base functional tests
+selftests: can: add J1939 socket option and metadata tests
 
-This adds a kselftest for the SAE J1939 socket interface. It opens a
-sender and a receiver CAN_J1939 socket on a vcan interface and checks
-payload integrity for single frame, TP, ETP, the size boundaries between
-them, and single-frame and BAM broadcast. The test runs through a new
-test_j1939_base.sh wrapper that sources j1939_lib.sh.
+This adds a new J1939 selftest, test_j1939_opts, that covers:
+
+  - SO_J1939_FILTER
+  - SO_J1939_SEND_PRIO, observed on the wire through a CAN_RAW socket
+  - SO_J1939_PROMISC
+  - unconnected sendto()
+  - a bind() with the wrong address family
+  - SO_J1939_ERRQUEUE TX-completion notifications
+
+It also enables CONFIG_CAN_RAW in the test config fragment.
 
 > diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
-> index e2092c289109..cf4bd2461a6c 100644
+> index cf4bd2461a6c..24a57edb912c 100644
 > --- a/tools/testing/selftests/net/can/Makefile
 > +++ b/tools/testing/selftests/net/can/Makefile
-> @@ -4,10 +4,16 @@ top_srcdir = ../../../../..
->  
->  CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INCLUDES)
->  
-> -TEST_PROGS := test_raw_filter.sh
-> +LOCAL_HDRS := j1939_tests.h
-> +
-> +TEST_PROGS := \
-> +	test_raw_filter.sh \
-> +	test_j1939_base.sh \
+> @@ -9,11 +9,13 @@ LOCAL_HDRS := j1939_tests.h
+>  TEST_PROGS := \
+>  	test_raw_filter.sh \
+>  	test_j1939_base.sh \
+> +	test_j1939_opts.sh \
 >  
 >  TEST_FILES := j1939_lib.sh
 
-[Severity: Medium]
-Will test_j1939_base.sh still work when only net/can is installed?
+[Severity: Low]
+Can test_j1939_opts.sh run from a CAN-only install, such as
+make -C tools/testing/selftests TARGETS=net/can install?
 
-The wrapper sources j1939_lib.sh, which is in TEST_FILES. But j1939_lib.sh
-then sources a file from the parent directory:
+The wrapper sources j1939_lib.sh, which does:
 
 tools/testing/selftests/net/can/j1939_lib.sh:
     net_dir=$(dirname "$0")/..
     source "$net_dir/lib.sh"
 
-net/lib.sh then sources $net_dir/lib/sh/defer.sh.
+net/lib.sh then sources lib/sh/defer.sh. This Makefile lists only
+j1939_lib.sh in TEST_FILES. Nothing installs ../lib.sh or ../lib/sh/*.sh.
 
-This Makefile has no TEST_INCLUDES, so lib.mk doesn't install ../lib.sh
-or ../lib/sh/*.sh for this target. The top-level selftests Makefile only
-adds net/lib for these targets:
-
-    ifneq ($(filter net drivers/net drivers/net/hw,$(TARGETS)),)
-
-After "make -C tools/testing/selftests TARGETS=net/can install", wouldn't
-the new test fail at the source step with "No such file or directory"
-instead of running or skipping?
-
-Other net subdirectories with the same dependency declare it. For example,
+Other net subdirectories declare these files. For example,
 net/mptcp/Makefile has:
 
     TEST_INCLUDES := ../lib.sh $(wildcard ../lib/sh/*.sh)
 
-test_raw_filter.sh already sources ../lib.sh the same way. Since the new
-test depends on it too, could a similar TEST_INCLUDES line go in here?
-The Makefile still has no TEST_INCLUDES at the end of the series.
+The top-level selftests Makefile adds net/lib as an install dependency
+only for the net, drivers/net and drivers/net/hw targets, not for net/can.
+Even when net/lib is added, it does not install net/lib.sh.
+
+In the installed tree, sourcing ../lib.sh would fail. That leaves
+ksft_skip, tests_run, check_err and log_test undefined, so the test can't
+run.
+
+test_raw_filter.sh has the same gap. The first patch of this series
+carried it into j1939_lib.sh, this patch adds another test that depends on
+it, and nothing later in the series fixes it.
+
+Would a TEST_INCLUDES line like the mptcp one fix this?
 
 [ ... ]
 
-> diff --git a/tools/testing/selftests/net/can/test_j1939_base.c b/tools/testing/selftests/net/can/test_j1939_base.c
+> diff --git a/tools/testing/selftests/net/can/test_j1939_opts.c b/tools/testing/selftests/net/can/test_j1939_opts.c
 > new file mode 100644
-> index 000000000000..59f1448b7fb2
+> index 000000000000..f761a42db213
 > --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_j1939_base.c
+> +++ b/tools/testing/selftests/net/can/test_j1939_opts.c
+> @@ -0,0 +1,305 @@
 
 [ ... ]
 
-> +/*
-> + * Send a deterministic payload of the given size on tx and verify it is
-> + * received byte for byte on rx. Returns 0 on success, -1 otherwise.
-> + */
-> +static int roundtrip(FIXTURE_DATA(j1939_base) *self, size_t size)
+> +/* Read the next CAN frame from a raw socket and return its J1939 priority. */
+> +static int raw_prio(int raw, int timeout_ms)
 > +{
-> +	uint8_t *tx_buf;
-> +	int rc;
+> +	struct can_frame frame;
 > +
-> +	tx_buf = malloc(size);
-> +	if (!tx_buf) {
-> +		fprintf(stderr, "# alloc failed\n");
+> +	if (recv_timeout(raw, &frame, sizeof(frame), timeout_ms) < 0)
 > +		return -1;
-> +	}
-> +	fill_pattern(tx_buf, size);
-> +
-> +	rc = send_recv_verify(self->tx, self->rx, tx_buf, size,
-> +			      J1939_RECV_TIMEOUT_MS);
-
-[Severity: Low]
-Can this check catch a message that arrives longer than it was sent?
-
-send_recv_verify() in j1939_tests.h receives into a buffer of exactly len
-bytes and compares only those len bytes:
-
-    uint8_t *rx_buf = malloc(len);
-    ...
-    recv_timeout(rx, rx_buf, len, timeout_ms) == (int)len &&
-    memcmp(buf, rx_buf, len) == 0)
-
-On the kernel side, j1939_sk_recvmsg() truncates without an error and
-returns the user buffer size:
-
-    if (size < skb->len)
-        msg->msg_flags |= MSG_TRUNC;
-    else
-        size = skb->len;
-    ...
-    return size;
-
-Plain recv() can't see the MSG_TRUNC output flag. So if TP/ETP reassembly
-ever delivered extra bytes, every subtest here would still pass. That
-includes the 9/1785/1786 cases in size_boundaries.
-
-Passing MSG_TRUNC as an input flag won't work either. j1939_sk_recvmsg()
-returns -EINVAL for any flag other than MSG_DONTWAIT, MSG_ERRQUEUE and
-MSG_CMSG_COMPAT.
-
-Two options that might work: receive into a buffer of at least len + 1
-bytes and require recv() to return exactly len, or use recvmsg() and
-check msg_flags. The helper is unchanged at the end of the series, and
-test_j1939_addr.c uses it too.
-
-> +	if (rc)
-> +		fprintf(stderr, "# round-trip failed at size %zu, errno %d\n",
-> +			size, errno);
-
-[Severity: Low]
-Is errno meaningful on every path that reaches this message?
-
-When poll() times out, recv_timeout() returns -1 without setting errno:
-
-    if (poll(&pfd, 1, timeout_ms) <= 0)
-        return -1;
-
-A memcmp() mismatch or a short send()/recv() count also leaves errno
-unchanged. A timeout or a data mismatch would then print whatever errno
-an earlier call left behind, often 0.
-
-Could the timeout and mismatch cases print their own messages?
-
-[ ... ]
-
-> +/* exact size boundaries around single / TP / ETP transitions. */
-> +TEST_F(j1939_base, size_boundaries)
-> +{
-> +	static const size_t sizes[] = { 8, 9, 1785, 1786 };
-> +	size_t k;
-> +
-> +	for (k = 0; k < ARRAY_SIZE(sizes); k++) {
-> +		ASSERT_EQ(pair_up(self, SA_RX, SA_RX, PGN_PDU1, 0), 0);
-> +		EXPECT_EQ(roundtrip(self, sizes[k]), 0)
-> +			TH_LOG("failed at boundary size %zu", sizes[k]);
-> +	}
+> +	return (int)J1939_ID_PRIO(frame.can_id & CAN_EFF_MASK);
 > +}
 
-[Severity: Low]
-This isn't a bug, but does this test, or tp_roundtrip and etp_roundtrip,
-check which transport was actually used?
+[Severity: Medium]
+Can raw_prio() decode a frame other than the one the test just sent?
 
-Only payload delivery is checked. A one-sided transmit selection bug in
-j1939_tp_send() would still be caught. The receive side checks the size
-on its own in j1939_xtp_rx_rts_session_new() and aborts the session:
+self->raw comes from open_raw_rcvbuf(). That binds without a
+CAN_RAW_FILTER, so CAN_RAW's default receive-all filter applies.
 
-    else if (len <= J1939_MAX_TP_PACKET_SIZE)
-        abort = J1939_XTP_ABORT_FAULT;
-    ...
-    else if (len < J1939_MIN_TP_PACKET_SIZE)
-        abort = J1939_XTP_ABORT_FAULT;
+raw_prio() returns the priority of the first frame that arrives. It does
+not check that J1939_ID_SA() is SA_TX, J1939_ID_PF() is J1939_PF(PGN_A) or
+J1939_ID_PS() is SA_RX.
 
-However, the TX and RX paths share J1939_MAX_TP_PACKET_SIZE. A symmetric
-change to that constant would not be noticed by this loopback-only test.
-Nothing here checks whether TP.CM_RTS (0x10) or ETP.CM_RTS (0x14) went
-out on the wire.
+j1939_lib.sh supports real CAN interfaces as well as vcan:
 
-The later "selftests: can: add J1939 TP/ETP multi-frame tests against
-CAN_RAW" patch does check the RTS command on the wire, but only at sizes
-200 and 6000.
+    else
+        ip link set dev "$CANIF" type can bitrate "$BITRATE" || exit $ksft_skip
+    fi
 
-Would it make sense to add the 8/9/1785/1786 sizes there, or to reword
-the "exact size boundaries" comment here?
+On a bus with other nodes, a frame from another node could arrive between
+FIXTURE_SETUP and the J1939 send. raw_prio() would decode that frame
+instead. send_prio_default and send_prio_set would then compare its
+priority with 6 or 3, and could fail or pass wrongly.
+
+j1939_tests.h already has recv_match() and recv_for_peer() for this case.
+The comment in recv_match() covers it: "Non-matching frames (other
+traffic on the bus) ...".
+
+Could raw_prio() use one of these, matching on source address, PF and PS?
+
+On the default private vcan only the test's own frame is on the bus, so
+the default run gives a reliable result.
+
+[ ... ]
+
+> +FIXTURE_SETUP(j1939_opts)
+> +{
+> +	self->tx = -1;
+> +	self->rx = -1;
+> +	self->raw = -1;
+> +
+> +	J1939_SETUP_IFINDEX(self);
+> +
+> +	J1939_SETUP_RAW(self, 0);
+> +}
+
+[Severity: Medium]
+If a kernel has CONFIG_CAN_J1939 enabled but no CAN_RAW support, should
+these tests be reported as skipped instead of failed?
+
+J1939_SETUP_RAW() opens socket(PF_CAN, SOCK_RAW, CAN_RAW) through
+open_raw_rcvbuf() and then calls ASSERT_GE() on the result. A missing
+CAN_RAW protocol therefore fails the test instead of skipping it.
+
+J1939_TEST_MAIN() says it will "Skip (rather than fail) when either is
+missing", but it only probes CAN_J1939:
+
+    probe = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+    if (probe < 0) {
+        if (errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT)
+            return KSFT_SKIP;
+
+CONFIG_CAN_RAW is a separate tristate, which is why this patch adds it to
+the config fragment. Without it, all nine tests in the fixture fail in
+setup.
+
+Seven of the nine never use self->raw:
+
+  filter_pgn
+  sendto_unconnected
+  bind_wrong_family
+  errqueue_tx_completion
+  getsockopt_send_prio
+  getsockopt_promisc
+  getsockopt_errqueue
+
+Only send_prio_default and send_prio_set use it, through raw_prio().
+Nothing later in the series changes this.
+
+Could the raw socket be opened only in the two send_prio tests? Or could
+the test skip when CAN_RAW is not available?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261014154435.3577983-1-o.rempel%40pengutronix.de
