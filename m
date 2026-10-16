@@ -1,45 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71AB2F1FE4
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 01:54:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A60E3451AA
+	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 01:54:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792115642; cv=none; b=eV2TAqcl4hdIsKu9qqX1u7EHBzEfWNPUNEmnyhQ4r3Bwjze32pVFUtbzVM+7mt9mFHy8tPJf/ekVh/sXuVc7GDnzpNWyb+WqjSpnyvN0ad4FVauwcVg3Y5LZ3C0EjmUQgcWI2e8KdZ2goLcpfZOoFMGtuYVkob0Y6CRdAFx+OKA=
+	t=1792115643; cv=none; b=rm+rVSURdExu+nCfpfI4LDS6EFnyXI+J5h84IsUrC6rxqGVczdoQ7MXNY6MJ0KSe2vM0OYlzfsB0FVWWbMZVaxytMh77L6GpPbDaLiVBEoVf3iDEhnwOJ041bFEjE0eG8+WzCszDAxlW2bV74PqZg/zwwRx+EfC+M1u+ySzxwaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792115642; c=relaxed/simple;
-	bh=Rwcl0y5hlMB1Kkf7w/A2VCRd+FzIObqhxLxy3RadKV8=;
+	s=arc-20240116; t=1792115643; c=relaxed/simple;
+	bh=yD6SI5O9Wxt9CpYvk9IiXHO/0/9qFlSxMkplRoYMUgo=;
 	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=C6PLMB9GeG1ChDtMuN3VudrgBqnwYC7RL/iux5SzwHUcIEB4+5Mfx4o5RuJVFvW/X+Onsaq1Co3NvsoJVlk0yMqnVMIlwJAEHVUrAqQtCs3AQxClsRHDUMO6twQP/qSjUDK6c6Fxa22+035DlWddsuKNPOR4QWb5mBqLnkCjIT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=G3u4VEp6; arc=none smtp.client-ip=100.103.45.18
+	 Date; b=Lt2VXlxwuSPS+6VMOY4TYOQyHTBMaYs9JRjEsGjvTyEAMQYtloCxM9UI4hrZ1qJcYSlr8sNJfMFah0OODjCNBwJgT04zAmE5kgvWw/tUceWN18S0ByMHF7QgjTh8BsmWvFUGGRk//xRJqmHTMg+8yAP9uIBBO/XSAEY9twZYf9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oqlVb3WF; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="G3u4VEp6"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10CD91F000C4;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oqlVb3WF"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 050951F000C5;
 	Fri, 16 Oct 2026 01:54:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792115641;
-	bh=bWtJlRuqpyIlzf/YSt876fA8iHPpjEw/oooQst2nmH0=;
+	s=k20260515; t=1792115642;
+	bh=STRngD0JKMArd+iUvh90/dqgmfQtmzBEed/6N/01CoY=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=G3u4VEp65GgADRJsH8lO4SGPqqBcctHjOtepnZ7tGWlKDmITIvG9yRrupOZmgt/vm
-	 BCmCIfel52oUBcJgKoF3YvTXCg73eJ9TmQCet/shwDZxeMXPj7F4+ZWIfPS5pRek8G
-	 eeglfPLe6+j9nBtT9LL1T9k7Xpb9WGtjvA2/iI3srKIixM3qLbqxR3GJsAZu8ZnOvb
-	 KyyiJe84lFVLZAv/chsi3HMeOZBeMzTrpvOAkr5XNFSFWsZVblT9GX7IyWU1HwqL9J
-	 H3K895OGc2AZZBXeVtbd8lRfG1rf/5gUcDJaQYZ9VSmmdFNW7t3j8jrYIxNHujY+CH
-	 +a3rs9+cl71EA==
-Message-ID: <sashiko-outbox-173569@kernel.org>
+	b=oqlVb3WF0toFhudfYxbKg3QddxNGu5oh9jqFj4w8VpJ4ZleTIdACpKn0j67LWEruK
+	 ou2XEnauByg0iZsy4DuVk6qKt3IDla/ZOdoqwMWxa+qvJ/VIeWibsxE7IT8ykxiDUB
+	 pvTJ2/UzSVCchHr3+w1ph8RtMDeS5HRABYYEEencs917vUUM9jmHx0I4yXntgW4oxY
+	 EEPM4wKadBaupv9imBdGYwr/F3AnPa+dWdA7tMmeokhvfSXiBW2/KRp0bCklEcpmff
+	 uOaiqjAYmXQmFIynzCDQIQSXnh08oh5OHJdzv4U9JDlcoUXhIs2rS83VmFQyzDtZDZ
+	 /YKQ8MRL+B8QA==
+Message-ID: <sashiko-outbox-173571@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 15/37] can: rcar_canfd: Allow the CAN FD clock
- to be sourced from fck
+Subject: Re: [PATCH net-next 17/37] can: rcar_canfd: Add support for Renesas
+ RZ/G3S
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
  Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261015015336.816543-16-mkl@pengutronix.de>
+In-Reply-To: <20261015015336.816543-18-mkl@pengutronix.de>
 References: <20261015015336.816543-1-mkl@pengutronix.de>
- <20261015015336.816543-16-mkl@pengutronix.de>
+ <20261015015336.816543-18-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Fri, 16 Oct 2026 01:54:00 +0000
+Date: Fri, 16 Oct 2026 01:54:01 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -48,69 +48,100 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 
 Thank you for your contribution! Sashiko AI review found 1 potential issue(=
 s) to consider:
-- [Medium] can: rcar_canfd: incorrect EPROBE_DEFER handling for can_clk
+- [High] can: rcar_canfd: uninitialized DCFG register on fixed_canfd hardwa=
+re if no-can-fd is specified
 --
 
-commit aa101d1e763b7f726a08a669b292613af929a1c2
+commit ef6619c0671e4d4b6f4522cdff322e81009d1151
 Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
+can: rcar_canfd: Add support for Renesas RZ/G3S
 
-This commit adjusts the CAN FD clock handling for the Renesas RZ/G3S to all=
-ow
-sourcing from either the peripheral clock (fck) or an external clock
-(can_clk). It adds a new flag fcan_pclk to the hardware info structures to
-support this configuration.
+The Renesas RZ/G3S CAN-FD controller is largely compatible with the variant
+found on the Renesas RZ/G3E. The main differences are:
+- the RZ/G3S provides 16 AFL pages
+- the RZ/G3S supports only two channels
+- the RZ/G3S supports only CAN-FD operation and does not implement the bits
+  used to select between classical CAN-only and CAN FD-only modes.
+- the RZ/G3S includes an internal divider that allows the peripheral clock
+  to be used as the CAN FD clock source.
 
-Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wana=
-doo.fr
-Link: https://patch.msgid.link/20260902141544.565763-4-claudiu.beznea+renes=
+Link: https://patch.msgid.link/20260902141544.565763-6-claudiu.beznea+renes=
 as@tuxon.dev
 
 > diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
 r_canfd.c
-> index b7c4fe3477ac5..f9173774387fa 100644
+> index ac5d5959d8e4c..74c3c3f20991f 100644
 > --- a/drivers/net/can/rcar/rcar_canfd.c
 > +++ b/drivers/net/can/rcar/rcar_canfd.c
-[ ... ]
-> @@ -2190,13 +2196,20 @@ static int rcar_canfd_probe(struct platform_devic=
-e *pdev)
->  	 */
->  	gpriv->can_clk =3D devm_clk_get(dev, "can_clk");
->  	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) =3D=3D 0)) {
-> -		gpriv->can_clk =3D devm_clk_get(dev, "canfd");
-> -		if (IS_ERR(gpriv->can_clk))
-> -			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
-> -					     "cannot get canfd clock\n");
-> +		if (info->fcan_pclk) {
-> +			fcan_freq =3D clk_get_rate(gpriv->clkp);
-> +			gpriv->can_clk =3D NULL;
-> +		} else {
-> +			gpriv->can_clk =3D devm_clk_get(dev, "canfd");
+> @@ -661,6 +661,26 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info=
+ =3D {
+>  	.fixed_canfd =3D 0,
+>  };
+> =20
+> +static const struct rcar_canfd_hw_info r9a08g045_hw_info =3D {
+> +	.nom_bittiming =3D &rcar_canfd_gen4_nom_bittiming_const,
+> +	.data_bittiming =3D &rcar_canfd_gen4_data_bittiming_const,
+> +	.tdc_const =3D &rcar_canfd_gen4_tdc_const,
+> +	.regs =3D &rcar_gen4_regs,
+> +	.sh =3D &rcar_gen4_shift_data,
+> +	.rnc_field_width =3D 16,
+> +	.max_aflpn =3D 15,
+> +	.max_cftml =3D 31,
+> +	.max_channels =3D 2,
+> +	.postdiv =3D 2,
+> +	.shared_global_irqs =3D 0,
+> +	.multi_channel_irqs =3D 1,
+> +	.ch_interface_mode =3D 1,
+> +	.shared_can_regs =3D 1,
+> +	.external_clk =3D 1,
+> +	.fcan_pclk =3D 1,
+> +	.fixed_canfd =3D 1,
 
-[Severity: Medium]
-In rcar_canfd_probe() in drivers/net/can/rcar/rcar_canfd.c, if the can_clk
-provider is not yet probed, devm_clk_get() will return -EPROBE_DEFER. Does
-this check incorrectly catch the probe deferral and route it to the fallback
-paths instead of propagating it to the driver core?
+[Severity: High]
+This problem wasn't introduced by this patch, but setting fixed_canfd here
+could lead to incomplete hardware initialization if a user specifies
+"renesas,no-can-fd" in the device tree.
 
-If info->fcan_pclk is true, it appears the driver will silently swallow
-the deferral and fall back to using clkp. If info->fcan_pclk is false, the
-driver attempts to fetch the canfd clock and might fail with -ENOENT,
-permanently failing the probe rather than waiting for the external clock to
-become available.
+In rcar_canfd_probe(), the driver unconditionally disables fdmode if the DT
+property is present, without verifying if the hardware actually supports
+classical CAN mode:
 
-Would it be better to use devm_clk_get_optional() here, or explicitly check
-for -EPROBE_DEFER before falling back to the secondary clock sources?
+	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
+		fdmode =3D false;			/* Classical CAN only mode */
 
-> +			if (IS_ERR(gpriv->can_clk))
-> +				return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
-> +						     "cannot get canfd clock\n");
-> +
-> +			fcan_freq =3D clk_get_rate(gpriv->can_clk);
-> +		}
-[ ... ]
+Since fdmode is false, CAN_CTRLMODE_FD is missing from the interface, which
+causes rcar_canfd_set_bittiming() to return early without programming the
+DCFG register:
+
+	if (!(priv->can.ctrlmode & CAN_CTRLMODE_FD))
+		return;
+
+	/* Data bit timing settings */
+	brp =3D dbt->brp - 1;
+...
+	cfg =3D rcar_canfd_compute_data_bit_rate_cfg(gpriv->info, tseg1, tseg2, sj=
+w, brp);
+	writel(cfg, &gpriv->fcbase[ch].dcfg);
+
+Meanwhile, rcar_canfd_reset_controller() bypasses the FDOE/CLOE register
+toggle because fixed_canfd is true:
+
+		/* Set the controller into appropriate mode */
+		if (gpriv->info->fixed_canfd)
+			continue;
+
+		if (gpriv->info->ch_interface_mode) {
+			/* Do not set CLOE and FDOE simultaneously */
+			if (!gpriv->fdmode) {
+
+Could this leave the fixed CAN FD hardware with uninitialized data phase
+timing while remaining as an active CAN FD node, potentially corrupting the
+shared CAN bus with active error frames? Should rcar_canfd_probe() ignore
+or reject the "renesas,no-can-fd" property when fixed_canfd is true?
+
+> +};
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261015015336.8165=
-43-1-mkl@pengutronix.de?part=3D15
+43-1-mkl@pengutronix.de?part=3D17
