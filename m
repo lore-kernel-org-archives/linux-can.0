@@ -1,179 +1,290 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 626F93B5820;
-	Fri, 16 Oct 2026 08:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0299F448BAF;
+	Fri, 16 Oct 2026 08:53:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792140173; cv=pass; b=YOkBd+inQTdvTMgmyAS5OpstrVGmCbEwXOg6pdZAo+5p0s7Mzup772VIA/D7y2CmKHjExhKpWHRjkzP5STZXofYRiRbp7z6rGqUG4HaEUJ6523zb+gCfOXJ2XYxwXJx0FWAgBnlUcrqOn2+dpkMS64tSI/9vkL9xfwEROfQ025s=
+	t=1792140836; cv=pass; b=OA9MAy7hYxMucS48JtPy7leHiXD5kXZsPm8Vpt3X1CGaaR6Uf+ILyu7iT+tEHeZhQPg+1mzWGd058kBzfRRaikWydeuVzd4Yl90qBc8KyzUptejvPy+Kb/x3Miw/e4mOERPRiKKYydHw6JIo2eLLf62A4J5OmfBTBMx9wMZVoSM=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792140173; c=relaxed/simple;
-	bh=2ot9xwMfDVL6qCue7UJ8KB8GkkrXIWmfeL3NirAlb9Y=;
-	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
-	 References:Date:Message-Id; b=fnUcAVLPzfl0EOugjgKXGLxPLmvD1zdNFAaDTDQXkSnIK+rgu2GMx8akQDwSvMsLnyFR8S29vWXkz66FSIO9suRNiBDVuNU+XswJGPDtJ9rO3Bj6HVNuJJuLrahmpMw++8f7ETubERzXEVznm6I71gpsFrAhNloSq9YlUk54YUg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=esJoF/Mn; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	s=arc-20240116; t=1792140836; c=relaxed/simple;
+	bh=3wPWHY63AvjS3DrC6i3SxSQskAQTqPqClCMRUm5t4V8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f4rCXJyPyikvPuJCtXJR2RSMID/7mISrm4mzxT+gTXSu/7/AlbTSIj09D6OG4oTlkxCf8N3A3tRLZLbiQs3d5ih6VV+PxhrOWWDSxA/DCZRp0SlofOYAZ58rsYkcQvw8XCdVjn/UklwPvUjcM2laIzjXKc1GKW2lJUdbJGXs5cQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sOsRagb4; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=nFQ9euoW; arc=pass smtp.client-ip=85.215.255.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="esJoF/Mn"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 100592007F9;
-	Fri, 16 Oct 2026 10:42:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792140168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vWznGaYZLYIhQHVFt1q76zV8ZoAZF4MamyVCcsrJ0Yw=;
-	b=esJoF/MnONiyp6hJx7xmg5e0GxRrerppIy6kuiIqOiLtAeP1HPAgm6CP3YMtqaaJ9MEoxb
-	AsluNDoJISbdlFu/HNwU0lSAnYqbMSXGDAHGujhNi9aA3lVWPkXFfRlkOFszZJmRlUXaFR
-	pgBgMQTvB6y8EDnBg4uLdNXBa8lKBIrqjWanaWFayk7sI7OzUNmr8aOmMbdKRLs0m4Z3d8
-	0UpSXBrUPuhYbhwkNUjTml3C/RVU3RQPFIbp10FHED0Zs8jizBhRmvMqYGBIjT1d9A5jWP
-	rl7shFxLMJtTXrzhTSMl6E0GFOwHNshSN9PXnb8VgMfNw4/J03SRzNbnJwfPuw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792140168; a=rsa-sha256;
-	cv=none;
-	b=RnykvqnOu2PacdVLIbmbMACNcEkNoZ8LUUVfL/IbtScoM2RkZ9l30exBH5NZg34mImgKZ6
-	AhS8Sf6n+I4lFc3aEgJwMfJdO0KKcQJ9ArlELCfBpvy/Zie2M1nrxQMJnUkYqdRWQ3CTTm
-	/u/N1lY7OtvmX0KtYa1WjihecrPUnVKfhxc3o17aoAYpYaaUlFkPO+tRsXWr1rrcU6HAau
-	m3OhtdfuGwXTvwPww4FMcVNJqaq9GXP0YOWKA03a33GkZyEFaWQzyroPD4FtVXomDnWKym
-	9uCRH4XGD23u3wntFnspqHntZeXJkASUbvn6OROJ75QJzMbYbsE+WqmyIJfTrw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792140168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=vWznGaYZLYIhQHVFt1q76zV8ZoAZF4MamyVCcsrJ0Yw=;
-	b=WSg5artA9TaJtaD41eY2VvwpDkrowW3r3ypFKfIidhkgbNTgCwW4kyFGBJspaOyzcDpmog
-	eUdcAYZXLoNi0iYNZvgafPoPGcX0BnIBmC/WFOEqdZ4W3KXQ6eQlkC8n8uiXrlJ+9Vaxgu
-	yuRbufsLSADqwI58QmzWZEpRX/FbCR8YLuzSB0MyMMH5cIuwkMzjWl7az82QL28Gvt9yfk
-	KHLybzZkWxvf1MLeHz/D5zCoec8dp0JhOFD/FgzpiAzo/GCmSY2n0dfGGZ5ksl7425JK4H
-	6Q3/S76ONBQGn6X6sRRTVJRaZ7YTZ7+GtagaC5qd6lxT+yyQ3qDKjsXFEY6WBw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xHdWZ-0069rP-36;
-	Fri, 16 Oct 2026 10:42:47 +0200
-Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id ACBA05C5E25;
-	Fri, 16 Oct 2026 08:42:47 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sOsRagb4";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="nFQ9euoW"
+ARC-Seal: i=1; a=rsa-sha256; t=1792140695; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=mwFg9U/0DIMcZRWh0Vap25tzaq5cSeVd8Dxw5jl3AfOpqDRflxq1gpNwPor0T8b0BT
+    6JlKFcovB+7TzNiZsqnVN6M033VEyR0gfCvJ31yrQgxkS42IOejICFhdJZlp22oHn8wl
+    lgTnwui5+Cny58HkEdCgfCQAWJCpRTPbe4wIEPLP0CDJR+V9m9x2o5KjVAGBjoCPYR1E
+    S4LzP8hfa13F4mcZ8BdiBB/5sg9xXj8ASdD029QOliDo3fFtgEeGV15SodgjzDp5TFRf
+    bIaWbMo61POk/WJYRriR1mtM/bQDZAkdLAwyikdaWZ12aiLNr3w9pHKba/AOkjxBwzeM
+    e/9Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792140695;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=vfi/EkoIJB8r9e+tAVZTNlXvcWxdjGlCci5n1/TcCjg=;
+    b=m22Ax0Ug1rwRzpd8q8VAKgR5aPQxoKjvhc8EjfnUOjucLF43QdXbCYzN7XnSh2yi4a
+    c674VsGmuH4T9KtTZ/5N9tjik8onaBeEzJNdkx+bFDQl70APWkVAK5obQU+AcT7WP15b
+    05wYdV41v17yvPp6yPCieu1JbVHthl39luNQAmjsiOIQKO/VgKJUPq+uhzPQkiJRDvzb
+    xx7Z2y47/uS4I95JZxwHsIOi2ejBDKeYjfc6P/rU5modHx1jJjGvjGUAuSLjPOtizfOi
+    aFiTIa6zyptFOGLzNUaG+BedcKlyEwJ+wFn5v6sytaUJAfllQNcPembeOLbul36CdCQ5
+    bHTg==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792140695;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=vfi/EkoIJB8r9e+tAVZTNlXvcWxdjGlCci5n1/TcCjg=;
+    b=sOsRagb4wuDZ0s1EGs4St7BLSOwkx4rLD11UL89zy/4jDTF1RnMlZQAHXvDw4hoX0c
+    FF1ZkjXeMUj9YKlGSuPVACcZAeJLNN+UeIHpUy7zlZzpaGLKI9GJP9UnAjwdY0+jSXQv
+    ThIR6ldMPJUSbywbVSa/qWY92rGNQC4Pp8l/w3v0iGToxXUibpT8Y1mzdYeIr1yNekS5
+    j0XPw14LYUUgAkKNiLWoP/CrqVZ4USzEgMHUSQSd+9OM6Nzc2bl5rYLM6nRzp0b1Dm/p
+    YCoVMTc/smwhO6oaIC9XRQrSJvlHGvrl9QqThhLqjO361BqQlbtSFkBG3SGoXY2chYBu
+    kUlA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792140695;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=vfi/EkoIJB8r9e+tAVZTNlXvcWxdjGlCci5n1/TcCjg=;
+    b=nFQ9euoWfSEvxU4qbhObChD4+Vohm+YXNhkQdNNS3rzAR/OSZgjJF4V8xgq7EaZZDm
+    iAmEI7gaS0ioCg+xriCQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29G8pYLCk
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 16 Oct 2026 10:51:34 +0200 (CEST)
+Message-ID: <797e174d-cb77-47f8-b56e-c1cfcb1784e4@hartkopp.net>
+Date: Fri, 16 Oct 2026 10:51:30 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH net-next 03/37] can: replace ARPHRD_CAN type checks
- with can_get_ml_priv()
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev-bot+sashiko@kernel.org
-Cc: mkl@pengutronix.de, netdev@vger.kernel.org, davem@davemloft.net, 
- kuba@kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de, 
- socketcan@hartkopp.net, kurt.van.dijck@eia.be
-In-Reply-To: <179211822219.434549.7841003426566715206@kernel.org>
-References: <20261015015336.816543-4-mkl@pengutronix.de>
- <179211822219.434549.7841003426566715206@kernel.org>
-Date: Fri, 16 Oct 2026 10:42:44 +0200
-Message-Id: <179214016466.1225518.8931119252169589153.b4-reply@b4>
-X-Mailer: b4 0.17-dev-6be7c
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2772; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=2ot9xwMfDVL6qCue7UJ8KB8GkkrXIWmfeL3NirAlb9Y=;
- b=owGbwMvMwCV2xirl17qZay8xnlZLYsi6+LjlZ5cy/yQ18clCVpefMinnTon59vWks3HzJq/oI
- N/k8OwzHaUsDGJcDLJiiixLf5xQFAh0KO19mTAJZg4rE8gQBi5OAZjI7ShGhtOMfrdanhbltHKc
- cFqwe1pX7bXa8Lab4j/unD4T915s5yRGhoXXVz43a3Xon95f2Xv+hV+pr0VJwdvlQbPvtKSfF8w
- 7zw8A
-X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
- fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 08/37] can: bcm: fix filter removal race between
+ release and netns change
+To: netdev-bot+sashiko@kernel.org, mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, kurt.van.dijck@eia.be
+References: <20261015015336.816543-9-mkl@pengutronix.de>
+ <179211822523.434549.241636889494644724@kernel.org>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <179211822523.434549.241636889494644724@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 2026-10-16 02:37 +0000, netdev-bot+sashiko@kernel.org wrote:
-> can: replace ARPHRD_CAN type checks with can_get_ml_priv()
->
-> This patch replaces the remaining dev->type == ARPHRD_CAN checks in
-> af_can, bcm, gw, isotp and raw with can_get_ml_priv(). The goal is to
-> keep TUN/TAP devices that were retyped to ARPHRD_CAN via TUNSETLINK away
-> from CAN code that dereferences a NULL dev->ml_priv.
->
-> Link: https://patch.msgid.link/20261012164802.94113-1-socketcan@hartkopp.net
->
-> > The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
-> > type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
-> > netdevice passes the ARPHRD_CAN checks and triggers a NULL pointer
-> > dereference when CAN filters are created and when they are removed,
-> > e.g. by the CAN protocols' netdevice notifier handlers.
->
-> [Severity: Low]
-> Is the "when CAN filters are created" part accurate for this tree?
->
-> Before this patch, can_rx_register() already rejected such a device:
->
-> net/can/af_can.c:can_rx_register() {
->     ...
-> 	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
-> 		return -ENODEV;
->     ...
-> }
->
-> can_rcv(), canfd_rcv() and canxl_rcv() also already tested
-> !can_get_ml_priv(dev). That makes those four af_can.c hunks look like
-> simplifications that don't change behavior. This holds for kernels
-> that already carry commit 8aa59e3559494.
+I'm working on an update on this.
 
-The anslysis looks correct to me. Oliver, can you re-spin this patch
-with an updated description?
-
-pw-bot: cr
-
-> [ ... 26 lines skipped ... ]
-
-> The code change itself looks complete. No ARPHRD_CAN checks remain in
-> net/can/ after this patch.
->
-> > diff --git a/net/can/isotp.c b/net/can/isotp.c
-> > index f5dc9d04bd68..6c28802c0605 100644
-> > --- a/net/can/isotp.c
-> > +++ b/net/can/isotp.c
->
-> [ ... ]
->
-> > @@ -1610,7 +1611,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
-> >  		err = -ENODEV;
-> >  		goto out;
-> >  	}
-> > -	if (dev->type != ARPHRD_CAN) {
-> > +	if (!can_get_ml_priv(dev)) {
-> >  		err = -ENODEV;
-> >  		goto out_put_dev;
-> >  	}
->
+On 16.10.26 04:37, netdev-bot+sashiko@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 3 potential
+> issue(s) to consider.
+> 
+> Critical: 0 · High: 0 · Medium: 2 · Low: 1
+> 
+> If you believe none of the issues are legitimate, please reply to each
+> issue of Medium severity or higher and explain why the AI is wrong.
+> If any of them are legitimate and you plan to respin, please let patchwork
+> know by including "pw-bot: cr" as a separate line at the end of your reply
+> (one such reply per series is enough).
+> 
+> - [Medium] The commit moves remove_proc_entry() ahead of rtnl_lock() so
+>    that procfs readers cannot stall RTNL from close().
+> - [Medium] bcm_release() now holds the global rtnl_mutex across the whole
+>    rx_ops unregistration loop (rtnl_lock() at net/can/bcm.c:1951,…
+> - [Low] Stale comment in bcm_release().
+> 
+> --
+> 
+> can: bcm: fix filter removal race between release and netns change
+> 
+> bcm_release() now takes rtnl_lock() before it removes the socket from
+> bcm_notifier_list. It holds RTNL across the rx_ops unregistration, so
+> bcm_release() and bcm_notify() can no longer both skip filter removal
+> while the bound device moves to another netns. The bcm_busy_notifier
+> busy-wait becomes a WARN_ON_ONCE(), and the procfs entry and tx_ops are
+> now removed before RTNL is taken.
+> 
+> Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+> Link: https://patch.msgid.link/20261014142114.280279-3-socketcan@hartkopp.net
+> 
+>> diff --git a/net/can/bcm.c b/net/can/bcm.c
+>> index 6759662e024c..301920011a30 100644
+>> --- a/net/can/bcm.c
+>> +++ b/net/can/bcm.c
+>> @@ -1926,21 +1926,19 @@ static int bcm_release(struct socket *sock)
+>>   
+>>   	/* remove bcm_ops, timer, rx_unregister(), etc. */
+>>   
+>> -	spin_lock(&bcm_notifier_lock);
+>> -	while (bcm_busy_notifier == bo) {
+>> -		spin_unlock(&bcm_notifier_lock);
+>> -		schedule_timeout_uninterruptible(1);
+>> -		spin_lock(&bcm_notifier_lock);
+>> -	}
+>> -	list_del(&bo->notifier);
+>> -	spin_unlock(&bcm_notifier_lock);
+>> -
+>> +	/* Remove the procfs entry and the tx_ops before taking RTNL:
+>> +	 * remove_proc_entry() waits for concurrent readers of the entry and
+>> +	 * must not hold up RTNL for them. Clear bo->bcm_proc_read so that
+>> +	 * bcm_notify() does not remove the entry a second time.
+>> +	 */
+>>   	lock_sock(sk);
+>>   
+>>   #if IS_ENABLED(CONFIG_PROC_FS)
+>>   	/* remove procfs entry */
+>> -	if (net->can.bcmproc_dir && bo->bcm_proc_read)
+>> +	if (net->can.bcmproc_dir && bo->bcm_proc_read) {
+>>   		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
+>> +		bo->bcm_proc_read = NULL;
+>> +	}
+>>   #endif /* CONFIG_PROC_FS */
+> 
 > [Severity: Medium]
-> This issue was not introduced by this patch. Further down in
-> isotp_bind(), the return values of both can_rx_register() calls are
-> thrown away, and the socket is marked bound anyway:
->
-> 	if (isotp_register_rxid(so))
-> 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
-> 				isotp_rcv, sk, "isotp", sk);
-> 	...
-> 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
-> 			isotp_rcv_echo, sk, "isotpe", sk);
->
-> 	/* switch to new settings */
-> 	...
-> 	so->bound = 1;
+> list_del(&bo->notifier) now runs after rtnl_lock(). That means this
+> first lock_sock() section runs while the socket is still on
+> bcm_notifier_list. Can a procfs reader still stall RTNL here, just
+> indirectly through the socket lock?
+> 
+> Consider this interleaving:
+> 
+> CPU1 (close)
+> bcm_release()
+>    lock_sock(sk)
+>    remove_proc_entry()
+>      proc_entry_rundown()
+>        wait_for_completion()      <- waits for the reader on CPU2
+> 
+> CPU2 (reader of /proc/net/can-bcm/<ino>)
+> proc_reg_read()
+>    use_pde()
+>    pde_read()                     <- copy to a FUSE or userfaultfd
+>                                      backed buffer blocks
+> 
+> CPU3 (NETDEV_UNREGISTER, RTNL held)
+> bcm_notifier()
+>    bcm_notify(bo, NETDEV_UNREGISTER, dev)
+>      lock_sock(sk)                <- blocks behind CPU1
+> 
+> bcm_notify() takes lock_sock(sk) before it checks whether any op or the
+> binding uses dev. So deleting or moving any CAN device in the socket's
+> netns would be enough.
+> 
+> Before this patch, the socket was unlinked first and the busy-wait made
+> sure bcm_notify() was not running for it, so this interleaving was not
+> possible.
+> 
+> The procfs entry is mode 0644 and is created on any connect(), including
+> can_ifindex = 0. With unprivileged user namespaces, a vcan device in a
+> user-owned netns can trigger the notifier, and RTNL is global.
+> 
+> Does this mean the commit message goal ("which could otherwise stall
+> RTNL from a plain close()") is only partly met?
+> 
+> There are similar RTNL stall paths already. bcm_sendmsg() holds
+> lock_sock() across memcpy_from_msg() in bcm_tx_setup() and
+> bcm_rx_setup(), and bcm_notify() itself calls remove_proc_entry() under
+> RTNL. This particular ordering is new with this patch, though.
+> 
+> [ ... ]
+> 
+>> @@ -1948,6 +1946,21 @@ static int bcm_release(struct socket *sock)
+>>   		bcm_remove_op(op);
+>>   	}
+>>   
+>> +	release_sock(sk);
+>> +
+>> +	rtnl_lock();
+>> +
+>> +	/* The netdev notifier chain runs under RTNL, so bcm_notifier() can't
+>> +	 * be walking bcm_notifier_list and point to this socket. The spinlock
+>> +	 * is still needed as bcm_init() adds sockets without holding RTNL.
+>> +	 */
+>> +	spin_lock(&bcm_notifier_lock);
+>> +	WARN_ON_ONCE(bcm_busy_notifier == bo);
+>> +	list_del(&bo->notifier);
+>> +	spin_unlock(&bcm_notifier_lock);
+>> +
+>> +	lock_sock(sk);
+>> +
+>>   	list_for_each_entry_safe(op, next, &bo->rx_ops, list) {
+>>   		/*
+>>   		 * Don't care if we're bound or not (due to netdev problems)
+> 
+> [Severity: Low]
+> This isn't a functional problem, but the comment a bit further down in
+> this rx_ops loop in bcm_release() still describes a concurrent
+> unregister:
+> 
+> 			 * op->rx_reg_dev is a tracked reference taken
+> 			 * when the subscription was registered, so it
+> 			 * stays valid here even if a concurrent
+> 			 * NETDEV_UNREGISTER already unlisted the device.
+> 
+> This loop now runs between rtnl_lock() and rtnl_unlock(), and the socket
+> stays on bcm_notifier_list until RTNL is taken. A NETDEV_UNREGISTER has
+> either already finished, in which case bcm_notify()->bcm_rx_unreg()
+> cleared op->rx_reg_dev, or it runs after this loop, when the socket is
+> no longer on the list.
+> 
+> Can a concurrent NETDEV_UNREGISTER still happen at this point? The old
+> comment seems to contradict the new comment added above it.
+> 
+> The same comment in bcm_delete_rx_op() is still accurate, because that
+> path does not hold RTNL. Should the copy in bcm_release() be updated?
+> 
+>> @@ -1973,6 +1986,8 @@ static int bcm_release(struct socket *sock)
+>>   
+>>   	}
+>>   
+>> +	rtnl_unlock();
+>> +
+>>   	synchronize_rcu();
+> 
+> [Severity: Medium]
+> The global rtnl_mutex is now held across the whole rx_ops
+> unregistration loop, and userspace decides how long that loop is. Is
+> that intended?
+> 
+> bcm_rx_setup() allocates one op per distinct (can_id, ifindex) with
+> kzalloc(OPSIZ, GFP_KERNEL). That allocation is not memcg accounted, and
+> there is no per-socket limit. bcm_connect() accepts can_ifindex == 0
+> without any device, and ANYDEV ops register on the all-devices list
+> through:
+> 
+> 	err = can_rx_register(sock_net(sk), NULL, op->can_id,
+> 
+> So an unprivileged user with no CAN hardware can create a very large
+> number of ops.
+> 
+> On close(), each op calls can_rx_unregister(). That takes
+> spin_lock_bh(&net->can.rcvlists_lock) and walks the receiver hlist
+> linearly until it finds the match.
+> 
+> A second socket can put M newer entries in front of the victim's
+> entries in the same bucket. It can do this with EFF ids that fold to
+> the same bucket in effhash(), or with the same SFF id. RTNL would then
+> be held for roughly K * M list steps.
+> 
+> Before this patch, the same loop ran only under lock_sock(sk), so only
+> the closing task paid for it. Now it would block netlink and netdev
+> configuration in every network namespace.
+> 
+> The loop without cond_resched() already existed, and the attacker needs
+> a lot of kernel memory. What is new is that RTNL covers the whole loop.
+> 
 
-Oliver, can you add error handling for can_rx_register() to isotp?
-
--- 
-Marc Kleine-Budde <mkl@pengutronix.de>
