@@ -1,67 +1,67 @@
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF904423E9E
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 09:57:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2F72453A29
+	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 09:57:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792144661; cv=none; b=r3WN4HwMCwx1d8kcZupEp5VTdWQmjv12gk2cGmsIIeVOTwAbijWPbizPMq/yUm2PLzHjBIxfXK9+PSEbgUe9jAlrhJNWcvhXTxUQAhL1n8cIT64yC64ChIEf9ZjnkapI4JgnfW92ki23SaG6MEocs5E9/xZY7hhdlLvBRFts2HY=
+	t=1792144662; cv=none; b=HmBCK5cVA3HT1WWP2ar/re0aHgc7T1TxNRsyBL42BHncrgQl/KlsxWFJkmw9/XOpSYGc6RBZMcd08SOX9rWb7LLf7iRedsctJPzk7bC0wzuGwW4WHCAzxg5PExhgrngepZ0rN6tcymB/u+ux4/ZwnixlmqjBagIMKkJltm+126c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792144661; c=relaxed/simple;
-	bh=UoTM8ItbqEeaBM/lQeEOpEFLul1eJGMCR3RCy34RXQM=;
+	s=arc-20240116; t=1792144662; c=relaxed/simple;
+	bh=+BflU2elRp/oOOYEKmuuC9afcLHCdlAbti/foe89B7E=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=hqzVZ6VXzoRFgk2vztRPIKIB+KRPT2+u+6Plf3R1RbrCaDMdA2fagP+lMdANAeWgudyPdS2La/Z65us8Us05FsJrR41Pcj+lW0fNpkcEzV7vHK3xBPZM4c1/jEtw+pmqgzVtfdo8NNYJaEyBHxQ5unTfNn9Xuybyz+fgCn2P72A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=hJx8nc1e; arc=none smtp.client-ip=209.85.221.42
+	 In-Reply-To:To:Cc; b=MSzUV2nb+j+xgDIGS92re0++OZeHS/gZdB+0FsOamb8IrJzK1XIet+2kq3h4dioxc8eTc4yp/uuVP49SNIpt9OKy6KOVGHe58P2yPAGmTnYfQwEW1bj+c80oXAbw0MOQP8kg7J3tmzFdAD4ZR+AqKe5o/slw98GpsCeq8mNCyDE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b=UE4aUDQm; arc=none smtp.client-ip=209.85.128.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="hJx8nc1e"
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-48b0584ad71so3719453f8f.0
-        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 02:57:39 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.b="UE4aUDQm"
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4a1b07c3c5fso26405965e9.1
+        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 02:57:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1792144658; x=1792749458; darn=vger.kernel.org;
+        d=baylibre.com; s=google; t=1792144659; x=1792749459; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=4lS7au6nzsuO2aRNvLqMF0r9p85w4fxyfzI4JwkyMGs=;
-        b=hJx8nc1e+erCz8rSQJup1CamQwiqXkj2CRC8qcWRaNKxq5N1aU1ogIUVpqKthB9jv6
-         54YK1hrXivK3fDmUSlH0IL+D4ZFdd+rsneBQhm+VFcp6rP/yIUQQ9O2MO5HP30l7lA7d
-         krKaZUe8Og6yqkhDpubMwAAU4Ca3NLvYPYVr5JwCpoi66fReE7af4qd6IWtlGRouv0PU
-         h0umP9dyZ/WnA1aP3oRquagemH4Si6tRu/WpclJa0dTAKZPDXtlA+tgV9skhYwCkq7LV
-         /6umOdCAjBl4/JTOHHdbTjAKlDxELy84w5wldWmb738M46/I10IzOxtDIk+fPGIruQiX
-         C5vA==
+        bh=DiJVS7Kj+4kCtaotoRvvsXd8ocn4YftmsuQb/0Cmybk=;
+        b=UE4aUDQmsvk9jIXoSuIlSdMWRsCCxYfprVH6HwykuX434TusKQ7hNgBElJc8nNqk36
+         xUxEH1IGglpkxYB8AXV0GG9kllnyy9XC6tURn+QgJV89FFP73Gm8dC3K+k9nL0rDkXa5
+         bYmy1GWtI+8kNjRWfxMGMoHsmOjdaLTt1H1ErVlhRO/kOdALDIY4VgepDWcAwWW85MuW
+         IHKON4bd2YQun5UIEKFPqHVetm0Eyox5L+fMUGwV3LRqablJ1jQ8CSOHdGwUWkssJC2v
+         0mpoRocrX+7a6++2ptGWbFMR/xl5Xgc+Yz9V5nMpc3NGBMHijuDtaPTKQMUrNMPPO16h
+         hfYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792144658; x=1792749458;
+        d=1e100.net; s=20260707; t=1792144659; x=1792749459;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :content-type:mime-version:subject:date:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=4lS7au6nzsuO2aRNvLqMF0r9p85w4fxyfzI4JwkyMGs=;
-        b=NidQIF9km4l45qN39cd8nn/1DPtt11U5HsFyqtUUOk5z7TxSK/X+NPNrqSfOlApfwu
-         1U8mkVVEoERPTBp4tA56KVZffWOPONNQrW3h6qoaXJ7w12VIYSYr5VKLyK60nXJtKUBp
-         50gBSBg9Hw6m1UOmZkZoX128ANOmstWviGidkiU/kbmwJPWCZZG/3C5ADRatCGYbRcLb
-         fpmvsjw/quCz7GUBtoyYnFHm70IzJIAHLWG+sLsaaXcKZ9cB2bCRaU5fdk+MZi2wnaCX
-         bdFhv5l6LTR5MM0ZBtyYW56Caiajl6s616vg/xj3nSNIle8gw+xHzcK3yf4kC2HpIDYg
-         GEYg==
-X-Forwarded-Encrypted: i=1; AKwUvBwzvmO9dfqDgjYuIHNZkYG1AaS551pN3vbSxAl7oCn/6iZailOZqYoi4wi2BKRfzHwJabl2C0hyB1s=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIdw53UCLBNSkWAI8jYMb8/t9k7hibLkTq0D5nP070WAR7x6KNd
-	t2EdmyfLRa98zKUldmNRrlAild0QY9wxZb3gz7oiK6YY8WnWAvpWZWUNAweZhMVIo74=
-X-Gm-Gg: AYBFou3Sy5pIYzNc5+WoBFJqW+7CM0vvd2jINCqVBTkun00Sda7Z14jG81v/4peE/rV
-	gg+DdMJgTKDbm0V4xIKx/Qcqsju9uUvtzkcZ87W1ndxY0HytAItVE7k/+MYx6DP4tbHAB3S0mIk
-	ryhqWnfLgUn0UNbjbV0zFg0wUhFSaXJNEq5rpoVj3A8TtTz3ap9QpQxS/UYwjWDx5JRDqyjvemF
-	OIj6OMdLnZiglmUG23H4jj9jS4U6g2t9dcyZkdAJ8LWip9bNgL2t/KrNU+TZ2rBlSsKVguZQGJa
-	BfzOSNeaFCHZ2fyNCV7r4EbVj35OlojJ8KKZani19kBLeyh4ELzQnLt7DpM+A43gi9CiQrIm7LY
-	Sbg+N1dvs8VTX+aRZC/lqmFJlIf37lCMTg/e1tS28bblhw3S8n70/7Cgt+eBOgAdpUw1wGpUgXO
-	XOERK04hFdr5D3MTtTpNVZcdyP0QuSX29jlG9yKepqXsQF9kuLqSC9CZgDL8SxogHpvvU=
-X-Received: by 2002:a05:6000:2012:b0:48d:ffe7:e883 with SMTP id ffacd0b85a97d-48dffe7f678mr2448773f8f.46.1792144657874;
-        Fri, 16 Oct 2026 02:57:37 -0700 (PDT)
+        bh=DiJVS7Kj+4kCtaotoRvvsXd8ocn4YftmsuQb/0Cmybk=;
+        b=ipGwEbJ3YiExFwW1JaXpcwHhnmPJpKDYkK7aETsiCa63UHr1278gXc570L5/KV4IoO
+         FD/mawjM7tltfwCd97iaHypAlQBF3ucDsWfjd0aIe3q8KVbksrT2ZnAQDK/zrSEnOveK
+         FZIIk7gdUTjlwVZ5rGu4z4U/UgG1XvAy7ROylGiubG6YJUk8RjrZ+Lg4/NsPXHgXNbvE
+         to+AzPkevCb036KRnEgEgssKqrf22hRPWxj9umsWwse+JU3/UKJopXkBvpzv35H3AaCk
+         NnJQTFnpvNvHriDX8Pd+7vziUVILInECYJXCCoQavyf91PkfaHLdr62Nq7G+14IL25dF
+         i3CQ==
+X-Forwarded-Encrypted: i=1; AKwUvByCsVrWbNaV71hGb0+FDVbNQFl6CfK8MhyYYE5G1liWZO21qdjKIHnwJimWT63qZqHTIvsz4Xlpla4=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJm/PaSy1ZMpgkq5IX9eK9ZOzCdJ4IoHABdPLVFHa13mT03Rsaw
+	bz9lVhTnLgo/J0TAsG0e4rc97ipTshtdI9AW0cz7FER+DnW6UDjbQv37a2aX6/1cxyw=
+X-Gm-Gg: AYBFou0/CyCqr8ZLY7J5n+VlwEruIflUAZwPEZYanoJUrKllbtRMZAVRNw2CdVOZFy4
+	e4V+Sfrj6EKiClQLnqfwWWBSgB213UP0YleGdy2esKRuM2Qb+9bXWMDa8QvwxN1t5Muuq1/7D3z
+	JejjbEVdBGlLcLN6wu4QWsIFdrG/qFR1pPiWQfZRd2BkUrjU89qlfYqBoV440V2fnKL7ONxyIAZ
+	kM8jhTbFGCSKmpfxA6He74n9l2YmZ0qvjVss3NTstRWK9twqZz2gIlXPmOUVtdcxVuSQ608rs9k
+	hhXItUGr4MNy5DsaEs4Gbtjk7eFQmuZYzpTy7es0fj6QLG2t8ohwVtwxSEAy1z5fjlR9/1D636Q
+	TNs3rEso7gtBGmCI2YxRUXJoia7xyjk1mUIlVjiQSssx22oFQFMQDMmoL/3MWq9s6bLGV2st6pm
+	csrlAo5vjbcfz9CqJAlh4wmEH/KncyQ0fhQnqwV6fl8s4sMruoa/Ui4ZeifLTYLU3qkIo=
+X-Received: by 2002:a05:600c:a4b:b0:4a0:23f:8b0d with SMTP id 5b1f17b1804b1-4a1af68d397mr229417145e9.2.1792144659190;
+        Fri, 16 Oct 2026 02:57:39 -0700 (PDT)
 Received: from localhost ([2001:4090:a244:81d0:2c16:1c4d:8a04:e0bf])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfd4f8bb6sm4232702f8f.34.2026.10.16.02.57.37
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1bd9b8b5fsm149819965e9.9.2026.10.16.02.57.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2026 02:57:37 -0700 (PDT)
-From: "Markus Schneider-Pargmann (TI)" <msp@baylibre.com>
-Date: Fri, 16 Oct 2026 11:57:12 +0200
-Subject: [PATCH v2 1/2] can: m_can: Fix suspend deinit() error path
+        Fri, 16 Oct 2026 02:57:38 -0700 (PDT)
+From: Markus Schneider-Pargmann <msp@baylibre.com>
+Date: Fri, 16 Oct 2026 11:57:13 +0200
+Subject: [PATCH v2 2/2] can: tcan4x5x: Add suspend error handling
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -70,7 +70,7 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-1-7efa2b172cce@baylibre.com>
+Message-Id: <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-2-7efa2b172cce@baylibre.com>
 References: <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-0-7efa2b172cce@baylibre.com>
 In-Reply-To: <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-0-7efa2b172cce@baylibre.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -80,71 +80,51 @@ Cc: Kendall Willis <k-willis@ti.com>, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, 
  "Markus Schneider-Pargmann (TI)" <msp@baylibre.com>
 X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1960; i=msp@baylibre.com;
- h=from:subject:message-id; bh=UoTM8ItbqEeaBM/lQeEOpEFLul1eJGMCR3RCy34RXQM=;
- b=owGbwMvMwCXWejAsc4KoVzDjabUkhqyLX/4bXF/CVHWC97a26KyFs5xmO00o03x64mBx4sXbx
- hO4V7+Y1VHKwiDGxSArpsjSmRia9l9+57HkRcs2w8xhZQIZwsDFKQAT+a3FyHB/3zwHq7n7+zb0
- T1rz+4eSnevpL4pcrK1Wnts+SPl7lDoyMtzlUv+nYsLwa+upsr/Xe4omlwrqfivRXm5St5DxYy3
- TJ24A
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1265; i=msp@baylibre.com;
+ h=from:subject:message-id; bh=+BflU2elRp/oOOYEKmuuC9afcLHCdlAbti/foe89B7E=;
+ b=owGbwMvMwCXWejAsc4KoVzDjabUkhqyLXzk4oj5s2TF7h25KyL0daVGnWhaIdJ81/vBuf6yeR
+ hBLtdy5jlIWBjEuBlkxRZbOxNC0//I7jyUvWrYZZg4rE8gQBi5OAZgIXyjD//x7FjHLtyxbrP9k
+ t56BdJjv/fbdHXO2MC8rP2D2s0Jw1TdGhl3faw75fZYTrIpn3P6ky0y2Jz3on/vVy023RVplvv7
+ 4zg0A
 X-Developer-Key: i=msp@baylibre.com; a=openpgp;
  fpr=BADD88DB889FDC3E8A3D5FE612FA6A01E0A45B41
 
-When suspending mcan, deinit is called and its return value is returned,
-but nothing is restored. Returning an error in the suspend function will
-stop suspending and resume the system immediately. So on error the
-device should be restored to its previous state. If coalescing is
-active, the hrtimer is restarted.
+m_can_class_suspend() may return errors. On error we should first
+restore the previous state and then pass the error code on. Otherwise we
+keep the device in a misconfigured state for the running state.
 
-Fixes: ad1ddb3bfb0c ("can: m_can: call deinit/init callback when going into suspend/resume")
-Signed-off-by: Markus Schneider-Pargmann (TI) <msp@baylibre.com>
+Fixes: b6b640c04446 ("can: tcan4x5x: support resuming from rx interrupt signal")
+Signed-off-by: Markus Schneider-Pargmann <msp@baylibre.com>
 ---
- drivers/net/can/m_can/m_can.c | 25 ++++++++++++++++++++++++-
- 1 file changed, 24 insertions(+), 1 deletion(-)
+ drivers/net/can/m_can/tcan4x5x-core.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/m_can/m_can.c b/drivers/net/can/m_can/m_can.c
-index 16f80607e150..02a95a769a78 100644
---- a/drivers/net/can/m_can/m_can.c
-+++ b/drivers/net/can/m_can/m_can.c
-@@ -2612,8 +2612,14 @@ int m_can_class_suspend(struct device *dev)
- 			hrtimer_cancel(&cdev->hrtimer);
- 			m_can_write(cdev, M_CAN_IE, IR_RF0N);
+diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
+index a5b8829aa519..b69312413d62 100644
+--- a/drivers/net/can/m_can/tcan4x5x-core.c
++++ b/drivers/net/can/m_can/tcan4x5x-core.c
+@@ -575,11 +575,20 @@ static int __maybe_unused tcan4x5x_suspend(struct device *dev)
+ {
+ 	struct m_can_classdev *cdev = dev_get_drvdata(dev);
+ 	struct spi_device *spi = to_spi_device(dev);
++	int ret;
  
--			if (cdev->ops->deinit)
-+			if (cdev->ops->deinit) {
- 				ret = cdev->ops->deinit(cdev);
-+				if (ret) {
-+					netdev_err(cdev->net, "failed to deinit device while suspending %pe\n",
-+						   ERR_PTR(ret));
-+					goto err_pm_wake_source;
-+				}
-+			}
- 		} else {
- 			m_can_stop(ndev);
- 		}
-@@ -2625,6 +2631,23 @@ int m_can_class_suspend(struct device *dev)
- 	if (!m_can_class_wakeup_pinctrl_enabled(cdev))
- 		pinctrl_pm_select_sleep_state(dev);
+ 	if (cdev->pm_wake_source)
+ 		enable_irq_wake(spi->irq);
  
+-	return m_can_class_suspend(dev);
++	ret = m_can_class_suspend(dev);
++	if (ret)
++		goto err_disable_irq;
 +	return 0;
 +
-+err_pm_wake_source:
-+	if (netif_running(ndev)) {
-+		if (cdev->pm_wake_source) {
-+			bool coalescing_active = (cdev->active_interrupts & (IR_RF0N | IR_TEFN))
-+						 != (IR_RF0N | IR_TEFN);
-+			m_can_write(cdev, M_CAN_IE, cdev->active_interrupts);
-+			if (coalescing_active)
-+				hrtimer_start(&cdev->hrtimer,
-+					      cdev->irq_timer_wait,
-+					      HRTIMER_MODE_REL);
-+		}
-+		netif_device_attach(ndev);
-+		netif_start_queue(ndev);
-+	}
-+
- 	return ret;
++err_disable_irq:
++	if (cdev->pm_wake_source)
++		disable_irq_wake(spi->irq);
++	return ret;
  }
- EXPORT_SYMBOL_GPL(m_can_class_suspend);
+ 
+ static int __maybe_unused tcan4x5x_resume(struct device *dev)
 
 -- 
 2.55.0
