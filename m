@@ -1,368 +1,237 @@
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Received: from TYVP286CU001.outbound.protection.outlook.com (mail-japaneastazon11011035.outbound.protection.outlook.com [52.101.125.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D19E24A4400;
-	Fri, 16 Oct 2026 14:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B434DAFB3;
+	Fri, 16 Oct 2026 14:13:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.125.35
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792159979; cv=pass; b=U9hsMpWXrVUIIU/NxaCycq8SixCwxCQkw1ohdMMwb3VyxnF4c348XxN8HYqkv3izh1/lVWjBtBjwr8Y7tjqhvXIB7e+ftYqOWr5XPWKYZFyFetjHOCnIWYsdAV7zuGVfBpyWT8blXl5RarvAxDNihE60pMRmlLvAq35xgEuDFY0=
+	t=1792159993; cv=fail; b=lfcD+dHqerVIXHJYjkl4y9IQKLFcEHlmj3XSgqIh/P6tJ4JrfOxUBgqblDJNkw+94RPUseBGh50BmYmpYaL07TeWd93v0D5YJ0VEgKKTZxAK7WokFCM8QGomyC1GkQGdXG8zqSQLRjRrSPrVqOYRHYyZqaFcTS7lMgrxRAHtCDw=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792159979; c=relaxed/simple;
-	bh=16p4EwDpi7ZkT+CE0IEXcQRPnPnweDbZSnjGOh+fZaI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FgPPyGhVMEoDIyuFAhVHwiRc6/iDhbvWVMT3Tn4WjsV2ZxSV0Ptdff+EjRLRyVIX879avYYu4PVCwuJBLWlmyysquydAYscstGQZHWmp9Dyrkq9uY9CvaDr251HNG8oKJ5gaGeprYCpp/elib9x60RWNpQXrmDEN/OR3JcrmzMY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=gNiJOSgp; arc=pass smtp.client-ip=185.203.200.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	s=arc-20240116; t=1792159993; c=relaxed/simple;
+	bh=AzKqC1k47EuIIR/k3bN9LQAZj4Iist/M/VUROyksOgI=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=QBjeUSg3Httmws124/hgiMKNSseyINP8ynqTFfmGjrlD3kRmxMVvQdg/tc8Tx7AQG8MpAQ7hbRgCyrjCmmTpQUJGLf78zj5t9ACAieALvGEMs1CtjIibJnJjRYRGakqy3cBEPCg8EZSi+02fiBLI0m4DYl2dNYUdsWBs9Vh23/M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com; spf=pass smtp.mailfrom=bp.renesas.com; dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b=djru1SF3; arc=fail smtp.client-ip=52.101.125.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="gNiJOSgp"
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 839962022CD;
-	Fri, 16 Oct 2026 16:12:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792159966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y5kvpZ060aOpgMsckomR7J6FNzbK4e8ySVFQCWgNzms=;
-	b=gNiJOSgptvu0betEc9ge99sY1aZFCxufqF90U7Uf3RditJJAdaPqJNjNt65wsjPcEbfbwf
-	GbXYEbYk11X5dY3W2emVL3EbT/z5KRTQj3rGy+70nsImFrodkQ92qfkQH4q0rNZ1vallqh
-	H+azyjXZHMQ2onM9jjCYO1fY0KAxUfQWPqOq3amG6xjLP+zXJ2oihD9LfQM0Jh50XizEfT
-	39zAJNrukOQAtuFjXSibmTsvCuGZYeHtoHkbtyYEfLTLvPZZ6dAAiCXGelU5B5xgp1fgjh
-	5qqUE/rYWpM+Ytk+SXWk6UIuGCy4BrKk1jmRWSNZ6Ou9M/UO/J0bmIjR+WRARg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792159966; a=rsa-sha256;
-	cv=none;
-	b=N08yNpG1iTqshczCqqTWN7LAuBILDnWXGj5RsXIsGi1PYI+uPUb0cD+QcGY68TjbeJvJYD
-	GNrSC6kVZUmZ4046xdrPrZ4LQ3Vq5uOZ3ejigntGF11iDXDStaLr2G01N6azpXz44YjpL1
-	O2lUCFLDP4W2xWtiCVBGCOfssv5crXuzkYCTAicGPkIvAWq6sTGEadiGdPrVLI9s3P6HhM
-	EPLG68tkSHrsvw0EDRV2lSAs7VfRM80eMtYyqmur+KFN7xpQ9REhTnGfzdcJuyPdn41Y9n
-	dsTD+UW0c09PTcymIzL47kdy2Y0xs9U+iKw0ZynggC2DYhXHEwBseNzDA8DN8Q==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792159966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y5kvpZ060aOpgMsckomR7J6FNzbK4e8ySVFQCWgNzms=;
-	b=CCP9x+MSig/qEIHNhdU/Qq/TCgpWejOhB6b49bgkiPPnYgO3SPpuwp2pPwjlmruLMepujK
-	AUGDLZCu0okkDZ25b6GknetIuKpSVJos3PiGoc0hv0yQhRiMRhG8kQk/G74Q4nCrlBcldv
-	hWX+0h+Hv4HmErZSZcrAfpTv4DBicCQLkqViW+wUYMrvPTx3CKwb72suvF+aq+UY5fMCUF
-	g8HxVP3CMeM5wNorRMDPXmvU8rKl+3TgtAE/U0al5evBDlqtRzbMk0AVdd9drvat7GlSLp
-	JxjJiXJPUxusfST0X00mTm23v7EYHNVeyW/5okdUQlIqPpgrEjIBn5POwu+aTw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xHifu-006CMD-1L;
-	Fri, 16 Oct 2026 16:12:46 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 1CCB45C62B7;
-	Fri, 16 Oct 2026 14:12:46 +0000 (UTC)
-Date: Fri, 16 Oct 2026 16:12:45 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Biju Das <biju.das.jz@bp.renesas.com>
-Cc: Vincent Mailhol <mailhol@kernel.org>, 
-	Geert Uytterhoeven <geert+renesas@glider.be>, Magnus Damm <magnus.damm@gmail.com>, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>, 
-	Tu Nguyen <tu.nguyen.xg@renesas.com>, linux-can@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	Chris Paterson <Chris.Paterson2@renesas.com>, Biju Das <biju.das@bp.renesas.com>
-Subject: Re: [PATCH v4 2/3] can: rcar_canfd: Derive max_channels from the
- device tree
-Message-ID: <20261016-moth-of-rampant-exercise-ecc0ee-mkl@pengutronix.de>
+	dkim=pass (1024-bit key) header.d=bp.renesas.com header.i=@bp.renesas.com header.b="djru1SF3"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=f1gxtU7U/ulEm1ENxHq3ooxrpi7aoYWiSCafTuZMS1t5Q5x+AjbJ/rFC/hF+XecgfZ8pKE3mJeadpc/QFSE674zRmCYlxK062KNuESmbImgy0nmvRGM94wU53HDE1Wj1cW+guUjCYGWi0fU0vlChuC413A30zn61UYbFYH4Bv6LO9TXYww4YJ2hj6dgUt3r2KFIziYJ/9IDEgPFwoDo78gpCY0F3xkaLs5w6SOdNLXNzE64YJjNHmedHxnaXvoTih9IjC00WxWPiN3UpCM+ErfMG0WuxbopZcVQO/E9c9jLC43yTXzjGlLux8r0qFCTLKZ5FBfA8wBoscbCiu1idtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AzKqC1k47EuIIR/k3bN9LQAZj4Iist/M/VUROyksOgI=;
+ b=RsTEhXquwR+ym5bMBsDskpf4N+rWi0kxQQ7J+fLWU8iL78rKVjLHWGsyxSpLjinwH1uebxilF16pVHaL35PfzkGWgazwQggTycnhZ+RDOV/dWUWf/DDOEYK1lx8ctKl2AQpV0VvHEbdOHBpxCsNRTuv3HXlZa9FQduloPmE/Afm+uB/AKiviyqFNs0vlHT69n5YCjEv2uqQuOXacAFxmHeh5Yf7bRwkCPkrHa0PbqCsNt6T0a0sEKMjWjXWfQt3ry/5/eA8h2dpgQz4/CL3ovwRWgVbNcixI0Jpx0DD4Z6WfKxplotGsCDP8xZlnYbpLjEHEx6K48qhmdbsybwp/FA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AzKqC1k47EuIIR/k3bN9LQAZj4Iist/M/VUROyksOgI=;
+ b=djru1SF3+B5AjPXl04GsBIfZtYuGmDMRyw9vFz8t/uiuxIvsPSdbUcmPwHgPrHQWyoQAt7uCCaN+CGgw/70/SiVvYwBn5GhOiiRg0Z50h5o3uZx4vjVwNWkg9UFZuMtsxBS/CsoarxgVSGetHPm/Fg6yQjCnXo+B5qBKkU8p44I=
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com (2603:1096:400:3d0::7)
+ by TYWPR01MB10693.jpnprd01.prod.outlook.com (2603:1096:400:2a5::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.522.14; Fri, 16 Oct
+ 2026 14:12:59 +0000
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de]) by TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de%6]) with mapi id 15.21.0496.021; Fri, 16 Oct 2026
+ 14:12:58 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Krzysztof Kozlowski
+	<krzk+dt@kernel.org>
+CC: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>,
+	Geert Uytterhoeven <geert+renesas@glider.be>, "magnus.damm"
+	<magnus.damm@gmail.com>, Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	"linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
+	Chris Paterson <Chris.Paterson2@renesas.com>, Prabhakar Mahadev Lad
+	<prabhakar.mahadev-lad.rj@bp.renesas.com>, Krzysztof Kozlowski
+	<krzysztof.kozlowski@oss.qualcomm.com>
+Subject: RE: [PATCH v4 1/3] dt-bindings: can: renesas,rcar-canfd: Document
+ RZ/G3L SoC
+Thread-Topic: [PATCH v4 1/3] dt-bindings: can: renesas,rcar-canfd: Document
+ RZ/G3L SoC
+Thread-Index: AQHdUXqWGJYcQwxreka0VFtI2IFYOLcAS3kAgAABusA=
+Date: Fri, 16 Oct 2026 14:12:58 +0000
+Message-ID:
+ <TY3PR01MB113465234171180FFB5F1B6FD869B2@TY3PR01MB11346.jpnprd01.prod.outlook.com>
 References: <20261001075742.21961-1-biju.das.jz@bp.renesas.com>
- <20261001075742.21961-3-biju.das.jz@bp.renesas.com>
+ <20261001075742.21961-2-biju.das.jz@bp.renesas.com>
+ <20261016-rebel-ostrich-from-vega-f759c8-mkl@pengutronix.de>
+In-Reply-To: <20261016-rebel-ostrich-from-vega-f759c8-mkl@pengutronix.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY3PR01MB11346:EE_|TYWPR01MB10693:EE_
+x-ms-office365-filtering-correlation-id: 4d66d6c3-489f-434c-3ce7-08df2b8f94e3
+x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|366016|23010399003|376014|7416014|1800799024|38070700021|56012099006|4143699003|11063799006|261009223027099003|10067099003|22082099003|18002099003;
+x-microsoft-antispam-message-info:
+ fXf70G3zdohaUpyJ68kckGLQLX7cC5/PU3hAlhjXMsdjsu45Mx1RHFxeHyVKtQagDDcQQaWPQ+KsHqwl6xybXj/CfugP9Ps7ae45TEEheWroJ4+VDSBSGm+x96eSts/UVbhgkVC6Zgys8r15i+w3gepadhcbya6qPupJdmgLGskLOKt9VQE+mmOn6ri7dFxHyoCBQjCs9KSfVkw56WxqAcj3RaZuqGPlqob0xFjTQ/FkEy9iXvvUdakPsOMtQulCOjiJuIM8o2vCgK9m1xXPjxtqVBV+MQ8eLAsMYxQxD14VHzsc0qKL9XPNvU5xoMSnY3QAjrR70MYj1h0R5NHCFiadeJ7gfLB8rr2kE4wMUwP4hm+cViGj0pnhH7ysXUBIZhPGDT3gRAuev894Oiz6ztW9uXhYcP/ozYFPp6VQAVAKKCb4U7K7J4Rxg7HDrCrr/3JiK3c4V5Of8BLSLOafoTXP/Y6clwjN8/tldScD4PAUUxmQrH9xMo4B1I+TSHxovbV8BVlggZVL31AOiGafWBwQSAPNNYO1VoEPy4ptqyZZIJCOWNK5pc4vvloUMu9J2spKk8kxFiSPK/iVQQBYh85x8ihhZOCSHzXZaQozzmNOmoHCKLp7gs4Slf+AJ9Vbmvvj+b3hQti1S/ZyrfFgxv7S1FJawpckLY0v3yyarPY=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY3PR01MB11346.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(23010399003)(376014)(7416014)(1800799024)(38070700021)(56012099006)(4143699003)(11063799006)(261009223027099003)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?ZWo2Y2NwZnJ1OFFTcUxEUUdQdnBhYlVJY0ZycjJWNldDYWV3TWF0NkpFUUVn?=
+ =?utf-8?B?TnJlWUxqdGo5UFo4TjRwVDdXUlJjdkNpVkdxbzV3WVVVcS9lcWhiNHk5cEds?=
+ =?utf-8?B?eDBSR21VQ1JGUEFBcG9nNDBEbTRGMVE0UXVSY2cyTjdzMUVVQ1MzVS9SYWRU?=
+ =?utf-8?B?Rk1iL0EydWpyc3FLQzR5TjRNUWJ4TDlkUlkrL0Iya2NjUUJXdVNMZjErMXRN?=
+ =?utf-8?B?UGl3S2VTRkJNWExJVnNQSHhSRk1rNHZ3dEx5K08rS3duYm9zVHFSNEhSS05X?=
+ =?utf-8?B?VnJyT0MxRkUvZXp0bm9YdW5MeWY5endQeXFLaEZKalVpVUgrcmlVMDdudG1K?=
+ =?utf-8?B?SHFJaUU3VXNSVnJaK1BnOVFFMUgzYjUvL0llaVhwZis1amJFb3doV0NmL1hx?=
+ =?utf-8?B?a1o2WHFQN29iVEUxUDAxczVYS0ZmdFJ3Vk9nOEFLZ2VKN2tpelNFY290SFRS?=
+ =?utf-8?B?djY2L01nYWFjc3JjOTIyYUdqdE8zblRiVlNiSi9PVksrUlRoWTFpbXNnQm9V?=
+ =?utf-8?B?eVl6YmRncmNtSGJEVXRBS3dSdTRnNTF2MzdVajd4dkprbFp1MDhwaEhmcWt0?=
+ =?utf-8?B?UjBTVXVQZkRNY0IyL1Y2ZGdoR3VVdHFRVzk2SlZHTGk2aW50M2JkUmR4M2V4?=
+ =?utf-8?B?UGhTOHVHQzhvMlBVSlNEalFWN0QxazJWc2RzNm5Velk3WTlzN3RSQTJoRlZw?=
+ =?utf-8?B?Y0pNN3hHa1d5bld5YjlaWFE0WlorY2dsQmFvMzRuNDRyTkJHbVhJQ0JYUEhX?=
+ =?utf-8?B?OVlZTkV1M0NSVmFTMnhqVUc3VzVsd2ZrVVdTVE9TOExBSHMwMmw0RFVBa1o2?=
+ =?utf-8?B?MDA1NHRYc2ZyS1B4c20yUzFHTEtlRysyRXMyQmZpVmVPOHp0K1kyWlRCSVk2?=
+ =?utf-8?B?YU9DNEtUWWFWSkV1K3o2OXlYM05NUVFWQnliNVlCWVgybms2eGM4eU1IU1A5?=
+ =?utf-8?B?T1V2bTF2YWV5UXYwRlVPdnc4SURMblhRcVNsd09GU1NpWkpFaGpnd21VRDJI?=
+ =?utf-8?B?UzAxdm1RTHE3MnZ2SmlYdTRjSVY0clNKZlhFM2NLVGVLK3A2ckMxZ3VkblBh?=
+ =?utf-8?B?YUlIdXFncjZVWGFZT2FZS21vNGpCWUYzdmVvMzVMdEZ3SjhpcEwzY0tjTTAx?=
+ =?utf-8?B?SkFQUFA1aGRYY0xKQ2VXRk80U3M0d2cvZnJWWEpLQWh2MHBwUXdWR0s2Y3JQ?=
+ =?utf-8?B?V2Rucll4cmhSUXRrQkZWMW1iV0djc2VDQlpuRjhycjV4dHUvcUZJL01Za3NF?=
+ =?utf-8?B?MmZ5d2ltRmxMZjdBMEordjNjNnZGcHA0VmdNRERTY0ZlSHAzUkl1N0lLaHNp?=
+ =?utf-8?B?VFdqK2VIcnhDbWxyQmh6cnBJQnk0ei8xVE1lRFhOS2pkOHY4YWNKczhuUlhY?=
+ =?utf-8?B?VURDUTJvVGE2RHZxYWNsK2VZZTdQcW5XcWkrWVlKc1MyNHp3QytTTkJIb3hK?=
+ =?utf-8?B?Ymx4RHI2OElUcG1VRlJzUHU2T0NlT0FpR0NPUVdTWWFYZm83SFc4ZWt0MEEv?=
+ =?utf-8?B?SDd2ajNsZkNTRENHeEZxSmEvOFpsSWlXcDNrdGpjeTJObzFTb0JQb3lrQlM2?=
+ =?utf-8?B?OStHTUhxVVhkQWQ4TGtUQ0FWOWRQRGMyOUhjd25seDRaa2NPU1ozbXh6L2NK?=
+ =?utf-8?B?bjZJYmxLck5vY0hPK0pqRTBTQWhpTTk2ek1tamFrMVJmaUZhSnVQWTZjM1pt?=
+ =?utf-8?B?V040MjlWQlFWQ2ViTzMxN0xlZm5jcWl2MHFrbmc2VXN0SWxvU1RvUjZsT1pG?=
+ =?utf-8?B?cmNvV3pMNUU5OCswdHh3bWczN3MzQnpucUtDdjI0SmNWaG1jRmZDY1gwcG1y?=
+ =?utf-8?B?LzRSZEptOUYyL3lMTmowM1ZsNjVCSGI3cjAxVG1sN0R5MFFRNmcxbHhLOUVC?=
+ =?utf-8?B?UlBwUXV0K2NnRUM1VWtVRVFxanYwazB1dEVyTU53dlJJakJpbDdoRGdDdzhs?=
+ =?utf-8?B?cm54ZnVtQ3VBMmlOalNBdVdXM2JCQTNKWktMQTRCV0JTODhwRXlJbVM2N0Fk?=
+ =?utf-8?B?WEc1K3Y1KzYyVWptVDl6ZkYrcW4ycjFiYkhFT1VuV3Rwa0lzNUR1Sy9kTDRy?=
+ =?utf-8?B?K2JLeVZjTjN6TU9SVXEwdWJZcGJDRlRsb3ZzbmxVNGNpZElMYlEyU0x3R1NN?=
+ =?utf-8?B?ZUFFSWdjbFFQRGU2REFCQjRZdGNYQ0svZy9WbEd4aVdZa2JxRXpkZXRhZUt1?=
+ =?utf-8?B?eFUzbkEvenVXTjRnenpkY0k4RjVKWEw4VUpFWklvck1zYWN2bkRsUWcwUkdh?=
+ =?utf-8?B?bUlxM3NTVWt0TkZobGc3M0RLbjh1V0N3ZE9rYkluSHpoSDZFN2RaL0dEYlVJ?=
+ =?utf-8?B?bExVMGJjTjNoT2FCZnJjZUw5YVNXZ2hYNzZ3cStaUGdOU0R6ZS9vZz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xywm42ucvzgj54nk"
-Content-Disposition: inline
-In-Reply-To: <20261001075742.21961-3-biju.das.jz@bp.renesas.com>
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY3PR01MB11346.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4d66d6c3-489f-434c-3ce7-08df2b8f94e3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Oct 2026 14:12:58.7689
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: rmN6tfBRnHTJrcrMAY9/l3ZdSTmUHIjwCWWeRboEKCMoaL8sSmhvW4oqOOa4RtZLMZucoLYMGXOIV/5V6EBxUFvKuhI4LJqMRj1vfengHFc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB10693
 
-
---xywm42ucvzgj54nk
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v4 2/3] can: rcar_canfd: Derive max_channels from the
- device tree
-MIME-Version: 1.0
-
-On 01.10.2026 08:57:38, Biju Das wrote:
-> The maximum number of channels is currently hardcoded per SoC in
-> struct rcar_canfd_hw_info. Since the DT describes the channels as
-> child nodes of the controller, the count can be obtained at probe time
-> with of_get_child_count() instead.
->
-> Drop max_channels from struct rcar_canfd_hw_info and store the value
-> in struct rcar_canfd_global, so it no longer needs to be maintained
-> for each SoC variant. Update all for_each_set_bit() users over
-> channels_mask to use gpriv->max_channels.
->
-> No functional change.
->
-> Reviewed-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-
-the netdev sashiko is not happy.
-
-pw-bot: cr
-
-regards,
-Marc
-
---- Patch [20]: [PATCH net-next 20/37] can: rcar_canfd: Derive max_channels=
- from the device tree ---
-commit f2792c210c20d626154d87626c44459c153936fd
-Author: Biju Das <biju.das.jz@bp.renesas.com>
-
-can: rcar_canfd: Derive max_channels from the device tree
-
-This commit removes the hardcoded per-SoC max_channels from struct
-rcar_canfd_hw_info. Probe now computes it with of_get_child_count() on
-the controller node and stores it in struct rcar_canfd_global. All
-for_each_set_bit() loops over channels_mask now use gpriv->max_channels
-as their bound.
-
-Link: https://patch.msgid.link/20261001075742.21961-3-biju.das.jz@bp.renesa=
-s.com
-
-> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
-r_canfd.c
-> index 74c3c3f20991..41c395118949 100644
-> --- a/drivers/net/can/rcar/rcar_canfd.c
-> +++ b/drivers/net/can/rcar/rcar_canfd.c
-
-[ ... ]
-
-> @@ -2145,14 +2139,18 @@ static int rcar_canfd_probe(struct platform_devic=
-e *pdev)
->  	bool fdmode =3D true;			/* CAN FD only mode - default */
->  	char name[9] =3D "channelX";
->  	u32 ch, fcan_freq;
-> +	u8 max_channels;
->  	int i;
->
->  	info =3D of_device_get_match_data(dev);
-> +	max_channels =3D of_get_child_count(dev->of_node);
-> +	if (max_channels > RCANFD_NUM_CHANNELS)
-> +		return -EINVAL;
-
-Discovered by: gpt-6-astra, opus-5-5, opus-5 =C2=B7 Missed by: sashiko-gemi=
-ni =C2=B7 Called a false positive by: gpt-6-astra
-
-This isn't a bug for binding-valid DTs, but of_get_child_count() returns
-an int, and the result is stored in the u8 max_channels before the range
-check. With 256 or more children the comparison sees the value modulo 256
-(256 becomes 0, 260 becomes 4), so the check would not reject such a node.
-
-The binding only allows "^channel[0-7]$" children and sets
-unevaluatedProperties: false. The truncated value is also still bounded
-by RCANFD_NUM_CHANNELS before it is used as an index bound, so nothing is
-accessed out of bounds.
-
-Would it be cleaner to keep the result in an int until after the
-comparison?
-
-Discovered by: opus-5-5, opus-5 =C2=B7 Missed by: gpt-6-astra, sashiko-gemi=
-ni =C2=B7 Called a false positive by: gpt-6-astra
-
-With max_channels gone from struct rcar_canfd_hw_info, this check against
-RCANFD_NUM_CHANNELS (8) is the only limit left. It is the family-wide
-maximum, not the channel count of the specific SoC.
-
-Suppose a DT declared channel nodes the IP doesn't have, for example
-channel2..channel7 on a 2-channel Gen3, RZ/G2L or RZ/T2H part. Then
-rcar_canfd_reset_controller(), rcar_canfd_configure_controller() and
-rcar_canfd_global_init() would program and poll the CCTR/CSTS,
-fcbase[ch].cfdcfg, FIFO and AFL registers of channels that don't exist.
-Before this patch those nodes were never looked up.
-
-The binding rejects these layouts per compatible ("^channel[2-7]$": false
-and similar), so this only affects DTs that violate the schema.
-
-Separately, this -EINVAL path prints nothing. Could it report the reason,
-for example with dev_err_probe()?
-
->
->  	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
->  		fdmode =3D false;			/* Classical CAN only mode */
->
-> -	for (i =3D 0; i < info->max_channels; ++i) {
-> +	for (i =3D 0; i < max_channels; ++i) {
->  		name[7] =3D '0' + i;
->  		of_child =3D of_get_available_child_by_name(dev->of_node, name);
->  		if (of_child) {
-
-Discovered by: gpt-6-astra, opus-5-5, opus-5 =C2=B7 Missed by: sashiko-gemi=
-ni =C2=B7 Ranked High by: gpt-6-astra
-
-of_get_child_count() returns how many child nodes there are, not the
-highest channel index plus one. Can channels be missed when the DT
-numbering has a gap?
-
-renesas,rcar-canfd.yaml matches "^channel[0-7]$" and only requires
-channel0 and channel1, so a gap looks valid. Take a Gen4 DT with
-channel0, channel1 and channel4, or a board that removes channel2 with
-/delete-node/. Either way the child count is 3.
-
-The loop above then only looks up channel0 to channel2, so channel4's bit
-is never set in channels_mask. Every later for_each_set_bit() loop is
-also capped by gpriv->max_channels. As a result channel4 is never reset
-or configured, never registered as a netdev and never serviced by the IRQ
-handlers. No warning is printed.
-
-Before this patch the bound was info->max_channels (8 on Gen4, 6 on
-RZ/G3E), so such a channel was found and probed. Does that fit with the
-"No functional change" statement in the commit message?
-
-All in-tree SoC dtsi files appear to use contiguous numbering, so only
-out-of-tree DTBs or overlays would be affected.
-
-[ ... ]
-
-> @@ -2314,7 +2313,7 @@ static int rcar_canfd_probe(struct platform_device =
-*pdev)
->  	return 0;
->
->  fail_channel:
-> -	for_each_set_bit(ch, &gpriv->channels_mask, info->max_channels)
-> +	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels)
->  		rcar_canfd_channel_remove(gpriv, ch);
-
-Discovered by: gpt-6-astra, opus-5-5, opus-5 =C2=B7 Missed by: sashiko-gemi=
-ni =C2=B7 Ranked Critical by: gpt-6-astra
-
-This is a pre-existing issue and was not introduced by this patch, but
-since this unwind loop is being changed: if register_candev() fails,
-could the channel's net_device be freed twice?
-
-rcar_canfd_channel_probe() publishes the pointer before it registers the
-device:
-
-drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_channel_probe() {
-    ...
-	gpriv->ch[priv->channel] =3D priv;
-	err =3D register_candev(ndev);
-	if (err) {
-		dev_err(dev, "register_candev() failed: %pe\n", ERR_PTR(err));
-		goto fail_candev;
-	}
-    ...
-fail_candev:
-	netif_napi_del(&priv->napi);
-fail:
-	free_candev(ndev);
-	return err;
-}
-
-When rcar_canfd_probe() reaches fail_channel, gpriv->ch[ch] still points
-into the freed ndev. This loop also calls rcar_canfd_channel_remove() for
-the channel that failed, and that function only checks for NULL:
-
-	if (priv) {
-		unregister_candev(priv->ndev);
-		netif_napi_del(&priv->napi);
-		free_candev(priv->ndev);
-	}
-
-So priv->ndev is read from freed memory, unregister_candev() is called on
-a netdev that was never registered, and free_candev() runs a second time.
-
-Would it work to set gpriv->ch[ch] only after register_candev() succeeds,
-or to clear it on the failure path?
-
->  fail_mode:
->  	rcar_canfd_global_deinit(gpriv, false);
-
-[ ... ]
-
-> @@ -2327,7 +2326,7 @@ static void rcar_canfd_remove(struct platform_devic=
-e *pdev)
->  	struct rcar_canfd_global *gpriv =3D platform_get_drvdata(pdev);
->  	u32 ch;
->
-> -	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->info->max_channels) {
-> +	for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
->  		rcar_canfd_disable_channel_interrupts(gpriv->ch[ch]);
->  		rcar_canfd_channel_remove(gpriv, ch);
->  	}
-
-Discovered by: gpt-6-astra, opus-5-5 =C2=B7 Missed by: opus-5, sashiko-gemi=
-ni =C2=B7 Ranked Critical by: gpt-6-astra
-
-This is also a pre-existing issue and not introduced by this patch. Can
-the IRQ handlers reach an already freed channel while this loop runs?
-
-Each pass frees a channel through
-rcar_canfd_channel_remove()->free_candev(). gpriv->ch[ch] is never
-cleared, and the global interrupts are only disabled later, in
-rcar_canfd_global_deinit().
-
-The shared handlers walk every bit in channels_mask and dereference
-gpriv->ch[ch]:
-
-rcar_canfd_channel_interrupt()
-    for_each_set_bit(ch, &gpriv->channels_mask, gpriv->max_channels) {
-        rcar_canfd_handle_channel_err(gpriv, ch);
-        rcar_canfd_handle_channel_tx(gpriv, ch);
-    }
-
-Take two channels. After ch0 has been freed, ch1 keeps running until
-unregister_candev() stops it. Any RX, TX or global interrupt from ch1 in
-that window runs one of the shared handlers:
-
-- rcar_canfd_global_interrupt() or rcar_canfd_channel_interrupt()
-- rcar_canfd_global_receive_fifo_interrupt() or
-  rcar_canfd_global_err_interrupt() on RZ/G2L-style parts
-
-That handler then reads ch0's priv->ndev and priv->base from freed
-memory.
-
-In rcar_canfd_handle_channel_err(), the stale priv->can.state
-(CAN_STATE_STOPPED after close) passes this check:
-
-	if (unlikely(priv->can.state !=3D CAN_STATE_ERROR_ACTIVE &&
-		     priv->can.state !=3D CAN_STATE_BUS_OFF))
-		rcar_canfd_state_change(ndev, txerr, rxerr);
-
-so rcar_canfd_state_change() runs on the freed ndev.
-
-On multi_channel_irqs parts, the per-channel devm IRQs use dev_id =3D priv.
-They stay registered after free_candev(), and there is no
-synchronize_irq(), so a handler already running on another CPU can also
-see the freed priv. The fail_channel path in rcar_canfd_probe() has the
-same problem.
-
-Would it help to disable the global interrupts and synchronize or free
-the IRQs before any channel is freed?
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---xywm42ucvzgj54nk
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatIw2gAKCRDMOmT6rpmt
-0pU6AP9LUtXs4nvnzzau36Vy73pykCNVlHORgPneMZ5uXQYRFAEApAVpBVDxUHce
-XSHovNxFxsQ/g5SiZsJMFWWSuOko1wY=
-=PhzF
------END PGP SIGNATURE-----
-
---xywm42ucvzgj54nk--
+SGkgTWFyYy8gS3J6eXN6dG9mLA0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZy
+b206IE1hcmMgS2xlaW5lLUJ1ZGRlIDxta2xAcGVuZ3V0cm9uaXguZGU+DQo+IFNlbnQ6IDE2IE9j
+dG9iZXIgMjAyNiAxNTowNA0KPiBTdWJqZWN0OiBSZTogW1BBVENIIHY0IDEvM10gZHQtYmluZGlu
+Z3M6IGNhbjogcmVuZXNhcyxyY2FyLWNhbmZkOiBEb2N1bWVudCBSWi9HM0wgU29DDQo+IA0KPiBP
+biAwMS4xMC4yMDI2IDA4OjU3OjM3LCBCaWp1IERhcyB3cm90ZToNCj4gPiBEb2N1bWVudCB0aGUg
+UlovRzNMIChSOUEwOEcwNDYpIFNvQyBzdXBwb3J0Lg0KPiA+DQo+ID4gUlovRzNMIGhhcyAxMSBp
+bnRlcnJ1cHRzIGFuZCAzIENBTkZEIGNoYW5uZWxzIGNvbXBhcmVkIHRvIDggaW50ZXJydXB0cw0K
+PiA+IGFuZCAyIENBTkZEIGNoYW5uZWxzIG9uIFJaL0czUy4gUlovRzNMIGhhcyAyODggYnVmZmVy
+cyBpbiB0b3RhbA0KPiA+IGNvbXBhcmVkIHRvIDE5MiBidWZmZXJzIGluIFJaL0czUy4NCj4gPg0K
+PiA+IFJldmlld2VkLWJ5OiBHZWVydCBVeXR0ZXJob2V2ZW4gPGdlZXJ0K3JlbmVzYXNAZ2xpZGVy
+LmJlPg0KPiA+IFJldmlld2VkLWJ5OiBLcnp5c3p0b2YgS296bG93c2tpDQo+ID4gPGtyenlzenRv
+Zi5rb3psb3dza2lAb3NzLnF1YWxjb21tLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBCaWp1IERh
+cyA8YmlqdS5kYXMuanpAYnAucmVuZXNhcy5jb20+DQo+IA0KPiBuZXRkZXYncyBzYXNoaWtvIGlz
+IG5vdCBoYXBweToNCj4gDQo+IHJlZ2FyZHMsDQo+IE1hcmMNCj4gDQo+IHB3LWJvdDogY3INCj4g
+DQo+IC0tLSBQYXRjaCBbMTldOiBbUEFUQ0ggbmV0LW5leHQgMTkvMzddIGR0LWJpbmRpbmdzOiBj
+YW46IHJlbmVzYXMscmNhci1jYW5mZDogRG9jdW1lbnQgUlovRzNMIFNvQyAtLS0NCj4gY29tbWl0
+IGZjNjk1MDc5YTFkMjdlNGYzYzIyZGI4ZjVlMmY0NGUyY2FhNDRkYjUNCj4gQXV0aG9yOiBCaWp1
+IERhcyA8YmlqdS5kYXMuanpAYnAucmVuZXNhcy5jb20+DQo+IA0KPiBkdC1iaW5kaW5nczogY2Fu
+OiByZW5lc2FzLHJjYXItY2FuZmQ6IERvY3VtZW50IFJaL0czTCBTb0MNCj4gDQo+IFRoaXMgYWRk
+cyB0aGUgUlovRzNMIChSOUEwOEcwNDYpIGNvbXBhdGlibGUgdG8gdGhlIHJlbmVzYXMscmNhci1j
+YW5mZCBiaW5kaW5nLiBJdCBhZGRzIGEgY29uZGl0aW9uYWwNCj4gYmxvY2sgZm9yIDExIGludGVy
+cnVwdHMsIDIgcmVzZXRzIGFuZCAzIGNoYW5uZWxzLCBhbmQgcHV0cyB0aGUgbmV3IGNvbXBhdGli
+bGUgaW4gdGhlIGJsb2NrIHRoYXQgZGlzYWxsb3dzDQo+IHJlbmVzYXMsbm8tY2FuLWZkIGFuZCBy
+ZW5lc2FzLGZkLW9ubHkuDQo+IA0KPiBMaW5rOiBodHRwczovL3BhdGNoLm1zZ2lkLmxpbmsvMjAy
+NjEwMDEwNzU3NDIuMjE5NjEtMi1iaWp1LmRhcy5qekBicC5yZW5lc2FzLmNvbQ0KPiANCj4gPiBk
+aWZmIC0tZ2l0DQo+ID4gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbmV0L2Nh
+bi9yZW5lc2FzLHJjYXItY2FuZmQueWFtbA0KPiA+IGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVl
+L2JpbmRpbmdzL25ldC9jYW4vcmVuZXNhcyxyY2FyLWNhbmZkLnlhbWwNCj4gPiBpbmRleCAxYTdh
+OWNlNDVlOTcuLjRiOTRiYzhkOTExYiAxMDA2NDQNCj4gPiAtLS0NCj4gPiBhL0RvY3VtZW50YXRp
+b24vZGV2aWNldHJlZS9iaW5kaW5ncy9uZXQvY2FuL3JlbmVzYXMscmNhci1jYW5mZC55YW1sDQo+
+ID4gKysrIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL25ldC9jYW4vcmVuZXNh
+cyxyY2FyLWNhbmZkLnlhbQ0KPiA+ICsrKyBsDQo+IA0KPiBbIC4uLiBdDQo+IA0KPiA+IEBAIC0y
+OTQsNiArMjk1LDI1IEBAIGFsbE9mOg0KPiA+ICAgICAgICBwYXR0ZXJuUHJvcGVydGllczoNCj4g
+PiAgICAgICAgICAiXmNoYW5uZWxbNi03XSQiOiBmYWxzZQ0KPiA+DQo+ID4gKyAgLSBpZjoNCj4g
+PiArICAgICAgcHJvcGVydGllczoNCj4gPiArICAgICAgICBjb21wYXRpYmxlOg0KPiA+ICsgICAg
+ICAgICAgY29udGFpbnM6DQo+ID4gKyAgICAgICAgICAgIGNvbnN0OiByZW5lc2FzLHI5YTA4ZzA0
+Ni1jYW5mZA0KPiA+ICsgICAgdGhlbjoNCj4gPiArICAgICAgcHJvcGVydGllczoNCj4gPiArICAg
+ICAgICBpbnRlcnJ1cHRzOg0KPiA+ICsgICAgICAgICAgbWluSXRlbXM6IDExDQo+ID4gKw0KPiA+
+ICsgICAgICAgIGludGVycnVwdC1uYW1lczoNCj4gPiArICAgICAgICAgIG1pbkl0ZW1zOiAxMQ0K
+PiA+ICsNCj4gPiArICAgICAgICByZXNldHM6DQo+ID4gKyAgICAgICAgICBtaW5JdGVtczogMg0K
+PiANCj4gRGlzY292ZXJlZCBieTogc2FzaGlrby1nZW1pbmkgwrcgTWlzc2VkIGJ5OiBvcHVzLTUt
+NSwgZ3B0LTYtYXN0cmEgwrcgQ29uZmlybWVkIGJ5OiBvcHVzLTUtNSBTaG91bGQgdGhpcw0KPiBi
+bG9jayBhbHNvIGNhcCBpbnRlcnJ1cHRzIGFuZCBpbnRlcnJ1cHQtbmFtZXMgYXQgMTE/DQoNCkty
+enlzenRvZiwNCg0KRG8geW91IGFncmVlIHdpdGggc2FzaGlrbydzIGNvbW1lbnQ/IEkgZHJvcHBl
+ZCBtYXhJdGVtcyBiYXNlZCBvbiB0aGUgcmV2aWV3IGNvbW1lbnQgWzFdDQoNClsxXSBodHRwczov
+L2xvcmUua2VybmVsLm9yZy9hbGwvMjAyNjEwMDEtY2h1YmJ5LXRvbWF0by12dWx0dXJlLWUxYTY5
+Y0BxdW9sbC8NCg0KQ2hlZXJzLA0KQmlqdQ0KDQo+IA0KPiBUaGUgY29tbWl0IG1lc3NhZ2Ugc2F5
+cyBSWi9HM0wgaGFzIGV4YWN0bHkgMTEgaW50ZXJydXB0cywgYnV0IG9ubHkNCj4gbWluSXRlbXM6
+IDExIGlzIHNldCBoZXJlLiBUaGUgdXBwZXIgYm91bmQgdGhlcmVmb3JlIGNvbWVzIGZyb20gdGhl
+IHRvcC1sZXZlbCBpbnRlcnJ1cHRzIGFuZCBpbnRlcnJ1cHQtDQo+IG5hbWVzIGl0ZW1zIGxpc3Rz
+LiBUaG9zZSBhbGxvdyB1cCB0bw0KPiAyMCBlbnRyaWVzIHRvIGNvdmVyIHRoZSBzaXggY2hhbm5l
+bCBwYXJ0cy4NCj4gDQo+IEFzIGEgcmVzdWx0LCBhIHJlbmVzYXMscjlhMDhnMDQ2LWNhbmZkIG5v
+ZGUgbGlzdGluZyBhbnl3aGVyZSBmcm9tIDEyIHRvDQo+IDIwIGludGVycnVwdHMsIHdpdGggdGhl
+IG1hdGNoaW5nIG5hbWVzIGZvciBjaGFubmVscyAzIHRvIDUsIHBhc3NlcyBkdF9iaW5kaW5nX2No
+ZWNrIGFuZCBkdGJzX2NoZWNrLiBUaGF0DQo+IGlzIGluY29uc2lzdGVudCB3aXRoIHRoaXMgc2Ft
+ZSBibG9jayByZWplY3RpbmcgIl5jaGFubmVsWzMtN10kIiBmb3IgdGhlIFNvQywgc2luY2UgdGhl
+IGV4dHJhIGludGVycnVwdHMNCj4gZGVzY3JpYmUgY2hhbm5lbHMgdGhhdCBjYW5ub3QgZXhpc3Qu
+DQo+IA0KPiBXYXMgdGhlIGludGVudCB0byBhZGQgbWF4SXRlbXM6IDExIG5leHQgdG8gbWluSXRl
+bXM6IDExIGZvciBib3RoIGludGVycnVwdHMgYW5kIGludGVycnVwdC1uYW1lcz8gVGhhdA0KPiB3
+b3VsZCBwaW4gdGhlIGNvdW50IGV4YWN0bHksIHRoZSB3YXkgdGhlIG90aGVyIHZhcmlhbnQgYmxv
+Y2tzIGJvdW5kIHRoZWlyIGludGVycnVwdCBjb3VudHMuDQo+IA0KPiBTaG91bGQgcmVuZXNhcyxy
+OWEwOGcwNDYtY2FuZmQgYWxzbyBiZSBpbiB0aGUgZXhpc3RpbmcgYWxsT2YgYmxvY2sgdGhhdCBt
+YWtlcyByZXNldHMgYW5kIHJlc2V0LW5hbWVzDQo+IHJlcXVpcmVkPyBSaWdodCBub3cgdGhhdCBi
+bG9jayBsaXN0cyBvbmx5IHRoZSBvdGhlciBSWiB2YXJpYW50czoNCj4gDQo+ICAgLSBpZjoNCj4g
+ICAgICAgcHJvcGVydGllczoNCj4gICAgICAgICBjb21wYXRpYmxlOg0KPiAgICAgICAgICAgY29u
+dGFpbnM6DQo+ICAgICAgICAgICAgIGVudW06DQo+ICAgICAgICAgICAgICAgLSByZW5lc2FzLHI5
+YTA4ZzA0NS1jYW5mZA0KPiAgICAgICAgICAgICAgIC0gcmVuZXNhcyxyOWEwOWcwNDctY2FuZmQN
+Cj4gICAgICAgICAgICAgICAtIHJlbmVzYXMscnpnMmwtY2FuZmQNCj4gICAgIHRoZW46DQo+ICAg
+ICAgIHJlcXVpcmVkOg0KPiAgICAgICAgIC0gcmVzZXRzDQo+ICAgICAgICAgLSByZXNldC1uYW1l
+cw0KPiANCj4gVGhlIG1pbkl0ZW1zOiAyIGNvbnN0cmFpbnQgYWJvdmUgb25seSBhcHBsaWVzIHdo
+ZW4gcmVzZXRzIGlzIHByZXNlbnQuIFRoZSB0b3AtbGV2ZWwgcmVxdWlyZWQgbGlzdCBoYXMNCj4g
+bmVpdGhlciByZXNldHMgbm9yIHJlc2V0LW5hbWVzLiBBcyBhIHJlc3VsdCwgYW4gUlovRzNMIGNh
+bmZkIG5vZGUgd2l0aCBubyByZXNldHMgcGFzc2VzIGR0X2JpbmRpbmdfY2hlY2sNCj4gYW5kIGR0
+YnNfY2hlY2suDQo+IA0KPiBUaGUgZHJpdmVyIHdpbGwgbm90IGNhdGNoIHRoZSBtaXN0YWtlIGVp
+dGhlci4gcmNhcl9jYW5mZF9wcm9iZSgpIGdldHMgYm90aCByZXNldHMgYXMgb3B0aW9uYWw6DQo+
+IA0KPiAJZ3ByaXYtPnJzdGMxID0gZGV2bV9yZXNldF9jb250cm9sX2dldF9vcHRpb25hbF9leGNs
+dXNpdmUoZGV2LCAicnN0cF9uIik7DQo+IAkuLi4NCj4gCWdwcml2LT5yc3RjMiA9IGRldm1fcmVz
+ZXRfY29udHJvbF9nZXRfb3B0aW9uYWxfZXhjbHVzaXZlKGRldiwgInJzdGNfbiIpOw0KPiANCj4g
+SWYgdGhlIERUIGxlYXZlcyBvdXQgdGhlIHJlc2V0IGxpbmVzLCBib3RoIGhhbmRsZXMgY29tZSBi
+YWNrIE5VTEwuIFByb2JlIHN0aWxsIHN1Y2NlZWRzLCBidXQgdGhlDQo+IGNvbnRyb2xsZXIgaXMg
+bmV2ZXIgZXhwbGljaXRseSB0YWtlbiBvdXQgb2YgcmVzZXQuDQo+IA0KPiBUaGlzIGlzIHN0aWxs
+IHRoZSBjYXNlIGF0IHRoZSBlbmQgb2YgdGhlIHNlcmllcy4gVGhlIHJlcXVpcmVkLXJlc2V0cyBl
+bnVtIGRvZXMgbm90IGluY2x1ZGUgcjlhMDhnMDQ2LA0KPiBldmVuIGFmdGVyICJjYW46IHJjYXJf
+Y2FuZmQ6IEFkZCBzdXBwb3J0IGZvciBSZW5lc2FzIFJaL0czTCIgYWRkcyB0aGUgZHJpdmVyIG1h
+dGNoIGVudHJ5Lg0KPiANCj4gPiArDQo+ID4gKyAgICAgIHBhdHRlcm5Qcm9wZXJ0aWVzOg0KPiA+
+ICsgICAgICAgICJeY2hhbm5lbFszLTddJCI6IGZhbHNlDQo+ID4gKw0KPiANCj4gWyAuLi4gXQ0K
+PiANCj4gLS0NCj4gUGVuZ3V0cm9uaXggZS5LLiAgICAgICAgICAgICAgICAgfCBNYXJjIEtsZWlu
+ZS1CdWRkZSAgICAgICAgICB8DQo+IEVtYmVkZGVkIExpbnV4ICAgICAgICAgICAgICAgICAgIHwg
+aHR0cHM6Ly93d3cucGVuZ3V0cm9uaXguZGUgfA0KPiBWZXJ0cmV0dW5nIE7DvHJuYmVyZyAgICAg
+ICAgICAgICAgfCBQaG9uZTogKzQ5LTUxMjEtMjA2OTE3LTEyOSB8DQo+IEFtdHNnZXJpY2h0IEhp
+bGRlc2hlaW0sIEhSQSAyNjg2IHwgRmF4OiAgICs0OS01MTIxLTIwNjkxNy05ICAgfA0K
