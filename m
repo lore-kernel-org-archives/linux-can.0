@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1883E411E;
-	Fri, 16 Oct 2026 07:00:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57ED63E5A09;
+	Fri, 16 Oct 2026 07:00:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792134019; cv=none; b=lba54Cwz0hbuakBZrO2DX++IkvYnwUeVTvkk/A8DEhIcOnX/uUaBkLTHvqm8lGcxyGylNC/NvmdplHO3Fpe0uSIY0d9oKZaHSlv08aqsDRrBSEbcepQnMD+EFdnQZGi1Sp4+T+7nhNzEclkCxhGsaSX7hl0akbK0N5VSNw+BUYs=
+	t=1792134023; cv=none; b=kAeK1PWWZQRo84vj9CDYl+TzQZN7eSEdPDWp0jRn69fooTYWO19Buzdw7IUrdvJRgL3HCtACgd6ElhDp46gTYzeDjqZULfL6uwmNdgYzYGpP0gKXR72/G8F+EMvaMSbWsM7aArbOXTpwt2XVZGpDnLc/fS6hUhl8QAasDiXZkUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792134019; c=relaxed/simple;
-	bh=2pwiQhJYWfRnAPyxfKKXeka/GDNPXpsaD0C6YvXmX/s=;
+	s=arc-20240116; t=1792134023; c=relaxed/simple;
+	bh=Do6YjhU3I7HXW18+BJvR37KsjZCA905dHYlvgy77e7s=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=guAD71t7VI/lC71OTSxziwliLXHzkA8UPw14k3DW6tP4lIiol+zlrUC7cGE5BzbTzQEN+veqqHqsq/Rx28GxaMRUtHIBwlG5k/BHzEtPeXzo5Wui6B1hJVxqLpUImlPszbeQ3inXrAF7pXTbKd7D1gjKyJV8gfQLpKmGTDvV4+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RNd8zpYN; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=MhSDXXJsQQlR1ijQb5em6kkUJCWTbJGNi3EOh6+yirBRMII3/ceMpJqiVjCGhH4knQMLWKmjXP83IGgnOM2O3JLBOLGU1CtVC0hk4kW4NLmFHF1JV975w5crCgiuNRTMMUmDFUjUNfJEVkCc0xO/O+vvPLpighbeJLYlN6cl05M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ryz3Gyfj; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RNd8zpYN"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33F821F000C8;
-	Fri, 16 Oct 2026 07:00:08 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ryz3Gyfj"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C591F000C9;
+	Fri, 16 Oct 2026 07:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792134008;
-	bh=fqcz5DDxh0WRC+T23TktfLkYQ28AegR+Q6SHPEsgbp8=;
+	s=k20260515; t=1792134010;
+	bh=OF5ULa6IJWX3C2R4SV7E2KBsDCBTRDWyiPVgL8acyIw=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=RNd8zpYNop4JrsIsdvq2YfV6uOZMXOavEEC/H+io3GAO/JbUmssiR6Femac3YlIWI
-	 HNja3M5ZJULoMH128ksvoEggQGF2ciN0HWOgXzMa1F2H6qj7LbNfHGPYXAj8zKS/re
-	 38a0vuwjDDTRXLN2TpxMvo6Zq7VSWN/rJJWsCaEjqj0VvRHfmhsW7FmU497GjPOYE3
-	 lmtiNeFCndGsTtv3tX8bCLuhFSENLIV/oE/1ja6jxv0lCpfQps2DOtRt1WhwzMKXID
-	 i+yuVQIesWvy40bM5cAc+yEoMzjP62RLVG5dLqxwZ05xeCRX0jxgKoPKHBgLHIT/HH
-	 J7T8Xc2PuUt4Q==
-Subject: Re: [PATCH can-next v1 6/8] selftests: can: add J1939 TP/ETP
- multi-frame tests against CAN_RAW
+	b=Ryz3GyfjT/USJjFGQt3HzXxT8soHFKPIs3f88FkJFaU98fhLCYND3mIxqYh3jsHm2
+	 036uMI4ZhygyUMLTILtDfpkJtsRtdtLJK8p8FuidubHLjIh73ywWEeqR0k7e/TgcH5
+	 Jckj4boqVYwv5cjZ3288oHyCrPjei1sVdVivdhfjKj1mWRkg2s3I1cxIKZErRCgTI0
+	 uzdVXgPPMVFplwPuDN9yCWPgee0irjUswcFATWetCDT3TenRy/DfLuRAdHhyiQ8r2e
+	 UQd5jq1HzBA6xy501V4a2PLOMCCvxga1i15VhrApiTS7K6cW/9velzoFGZCjnnk8+F
+	 V7t9h0M+8ImAw==
+Subject: Re: [PATCH can-next v1 7/8] selftests: can: cover J1939 transport
+ abort and timeout paths
 From: netdev-bot+sashiko@kernel.org
 To: o.rempel@pengutronix.de
 Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
@@ -35,10 +35,10 @@ Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
  linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
  alexander.hoelzl@gmx.net, quchaosheng000406@163.com,
  penguin-kernel@I-love.SAKURA.ne.jp, kuba@kernel.org
-Date: Fri, 16 Oct 2026 07:00:07 +0000
-Message-ID: <179213400774.1406898.17439713276450411907@kernel.org>
-In-Reply-To: <20261014154435.3577983-7-o.rempel@pengutronix.de>
-References: <20261014154435.3577983-7-o.rempel@pengutronix.de>
+Date: Fri, 16 Oct 2026 07:00:09 +0000
+Message-ID: <179213400907.1406898.1428765402732531339@kernel.org>
+In-Reply-To: <20261014154435.3577983-8-o.rempel@pengutronix.de>
+References: <20261014154435.3577983-8-o.rempel@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -55,190 +55,145 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] Neither transmit test checks that the kernel completed the TX
-  session after the peer's EOMA.
-- [Low] The TP/ETP transmit tests accept DT frames shorter than 8 bytes,
-  which the kernel's own transport receiver rejects.
-- [Low] Both receive tests would accept an oversized reassembled datagram
-  as a correct round-trip.
-- [Low] The transmit tests would pass an out-of-order TP/ETP data stream,
-  because unpack_dt_into() reorders the packets before the payload is…
+- [Low] The file header comment in
+  tools/testing/selftests/net/can/test_j1939_multi.c (line 14) says the…
+- [Low] tp_tx_rts_cts_timeout and tp_rx_timeout in
+  tools/testing/selftests/net/can/test_j1939_multi.c time the kernel's…
 
 --
 
-selftests: can: add J1939 TP/ETP multi-frame tests against CAN_RAW
+selftests: can: cover J1939 transport abort and timeout paths
 
-This commit adds a kselftest that pairs a J1939 socket with a CAN_RAW
-peer and runs TP and ETP multi-frame transfers in both directions. The
-raw peer answers the kernel's RTS/CTS/DPO sequencing, and the reassembled
-payload is compared against the sent pattern. The test also checks the
-size fields of the EOMA the kernel sends on receive and of the RTS it
-sends on transmit.
+This commit adds TP-only edge-case tests to the J1939 multi-frame
+selftests. One test covers a per-CTS block limit, two cover the RTS/CTS
+and rx timeouts that should end a stalled session with a Connection
+Abort, and one covers a received Connection Abort cancelling an incoming
+session.
 
 > diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
-> new file mode 100644
-> index 000000000000..1f27ee58f48c
-> --- /dev/null
+> index 1f27ee58f48c..069a9c8690b5 100644
+> --- a/tools/testing/selftests/net/can/test_j1939_multi.c
 > +++ b/tools/testing/selftests/net/can/test_j1939_multi.c
-> @@ -0,0 +1,453 @@
+> @@ -5,7 +5,18 @@
 
 [ ... ]
 
-> +/*
-> + * Scatter a received DT frame's payload into buf at the offset implied by its
-> + * sequence number. base_pkt is the 0-based absolute packet the 1-based seq is
-> + * relative to (0 for TP, the DPO offset for ETP).
-> + */
-> +static void unpack_dt_into(uint8_t *buf, size_t total, unsigned int base_pkt,
-> +			   const struct can_frame *frame)
-> +{
-> +	unsigned int abs_pkt = base_pkt + (frame->data[0] - 1);
-> +	size_t off = (size_t)abs_pkt * 7;
+> + * Timing limitation: the abort/timeout tests wait with wide receive windows
+> + * rather than tight bounds, because timing over vcan under QEMU is not tightly
+> + * bounded. They catch a gross timer regression (e.g. a doubled timeout) but not
+> + * a subtle shift; see the per-test comments.
 
 [Severity: Low]
-unpack_dt_into() places each payload at the offset given by the frame's
-own sequence byte. Would the TX tests still pass if the kernel sent the
-DT frames out of order?
+Does tp_rx_timeout() really catch a doubled timeout, as this comment
+says? Its receive window is:
 
-In tp_tx_to_raw(), the loop increments got for every TP_DAT frame. It
-never checks that frame.data[0] == got + 1. The inner loop in
-etp_tx_to_raw() also never checks that the block-relative sequence
-equals i + 1.
+#define TP_RX_ABORT_WAIT_MS	(TP_T2_MS * 2)	/* generous; floor check is the real test */
 
-A permuted stream such as 2, 1, 3, ... with matching payloads would
-still rebuild the expected rx_buf, and the memcmp() would pass.
+That is 2500 ms, which is exactly a doubled T2.
 
-The kernel's own receiver only advances on in-order packets, in
-j1939_xtp_rx_dat_one():
+The window also starts late. tp_rx_timeout() takes t0 only after
+tp_rx_start_session() has dequeued the CTS. The kernel arms the rx timer
+earlier, when it sends the CTS:
 
-    if (packet == session->pkt.rx)
-        session->pkt.rx++;
-
-So a conforming receiver would stall or abort on such a stream. Could
-both TX loops assert the expected sequence number?
-
-[ ... ]
-
-> +static int tp_rx_roundtrip(FIXTURE_DATA(j1939_multi) *self,
-> +			   unsigned int max_cts_pkts, int *max_want_out,
-> +			   struct can_frame *eoma_out)
-> +{
-> +	uint8_t payload[TP_SIZE], rx_buf[TP_SIZE];
-
-[ ... ]
-
-> +	if (recv_timeout(self->j1939, rx_buf, sizeof(rx_buf),
-> +			 J1939_RECV_TIMEOUT_MS) != (int)sizeof(rx_buf))
-> +		return -1;
-> +	if (memcmp(payload, rx_buf, sizeof(payload)) != 0)
-> +		return -1;
-
-[Severity: Low]
-Can this length check catch a delivered datagram that is larger than
-TP_SIZE?
-
-recv_timeout() calls plain recv() into a buffer of exactly
-sizeof(rx_buf). j1939_sk_recvmsg() reports an oversized datagram only
-through msg_flags, and it returns the number of bytes copied:
-
-net/can/j1939/socket.c:j1939_sk_recvmsg() {
+net/can/j1939/transport.c:j1939_session_tx_cts() {
     ...
-	if (size < skb->len)
-		msg->msg_flags |= MSG_TRUNC;
-	else
-		size = skb->len;
+	ret = j1939_tp_tx_ctl(session, true, dat);
+	if (ret < 0)
+		return ret;
+    ...
+	j1939_tp_set_rxtimeout(session, 1250);
     ...
 }
 
-Suppose a reassembly regression delivered 203 bytes instead of 200
-(pkt.total * 7 rounding plus trailing 0xff padding). recv() would still
-return 200, and the memcmp() would pass.
+Suppose T2 regressed from 1250 to 2500 ms. The abort would go out at
+about T_cts + 2500 ms. The recv_ctl_cmd() deadline is t0 + 2500 ms, and
+t0 is later than T_cts. So the abort would arrive inside the window or
+right at its edge, and the test would usually pass. Any regression below
+2x (for example 1250 -> 2400 ms) would always pass.
 
-The same gap exists in etp_rx_from_raw(), where the recv_timeout() of
-ETP_SIZE bytes would not notice 6006 bytes delivered instead of 6000.
+The comment on tp_rx_timeout() itself ("the upper bound is a generous T2
+multiple, so timer shifts within it escape") also contradicts the header.
+Only tp_tx_rts_cts_timeout(), with its 2000 ms window, matches the
+header's claim. The last patch in this series doesn't change this file.
 
-The commit message says "the reassembled payload is checked byte for
-byte", but the length of the datagram that reaches the socket is never
-checked. Would it help to receive into a larger buffer, or to use
-recvmsg() and check for MSG_TRUNC?
+Could the header claim be limited to the TX test? Alternatively, the RX
+window could be set below 2 * T2, for example 2000 ms as in the TX test.
+
+> + *
+> + * Coverage limitation: a received Connection Abort is exercised RX-side only;
 
 [ ... ]
 
-> +TEST_F(j1939_multi, tp_tx_to_raw)
+> @@ -313,6 +332,69 @@ TEST_F(j1939_multi, tp_tx_to_raw)
+
+[ ... ]
+
+> +TEST_F(j1939_multi, tp_tx_rts_cts_timeout)
 > +{
-
-[ ... ]
-
-> +	while (got < num_pkts) {
-> +		ASSERT_EQ(recv_for_peer(self->raw, J1939_PF(TP_DAT), SA_PEER, &frame,
-> +					J1939_RECV_TIMEOUT_MS), 0)
-> +			TH_LOG("missing DT after %u/%u packets", got, num_pkts);
-> +		unpack_dt_into(rx_buf, TP_SIZE, 0, &frame);
-> +		got++;
-> +	}
+> +	uint8_t payload[TP_SIZE];
+> +	struct timespec t0, t1;
+> +	struct can_frame frame;
+> +	long elapsed_ms;
+> +
+> +	fill_pattern(payload, sizeof(payload));
+> +
+> +	ASSERT_EQ(tx_start_session(&self->j1939, self->ifindex, payload,
+> +				   sizeof(payload), self->raw, J1939_PF(TP_CTL),
+> +				   TP_CMD_RTS, &frame), 0);
+> +
+> +	/* Deliberately send no CTS; expect the kernel to abort within 2000 ms. */
+> +	clock_gettime(CLOCK_MONOTONIC, &t0);
+> +	ASSERT_EQ(recv_ctl_cmd(self->raw, J1939_PF(TP_CTL), SA_PEER, &frame,
+> +			       2000, TP_CMD_ABORT), 0)
+> +		TH_LOG("kernel did not send a Connection Abort within 2000 ms");
+> +	clock_gettime(CLOCK_MONOTONIC, &t1);
+> +	elapsed_ms = timespec_diff_ms(&t0, &t1);
+> +	/* must not fire instantly: the T3 timer has to run before the abort */
+> +	ASSERT_GE(elapsed_ms, 800)
+> +		TH_LOG("abort fired after only %ld ms, timer did not run", elapsed_ms);
 
 [Severity: Low]
-Should this loop also check that frame.can_dlc == 8 for each DT frame?
+Is t0 measured from the right reference point here? The kernel arms T3
+when it transmits the RTS, not when userspace reads it:
 
-match_peer_dest() in j1939_tests.h, used by recv_for_peer(), only
-compares the PF and PS fields of the CAN ID. unpack_dt_into() then
-copies at most the bytes still needed.
+net/can/j1939/transport.c:j1939_session_tx_rts() {
+    ...
+	ret = j1939_tp_tx_ctl(session, false, dat);
+	if (ret < 0)
+		return ret;
+    ...
+	} else {
+		j1939_tp_set_rxtimeout(session, 1250);
+	}
+    ...
+}
 
-The kernel's own receiver rejects short DT frames in
-j1939_xtp_rx_dat_one():
+tx_start_session() has already dequeued the RTS before
+clock_gettime(&t0) runs. So elapsed_ms is 1250 ms minus the delay
+between the kernel transmit and t0.
 
-    if (skb->len != 8) {
-        /* makes no sense */
-        abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
+If the test task stalls for about 450 ms or more before t0, the abort
+from a correct kernel arrives in under 800 ms. ASSERT_GE(elapsed_ms, 800)
+then fails even though the kernel is fine. If the stall is over 500 ms, a
+doubled T3 (2500 ms) would also fit inside the 2000 ms window. The
+comment above this test says that case should be caught.
 
-On transmit, full-length DT frames depend on the padding in
-j1939_tp_tx_dat():
+tp_rx_timeout() has the same pattern. j1939_session_tx_cts() arms the
+1250 ms rx timer right after it transmits the CTS. t0 is taken only after
+tp_rx_start_session() has consumed that CTS, and the same 800 ms floor
+applies.
 
-    if (j1939_tp_padding && len < 8)
-        memset(skb_put(skb, 8 - len), 0xff, 8 - len);
+The header comment says vcan timing under QEMU is not tightly bounded,
+and that is where stalls like this are most likely. Would kernel socket
+timestamps on the RTS/CTS frame and on the abort give a more reliable
+measure of the timer interval? The last patch in the series doesn't
+change this.
 
-If that padding regressed, the last DT frame would go out short. That is
-5 bytes for packet 29 with TP_SIZE, and 2 bytes for packet 858 with
-ETP_SIZE. rx_buf would still match, so both tp_tx_to_raw() and
-etp_tx_to_raw() would pass.
-
-> +
-> +	/* acknowledge with EOMA */
-> +	ctl_dat_init(dat, TP_CMD_EOMA);
-> +	put_le16(&dat[1], TP_SIZE);
-> +	dat[3] = num_pkts;
-> +	ASSERT_EQ(send_ctl_frame(self->raw, PRIO, TP_CTL, SA_LOCAL, SA_PEER,
-> +				 dat, PGN_DATA), 0);
-> +
-> +	EXPECT_EQ(memcmp(payload, rx_buf, sizeof(payload)), 0);
+> +	/* the T3 expiry must be reported as a timeout abort */
+> +	EXPECT_EQ(frame.data[1], ABORT_REASON_TIMEOUT);
 > +}
 
-[Severity: Low]
-After the EOMA is sent, the test only compares rx_buf, and rx_buf was
-filled from DT frames received before the EOMA went out. Does anything
-confirm that the kernel actually accepted the acknowledgement?
-
-The TX session is only acked and completed in j1939_xtp_rx_eoma_one():
-
-    session->pkt.tx_acked = session->pkt.total;
-    j1939_session_timers_cancel(session);
-    /* transmitted without problems */
-    j1939_session_completed(session);
-
-Several failures would still let tp_tx_to_raw() pass:
-
-  - a bad-PGN match in j1939_xtp_rx_cmd_bad_pgn()
-  - a failed session lookup
-  - a T3 timeout abort after the last DT
-
-etp_tx_to_raw() has the same gap: it ends right after sending the ETP
-EOMA. In both cases, teardown closes the sockets before any abort or
-completion can be observed.
-
-The commit message says the tests drive the round-trips "in both
-directions", but the last step on the TX side is never verified. Could
-the tests wait for SCM_TSTAMP_ACK on the j1939 socket, or check that no
-TP.Abort follows on the raw socket?
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261014154435.3577983-1-o.rempel%40pengutronix.de
