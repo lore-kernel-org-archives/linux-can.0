@@ -1,105 +1,180 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E18963451AA
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 01:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D7F82E62B7;
+	Fri, 16 Oct 2026 02:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792115647; cv=none; b=CqZXg/X5xA6kqua6TiFbVDEP4TxNBhLig7ggsIuzJqUnN/4qE8n019q3pLTbGi5jnEg82CQAl/Z1yWCEZlUisfOK3buZEGChZl+HFSPY+u8TaqtYQi1NTgcXKX2GCpXOVDbL/dg/LzFdBqdtLjVrj8g6KrfTvz/7ynQB5XeAxxY=
+	t=1792118224; cv=none; b=F1gOm+vRDuuYWRFXHQ8tFr9whu5kqaVZzeIcQER3fI9taWIHW6UMEwn2tSm2FmEHxjR4wrwTnQq4htTGAnqmPbqCvsvSZestZpL6w4vFrXH5n2BQr57Z4+PH5Cx/oVzNK2JjWWGIu4kIcIDmOdBu1Lhq/RTqflAO/ZwDT03tOdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792115647; c=relaxed/simple;
-	bh=qSoEyZpuTWGav8Wz12xyp1vvULlyL6fE7O5vbb4JhBk=;
-	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=UaLD/czrrE9ceKZcMEtJdQYCONifnL0hD2YnfyNPY9xRNjmMeUZDmLrbPbzJOvk7rdaKk+G7b/9I/7x+2d1olL6k8209C4rMhGyNKKG+jcQWDnoKebaQwQY58uiHrU3sk/fNLNboSKga5Et0Ch0VUfZ/NEBaVllp+vHkoNDTPBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RDVsaHnx; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792118224; c=relaxed/simple;
+	bh=JDB1oUU5OYZaYQslaG4fCmkP0uPRt0UTEkdyVnVes+g=;
+	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=sdy4E6pyhAJBBeyNSuKvyuTOdFXnEHqraiRqRrlZwsSWeTZYzUcNY9HvdnsFtv9MSGrjKgldAqOocdcoqZwGOIenMuCJ72wbusZTSO/Ntye4PtQloXZ3We4wEG156cMdYZ+dfJKMfCCyP8D5Z7XTYjARX3WF9XHfqmAQeg4OOn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Wni/1fiK; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RDVsaHnx"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C15F1F000C6;
-	Fri, 16 Oct 2026 01:54:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Wni/1fiK"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1D1F1F000C4;
+	Fri, 16 Oct 2026 02:37:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792115645;
-	bh=GpEXMfExBO3vCNpe7qyd9z1XcrL20fLyztBOe/2R4Vc=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=RDVsaHnxsunQj0Y8GI/yX8NXoto84HmFTvaidb7KH72Gn3KAPzzrkQaf3zlDSvHpF
-	 AlhRn9del4gaW39lLxdr2PRbxN2iidui5siCFE10B3cLuJChMJ2YhGvzrVrqkAawzM
-	 54/1rGGBmT6+Xyx5wwjJDsSz3KWxNs2/p0LkR6lwkZ5x/Vwy759VsIpwXyXk9Zt3iY
-	 drhij2Bz7tbcuUUp61m67Ycg11UQ9Ctzb2j7bX4skHcjMcMQvLIT7MtMT+VicwMhdv
-	 khPDVUQC3x6rBTJ3DjhDb2cxKS8pJUqv9KvpOD0M7m298pK1i9vCO2nISPGQ1HyjVg
-	 7fhVBZ3i6vi2g==
-Message-ID: <sashiko-outbox-173595@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 33/37] can: kvaser_pciefd: fix use-after-free
- in bec poll timer
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261015015336.816543-34-mkl@pengutronix.de>
-References: <20261015015336.816543-1-mkl@pengutronix.de>
- <20261015015336.816543-34-mkl@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 16 Oct 2026 01:54:04 +0000
+	s=k20260515; t=1792118223;
+	bh=hkraSBayj39YDT7jsKqIPrmfUyXqKkJ0nVZCMzuzfts=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=Wni/1fiKu3EWKjZqoSyDGMfh0OFkIiLyNd6u5X3LpbKFIs9et1KGjlf9eJ0eVA5VT
+	 3WcRwS+5aSxcdwgGbWpzzmSZGCDdk3o4Vbz91V9UloZpO9YH13/bpOMOlr2mrteG7+
+	 Fz7ykgcBQzZM2kVmQMi/NiLjhBu7e/QHoHZj9MXopdld6fB1Y5cYkc2o1dSKq2iKtt
+	 ko5UeNJkXmlqXilbkXAj2qOeJjhmcjghRlhX7jw06cAQ0+sRHvM21oDMz81VXvcG+0
+	 B/0wXLCuqMk+4cQXrkxzwPp6a5rOFdQ2Y0SbZIYqmyFlRvE7Pby2tnsmbJ+rtBzFV8
+	 QeoQs5N9fWZYQ==
+Subject: Re: [PATCH net-next 03/37] can: replace ARPHRD_CAN type checks with
+ can_get_ml_priv()
+From: netdev-bot+sashiko@kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, socketcan@hartkopp.net,
+ kurt.van.dijck@eia.be
+Date: Fri, 16 Oct 2026 02:37:02 +0000
+Message-ID: <179211822219.434549.7841003426566715206@kernel.org>
+In-Reply-To: <20261015015336.816543-4-mkl@pengutronix.de>
+References: <20261015015336.816543-4-mkl@pengutronix.de>
+X-sashiko-severity: Low
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] can: kvaser_pciefd: missing SRB DMA engine shutdown in remove()
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
+
+Low priority / nit picks for your consideration:
+
+- [Low] The commit message is partly wrong about where the crash happens.
+
+Pre-existing issues:
+- [Medium] This problem wasn't introduced by this patch, but isotp_bind()
+  (net/can/isotp.c) throws away the return value of both…
+
 --
 
-commit edee436281614056200b58c9acbef8d6681036cd
-Author: Fan Wu <fanwu01@zju.edu.cn>
+can: replace ARPHRD_CAN type checks with can_get_ml_priv()
 
-can: kvaser_pciefd: fix use-after-free in bec poll timer
+This patch replaces the remaining dev->type == ARPHRD_CAN checks in
+af_can, bcm, gw, isotp and raw with can_get_ml_priv(). The goal is to
+keep TUN/TAP devices that were retyped to ARPHRD_CAN via TUNSETLINK away
+from CAN code that dereferences a NULL dev->ml_priv.
 
-This commit replaces timer_delete() with timer_shutdown_sync() in the device
-removal and probe error paths. This ensures any running timer callbacks are
-completed before the CAN devices are freed, preventing a use-after-free.
+Link: https://patch.msgid.link/20261012164802.94113-1-socketcan@hartkopp.net
 
-Link: https://patch.msgid.link/20260818063832.383829-1-fanwu01@zju.edu.cn
+> The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
+> type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
+> netdevice passes the ARPHRD_CAN checks and triggers a NULL pointer
+> dereference when CAN filters are created and when they are removed,
+> e.g. by the CAN protocols' netdevice notifier handlers.
 
-> diff --git a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c b/drivers=
-/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-> index d8c9bfb202304..a0597db720864 100644
-> --- a/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
-> +++ b/drivers/net/can/kvaser_pciefd/kvaser_pciefd_core.c
+[Severity: Low]
+Is the "when CAN filters are created" part accurate for this tree?
+
+Before this patch, can_rx_register() already rejected such a device:
+
+net/can/af_can.c:can_rx_register() {
+    ...
+	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
+		return -ENODEV;
+    ...
+}
+
+can_rcv(), canfd_rcv() and canxl_rcv() also already tested
+!can_get_ml_priv(dev). That makes those four af_can.c hunks look like
+simplifications that don't change behavior. This holds for kernels
+that already carry commit 8aa59e3559494.
+
+The only unguarded path seems to be can_rx_unregister(). It checked only
+dev->type and then went on to:
+
+net/can/af_can.c:can_dev_rcv_lists_find() {
+	if (dev) {
+		struct can_ml_priv *can_ml = can_get_ml_priv(dev);
+		return &can_ml->dev_rcv_lists;
+    ...
+}
+
+The trigger that can actually be reached appears to be isotp.
+isotp_bind() checked only ARPHRD_CAN and ignored the -ENODEV from both
+can_rx_register() calls. It then set so->bound = 1 and set so->dev to
+the TUN device. A later teardown then crashed:
+
+isotp_release() / isotp_notify(NETDEV_UNREGISTER)
+  can_rx_unregister()
+    can_dev_rcv_lists_find()
+      &can_ml->dev_rcv_lists   <- can_ml == NULL
+
+raw, bcm and gw check the can_rx_register() return value and never
+record the device, so they don't seem to be able to reach this path.
+
+Could the commit message name the removal path (can_rx_unregister()
+reached via isotp_bind()) as the actual crash site, and say that the
+other af_can.c hunks are cleanups?
+
+The code change itself looks complete. No ARPHRD_CAN checks remain in
+net/can/ after this patch.
+
+> diff --git a/net/can/isotp.c b/net/can/isotp.c
+> index f5dc9d04bd68..6c28802c0605 100644
+> --- a/net/can/isotp.c
+> +++ b/net/can/isotp.c
+
 [ ... ]
-> @@ -1879,7 +1880,7 @@ static void kvaser_pciefd_remove(struct pci_dev *pd=
-ev)
->  		struct kvaser_pciefd_can *can =3D pcie->can[i];
-> =20
->  		unregister_candev(can->can.dev);
-> -		timer_delete(&can->bec_poll_timer);
-> +		timer_shutdown_sync(&can->bec_poll_timer);
->  		kvaser_pciefd_pwm_stop(can);
->  		kvaser_pciefd_devlink_port_unregister(can);
+
+> @@ -1610,7 +1611,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+>  		err = -ENODEV;
+>  		goto out;
+>  	}
+> -	if (dev->type != ARPHRD_CAN) {
+> +	if (!can_get_ml_priv(dev)) {
+>  		err = -ENODEV;
+>  		goto out_put_dev;
 >  	}
 
 [Severity: Medium]
-Could this teardown path leave the DMA engine actively running while
-unmapping the device registers?
+This issue was not introduced by this patch. Further down in
+isotp_bind(), the return values of both can_rx_register() calls are
+thrown away, and the socket is marked bound anyway:
 
-In kvaser_pciefd_probe(), the error path explicitly stops the DMA engine
-before clearing the PCI master bit:
+	if (isotp_register_rxid(so))
+		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
+				isotp_rcv, sk, "isotp", sk);
+	...
+	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+			isotp_rcv_echo, sk, "isotpe", sk);
 
-    err_teardown_can_ctrls:
-        kvaser_pciefd_teardown_can_ctrls(pcie);
-        iowrite32(0, KVASER_PCIEFD_SRB_ADDR(pcie) + KVASER_PCIEFD_SRB_CTRL_=
-REG);
-        pci_clear_master(pdev);
+	/* switch to new settings */
+	...
+	so->bound = 1;
 
-However, later in kvaser_pciefd_remove(), it proceeds directly to unmap
-registers via pci_iounmap() and disable the PCI device without writing 0 to
-KVASER_PCIEFD_SRB_CTRL_REG.
+With this patch the -ENODEV case can no longer happen here, because the
+device check now matches the one in can_rx_register(). can_rx_register()
+can still return -ENOMEM, though:
 
-Does the SRB DMA engine need to be explicitly shut down here as well to
-prevent PCIe AER errors or an inconsistent state across unbind/rebind cycle=
-s?
+net/can/af_can.c:can_rx_register() {
+    ...
+	rcv = kmem_cache_alloc(rcv_cache, GFP_KERNEL);
+	if (!rcv)
+		return -ENOMEM;
+    ...
+}
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261015015336.8165=
-43-1-mkl@pengutronix.de?part=3D33
+If that allocation fails, does bind() report success even though the
+socket never receives flow control or echo frames? Transfers would then
+fail through the FC/echo timeouts. On release or NETDEV_UNREGISTER,
+can_rx_unregister() would also print "can: receive list entry not
+found".
+
+Should isotp_bind() check these return values and unwind on failure?
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261015015336.816543-2-mkl%40pengutronix.de
