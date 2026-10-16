@@ -1,42 +1,42 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CE6E39EF0F;
-	Fri, 16 Oct 2026 02:37:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4EC397AFF;
+	Fri, 16 Oct 2026 02:37:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792118228; cv=none; b=Zda5D7+ygEb0wo87OJb1pKzIkPbjN/LVQtib6aqIwHm0BK+T/JnMMbZHXbj6lBZMQ+Mzy4+OJBBcy92U+0QonfEIJx4rS98NM42EONFpyjwvKf6yJD9yaKx4KK+O0RbrtEsqntNydCPQ/WtPgAUeZGLg2SzQ+27lqDgdw8MH1Hc=
+	t=1792118229; cv=none; b=s25TDg8+qf+HwPAZfEHfH6u6ALE+NUPzAVuB+byUq3CIjyvq+aGJoK/Dc9ngDwkjn7bOFu0vjhu/X5W5p0xjRlxjMzYJgBZfGoaE1Syn2emRgEeqAfhhTYFT6j4IeJwQQjO+In9VP58sk723gRob37uVr8jpTh4bQf3TanSEndk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792118228; c=relaxed/simple;
-	bh=rvFXOpzN1CT6wXMoyTATyXlBBlxkX8HFBohfqkAEjc0=;
+	s=arc-20240116; t=1792118229; c=relaxed/simple;
+	bh=XmbJZ5gVp+VdglOj++8Q85yj9yJmdz54MqAQoP2R/2Q=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=syvFQqxEolYX+KF/IO4Cx4bVRAq7piqp8v6E0IzM326JVzH63xQkEfh3JbShNdvPy3qEOv8HXuJ/zc9QijSV6laXHJgEvX8/i3yp2mtieI7B58ECnMJo7tvY2fN6DkUJiZGaatYVCGGyUU/v87TS5d+D3G9dxCMY+/0BLlDFbSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EfJgSx9N; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=qPj9UzZutaqUXofFhScA4+/HXyqfJm33jrS/3ZTm/azoVdzOdn4ZCza8l7XQH/mFIy+4xlsX9RSs2ZGB2vsBVeS/F68FeLjR9ood4pCdMkhcgjw2Gjt1bNbNecBVMahecnaCOgXSBGXtdHmknMfiVHnD+o1iwUEpDsGsAnVAafw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CsIS3kSy; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EfJgSx9N"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A26F41F000C4;
-	Fri, 16 Oct 2026 02:37:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CsIS3kSy"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE28C1F000C6;
+	Fri, 16 Oct 2026 02:37:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792118227;
-	bh=KpGzUkY68IOVX5Qp26PLD7y5jX9/auxJhj8C5sce3T8=;
+	s=k20260515; t=1792118228;
+	bh=e071zChG8ty1BKjvsY62Yo0YM+G7HEVzPLaqm31EDT8=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=EfJgSx9NU6eNhV+8GYnYrSyKFsQUJLfgtQcILWbDGJoKjx2AvYr00xDphSbCwbzZ6
-	 H91ozNE+BSh64PtHo8+JetLtbdrPMdgIdLxbGY366UxI+mBsjBc9B2fxRjIptOTkDO
-	 tS0fYFWvIpxuKX8GWYl1gq6ZkQwd49YyH83z6tg9aLXF+aXYXVIb8UYq+S44dSK6vH
-	 qyTgH9NbglhCaNUuDyK8RzJgbGArSUv2F9YkYedg+CWEe/KyAFZe+K4f1zo+5M9P/g
-	 MtbSb7A8zDuDPe6kR1rZOXdeJaG9SwrrsOWiH3pvnOo+LXtiwFRb6J6QuZR1h9jqCr
-	 e2PsVXCuE1r3w==
-Subject: Re: [PATCH net-next 11/37] dt-bindings: can: renesas,rcar-canfd:
- Document RZ/G3S SoC
+	b=CsIS3kSyqnD8RjdkYrmf5hoYSKS7Oaijq5J2tTNiuh1fS9kCduDjHs+dJTzzH+hjg
+	 HwphC9XD1BwV5Pmv/UKZef3GQ1pcM9Q8BUiDB6uxX1Xt0m8P1mjXDtCiDL/1dzGo4s
+	 SLqBTi+HRWcDzj0hplA0EeQpRRTAxKjEJSbvt7iAFiiQSKnQ4c8+AY+SqhdStH31Ji
+	 TH2aaX6FHHCBsDVFjJCKcmAOwIPc1H1xk/DGn18A8p34gIwsIa2ZVlNOgkB7LGOt/3
+	 no6oq/MnVZRatAw68OKiw8gELAKONRu6Sjl3WtQ1tfaB1Pz0i1wFT/iz3sTTiU5Rh+
+	 wdiUzGNTZ/hKg==
+Subject: Re: [PATCH net-next 15/37] can: rcar_canfd: Allow the CAN FD clock to
+ be sourced from fck
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, socketcan@hartkopp.net,
  kurt.van.dijck@eia.be
-Date: Fri, 16 Oct 2026 02:37:06 +0000
-Message-ID: <179211822620.434549.8950926089601634766@kernel.org>
-In-Reply-To: <20261015015336.816543-12-mkl@pengutronix.de>
-References: <20261015015336.816543-12-mkl@pengutronix.de>
+Date: Fri, 16 Oct 2026 02:37:07 +0000
+Message-ID: <179211822725.434549.10997986390340946212@kernel.org>
+In-Reply-To: <20261015015336.816543-16-mkl@pengutronix.de>
+References: <20261015015336.816543-16-mkl@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -53,78 +53,83 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The free-text description of renesas,no-can-fd in the binding
-  still says Classical CAN mode is available on every controller: 'The…
+- [Low] The patch adds a third fCAN source (fck/pclk, used when
+  `info->fcan_pclk` is set), but the clock comments and the boot banner…
 
 --
 
-dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
+can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
 
-This adds the renesas,r9a08g045-canfd compatible for the RZ/G3S CAN FD
-controller. It adds the compatible to the existing conditional blocks. It
-also forbids renesas,no-can-fd and renesas,fd-only on RZ/G3S, and makes
-assigned-clocks and assigned-clock-rates required only for the other SoCs.
+This commit adds an fcan_pclk hardware info flag. With it set, the fCAN
+clock falls back to the peripheral clock (fck) when the external can_clk
+is unavailable, the rate is divided by info->postdiv and can_clk is set
+to NULL. All existing rcar_canfd_hw_info instances now set fcan_pclk = 0
+explicitly.
 
-Link: https://patch.msgid.link/20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev
+Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wanadoo.fr
+Link: https://patch.msgid.link/20260902141544.565763-4-claudiu.beznea+renesas@tuxon.dev
 
-> diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> index b9d9dd7a7967..bbaaef8f4282 100644
-> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+> index b7c4fe3477ac..f9173774387f 100644
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
 
 [ ... ]
 
-> @@ -350,6 +352,20 @@ allOf:
->        properties:
->          reset-names: false
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: renesas,r9a08g045-canfd
-> +    then:
-> +      properties:
-> +        renesas,no-can-fd: false
+> @@ -2190,13 +2196,20 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+>  	 */
+>  	gpriv->can_clk = devm_clk_get(dev, "can_clk");
+>  	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
+> -		gpriv->can_clk = devm_clk_get(dev, "canfd");
+> -		if (IS_ERR(gpriv->can_clk))
+> -			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+> -					     "cannot get canfd clock\n");
+> +		if (info->fcan_pclk) {
+> +			fcan_freq = clk_get_rate(gpriv->clkp);
+> +			gpriv->can_clk = NULL;
+> +		} else {
 
 [Severity: Low]
-This isn't a bug, but should the renesas,no-can-fd description be updated
-to match this new constraint?
+Should the clock comments and the probe banner be updated for this new
+fck source? Several places still describe only the external and canfd
+clocks.
 
-The property description in the same binding still says that every
-controller can run in Classical CAN mode:
+The comment just above this block in rcar_canfd_probe() still says:
 
-  renesas,no-can-fd:
-    $ref: /schemas/types.yaml#/definitions/flag
-    description:
-      The controller can operate in either CAN-FD mode (default) or FD-Only
-      mode (RZ/{G2L,G3E} and R-Car Gen4) or Classical CAN mode. Specify this
-      property to put the controller in Classical CAN mode.
+	/* fCAN clock: Pick External clock. If not available fallback to
+	 * CANFD clock
+	 */
 
-With this patch the property is forbidden for renesas,r9a08g045-canfd,
-because RZ/G3S does not have the mode select bits.
+With fcan_pclk set, the fallback is fck (gpriv->clkp), not the canfd
+clock.
 
-The header comment in drivers/net/can/rcar/rcar_canfd.c says the same
-thing:
+In struct rcar_canfd_global, the field comments also don't cover this
+case. Here can_clk is NULL and the fCAN source is clkp:
 
- * To switch the controller to Classical CAN (CAN 2.0) only mode, add
- * "renesas,no-can-fd" optional property to the device tree node. A h/w reset is
- * also required to switch modes.
+	struct clk *can_clk;		/* fCAN clock */
+	...
+	bool extclk;			/* CANFD or Ext clock */
 
-Neither text is changed later in the series. Both now contradict the schema
-for RZ/G3S, and for RZ/G3L once it is added the same way.
+The banner at the end of rcar_canfd_probe() wasn't changed either:
 
-Could the description exclude the SoCs that only support CAN FD mode?
+	dev_info(dev, "global operational state (%s clk, %s mode)\n",
+		 gpriv->extclk ? "ext" : "canfd",
 
-> +        renesas,fd-only: false
-> +    else:
-> +      required:
-> +        - assigned-clocks
-> +        - assigned-clock-rates
-> +
->  unevaluatedProperties: false
->  
->  examples:
+On this path extclk stays false. Won't the banner then say "canfd clk"
+for a controller that has no canfd clock and runs from fck / postdiv?
+
+The later "can: rcar_canfd: Add support for Renesas RZ/G3S" patch sets
+.fcan_pclk = 1 in r9a08g045_hw_info. After that, an RZ/G3S board whose
+can_clk is missing or has a rate of 0 would print this label.
+
+Also, the new bitfield comment calls this clock pclk:
+
+	unsigned fcan_pclk:1;		/* Has fcan sourced from pclk. */
+
+The commit message and the code call it fck. Could the comment use the
+same name?
+
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261015015336.816543-2-mkl%40pengutronix.de
