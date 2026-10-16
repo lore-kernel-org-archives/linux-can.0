@@ -1,72 +1,69 @@
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1B951AFFF;
-	Fri, 16 Oct 2026 16:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792168121; cv=pass; b=i2UviBDzniTDcHIwVHriyBSWMHgd+bz83i4GUzuAIFkxA0KrLWw+cc2vCXpFYkBgDXjpFW5fiOHDenRlSXu07E6QFTTDaI7Atu5uuw92MW2RpOOWYcRXrUltL9PAsOhGX0ipw5QTO9DbIpUFXWdBX1TgVH+NqS7D3Wi3fYfbdlg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792168121; c=relaxed/simple;
-	bh=q0YN9f/O6gekCA9GBQ/dXTXX74d6AaeW0m3bItIOULM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p2akTqM+nQ5CZk1pwhgSm1Mjr3n4Sa0SvLr7ascWPCFXby9L2csvgH1DOdCji22zOjYVbWe9GQlBJw01ojpVd1Z5W33KNYcCdCPZ48lbTkda+aPskEdcxGvu5qSmDqxdeu9HZKEiFk8PbdIN899VKJE9Fx+xbw5CVtbtKA9qOw4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=VzQn0eJn; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=uEYyeDGJ; arc=pass smtp.client-ip=85.215.255.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D906145EF49
+	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 18:07:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792174035; cv=none; b=peMaqE6Ttkx8uWDhiwzB1ukrjzsIqQJs8atbZfeEZVF6yUemd3BejsJaAA983GYBLtozvHWtJ3glItUK22vbWwqnyKKh7AiFn+GXULPAHa+yrkm+FyN7+5rG3mNRc06wnq+kBFZFbyj/+Ed0WQjWVINeAuNCDthN6F01/7vasAA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792174035; c=relaxed/simple;
+	bh=eiUiQoopFUDmGr3UYzTNNVOWWiP061mHHX8TFI39C1E=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=f61LZsssaHFIhcBe7sNz3HVTJ/ufiaHNuyHQU/SU5LldUzE6dwkTLp66SF+POGv5u5ae2FKUPZwghtNv3kUmD4Chi73qzRVm8pkqvBtR4xQD+Jk92FG4isuQDkLzB/M366WJNXFLqyJdg0UROXdrSgkWvzx7LI8HFqqdNCKUJtY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=n9W2csVA; arc=none smtp.client-ip=209.85.128.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="VzQn0eJn";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="uEYyeDGJ"
-ARC-Seal: i=1; a=rsa-sha256; t=1792167989; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JTukwDQeMMKg1Dn/PkLyy3IZftV5iL1NnCJPm7HJPaOCYxg/5bYk3/PdYiPGD9UO6g
-    oKUem4gIMQiirhf5Y9nEoVj+oTo4LL+CdMIbQO08XX+IiR39VACFiv8oqvhUFRhuD2gm
-    G+Ns2FVoYI3AHN0iYuI0t3Vvbpe00GFWhsA+4eIwJbBVaFbPDm+UwtKvrFI7290374VR
-    O509ME3BSxE5jU8YI1Lrswwha5+l92+IXge6fqn20oGtn0mQaOgxXnS2ZCPtleZpdtmq
-    TuLBLxSO+/qNP0sKCZLyFJrdlPtYhJ/hvj8krhvTLoV7h4HQTzSq1SvHEAPK4hvQmxEd
-    q74Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792167989;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=JfCm0VuccaxZBDYiP4Hrji1cgGax0G5AJjs9mvMeuXE=;
-    b=Pf41fD3TN3IN3tyCzLGHBOFwGYECUYxUblYnklmdQ7QGmNZ5BDtwlyG/L4LoN+xL68
-    8/en3ySw2ecwkJMZFIuh5hcz1/eOERSMFgOho983YaRmwwUcOhMbQboTTPuY4az2QXsK
-    OhRFpSYFw6iHeqdGA3b82etGczXAWPYGzwcJF9VmVAZaxZv4+FSUx5QJp0eifjpmTJVN
-    2mrkUuAAthJupqx3vE3dLKfePz4vSRChGy4HRKNdZJR1ZmQ4xklD5D5Ims8y9XPKAdon
-    uiVJmj0QfUgl7zMzNVuFHOGiUgjYuWGsvytgNpaKkXvLoe94lgKpM3S7lQtK/8FIB+n4
-    zznA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792167989;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=JfCm0VuccaxZBDYiP4Hrji1cgGax0G5AJjs9mvMeuXE=;
-    b=VzQn0eJnD52+zA4GE7Ph6GBPBWbOakeakGx+DzSn0GrUqHWU3O60fi33MgOuPPcC1K
-    cQM6b2WXGPqeJUO0lVZbY47NLfIT78u1JYYFQYpsbAeiuKT8Q0JDyCsK1OmViTG2CsNh
-    UcgsC4xpZrJUWqJi+VZnE+VCDrtWEpxbldL3mg1M7wUWHI08n3rNpPxDxH8TAp5NfMTH
-    99Hezt1iP++wREthFubKhXCIeiPY5MzJv2qlwDuDYCw8BApqrDWU4iTZspuemF8mK2X6
-    GzOX0Anek5AtEGZ6V66j8mJDhhdJouQtaNUDXAIAC4Oya2QUJVhltR2IPQIZfZhXVjyS
-    KeKg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792167989;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=JfCm0VuccaxZBDYiP4Hrji1cgGax0G5AJjs9mvMeuXE=;
-    b=uEYyeDGJrhaFEc3kiCKpHZdNDho/5KOOwGfTNVxbQokeQjKrVhLDJQgKXPyglewUm5
-    MDvqOy+8QI+eBmctCgCA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29GGQSN9w
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 16 Oct 2026 18:26:28 +0200 (CEST)
-Message-ID: <99fed91f-dbc5-4029-8a34-7e0113acfe13@hartkopp.net>
-Date: Fri, 16 Oct 2026 18:26:21 +0200
+	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="n9W2csVA"
+Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4a022fee0caso2048345e9.1
+        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 11:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1792174030; x=1792778830; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=kwqs7mz873M28LjIKl95AhngO7J7OiavOqidLa4FRNc=;
+        b=n9W2csVAyuaKikh+vFpNLESUTmENQTssuKfmrIM+YSorZ1ZkkF5CMXJA8WDhb/T5MW
+         fxCUR5v3YRDv0gExwQijst1t38gDNULmLv9drqfSoyC8+ezQ+3klEGLnlVd65Mkfz1+W
+         Dj5QgGAj4UgRTVRdnVsWj/6GyuSO2MSIa/uaunLvqG0mSmTo6JpEkPtwA22CY3LD0iIj
+         3vg7L0qFpoLviFWL7Sm9bUILhSkcXsKRptFhlEFG862xfNHn1mbb+rnF+zYKDVOT5n9h
+         jp9HxbAocXwILVeAdA2rUpD4MEZSmTDIOU1d0zKWfkvtpgoY1xySyluU8/NzdWf6vK1U
+         BWdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792174030; x=1792778830;
+        h=content-transfer-encoding:content-type:in-reply-to:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=kwqs7mz873M28LjIKl95AhngO7J7OiavOqidLa4FRNc=;
+        b=NzqIzeKVojf96ErgI4258qMZ5qlvtPBPLBs8sJG77pAIxtjKti4md9O04i/strSYn/
+         S+zUarl5Hqqtomqfmmz1ATmOhEkEuy+DwMPC/gaIBVDb3rX59Tea/KTEbLY63Ue1A01X
+         0DuaU+gghW/2pxaRedefVf+/c2w+K7zlKoBBQWQIO7iJqz73odx22sIlufeLFDJWEgPs
+         srAIdvWWmWbsZytcqa9iGGkSwKd1WQuHxvhRWNUAt9v70eDbJBPAqb3kByTxe5pEHMRs
+         NvuMVT3svsobEAclUQvDL5Hg4nzwBYQ9oI9hI0b/KtLLkoszeEQa7M9PGruVNvU+Q3IB
+         yHFw==
+X-Forwarded-Encrypted: i=1; AKwUvBzJXsKtk+3b6RXQTJGFSEKPLB76NbBPxzMNrK6GTP4JiancPcyIwpJ6r+M0aJwxvqLnERJ8cWnoAck=@vger.kernel.org
+X-Gm-Message-State: AFq9FYIO5WUBOsRM0lttCk3tIK6/gFMOVRbWdCujZmlgXAmyLpxpVJ11
+	DNxO5YDOkrAW9X1fMZRjQrfsis6VlKSSDrAVhy5Ff8YPk8pUtoe9kX3aipoUnE8sXh4=
+X-Gm-Gg: AYBFou3doCNpYuRn4zsFTia1VgwD0pIDofjd2cFu8+Vvuyk0lbXRF0EiE0fVEYGDjRS
+	XXSvhKHgrF8ibIr0Iti8X1k9wOMTfl4IVYXHON5wO/OHMPIrwtulQRGjp+BEqvcJTLumG5Df0+b
+	QRGyEikkaijqyHIYBRNgSVMkohHNe8fREn/u7ADDvIUNpi69UmIMnD8Lbsdl5I5aMxXT3SFn+2e
+	n3ctoFdkgedWWg6QtFZoApp+ltvRSfwYnnDFlV0D8cS59LqyRubHG7MU6344hCvLQrN67RlIp89
+	Rwsx4LQa4TrYrE2XuqPzVPWTIYmIj4D1fwm+sumPyXJ9OAfA+AXT85mf2wXyAVYp+xG9zXH+ffQ
+	Bpwsz3WqvoN5uKTobvTj1Uv8Z8I+iHY7ZwF6h3KAcgMrCcfL0tJimI4xasm9gcyy6V/kAKE8kzu
+	gszTh0CW+L/g6Ne/yE8UqfDAHsx8cBfFcvPddEj67WzFIRptr0mOmsyHuCuWgrTPYq12rsh0uJ2
+	LHZDykOhwGwjjNrPg==
+X-Received: by 2002:a05:600c:6215:b0:4a1:d41b:5060 with SMTP id 5b1f17b1804b1-4a1d762b705mr10663215e9.22.1792174029743;
+        Fri, 16 Oct 2026 11:07:09 -0700 (PDT)
+Received: from [192.168.50.4] ([82.78.167.221])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1d3e2e602sm40486255e9.5.2026.10.16.11.07.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 16 Oct 2026 11:07:09 -0700 (PDT)
+From: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+X-Google-Original-From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
+Message-ID: <69826962-0c21-4616-9cd8-6eb0478a422b@tuxon.dev>
+Date: Fri, 16 Oct 2026 21:07:07 +0300
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -74,101 +71,193 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 08/37] can: bcm: fix filter removal race between
- release and netns change
-To: netdev-bot+sashiko@kernel.org, mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, kurt.van.dijck@eia.be
-References: <20261015015336.816543-9-mkl@pengutronix.de>
- <179211822523.434549.241636889494644724@kernel.org>
+Subject: Re: [PATCH v4 3/7] can: rcar_canfd: Allow the CAN FD clock to be
+ sourced from fck
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: mailhol@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
+ conor+dt@kernel.org, geert+renesas@glider.be, magnus.damm@gmail.com,
+ biju.das.jz@bp.renesas.com, fabrizio.castro.jz@renesas.com,
+ claudiu.beznea@tuxon.dev, linux-can@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+ <20260902141544.565763-4-claudiu.beznea+renesas@tuxon.dev>
+ <20261016-durable-meticulous-owl-7a9eed-mkl@pengutronix.de>
 Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179211822523.434549.241636889494644724@kernel.org>
+In-Reply-To: <20261016-durable-meticulous-owl-7a9eed-mkl@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
-On 16.10.26 04:37, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 3 potential
-> issue(s) to consider.
+On 10/16/26 16:39, Marc Kleine-Budde wrote:
+> On 02.09.2026 17:15:40, Claudiu Beznea wrote:
+>> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+>> index b7c4fe3477ac..f9173774387f 100644
+>> --- a/drivers/net/can/rcar/rcar_canfd.c
+>> +++ b/drivers/net/can/rcar/rcar_canfd.c
 > 
-> Critical: 0 · High: 0 · Medium: 2 · Low: 1
+> [...]
 > 
-> If you believe none of the issues are legitimate, please reply to each
-> issue of Medium severity or higher and explain why the AI is wrong.
-> If any of them are legitimate and you plan to respin, please let patchwork
-> know by including "pw-bot: cr" as a separate line at the end of your reply
-> (one such reply per series is enough).
+>>
+>>   /* Helper functions */
+>> @@ -2190,13 +2196,20 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+>>   	 */
+>>   	gpriv->can_clk = devm_clk_get(dev, "can_clk");
+>>   	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
+>              ^^^^^^^^^^^^^^^^^^^^^
 > 
-> - [Medium] The commit moves remove_proc_entry() ahead of rtnl_lock() so
->    that procfs readers cannot stall RTNL from close().
+> As sashiko.dev [1] pointed out here's no check for -EPROBE_DEFER.
 
-Fixed in new version.
+This looks to me a pre-existing issue.
 
-> - [Medium] bcm_release() now holds the global rtnl_mutex across the whole
->    rx_ops unregistration loop (rtnl_lock() at net/can/bcm.c:1951,…
+The newly added support does:
 
-See below.
+fcan_freq = clk_get_rate(gpriv->clkp);
 
-> - [Low] Stale comment in bcm_release().
+At the time this is executed the clkp was already checked against any errors 
+(above) including -EPROBE_DEFER.
 
-Fixed in new version.
-
-> 
-> --
-
+Please let me know what is the procedure now. Should I re-send the series and 
+address the fixes? Should I send follow up patches?
 
 > 
-> [Severity: Medium]
-> The global rtnl_mutex is now held across the whole rx_ops
-> unregistration loop, and userspace decides how long that loop is. Is
-> that intended?
+> [1] https://lore.kernel.org/all/sashiko-outbox-173569@kernel.org/
 > 
-> bcm_rx_setup() allocates one op per distinct (can_id, ifindex) with
-> kzalloc(OPSIZ, GFP_KERNEL). That allocation is not memcg accounted, and
-> there is no per-socket limit. bcm_connect() accepts can_ifindex == 0
-> without any device, and ANYDEV ops register on the all-devices list
-> through:
+> The netdev bot found more issues.
+> pw-bot: cr
 > 
-> 	err = can_rx_register(sock_net(sk), NULL, op->can_id,
+> regards,
+> Marc
 > 
-> So an unprivileged user with no CAN hardware can create a very large
-> number of ops.
+> --- Patch [15]: [PATCH net-next 15/37] can: rcar_canfd: Allow the CAN FD clock to be sourced from fck ---
+> commit 4ef0042ccf34457229cdde398a008bebaab54e69
+> Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 > 
-> On close(), each op calls can_rx_unregister(). That takes
-> spin_lock_bh(&net->can.rcvlists_lock) and walks the receiver hlist
-> linearly until it finds the match.
+> can: rcar_canfd: Allow the CAN FD clock to be sourced from fck
 > 
-> A second socket can put M newer entries in front of the victim's
-> entries in the same bucket. It can do this with EFF ids that fold to
-> the same bucket in effhash(), or with the same SFF id. RTNL would then
-> be held for roughly K * M list steps.
+> This commit adds an fcan_pclk hardware info flag. With it set, the fCAN
+> clock falls back to the peripheral clock (fck) when the external can_clk
+> is unavailable, the rate is divided by info->postdiv and can_clk is set
+> to NULL. All existing rcar_canfd_hw_info instances now set fcan_pclk = 0
+> explicitly.
 > 
-> Before this patch, the same loop ran only under lock_sock(sk), so only
-> the closing task paid for it. Now it would block netlink and netdev
-> configuration in every network namespace.
+> Link: https://lore.kernel.org/all/1d9719e3-10ff-4cd8-b729-55fea93c37ce@wanadoo.fr
+> Link: https://patch.msgid.link/20260902141544.565763-4-claudiu.beznea+renesas@tuxon.dev
 > 
-> The loop without cond_resched() already existed, and the attacker needs
-> a lot of kernel memory. What is new is that RTNL covers the whole loop.
+>> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+>> index b7c4fe3477ac..f9173774387f 100644
+>> --- a/drivers/net/can/rcar/rcar_canfd.c
+>> +++ b/drivers/net/can/rcar/rcar_canfd.c
 > 
+> [ ... ]
+> 
+>> @@ -2190,13 +2196,20 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+>>   	 */
+>>   	gpriv->can_clk = devm_clk_get(dev, "can_clk");
+>>   	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
+>> -		gpriv->can_clk = devm_clk_get(dev, "canfd");
+>> -		if (IS_ERR(gpriv->can_clk))
+>> -			return dev_err_probe(dev, PTR_ERR(gpriv->can_clk),
+>> -					     "cannot get canfd clock\n");
+>> +		if (info->fcan_pclk) {
+>> +			fcan_freq = clk_get_rate(gpriv->clkp);
+>> +			gpriv->can_clk = NULL;
+>> +		} else {
+> 
+> Discovered by: opus-5-5 · Missed by: gpt-6-astra, sashiko-gemini · Confirmed by: gpt-6-astra
+> Should the clock comments and the probe banner be updated for this new
+> fck source? 
+> Several places still describe only the external and canfd
+> clocks.
+> 
+> The comment just above this block in rcar_canfd_probe() still says:
+> 
+> 	/* fCAN clock: Pick External clock. If not available fallback to
+> 	 * CANFD clock
+> 	 */
+> 
+> With fcan_pclk set, the fallback is fck (gpriv->clkp), not the canfd
+> clock.
 
-Yes. This is a potential misuse scenario, which is far away from common
-usage patterns.
+We can update the comment as follows to comply with the clock name in the driver:
 
-In v3 RTNL only covers the removal of the device specific filters. The
-'any' CAN device filters live in the socket's namespace and are removed
-after rtnl_unlock().
+/* fCAN clock: Pick External clock. If not available fallback to
+  * CANFD clock or peripheral clock in case fcan_pclk = 1
+  */
 
-The need for RTNL when removing device specific filters comes from
-af_can protecting the per-device receive lists with the per-netns
-rcvlists_lock. This is not specific to bcm: raw_release() and
-raw_setsockopt(CAN_RAW_FILTER) already hold RTNL across up to 512
-filters per call. A per-device lock in struct can_dev_rcv_lists would
-remove this dependency for raw, isotp and bcm. This is something for a
-separate af_can rework in can-next.
+or, to comply with the clock name in the bindings:
 
-Best regards,
-Oliver
+/* fCAN clock: Pick External clock. If not available fallback to
+  * CANFD clock or fck in case fcan_pclk = 1
+  */
 
-pw-bot: cr
+Please let me know what is prefered.
+
+
+> 
+> In struct rcar_canfd_global, the field comments also don't cover this
+> case. Here can_clk is NULL and the fCAN source is clkp:
+> 
+> 	struct clk *can_clk;		/* fCAN clock */
+> 	...
+> 	bool extclk;			/* CANFD or Ext clock */
+
+There is already a pointer covering the clkp:
+
+         struct clk *clkp;		/* Peripheral clock */
+
+> 
+> The banner at the end of rcar_canfd_probe() wasn't changed either:
+> 
+> 	dev_info(dev, "global operational state (%s clk, %s mode)\n",
+> 		 gpriv->extclk ? "ext" : "canfd",
+> 
+> On this path extclk stays false. Won't the banner then say "canfd clk"
+> for a controller that has no canfd clock and runs from fck / postdiv?
+
+That could be updated with "clkp" to comply with the driver name or "fck" to 
+comply with the bindings or with "peripheral". Please let me know what is 
+preferred.
+
+> 
+> The later "can: rcar_canfd: Add support for Renesas RZ/G3S" patch sets
+> .fcan_pclk = 1 in r9a08g045_hw_info. After that, an RZ/G3S board whose
+> can_clk is missing or has a rate of 0 would print this label.
+> 
+> Also, the new bitfield comment calls this clock pclk:
+> 
+> 	unsigned fcan_pclk:1;		/* Has fcan sourced from pclk. */
+> 
+> The commit message and the code call it fck. 
+
+The commit message mentions: ...the CAN FD clock can be sourced either from fck
+(the peripheral clock) or from an external clock (can_clk).
+
+The driver uses clkp (peripheral clock) to refer to the fck.
+
+fck is the clock name used in the bindings. In bindings I kept the same clock 
+name and provided the proper phandle in the device tree. I don't consider we 
+should change the driver and the bindings for this thing. Please let me know 
+otherwise.
+
+The clock diagram is something like:
+
+                         +----+
+pclk (fck) -> 1/2 div ->|    |
+                         | mux|---> fcan
+ext  (can_clk)--------->|    |
+                         ++++++
+
+b/w () are the clock names in bindings.
+
+The full HW block with the clocks involved can be found at 
+https://github.com/claudiubeznea/logs/blob/master/canfd-clk.png
+
+Please let me know what is the procedure for this. Should I re-spin the series? 
+Should I send follow up patches?
+
+Thank you,
+Claudiu
+
