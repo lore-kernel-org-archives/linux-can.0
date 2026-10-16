@@ -1,131 +1,72 @@
-Received: from mail-dl1-f44.google.com (mail-dl1-f44.google.com [74.125.82.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-221-153.mail.qq.com (out203-205-221-153.mail.qq.com [203.205.221.153])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0563AFAF0
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 06:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A2B3955EB;
+	Fri, 16 Oct 2026 06:12:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792131134; cv=none; b=PRXBYndK3LtIXVUjk0zHoZUHRMMFKsWjqMKY2AOcJXTY5MkgRnYZA2m7lQIgxEtlQ4pUrwl/K7mzYIL23AKISo5JQyy6ih3qD9LkB1BaReUTERpxIqOWi6PDiVtOGdUK1tPDDzTaCghP/yR1gCKqaljZhxP2N/cdOtqVJz3d/v8=
+	t=1792131171; cv=none; b=vEhRLoxS4V5d7ckidIHHf10OifX6bmMHWPwdKHI/fLwX7Tgnq4GzKB21cdZv5lXUpAEShzFyieOxGQYkY/t+t+YdYTxessFUOho5B/R8hJxzofG79TVdcBYX+Fx2RzSM88A3hPfGG3rmqq6Q0hvxn8n842+wavsa4q6XZtFz/Hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792131134; c=relaxed/simple;
-	bh=+8u8/e19AlhCP7ZcBLcWul/CcxHHWq6yEhKJ5AL0gE0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZCYu4lXrcVVYQqz0BU1da2tERBer0icBiWu4z3YoK8hzDN7n6pe0wU+ub+lA78vbDJWUzADyjRGfI8/7bDgugZeRchLnm/QBrFtdaVaLY92yO3U9YFcVAQCC8/u+fFvPjuF0V0VC9ASBCd5UVgmbn5fbYjGxmRZ8wYk1VJm3UYQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWcpGR5S; arc=none smtp.client-ip=74.125.82.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1792131171; c=relaxed/simple;
+	bh=Pcl2raRurZjpnn71jo5ShnqVzuQQYqLtZN6GcJ3U5JE=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=AA+qzI9rv7NQL65Mn1NGrzcEZqQvIUJvdLwcrzwejNp+iqdcqUwGhmRBXrU2EDtgjQ7TlUyuSzDycWecusQFhQHKQW2IkKzLqggZo5t/MXPZMJG5RCMdVByW4xcdtT6j+2QXjL3iuNSDy9PWJV0bR9vp+wIT4UY+d8NyiN/vpuU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=AgUD//DG; arc=none smtp.client-ip=203.205.221.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWcpGR5S"
-Received: by mail-dl1-f44.google.com with SMTP id a92af1059eb24-16079d54c17so296625c88.0
-        for <linux-can@vger.kernel.org>; Thu, 15 Oct 2026 23:12:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792131132; x=1792735932; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=6X6wzE3wvd9aUwN+DPOs4etEkN6w/QmC2PVX0ZhQI4I=;
-        b=JWcpGR5SKJ8KhSGeUEb0cC3WqGM4zdczBxxh2RV3lrn/ETteOzc4qzWeq+RMkVvbnA
-         WJupc6/bhRPgNG4ojWqsZfTnjDdloD5mvAA6j96gujlA20IinA23O2IAoW0gNk1Erc0p
-         /Ps3gjfJ/iCmwbqLpI/eQ42Jl5olzqMlGfBvQxYpF4sTna7Z5oR66AmqovLobfmuiUcp
-         sHOSv1ruyp4YmszNBddBQvVlEq8F+VGfI93D6KNqPAdZx5bvncF+21OL/WtVVynYw+t/
-         saal3oWhDyVm4HSJtyAsBKpCWU2XPfKpNP7O4e1oteS1b0GCgbWmjmy10P39ebpCy4OK
-         um8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792131132; x=1792735932;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=6X6wzE3wvd9aUwN+DPOs4etEkN6w/QmC2PVX0ZhQI4I=;
-        b=UJ1J0sPjCI27zpaf3KVwmTWvSjG5cYuB7GdkepGnZc6AB5rt6mThrqwvTQjXEFWMG/
-         p9rpoVIzsRd9fzLt2dGqy5kEcqd7pppvgyOhCwON/0r+y3zwQWY4McTBRxbbsqd7Ws1J
-         o2XyEFNaS6z+WQE6ULjsbmYAGzYqlOF9eSI7zBeZKnBveB5qkdSUNXW2Kv+tLWgA/5C7
-         5IOgdgfVXHqHcQNs48G2QtVPmYWm+mx6DIzqn0MF1zp/4wDxI424lfNUsy8ZBD802eQh
-         V8LVZU/asea2NGnI+BvgIBLR727wHLE8m2PWJiwBhS0e9VLd28Ge7glpWSAaN+A/OWPU
-         lTlQ==
-X-Forwarded-Encrypted: i=1; AKwUvBw87TvgNYg5PjyfnCGSLpGVVj+N5v3hTg3rMaXxrvbOP5B4tM6u+sp40JAY5R6+rOo5mi2Z+pHRwXw=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLoFQDQm3IOIR25nMyUGi/9Uy9EGFKgH+IS/8/ne2iCW07BPps5
-	gB+gUgEoZe/tvwDyBvJNdHAIwenDGEoggqvW7bz0qDVfvg4ivYNjG10qlPnP1OIC
-X-Gm-Gg: AYBFou1TjEVL8JdW4NkPuZcSIl3kDB9mT5rXwYtJ8HI9GBdEnR5OMDIWHkmoo7M3Qii
-	r37jNhqFzP9KShTCToFBbpSaxBzt4vf1NHnSwHCM0+zRLUdoz6tTONPQJl6/2WF68OON2vJC9Eq
-	OVoYG2z/sjVXptbpNlJEy6RWLtUJhMYJgVwRPejmGC20J8JLNCK8yyhCUoLQzmV2OVOhuMslIu8
-	p8C6baDgPyR6i8N5Y6dOQPd5NNBTl6VtzivONB5MevZHSZ4yjzRSextLSjXCCHfReCyvdJNXbXb
-	VdDMv5vKxD58yGwKFFjnJyyEItxoImnOR9jCLabJJ44ylVnq023qfLTCYXtYzfDBNvMn5/Q6ztc
-	N5BkwW4g1PQ0Qhl3SmwpMfIEDwZX+a3vCc/9sJi0cP0ZlKx8cl/Q7/teI0p1rQhPJICivX8YvNu
-	92WEv3dE9EPMZLuDdWV8FT+YH5GopH3dGEAoE41xdo294IZcJ9wHrY5UkLaIISjbCml9dGavIOT
-	duwD1BaA9nZzXBpuyQ3DsU5AmMI/U5+iIfWXrirv8mf8As=
-X-Received: by 2002:a05:7022:ea8b:b0:16b:fdbf:4a9c with SMTP id a92af1059eb24-16bfdbf4fe6mr23611687c88.23.1792131132120;
-        Thu, 15 Oct 2026 23:12:12 -0700 (PDT)
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan ([183.242.161.82])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1831acba710sm3755480c88.13.2026.10.15.23.12.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2026 23:12:11 -0700 (PDT)
-From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: Chen-Yu Tsai <wens@kernel.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Nicolas Ferre <nicolas.ferre@microchip.com>,
-	Alexandre Belloni <alexandre.belloni@bootlin.com>,
-	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/4] can: ifi_canfd: don't discard the IRQ lookup error in probe
-Date: Fri, 16 Oct 2026 14:11:39 +0800
-Message-ID: <165f3fccb8faf1db65e8f18dbee4694c95266e31.1792118040.git.chaosheng.qu.linux@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1792118040.git.chaosheng.qu.linux@gmail.com>
-References: <cover.1792118040.git.chaosheng.qu.linux@gmail.com>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="AgUD//DG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1792131166; bh=Pcl2raRurZjpnn71jo5ShnqVzuQQYqLtZN6GcJ3U5JE=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=AgUD//DG+Ve4rkVO5rLSaJ0nFGR4PRADs9+UY8WLOn6FrUgaW971WOkfSUF+jQ6JJ
+	 UW3NApjr0PvEu4vQ9WtUCJjmJu3cxejj9z350qZvjh3TyJRc8S3kHDuUBYNtxYcGUI
+	 f+QIfzLb5jHn6KCpgAVBRdRhGcWg03PnnRlZeefU=
+X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
+X-QQ-XMAILINFO: NX669osvFPDayi99gxpQuJ5Uim9/ETPpsz/R+MRP7zb3FlPNPPqVrV/eiVBKBk
+	 0r937APbrZezjhcDpwft/cUe1KJ2ME0knMVgmKG8IjP4U159evzMO2hDea6wE8x/8I14tAsCc50YZ
+	 BUU4s9LdyZWCNUx1rz2s3X3HYsZ6Cw/kcTUpVcaqyA5IsCl+yJeNxI3iP+1muR4FxGzmaQVU6UX8D
+	 aaN2YXjbJS8IVBuN+XEJ1zG9ohgJxm6q/RaBx0Rzo7X5DKe4MO3XicjJ8jyyr3qZXB6OpjGEqRY/e
+	 g5m+wHv052bM5XAj0Mfx9gBofvroamiCxIrAUAPkYlGNoux5g9AmoAIOWYYIfoyvyiYrrMoHYcMDk
+	 7fxiy3vEUo0GDEEBzJECW+JZfX002qJaI+H/826KKBlixCv6ER1PD24srODetyKd6FCTYiKGIux8f
+	 7Q8Q1ZFFWixaju7lbEI6UFq9trM2hA/D27E/nhX+Hi0ZtCcNlKmbkxE6mIa+ULtBPqw7IaXtdx3Fb
+	 x0mnYcJeCnetApOLKQqMqX3rb6igl+2a9rMSD3yHaEP0zeu9L/CBswbv/OkuS7qNLOD8vvYrwzcTi
+	 mNhMUAysO2LAvs7AskJcYZu11gKXpflgj74g8YT3JmztovAJW3Q9rvgV9pXASJVk0kkRSKP03rvEO
+	 MIHq2hbRSvtV2A9CDjTEqcN5eNQJ5g8ekO1y/Hwp4sh0jitxI4sWe3uKu/Z+pfsZZWo54wr65QaDP
+	 QiWxLNBFEHbPRy5bE9pX68lJdn9dElpuFbie5Z5fqvU5AIZq959ou3ydgUpgtCtW3YfuzoV44++/g
+	 Mn/h/EKeS4dxCd47Et0Lhi+i4h5K7b7c3VM2oAN02ugFF+wo0IUEfhJpTaZ5oBHDo4KeaIt8uyDRu
+	 T/6f/I514tefHRpi10MqhfvR8GPtTlL9K3+Rub8YbldEHwLR9kQ20cFgrYhwJs1IZVur1lLzB09kg
+	 rklYQMyxCDStUfUkQF2v3iHwRXYczulBlB9895sKThQ5ws+ffGFTOHt1XqQUDRMnSUBkL+B4vMwxk
+	 ba3HMKOymbZGtghfAXC6CyUfS8EEiMTXaSNvH9ld33fdLN64=
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
+Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>
+Subject: Re: [PATCH net v2 3/3] can: rockchip_canfd: cancel bus-off restart before closing the device
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Fri, 16 Oct 2026 14:12:43 +0800
+X-Priority: 3
+Message-ID: <tencent_DD06B1C5CFBB499BE647A639417E0420C005@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <tencent_B15E13184DA04C4382F48848C006A2B51F06@qq.com>
+	<179208227384.1406898.15110321342582191229@kernel.org>
+In-Reply-To: <179208227384.1406898.15110321342582191229@kernel.org>
+X-QQ-mid: xmsezb41-0t1792131163tpme4vw8z
 
-ifi_canfd_plat_probe() maps every failure of platform_get_irq() to
--EINVAL:
-
-	irq = platform_get_irq(pdev, 0);
-	if (irq < 0)
-		return -EINVAL;
-
-The driver matches through an of_match_table ("ifi,canfd-1.0"), so
-of_irq_get() returns -EPROBE_DEFER while the interrupt controller has not
-been probed. The probe overwrites it and the driver core stops retrying,
-leaving the device unbound even though the interrupt controller appears
-later.
-
-Return the lookup error unchanged, as the neighbouring CAN platform
-drivers do, e.g. commit 057bd6168d98 ("can: cc770: don't discard the IRQ
-lookup error in probe").
-
-A device tree without an interrupt now reports -ENXIO rather than
--EINVAL; the driver core treats both as a failed probe.
-
-Build tested on x86_64.
-
-Assisted-by: LLM
-Signed-off-by: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
----
- drivers/net/can/ifi_canfd/ifi_canfd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
-index 9eecfe5a87bd..e0f5abd934fa 100644
---- a/drivers/net/can/ifi_canfd/ifi_canfd.c
-+++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
-@@ -965,7 +965,7 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
- 
- 	irq = platform_get_irq(pdev, 0);
- 	if (irq < 0)
--		return -EINVAL;
-+		return irq;
- 
- 	id = readl(addr + IFI_CANFD_IP_ID);
- 	if (id != IFI_CANFD_IP_ID_VALUE) {
--- 
-2.43.0
+SGksCgo+IC3CoFtNZWRpdW1dwqBjYW46wqByb2NrY2hpcF9jYW5mZDrCoGRpc2FibGVfaXJx
+KCnCoGNhbGxlZMKgb27CoHNoYXJlZMKgSVJRCj4gCj4gUHJlLWV4aXN0aW5nwqBpc3N1ZXM6
+Cj4gLcKgW0hpZ2hdwqBUaGlzwqBwcm9ibGVtwqB3YXNuJ3TCoGludHJvZHVjZWTCoGJ5wqB0
+aGlzwqBwYXRjaCzCoGJ1dMKgdGhlwqByZXN0YXJ0Cj4gwqDCoGNhbGxiYWNrwqB0aGXCoHBh
+dGNowqBtb2RpZmllc8KgcmUtaW5pdGlhbGl6ZXPCoGHCoGRlbGF5ZWRfd29ya8KgdGhhdMKg
+bWF54oCmCgpCb3RoIGlzc3VlcyB3ZXJlIGFkZHJlc3NlZCBpbiB2MywgYW5kIHRoZSBmaXhl
+cyBhcmUgcmV0YWluZWQgaW4gdjUuCgpSZWdhcmRzLApDdW5oYW8gTHUK
 
