@@ -1,47 +1,83 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dy1-f180.google.com (mail-dy1-f180.google.com [74.125.82.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57ED63E5A09;
-	Fri, 16 Oct 2026 07:00:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9C63B42C9
+	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 07:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792134023; cv=none; b=kAeK1PWWZQRo84vj9CDYl+TzQZN7eSEdPDWp0jRn69fooTYWO19Buzdw7IUrdvJRgL3HCtACgd6ElhDp46gTYzeDjqZULfL6uwmNdgYzYGpP0gKXR72/G8F+EMvaMSbWsM7aArbOXTpwt2XVZGpDnLc/fS6hUhl8QAasDiXZkUI=
+	t=1792135032; cv=none; b=TB7x2LJjndnWrdu440g+0+MxcJdgeLolw176JCS1BKrPEy7l4WBa169RdwgnXtiz3ChP3k+vT3tW+j7FTW8ndFzXfebMM8fKbh8Lhbquo4/wJtVEG7pGx4Yy5UqTkBNkLpVlIDMxCV1C4Zf0QuS6UvBHVd4PDG6H/2BMz2zHhN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792134023; c=relaxed/simple;
-	bh=Do6YjhU3I7HXW18+BJvR37KsjZCA905dHYlvgy77e7s=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MhSDXXJsQQlR1ijQb5em6kkUJCWTbJGNi3EOh6+yirBRMII3/ceMpJqiVjCGhH4knQMLWKmjXP83IGgnOM2O3JLBOLGU1CtVC0hk4kW4NLmFHF1JV975w5crCgiuNRTMMUmDFUjUNfJEVkCc0xO/O+vvPLpighbeJLYlN6cl05M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ryz3Gyfj; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792135032; c=relaxed/simple;
+	bh=WYIoHRWahmE2fvmt+avDjJLVf4iUC15MrcJZtroluhw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=JYxAbD8iaNVGwZt7u2Q/J/yMtTdGlDoWBKzUUVc1NdZmA+d9vZHDhZMNPu27ZI/jLS+JiYjsFYLP5BGhdAjRu15p8t9pMNUiQWANXEOxVnofpZNA203/MXGG1wOkDqWDX7mG2IP+Hr2t3eS1XplFm4osxWmhh7RCHd0wia9cI7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljB4bnyv; arc=none smtp.client-ip=74.125.82.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ryz3Gyfj"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C591F000C9;
-	Fri, 16 Oct 2026 07:00:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792134010;
-	bh=OF5ULa6IJWX3C2R4SV7E2KBsDCBTRDWyiPVgL8acyIw=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Ryz3GyfjT/USJjFGQt3HzXxT8soHFKPIs3f88FkJFaU98fhLCYND3mIxqYh3jsHm2
-	 036uMI4ZhygyUMLTILtDfpkJtsRtdtLJK8p8FuidubHLjIh73ywWEeqR0k7e/TgcH5
-	 Jckj4boqVYwv5cjZ3288oHyCrPjei1sVdVivdhfjKj1mWRkg2s3I1cxIKZErRCgTI0
-	 uzdVXgPPMVFplwPuDN9yCWPgee0irjUswcFATWetCDT3TenRy/DfLuRAdHhyiQ8r2e
-	 UQd5jq1HzBA6xy501V4a2PLOMCCvxga1i15VhrApiTS7K6cW/9velzoFGZCjnnk8+F
-	 V7t9h0M+8ImAw==
-Subject: Re: [PATCH can-next v1 7/8] selftests: can: cover J1939 transport
- abort and timeout paths
-From: netdev-bot+sashiko@kernel.org
-To: o.rempel@pengutronix.de
-Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
- shuah@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- alexander.hoelzl@gmx.net, quchaosheng000406@163.com,
- penguin-kernel@I-love.SAKURA.ne.jp, kuba@kernel.org
-Date: Fri, 16 Oct 2026 07:00:09 +0000
-Message-ID: <179213400907.1406898.1428765402732531339@kernel.org>
-In-Reply-To: <20261014154435.3577983-8-o.rempel@pengutronix.de>
-References: <20261014154435.3577983-8-o.rempel@pengutronix.de>
-X-sashiko-severity: Low
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljB4bnyv"
+Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-30b6dad2382so14704263eec.0
+        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 00:17:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792135030; x=1792739830; darn=vger.kernel.org;
+        h=mime-version:content-transfer-encoding:content-type:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=WYIoHRWahmE2fvmt+avDjJLVf4iUC15MrcJZtroluhw=;
+        b=ljB4bnyvKLk/t8VWqupEePEo8p86nyEJndWQkJ+twE7aQsnLkR1ip0bPAF+i9J/Ewx
+         Y+7ALoeK8MWK1FbCZfM5r1kJIwqu5Zx8tnJ84LZpUt2xxTeVjWlDKrMNzW47WBsWBAOi
+         DUqddf0ExPC866enxMpjhX7vPULYdXzmLYn/Ztg80GQCvN9KReZqvbTeB3yaFHIwmAb5
+         ftMCLH4y5ClGAhFXBuR1GndE+VIgCXFXDNoURkMC1q+9b02V6693dHpC+Z5DVW90pyeQ
+         PGhZ7g5uM/VPhGsgJj7m/q/w/SuRYoWcIyKphiGqSeuQs44EgzLearY80ZP1l7TVGVsd
+         tLuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792135030; x=1792739830;
+        h=mime-version:content-transfer-encoding:content-type:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=WYIoHRWahmE2fvmt+avDjJLVf4iUC15MrcJZtroluhw=;
+        b=RYGs0y3H5knCik4vYHkSCj76n45JSz4BAVmBhA4LjdHunJXSfkz97K7WU1gILhothV
+         gD4vYaJkgVDOtPy9z88lFYLt+HVwksubrD5lYLTEVCi1PZIMm6XR5Jt66BonOyotjdtC
+         lPXR0QtWzSwOwB1Px/kZQA1vnGS8SlFuN3xyQBUVwh+NwrMiggbVVVyWP3Wz9ugu9Gvk
+         E364uzh8BKPCMjPhoictz39Oyc2CuArQHe08f0lTn8VU9ORFFjM98YnjqJ30ON+19yH+
+         RI/QrgpccKYmGh1yKPbFNnTqNpTjjOC0zAZwazqFK0suV1Ecml+WTRvhYQ6vGEyZI5qo
+         5w7Q==
+X-Forwarded-Encrypted: i=1; AKwUvBzieMR8T/Kq5HENo5LaddE6lIWKnSr1RggbkwLxJ9utO/J+KzpM397ZSPGCOh/nJTMBQxdGEACPr9g=@vger.kernel.org
+X-Gm-Message-State: AFq9FYLeAGiZZZRluB0p0vmL7NlG1mI3EmdsTqx9KQqcvGrM7PSZM4Lr
+	UOAaiyw42l+bSqy7c5BKgEzY9ffM3UGtjmRHbbQFOYtJMlywy53ybJus
+X-Gm-Gg: AYBFou1OzNUydIsuWtpWUNLtw6Hq7D18PNKOwSul8zu3+HBhoAHBKyfJcNeJWf0qPde
+	CFeDX/7JkIs8IMefAgGt+hed74g7fS80Vgjmkmo7uo2RXJ8TcDd0fMFM6riu2/hJK2ZWnwrnJbQ
+	K3ok94y+fbSmD5JlpjGSkLPIO7RZ+5SysIyQ/BnIWnG7DRHzO4INg7FyBO0WjzIX+jUevap0wm2
+	0dyURyZ8knrX+A86S07I/xRZ0q/KL2XFqTfWmEUvNgM7Pokw+gi9v6C8dSFyboZQ0kFUL+j0GHx
+	sDWcANEiRsfKCxjQqFhSxeFekkMKFzNPdJ4HxpHf3y/irg8iuRI2+UodSBtxSv/DBNWooaW8VvT
+	ZXeJqT2EF/8SYRrx1hk43gP6rSqVRbpXLX3jWq4YODyeSovUdblFumSf3L6TaB05MJJM4M6IET/
+	p7nmLvtbTgcYuy7v2+lnF6U591U+EPSoSFnBliu6KBzlTGoyJ2sLH80XhgPP6x8eDXE2Sq
+X-Received: by 2002:a05:7301:9c91:b0:35f:8c5d:5928 with SMTP id 5a478bee46e88-35f8c5d5bc7mr4763847eec.30.1792135029915;
+        Fri, 16 Oct 2026 00:17:09 -0700 (PDT)
+Received: from [127.0.1.1] ([183.242.161.82])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36082784ec8sm3973233eec.22.2026.10.16.00.17.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 16 Oct 2026 00:17:09 -0700 (PDT)
+From: chaosheng.qu.linux@gmail.com
+To: netdev-bot+sinfo@kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>, Chen-Yu Tsai <wens@kernel.org>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Samuel Holland <samuel@sholland.org>,
+ Nicolas Ferre <nicolas.ferre@microchip.com>,
+ Alexandre Belloni <alexandre.belloni@bootlin.com>,
+ Claudiu Beznea <claudiu.beznea@tuxon.dev>, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/4] can: don't discard the platform_get_irq()
+ error in probe
+Date: Fri, 16 Oct 2026 15:16:59 +0800
+Message-ID: <179213501981.212310.9988031427961239592@gmail.com>
+In-Reply-To: <179213131512.408196.11368789495251891862@kernel.org>
+References: <cover.1792118040.git.chaosheng.qu.linux@gmail.com>
+ <179213131512.408196.11368789495251891862@kernel.org>
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -49,151 +85,19 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Hi,
 
-Low priority / nit picks for your consideration:
+The issue was identified during development while reviewing the probe error h=
+andling in these CAN platform drivers. Manual inspection showed that negative=
+ results from platform_get_irq() were being replaced with fixed error codes. =
+For drivers matched via OF, this can discard -EPROBE_DEFER and prevent the dr=
+iver core from retrying once the interrupt controller becomes available. I co=
+mpared these paths with platform_get_irq() semantics and neighboring drivers.
 
-- [Low] The file header comment in
-  tools/testing/selftests/net/can/test_j1939_multi.c (line 14) says the…
-- [Low] tp_tx_rts_cts_timeout and tp_rx_timeout in
-  tools/testing/selftests/net/can/test_j1939_multi.c time the kernel's…
+This was not a production hit or a syzbot report, and it was not found by a s=
+tatic-analysis scan. LLM assistance was used in preparing the patches, as dis=
+closed by the Assisted-by tag. The controllers were unavailable for runtime t=
+esting, so the series was build-tested only.
 
---
-
-selftests: can: cover J1939 transport abort and timeout paths
-
-This commit adds TP-only edge-case tests to the J1939 multi-frame
-selftests. One test covers a per-CTS block limit, two cover the RTS/CTS
-and rx timeouts that should end a stalled session with a Connection
-Abort, and one covers a received Connection Abort cancelling an incoming
-session.
-
-> diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
-> index 1f27ee58f48c..069a9c8690b5 100644
-> --- a/tools/testing/selftests/net/can/test_j1939_multi.c
-> +++ b/tools/testing/selftests/net/can/test_j1939_multi.c
-> @@ -5,7 +5,18 @@
-
-[ ... ]
-
-> + * Timing limitation: the abort/timeout tests wait with wide receive windows
-> + * rather than tight bounds, because timing over vcan under QEMU is not tightly
-> + * bounded. They catch a gross timer regression (e.g. a doubled timeout) but not
-> + * a subtle shift; see the per-test comments.
-
-[Severity: Low]
-Does tp_rx_timeout() really catch a doubled timeout, as this comment
-says? Its receive window is:
-
-#define TP_RX_ABORT_WAIT_MS	(TP_T2_MS * 2)	/* generous; floor check is the real test */
-
-That is 2500 ms, which is exactly a doubled T2.
-
-The window also starts late. tp_rx_timeout() takes t0 only after
-tp_rx_start_session() has dequeued the CTS. The kernel arms the rx timer
-earlier, when it sends the CTS:
-
-net/can/j1939/transport.c:j1939_session_tx_cts() {
-    ...
-	ret = j1939_tp_tx_ctl(session, true, dat);
-	if (ret < 0)
-		return ret;
-    ...
-	j1939_tp_set_rxtimeout(session, 1250);
-    ...
-}
-
-Suppose T2 regressed from 1250 to 2500 ms. The abort would go out at
-about T_cts + 2500 ms. The recv_ctl_cmd() deadline is t0 + 2500 ms, and
-t0 is later than T_cts. So the abort would arrive inside the window or
-right at its edge, and the test would usually pass. Any regression below
-2x (for example 1250 -> 2400 ms) would always pass.
-
-The comment on tp_rx_timeout() itself ("the upper bound is a generous T2
-multiple, so timer shifts within it escape") also contradicts the header.
-Only tp_tx_rts_cts_timeout(), with its 2000 ms window, matches the
-header's claim. The last patch in this series doesn't change this file.
-
-Could the header claim be limited to the TX test? Alternatively, the RX
-window could be set below 2 * T2, for example 2000 ms as in the TX test.
-
-> + *
-> + * Coverage limitation: a received Connection Abort is exercised RX-side only;
-
-[ ... ]
-
-> @@ -313,6 +332,69 @@ TEST_F(j1939_multi, tp_tx_to_raw)
-
-[ ... ]
-
-> +TEST_F(j1939_multi, tp_tx_rts_cts_timeout)
-> +{
-> +	uint8_t payload[TP_SIZE];
-> +	struct timespec t0, t1;
-> +	struct can_frame frame;
-> +	long elapsed_ms;
-> +
-> +	fill_pattern(payload, sizeof(payload));
-> +
-> +	ASSERT_EQ(tx_start_session(&self->j1939, self->ifindex, payload,
-> +				   sizeof(payload), self->raw, J1939_PF(TP_CTL),
-> +				   TP_CMD_RTS, &frame), 0);
-> +
-> +	/* Deliberately send no CTS; expect the kernel to abort within 2000 ms. */
-> +	clock_gettime(CLOCK_MONOTONIC, &t0);
-> +	ASSERT_EQ(recv_ctl_cmd(self->raw, J1939_PF(TP_CTL), SA_PEER, &frame,
-> +			       2000, TP_CMD_ABORT), 0)
-> +		TH_LOG("kernel did not send a Connection Abort within 2000 ms");
-> +	clock_gettime(CLOCK_MONOTONIC, &t1);
-> +	elapsed_ms = timespec_diff_ms(&t0, &t1);
-> +	/* must not fire instantly: the T3 timer has to run before the abort */
-> +	ASSERT_GE(elapsed_ms, 800)
-> +		TH_LOG("abort fired after only %ld ms, timer did not run", elapsed_ms);
-
-[Severity: Low]
-Is t0 measured from the right reference point here? The kernel arms T3
-when it transmits the RTS, not when userspace reads it:
-
-net/can/j1939/transport.c:j1939_session_tx_rts() {
-    ...
-	ret = j1939_tp_tx_ctl(session, false, dat);
-	if (ret < 0)
-		return ret;
-    ...
-	} else {
-		j1939_tp_set_rxtimeout(session, 1250);
-	}
-    ...
-}
-
-tx_start_session() has already dequeued the RTS before
-clock_gettime(&t0) runs. So elapsed_ms is 1250 ms minus the delay
-between the kernel transmit and t0.
-
-If the test task stalls for about 450 ms or more before t0, the abort
-from a correct kernel arrives in under 800 ms. ASSERT_GE(elapsed_ms, 800)
-then fails even though the kernel is fine. If the stall is over 500 ms, a
-doubled T3 (2500 ms) would also fit inside the 2000 ms window. The
-comment above this test says that case should be caught.
-
-tp_rx_timeout() has the same pattern. j1939_session_tx_cts() arms the
-1250 ms rx timer right after it transmits the CTS. t0 is taken only after
-tp_rx_start_session() has consumed that CTS, and the same 800 ms floor
-applies.
-
-The header comment says vcan timing under QEMU is not tightly bounded,
-and that is where stalls like this are most likely. Would kernel socket
-timestamps on the RTS/CTS frame and on the abort give a more reliable
-measure of the timer interval? The last patch in the series doesn't
-change this.
-
-> +	/* the T3 expiry must be reported as a timeout abort */
-> +	EXPECT_EQ(frame.data[1], ABORT_REASON_TIMEOUT);
-> +}
-
-[ ... ]
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261014154435.3577983-1-o.rempel%40pengutronix.de
+Thanks,
+Chaosheng
