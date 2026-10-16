@@ -1,103 +1,118 @@
-Received: from mail-dy1-f180.google.com (mail-dy1-f180.google.com [74.125.82.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9C63B42C9
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 07:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792135032; cv=none; b=TB7x2LJjndnWrdu440g+0+MxcJdgeLolw176JCS1BKrPEy7l4WBa169RdwgnXtiz3ChP3k+vT3tW+j7FTW8ndFzXfebMM8fKbh8Lhbquo4/wJtVEG7pGx4Yy5UqTkBNkLpVlIDMxCV1C4Zf0QuS6UvBHVd4PDG6H/2BMz2zHhN8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792135032; c=relaxed/simple;
-	bh=WYIoHRWahmE2fvmt+avDjJLVf4iUC15MrcJZtroluhw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JYxAbD8iaNVGwZt7u2Q/J/yMtTdGlDoWBKzUUVc1NdZmA+d9vZHDhZMNPu27ZI/jLS+JiYjsFYLP5BGhdAjRu15p8t9pMNUiQWANXEOxVnofpZNA203/MXGG1wOkDqWDX7mG2IP+Hr2t3eS1XplFm4osxWmhh7RCHd0wia9cI7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ljB4bnyv; arc=none smtp.client-ip=74.125.82.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7B2831326A;
+	Fri, 16 Oct 2026 08:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=185.203.200.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792139176; cv=pass; b=jpONNW5jK33TICA2j9oWLHDbpaaPM6wQ70+1ULK1fo0BtEMKa4/YDfr4M4twE+bZ5/Ld13LPA43X54C90nuJR5/MP763vJ4Uq9mL9G6jDu9qbm2L/cyeS4YPYoUhPP3drsG8FL15Hk4GokynEr1YTeSnaLKz9pGnfeax8JUW4AM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792139176; c=relaxed/simple;
+	bh=uBi4KCZR9BjxTpBL1OMvFzCzmq18LtaxZNaptSiCy7o=;
+	h=MIME-Version:Content-Type:Subject:From:To:Cc:In-Reply-To:
+	 References:Date:Message-Id; b=H0CsYYzzy9a/JZrdKmXkAY1prcVhHnVOZa+qK9SLAFln1oQDBL4OZyjo/kLTSKaWOV2tL8b1X7hjiQd/Usz+iF4Fn9qvU5HEAxH80wrNkJct0MK7HCa1nLKQ+F+srLInLpBzdR7OJuXdbYXyOS7w71nhZDDnOLdGbwlbMR5hftk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b=CcgZenUp; arc=pass smtp.client-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ljB4bnyv"
-Received: by mail-dy1-f180.google.com with SMTP id 5a478bee46e88-30b6dad2382so14704263eec.0
-        for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 00:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792135030; x=1792739830; darn=vger.kernel.org;
-        h=mime-version:content-transfer-encoding:content-type:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=WYIoHRWahmE2fvmt+avDjJLVf4iUC15MrcJZtroluhw=;
-        b=ljB4bnyvKLk/t8VWqupEePEo8p86nyEJndWQkJ+twE7aQsnLkR1ip0bPAF+i9J/Ewx
-         Y+7ALoeK8MWK1FbCZfM5r1kJIwqu5Zx8tnJ84LZpUt2xxTeVjWlDKrMNzW47WBsWBAOi
-         DUqddf0ExPC866enxMpjhX7vPULYdXzmLYn/Ztg80GQCvN9KReZqvbTeB3yaFHIwmAb5
-         ftMCLH4y5ClGAhFXBuR1GndE+VIgCXFXDNoURkMC1q+9b02V6693dHpC+Z5DVW90pyeQ
-         PGhZ7g5uM/VPhGsgJj7m/q/w/SuRYoWcIyKphiGqSeuQs44EgzLearY80ZP1l7TVGVsd
-         tLuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792135030; x=1792739830;
-        h=mime-version:content-transfer-encoding:content-type:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=WYIoHRWahmE2fvmt+avDjJLVf4iUC15MrcJZtroluhw=;
-        b=RYGs0y3H5knCik4vYHkSCj76n45JSz4BAVmBhA4LjdHunJXSfkz97K7WU1gILhothV
-         gD4vYaJkgVDOtPy9z88lFYLt+HVwksubrD5lYLTEVCi1PZIMm6XR5Jt66BonOyotjdtC
-         lPXR0QtWzSwOwB1Px/kZQA1vnGS8SlFuN3xyQBUVwh+NwrMiggbVVVyWP3Wz9ugu9Gvk
-         E364uzh8BKPCMjPhoictz39Oyc2CuArQHe08f0lTn8VU9ORFFjM98YnjqJ30ON+19yH+
-         RI/QrgpccKYmGh1yKPbFNnTqNpTjjOC0zAZwazqFK0suV1Ecml+WTRvhYQ6vGEyZI5qo
-         5w7Q==
-X-Forwarded-Encrypted: i=1; AKwUvBzieMR8T/Kq5HENo5LaddE6lIWKnSr1RggbkwLxJ9utO/J+KzpM397ZSPGCOh/nJTMBQxdGEACPr9g=@vger.kernel.org
-X-Gm-Message-State: AFq9FYLeAGiZZZRluB0p0vmL7NlG1mI3EmdsTqx9KQqcvGrM7PSZM4Lr
-	UOAaiyw42l+bSqy7c5BKgEzY9ffM3UGtjmRHbbQFOYtJMlywy53ybJus
-X-Gm-Gg: AYBFou1OzNUydIsuWtpWUNLtw6Hq7D18PNKOwSul8zu3+HBhoAHBKyfJcNeJWf0qPde
-	CFeDX/7JkIs8IMefAgGt+hed74g7fS80Vgjmkmo7uo2RXJ8TcDd0fMFM6riu2/hJK2ZWnwrnJbQ
-	K3ok94y+fbSmD5JlpjGSkLPIO7RZ+5SysIyQ/BnIWnG7DRHzO4INg7FyBO0WjzIX+jUevap0wm2
-	0dyURyZ8knrX+A86S07I/xRZ0q/KL2XFqTfWmEUvNgM7Pokw+gi9v6C8dSFyboZQ0kFUL+j0GHx
-	sDWcANEiRsfKCxjQqFhSxeFekkMKFzNPdJ4HxpHf3y/irg8iuRI2+UodSBtxSv/DBNWooaW8VvT
-	ZXeJqT2EF/8SYRrx1hk43gP6rSqVRbpXLX3jWq4YODyeSovUdblFumSf3L6TaB05MJJM4M6IET/
-	p7nmLvtbTgcYuy7v2+lnF6U591U+EPSoSFnBliu6KBzlTGoyJ2sLH80XhgPP6x8eDXE2Sq
-X-Received: by 2002:a05:7301:9c91:b0:35f:8c5d:5928 with SMTP id 5a478bee46e88-35f8c5d5bc7mr4763847eec.30.1792135029915;
-        Fri, 16 Oct 2026 00:17:09 -0700 (PDT)
-Received: from [127.0.1.1] ([183.242.161.82])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-36082784ec8sm3973233eec.22.2026.10.16.00.17.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 16 Oct 2026 00:17:09 -0700 (PDT)
-From: chaosheng.qu.linux@gmail.com
-To: netdev-bot+sinfo@kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>, Chen-Yu Tsai <wens@kernel.org>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>,
- Nicolas Ferre <nicolas.ferre@microchip.com>,
- Alexandre Belloni <alexandre.belloni@bootlin.com>,
- Claudiu Beznea <claudiu.beznea@tuxon.dev>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/4] can: don't discard the platform_get_irq()
- error in probe
-Date: Fri, 16 Oct 2026 15:16:59 +0800
-Message-ID: <179213501981.212310.9988031427961239592@gmail.com>
-In-Reply-To: <179213131512.408196.11368789495251891862@kernel.org>
-References: <cover.1792118040.git.chaosheng.qu.linux@gmail.com>
- <179213131512.408196.11368789495251891862@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.b="CcgZenUp"
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 92D312007F9;
+	Fri, 16 Oct 2026 10:26:10 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792139170;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vQk/1kZZ4REXjlsI2Bo1jff3ZJHZBK3W1gDNVH/5k8A=;
+	b=CcgZenUpg84nYoyPQRC9oVVbWJbT7n0dccUAtwIiJZt/lqnfBLDtxOqkEtijvsz3c21O1C
+	1LlvXGje2O441mt25ydbMvId9eE4b+p58d259nrczpZk1VbxfrPcFAZf+Yp9FtDtz0iHNz
+	SvmaLWMcZL/ogZ8AVNZJsRWjYrJskLY26xMp/FZeB7jQHRI8eQDXEujov7mPNZJ0L7qrTM
+	2y3vBlJ2QFz0H67eZQiL1QoX7/yg5brjOhrGSCRGTjU61LdbYNtTNnT3f9ig5QKU2NQWm2
+	5ZJv/06oyYKJmhrAwjRy0JYlY3B/qDqPCSYJcmzBeD/z7rzct6xbwvfpWFg6jQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792139170; a=rsa-sha256;
+	cv=none;
+	b=ThYj9rOsZqfsG3HQkHfmwfrAqlhSPvBu5S9cwYwIxZwg9gDfHC7v1VPV4xSsBlT+zgjb71
+	lD3Z2oUuEh6iDgM39ZKc6DS95bDWORc8ph/cNXgC4NXlijsHKH8E7gXpZbe0USdtYvki4r
+	/bBC8g2QZZ/Aw60okuvjz0cghNYReCTgHr/ekxYXiqL/QR+x86LWE3qTeh+wWmqlDj09F+
+	OUcgJW8z+qTMq/krh48rUJhlfonptJldMiSBBY1C9P8+Zt04JtFSd8OVCBD9ktdzVCi+md
+	6ZxkEsLEI8aIcziNgFGhW+a3btT6m7Bl13CPZ6Iy4O83it07YW3Xzv6+Wzx02Q==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792139170;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vQk/1kZZ4REXjlsI2Bo1jff3ZJHZBK3W1gDNVH/5k8A=;
+	b=Qep33NcrDwK0H2swIDSHLdJNAojdXX+1dmdCUx8PKfm5U8mzeEwkeB8sy7w4kanRYXNucM
+	oIhj8uu19+1HVYTCW/gPoHP9hY4hfKSPWW8SggdHZ0AJmnOpvZsAUuKlNQuD4Ev7+M9rT7
+	nEx5AxI5w/ccqKyGE234oN2aSmmEDHewiNMQDUE6nWhNuhGym+qvcUwxUpgUPLG9pCkZRD
+	GjbUmF1qVv3SDHpout60SVURyadLYQQveeM5sM+UTgnKKVRoK6zPiMOOvOrkB0sjxwiZGV
+	YZCD1RnfwPYYK98bLcAPsvK9CfRXOF/ETYEMAlgXbcDUIqi7rjWTXj9HmCqsoQ==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xHdGU-0069lk-1Z;
+	Fri, 16 Oct 2026 10:26:10 +0200
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id D64BF5C5DEB;
+	Fri, 16 Oct 2026 08:25:18 +0000 (UTC)
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH net-next 01/37] can: dev: can_dropped_invalid_skb: drop
+ CAN XL frames on non-CAN XL devices
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev-bot+sinfo@kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org, 
+ davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org, 
+ kernel@pengutronix.de, Vincent Mailhol <mailhol@kernel.org>, 
+ stable@kernel.org
+In-Reply-To: <179202944723.408196.14576860852925761610@kernel.org>
+References: <20261015015336.816543-1-mkl@pengutronix.de>
+ <20261015015336.816543-2-mkl@pengutronix.de>
+ <179202944723.408196.14576860852925761610@kernel.org>
+Date: Fri, 16 Oct 2026 10:25:15 +0200
+Message-Id: <179213911553.1225518.14596051956324247810.b4-reply@b4>
+X-Mailer: b4 0.17-dev-6be7c
+X-Developer-Signature: v=1; a=openpgp-sha256; l=635; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=uBi4KCZR9BjxTpBL1OMvFzCzmq18LtaxZNaptSiCy7o=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsi6eD+77q/Yr+2c/3zjLm0xWHJz9Ts/48mN2bcUHX4E5
+ t0POxDC21HKwiDGxSArpsiy9McJRYFAh9LelwmTYOawMoEMYeDiFICJ2HowMvxNuTtRcGZYqpqm
+ +6mnr5O/mAalWLv7p1x5r/QrTfLArzaG/8VXuzRX/pAymVrxN599esfqizt+/J6v8/btoby2/De
+ zZDkB
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-Hi,
+On 2026-10-15 01:57 +0000, netdev-bot+sinfo@kernel.org wrote:
+> This is an automated message. This series looks like a fix, but its
+> commit messages seem to be missing some information:
+>
+>  - How the issue was discovered, e.g. hit in production, hit during
+>    development, syzbot report, manual code inspection, LLM or static
+>    analysis tool scan.
 
-The issue was identified during development while reviewing the probe error h=
-andling in these CAN platform drivers. Manual inspection showed that negative=
- results from platform_get_irq() were being replaced with fixed error codes. =
-For drivers matched via OF, this can discard -EPROBE_DEFER and prevent the dr=
-iver core from retrying once the interrupt controller becomes available. I co=
-mpared these paths with platform_get_irq() semantics and neighboring drivers.
-
-This was not a production hit or a syzbot report, and it was not found by a s=
-tatic-analysis scan. LLM assistance was used in preparing the patches, as dis=
-closed by the Assisted-by tag. The controllers were unavailable for runtime t=
-esting, so the series was build-tested only.
+This is a pull-request of collected patches for the CAN subsystem. It
+includes new features as we as fixes for issues found by bots, code
+analysis, but that is stated in the individual patch description.
 
 Thanks,
-Chaosheng
+Marc
+
+-- 
+Marc Kleine-Budde <mkl@pengutronix.de>
