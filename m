@@ -1,72 +1,72 @@
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42E8D372056
-	for <linux-can@vger.kernel.org>; Fri, 16 Oct 2026 10:02:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208A146DFEB;
+	Fri, 16 Oct 2026 10:02:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792144954; cv=pass; b=n/tT3sb1cOrzOgwuM6qXd8eCApNixWFBjq2K81Gg3T2eF6OKA6Qz/6CM+2nWpOpogycr098sThn2CWk8JC+v0go6cnoA1QZI1fJ0KUnf1EA02qin1JFkHuU6IaBF1r2mij2Dh6UbZ2k4S2layEe0xhkcGYzyiWzF0rlbPgnOkHo=
+	t=1792144961; cv=pass; b=KiWa5am0b/VATl0IE3C8Z20FtkPOeAxhJc/l8DDbXvlhZs3/Bek2EnxQUc/AU7xmcN3nT1xl1mcsw3Ndgq6cPCf3zHMKSqyxxz97cOonnoS+l9aD4JO2dklvSG+vSlMuzDCy/xIUkHFuibB1TYPhd7bBFdW/IxYe7mcnId4gEG0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792144954; c=relaxed/simple;
-	bh=cjGR03b7bOGd50KvPLpOFJnmfMCo6/4yLjqcH0durGI=;
+	s=arc-20240116; t=1792144961; c=relaxed/simple;
+	bh=pi9nK/MNaWYOAKNlyBL5BQuj1IHCffBviMdybNooTo8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Tx+4Ladgf7/D25k7hpGZyrpKVrVZuIVNQFhisJ/ZW/YWIaLJA6Nw++klcEysx350df9Orcbzq81s7KnXpaAuYFBkAL8Un4fA+1NHIKsDFq2BRnwQMqSUGnWuOkjZRhtc/IVda+vgJDTEvcQIvzhsQGpKBTyF2qe0YWH5GdaAgHI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=N8Uvka7l; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=yFDhyy0M; arc=pass smtp.client-ip=85.215.255.84
+	 In-Reply-To:Content-Type; b=jIz7hTbUWI4/0zdzwmZE+rjUIrE2DXbQQ+4vDDE519Fsshxx1IkdeHLUaZHGaFfS5ORXtPGD+MkZQgLeO0ffV34B+2AJ6LWfcbUj/Eo+1TEzONToJrNR6umXXva5iwQEJxzC58KdrmUc2sSoEita3dypQk4Q59HkVwHa1385D/M=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=sJ/P4/Gz; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=NfEY67ZI; arc=pass smtp.client-ip=85.215.255.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="N8Uvka7l";
-	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="yFDhyy0M"
-ARC-Seal: i=1; a=rsa-sha256; t=1792144926; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="sJ/P4/Gz";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="NfEY67ZI"
+ARC-Seal: i=1; a=rsa-sha256; t=1792144827; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=UL5Q5dqDBtcP37JKTxujfzIbFMupXPgfhBhaYrE7O/HKJ+wPe1I7Un/jGeabfvFtBV
-    +rwDGP3vih/UlPHZCSCbWhJF3P72/g4eBG6gQYeOL03V6qG1Ad98kurLHPZl6AmFDzJh
-    QPbSmdcyTUpnTFqyBkTFEVgfD0iUj5etE6PSmXQUVfZ0S/NqSIpIc/5QnpdMHmwmimAu
-    tUtJYS/3sHxtZ91f6+HjEmHBkS0AkvD9YpwrR8jThOB4wyEs5ef+nTSuyLdxkfdBrHhL
-    rXNRGSGKRV8w+ufFlIuWOMXpKqWo2QeTJv28YKLyBtxb7/TL0NBYAJmpqP/F9Vyf1VIz
-    17DQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792144926;
+    b=EltZDIY/4TZGnNm96jlHaDUK42yuGXh9a5VnvfOTfvCDxo+1R7KTGf6dhbVisNnKaj
+    HmUU8NAR4VlIW4jNoI1XY3IqWvHYf7Zx+YwLYdCk2OG5OshWytNofq77Dfs/2Q6cgFRc
+    X83nfUovahDgZDujsd5/aEfKLlzMsmvfdjBCXUKH/pqigMTPo+dvh+dwSr/lo+Z4H9ip
+    AByIC5pcAWqgnBRCSGpKzAsK1+UeZsmWxtwxedfJsnSkAbRqH3znmTjwLGydV9y3mcrs
+    OxLHdWxbtNWzGgEGYM7poZmCZf+JmRoH4cO5xtpEeFo/3wEktOP3Ck1iVRamm/taFL9R
+    pUHQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792144827;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=rDlPpzWzUAAlcDs9R1pOREdvWvP85Tf9fktOSGumWHA=;
-    b=RLPoFmp/q0x38wTpIfEH9d73B8WD6xoq0DSyQLS1r3rmXEsn+UEf9XvlYB7lHQR2IA
-    MpI1tEt51dbdFlT+JQtVaWSluzjEiFd7fUhit+rTKjXErL+cgCMv5GX2hqWlMBYRd1AC
-    cqtrPO1SwfaQDTjNUiq0t8yk+avMu0uCfyY7pzqFjW1Eoz4q4KSih/PLBFgLSK8KDd47
-    VCal06lq+hCquNFKj+ZYW86VPwmnNT1wYgwxUj2sTyxG4xPjKZN/tgtLryqisoXSo9Rr
-    MeESLmhO/wpx30Yvu746eHDtETjU25vJ2w8FcwiLT6iU77LzDvCuVbYh1xDHSlUvJpDM
-    jkAw==
+    bh=EsFMWx6TM+4++YBZxhcYUc/mq8GrlD0u+Gnm4oHvEk0=;
+    b=B/bD4abqomuJL8ez6GSn56gOud4GVg8HBC4THjfjuJLJdZY3OH2ZqnX2x4mZXtMTyV
+    WIibKwBsfNdWpGIqRhj7t0LHeIZa1jsCWURXAxOPcJnrEXie+c4EmXGQvbPgFm4p6Fy7
+    P4IX9p7AcDw0NUME1LUvasa37vM+5Ob8T6MkiF3NzRyrf3On/ScbLLs0v988MH93Ngwv
+    LFZPO6Q3OrzPdTtoK50X5atl/ifjNSz1K4xEAwtIr5OxYhGxU/WFFfG+WNr625zZwdbF
+    AfaNF3M65OFc53C5nm7esmUt6UFV9Rqdl2+Fl/b2Z1dZYGxl4TzZzN5zooEDGBZrQHvk
+    HnQw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792144926;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792144827;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=rDlPpzWzUAAlcDs9R1pOREdvWvP85Tf9fktOSGumWHA=;
-    b=N8Uvka7l9BmjSI5JLunWlWZdg+SV8mwJE6QplGRVc5Xh+u1FKnTtVCB5DOj/Zuo2pN
-    12musSrjSTn5zvpm+Dle7g9m69WNOP0ftig/OAu7taUiMoB2c4kTzfbsrxqjmAytQ0Ix
-    7sIibOiB25q/h5aET+Si+QgWPbuRMySfVdDRDtBQP94bRgwMdS5ZehJ494PTyaHJk72p
-    7B+ugvtn+8nrCpLpxSle2itlXAX3y2pjf45mi4VioLT8rMtHvgJXe8AV1Xg2pfRXL0YZ
-    Xj3TJqJaHI82UAK9EaOByenVxZkcd4LGgq41o2P6JTRaSwu6TlhVD5D+YpVq20xg1vrx
-    hG/A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792144926;
+    bh=EsFMWx6TM+4++YBZxhcYUc/mq8GrlD0u+Gnm4oHvEk0=;
+    b=sJ/P4/GzLcchQypX+wft+Cz1BQX6f8cETF+0tdxb2DZTRq2n+mImSMltiJttu/6ozr
+    UOS8tVu+IBJjFQZK7XgaSIENn3MMp0Syq4ArVDhnELUtFWuSqXSMJ86H8bZW7bsXVSdq
+    2dIv7/tNdPE5YprgPfkZsBquXVQpot23K6of+FTZ7wIRhYEHDzvW/8HPOrDH3OkbcvZp
+    19AHislrPL7eWgw6e/JqtMTbp/fDQ2bT+VYgcJ8eT27cK2tgSm5dTLEGfYishb5v1e0v
+    0DH0Dn/VeQRHKdin+Nl6jzoKUiZHgbdJo/o21EAgZW3mJRZNp63UTqFaKt3rQPvuo42q
+    nQbA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792144827;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=rDlPpzWzUAAlcDs9R1pOREdvWvP85Tf9fktOSGumWHA=;
-    b=yFDhyy0Mt4eBePaFYLiMkV0QKDkmYcVn0A29lCZg8KqUXV7JKeMmvgD3gsE8rTeKjc
-    uCUUo7GB9cbXL8yEQMBw==
+    bh=EsFMWx6TM+4++YBZxhcYUc/mq8GrlD0u+Gnm4oHvEk0=;
+    b=NfEY67ZIgMkQzKrOlgNtA6URZPnFhHqpyJiA//BoyKZ3C4MJvYAk0FR8fGB8yOJESq
+    dMT2NpysmiJDe1SLwwCw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::989]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29GA26LaZ
+    with ESMTPSA id Kfdf2a29GA0QLZs
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Fri, 16 Oct 2026 12:02:06 +0200 (CEST)
-Message-ID: <e71563e4-2d8d-4302-a9d1-b0dc34fea3a1@hartkopp.net>
-Date: Fri, 16 Oct 2026 12:02:06 +0200
+    Fri, 16 Oct 2026 12:00:26 +0200 (CEST)
+Message-ID: <f1c3a00a-a3f2-4880-b1af-dd150ca807f7@hartkopp.net>
+Date: Fri, 16 Oct 2026 12:00:26 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -74,77 +74,112 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH can-next v2] can: replace ARPHRD_CAN type checks with
+Subject: Re: [PATCH net-next 03/37] can: replace ARPHRD_CAN type checks with
  can_get_ml_priv()
-To: sashiko-reviews@lists.linux.dev, linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20261016093525.327367-1-socketcan@hartkopp.net>
- <sashiko-outbox-174104@kernel.org>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev-bot+sashiko@kernel.org
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, kurt.van.dijck@eia.be
+References: <20261015015336.816543-4-mkl@pengutronix.de>
+ <179211822219.434549.7841003426566715206@kernel.org>
+ <179214016466.1225518.8931119252169589153.b4-reply@b4>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <sashiko-outbox-174104@kernel.org>
+In-Reply-To: <179214016466.1225518.8931119252169589153.b4-reply@b4>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 16.10.26 11:50, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
-> - [Medium] can: isotp: silent bind() failure if can_rx_register() returns -ENOMEM
-> --
+On 16.10.26 10:42, Marc Kleine-Budde wrote:
+> On 2026-10-16 02:37 +0000, netdev-bot+sashiko@kernel.org wrote:
+>> can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+>>
+>> This patch replaces the remaining dev->type == ARPHRD_CAN checks in
+>> af_can, bcm, gw, isotp and raw with can_get_ml_priv(). The goal is to
+>> keep TUN/TAP devices that were retyped to ARPHRD_CAN via TUNSETLINK away
+>> from CAN code that dereferences a NULL dev->ml_priv.
+>>
+>> Link: https://patch.msgid.link/20261012164802.94113-1-socketcan@hartkopp.net
+>>
+>>> The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
+>>> type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
+>>> netdevice passes the ARPHRD_CAN checks and triggers a NULL pointer
+>>> dereference when CAN filters are created and when they are removed,
+>>> e.g. by the CAN protocols' netdevice notifier handlers.
+>>
+>> [Severity: Low]
+>> Is the "when CAN filters are created" part accurate for this tree?
+>>
+>> Before this patch, can_rx_register() already rejected such a device:
+>>
+>> net/can/af_can.c:can_rx_register() {
+>>      ...
+>> 	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
+>> 		return -ENODEV;
+>>      ...
+>> }
+>>
+>> can_rcv(), canfd_rcv() and canxl_rcv() also already tested
+>> !can_get_ml_priv(dev). That makes those four af_can.c hunks look like
+>> simplifications that don't change behavior. This holds for kernels
+>> that already carry commit 8aa59e3559494.
 > 
-> commit 95cbcd2505f7f236f0737cc7471505243facbfe5
-> Author: Oliver Hartkopp <socketcan@hartkopp.net>
+> The anslysis looks correct to me. Oliver, can you re-spin this patch
+> with an updated description?
+
+Done
+
+https://lore.kernel.org/linux-can/20261016093525.327367-1-socketcan@hartkopp.net/
+
 > 
-> can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+> pw-bot: cr
 > 
-> This commit replaces explicit ARPHRD_CAN hardware type checks with
-> can_get_ml_priv() to prevent NULL pointer dereferences when a TUN/TAP
-> device is repurposed to mimic a CAN device.
+>> [ ... 26 lines skipped ... ]
 > 
-> Link: https://patch.msgid.link/20261012164802.94113-1-socketcan@hartkopp.net
+>> The code change itself looks complete. No ARPHRD_CAN checks remain in
+>> net/can/ after this patch.
+>>
+>>> diff --git a/net/can/isotp.c b/net/can/isotp.c
+>>> index f5dc9d04bd68..6c28802c0605 100644
+>>> --- a/net/can/isotp.c
+>>> +++ b/net/can/isotp.c
+>>
+>> [ ... ]
+>>
+>>> @@ -1610,7 +1611,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+>>>   		err = -ENODEV;
+>>>   		goto out;
+>>>   	}
+>>> -	if (dev->type != ARPHRD_CAN) {
+>>> +	if (!can_get_ml_priv(dev)) {
+>>>   		err = -ENODEV;
+>>>   		goto out_put_dev;
+>>>   	}
+>>
+>> [Severity: Medium]
+>> This issue was not introduced by this patch. Further down in
+>> isotp_bind(), the return values of both can_rx_register() calls are
+>> thrown away, and the socket is marked bound anyway:
+>>
+>> 	if (isotp_register_rxid(so))
+>> 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
+>> 				isotp_rcv, sk, "isotp", sk);
+>> 	...
+>> 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+>> 			isotp_rcv_echo, sk, "isotpe", sk);
+>>
+>> 	/* switch to new settings */
+>> 	...
+>> 	so->bound = 1;
 > 
->> diff --git a/net/can/isotp.c b/net/can/isotp.c
->> index f5dc9d04bd686..6c28802c0605f 100644
->> --- a/net/can/isotp.c
->> +++ b/net/can/isotp.c
->> @@ -1610,7 +1611,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
->>   		err = -ENODEV;
->>   		goto out;
->>   	}
->> -	if (dev->type != ARPHRD_CAN) {
->> +	if (!can_get_ml_priv(dev)) {
->>   		err = -ENODEV;
->>   		goto out_put_dev;
->>   	}
+> Oliver, can you add error handling for can_rx_register() to isotp?
 > 
-> [Severity: Medium]
-> A few lines lower in isotp_bind(), the return values of can_rx_register()
-> are ignored:
-> 
-> 	if (isotp_register_rxid(so))
-> 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
-> 				isotp_rcv, sk, "isotp", sk);
-> 
-> 	/* no consecutive frame echo skb in flight */
-> 	WRITE_ONCE(so->cfecho, 0);
-> 
-> 	/* register for echo skb's */
-> 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
-> 			isotp_rcv_echo, sk, "isotpe", sk);
-> 
-> If can_rx_register() fails (for example, returning -ENOMEM due to a failed
-> kmem_cache_alloc()), bind() will succeed but the socket is not fully
-> registered to receive CAN frames. This leads to a silent failure where
-> user-space believes the socket is successfully bound, but no traffic will
-> ever be received.
-> 
-> Could this regression be prevented by checking the return values and
-> propagating the error appropriately, or cleaning up any partial
-> registrations?
-> 
+
+No. I'm really getting pissed about being urged by sahiko-bot changing 
+commit messages because "those four af_can.c hunks look like 
+simplifications that don't change behavior". Really? Every normal 
+reviewer would see that and created this fact in his mind automatically.
+
 When this patch is applied isotp_bind() can only fail with -ENOMEM and 
 nothing breaks. The socket just becomes unusable. And if we have -ENOMEM 
 we have a big problem anyway.
@@ -158,3 +193,7 @@ are in mainline.
 
 Best regards,
 Oliver
+
+
+
+
