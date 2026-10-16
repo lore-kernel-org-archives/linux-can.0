@@ -1,43 +1,45 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CEE73845AC;
-	Fri, 16 Oct 2026 02:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD62F54704D;
+	Fri, 16 Oct 2026 05:02:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792118238; cv=none; b=Kcxl97Tq8JQTJJy4qrhnQ7GA0C5A8zhZrZuh9uIW3qU/BBu01BXcTWjjHxn2YOOS4X2GNN+oHP3QRv6iHqTFeHP3+P8H1wmh/Nk3e9JwB6+mX3u+A4ZFPUKQBnz/zGTgxxHARhug/LI1REqrdm0hGm9pg9/EUc/fKJ+N2hjkxBI=
+	t=1792126951; cv=none; b=XlT0WUNaSoapbk9F9d05eLzDTJl8Do3Ny6jwtQSr5eluw3YbU3WxrG1dcdbo81n5StSxhQ3hwJnqQDHLinWu641WtKRbvDHUwf6AJkh4NR5PqvjfszSEqbUXNaCe5jSfTEOuNtOVx1kXhecNIP0KvoHPgSUSvTKIWdUp5xJ8RA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792118238; c=relaxed/simple;
-	bh=NLGXQ6S+UzrGweleq2coDo6hDP7rUjR1GgWAHQcJWeo=;
+	s=arc-20240116; t=1792126951; c=relaxed/simple;
+	bh=KOBChZu/RXJGJj7Q1jqdW7CYdziDCfFze2ZQ74tHsa0=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HegdBV4yyFMSabQwTDHQjdleO8vSfvrG5J2Zs62A/1nLP2xJPsiahERyiOGqHkUX3hqRBEVvIP5cJVQ475pppZ9uuer3RwbY3+8hU3BexONiiTaMO7AgdmzETdHhhGOSHKlucMZCWLj5cGqGnKPTAoU8SdclUvBTp84UhFH8Xcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WaZhC4Kf; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=IuXlzkjs6eyqXtzCnxjSx8Kh0QwOPvHEvTuq+WZnlaX0ie/Qrc1qFgAT0v/UtOamR+Fb0w5kTssK3UQxl5dD+U20QYteNOtJeI2SNMX52HxFElUrpCzpAC7WKLCp7yLydto1N6d+AoxniKbY/fs9i2Hw4xAzIuAbG0pVM+0nVGQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZtzVy1ih; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WaZhC4Kf"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D2E591F000C4;
-	Fri, 16 Oct 2026 02:37:14 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZtzVy1ih"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A5B271F000C4;
+	Fri, 16 Oct 2026 05:02:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792118235;
-	bh=noAKhCMP/308XIoU2rOkCFa1m5zPEvdiql5A/84HVao=;
+	s=k20260515; t=1792126950;
+	bh=ofHJ0AU9zMpvLLzpIeVQ1M96hYTVnc0UtFDnFu9jKcA=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=WaZhC4KfXg6k68n8r7dhWD1ximVSY6zqUpMSGRDR/JYyDxoC7A/mNopGXJJ+gj/Ew
-	 sM2xFM8jJQuvMKSzIQ/dnKkk8mnN3BXAULzSmUdS89kyPFp65FlXHuRJZiaxeB+3+i
-	 6kXy/UvjrG43Gkx+wKgFjxIdZbrLJuIqEdyxvSZgw+78tIr/1csW0girSjbbZyfrT5
-	 Izq11wvw51oKZcR0ogqsNsKGeuOpCXVuQyhwiTBCV+Rb1kl71AYgCwpqBhJMcT4s9b
-	 hWRSQcROk1sLRkbbIReid+1OkVZf2ZHHjD/H2wPvp/2NPKbDPQh+PbnW6yy1WMQk6g
-	 s+2OG2qD2hGdw==
-Subject: Re: [PATCH net-next 28/37] can: ems_usb: use usb_kill_urb() to stop
- the intr URB
+	b=ZtzVy1ihP4VsDHVWMfFRwI6Uqha4WG2twjKwRoFb/uwl17EATWn1U1NYWsNZPWTHQ
+	 EyYqhTzC8zWyTgRIE1pKsTUmAaNgrjJQpxl8DrDRB7vVOqD5ipfwSdgt8pABqMsTFV
+	 sOusLy0yYKgWIPs4ZG0lmdpUijPkqx59FUbSQbkZlQuOt5sVWICk2lUoUI2rWlngXC
+	 Hvay+tOmP+EysQJBWs5N4H1I3KISuR1rzsAcb2EjEXXY9AN8R432GEtBnKjsIISmXZ
+	 TXygl3jFVNnUkqFOZlUWW0oKh4InW013gvgwRD43EOhG1wQE2dz5+hr8yuWN/bCdaB
+	 ad04rxDWg+SGw==
+Subject: Re: [PATCH net v3 1/5] can: dev: prevent bus-off recovery when the
+ interface is not running
 From: netdev-bot+sashiko@kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, socketcan@hartkopp.net,
- kurt.van.dijck@eia.be
-Date: Fri, 16 Oct 2026 02:37:14 +0000
-Message-ID: <179211823441.434549.9677243526506061190@kernel.org>
-In-Reply-To: <20261015015336.816543-29-mkl@pengutronix.de>
-References: <20261015015336.816543-29-mkl@pengutronix.de>
-X-sashiko-severity: Low
+To: 1579567540@qq.com
+Cc: mkl@pengutronix.de, mailhol@kernel.org, heiko@sntech.de,
+ davem@davemloft.net, wg@grandegger.com, socketcan@hartkopp.net,
+ kernel@pengutronix.de, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, stable@vger.kernel.org, kuba@kernel.org
+Date: Fri, 16 Oct 2026 05:02:29 +0000
+Message-ID: <179212694915.1406898.5096495212984871051@kernel.org>
+In-Reply-To: <20261014-rockchip-canfd-restart-close-v3-1-f0eb41090242@qq.com>
+References: <20261014-rockchip-canfd-restart-close-v3-1-f0eb41090242@qq.com>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -47,164 +49,147 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 0 · Medium: 1 · Low: 1
 
-- [Low] Now that unlink_all_urbs() stops the intr URB with
-  usb_kill_urb(), there is a new race window on close.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Pre-existing issues:
-- [Critical] unlink_all_urbs() in drivers/net/can/usb/ems_usb.c (lines
-  755-757) can free the RX coherent buffers twice.
-- [Medium] ems_usb_start() does not undo partial setup when it fails.
+- [Medium] The new `if (!netif_running(dev)) return -ENETDOWN;` in
+  can_restart() (drivers/net/can/dev/dev.c:201) is a lockless test_bit()…
+- [Low] The comment above can_bus_off() in drivers/net/can/dev/dev.c
+  (line 265) still says "If enabled, a timer is started to trigger bus-…
 
 --
 
-can: ems_usb: use usb_kill_urb() to stop the intr URB
+can: dev: prevent bus-off recovery when the interface is not running
 
-This commit changes unlink_all_urbs() to stop the intr URB with
-usb_kill_urb() instead of usb_unlink_urb(). The goal is to make sure
-ems_usb_read_interrupt_callback() has returned before
-ems_usb_disconnect() frees dev->intr_in_buffer and the candev.
+This patch adds a netif_running() check to can_restart() so that bus-off
+recovery is skipped once __LINK_STATE_START has been cleared. It also
+makes can_bus_off() schedule restart_work only for a running interface.
+The commit message notes that the checks do not wait for recovery that
+has already passed the check.
 
-Link: https://patch.msgid.link/20260923030522.409344-1-fanwu01@zju.edu.cn
-
-> diff --git a/drivers/net/can/usb/ems_usb.c b/drivers/net/can/usb/ems_usb.c
-> index 24cf8f651f8f..2d31f0b86859 100644
-> --- a/drivers/net/can/usb/ems_usb.c
-> +++ b/drivers/net/can/usb/ems_usb.c
-> @@ -748,7 +748,7 @@ static void unlink_all_urbs(struct ems_usb *dev)
->  {
->  	int i;
+> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+> index 769745e22a3c..92492c503446 100644
+> --- a/drivers/net/can/dev/dev.c
+> +++ b/drivers/net/can/dev/dev.c
+> @@ -198,6 +198,9 @@ static int can_restart(struct net_device *dev)
+>  	if (!priv->do_set_mode)
+>  		return -EOPNOTSUPP;
 >  
-> -	usb_unlink_urb(dev->intr_urb);
-> +	usb_kill_urb(dev->intr_urb);
-
-[Severity: Low]
-Can this now log a spurious error during a normal ifdown?
-
-usb_kill_urb() raises urb->reject before it unlinks the URB. Suppose the
-intr URB completes with status 0 while ems_usb_close()->unlink_all_urbs()
-is inside usb_kill_urb(). In that case ems_usb_read_interrupt_callback()
-takes the case 0 path and resubmits:
-
-ems_usb_read_interrupt_callback() {
-    ...
-	err = usb_submit_urb(urb, GFP_ATOMIC);
-
-	if (err == -ENODEV)
-		netif_device_detach(netdev);
-	else if (err)
-		netdev_err(netdev, "failed resubmitting intr urb: %d\n", err);
-}
-
-usb_hcd_link_urb_to_ep() in drivers/usb/core/hcd.c then rejects the
-resubmit:
-
-	/* Check that the URB isn't being killed */
-	if (unlikely(atomic_read(&urb->reject))) {
-		rc = -EPERM;
-		goto done;
-	}
-
-As a result, "failed resubmitting intr urb: -1" gets printed. The
-netif_device_present() check at the top of the callback doesn't catch
-this, because the device is still present during close. usb_unlink_urb()
-never set reject, so this message couldn't appear here before.
-
-The kill itself still completes, so the only effect is log noise. Would it
-make sense to treat -EPERM as an expected result, alongside -ENODEV?
-
->  
->  	usb_kill_anchored_urbs(&dev->rx_submitted);
->  
-
-[Severity: Critical]
-This isn't a bug introduced by this patch, but it is in the same helper
-and the same disconnect teardown. Can unlink_all_urbs() free the RX
-coherent buffers twice?
-
-The loop just below this hunk frees every dev->rxbuf[i] but never clears
-the pointers:
-
-	for (i = 0; i < MAX_RX_URBS; ++i)
-		usb_free_coherent(dev->udev, RX_BUFFER_SIZE,
-				  dev->rxbuf[i], dev->rxbuf_dma[i]);
-
-unlink_all_urbs() is called from ems_usb_close() and also unconditionally
-from ems_usb_disconnect():
-
-ems_usb_disconnect() {
-	...
-		unregister_netdev(dev->netdev);
-
-		unlink_all_urbs(dev);
-	...
-}
-
-There are three ways to reach a second free:
-
-If the interface is up at unplug, unregister_netdev() closes it and
-ems_usb_close()->unlink_all_urbs() frees the buffers. ems_usb_disconnect()
-then calls unlink_all_urbs() again on the same pointers.
-
-If the interface was opened and closed earlier and is down at unplug,
-ems_usb_disconnect() frees the stale pointers from the last session a
-second time.
-
-If a later ems_usb_start() breaks out of the RX loop early because an
-alloc or submit fails, the slots it didn't refill still hold pointers that
-the previous close already freed. The next close or disconnect frees them
-again.
-
-usb_free_coherent() only skips a NULL addr, so each stale pointer goes to
-hcd_buffer_free(). Depending on the HCD, that means dma_pool_free(),
-kfree() or gen_pool_free() on memory that was already freed.
-
-This loop appears to date from commit 9969e3c5f40c ("can: ems_usb: fix
-memory leak").
-
-Could dev->rxbuf[i] be set to NULL after each free, or could the extra
-unlink_all_urbs() call in ems_usb_disconnect() be dropped?
+> +	if (!netif_running(dev))
+> +		return -ENETDOWN;
+> +
 
 [Severity: Medium]
-This is a pre-existing issue, not one introduced by this patch. Does
-ems_usb_start() leave URBs in flight when it fails part way through?
+Is this check enough to prevent the failure described in the commit
+message, "potentially re-enabling hardware while the driver is tearing it
+down"?
 
-If usb_submit_urb(dev->intr_urb) fails, ems_usb_start() returns while the
-RX URBs are still anchored on rx_submitted and in flight.
+netif_running() is a lockless test_bit(). can_restart_work() runs from
+the system workqueue and holds neither RTNL nor the instance lock.
+__dev_close_many() clears __LINK_STATE_START under RTNL and calls
+ndo_stop() some time after that. A restart that tests the bit just before
+the clear_bit() still goes on to:
 
-If a later ems_usb_control_cmd() or ems_usb_write_mode() call fails, it
-returns with both the RX URBs and the self-resubmitting intr URB still
-active:
+can_restart_work()
+  can_restart()
+    can_flush_echo_skb()
+    netif_rx()
+    netif_carrier_on()
+    priv->do_set_mode(dev, CAN_MODE_START)
 
-failed:
-	netdev_warn(netdev, "couldn't submit control: %d\n", err);
+and this can overlap with the driver's ndo_stop().
 
-	return err;
+The only core cancel point is close_candev(), and most drivers call it
+after they have already torn down the hardware. For example, in
+drivers/net/can/sja1000/sja1000.c:
 
-On this path ems_usb_open() only calls close_candev(). ndo_stop isn't
-called after a failed open, so unlink_all_urbs() never runs.
+sja1000_close() {
+	netif_stop_queue(dev);
+	set_reset_mode(dev);
 
-On the next open, ems_usb_start() overwrites dev->rxbuf[], so the earlier
-buffers and URBs leak. usb_fill_int_urb() also rewrites the intr URB while
-it is still active. usb_submit_urb() then hits:
+	if (!(priv->flags & SJA1000_CUSTOM_IRQ_HANDLER))
+		free_irq(dev->irq, (void *)dev);
 
-	if (urb->hcpriv) {
-		WARN_ONCE(1, "URB %p submitted while active\n", urb);
-		return -EBUSY;
-	}
+	close_candev(dev);
+	...
+}
 
->From then on every open fails until the device is replugged.
+while the restart callback concurrently does:
 
-This doesn't reopen the disconnect use-after-free fixed here, because
-ems_usb_disconnect()->unlink_all_urbs() now kills the leftover intr URB
-before the frees.
+sja1000_set_mode() {
+	case CAN_MODE_START:
+		sja1000_start(dev);
+		if (netif_queue_stopped(dev))
+			netif_wake_queue(dev);
+	...
+}
 
-Should ems_usb_start() unwind the submitted URBs on these error paths?
+Could the controller end up out of reset mode, with interrupts enabled
+and the queue woken, after its IRQ handler has been freed? By the time
+cancel_delayed_work_sync() in close_candev() waits for the work, the
+restart has already happened.
+
+flexcan_close() follows the same order. It disables interrupts, frees
+the IRQs, stops the chip, deletes rx-offload and disables the transceiver
+before it calls close_candev(). Meanwhile flexcan_set_mode() can be
+restarting the chip and re-enabling interrupts.
+
+As far as I can tell, only rockchip_canfd gets
+close_candev_cancel_restart_sync() at the start of ndo_stop by the end of
+the series. flexcan, sja1000 and the other close_candev() users keep the
+window.
+
+Would it make sense to serialize this instead of relying on a lockless
+pre-check? One option is to cancel restart_work before any driver
+hardware teardown. Another is to recheck under RTNL via rtnl_trylock()
+and requeue the work if the trylock fails.
+
+>  	if (netif_carrier_ok(dev))
+>  		netdev_err(dev, "Attempt to restart for bus-off recovery, but carrier is OK?\n");
+>  
+> @@ -264,8 +267,9 @@ int can_restart_now(struct net_device *dev)
+>  void can_bus_off(struct net_device *dev)
+>  {
+>  	struct can_priv *priv = netdev_priv(dev);
+> +	const bool restart = priv->restart_ms && netif_running(dev);
+
+[Severity: Low]
+This isn't a bug, but the comment above can_bus_off() still describes the
+old condition:
+
+/* CAN bus-off
+ *
+ * This functions should be called when the device goes bus-off to
+ * tell the netif layer that no more packets can be sent or received.
+ * If enabled, a timer is started to trigger bus-off recovery.
+ */
+
+Could it mention that recovery is now only scheduled when the interface
+is running?
+
+The word "timer" was already inaccurate before this patch, because
+recovery is a delayed work item (priv->restart_work).
+
+The restart-ms description in Documentation/networking/can.rst also says
+nothing about a running interface. That matters less, since a down
+interface has no user-visible bus-off condition.
+
+>  
+> -	if (priv->restart_ms)
+> +	if (restart)
+>  		netdev_info(dev, "bus-off, scheduling restart in %d ms\n",
+>  			    priv->restart_ms);
+>  	else
+
+[ ... ]
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261015015336.816543-2-mkl%40pengutronix.de
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261014-rockchip-canfd-restart-close-v3-0-f0eb41090242%40qq.com
