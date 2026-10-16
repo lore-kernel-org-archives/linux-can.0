@@ -1,33 +1,33 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E75653E49C2;
-	Fri, 16 Oct 2026 07:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D1883E411E;
+	Fri, 16 Oct 2026 07:00:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792134018; cv=none; b=TwqjLJhM7Yqi1KnxrRw0ECPVQlf1zqk9I+GEENQ4guGJp1Uc8BGaqxKsoO8L1WfLjXiCcSItZp+XHDr9jI3V89g+2y+bsRuTkUiTQVNC/LEm+S3Gy12XoD4pemNMSQTGEUnBSoou7wsaFhT3CbXeYMDAfUYD5vKmfjxVr3+HOjA=
+	t=1792134019; cv=none; b=lba54Cwz0hbuakBZrO2DX++IkvYnwUeVTvkk/A8DEhIcOnX/uUaBkLTHvqm8lGcxyGylNC/NvmdplHO3Fpe0uSIY0d9oKZaHSlv08aqsDRrBSEbcepQnMD+EFdnQZGi1Sp4+T+7nhNzEclkCxhGsaSX7hl0akbK0N5VSNw+BUYs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792134018; c=relaxed/simple;
-	bh=S9zcJQhk2vvhsE4gWkS0DdL6lwktRQKpn2g3eIh46yI=;
+	s=arc-20240116; t=1792134019; c=relaxed/simple;
+	bh=2pwiQhJYWfRnAPyxfKKXeka/GDNPXpsaD0C6YvXmX/s=;
 	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=Wm/8ZP/qKkSM1uQN36/W+/T+F3wEjpTM0zgLU5eJb+Yt9NvS/E5jtvIPF1b3mGApe17ii+khQw8r3KwgnAHL7v4sPg6Guez+TdOUObacW8OX6T1EXHByP+fSDPu7MuPQMPnglAoRM6KY5SeuxEb6LkU6r8rksQuFRJSVgrYc9r8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=j2+008s+; arc=none smtp.client-ip=100.103.45.18
+	 Content-Type:MIME-Version; b=guAD71t7VI/lC71OTSxziwliLXHzkA8UPw14k3DW6tP4lIiol+zlrUC7cGE5BzbTzQEN+veqqHqsq/Rx28GxaMRUtHIBwlG5k/BHzEtPeXzo5Wui6B1hJVxqLpUImlPszbeQ3inXrAF7pXTbKd7D1gjKyJV8gfQLpKmGTDvV4+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RNd8zpYN; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="j2+008s+"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D37D81F000C7;
-	Fri, 16 Oct 2026 07:00:06 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RNd8zpYN"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 33F821F000C8;
+	Fri, 16 Oct 2026 07:00:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792134007;
-	bh=4+cn8ewrjOecbSF6/zei3Nbc/uIgVqYRGth5saecA3g=;
+	s=k20260515; t=1792134008;
+	bh=fqcz5DDxh0WRC+T23TktfLkYQ28AegR+Q6SHPEsgbp8=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=j2+008s+s3CCHqg5AVI0boRTFQP72TtyHyh00Vlr1pUGhpBtnw9FlCBUhPAtFGhsD
-	 9XV7B2VPlIox9EqxOF0TCFW79sfJIc5NwtBT3EETNmmmANLwUiBbZMwemh/q+LAFf+
-	 moZXXHtPR7IcZONVbjwCNGIqE0dPwZhT1QH41lkBoaQsJsRKd8bEpfjM3RQeTYpn1P
-	 8JG69cHyzejGal8/oH4DwFQ6NDyD7fo6Sg56yfQHzoqwYV9eDreYPozcvve6LLHEm8
-	 METQZgN44feZOrXJLOHxb5RPvONSyKgnATSGKpB3uMCadwoqx3079qH/ir1mKNQNsZ
-	 BXsAJEwT/N6GQ==
-Subject: Re: [PATCH can-next v1 5/8] selftests: can: add J1939 wire-format
- tests against CAN_RAW
+	b=RNd8zpYNop4JrsIsdvq2YfV6uOZMXOavEEC/H+io3GAO/JbUmssiR6Femac3YlIWI
+	 HNja3M5ZJULoMH128ksvoEggQGF2ciN0HWOgXzMa1F2H6qj7LbNfHGPYXAj8zKS/re
+	 38a0vuwjDDTRXLN2TpxMvo6Zq7VSWN/rJJWsCaEjqj0VvRHfmhsW7FmU497GjPOYE3
+	 lmtiNeFCndGsTtv3tX8bCLuhFSENLIV/oE/1ja6jxv0lCpfQps2DOtRt1WhwzMKXID
+	 i+yuVQIesWvy40bM5cAc+yEoMzjP62RLVG5dLqxwZ05xeCRX0jxgKoPKHBgLHIT/HH
+	 J7T8Xc2PuUt4Q==
+Subject: Re: [PATCH can-next v1 6/8] selftests: can: add J1939 TP/ETP
+ multi-frame tests against CAN_RAW
 From: netdev-bot+sashiko@kernel.org
 To: o.rempel@pengutronix.de
 Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
@@ -35,11 +35,11 @@ Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
  linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
  alexander.hoelzl@gmx.net, quchaosheng000406@163.com,
  penguin-kernel@I-love.SAKURA.ne.jp, kuba@kernel.org
-Date: Fri, 16 Oct 2026 07:00:06 +0000
-Message-ID: <179213400640.1406898.2222807046631827570@kernel.org>
-In-Reply-To: <20261014154435.3577983-6-o.rempel@pengutronix.de>
-References: <20261014154435.3577983-6-o.rempel@pengutronix.de>
-X-sashiko-severity: Medium
+Date: Fri, 16 Oct 2026 07:00:07 +0000
+Message-ID: <179213400774.1406898.17439713276450411907@kernel.org>
+In-Reply-To: <20261014154435.3577983-7-o.rempel@pengutronix.de>
+References: <20261014154435.3577983-7-o.rempel@pengutronix.de>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -49,259 +49,196 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 4 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 3
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [Medium] On a real CAN interface, tx_to_raw_send_recv() in
-  tools/testing/selftests/net/can/test_j1939_wire.c can check the wrong…
-- [Low] The TX tests check only part of the CAN id, although the file
-  header (lines 6-8) says they verify 'the expected CAN id (priority,…
-- [Low] The RX tests do not check how the kernel parses the source
-  address or priority, although the file header says frames are checked…
-- [Low] The commit message overstates the gap the test fills.
+- [Low] Neither transmit test checks that the kernel completed the TX
+  session after the peer's EOMA.
+- [Low] The TP/ETP transmit tests accept DT frames shorter than 8 bytes,
+  which the kernel's own transport receiver rejects.
+- [Low] Both receive tests would accept an oversized reassembled datagram
+  as a correct round-trip.
+- [Low] The transmit tests would pass an out-of-order TP/ETP data stream,
+  because unpack_dt_into() reorders the packets before the payload is…
 
 --
 
-selftests: can: add J1939 wire-format tests against CAN_RAW
+selftests: can: add J1939 TP/ETP multi-frame tests against CAN_RAW
 
-This adds test_j1939_wire, which pairs a J1939 socket with a CAN_RAW
-socket so the CAN frames on the wire are checked in both directions. It
-covers PDU1 (destination specific) and PDU2 (broadcast) single frames,
-both for J1939 TX seen on CAN_RAW and for raw-injected frames received
-on a J1939 socket.
+This commit adds a kselftest that pairs a J1939 socket with a CAN_RAW
+peer and runs TP and ETP multi-frame transfers in both directions. The
+raw peer answers the kernel's RTS/CTS/DPO sequencing, and the reassembled
+payload is compared against the sent pattern. The test also checks the
+size fields of the EOMA the kernel sends on receive and of the RTS it
+sends on transmit.
 
-> The base test only exercises J1939-socket-to-J1939-socket
-> transfers, which stay on the local delivery path inside one netdevice, so
-> the on-wire format is otherwise unchecked.
-
-[Severity: Low]
-Is this description accurate?
-
-Earlier patches in this series already look at on-wire CAN ids through
-a CAN_RAW peer. raw_prio() in test_j1939_opts.c (from "selftests: can:
-add J1939 socket option and metadata tests") decodes the priority:
-
-    return (int)J1939_ID_PRIO(frame.can_id & CAN_EFF_MASK);
-
-source_sa_on_wire() in test_j1939_addr.c (from "selftests: can: add
-J1939 addressing and concurrency tests") checks the source address:
-
-    EXPECT_EQ((int)J1939_ID_SA(frame.can_id), SA_TX)
-
-J1939-to-J1939 traffic also does not take a shortcut inside the stack.
-j1939_send_one() builds the full CAN id and loops the frame back through
-can_send():
-
-net/can/j1939/main.c:j1939_send_one() {
-    ...
-	cf->can_id = canid;
-	cf->len = dlc;
-
-	return can_send(skb, 1);
-}
-
-j1939_can_recv() then decodes the looped-back frame, so the base test
-already exercises encode and decode. It only misses errors that are
-symmetric between the two.
-
-Could the commit message describe what this patch actually adds? That
-is the PF/PS/full-PGN and payload checks for PDU1/PDU2, plus delivery
-of injected raw frames to J1939 data sockets.
-
-> diff --git a/tools/testing/selftests/net/can/test_j1939_wire.c b/tools/testing/selftests/net/can/test_j1939_wire.c
+> diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
 > new file mode 100644
-> index 000000000000..8f5113394f99
+> index 000000000000..1f27ee58f48c
 > --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_j1939_wire.c
-> @@ -0,0 +1,170 @@
+> +++ b/tools/testing/selftests/net/can/test_j1939_multi.c
+> @@ -0,0 +1,453 @@
 
 [ ... ]
 
-> +static int rx_single_frame_check(FIXTURE_DATA(j1939_wire) *self, bool bcast,
-> +				 pgn_t pgn, uint8_t da, const uint8_t payload[8])
+> +/*
+> + * Scatter a received DT frame's payload into buf at the offset implied by its
+> + * sequence number. base_pkt is the 0-based absolute packet the 1-based seq is
+> + * relative to (0 for TP, the DPO offset for ETP).
+> + */
+> +static void unpack_dt_into(uint8_t *buf, size_t total, unsigned int base_pkt,
+> +			   const struct can_frame *frame)
 > +{
-> +	uint8_t rx_buf[8];
-> +
-> +	if (bcast)
-> +		self->j1939 = j1939_open_flags(self->ifindex, J1939_NO_NAME,
-> +					       SA_LOCAL, pgn, J1939_OPEN_BCAST);
-> +	else
-> +		self->j1939 = j1939_open(self->ifindex, SA_LOCAL, pgn);
-> +	if (self->j1939 < 0)
-> +		return -1;
-> +
-> +	if (send_raw8(self->raw, PRIO, pgn, da, SA_PEER, payload))
-> +		return -1;
-> +
+> +	unsigned int abs_pkt = base_pkt + (frame->data[0] - 1);
+> +	size_t off = (size_t)abs_pkt * 7;
+
+[Severity: Low]
+unpack_dt_into() places each payload at the offset given by the frame's
+own sequence byte. Would the TX tests still pass if the kernel sent the
+DT frames out of order?
+
+In tp_tx_to_raw(), the loop increments got for every TP_DAT frame. It
+never checks that frame.data[0] == got + 1. The inner loop in
+etp_tx_to_raw() also never checks that the block-relative sequence
+equals i + 1.
+
+A permuted stream such as 2, 1, 3, ... with matching payloads would
+still rebuild the expected rx_buf, and the memcmp() would pass.
+
+The kernel's own receiver only advances on in-order packets, in
+j1939_xtp_rx_dat_one():
+
+    if (packet == session->pkt.rx)
+        session->pkt.rx++;
+
+So a conforming receiver would stall or abort on such a stream. Could
+both TX loops assert the expected sequence number?
+
+[ ... ]
+
+> +static int tp_rx_roundtrip(FIXTURE_DATA(j1939_multi) *self,
+> +			   unsigned int max_cts_pkts, int *max_want_out,
+> +			   struct can_frame *eoma_out)
+> +{
+> +	uint8_t payload[TP_SIZE], rx_buf[TP_SIZE];
+
+[ ... ]
+
 > +	if (recv_timeout(self->j1939, rx_buf, sizeof(rx_buf),
 > +			 J1939_RECV_TIMEOUT_MS) != (int)sizeof(rx_buf))
 > +		return -1;
-> +
-> +	return memcmp(rx_buf, payload, sizeof(rx_buf)) == 0 ? 0 : -1;
-> +}
+> +	if (memcmp(payload, rx_buf, sizeof(payload)) != 0)
+> +		return -1;
 
 [Severity: Low]
-Does this check how the kernel parses the source address or the
-priority? The file header says an injected frame "is parsed and
-delivered to the J1939 socket". However, recv_timeout() is a plain
-recv(), so the sockaddr_can holding the parsed SA/PGN is thrown away.
-Only the payload gets compared.
+Can this length check catch a delivered datagram that is larger than
+TP_SIZE?
 
-The RX socket is bound but never connected. j1939_sk_match_dst() only
-applies the source address filter to connected sockets:
+recv_timeout() calls plain recv() into a buffer of exactly
+sizeof(rx_buf). j1939_sk_recvmsg() reports an oversized datagram only
+through msg_flags, and it returns the number of bytes copied:
 
-net/can/j1939/socket.c:j1939_sk_match_dst() {
+net/can/j1939/socket.c:j1939_sk_recvmsg() {
     ...
-	/* Source address filter */
-	if (jsk->state & J1939_SOCK_CONNECTED) {
-    ...
-}
-
-Suppose j1939_can_recv() decoded skcb->addr.sa wrongly (to any value
-other than 0xff), or decoded skcb->priority wrongly. The payload would
-still be delivered, and rx_pdu1_from_raw and rx_pdu2_from_raw would
-pass. Wrong PGN or DA parsing would stop delivery, so those are only
-covered indirectly.
-
-Would it work to use recvfrom() here and check that
-addr.can_addr.j1939.addr == SA_PEER and addr.can_addr.j1939.pgn == pgn?
-The SCM_J1939_PRIO cmsg could also be checked.
-
-> +static int tx_to_raw_send_recv(FIXTURE_DATA(j1939_wire) *self, bool bcast,
-> +			       pgn_t pgn, uint8_t da, const uint8_t payload[8],
-> +			       struct can_frame *frame)
-> +{
-
-[ ... ]
-
-> +	if (send(self->j1939, payload, 8, 0) != 8)
-> +		return -1;
-> +
-> +	if (recv_timeout(self->raw, frame, sizeof(*frame),
-> +			 J1939_RECV_TIMEOUT_MS) <= 0)
-> +		return -1;
-> +
-> +	return 0;
-> +}
-
-[Severity: Medium]
-Can this return an unrelated frame when CANIF is a real CAN interface?
-
-FIXTURE_SETUP opens self->raw with J1939_SETUP_RAW(self, 0), which keeps
-the default accept-all filter, before the J1939 socket exists. The first
-frame it returns is assumed to be the one the J1939 socket just sent.
-Nothing checks SA, PGN or destination before tx_pdu1_to_raw() and
-tx_pdu2_to_raw() assert on its fields.
-
-j1939_lib.sh supports non-vcan interfaces explicitly:
-
-tools/testing/selftests/net/can/j1939_lib.sh:setup() {
-	if [[ $CANIF == vcan* ]]; then
-		ip link add name "$CANIF" type vcan || exit $ksft_skip
-		created=1
+	if (size < skb->len)
+		msg->msg_flags |= MSG_TRUNC;
 	else
-		ip link set dev "$CANIF" type can bitrate "$BITRATE" || exit $ksft_skip
-	fi
+		size = skb->len;
     ...
 }
 
-If another node sends a frame on that bus, the PRIO/SA/PS/PF/payload
-checks run against that frame, and the TX tests fail on a correct
-kernel. A freshly created vcan has no other traffic, so the default run
-is not affected.
+Suppose a reassembly regression delivered 203 bytes instead of 200
+(pkt.total * 7 rounding plus trailing 0xff padding). recv() would still
+return 200, and the memcmp() would pass.
 
-j1939_tests.h already has a helper for this case. The comment in
-recv_match() says:
+The same gap exists in etp_rx_from_raw(), where the recv_timeout() of
+ETP_SIZE bytes would not notice 6006 bytes delivered instead of 6000.
 
-	/*
-	 * Non-matching frames (other traffic on the bus) must not refresh the
-	 * timeout, or a busy bus would keep the loop alive forever. ...
+The commit message says "the reassembled payload is checked byte for
+byte", but the length of the datagram that reaches the socket is never
+checked. Would it help to receive into a larger buffer, or to use
+recvmsg() and check for MSG_TRUNC?
 
-Could this use recv_for_peer(self->raw, J1939_PF(pgn), da, frame, ...)
-for PDU1, and a recv_match() predicate on the full PGN plus SA_LOCAL
-for PDU2?
+[ ... ]
 
-The same unfiltered pattern is already in source_sa_on_wire() and
-raw_prio() from earlier patches in this series. This patch adds new
-instances of it.
-
-Also, the file header says "The vcan interface is set up by the caller
-(see test_j1939_wire.sh)". The wrapper accepts non-vcan interfaces too,
-so the header does not match.
-
-> +/* J1939 TX -> CAN_RAW: destination-specific (PDU1) single frame. */
-> +TEST_F(j1939_wire, tx_pdu1_to_raw)
+> +TEST_F(j1939_multi, tp_tx_to_raw)
 > +{
-> +	uint8_t payload[8] = { 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77, 0x88 };
-> +	struct can_frame frame;
-> +	canid_t id;
-> +
-> +	ASSERT_EQ(tx_to_raw_send_recv(self, false, PGN_PDU1, SA_PEER, payload,
-> +				      &frame), 0);
-> +	id = frame.can_id & CAN_EFF_MASK;
-> +
-> +	EXPECT_EQ(J1939_ID_PRIO(id), PRIO);
-> +	EXPECT_EQ(J1939_ID_SA(id), SA_LOCAL);			/* source address */
-> +	EXPECT_EQ(J1939_ID_PS(id), SA_PEER);		/* destination (PS) */
-> +	EXPECT_EQ(J1939_ID_PF(id), J1939_PF(PGN_PDU1));
+
+[ ... ]
+
+> +	while (got < num_pkts) {
+> +		ASSERT_EQ(recv_for_peer(self->raw, J1939_PF(TP_DAT), SA_PEER, &frame,
+> +					J1939_RECV_TIMEOUT_MS), 0)
+> +			TH_LOG("missing DT after %u/%u packets", got, num_pkts);
+> +		unpack_dt_into(rx_buf, TP_SIZE, 0, &frame);
+> +		got++;
+> +	}
 
 [Severity: Low]
-Does this cover the whole CAN id that the file header promises ("the
-expected CAN id (priority, PGN, source and destination)")?
+Should this loop also check that frame.can_dlc == 8 for each DT frame?
 
-Both tx_pdu1_to_raw() and tx_pdu2_to_raw() mask with CAN_EFF_MASK
-before any assertion, so CAN_EFF_FLAG (and RTR/ERR) are never checked.
-j1939_send_one() builds the id with the flag set:
+match_peer_dest() in j1939_tests.h, used by recv_for_peer(), only
+compares the PF and PS fields of the CAN ID. unpack_dt_into() then
+copies at most the bytes still needed.
 
-	canid = CAN_EFF_FLAG |
-		(skcb->priority << 26) |
-		(skcb->addr.pgn << 8) |
-		skcb->addr.sa;
+The kernel's own receiver rejects short DT frames in
+j1939_xtp_rx_dat_one():
 
-A regression that dropped CAN_EFF_FLAG would still pass.
+    if (skb->len != 8) {
+        /* makes no sense */
+        abort = J1939_XTP_ABORT_UNEXPECTED_DATA;
 
-For PDU1, the PGN check here only covers PF (bits 16-23). The DP and
-EDP bits (24-25) are never checked. tx_pdu2_to_raw() compares the full
-PGN with (id >> 8) & J1939_PGN_MAX, so the two TX tests check different
-things.
+On transmit, full-length DT frames depend on the padding in
+j1939_tp_tx_dat():
 
-j1939_tests.h already has j1939_canid(), documented as "Encode a J1939
-single frame the way the kernel does on transmit", and send_raw8() uses
-it on the RX side. Would a direct comparison like this cover every
-field in both tests?
+    if (j1939_tp_padding && len < 8)
+        memset(skb_put(skb, 8 - len), 0xff, 8 - len);
 
-    EXPECT_EQ(frame.can_id, j1939_canid(PRIO, pgn, da, SA_LOCAL));
+If that padding regressed, the last DT frame would go out short. That is
+5 bytes for packet 29 with TP_SIZE, and 2 bytes for packet 858 with
+ETP_SIZE. rx_buf would still match, so both tp_tx_to_raw() and
+etp_tx_to_raw() would pass.
 
-> +	ASSERT_EQ(frame.can_dlc, sizeof(payload));
-> +	EXPECT_EQ(memcmp(frame.data, payload, sizeof(payload)), 0);
+> +
+> +	/* acknowledge with EOMA */
+> +	ctl_dat_init(dat, TP_CMD_EOMA);
+> +	put_le16(&dat[1], TP_SIZE);
+> +	dat[3] = num_pkts;
+> +	ASSERT_EQ(send_ctl_frame(self->raw, PRIO, TP_CTL, SA_LOCAL, SA_PEER,
+> +				 dat, PGN_DATA), 0);
+> +
+> +	EXPECT_EQ(memcmp(payload, rx_buf, sizeof(payload)), 0);
 > +}
 
-[ ... ]
+[Severity: Low]
+After the EOMA is sent, the test only compares rx_buf, and rx_buf was
+filled from DT frames received before the EOMA went out. Does anything
+confirm that the kernel actually accepted the acknowledgement?
 
-> +/* J1939 TX -> CAN_RAW: broadcast (PDU2) single frame. */
-> +TEST_F(j1939_wire, tx_pdu2_to_raw)
-> +{
-> +	uint8_t payload[8] = { 1, 2, 3, 4, 5, 6, 7, 8 };
-> +	struct can_frame frame;
-> +	canid_t id;
-> +
-> +	ASSERT_EQ(tx_to_raw_send_recv(self, true, PGN_PDU2, J1939_NO_ADDR,
-> +				      payload, &frame), 0);
-> +	id = frame.can_id & CAN_EFF_MASK;
-> +
-> +	EXPECT_EQ(J1939_ID_PRIO(id), PRIO);
-> +	EXPECT_EQ(J1939_ID_SA(id), SA_LOCAL);			/* source address */
-> +	EXPECT_EQ((id >> 8) & J1939_PGN_MAX, PGN_PDU2);	/* full broadcast PGN */
+The TX session is only acked and completed in j1939_xtp_rx_eoma_one():
 
-[ ... ]
+    session->pkt.tx_acked = session->pkt.total;
+    j1939_session_timers_cancel(session);
+    /* transmitted without problems */
+    j1939_session_completed(session);
+
+Several failures would still let tp_tx_to_raw() pass:
+
+  - a bad-PGN match in j1939_xtp_rx_cmd_bad_pgn()
+  - a failed session lookup
+  - a T3 timeout abort after the last DT
+
+etp_tx_to_raw() has the same gap: it ends right after sending the ETP
+EOMA. In both cases, teardown closes the sockets before any abort or
+completion can be observed.
+
+The commit message says the tests drive the round-trips "in both
+directions", but the last step on the TX side is never verified. Could
+the tests wait for SCM_TSTAMP_ACK on the j1939 socket, or check that no
+TP.Abort follows on the raw socket?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261014154435.3577983-1-o.rempel%40pengutronix.de
