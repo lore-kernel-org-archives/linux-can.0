@@ -1,101 +1,114 @@
-Received: from out203-205-221-221.mail.qq.com (out203-205-221-221.mail.qq.com [203.205.221.221])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C375D36EA98;
-	Sat, 17 Oct 2026 03:54:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.221
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BC31F30BB
+	for <linux-can@vger.kernel.org>; Sat, 17 Oct 2026 06:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792209257; cv=none; b=Zv8GZ+pTf5BH6+O7XH7aAnURFSGMSV8WH7vxeszDFYzKac96ZQXJ61WKrLePrBv4iXTy3CXAyH3S1uUyxrh56WHPD9qpkTKUYfjoDE6FImegXYVnvww1bRydFPjgXim8xhA1y+6AYx8R+AVmUqnd1hHE/WKRObt6B7Eb3G12b6I=
+	t=1792217507; cv=none; b=iDZW0RavMkyQGiQvZaQAA+pb/0pLzRHAXgPhrYq2r6FXpdbe1AgPGObIujVcvvdhMDscpZ+6xQQRAaX7uNAJyr5gzNym1m89zlHn/8RQY2E3f1Fib1uAoG9yWhj0DXUf4L2GB9WYfnY3OJ8LBlG0OcQUjBeLSRfKozQx0LcdwSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792209257; c=relaxed/simple;
-	bh=BiIpDiNO+A5zvu0yb7FPXXF68Vr0h0A6t93DHhTsnoY=;
-	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
-	 References:In-Reply-To; b=O4dO4nyU7NwsUposcSX+gLHYXejju/cyMc6boSXi3Q+w/pEFc92N+kpNansIiFyolvto2z7D/QCKqLUul+RGo29UkqrPrvRImH4koAE4ZzBkrLMZ7V4Hg26Bezg3NTPZZbMg0cMMIDTqBQD44kI8SwuiXinW2Ef2UlSyyk8jSG0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=xZAJpUL9; arc=none smtp.client-ip=203.205.221.221
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	s=arc-20240116; t=1792217507; c=relaxed/simple;
+	bh=FbSO5ON0kGxGnvupNIYBllDjI//sncYhkU3pg6Bhhj4=;
+	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
+	 Date; b=IFHxZ/L5wcGv0bKxkuvSeH4GGbuOM8ItUxHkiL/TkliuXhzzvine+cOjm83UUp7SXLsqcLuESV/NSRH6/kaJby74v7+V7Rc+AtAaALhJdTlOwUfh+5R1qaBVIhFldjKcpcfkOIG0fZ0v2zwCVUZOppxo/aa96EmL6V+elGhv3oM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cexm1V4W; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="xZAJpUL9"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1792209245; bh=BiIpDiNO+A5zvu0yb7FPXXF68Vr0h0A6t93DHhTsnoY=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=xZAJpUL9eL11GZBqk2NDu3/u8sKpa/tFWZocoBN7dlVkYVEWI0+xWwelCeXkyCupv
-	 aTjLuvHPRNNcGkIMQrdQ3rEnivIMbmo5fiYz7fyk+fBvPy8coh5q4CbKMP56u3G79h
-	 2ZroTXfFBEe1Oky34xxj8tVmFBkWyNX+/RPBepEA=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-XMAILINFO: NH2c3QqomeNikxeJuDQAEIQjSXALw5wWoyJKWbS38jUGjjE+0FUKEOE6/HeRya
-	 9vOjAxN/dM/jrxLKVIQucQSTNctilefGfiRmjeyzL35MZx7leZFPU1QdOKDb6VZu3vdldRNN+2lAv
-	 ixAo6Aijx4ND0GKKh/b/awJmMvGPmrvriJXXLz6V3PVaB/oZlAcYSzWNCH3+KB/GNPU+VUz89XEKj
-	 q9fAz6xHnF6VzTe6hxOWuoBvxdTVCp72UWN6eI2FWZTgHFkAJ2NanBXp3vIJOtw4BBVyZjaywRxxS
-	 UC7VqtoEhYfUhpnHWbL5TNU0A3LkfLDHrREaFm2+gpUPP5J6pHm4Qih7yUdpczynuT1lRw4XZ2x4W
-	 JK9Xbj5pHOKtowYmzk0G3E6uqbsRjDwWbO7ibzzcr7gujPk3mpz1XL4kE3t2vBVenyFtZZngxy/fN
-	 3CM9ywJo3xXNLxTQq+wITtbOQYffVTgRM8eYAanankf1G8jQbAZsadVoNW1YBQzOf+0zmHB6+yWe6
-	 hjpNEtyaCehh0T9ztuUKr1iSbvAa9NGAUbUlqIstdOOh7XGuhW0C7G0p8bmqWwa3H6y0xQIfPqucB
-	 BtZ9/HpBGDoN0rQsqelTfvbe6bsjrNsUzpbTpUcMSPCpAY3ELxXURV+2YQC3RY0v1czVZuvlyKqgd
-	 jR2WqLVtTjuCw4RFsVysSoRX3+hx7Oyj80nLitTjhJ/YHyhcrRAOtiJPGdjnXRZA0ec71dO3XXuUN
-	 H6CxKzMbvqnILU86Ef2KHLhyaCM9FShN8q357N53bIE0HnAylyjMJ13yjO2nUNpdacMY1qgNp3g1K
-	 G8LdxkB6kYsXDA7rvwKLhn5LstWZL7Y/ivKW+mkwPcFqPwpXtgla38OwkJ5nfVm5j6tiPEbgfn3+9
-	 Y770mMgHxgwzLXxGXYAEaRYGkrJRsrDK9MBsqhNMuJMexbRe5ZU+rMemmFKIq5EguEkkCnzN0gxks
-	 lCnMnUAsx468MpAX1LhV/R73TcpFLXWCtfUQasXEl8tj+Y5BKO+vjxclMCZ+ei+SsVnio+PTOOJIQ
-	 rWJey/VF2o3OrQuXoWl8Vl+pFP4RGgCUbjg3V0Lq5Ioek+iVFEmN+/o+vNzX6qPW4FC553xy6O/PA
-	 o1g+ZQpJ4jLJjknypRuXz9qZkSWsbiOOHM8=
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
-Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>
-Subject: Re: [PATCH net v5 5/6] can: rockchip_canfd: serialize TX with bus-off and restart
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cexm1V4W"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF0A11F000C4;
+	Sat, 17 Oct 2026 06:11:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792217506;
+	bh=WQODnyqvt+2YaEvhbt85rT0pWRTHG9VcsAAKkfWv7tw=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Cexm1V4W/zzXlGFHXKA2hNxPgUS+GGX/Y66FlGIJgAins8ujuvDhdcI+GJEcTPgkh
+	 jFicTt2ChU2u1nXlf+7nViSKJK6zyzsXEL4T/HZdCA5QkssuAh/zW2DnjJ17PKpOqv
+	 HmdUfzou2Du+4K2TR6QItC9fMxm9M5awfyhPdt/WgCGi9cc042AI+jPSlZTSPTl0a2
+	 sgjQ9iiXSG5JE72Uy+vHzVH88RSV9ERN+zSnreh/QpydJvJL8gNCUvC+kqHQC7yvuu
+	 T2epliRImHKFcly7MkCHbAo0j8gj6ZKeJRxwHjsWfvGGwFJVXOnK5clRQtlgTVW/io
+	 QAMLdYjOMmjAw==
+Message-ID: <sashiko-outbox-175332@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net-next 1/2] can: slcan: publish tty->disc_data only
+ after register_candev()
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Chaosheng Qu" <chaosheng.qu.linux@gmail.com>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <afc724d533dc3e7d6d423a641ecb6ca5b40451f7.1792118038.git.chaosheng.qu.linux@gmail.com>
+References: <cover.1792118038.git.chaosheng.qu.linux@gmail.com>
+ <afc724d533dc3e7d6d423a641ecb6ca5b40451f7.1792118038.git.chaosheng.qu.linux@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 17 Oct 2026 06:11:45 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Sat, 17 Oct 2026 11:54:03 +0800
-X-Priority: 3
-Message-ID: <tencent_C91338471C02F811B1FC329B56683265FE09@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261015-rockchip-canfd-restart-close-v5-5-ae77327037c9@qq.com>
-	<179219884425.1406898.18319979032484933416@kernel.org>
-In-Reply-To: <179219884425.1406898.18319979032484933416@kernel.org>
-X-QQ-mid: xmsezb41-0t1792209243t8ya42z76
 
-SGksCgo+IFtTZXZlcml0eTogTG93XQo+IFRoaXMgbG9jayBzdGF5cyBoZWxkIHdpdGggaGFy
-ZCBJUlFzIGRpc2FibGVkIHVudGlsIHRoZSBlbmQgb2YKPiBya2NhbmZkX3N0YXJ0X3htaXQo
-KS4gVGhlIGxvY2tlZCByZWdpb24gaW5jbHVkZXMgdGhlIGVjaG8gc2tiIGhhbmRsaW5nOgo+
-IAo+IGRyaXZlcnMvbmV0L2Nhbi9yb2NrY2hpcC9yb2NrY2hpcF9jYW5mZC10eC5jOnJrY2Fu
-ZmRfc3RhcnRfeG1pdCgpIHsKPiAgICAgLi4uCj4gZnJhbWVfbGVuID0gY2FuX3NrYl9nZXRf
-ZnJhbWVfbGVuKHNrYik7Cj4gZXJyID0gY2FuX3B1dF9lY2hvX3NrYihza2IsIG5kZXYsIHR4
-X2hlYWQsIGZyYW1lX2xlbik7Cj4gaWYgKCFlcnIpCj4gbmV0ZGV2X3NlbnRfcXVldWUocHJp
-di0+bmRldiwgZnJhbWVfbGVuKTsKPiAgICAgLi4uCj4gfQo+IAo+IGNhbl9wdXRfZWNob19z
-a2IoKS0+Y2FuX2NyZWF0ZV9lY2hvX3NrYigpIGNsb25lcyB0aGUgc2tiIGFuZCB0aGVuIGNh
-bGxzCj4gY29uc3VtZV9za2IoKSBvbiB0aGUgb3JpZ2luYWwuIElmIHRoZSBjbG9uZSBmYWls
-cywgaXQgY2FsbHMga2ZyZWVfc2tiKCkKPiBpbnN0ZWFkLiBjYW5fcHV0X2VjaG9fc2tiKCkg
-YWxzbyBjYWxscyBrZnJlZV9za2IoKSBpbiB0aHJlZSBjYXNlczogSUZGX0VDSE8KPiBpcyBj
-bGVhciwgdGhlIHByb3RvY29sIGNoZWNrIGZhaWxzLCBvciB0aGUgZWNobyBzbG90IGlzIHN0
-aWxsIG9jY3VwaWVkLgo+IAo+IEZyZWVpbmcgdGhlIG9yaWdpbmFsIHNrYiBydW5zIHRoZSBz
-b2NrZXQgZGVzdHJ1Y3RvciAoc29ja193ZnJlZSgpKS4gSWYgdGhpcwo+IGlzIHRoZSBsYXN0
-IFRYIHNrYiBvZiBhIGNsb3NlZCBzb2NrZXQsIHRoYXQgY2FuIGNvbnRpbnVlIGludG8gX19z
-a19mcmVlKCkuCj4gCj4gVGhlIGNvbW1lbnQgYWJvdmUgZGV2X2tmcmVlX3NrYl9pcnEoKSBp
-biBpbmNsdWRlL2xpbnV4L25ldGRldmljZS5oIHNheXMKPiBrZnJlZV9za2IoKSBhbmQgY29u
-c3VtZV9za2IoKSBtdXN0IG5vdCBiZSBjYWxsZWQgd2l0aCBoYXJkd2FyZSBpbnRlcnJ1cHRz
-Cj4gZGlzYWJsZWQuIEJlZm9yZSB0aGlzIHBhdGNoLCBuZG9fc3RhcnRfeG1pdCgpIHJhbiB3
-aXRoIG9ubHkgQkggZGlzYWJsZWQuCgpZb3UgYXJlIHJpZ2h0LiBPbiBub24tUFJFRU1QVF9S
-VCBrZXJuZWxzLCB0aGUgbmV3IGxvY2tpbmcgcGxhY2VzIHRoZQpvcmlnaW5hbCBza2IncyBy
-ZWxlYXNlIGluc2lkZSBhbiBJUlEtZGlzYWJsZWQgc2VjdGlvbi4gSSB3aWxsIGZpeCB0aGlz
-CmluIHRoZSBuZXh0IHJldmlzaW9uIHdoaWxlIHByZXNlcnZpbmcgdGhlIHN5bmNocm9uaXph
-dGlvbiB3aXRoIGJ1cy1vZmYKYW5kIGNsb3NlLgoKPiBbU2V2ZXJpdHk6IE1lZGl1bV0KPiBU
-aGlzIGlzIGEgcHJlLWV4aXN0aW5nIGlzc3VlIHRoYXQgdGhpcyBwYXRjaCBkaWQgbm90IGlu
-dHJvZHVjZS4gV2hhdAo+IGhhcHBlbnMgd2hlbiBjYW5fcHV0X2VjaG9fc2tiKCkgZmFpbHMg
-ZWFybGllciBpbiB0aGlzIGZ1bmN0aW9uPwoKWWVzLCB0aGUgZXhpc3RpbmcgY29kZSBzdGls
-bCBhZHZhbmNlcyB0eF9oZWFkIGFuZCBzdWJtaXRzIHRoZSBmcmFtZSBhZnRlcgplY2hvIGFs
-bG9jYXRpb24gZmFpbHMuIFdoZW4gdHhfdGFpbCByZWFjaGVzIHRoZSBlbXB0eSBzbG90LCBj
-b21wbGV0aW9uCm1hdGNoaW5nIGZhaWxzIGFuZCB0eF90YWlsIGNhbm5vdCBhZHZhbmNlLCB3
-aGljaCBjYW4gc3RhbGwgVFguCgpUaGlzIHByZWRhdGVzIHRoZSBzZXJpZXMuIEkgaGF2ZSBy
-ZWNvcmRlZCBpdCBhcyBhIHNlcGFyYXRlIGZvbGxvdy11cCBmaXgKYW5kIHdpbGwga2VlcCBp
-dCBvdXRzaWRlIHRoaXMgcmVzdGFydC9jbG9zZSBzZXJpZXMuCgpSZWdhcmRzLApDdW5oYW8g
-THUKCnB3LWJvdDogY3IK
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [Medium] can: slcan: permanent TX queue stall due to lost tty_wakeup
+--
 
+commit 97d420d988d6c139c8f2ceadb7c0d2d8b4b77ede
+Author: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+
+can: slcan: publish tty->disc_data only after register_candev()
+
+This commit modifies slcan_open() to assign the private slcan structure to
+the tty layer only after the network device is successfully registered. The
+goal is to simplify the error handling path so that the pointer does not
+need to be cleared if register_candev() fails.
+
+> diff --git a/drivers/net/can/slcan/slcan-core.c b/drivers/net/can/slcan/s=
+lcan-core.c
+> index c9414faafe664..fc6ecf110aabf 100644
+> --- a/drivers/net/can/slcan/slcan-core.c
+> +++ b/drivers/net/can/slcan/slcan-core.c
+> @@ -849,7 +849,6 @@ static int slcan_open(struct tty_struct *tty)
+> =20
+>  	/* Mark ldisc channel as alive */
+>  	sl->tty =3D tty;
+> -	tty->disc_data =3D sl;
+> =20
+>  	err =3D register_candev(dev);
+>  	if (err) {
+> @@ -858,6 +857,8 @@ static int slcan_open(struct tty_struct *tty)
+>  		return err;
+>  	}
+> =20
+> +	tty->disc_data =3D sl;
+
+[Severity: Medium]
+Does this change introduce a regression that leads to a permanent TX queue
+stall?
+
+Because register_candev() drops rtnl_lock internally and makes the network
+device visible to userspace, an administrator could bring up the interface
+and transmit a CAN packet while slcan_open() is still executing.
+
+If the transmit buffer fills up, slcan_netdev_xmit() stops the queue and
+relies on the UART hardware calling tty_wakeup() to restart it.
+
+However, since slcan_open() still holds the ldisc_sem write lock (acquired
+during tty_set_ldisc()), tty_wakeup() will fail to acquire the read lock:
+
+drivers/tty/tty_io.c:tty_wakeup() {
+	...
+	ld =3D tty_ldisc_ref(tty);
+	if (ld) {
+		if (ld->ops->write_wakeup)
+			ld->ops->write_wakeup(tty);
+		tty_ldisc_deref(ld);
+	}
+	...
+}
+
+Will this cause tty_ldisc_ref() to silently drop the wakeup, leaving the
+netdev queue permanently stopped?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/cover.1792118038.gi=
+t.chaosheng.qu.linux@gmail.com?part=3D1
