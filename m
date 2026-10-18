@@ -1,170 +1,101 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out28-217.mail.aliyun.com (out28-217.mail.aliyun.com [115.124.28.217])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4583E2D5436;
-	Sun, 18 Oct 2026 01:22:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADD83905EF;
+	Sun, 18 Oct 2026 10:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.217
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792286538; cv=none; b=Y0jWr+79j7UJESYEVHB/lgPyNY8LMA3o3oLvBV1Q81/zdKcjP1WqOdouzOWPrWJAvCeGBeyZODpgEc1A3F23YdB88LCSk7FNYqFfHg17Rq9QNe64Jkmk6hvRH3v4zzhB/0emigufE/hcLGYRW7xCsvnHg+LPcOQDfysYkzYy6Mk=
+	t=1792318901; cv=none; b=K5E48NwtbwO/qaBAjVlcGWN8a+JGxcKotUv16mT25N500HbkGVNNKqd4nkq/AmzwcxPzpDjNESpElEfmYubC2o4jgL+XhTTRDWkWiKl1RbFG9DlwEjx0OygU6PZi8PftIRb01BIpdu1Pbgo0M6b1raSV8LVjUJ9/euQsJdR/1GA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792286538; c=relaxed/simple;
-	bh=XhexNEgETB4kXOMwMoUg24sDNbqfeADoCZGm0EPDurE=;
-	h=Subject:From:To:Cc:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=d+Zv79iprM52+X8pvk23kxhB+Kb+D7UC/UE/0qFJDqkMUVQmUYsn/NnAoi8U7CbWUEs5cwJgMZl/yBiiThGTFi4NR5OpItVOABW/RIgP8QbFr9CpxA2XCs+CdGDZq94bnlr5hCRbMMWEGi5W+W3zGtSUInilaVugdpLR8lQDqbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q//I5FQZ; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792318901; c=relaxed/simple;
+	bh=MqIop+Ry5uHGldSb9XPw77eJyDNc2sII9hGClB09mQs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YyNgJGNMSozUQAw/FbMVi7Q8ns+bOcQLQNzCdZbh9rCQOrRKS410hcFe5Tw1+WNy3nFnhUMaWyQwJgU/Z3hC7tnosjLDYOR0tDXquLjhXnw3OgMJ2DyZs2w97dO2KOqOpebT47idfVlkCeHqVkzP/iz3BQT4qpnS5TCHDvQkjnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht; spf=pass smtp.mailfrom=yinhe.ht; dkim=pass (2048-bit key) header.d=yinhe.ht header.i=@yinhe.ht header.b=JjcZSRpD; arc=none smtp.client-ip=115.124.28.217
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yinhe.ht
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q//I5FQZ"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F74A1F000C5;
-	Sun, 18 Oct 2026 01:22:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792286537;
-	bh=M53PMwFpTB0OGisdlvnYwV3+CQAncQbW9tNlntg8hV8=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Q//I5FQZen1TJNIXlJq/IhrgBN+Y1tVmdhITXDKZKCaH0d6Gx+Wv0vc134kMnSZJd
-	 wT3NwTqBI3Nw8KrRoByOyftpOMurUpRjAgZLfRezJ8NhcVODhggDL3OPi14fkGh+lP
-	 sodJjqMIzhvZ8pk3E5Yee7MmsPhNiF5MwUYLGQpVl6D4i28URp5pPHWidXB8R3cJ2L
-	 lZHrw7nv6H8YVcCpJN2txwBOi9Iv46ZkAkkwcnIV17pL895rtd2nM1XV1HhLLCR5Bk
-	 rT4WOFHwUP8B/8I38IZNgN/l3z5SYqruZM/3QIuzQ7wfrhCYB4Dr51xwGHXzTTVGRF
-	 dBcAMhxn6HbXQ==
-Subject: Re: [PATCH v2 2/2] can: tcan4x5x: Add suspend error handling
-From: netdev-bot+sashiko@kernel.org
-To: msp@baylibre.com
-Cc: mkl@pengutronix.de, mailhol@kernel.org, sean@geanix.com, martin@geanix.com,
- k-willis@ti.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- kuba@kernel.org
-Date: Sun, 18 Oct 2026 01:22:16 +0000
-Message-ID: <179228653606.3131.9842377725532740946@kernel.org>
-In-Reply-To:
- <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-2-7efa2b172cce@baylibre.com>
-References:
- <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-2-7efa2b172cce@baylibre.com>
-X-sashiko-severity: Low
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key) header.d=yinhe.ht header.i=@yinhe.ht header.b="JjcZSRpD"
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=yinhe.ht; s=default;
+	t=1792318889; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=oPcpo3LDbQ/rlNvHeFnmd3lUFBVjp8gt26UuGxzknmc=;
+	b=JjcZSRpDg6jjBbke8IR/NJYHugk5fUm4hQ1ZxMtp/KEElxFFawxcxtzE2HpzcJDNQo1lAvtmhNxMcAnaTPW30Qhqq3ezioLZiIuzGE21OOe5u0nibiV/v0oR2NxxxZiX90G2OfSI5OUXagSo/5r6CRlW7a3+5YGrzONUnYUJkUFtMBqGJ4G3N0el6NL8u2m+zgpuu6EBEZRPtAvZNtXWMZ8faT6hkBmG0fw8gcEzFg5Y8NH9tsCqwpgWaF9EDBLi5napfU1TuHA66ITXltvhOHB85uyPPp9IifBotxhvIz5Fy6nqBa+EOs5eX5zyTkwgdVP5aOhqyxC14Rti7yrhFg==
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07668728|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0457954-0.00438278-0.949822;FP=5349324788030295733|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033037032089;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.jiygvZo_1792318888;
+Received: from galx..(mailfrom:chunyuzhiqiang@yinhe.ht fp:SMTPD_---.jiygvZo_1792318888 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Sun, 18 Oct 2026 18:21:29 +0800
+From: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+To: netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org,
+	mkl@pengutronix.de,
+	kernel@pengutronix.de,
+	haibo.chen@oss.nxp.com,
+	shawnguo@kernel.org,
+	imx@lists.linux.dev,
+	ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+Subject: [PATCH net v4] can: dev: can_fill_info(): don't wake up controller if interface is down
+Date: Sun, 18 Oct 2026 18:17:44 +0800
+Message-ID: <20261018101744.93657-1-chunyuzhiqiang@yinhe.ht>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+If the interface is down, the CAN controller might be powered down, the
+clock disabled, and/or its external reset asserted.
 
-Low priority / nit picks for your consideration:
+Don't call do_get_berr_counter() to read the CAN bus error counters if
+the interface is down. This fixes a generic logic problem that exists
+on all platforms.
 
-- [Low] The Fixes: tag points at the wrong commit.
-- [Low] tcan4x5x_suspend() ignores the return value of
-  enable_irq_wake(spi->irq).
+Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
+Cc: stable@vger.kernel.org
+Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+---
+v1 -> v2:
+  - Reword the commit message to drop the MDIS reasoning.
+  - Add Fixes: tag.
 
---
+v2 -> v3:
+  - Use the title and commit message suggested by Bough Chen.
+  - Drop the i.MX8QXP-specific crash dump and erratum explanation.
+  - Drop the m_can reference.
+  - Drop the Link: tag.
 
-can: tcan4x5x: Add suspend error handling
+v3 -> v4:
+  - Move the netif_running() check from the flexcan driver to
+    can_fill_info() and can_get_size() in the CAN core, as suggested by
+    Marc Kleine-Budde. This covers all CAN drivers, not just flexcan.
 
-This patch adds an error path to tcan4x5x_suspend(). When
-m_can_class_suspend() fails, the wake IRQ armed by enable_irq_wake() is
-released with disable_irq_wake() before the error is returned.
+ drivers/net/can/dev/netlink.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Fixes: b6b640c04446 ("can: tcan4x5x: support resuming from rx interrupt signal")
-
-[Severity: Low]
-
-Is this the right commit for the Fixes tag?
-
-At b6b640c04446, m_can_class_suspend() ends with an unconditional
-"return 0;". The new err_disable_irq path in tcan4x5x_suspend() could
-never run against that version.
-
-m_can_class_suspend() first became able to fail in ad1ddb3bfb0c ("can:
-m_can: call deinit/init callback when going into suspend/resume"). That
-commit added:
-
-    ret = cdev->ops->deinit(cdev);
-
-and changed the final statement to "return ret;". tcan4x5x is the only
-m_can driver that sets .deinit (.deinit = tcan4x5x_deinit).
-
-The previous patch in this series, "can: m_can: Fix suspend deinit()
-error path", already uses Fixes: ad1ddb3bfb0c. With different tags,
-stable tooling could pick this patch for trees that have b6b640c04446
-but not ad1ddb3bfb0c. In those trees the new branch is dead code, and the
-companion patch would not be picked.
-
-Should this be Fixes: ad1ddb3bfb0c ("can: m_can: call deinit/init
-callback when going into suspend/resume") instead?
-
-Also, the commit message says "restore the previous state". Could it say
-that the state being restored is only the enable_irq_wake() reference?
-
-> diff --git a/drivers/net/can/m_can/tcan4x5x-core.c b/drivers/net/can/m_can/tcan4x5x-core.c
-> index a5b8829aa5193..b69312413d627 100644
-> --- a/drivers/net/can/m_can/tcan4x5x-core.c
-> +++ b/drivers/net/can/m_can/tcan4x5x-core.c
-> @@ -575,11 +575,20 @@ static int __maybe_unused tcan4x5x_suspend(struct device *dev)
->  {
->  	struct m_can_classdev *cdev = dev_get_drvdata(dev);
->  	struct spi_device *spi = to_spi_device(dev);
-> +	int ret;
->  
->  	if (cdev->pm_wake_source)
->  		enable_irq_wake(spi->irq);
->  
-> -	return m_can_class_suspend(dev);
-> +	ret = m_can_class_suspend(dev);
-> +	if (ret)
-> +		goto err_disable_irq;
-> +	return 0;
-> +
-> +err_disable_irq:
-> +	if (cdev->pm_wake_source)
-> +		disable_irq_wake(spi->irq);
-> +	return ret;
-
-[Severity: Low]
-
-Can this disable_irq_wake() be unbalanced against the enable_irq_wake()
-above it?
-
-The return value of enable_irq_wake(spi->irq) is ignored. Suppose the
-parent irqchip has no irq_set_wake callback and does not set
-IRQCHIP_SKIP_SET_WAKE. Then set_irq_wake_real() returns -ENXIO, and
-irq_set_irq_wake() resets the depth:
-
-kernel/irq/manage.c:irq_set_irq_wake() {
-    ...
-		if (desc->wake_depth++ == 0) {
-			ret = set_irq_wake_real(irq, on);
-			if (ret)
-				desc->wake_depth = 0;
-    ...
-}
-
-m_can_class_suspend() can then also fail, for example when an SPI access
-in tcan4x5x_deinit() fails. In that case this error path calls
-disable_irq_wake() with wake_depth == 0, which hits:
-
-			if (desc->wake_depth == 0) {
-				WARN(1, "Unbalanced IRQ %d wake disable\n", irq);
-
-So the rollback drops a wake reference that was never taken.
-
-Ignoring the enable failure has a second effect. Suspend carries on with
-the chip in RX-wake mode even though the SoC IRQ line was never armed as
-a wake source.
-
-tcan4x5x_resume() already calls disable_irq_wake() unconditionally, so
-the pattern is older than this patch. This patch copies it into the new
-rollback path.
-
-Would it work to record whether enable_irq_wake() succeeded, or to
-return its error before calling m_can_class_suspend()? Then
-disable_irq_wake() would only be called when the wake reference was
-actually taken.
-
->  }
->  
->  static int __maybe_unused tcan4x5x_resume(struct device *dev)
-
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 6f83b87d54fc..d17f4e9cc144 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -584,7 +584,7 @@ static size_t can_get_size(const struct net_device *dev)
+ 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_STATE */
+ 	size += nla_total_size(sizeof(struct can_ctrlmode));	/* IFLA_CAN_CTRLMODE */
+ 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_RESTART_MS */
+-	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
++	if (priv->do_get_berr_counter && netif_running(dev))	/* IFLA_CAN_BERR_COUNTER */
+ 		size += nla_total_size(sizeof(struct can_berr_counter));
+ 	if (priv->termination_const) {
+ 		size += nla_total_size(sizeof(priv->termination));		/* IFLA_CAN_TERMINATION */
+@@ -735,7 +735,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
+ 	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
+ 
+-	    (priv->do_get_berr_counter &&
++	    (priv->do_get_berr_counter && netif_running(dev) &&
+ 	     !priv->do_get_berr_counter(dev, &bec) &&
+ 	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
+ 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261016-v7-3-topic-mcan-suspend-fix-fix-v2-0-7efa2b172cce%40baylibre.com
+2.47.3
+
