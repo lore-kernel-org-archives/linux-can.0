@@ -1,173 +1,129 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6D83ADB92
-	for <linux-can@vger.kernel.org>; Sun, 18 Oct 2026 14:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C1E5495AF3
+	for <linux-can@vger.kernel.org>; Sun, 18 Oct 2026 15:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792335067; cv=none; b=oLhv5k29ckSz+490+Vyw2OH2AW+M7wFVUSjpq7Ou22moBT14wcochA6cEP/IUIxm53HQlncq4aTZeBQNPCy8S/A8o5RjTfsMnnPOn2zalIGOaxkwUq6H4oLHdrUHoWWKmocW1AER7AdPIMB/q/lEC+k59UYY560qEFI4kIUJ1lI=
+	t=1792336369; cv=none; b=JWz3wCl8+Z6IMs+kcuTIsoIsk6BWwp5cphA3IQ1DtO3t7MoIIHUSN6wpRBx4lY98k2vGlVrOPRXJqR6beV6bdqoolH4e1AvGuBIkr6P7aXMW+/N86keKRoLrfr3mxWnsP8H6fSdhRQWX0IpRBvXYjobR5M4UGAvU53k/mquPMz0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792335067; c=relaxed/simple;
-	bh=p+rwPGpD1it2jolrAKhsR3E6UuXfQUWwF0aOZVL1MYg=;
-	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
-	 Date; b=k0CWbeQrQBmKlhFTdl8qUFyN6zJCXJqQBJTQl0pxb3dP3FRP47SeIqlQQTdlNDCbXqLLfRBmJry2dULWWTic9ZFXe8skk8zesbTpr8AOPBKzFsgGe9Og/sIGwr3qwZYJ5QShQTa0QGmqJHvJ5wLFvY+hKzL2vuQrL/ZL5dugMcs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oz2k0l6C; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792336369; c=relaxed/simple;
+	bh=Hu1C+gxspGtogjhLwvc2sfoZ9RIMKEOB5ZA39HHhugk=;
+	h=From:To:Cc:Subject:Mime-Version:Content-Type:Date:Message-ID:
+	 References:In-Reply-To; b=udY8mcIma54M7J9WZAUbFwh/ZxlWNU+kBECH/q4WQk4rFf10e26r++rOxFywe9XxryouYMinljLoBATbpmqayxsJ5OeV0jL7pZAOlFLHv4C5dkdzVfC0/WkUwketiTq3F6Mbhe9OK+rgtzZuMmdY61p8CaePtsKlUX9r3t4zk9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=UThYTwQJ; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oz2k0l6C"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 630B71F000C4;
-	Sun, 18 Oct 2026 14:51:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792335065;
-	bh=dkXpLZIHYZVrRM0XJKdFwnOBoRWe3Vrw4CjEJ3EWvyw=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=oz2k0l6CSZBefz8hke8zjghcZGAhJtMhP1HSTBWtRLUDayGPxzxCwz8LmQPySEfLH
-	 acUi9YU0QPCQkSWoYcxdFf4czcSWyuYUVczaqkvSD+5U+VTl4bhgmPN7PjPR7PDQeg
-	 9bER/JhqgBi+aCHrpz2RksNAc+0wugA95zPfjkhoM8GGr+ne3nQ4M+x42jpLwb3OXG
-	 MNbGFr3lrnE59HXEXA1h8kdu8gQFYNR+euhvDGMCa6HGMBLPjCRboHBltmLphRq+Su
-	 RRKhCDNWMmQurg1yo7Klg5xRCvv+lui+YnV+CixEPQ3b/1k15Kta7YVByDgvIuhj12
-	 3OioYxSG+RRmQ==
-Message-ID: <sashiko-outbox-176216@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net v6 3/6] can: rockchip_canfd: cancel bus-off restart
- before closing the device
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Cunhao Lu" <1579567540@qq.com>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261017-rockchip-canfd-restart-close-v6-3-ed605feb4b6e@qq.com>
-References: <20261017-rockchip-canfd-restart-close-v6-0-ed605feb4b6e@qq.com>
- <20261017-rockchip-canfd-restart-close-v6-3-ed605feb4b6e@qq.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Sun, 18 Oct 2026 14:51:04 +0000
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="UThYTwQJ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1792336361; bh=Hu1C+gxspGtogjhLwvc2sfoZ9RIMKEOB5ZA39HHhugk=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=UThYTwQJTMc0wWxSjz2NECux799iRpy1aSU/6sIaGxdN3yvVwBo8UvFapPCOp4Hgs
+	 08qk0C8TMOs9w1Tpagg0qgmjwx1x5OBa3JhI0FIzUsMs6GdOatXHoI+Brji3R7n3SN
+	 CJuSKHPaKPSWlytEw+AmZNgbSvWTXrNerPAOShFI=
+X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
+X-QQ-XMAILINFO: MwjSFSbFHfyzxmNWeh0d6crR7yYkYywctExKdsld25OP39ZHntAYjg9A+HTA0K
+	 RI3j2YB8JYy4O+5ihovDUUiaWLPSf522NRo480M/QG4juEgNMYQuRKcvLQydltxEAZ75E2Ngex/EU
+	 F2J8sZFttEdaa5GWdCdxxNWjs/f6z5xVK98SqHZFnn30upRbBpuWDofO2PFODGbX7LQPLgUi/RlA5
+	 kjbiTc/lOpQpgjXRcPSKH69FK4U4Tw6CTYCzBZbF7VaPNEdvq9YEK+3Qv7Z2ExolQpyOpwmILbBBV
+	 aSGiqRrMBk1WEcBtYI0DsJUHzRjec7zfkfT51mEFdbWiP/OX/QmnaU02TvjPqcge2yEylIAwZEWes
+	 7V9L2cbwvIKKHNyYTMFEhTkD5mDXZa9gKGKF+h2xO8Z9HDn9O8/7oo7fDNMybTiDCT5kVwRy2IS+i
+	 CPtEIteZeaakPmyldBS7wV5zffh/Ak6POUneRsucyjxHxuOEpWBcLEAaBWHatTTjMUN9/ZQB4fvYp
+	 WzdJUTIPkChLNrbLh+Z7YCfi0klSJiCSgM6ucojvMZXINEu5jSYMHF2hvFoy/+u6pMgSP6FKCwViZ
+	 XUXk+jonzhrO2YPno/Jwb097CDa8UKPpmqg6p1kx8DNFmco28uHVZhLDn4XkMFBhWduPRwVHTUYfB
+	 3UwozOA4zQtf+BzObvJX0EBwuuByqyTifaOqe5j+wMBdS3HsvY4DxD1Q9ZhKIDtLBROi/4hF/VKkL
+	 h4yomItonsgqdk3qAABNG7/ljIzc0j8cHzSQkg4Fhz0m3Cqub4TxsJmi0comZ/7tvqfSV2+n89OIJ
+	 R3ULh8Vh/zJXf6zP3WMyu2nKq2em/D2S8//g+I/tc3I2NHFQ45+7573vqeYWSShBfn2sLrM262b8U
+	 cPCtFaiJ9KnT3hXNMZK6HdeeESfIMn3SvuF9cNOlVFY67rZucvy+1HZ3WEaK2a9MLquYHTE6nFEsA
+	 qW9fweTBK2aFr62yHBlgiiMl9Cd/lUF3X+nV6VS/WljDrcRCq8YlcBINWHNvVZlOLx0X0kNc72bnr
+	 nA8hq9egNkaffLlpFN5I7tSrHwETou82g/3oAQTDInbj2W6k=
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?c2FzaGlrby1yZXZpZXdz?=" <sashiko-reviews@lists.linux.dev>
+Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?T2xla3NpaiBSZW1wZWw=?=" <o.rempel@pengutronix.de>
+Subject: Re: [PATCH net v6 3/6] can: rockchip_canfd: cancel bus-off restart before closing the device
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Sun, 18 Oct 2026 23:12:39 +0800
+X-Priority: 3
+Message-ID: <tencent_EB0857C01DA2B3DF52532DCD92CC4642CC06@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20261017-rockchip-canfd-restart-close-v6-0-ed605feb4b6e@qq.com>
+ <20261017-rockchip-canfd-restart-close-v6-3-ed605feb4b6e@qq.com>
+	<sashiko-outbox-176216@kernel.org>
+In-Reply-To: <sashiko-outbox-176216@kernel.org>
+X-QQ-mid: xmsezb41-0t1792336359ts2wan661
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Medium] can: rockchip_canfd: ad-hoc flag synchronization in rkcanfd_set_=
-mode()
---
+SGksCgo+IFtTZXZlcml0eTogTWVkaXVtXQo+IERvZXMgdXNpbmcgcHJpdi0+aXJxX3N1c3Bl
+bmRlZCBhcyBhIGJvb2xlYW4gZ2F0ZSBmbGFnIGJldHdlZW4KPiBya2NhbmZkX3NldF9tb2Rl
+KCkgYW5kIHJrY2FuZmRfaXJxKCkgbGVhdmUgYSByYWNlIHdpbmRvdyBkdXJpbmcgY29udHJv
+bGxlcgo+IHJlc3RhcnQgYW5kIHNoYXJlZCBJUlEgaGFuZGxpbmc/CgpUaGUgZmxhZyB3b3Jr
+cyB0b2dldGhlciB3aXRoIHN5bmNocm9uaXplX2lycSgpIHRvIGtlZXAgdGhlIElSUSBoYW5k
+bGVyCmZyb20gYWNjZXNzaW5nIHRoZSBkZXZpY2UgZHVyaW5nIHJlaW5pdGlhbGl6YXRpb24u
+IHN5bmNocm9uaXplX2lycSgpCndhaXRzIGZvciBoYW5kbGVycyB0aGF0IGhhdmUgYWxyZWFk
+eSBwYXNzZWQgdGhlIGZsYWcgY2hlY2suCgo+IFNldHRpbmcgcHJpdi0+aXJxX3N1c3BlbmRl
+ZCBvbiBlbnRyeSB0byBya2NhbmZkX3NldF9tb2RlKCkgYW5kIGNsZWFyaW5nIGl0IG9uCj4g
+ZXhpdCBhY3RzIGFzIGFuIGFkLWhvYyBsb2NrIHRoYXQgaXMgaW52aXNpYmxlIHRvIGxvY2tk
+ZXAgYW5kIGRvZXMgbm90Cj4gc2VyaWFsaXplIGFnYWluc3Qgb3RoZXIgY29uY3VycmVudCBy
+ZWFkZXJzIG9yIHdyaXRlcnMgb2Ygc2hhcmVkIHN0YXRlIChzdWNoIGFzCj4gcmtjYW5mZF9n
+ZXRfYmVycl9jb3VudGVyKCkpLgoKVGhlIEJFQyBjYWNoZSByYWNlIGlzIGEgcHJlLWV4aXN0
+aW5nIGlzc3VlLiBJIHdpbGwgbGVhdmUgaXQgb3V0IG9mIHRoaXMKc2VyaWVzIGZvciBub3cu
+IFdoZW4gSSBoYXZlIHRpbWUsIEkgd2lsbCBzZW5kIGEgc2VwYXJhdGUgcGF0Y2ggdG8gZml4
+IGl0LgoKPiBJbiBhZGRpdGlvbiwgcmtjYW5mZF9jaGlwX3N0YXJ0KCkgYWxyZWFkeSBwdXRz
+IHRoZSBjb250cm9sbGVyIGludG8KPiBSS0NBTkZEX1JFR19NT0RFX1dPUktfTU9ERSBhbmQg
+c2V0cyBwcml2LT5jYW4uc3RhdGUgPSBDQU5fU1RBVEVfRVJST1JfQUNUSVZFCj4gYmVmb3Jl
+IHJrY2FuZmRfc2V0X21vZGUoKSBjbGVhcnMgcHJpdi0+aXJxX3N1c3BlbmRlZDoKPgo+IGNh
+bl9yZXN0YXJ0KCkKPiAgIHJrY2FuZmRfc2V0X21vZGUobmRldiwgQ0FOX01PREVfU1RBUlQp
+Cj4gICAgIHJrY2FuZmRfY2hpcF9zdGFydChwcml2KQo+ICAgICAgIHJrY2FuZmRfY2hpcF9z
+ZXRfd29ya19tb2RlKHByaXYpOwo+ICAgICAgIHByaXYtPmNhbi5zdGF0ZSA9IENBTl9TVEFU
+RV9FUlJPUl9BQ1RJVkU7Cj4gICAgIHNtcF9zdG9yZV9yZWxlYXNlKCZwcml2LT5pcnFfc3Vz
+cGVuZGVkLCBmYWxzZSk7Cj4gICAgIHJrY2FuZmRfY2hpcF9pbnRlcnJ1cHRzX2VuYWJsZShw
+cml2KTsKPiAgICAgbmV0aWZfd2FrZV9xdWV1ZShuZGV2KTsKPgo+IEJlY2F1c2UgcmtjYW5m
+ZF9pcnEoKSByZWFkcyB0aGUgcmF3IHVubWFza2VkIGludGVycnVwdCBzdGF0dXMgZnJvbQo+
+IFJLQ0FORkRfUkVHX0lOVCBhbmQgbWFza3MgaXQgaW4gc29mdHdhcmUgd2l0aCB+cHJpdi0+
+cmVnX2ludF9tYXNrX2RlZmF1bHQKPiByYXRoZXIgdGhhbiBjb25zdWx0aW5nIFJLQ0FORkRf
+UkVHX0lOVF9NQVNLLCBhIHNoYXJlZCBJUlEgZmlyaW5nIG9uIHRoZQo+IElSUUZfU0hBUkVE
+IGxpbmUgYWZ0ZXIgc21wX3N0b3JlX3JlbGVhc2UoJnByaXYtPmlycV9zdXNwZW5kZWQsIGZh
+bHNlKSAob3IgYW4KPiBpbnRlcnJ1cHQgZmlyaW5nIHJpZ2h0IGFzIHJrY2FuZmRfY2hpcF9p
+bnRlcnJ1cHRzX2VuYWJsZSgpIHVubWFza3MgaGFyZHdhcmUKPiBpbnRlcnJ1cHRzKSBjYW4g
+ZW50ZXIgcmtjYW5mZF9pcnEoKSBhbmQgaGFuZGxlIGEgbmV3IGJ1cy1vZmYgY29uZGl0aW9u
+IGJlZm9yZQo+IHJrY2FuZmRfc2V0X21vZGUoKSBmaW5pc2hlczoKPgo+IHJrY2FuZmRfaXJx
+KCkKPiAgIHJrY2FuZmRfaGFuZGxlX3N0YXRlX2Vycm9yX2ludCgpCj4gICAgIHJrY2FuZmRf
+Y2hpcF9zdG9wKHByaXYsIENBTl9TVEFURV9CVVNfT0ZGKQo+ICAgICBjYW5fYnVzX29mZihu
+ZGV2KQo+Cj4gV2hlbiBya2NhbmZkX3NldF9tb2RlKCkgdGhlbiBleGVjdXRlcyBya2NhbmZk
+X2NoaXBfaW50ZXJydXB0c19lbmFibGUocHJpdikgYW5kCj4gbmV0aWZfd2FrZV9xdWV1ZShu
+ZGV2KSwgd291bGRuJ3QgaXQgdW5tYXNrIGludGVycnVwdHMgb24gdGhlIHN0b3BwZWQKPiBj
+b250cm9sbGVyIGFuZCB3YWtlIHRoZSB0cmFuc21pdCBxdWV1ZSB3aGlsZSBwcml2LT5jYW4u
+c3RhdGUgaXMKPiBDQU5fU1RBVEVfQlVTX09GRj8KClRoaXMgaXMgYWxyZWFkeSBoYW5kbGVk
+IGJ5IHBhdGNoIDUvNi4gcmtjYW5mZF9jaGlwX3N0YXJ0X2ZpbmlzaCgpIGhvbGRzCnR4X2xv
+Y2sgd2hpbGUgY2xlYXJpbmcgaXJxX3N1c3BlbmRlZCwgZW5hYmxpbmcgaW50ZXJydXB0cyBh
+bmQgd2FraW5nCnRoZSBxdWV1ZS4gVGhlIGJ1cy1vZmYgcGF0aCB0YWtlcyB0aGUgc2FtZSBs
+b2NrIGluIHJrY2FuZmRfdHhfZGlzYWJsZSgpCmJlZm9yZSBwdWJsaXNoaW5nIEJVU19PRkYg
+YW5kIHN0b3BwaW5nIHRoZSBjb250cm9sbGVyLiBBIG5ldyBidXMtb2ZmCnRoZXJlZm9yZSB0
+YWtlcyBlZmZlY3QgYWZ0ZXIgc3RhcnR1cCBmaW5pc2hlcy4KCj4gU2ltaWxhcmx5LCBiZWNh
+dXNlIHJrY2FuZmRfaXJxKCkgb25seSBjaGVja3MgcHJpdi0+aXJxX3N1c3BlbmRlZCAod2hp
+Y2ggaXMKPiBvbmx5IHNldCBkdXJpbmcgcmtjYW5mZF9zZXRfbW9kZSgpKSBhbmQgbWFza3Mg
+UktDQU5GRF9SRUdfSU5UIHdpdGgKPiB+cHJpdi0+cmVnX2ludF9tYXNrX2RlZmF1bHQsIHNo
+YXJlZCBJUlFzIGFycml2aW5nIGR1cmluZyBya2NhbmZkX29wZW4oKQo+IGJldHdlZW4gcmVx
+dWVzdF9pcnEoKSBhbmQgcmtjYW5mZF9jaGlwX2ludGVycnVwdHNfZW5hYmxlKCksIG9yIHdo
+aWxlIGluCj4gQ0FOX1NUQVRFX0JVU19PRkYgYWZ0ZXIgcmtjYW5mZF9jaGlwX3N0b3AoKSBt
+YXNrcyBSS0NBTkZEX1JFR19JTlRfTUFTSywgY2FuCj4gc3RpbGwgZXZhbHVhdGUgcGVuZGlu
+ZyBiaXRzIGluIFJLQ0FORkRfUkVHX0lOVC4gV291bGQgYSBwcm9wZXIgc3BpbmxvY2sgKG9y
+Cj4gaG9ub3JpbmcgdGhlIGFjdGl2ZSBtYXNrIHN0YXRlIHVuZGVyIGEgbG9jaykgYXZvaWQg
+dGhpcyByYWNlPwoKUGF0Y2ggNS82IGFsc28gc2V0cyBpcnFfc3VzcGVuZGVkIGluIHJrY2Fu
+ZmRfb3BlbigpIGJlZm9yZSByZXF1ZXN0X2lycSgpLgpJdCBpcyBjbGVhcmVkIGluIHJrY2Fu
+ZmRfY2hpcF9zdGFydF9maW5pc2goKSB1bmRlciB0eF9sb2NrLgoKVGhlIGJ1cy1vZmYgc3Rv
+cCBwYXRoIGFscmVhZHkgcmVzZXRzIHRoZSBoYXJkd2FyZSBhbmQgY2xlYXJzIFdPUktfTU9E
+RS4KSSBoYXZlIG5vdCBvYnNlcnZlZCBhIGZhaWx1cmUgY2F1c2VkIGJ5IHBlbmRpbmcgYml0
+cyByZW1haW5pbmcgYWZ0ZXIKcmVzZXQsIHNvIEkgZG8gbm90IHRoaW5rIHRoaXMgc2hvdWxk
+IGJlIGNvbnNpZGVyZWQgYSBidWcuCgpSZWdhcmRzLApDdW5oYW8gTHUK
 
-commit 84108d981e4356f8149159f043033d7bbecd5e53
-Author: Cunhao Lu <1579567540@qq.com>
-
-can: rockchip_canfd: cancel bus-off restart before closing the device
-
-This commit cancels bus-off restart work at the beginning of ndo_stop(),
-synchronizes interrupt and timestamp handling across controller restart in
-rkcanfd_set_mode(), and disables RX offload on request_irq() failure in
-rkcanfd_open().
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net=
-/can/rockchip/rockchip_canfd-core.c
-> index 37c1c22c40c9f..4b3db07242395 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-[ ... ]
-> @@ -356,7 +357,18 @@ static int rkcanfd_set_mode(struct net_device *ndev,
-> =20
->  	switch (mode) {
->  	case CAN_MODE_START:
-> +		rkcanfd_chip_interrupts_disable(priv);
-> +		/* Flush the interrupt mask write before suspending the handler. */
-> +		rkcanfd_read(priv, RKCANFD_REG_INT_MASK);
-> +		/* Keep shared IRQs from accessing the device during restart. */
-> +		WRITE_ONCE(priv->irq_suspended, true);
-> +		/* Wait for handlers that already passed the suspended check. */
-> +		synchronize_irq(ndev->irq);
-> +		rkcanfd_timestamp_stop_sync(priv);
-> +
->  		rkcanfd_chip_start(priv);
-> +		/* Publish the initialized state before resuming IRQ handling. */
-> +		smp_store_release(&priv->irq_suspended, false);
->  		rkcanfd_chip_interrupts_enable(priv);
->  		netif_wake_queue(ndev);
->  		break;
-> @@ -666,6 +678,10 @@ static irqreturn_t rkcanfd_irq(int irq, void *dev_id)
->  	struct rkcanfd_priv *priv =3D dev_id;
->  	u32 reg_int_unmasked, reg_int;
-> =20
-> +	/* Pairs with the release after restart has initialized the device. */
-> +	if (smp_load_acquire(&priv->irq_suspended))
-> +		return IRQ_NONE;
-> +
->  	reg_int_unmasked =3D rkcanfd_read(priv, RKCANFD_REG_INT);
->  	reg_int =3D reg_int_unmasked & ~priv->reg_int_mask_default;
-
-[Severity: Medium]
-Does using priv->irq_suspended as a boolean gate flag between
-rkcanfd_set_mode() and rkcanfd_irq() leave a race window during controller
-restart and shared IRQ handling?
-
-Setting priv->irq_suspended on entry to rkcanfd_set_mode() and clearing it =
-on
-exit acts as an ad-hoc lock that is invisible to lockdep and does not
-serialize against other concurrent readers or writers of shared state (such=
- as
-rkcanfd_get_berr_counter()).
-
-In addition, rkcanfd_chip_start() already puts the controller into
-RKCANFD_REG_MODE_WORK_MODE and sets priv->can.state =3D CAN_STATE_ERROR_ACT=
-IVE
-before rkcanfd_set_mode() clears priv->irq_suspended:
-
-can_restart()
-  rkcanfd_set_mode(ndev, CAN_MODE_START)
-    rkcanfd_chip_start(priv)
-      rkcanfd_chip_set_work_mode(priv);
-      priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
-    smp_store_release(&priv->irq_suspended, false);
-    rkcanfd_chip_interrupts_enable(priv);
-    netif_wake_queue(ndev);
-
-Because rkcanfd_irq() reads the raw unmasked interrupt status from
-RKCANFD_REG_INT and masks it in software with ~priv->reg_int_mask_default
-rather than consulting RKCANFD_REG_INT_MASK, a shared IRQ firing on the
-IRQF_SHARED line after smp_store_release(&priv->irq_suspended, false) (or an
-interrupt firing right as rkcanfd_chip_interrupts_enable() unmasks hardware
-interrupts) can enter rkcanfd_irq() and handle a new bus-off condition befo=
-re
-rkcanfd_set_mode() finishes:
-
-rkcanfd_irq()
-  rkcanfd_handle_state_error_int()
-    rkcanfd_chip_stop(priv, CAN_STATE_BUS_OFF)
-    can_bus_off(ndev)
-
-When rkcanfd_set_mode() then executes rkcanfd_chip_interrupts_enable(priv) =
-and
-netif_wake_queue(ndev), wouldn't it unmask interrupts on the stopped
-controller and wake the transmit queue while priv->can.state is
-CAN_STATE_BUS_OFF?
-
-Similarly, because rkcanfd_irq() only checks priv->irq_suspended (which is
-only set during rkcanfd_set_mode()) and masks RKCANFD_REG_INT with
-~priv->reg_int_mask_default, shared IRQs arriving during rkcanfd_open()
-between request_irq() and rkcanfd_chip_interrupts_enable(), or while in
-CAN_STATE_BUS_OFF after rkcanfd_chip_stop() masks RKCANFD_REG_INT_MASK, can
-still evaluate pending bits in RKCANFD_REG_INT. Would a proper spinlock (or
-honoring the active mask state under a lock) avoid this race?
-
-[ ... ]
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/=
-rockchip/rockchip_canfd.h
-> index 95bea9bfd8a2f..e1debab54534e 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd.h
-> +++ b/drivers/net/can/rockchip/rockchip_canfd.h
-> @@ -480,6 +480,7 @@ struct rkcanfd_priv {
-> =20
->  	u32 reg_mode_default;
->  	u32 reg_int_mask_default;
-> +	bool irq_suspended;
->  	struct rkcanfd_devtype_data devtype_data;
-[ ... ]
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261017-rockchip-c=
-anfd-restart-close-v6-0-ed605feb4b6e@qq.com?part=3D3
