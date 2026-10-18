@@ -1,101 +1,173 @@
-Received: from out28-217.mail.aliyun.com (out28-217.mail.aliyun.com [115.124.28.217])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CADD83905EF;
-	Sun, 18 Oct 2026 10:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.28.217
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F6D83ADB92
+	for <linux-can@vger.kernel.org>; Sun, 18 Oct 2026 14:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792318901; cv=none; b=K5E48NwtbwO/qaBAjVlcGWN8a+JGxcKotUv16mT25N500HbkGVNNKqd4nkq/AmzwcxPzpDjNESpElEfmYubC2o4jgL+XhTTRDWkWiKl1RbFG9DlwEjx0OygU6PZi8PftIRb01BIpdu1Pbgo0M6b1raSV8LVjUJ9/euQsJdR/1GA=
+	t=1792335067; cv=none; b=oLhv5k29ckSz+490+Vyw2OH2AW+M7wFVUSjpq7Ou22moBT14wcochA6cEP/IUIxm53HQlncq4aTZeBQNPCy8S/A8o5RjTfsMnnPOn2zalIGOaxkwUq6H4oLHdrUHoWWKmocW1AER7AdPIMB/q/lEC+k59UYY560qEFI4kIUJ1lI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792318901; c=relaxed/simple;
-	bh=MqIop+Ry5uHGldSb9XPw77eJyDNc2sII9hGClB09mQs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=YyNgJGNMSozUQAw/FbMVi7Q8ns+bOcQLQNzCdZbh9rCQOrRKS410hcFe5Tw1+WNy3nFnhUMaWyQwJgU/Z3hC7tnosjLDYOR0tDXquLjhXnw3OgMJ2DyZs2w97dO2KOqOpebT47idfVlkCeHqVkzP/iz3BQT4qpnS5TCHDvQkjnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht; spf=pass smtp.mailfrom=yinhe.ht; dkim=pass (2048-bit key) header.d=yinhe.ht header.i=@yinhe.ht header.b=JjcZSRpD; arc=none smtp.client-ip=115.124.28.217
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yinhe.ht
+	s=arc-20240116; t=1792335067; c=relaxed/simple;
+	bh=p+rwPGpD1it2jolrAKhsR3E6UuXfQUWwF0aOZVL1MYg=;
+	h=Message-ID:From:Subject:To:Cc:In-Reply-To:References:Content-Type:
+	 Date; b=k0CWbeQrQBmKlhFTdl8qUFyN6zJCXJqQBJTQl0pxb3dP3FRP47SeIqlQQTdlNDCbXqLLfRBmJry2dULWWTic9ZFXe8skk8zesbTpr8AOPBKzFsgGe9Og/sIGwr3qwZYJ5QShQTa0QGmqJHvJ5wLFvY+hKzL2vuQrL/ZL5dugMcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oz2k0l6C; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=yinhe.ht header.i=@yinhe.ht header.b="JjcZSRpD"
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=yinhe.ht; s=default;
-	t=1792318889; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=oPcpo3LDbQ/rlNvHeFnmd3lUFBVjp8gt26UuGxzknmc=;
-	b=JjcZSRpDg6jjBbke8IR/NJYHugk5fUm4hQ1ZxMtp/KEElxFFawxcxtzE2HpzcJDNQo1lAvtmhNxMcAnaTPW30Qhqq3ezioLZiIuzGE21OOe5u0nibiV/v0oR2NxxxZiX90G2OfSI5OUXagSo/5r6CRlW7a3+5YGrzONUnYUJkUFtMBqGJ4G3N0el6NL8u2m+zgpuu6EBEZRPtAvZNtXWMZ8faT6hkBmG0fw8gcEzFg5Y8NH9tsCqwpgWaF9EDBLi5napfU1TuHA66ITXltvhOHB85uyPPp9IifBotxhvIz5Fy6nqBa+EOs5eX5zyTkwgdVP5aOhqyxC14Rti7yrhFg==
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07668728|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0457954-0.00438278-0.949822;FP=5349324788030295733|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033037032089;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DS;RN=8;RT=8;SR=0;TI=SMTPD_---.jiygvZo_1792318888;
-Received: from galx..(mailfrom:chunyuzhiqiang@yinhe.ht fp:SMTPD_---.jiygvZo_1792318888 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Sun, 18 Oct 2026 18:21:29 +0800
-From: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-To: netdev@vger.kernel.org
-Cc: linux-can@vger.kernel.org,
-	mkl@pengutronix.de,
-	kernel@pengutronix.de,
-	haibo.chen@oss.nxp.com,
-	shawnguo@kernel.org,
-	imx@lists.linux.dev,
-	ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-Subject: [PATCH net v4] can: dev: can_fill_info(): don't wake up controller if interface is down
-Date: Sun, 18 Oct 2026 18:17:44 +0800
-Message-ID: <20261018101744.93657-1-chunyuzhiqiang@yinhe.ht>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oz2k0l6C"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 630B71F000C4;
+	Sun, 18 Oct 2026 14:51:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792335065;
+	bh=dkXpLZIHYZVrRM0XJKdFwnOBoRWe3Vrw4CjEJ3EWvyw=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=oz2k0l6CSZBefz8hke8zjghcZGAhJtMhP1HSTBWtRLUDayGPxzxCwz8LmQPySEfLH
+	 acUi9YU0QPCQkSWoYcxdFf4czcSWyuYUVczaqkvSD+5U+VTl4bhgmPN7PjPR7PDQeg
+	 9bER/JhqgBi+aCHrpz2RksNAc+0wugA95zPfjkhoM8GGr+ne3nQ4M+x42jpLwb3OXG
+	 MNbGFr3lrnE59HXEXA1h8kdu8gQFYNR+euhvDGMCa6HGMBLPjCRboHBltmLphRq+Su
+	 RRKhCDNWMmQurg1yo7Klg5xRCvv+lui+YnV+CixEPQ3b/1k15Kta7YVByDgvIuhj12
+	 3OioYxSG+RRmQ==
+Message-ID: <sashiko-outbox-176216@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net v6 3/6] can: rockchip_canfd: cancel bus-off restart
+ before closing the device
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Cunhao Lu" <1579567540@qq.com>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261017-rockchip-canfd-restart-close-v6-3-ed605feb4b6e@qq.com>
+References: <20261017-rockchip-canfd-restart-close-v6-0-ed605feb4b6e@qq.com>
+ <20261017-rockchip-canfd-restart-close-v6-3-ed605feb4b6e@qq.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 18 Oct 2026 14:51:04 +0000
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-If the interface is down, the CAN controller might be powered down, the
-clock disabled, and/or its external reset asserted.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [Medium] can: rockchip_canfd: ad-hoc flag synchronization in rkcanfd_set_=
+mode()
+--
 
-Don't call do_get_berr_counter() to read the CAN bus error counters if
-the interface is down. This fixes a generic logic problem that exists
-on all platforms.
+commit 84108d981e4356f8149159f043033d7bbecd5e53
+Author: Cunhao Lu <1579567540@qq.com>
 
-Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
-Cc: stable@vger.kernel.org
-Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
----
-v1 -> v2:
-  - Reword the commit message to drop the MDIS reasoning.
-  - Add Fixes: tag.
+can: rockchip_canfd: cancel bus-off restart before closing the device
 
-v2 -> v3:
-  - Use the title and commit message suggested by Bough Chen.
-  - Drop the i.MX8QXP-specific crash dump and erratum explanation.
-  - Drop the m_can reference.
-  - Drop the Link: tag.
+This commit cancels bus-off restart work at the beginning of ndo_stop(),
+synchronizes interrupt and timestamp handling across controller restart in
+rkcanfd_set_mode(), and disables RX offload on request_irq() failure in
+rkcanfd_open().
 
-v3 -> v4:
-  - Move the netif_running() check from the flexcan driver to
-    can_fill_info() and can_get_size() in the CAN core, as suggested by
-    Marc Kleine-Budde. This covers all CAN drivers, not just flexcan.
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net=
+/can/rockchip/rockchip_canfd-core.c
+> index 37c1c22c40c9f..4b3db07242395 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+[ ... ]
+> @@ -356,7 +357,18 @@ static int rkcanfd_set_mode(struct net_device *ndev,
+> =20
+>  	switch (mode) {
+>  	case CAN_MODE_START:
+> +		rkcanfd_chip_interrupts_disable(priv);
+> +		/* Flush the interrupt mask write before suspending the handler. */
+> +		rkcanfd_read(priv, RKCANFD_REG_INT_MASK);
+> +		/* Keep shared IRQs from accessing the device during restart. */
+> +		WRITE_ONCE(priv->irq_suspended, true);
+> +		/* Wait for handlers that already passed the suspended check. */
+> +		synchronize_irq(ndev->irq);
+> +		rkcanfd_timestamp_stop_sync(priv);
+> +
+>  		rkcanfd_chip_start(priv);
+> +		/* Publish the initialized state before resuming IRQ handling. */
+> +		smp_store_release(&priv->irq_suspended, false);
+>  		rkcanfd_chip_interrupts_enable(priv);
+>  		netif_wake_queue(ndev);
+>  		break;
+> @@ -666,6 +678,10 @@ static irqreturn_t rkcanfd_irq(int irq, void *dev_id)
+>  	struct rkcanfd_priv *priv =3D dev_id;
+>  	u32 reg_int_unmasked, reg_int;
+> =20
+> +	/* Pairs with the release after restart has initialized the device. */
+> +	if (smp_load_acquire(&priv->irq_suspended))
+> +		return IRQ_NONE;
+> +
+>  	reg_int_unmasked =3D rkcanfd_read(priv, RKCANFD_REG_INT);
+>  	reg_int =3D reg_int_unmasked & ~priv->reg_int_mask_default;
 
- drivers/net/can/dev/netlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+[Severity: Medium]
+Does using priv->irq_suspended as a boolean gate flag between
+rkcanfd_set_mode() and rkcanfd_irq() leave a race window during controller
+restart and shared IRQ handling?
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 6f83b87d54fc..d17f4e9cc144 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -584,7 +584,7 @@ static size_t can_get_size(const struct net_device *dev)
- 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_STATE */
- 	size += nla_total_size(sizeof(struct can_ctrlmode));	/* IFLA_CAN_CTRLMODE */
- 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_RESTART_MS */
--	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
-+	if (priv->do_get_berr_counter && netif_running(dev))	/* IFLA_CAN_BERR_COUNTER */
- 		size += nla_total_size(sizeof(struct can_berr_counter));
- 	if (priv->termination_const) {
- 		size += nla_total_size(sizeof(priv->termination));		/* IFLA_CAN_TERMINATION */
-@@ -735,7 +735,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
- 	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
- 
--	    (priv->do_get_berr_counter &&
-+	    (priv->do_get_berr_counter && netif_running(dev) &&
- 	     !priv->do_get_berr_counter(dev, &bec) &&
- 	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
- 
--- 
-2.47.3
+Setting priv->irq_suspended on entry to rkcanfd_set_mode() and clearing it =
+on
+exit acts as an ad-hoc lock that is invisible to lockdep and does not
+serialize against other concurrent readers or writers of shared state (such=
+ as
+rkcanfd_get_berr_counter()).
 
+In addition, rkcanfd_chip_start() already puts the controller into
+RKCANFD_REG_MODE_WORK_MODE and sets priv->can.state =3D CAN_STATE_ERROR_ACT=
+IVE
+before rkcanfd_set_mode() clears priv->irq_suspended:
+
+can_restart()
+  rkcanfd_set_mode(ndev, CAN_MODE_START)
+    rkcanfd_chip_start(priv)
+      rkcanfd_chip_set_work_mode(priv);
+      priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+    smp_store_release(&priv->irq_suspended, false);
+    rkcanfd_chip_interrupts_enable(priv);
+    netif_wake_queue(ndev);
+
+Because rkcanfd_irq() reads the raw unmasked interrupt status from
+RKCANFD_REG_INT and masks it in software with ~priv->reg_int_mask_default
+rather than consulting RKCANFD_REG_INT_MASK, a shared IRQ firing on the
+IRQF_SHARED line after smp_store_release(&priv->irq_suspended, false) (or an
+interrupt firing right as rkcanfd_chip_interrupts_enable() unmasks hardware
+interrupts) can enter rkcanfd_irq() and handle a new bus-off condition befo=
+re
+rkcanfd_set_mode() finishes:
+
+rkcanfd_irq()
+  rkcanfd_handle_state_error_int()
+    rkcanfd_chip_stop(priv, CAN_STATE_BUS_OFF)
+    can_bus_off(ndev)
+
+When rkcanfd_set_mode() then executes rkcanfd_chip_interrupts_enable(priv) =
+and
+netif_wake_queue(ndev), wouldn't it unmask interrupts on the stopped
+controller and wake the transmit queue while priv->can.state is
+CAN_STATE_BUS_OFF?
+
+Similarly, because rkcanfd_irq() only checks priv->irq_suspended (which is
+only set during rkcanfd_set_mode()) and masks RKCANFD_REG_INT with
+~priv->reg_int_mask_default, shared IRQs arriving during rkcanfd_open()
+between request_irq() and rkcanfd_chip_interrupts_enable(), or while in
+CAN_STATE_BUS_OFF after rkcanfd_chip_stop() masks RKCANFD_REG_INT_MASK, can
+still evaluate pending bits in RKCANFD_REG_INT. Would a proper spinlock (or
+honoring the active mask state under a lock) avoid this race?
+
+[ ... ]
+
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/=
+rockchip/rockchip_canfd.h
+> index 95bea9bfd8a2f..e1debab54534e 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd.h
+> +++ b/drivers/net/can/rockchip/rockchip_canfd.h
+> @@ -480,6 +480,7 @@ struct rkcanfd_priv {
+> =20
+>  	u32 reg_mode_default;
+>  	u32 reg_int_mask_default;
+> +	bool irq_suspended;
+>  	struct rkcanfd_devtype_data devtype_data;
+[ ... ]
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261017-rockchip-c=
+anfd-restart-close-v6-0-ed605feb4b6e@qq.com?part=3D3
