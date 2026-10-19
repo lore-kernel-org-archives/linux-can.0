@@ -1,91 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.171
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1792423741;
-	b=LEXN4JXALROiC6DSkm/EVdOqH7jEOcqmh7sVi9aYvoFFOWe2BowJ3P4dDGQhyRWVVrQz
-	 /3SX+Zte9oBIpkQmkQ/dzurmzXCX24aq+50/AJP64tLIP4Y+KS3e3RqsZ0tGaT+miU1+W
-	 yERZ/sOnFImkLMYSl0Iz3u47EhtM4LIq+P//MV43s5vqmvt4H7mMlby+6XqmlRpainXQ0
-	 7u8Wu0fFxKvuooNK5AnVNwrXzaWQPptWDvi6y9CLF6Tku6osVxUyRf5DmARn7GbzxGBqs
-	 O58+tKyxHoEe3SRQ6s+X+pl5i8hmUyAUsblqums0C+LuEXGIol+YGdDLUf2J65JZh5A==
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792423676;
+	b=PE9lnNZb79+loTFBC211YWnOwvnGqMFphiHUpFBy+0TzSC2PeBG3r20jNeLJV5Q18GM4
+	 dCLfT02MSzUHxVWO2C+IefiHDYPp1FH9p+jKrUx3GRa512MmljYzu67/kUbL8RDq5roGw
+	 9umgQN594ppzfSoNYEAV4/d0p1zmyCjI/u3MJIwoMOr4oxhc6V6d1kRlAQKvYLRL/WJ33
+	 4IxcCp12ZTf4AdfaoLeFJlUJJqkrLkILbTO85jE4M9RS4gbd6JqulVy97LVcAWMY7/i9n
+	 ks+ZPqP9/GmOKKDdLCzpwKpFdXWB6Gi9/DnLfgD6QKn3DO4TmcJASOVTgDs1C0vlZdg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792423741;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792423676;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=aO1mqHh3W8kkH6YYVsvAqM9uvV55hc0mi4bVNpb+qaE=;
-	b=qmOrktR21mQCb8JW3Ck1vxKgNAmOd6207I2bfXuWzHt2d5W3+7X25zAoXekIvELBkugF
-	 eFmTk7awbg0E6QDRzcLRv+jqZTnVHhIKBLqa2r40RX8CLwQyRjVgfL8OpX8xUn+viSVv+
-	 0sMLE8UbmlFRDIFM0I8fStEuqRUdLTGLV146ht3OVm9kv3A0LjGnEmzMCocsEW1npLNnj
-	 TUvpfzYK2QLyaHALPJl/rKcmzRTrFG0G+L37A16xVoCyX/UTHzrHs39NmTD9MH+xrs0Bv
-	 yqXSgR/qMwi6O5IA8Y3iF1SjFE4R/RYjhcPsa3GNGyl810cmZTHXJG5Ur/gbWM+kH5Q==
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=LDkhaTDtgSTmn5DuHZM1hn+df8UAT4lyjU6hBRjS/4M=;
+	b=I2GBuWs9b3B7WAtXwk05dE0OZYJ9GFiUt/WMsf5Nq4Rjrx7KcuDZjFrXLf0wF9fcMENJ
+	 n89VM/7X/QTrR7yNwR4Z/+z6JjVY8r9x5kZ6+7+TOGX7UkE87AQM4AZOFyLZmAIcmMytf
+	 xOIEKWynR69t60LJPxjBcTf7CxB1HHASpP5HvVYo8Cz63ykBS2KGZDfJsS3aHUVtw7jIw
+	 sArqBT8DOcXcm+bIqWXtj+SDIni2WnTih1fvOvYG0gpo6AH+THXja5CigdM5IFOvYjdK9
+	 d5PA7S5gnaqx85Pv2l8idPCssRxzxAGVtjhzDQWrMjJS0/iH4jA2kAh2D/AWZ6gmEQQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=S+CUDrss;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=B2ZY32QV;
-	arc=fail smtp.remote-ip=81.169.146.171
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [81.169.146.171])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=XBDcTK6x;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=KHvLWdEG;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DF0C6098A00
-	for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 15:29:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0DF0C6098A00
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A37D60B6242
+	for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 15:27:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9A37D60B6242
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=S+CUDrss;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=B2ZY32QV
-ARC-Seal: i=1; a=rsa-sha256; t=1792423739; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=XBDcTK6x;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=KHvLWdEG
+ARC-Seal: i=1; a=rsa-sha256; t=1792423668; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=PvbFGSQZ5plaooGrlariXFiw8RmPgVwfptvLIvdDJwbcPSems6Ai6Y3sOYfkXXXTz8
-    08v0qpYlOy62qL+RarLCYWJti4/+os8BIhxI9GzV6X9/04MBvdQ6qcDL8hbnjRrnoBVG
-    Xwmi5AcEWoC7Pg8w+yP31c1w+Hjix6azKpQqBq+2r8XKorktNYd7N2redWGUhq9jXqxj
-    3/CczThHAyAnsGWueNe7Oh/wDeGjd4A4cGqieAdx5tdvtkSZ0LYeVMM1Ck22QDKr3bxr
-    orGktmDyAv4rp3OBc58QZSKWAllRyb9Wyuwg6RuE02D34ZSEU0BOaldG8ax7Zt18VSbp
-    MuiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792423739;
+    b=Ivf28xISoj38N6BhWH+ZAcwcAJhxiZn2WMPd5SLmcNViuBe+1FpKk7Vep0rq4OaZC4
+    lJMJrh17R49l0x+U6hB2kwSik+MAEVcTcc7cvJoruiI+UXJjU6LFomE+3w8lsjKZUwX0
+    LN2z9U1Srku1aEBxEzxXDLLvLLib4B6ijgOa/7YjAZH9kQOawINtNO6A7ryTpUA/4Vn1
+    YoYqzgrS6gUVsj6phx8A3kBKQUv3A0waTvhZggIJPxGNXVv4XgURbxpLsIzmfbbII/EE
+    1xVo4mtU271R3kwBBaaQSvDeRd8zsYrI0BpZ9xBaPtsM7OceNe1xxFnFYhRlD/PGAVGs
+    nt4Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792423668;
     s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=aO1mqHh3W8kkH6YYVsvAqM9uvV55hc0mi4bVNpb+qaE=;
-    b=A1SQyM5YdvGi+f4/bDzxvcw3oi31OXoIvMggK8iWhsInstjOcyelbOiXerWIqCYEsA
-    mzG8XrsTU90p2QyzB9oNkNrNSECXVACCpOW/j5LefmKBkWFLMz3vO3HF3PhJ6Hy0gevL
-    Ny3TttM3HJ2Ef1Wykq9rDsbr/cXp2NQ0HsGWMSCZLntJbn80ptPYGGpQXqtZIYSNHGj8
-    oN5htCuIMDghFj8SgLQxJSuT0SkGSsHW1GxjWYEC0WbsQyK2LH4ZJOvx87cnwW1OXHqj
-    E1dHXDljp869AKZ7ywxJ6MDWnZdbTIXwVsKCn8BRD1rDV19AgBdF9sReYIQ2FdneJBpy
-    ymTg==
+    bh=LDkhaTDtgSTmn5DuHZM1hn+df8UAT4lyjU6hBRjS/4M=;
+    b=azoruvy/hU/u8LTAhf0E/QLECr/MD3Qko9qbm2CRRPyocPXtxCW6DxO1lQj3nBFNwJ
+    KI+SMZUqZEg+HesFAx4cs+ZCHWYcVyQrJ+bYCJ2YmE3FVdY5DvooTvLgcQgt3Wby67hE
+    Fj6e5O+r01tPJs4NbhBDjU6oYsT5bXyV84OMEKlYia+fJu1zETpHNDc5nQXi9+e+bDnQ
+    ZesYRTGGzU1V5nvj+rIk/eqg+PVUWnfYIie1oTR/Ps4B9SIVLyS2koOOANiMML73mEjW
+    m5MMQhKZQs/JslDEMwAEtijkhp0CwC5QFvrx9MNCS33FkR59jYvi+qyYEm9QElQny0ta
+    LdHA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792423739;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792423668;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=aO1mqHh3W8kkH6YYVsvAqM9uvV55hc0mi4bVNpb+qaE=;
-    b=S+CUDrss8OcmTbdfMcwaDai5NTDw4CGbVLFa/sGWCeEW8lVsKidJ//CnFgH9nQ1vh5
-    v1d4Y2RRrPGvi4G0JBrudP3BWC035Lxjj5HBRBdwJphyGmEbYaBTDVLDER+owL2EZgIu
-    Ya9CR/hBAG3teWr4nEsM+tbjsanpKGtD9Fu5FEXxF3C5+4xiWhZ9QscAHxk07iyGmVgz
-    JlJ3NQPYFgkUDxkGMgON5nRLJG0CU9BdP8GAvLpG6wv8gGo+ueavYGAvz8s6WOTtkACi
-    IajJ6G1LF7jdr/GPgJ2HyzeYWJqhUs1zAeDbxQpkcN1hawl1+ChpUSQaG3QDvC0Sv4/t
-    u/eA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792423739;
+    bh=LDkhaTDtgSTmn5DuHZM1hn+df8UAT4lyjU6hBRjS/4M=;
+    b=XBDcTK6xJnE/BX2hIfWpXSCM+2aF7Uu3zJsiChIVhN29Wal+870smSd6Cc45F3L+ZL
+    47i/yasmpnXomt+patrfa4U+oVXmwZKbJbJdK+P60eYNKS2Sg6dBjo6I5K99t3Haf9r+
+    2xJFI4jYJYU6KtpJI9kOWNWjmLf3AUI9D8hhMVU6IiOueyi+R5bKgEsWFlCxeC50arJa
+    jHbwR4OxTnwTdBzIVryLldJ2fS5e4KkS7DKY8SnWkT1qamkcM5TqRUQrHJrNK+rFuKus
+    5XUZwCGxWJSg5/OihICs07AEHb0X8PvrK0Ecsu/QfDKi5AquQTqeaZhKcaj+3apFkXND
+    WTSg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792423668;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
     From:Subject:Sender;
-    bh=aO1mqHh3W8kkH6YYVsvAqM9uvV55hc0mi4bVNpb+qaE=;
-    b=B2ZY32QVXPZGdlHBbkVLH/1D10yntABzhHaEe1lAJIL8VXfxaBnLy7UzPy6nvBquKt
-    ipaj61StLFFtCFnjK+AQ==
+    bh=LDkhaTDtgSTmn5DuHZM1hn+df8UAT4lyjU6hBRjS/4M=;
+    b=KHvLWdEGmQ72zj6FO6XZD3ZD6uvi6oxifM+hQM36bcdgQBlAE52M7QEsu6EqLQ1e/C
+    OEQOKyZvEWURCWGhq/AA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
+Received: from vivo.lan
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29JFSxXZm
+    with ESMTPSA id Kfdf2a29JFRlXY6
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Mon, 19 Oct 2026 17:28:59 +0200 (CEST)
-Message-ID: <103cb851-9e54-471a-900a-2683d817bd41@hartkopp.net>
-Date: Mon, 19 Oct 2026 17:28:58 +0200
+    Mon, 19 Oct 2026 17:27:47 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH can-next v4 2/5] can: proc: skip stats calculation after reset in can_stat_update()
+Date: Mon, 19 Oct 2026 17:27:38 +0200
+Message-ID: <20261019152741.54854-3-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261019152741.54854-1-socketcan@hartkopp.net>
+References: <20261019152741.54854-1-socketcan@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,119 +101,83 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH can-next v3 0/4] can: protect the receive lists with a
- per-device lock
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-References: <20261019074244.50391-1-socketcan@hartkopp.net>
- <20261019-premium-anaconda-of-education-723479-mkl@pengutronix.de>
- <4c81a8e3-431b-4d18-814b-e09cdcff0b18@hartkopp.net>
- <20261019-supportive-coyote-of-efficiency-797bb1-mkl@pengutronix.de>
- <20261019-gigantic-humble-aardvark-4273f1-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261019-gigantic-humble-aardvark-4273f1-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
-can: raw: remove redundant NULL check before netdev_hold()
+Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+introduced local snapshots of the statistics counters at the beginning
+of can_stat_update(). When can_init_stats() resets the statistics, these
+stale pre-reset snapshots are still used for the following total/current
+/max calculations and overwrite the freshly reset values. Additionally a
+jiffies tick between the snapshot and the reset could trigger a second
+can_init_stats() call.
 
-was missing in my tree.
+Merge the reset conditions into a single check and skip the calculation
+for the current interval when the statistics have been reset.
 
-v4 is sent
+Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/proc.c | 30 ++++++++++++------------------
+ 1 file changed, 12 insertions(+), 18 deletions(-)
 
-Many thanks,
-Oliver
-
-On 19.10.26 16:52, Marc Kleine-Budde wrote:
-> On 19.10.2026 16:49:52, Marc Kleine-Budde wrote:
->> On 19.10.2026 16:46:20, Oliver Hartkopp wrote:
->>>
->>>
->>> On 19.10.26 16:12, Marc Kleine-Budde wrote:
->>>> On 19.10.2026 09:42:39, Oliver Hartkopp wrote:
->>>>> This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
->>>>> triggered when a CAN device is moved to another network namespace while
->>>>> a socket bound to this device is released [1].
->>>>>
->>>>> Only patch 4 is new. Patches 1-3 are already on their way to net-next
->>>
->>> As these three patches "1-3" are not in your current tree anymore you can
->>> simply apply this complete series as-is.
->>>
->>> And on top if this series you can also apply this
->>>
->>> https://lore.kernel.org/linux-can/20261019115231.93550-1-socketcan@hartkopp.net/
->>>
->>> to fix this sashiko-bot remark:
->>>
->>> https://lore.kernel.org/linux-can/sashiko-outbox-176764@kernel.org/
->>
->> It doesn't work for me. Please send a _single_ series on top of the
->> testing branch, which includes _all_ patches.
->>
->> regards,
->> Marc
->>
->> | $ b4 shazam -s -k -l -H --merge-base=@ https://lore.kernel.org/linux-can/20261019115231.93550-1-socketcan@hartkopp.net/
-> 
-> Ok, that was the wrong series, but
-> 20261019074244.50391-1-socketcan@hartkopp.net doesn't work either.
-> 
-> Marc
-> 
-> | $ b4 shazam -s -k -l -H --merge-base=@ 20261019074244.50391-1-socketcan@hartkopp.net
-> | Looking up 20261019074244.50391-1-socketcan@hartkopp.net
-> | Checking for newer revisions
-> | Grabbing search results from lore.kernel.org
-> | Analyzing 11 messages in the thread
-> | Looking for additional code-review trailers on lore.kernel.org
-> | Analyzing 19 code-review messages
-> | Checking attestation on all messages, may take a moment...
-> | Retrieving patchwork CI status, may take a moment...
-> | ---
-> |   ✓ [PATCH v3 1/4] can: proc: reset pkg_stats atomics individually
-> |     + Link: https://patch.msgid.link/20261019074244.50391-2-socketcan@hartkopp.net
-> |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> |     ● checkpatch.pl: passed all checks
-> |   ✓ [PATCH v3 2/4] can: proc: remove pointers from CAN specific proc output
-> |     + Link: https://patch.msgid.link/20261019074244.50391-3-socketcan@hartkopp.net
-> |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> |     ● checkpatch.pl: passed all checks
-> |   ✓ [PATCH v3 3/4] can: replace ARPHRD_CAN type checks with can_get_ml_priv()
-> |     + Link: https://patch.msgid.link/20261019074244.50391-4-socketcan@hartkopp.net
-> |     ● checkpatch.pl: passed all checks
-> |   ✓ [PATCH v3 4/4] can: protect the receive lists with a per-device lock
-> |     + Link: https://patch.msgid.link/20261019074244.50391-5-socketcan@hartkopp.net
-> |     + Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-> |     ● checkpatch.pl: passed all checks
-> |   ---
-> |   ✓ Signed: DKIM/hartkopp.net
-> | ---
-> | Total patches: 4
-> | ---
-> |  Base: @
-> | Magic: Preparing a sparse worktree
-> | Unable to cleanly apply series, see failure log below
-> | ---
-> | Applying: can: proc: reset pkg_stats atomics individually
-> | Applying: can: proc: remove pointers from CAN specific proc output
-> | Applying: can: replace ARPHRD_CAN type checks with can_get_ml_priv()
-> | Applying: can: protect the receive lists with a per-device lock
-> | Using index info to reconstruct a base tree...
-> | M       net/can/isotp.c
-> | M       net/can/raw.c
-> | Falling back to patching base and 3-way merge...
-> | Auto-merging net/can/isotp.c
-> | Auto-merging net/can/raw.c
-> | CONFLICT (content): Merge conflict in net/can/raw.c
-> | Patch failed at 0004 can: protect the receive lists with a per-device lock
-> | Resolved 'net/can/raw.c' using previous resolution.
-> | error: Failed to merge in the changes.
-> | hint: Use 'git am --show-current-patch=diff' to see the failed patch
-> | ---
-> | Not fetching into FETCH_HEAD
-> | Use --resolve to enable conflict resolution
-> 
+diff --git a/net/can/proc.c b/net/can/proc.c
+index 70104f13077e..fb144d2adc35 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -147,29 +147,22 @@ void can_stat_update(struct timer_list *t)
+ 	/* fetch and clear values for 'current rate' calculation */
+ 	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
+ 	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
+ 	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+ 
+-	/* restart counting in timer context on user request */
+-	if (user_reset)
+-		can_init_stats(net);
+-
+-	/* restart counting on jiffies overflow */
+-	if (j < pkg_stats->jiffies_init)
+-		can_init_stats(net);
+-
+-	/* prevent overflow in calc_rate() */
+-	if (rx_frames > (LONG_MAX / HZ))
+-		can_init_stats(net);
+-
+-	/* prevent overflow in calc_rate() */
+-	if (tx_frames > (LONG_MAX / HZ))
+-		can_init_stats(net);
+-
+-	/* matches overflow - very improbable */
+-	if (matches > (LONG_MAX / 100))
++	/*
++	 * Restart counting in timer context on user request, on jiffies
++	 * overflow or to prevent overflows in calc_rate() and in the
++	 * match ratio calculation. The local snapshots are stale after
++	 * the reset, so skip the calculation for this interval.
++	 */
++	if (user_reset || j < pkg_stats->jiffies_init ||
++	    rx_frames > (LONG_MAX / HZ) || tx_frames > (LONG_MAX / HZ) ||
++	    matches > (LONG_MAX / 100)) {
+ 		can_init_stats(net);
++		goto out;
++	}
+ 
+ 	/* calc total values */
+ 	if (rx_frames)
+ 		pkg_stats->total_rx_match_ratio = (matches * 100) / rx_frames;
+ 
+@@ -194,10 +187,11 @@ void can_stat_update(struct timer_list *t)
+ 		pkg_stats->max_rx_rate = pkg_stats->current_rx_rate;
+ 
+ 	if (pkg_stats->max_rx_match_ratio < pkg_stats->current_rx_match_ratio)
+ 		pkg_stats->max_rx_match_ratio = pkg_stats->current_rx_match_ratio;
+ 
++out:
+ 	/* restart timer (one second) */
+ 	mod_timer(&net->can.stattimer, round_jiffies(jiffies + HZ));
+ }
+ 
+ /*
+-- 
+2.43.0
 
