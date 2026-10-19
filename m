@@ -1,88 +1,88 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792429730;
-	b=civNlCz8+nNrsqUjk75G3VcwtLfQ1cAU1VN6VVsaMNAzAz5bK3zJeeLUUnSBXrG0nhfb
-	 dNO7REIDrttajMYE9LuolwE1r3/6GT9kItrQaJNvOM2Ar7uzLr0IcOXF3moiM8QdfdVRI
-	 nrfEoYCKu0KinDPEECJOmYJWwbhPtD3ScLq7isZWitP5iNd8HS1a+cyAJzZaU5EYa5EjY
-	 K+PIYsP03oNk4Bwlm61DVmJzNRuXrl8i1p9cYqEGyU919r5a0U5K6UYuw3EW+xJvQGbNa
-	 FL+pqhybLRyCrRnzE7zOVYVjLHW4uoyU9kgcu/63DqqHZmxq5/Q6phzBF7ruIsKSrJg==
+	t=1792429733;
+	b=x/How+iiAZr5tw0Y8XWcComBM6cZ3ICiW4Zj/mREsSvmwZDrJtyjDIXyRlPQEkvIbA0Y
+	 YFe1kVDdpDiBO0O9rSCVU809vvlAIuNtOcNTTJVsYJ/w4SPCb2Gqdt76xx0mTPsy0B4Ze
+	 BAjQvPkoroKXrmZvnU1ozDZnv0iDt2kE2n83Uk1dMxfuXAfC19zkMTdNgFWBu19iLDycv
+	 95SatmOXpAkNv8NS7cVrlBw9A28vOu8TMk5nZpnv9f7vZ/ZghTYgecUMwx1qVphInaO+D
+	 v7e6KQnLtQef5nn7M5IG0flLAus4/kmL4HArAHD2j3AQL8BcA1Lt+zthfrBeNkRLUxw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792429730;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792429733;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=wbIi++T5I/EY7npkGc0X2Wvuhoby9O/RDkzRPOSp+tc=;
-	b=Pc1atayp5hv842GV0TbiWiZ1O7+OLNXsqsF7o33SgGjZv72S9yPWhTzRGXe7HyiM9adB
-	 nftr7c7RvxKuk9SHECPrf7z2CiFEE98/OnLDgsfE6kYP0ccAy1e5dXxeI+0KhnyQZPPBf
-	 qQf/1cfVvAVAA3dDmdDvKy3gzuA2tGf3mP9Q6MSXTQoOQI0ZxCcbuJ+FAoQeiLQg4Sesw
-	 TNqKpqEzmjBTrmekj6Pwcd+JNu0ib8I88LizSOodwXHXrLWtNrJBVBzhKVi/X5Q07BLnd
-	 qC5SEj46S4soio0CKq7+B0gct4ncILuIHB4VengyDN2mGKsGbLyHrPRa5bebmnLZ8bA==
+	bh=Dqr4BiqUSiEh+bses/PVVRHRAcmRgHRPrxqAvDmSQpI=;
+	b=Aqsf1K2t9XJxN0w1G2hMsLbjES7lmxMJNvDdNmB3lrMSOaOnLbXCysM7MUuQXCqv18O0
+	 DGJdoIUK293XoNIl5ZVvIFOuhfOby3vKEJjMfzKxqpzRPMi5O9PpKj5lT7w77ExSQBwNG
+	 8cYUmG3ldmpqNNoAX9flq15Q1/5ce7kN3xynAB1GHroCFJc9JkVB4vzydcZvKPMURJ6gU
+	 G+zo16t88RbcV1YuiaJ/wPcCVNX0nBN36j1WhW4dNmIv89uKObWLINN20hPIgLu5Fk+Hz
+	 rQ4IUkk48yYa2Ng2ee46HGZAYhIiKUY9cs4av6ifiu4I/COnX9dDo4OfdRNjQ5514MQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=eBLMQuCx;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aaSnyqi3;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38DA606A31C;
-	Mon, 19 Oct 2026 17:08:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B38DA606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7096E606A33B;
+	Mon, 19 Oct 2026 17:08:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7096E606A33B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=eBLMQuCx
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aaSnyqi3
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id DD1F9202852;
-	Mon, 19 Oct 2026 19:08:36 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 608B2202859;
+	Mon, 19 Oct 2026 19:08:37 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792429716;
+	s=20260414; t=1792429717;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wbIi++T5I/EY7npkGc0X2Wvuhoby9O/RDkzRPOSp+tc=;
-	b=eBLMQuCxaSG4u28kbg3Z7QajzD876uI/gAHmHPlwjnxcJ4Dwru7QKU2cakueEBUCh7unmD
-	+rD7AuIMYMZ4/yuHGjyDAj6zEG7P+qjpcy+Bs2SfxzurwaD5w5AZus3+Q7dKLZCne0wLNV
-	uQLW8d4k/UE17SeP6Ql7LB7wMt2BB9C9xfMcnIaF7ywyiWvhjI85wDz9LPC+ci4LDw/gaH
-	f8mxPSeNx0gpMiIQZCqwRzRVKvZDGqraysj1/6cG32TNH9wDS+s9QHildW7EaTU57qrE7/
-	CDYE2/yrO+9VrNj0f6sXxGvL1ONjucCRncjqB89NxmiGPPWEcnFu8KwuW4HVbg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792429716; a=rsa-sha256;
+	bh=Dqr4BiqUSiEh+bses/PVVRHRAcmRgHRPrxqAvDmSQpI=;
+	b=aaSnyqi3sMjlT7hKPvMWHDSifELLSsMGmcIvZh4GGell2hT6HaQk8YFanXPaTOzGuZHjYt
+	nPS9fCwPL9IHCZ9afUMWUXRj6MRyCVyI1MFeQtGWBuBKlX9ZBPIweVmTv9RqLNWLeXE3Hh
+	dLvJS4gaQFGZf9sxNSUo+kbhKed22/RsLrCb6ZQe5Qbhb8Sb4iwJ4mdRijv6hbO8BBdLkK
+	B4ScGh5UyklMtW0ulRqBUHv+n18j+AT50IvEqHWu63DT2O14BnKwq2TSGdbIsFMvHX24+T
+	UMj72ebp+Do5C/0SBPAqIoQWiYjSizUmAUfQG+LVviGe7NADdpi/pGHVPVBkpA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792429717; a=rsa-sha256;
 	cv=none;
-	b=U0hQknE8MeBU2xjfWqul7jh8YcvCWs4fHk3iHiAK8g+dc7HdW3/fkULyLu+z5Og56Ae9Kx
-	JsCbKiUFGhpM8L1wtRg3N0SiYl/qha3I3vnq62V7vrDQr+9mXTez3FaRK4s4b/e0F27GY1
-	vO+lWD105DjLujcj/13fZo4VGqvuJhLFGiK+cGQUqa7EUxqHBSFROXvLiw6pNLMAh81vFM
-	AbEoIJk/HC9+vM45/2AqLMeS6WP1U8WrEYQkb8mXHF6xK1q1+qT6EmLEGum4qlXiqYcU+2
-	DWQkUvOvYjlahQnTdFQdrNafwbo1iYL2RKAmXlMtNLRnvqdxVjHdL/SqAUCAiw==
+	b=dJNtw761fdtwH9+NbBhXDzwuM13/1Tz7pgEO2hgtRkOMkOZcgHcUrOTnSjs7c5lh+6fQg/
+	5N0vHLY6y+jPG/iMgTCuUe6smjCtH6Q6k/pLRHdGVz1hRooaRZUWBc0aYAB8z9Dzo+tPSu
+	QoIpJACFJV0aF/8e4CuI3jpREulF+AxNpKSYczN50kzGcFxA9z1mRPcwdZiTOi4e1CPnkI
+	QiHX+t2m2b12vfXtm6dywn+PrP02wmTKJ5kJamWJnQ3RtmgXwR/1McfyEtWdkUBR7GLYNw
+	doFEq6ZhLyeJ7uXavBPH/noJ5+L0+MhVz4hd6ozEh4zRMlHt/Zf14shDnIuXeA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792429716;
+	s=20260414; t=1792429717;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wbIi++T5I/EY7npkGc0X2Wvuhoby9O/RDkzRPOSp+tc=;
-	b=fbg2yY2Pm1UVQpFmN3n8/9+inPhLXwO9cK3O+gxA0/tFzNmMdiLQ0DgRkz7UKRCJ5RwbtJ
-	a1LNk2aDJEs7PQkZy8RfF85l5VEpkz4vt8aWBIi2aahikvGEhUXdLz6zpl764Q7A9H2uDs
-	I49gY3/pePDR8lBZf4RfynFAyZlK2rf9MwJxRnjzTBIPRPBeI0yoEz4lXRvDmGeTsMdKsM
-	7Faudxcvj+uoBz8g5DLNdgRjGuwrnyoJiY3KbU6JvUMBSCrU4tnMoggkH93gl6WsSMvOqZ
-	UhKC2QP4+TDhpiX+gL5A/LVFc5d6qdjTGDrysqsEuqX4CRQHo9YfYW2CyNoRBA==
+	bh=Dqr4BiqUSiEh+bses/PVVRHRAcmRgHRPrxqAvDmSQpI=;
+	b=K52ykof7JbSGYO2P4KTeIZpwTv50/2R6+kRVoZ+R/2PLiroCibV4M9n9HbVljFP3N5lvG/
+	319SW/k45lE/tghR1EhozlW5vT6yFdg3wQhSatl8WSD0YU0o4lxUAfjuCpBGBQHqefLvwj
+	ixJeB97D5YJowjDie0DrHfKTfbU3na/cs7kVR6BI00cx5F5fQgl5F4C/lNmQzl4y3Su2e+
+	BpRxHrzpbehjCmkvaEQSmuuajuJgz3cL2jUD1M022j7CSJVJV2pBfUIMC4nN5uXHItLi68
+	hH9YWqvCIWU2ZYdqmPq7MwJkEoI6QcK90lqitM/aRcip1DyNtS7t2rxWWy6YvQ==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xIqqi-000FgB-2T;
-	Mon, 19 Oct 2026 19:08:36 +0200
+	id 1xIqqj-000FgY-0q;
+	Mon, 19 Oct 2026 19:08:37 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7BA795C948D;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id F0B265C9494;
 	Mon, 19 Oct 2026 17:08:36 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,12 +90,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Cunhao Lu <1579567540@qq.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
 	stable@kernel.org,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 03/11] can: skb: make echo skb freeing safe in any IRQ context
-Date: Mon, 19 Oct 2026 19:01:08 +0200
-Message-ID: <20261019170834.1727150-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 10/11] can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+Date: Mon, 19 Oct 2026 19:01:15 +0200
+Message-ID: <20261019170834.1727150-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261019170834.1727150-1-mkl@pengutronix.de>
 References: <20261019170834.1727150-1-mkl@pengutronix.de>
@@ -110,96 +111,234 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Cunhao Lu <1579567540@qq.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-can_put_echo_skb() can be called with hardware interrupts disabled. Its
-direct drop paths use kfree_skb(), while can_create_echo_skb() uses
-kfree_skb() when cloning fails and consume_skb() after a successful clone.
-None of these helpers is safe in every IRQ context.
+Commit 4e096a18867a ("net: introduce CAN specific pointer in the struct
+net_device") introduced an explicit way to assign the midlayer private
+pointer (dev->ml_priv) to named users like ML_PRIV_CAN. A valid pointer
+returned by can_get_ml_priv() therefore identifies a real CAN device.
 
-Use dev_kfree_skb_any() for all drop paths and dev_consume_skb_any() when
-consuming a successfully cloned skb. This preserves the respective skb drop
-and consumed semantics regardless of the caller IRQ context.
+The referenced commit only converted the j1939 and proc code to this
+check, while the other parts of the CAN subsystem still rely on
+dev->type == ARPHRD_CAN.
 
-Signed-off-by: Cunhao Lu <1579567540@qq.com>
-Link: https://patch.msgid.link/tencent_E84809CF236D0137885E7E4E4D58340B3208@qq.com
+The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
+type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
+netdevice passes the ARPHRD_CAN checks and triggers a NULL pointer
+dereference when CAN filters are created and when they are removed,
+e.g. by the CAN protocols' netdevice notifier handlers. This only
+requires owning a TUN/TAP device or CAP_NET_ADMIN in an unprivileged
+user namespace.
+
+Convert the remaining ARPHRD_CAN checks in af_can, bcm, gw, isotp and
+raw to can_get_ml_priv().
+
+Fixes: 4e096a18867a ("net: introduce CAN specific pointer in the struct net_device")
 Cc: stable@kernel.org
-Fixes: ae64438be192 ("can: dev: fix skb drop check")
-Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-Fixes: 3ccd4c6167d3 ("can: Unify droping of invalid tx skbs and netdev stats")
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-[mkl: also convert can_dropped_invalid_skb(), can_dev_dropped_skb()]
-[mkl: add stable on Cc + add Fixes tags]
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20261012164802.94113-1-socketcan@hartkopp.net
+Link: https://patch.msgid.link/20261019152741.54854-5-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 6 +++---
- include/linux/can/dev.h   | 2 +-
- include/linux/can/skb.h   | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ net/can/af_can.c | 15 ++++++---------
+ net/can/bcm.c    |  7 ++++---
+ net/can/gw.c     |  7 ++++---
+ net/can/isotp.c  |  5 +++--
+ net/can/raw.c    |  4 ++--
+ 5 files changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index bc0787535b52..46c151eece8f 100644
---- a/drivers/net/can/dev/skb.c
-+++ b/drivers/net/can/dev/skb.c
-@@ -63,7 +63,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	    (skb->protocol != htons(ETH_P_CAN) &&
- 	     skb->protocol != htons(ETH_P_CANFD) &&
- 	     skb->protocol != htons(ETH_P_CANXL))) {
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return 0;
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 6ebe9d3689ac..d97f85fc3232 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -226,7 +226,7 @@ int can_send(struct sk_buff *skb, int loop)
+ 		goto inval_skb;
  	}
  
-@@ -91,7 +91,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	} else {
- 		/* locking problem with netif_stop_queue() ?? */
- 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return -EBUSY;
+-	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
++	if (unlikely(!can_get_ml_priv(skb->dev))) {
+ 		err = -EPERM;
+ 		goto inval_skb;
  	}
+@@ -452,7 +452,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
  
-@@ -403,7 +403,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- 	return false;
+ 	/* insert new receiver  (dev,canid,mask) -> (func,data) */
  
- inval_skb:
--	kfree_skb(skb);
-+	dev_kfree_skb_any(skb);
- 	dev->stats.tx_dropped++;
- 	return true;
- }
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 6d0710d6f571..346faddee02e 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -176,7 +176,7 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
- 	return can_dropped_invalid_skb(dev, skb);
+-	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
++	if (dev && !can_get_ml_priv(dev))
+ 		return -ENODEV;
  
- invalid_skb:
--	kfree_skb(skb);
-+	dev_kfree_skb_any(skb);
- 	dev->stats.tx_dropped++;
- 	return true;
- }
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 5d27843862fc..87ace09c0d8b 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -78,12 +78,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+ 	if (dev && !net_eq(net, dev_net(dev)))
+@@ -519,7 +519,7 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 	struct can_dev_rcv_lists *dev_rcv_lists;
  
- 	nskb = skb_clone(skb, GFP_ATOMIC);
- 	if (unlikely(!nskb)) {
--		kfree_skb(skb);
-+		dev_kfree_skb_any(skb);
- 		return NULL;
+-	if (dev && dev->type != ARPHRD_CAN)
++	if (dev && !can_get_ml_priv(dev))
+ 		return;
+ 
+ 	if (dev && !net_eq(net, dev_net(dev)))
+@@ -684,8 +684,7 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	struct can_skb_ext *csx = can_skb_ext_find(skb);
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
+-		     !csx || !can_is_can_skb(skb))) {
++	if (unlikely(!can_get_ml_priv(dev) || !csx || !can_is_can_skb(skb))) {
+ 		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
+ 			     dev->type, skb->len);
+ 
+@@ -710,8 +709,7 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	struct can_skb_ext *csx = can_skb_ext_find(skb);
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
+-		     !csx || !can_is_canfd_skb(skb))) {
++	if (unlikely(!can_get_ml_priv(dev) || !csx || !can_is_canfd_skb(skb))) {
+ 		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
+ 			     dev->type, skb->len);
+ 
+@@ -736,8 +734,7 @@ static int canxl_rcv(struct sk_buff *skb, struct net_device *dev,
+ {
+ 	struct can_skb_ext *csx = can_skb_ext_find(skb);
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
+-		     !csx || !can_is_canxl_skb(skb))) {
++	if (unlikely(!can_get_ml_priv(dev) || !csx || !can_is_canxl_skb(skb))) {
+ 		pr_warn_once("PF_CAN: dropped non conform CAN XL skbuff: dev type %d, len %d\n",
+ 			     dev->type, skb->len);
+ 
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 6c85a76477c3..6759662e024c 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -54,6 +54,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/skbuff.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/bcm.h>
+@@ -1718,7 +1719,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 				goto out_release;
+ 			}
+ 
+-			if (dev->type != ARPHRD_CAN) {
++			if (!can_get_ml_priv(dev)) {
+ 				dev_put(dev);
+ 				ret = -ENODEV;
+ 				goto out_release;
+@@ -1866,7 +1867,7 @@ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
+ 		return NOTIFY_DONE;
+@@ -2023,7 +2024,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 			ret = -ENODEV;
+ 			goto fail;
+ 		}
+-		if (dev->type != ARPHRD_CAN) {
++		if (!can_get_ml_priv(dev)) {
+ 			dev_put(dev);
+ 			ret = -ENODEV;
+ 			goto fail;
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 36f9aa0f7026..8a5327d8a00e 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -52,6 +52,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/skbuff.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/gw.h>
+@@ -612,7 +613,7 @@ static int cgw_notifier(struct notifier_block *nb,
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct net *net = dev_net(dev);
+ 
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 
+ 	if (msg == NETDEV_UNREGISTER) {
+@@ -1163,7 +1164,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
+ 	if (!gwj->src.dev)
+ 		goto out;
+ 
+-	if (gwj->src.dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(gwj->src.dev))
+ 		goto out;
+ 
+ 	gwj->dst.dev = __dev_get_by_index(net, gwj->ccgw.dst_idx);
+@@ -1171,7 +1172,7 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
+ 	if (!gwj->dst.dev)
+ 		goto out;
+ 
+-	if (gwj->dst.dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(gwj->dst.dev))
+ 		goto out;
+ 
+ 	/* is sending the skb back to the incoming interface intended? */
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 64ff203a37f4..5e1c3971ebfc 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -65,6 +65,7 @@
+ #include <linux/if_arp.h>
+ #include <linux/skbuff.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/isotp.h>
+@@ -1618,7 +1619,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 		err = -ENODEV;
+ 		goto out;
  	}
+-	if (dev->type != ARPHRD_CAN) {
++	if (!can_get_ml_priv(dev)) {
+ 		err = -ENODEV;
+ 		goto out_put_dev;
+ 	}
+@@ -1905,7 +1906,7 @@ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
  
- 	can_skb_set_owner(nskb, skb->sk);
--	consume_skb(skb);
-+	dev_consume_skb_any(skb);
- 	return nskb;
- }
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
+ 		return NOTIFY_DONE;
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 3e57f72a3afe..dfea48768b23 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -348,7 +348,7 @@ static int raw_notifier(struct notifier_block *nb, unsigned long msg,
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
  
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
+ 		return NOTIFY_DONE;
+@@ -491,7 +491,7 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+ 			err = -ENODEV;
+ 			goto out;
+ 		}
+-		if (dev->type != ARPHRD_CAN) {
++		if (!can_get_ml_priv(dev)) {
+ 			err = -ENODEV;
+ 			goto out_put_dev;
+ 		}
 -- 
 2.53.0
 
