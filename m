@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1792429730;
-	b=hIvfSoYZwNsrMnjtDAkMAhNdkFwzAPIaeX9ij5nakOGmcwVjyer9tkO9+eF3k5V9sAik
-	 GZ/T+b2TPoDIQiejdwpv8zKWdiqISGbEq1q9rB7DqiZih0SBYeUqRK8Z+tuF5+RuFuLT4
-	 QS9Gx5nXks59HcoLl/fNyf6w4KVi23PYFqVBvNb5RHMtGm9EiVKTqxfwTkIcmTJa580nI
-	 XaewEhLSLdnzxzOUDUQa903xB3FDbjQYBUyFisqJPRhKSMSO/SHR2SSp29TJHDjcD6dwC
-	 hUx8y5HbZVzD+JGW0BZgXOBIG5cH/52icIU9Cfn2dvduMWtVk/uYVeAGokZcfRYcGxQ==
+	b=civNlCz8+nNrsqUjk75G3VcwtLfQ1cAU1VN6VVsaMNAzAz5bK3zJeeLUUnSBXrG0nhfb
+	 dNO7REIDrttajMYE9LuolwE1r3/6GT9kItrQaJNvOM2Ar7uzLr0IcOXF3moiM8QdfdVRI
+	 nrfEoYCKu0KinDPEECJOmYJWwbhPtD3ScLq7isZWitP5iNd8HS1a+cyAJzZaU5EYa5EjY
+	 K+PIYsP03oNk4Bwlm61DVmJzNRuXrl8i1p9cYqEGyU919r5a0U5K6UYuw3EW+xJvQGbNa
+	 FL+pqhybLRyCrRnzE7zOVYVjLHW4uoyU9kgcu/63DqqHZmxq5/Q6phzBF7ruIsKSrJg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1792429730;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=zrvCeDlbEo1dcdadZUxg0hKYtY32Q9aSGECGIN22EA4=;
-	b=G2eHiW8/xXlHDnYVeLuZel9c5xPV4wJIhP+xt5fvgwySBT/Xteeo7IrC90GKEns4ZpOQ
-	 MPv6dek1jdQCj1fk/Ls4j66lUSqMiShZZBgR5NtzAYQRWwA1ETwYVwiJeowlt7Ev1230M
-	 1ycS372Z2jAlPBrKPxKqqxNvhNCLUigrKhqZUYZrMg2CjYD/srPDLQdQuyp9gxGc+V9Eh
-	 6OdWFLNJzk8fYBgYygxQTwhbvuz9C7h7VoA0/BILE2xEKy3LWljdsTqxosZs9XhosXlom
-	 a7gYCkfXin3EikMo755MmbeskUeIbuvc+t2plmfmHYc3cJHuNc4WRL3RFfuoMBLxduQ==
+	bh=wbIi++T5I/EY7npkGc0X2Wvuhoby9O/RDkzRPOSp+tc=;
+	b=Pc1atayp5hv842GV0TbiWiZ1O7+OLNXsqsF7o33SgGjZv72S9yPWhTzRGXe7HyiM9adB
+	 nftr7c7RvxKuk9SHECPrf7z2CiFEE98/OnLDgsfE6kYP0ccAy1e5dXxeI+0KhnyQZPPBf
+	 qQf/1cfVvAVAA3dDmdDvKy3gzuA2tGf3mP9Q6MSXTQoOQI0ZxCcbuJ+FAoQeiLQg4Sesw
+	 TNqKpqEzmjBTrmekj6Pwcd+JNu0ib8I88LizSOodwXHXrLWtNrJBVBzhKVi/X5Q07BLnd
+	 qC5SEj46S4soio0CKq7+B0gct4ncILuIHB4VengyDN2mGKsGbLyHrPRa5bebmnLZ8bA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=b0ZlzURX;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=eBLMQuCx;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3A84606A31E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B38DA606A31C;
 	Mon, 19 Oct 2026 17:08:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B3A84606A31E
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B38DA606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=b0ZlzURX
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=eBLMQuCx
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id BFBE0202849;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id DD1F9202852;
 	Mon, 19 Oct 2026 19:08:36 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792429716;
@@ -43,19 +43,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zrvCeDlbEo1dcdadZUxg0hKYtY32Q9aSGECGIN22EA4=;
-	b=b0ZlzURXSUfjJuo2k6z/Q/MlWLA3dSksxfj4nzPLOf0pwX/+1p1gWYOWaPTyYwjmaZ8c0D
-	kqeafWpi/87TzvB+J/fZgkksMPpEwN5yM8mXYb5F/dl7UD4XBK+Xos0WZiERN5FKyJcVb3
-	9g0+X51nvJimODbJ2lfofnFlA60GpYXKcOUiKmB3i1mr08VOzeBH+zd8Z4hVBYno0D7BgV
-	RQxvTJvDAXs/Lohpj6N7Idc79M+fqEq61oGPCAxfXqvsZUoT8lPDCvA+36/lnmnRsg+u+A
-	vA78+3GHV312UrUpw5zTX7b9V4fOf8Dqe+uAPYEByZfrOUWFB98qHcynbn76nw==
+	bh=wbIi++T5I/EY7npkGc0X2Wvuhoby9O/RDkzRPOSp+tc=;
+	b=eBLMQuCxaSG4u28kbg3Z7QajzD876uI/gAHmHPlwjnxcJ4Dwru7QKU2cakueEBUCh7unmD
+	+rD7AuIMYMZ4/yuHGjyDAj6zEG7P+qjpcy+Bs2SfxzurwaD5w5AZus3+Q7dKLZCne0wLNV
+	uQLW8d4k/UE17SeP6Ql7LB7wMt2BB9C9xfMcnIaF7ywyiWvhjI85wDz9LPC+ci4LDw/gaH
+	f8mxPSeNx0gpMiIQZCqwRzRVKvZDGqraysj1/6cG32TNH9wDS+s9QHildW7EaTU57qrE7/
+	CDYE2/yrO+9VrNj0f6sXxGvL1ONjucCRncjqB89NxmiGPPWEcnFu8KwuW4HVbg==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792429716; a=rsa-sha256;
 	cv=none;
-	b=bZGObe00i2N9tNnmXvCRXFsVBT1qECfO3ErhZzNnpgJHqIwBYRqxHoa+j0o3EZkc5W6Suk
-	8r938+bn2XSSOI14vdWxkecjZ6nvZ0eu/h8Slq0EzxfsyFyWdZIXnFdQxl7ZbBxQwwRGIf
-	lTRJDkhh+B8Y98dmFrDZDZtIqAOvTlRUDeyjZKp5lnlByOSXV/4332msbfZmhYrjDNLC6f
-	COj4aJAQJetLw3cf4e516mBc04G9MmNntWG+MHL+6xN0os8mpanv7rlz8Zhsh9CgedEdpR
-	iqBIGZign5DjlK+zJJwsVUPwFoJTZ8myyyJrlI3TD3YlQH+kK/h/XsURr85X/Q==
+	b=U0hQknE8MeBU2xjfWqul7jh8YcvCWs4fHk3iHiAK8g+dc7HdW3/fkULyLu+z5Og56Ae9Kx
+	JsCbKiUFGhpM8L1wtRg3N0SiYl/qha3I3vnq62V7vrDQr+9mXTez3FaRK4s4b/e0F27GY1
+	vO+lWD105DjLujcj/13fZo4VGqvuJhLFGiK+cGQUqa7EUxqHBSFROXvLiw6pNLMAh81vFM
+	AbEoIJk/HC9+vM45/2AqLMeS6WP1U8WrEYQkb8mXHF6xK1q1+qT6EmLEGum4qlXiqYcU+2
+	DWQkUvOvYjlahQnTdFQdrNafwbo1iYL2RKAmXlMtNLRnvqdxVjHdL/SqAUCAiw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -65,24 +65,24 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zrvCeDlbEo1dcdadZUxg0hKYtY32Q9aSGECGIN22EA4=;
-	b=SGWEjMg02Ta3iSs4k4lThwkLqfioP6B9OqItJ7y+Z6VPnDbW1bLFuvLWi0ykhWlZUE1lcn
-	JXuoE451POqxZrJf9X8pi+7i5+D94v+v/fIZQVssi0udBq+RnnaXdOFSNjIW0tUNJSTs7S
-	ky0h6PEgcpb4kfwbmc97kALItz8JmwjsQAcCdjnUAdok8/rtcpbLmBsvFIJmsx/YMp4KLl
-	ctRFcG1Gkns88u1jnVs6S715r5LhHu2lFIcuFQc9eMj/e5h0MzVK9qSftdUNs70YhmA1H8
-	hi6S5U1yn4l+jZYPrweLpvki6nihB4bSf3hhp1UZjegtvxyBjYeeLp54skkH8Q==
+	bh=wbIi++T5I/EY7npkGc0X2Wvuhoby9O/RDkzRPOSp+tc=;
+	b=fbg2yY2Pm1UVQpFmN3n8/9+inPhLXwO9cK3O+gxA0/tFzNmMdiLQ0DgRkz7UKRCJ5RwbtJ
+	a1LNk2aDJEs7PQkZy8RfF85l5VEpkz4vt8aWBIi2aahikvGEhUXdLz6zpl764Q7A9H2uDs
+	I49gY3/pePDR8lBZf4RfynFAyZlK2rf9MwJxRnjzTBIPRPBeI0yoEz4lXRvDmGeTsMdKsM
+	7Faudxcvj+uoBz8g5DLNdgRjGuwrnyoJiY3KbU6JvUMBSCrU4tnMoggkH93gl6WsSMvOqZ
+	UhKC2QP4+TDhpiX+gL5A/LVFc5d6qdjTGDrysqsEuqX4CRQHo9YfYW2CyNoRBA==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xIqqi-000Fg9-28;
+	id 1xIqqi-000FgB-2T;
 	Mon, 19 Oct 2026 19:08:36 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 6393E5C948B;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7BA795C948D;
 	Mon, 19 Oct 2026 17:08:36 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,12 +90,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Cunhao Lu <1579567540@qq.com>,
 	stable@kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 01/11] can: dev: can_dropped_invalid_skb: drop CAN XL frames on non-CAN XL devices
-Date: Mon, 19 Oct 2026 19:01:06 +0200
-Message-ID: <20261019170834.1727150-2-mkl@pengutronix.de>
+Subject: [PATCH net-next 03/11] can: skb: make echo skb freeing safe in any IRQ context
+Date: Mon, 19 Oct 2026 19:01:08 +0200
+Message-ID: <20261019170834.1727150-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261019170834.1727150-1-mkl@pengutronix.de>
 References: <20261019170834.1727150-1-mkl@pengutronix.de>
@@ -110,64 +110,96 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Vincent Mailhol <mailhol@kernel.org>
+From: Cunhao Lu <1579567540@qq.com>
 
-Sending a PF_PACKET bypasses the CAN framework logic and can directly
-reach a CAN driver's xmit() function. The PF_PACKET framework only
-checks that skb->len does not exceed the net_device MTU.
+can_put_echo_skb() can be called with hardware interrupts disabled. Its
+direct drop paths use kfree_skb(), while can_create_echo_skb() uses
+kfree_skb() when cloning fails and consume_skb() after a successful clone.
+None of these helpers is safe in every IRQ context.
 
-For a CAN device that is not CAN XL capable, anything above CANFD_MTU
-(72 bytes) is therefore dropped before it reaches the driver. However,
-CAN XL frames are variable length. can_is_canxl_skb() accepts lengths in
-the range CANXL_HDR_SIZE + CANXL_MIN_DLEN up to CANXL_MTU, i.e. 13 to
-2060 bytes.
+Use dev_kfree_skb_any() for all drop paths and dev_consume_skb_any() when
+consuming a successfully cloned skb. This preserves the respective skb drop
+and consumed semantics regardless of the caller IRQ context.
 
-As a result, an ETH_P_CANXL skb with a length between 13 and 72 bytes
-can pass both the MTU and the can_dropped_invalid_skb() checks.
-
-A driver that does not support CAN XL will interpret canxl_frame->flags
-as a length because of the overlap with can_frame->len. And because
-CANXL_XLF is set, the resulting length is between 128 and 255. For
-drivers that do not check can_frame->len before copying can_frame->data,
-as most drivers do, this results in a buffer overflow of up to 247
-bytes.
-
-Drop ETH_P_CANXL skbs if the device does not have the CAN_CAP_XL
-capability. Keep can_is_canxl_skb() for the validation of CAN XL skbs.
-
-Closes: https://sashiko.dev/#/patchset/20260731-master-v5-0-5b27029dee20@qq.com?part=1
-Fixes: fb08cba12b52 ("can: canxl: update CAN infrastructure for CAN XL frames")
-Signed-off-by: Vincent Mailhol <mailhol@kernel.org>
-Link: https://patch.msgid.link/20260731-drop_canxl_frames-v1-1-7387b70353b3@kernel.org
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
+Link: https://patch.msgid.link/tencent_E84809CF236D0137885E7E4E4D58340B3208@qq.com
 Cc: stable@kernel.org
+Fixes: ae64438be192 ("can: dev: fix skb drop check")
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Fixes: 3ccd4c6167d3 ("can: Unify droping of invalid tx skbs and netdev stats")
+Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+[mkl: also convert can_dropped_invalid_skb(), can_dev_dropped_skb()]
+[mkl: add stable on Cc + add Fixes tags]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/skb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ drivers/net/can/dev/skb.c | 6 +++---
+ include/linux/can/dev.h   | 2 +-
+ include/linux/can/skb.h   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index 14edec5afb57..bc0787535b52 100644
+index bc0787535b52..46c151eece8f 100644
 --- a/drivers/net/can/dev/skb.c
 +++ b/drivers/net/can/dev/skb.c
-@@ -4,6 +4,7 @@
-  * Copyright (C) 2008-2009 Wolfgang Grandegger <wg@grandegger.com>
-  */
+@@ -63,7 +63,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	    (skb->protocol != htons(ETH_P_CAN) &&
+ 	     skb->protocol != htons(ETH_P_CANFD) &&
+ 	     skb->protocol != htons(ETH_P_CANXL))) {
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return 0;
+ 	}
  
-+#include <linux/can/can-ml.h>
- #include <linux/can/dev.h>
- #include <linux/module.h>
- #include <net/can.h>
-@@ -388,7 +389,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- 		break;
+@@ -91,7 +91,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	} else {
+ 		/* locking problem with netif_stop_queue() ?? */
+ 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return -EBUSY;
+ 	}
  
- 	case ETH_P_CANXL:
--		if (!can_is_canxl_skb(skb))
-+		if (!can_cap_enabled(dev, CAN_CAP_XL) || !can_is_canxl_skb(skb))
- 			goto inval_skb;
- 		break;
+@@ -403,7 +403,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+ 	return false;
  
-
-base-commit: 98c2ad4f5d805dbc1ea436a334ee59311806a48c
+ inval_skb:
+-	kfree_skb(skb);
++	dev_kfree_skb_any(skb);
+ 	dev->stats.tx_dropped++;
+ 	return true;
+ }
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 6d0710d6f571..346faddee02e 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -176,7 +176,7 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
+ 	return can_dropped_invalid_skb(dev, skb);
+ 
+ invalid_skb:
+-	kfree_skb(skb);
++	dev_kfree_skb_any(skb);
+ 	dev->stats.tx_dropped++;
+ 	return true;
+ }
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 5d27843862fc..87ace09c0d8b 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -78,12 +78,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+ 
+ 	nskb = skb_clone(skb, GFP_ATOMIC);
+ 	if (unlikely(!nskb)) {
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return NULL;
+ 	}
+ 
+ 	can_skb_set_owner(nskb, skb->sk);
+-	consume_skb(skb);
++	dev_consume_skb_any(skb);
+ 	return nskb;
+ }
+ 
 -- 
 2.53.0
 
