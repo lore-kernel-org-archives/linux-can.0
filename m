@@ -1,62 +1,64 @@
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FFC4848AC
-	for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 12:02:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 648D54E9C2C
+	for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 12:02:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792411348; cv=none; b=SUBWu7bhNy6Od80VDx3KzF3Yu1yCOy+JiqOg9WBwcuDLnTn06C9niLGT9MGjjlTJq9rNyuEUF2lm/7/oUbKGKYLmKVoXhnnWmk2kHSThfANkmTSfP9H5Wq1XIOrc0ZeN4d6o1uOCkuc4jWNr8ADlMsP6fvyF6fK55apZaBl7SB4=
+	t=1792411349; cv=none; b=OJGz7MQNuKOXeNndyEXyQrwK9ta5w5Qpo30QhjvE+SkzmOGxTvpjHguNy0ajtemtV3nIV7IxnKtwo9VhlHpHFCm/XIS99SLIFoTlWQy+M4uyFFlWqeepNKgos5rOTWy3XnWzS+k9aDL3r7VwWNidfUGOB78+nq2Zn16s7m4rOno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792411348; c=relaxed/simple;
-	bh=0ZtTflIyQ/Ih9q9zKS2+34drbheFWDbpyOLOT7gZzdU=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=JVMqmXNggdKNOi/Okp8BCb4PaoQfvD+Ghk8+RfFcnwplMFd1ohPcJGpp9vUPJ5DLoi39yK1QEkLXD0mhzkKGDjFOJr2IbaffM95a9q2nscSTKlT/dOTbjSr9UcSMjB8Af1u/QtT0AeIGyFyhrGJ6P+XwNRI1UnG4WAkrVHrB8Nw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GhQcPKk2; arc=none smtp.client-ip=209.85.221.51
+	s=arc-20240116; t=1792411349; c=relaxed/simple;
+	bh=DZ2kdbVbYg1pkCIntf+4CYQabG4gloV37Aw1qUTBU/0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ku/5zRpJFD+rVmUFcPsHXjQ5377lQIhe8HzdEX+9Lt8i/GM94RrzAfbrF5wSrpZWRGG3FrCeNTMOjBvH6yK9FKk5+iPAhmmMKvhKRJxZV6vCynbAifCDNNR+mQG15RTaa5N+rTVPHsHi6iOS45BL3xQiy99Qj+zedt9N17RIsuo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TLvBW5Xs; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GhQcPKk2"
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-48df54150dfso1526491f8f.0
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 05:02:26 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TLvBW5Xs"
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-48de6a62a4cso1662494f8f.2
+        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 05:02:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792411345; x=1793016145; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=85UJNW1kmvdUmgX8wEBdPlUGd6dDmuuDjcTlYqLXCyw=;
-        b=GhQcPKk2ngooLxLHIzhC2YRzyGL9g9I+iRHytXtqUa9pcnTNMT4TiIR26Vad3qdb0v
-         oLaVV/kAtSTkxPdmy7VRRuXCoEUz1DCmV7gVE4tqHaZdVymc7QZxtnHy0Ba4tb3EceKW
-         K0WMME3QIMnbcc6kB+sMHMePu5BvzxMEg8MAFBCAgKpHmurq8C9Z59h6JsxrcpDvpIWT
-         zAA5szhhKw5eVXAlvRFKmdVDt1+b2QcnCVafQ/92FVM3Qhg/wWcnmwArSD1Tdvn90kq+
-         hyDA4vLoN4dQlQ/YeKmELi5sS+AAJPVPu6lTDRrtVPJG6OPR7En0G+U5m5uxfzIlN6Ch
-         +m9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792411345; x=1793016145;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20251104; t=1792411347; x=1793016147; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=85UJNW1kmvdUmgX8wEBdPlUGd6dDmuuDjcTlYqLXCyw=;
-        b=FFt2JF4EsIPw7TRfjc+NS15ONQg9Je5OB8oilEFo9HXf7+NvyTWYb78IlkFxe7w/HY
-         kEUeBezU5nqc1MBv4UGbvLOQZFTZCfGMPRAi7VmpzRoGQrplEMrKDHQFI4Ao14/C+YxH
-         aUAbcNv3epYS+qv7+FWdd9dqCDrpea+1VXIUjJHDQyPXtl3iaX3KfGa+uXmR/6XSCU5g
-         ibxe9H0p/X0xQZyDir3hkl5jj1j2os6VWfUtQ2iGxmIUpkScH1DbeIdG3VLMmjs5RiI0
-         642GmYDZUlKaHkVRZn5M8g3gz2/igcC+ODVtDsN01HB35p5hkU6YL78+AOmfUvjqpHcP
-         c7dA==
-X-Forwarded-Encrypted: i=1; AKwUvBx0M57yRsnO6sGc6GcVj2T1DlMifCZTHRdLnZXqLqAuDOeqKJ6CY4C1PGQQin51mkHXYWgmvbY7QD8=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJCaNb1rajPxc7A3GMa3vrSAazy477VccmSCFsfoPshsjW45r/9
-	O03/IUH+85EBV+cwRXoPbIeuWHt5N/Yfdl0zadPNL1L+dEE4E3YZAvBw
-X-Gm-Gg: AYBFou244oJYKb4O1FEheX3k+hmMEWYl0r1pdt2Ccu8i3aAzHiG/WMnYWsBv2rxBLor
-	E44kv97t2gS20wsySoaop3LJAwowrWrk6STB9UijVkqxjl7IkUyNH9aJ1JXoDGi+eXMoVkEm+xm
-	ijliesUA/LQHs0g1zYuBFkC1w6Hl8j8yGQT0XArvg71hkxls0T9b8rAs+bEcKsjXE73kUIvIAb4
-	0aPed3IW7H0NdHJmgTowDdy9x1YSovaGgNjHpDhd52Y9+2lctE6iix6EfyNIaNqQcFrlGtAKPjc
-	OqfyadtupHvE9ADD+7q8Q1bLP0ANcJW3Q/P1V383J0rI00tba0v1eQr5DSe7sGI3H2CxRTkFD5Y
-	q08/ob1yk3YY4fwHq/hUxCUbO9mVBd8bK4NADGySAdealUeujmVsrry8enDm5pfjgb4sdltECpn
-	5e1UNnzhStVw1IgurNTohQGmqIWjtxU20ALh5OSUnKXeTicFHUTEoLtxHkQjHmXyZusuWl/w/re
-	5CP4bBrnkY9Q9j3FnEdNa90rxkvJ1ZGfyjWNhAFx97pfYMvhXe2SWw=
-X-Received: by 2002:a05:6000:46d9:b0:48d:fa9c:7838 with SMTP id ffacd0b85a97d-48e07985881mr9011954f8f.2.1792411344468;
-        Mon, 19 Oct 2026 05:02:24 -0700 (PDT)
+        bh=kXjXKm6gt0TwYUecPdJSnTOm2s6L4h99iDdc56AsF8Q=;
+        b=TLvBW5Xs4IKC5mKW6dHnUlt5Ce7Z1M1rVv28tj+Trdzf+jq31ChqnkBeFvA1Le+9Nz
+         V9otsN4oy5COrdffcE7x+zgYS0auqIktA9CS/eeCQ0x5n6QUnqdcmROyKeXul/E9Kqzq
+         q6FQdLd675orwpTFZoKv5wndYWHD8QtaqzWRMOfVWLsUF+R5vYUAMY6M/EvqgU0tdfd5
+         9hWsirQZ4WmqZy0idda96ApymLTOn0R7IyZZUevcO7d2ROeKMQ3wsQWvbi3rvf6C/fyF
+         R/YVzYH3lqgcI1Y9DdhDV3mTQ9MlobKfbOH+l9aDyiJrviVX5G6BVp/ygBPol4dos7js
+         UzCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792411347; x=1793016147;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to:content-type;
+        bh=kXjXKm6gt0TwYUecPdJSnTOm2s6L4h99iDdc56AsF8Q=;
+        b=1dBdvFqdWxf+0FW/WJYDMBNUyp+pjyEZen5YRKgNreWE00+MG+nEp1Y2/Qyjhd14Px
+         lct8aNEWnooM3p/JFeDgPAZCzq0NFQAqDTXp+C15KHaQUwaqgC6SR8gG0BsrtM9hKTHJ
+         JuHKafxq2f4s702SbKM+C+CTnFtDIXv7WAjB1D5C1d6hbYpD7Oyr6xtFvZPs8mQDvg4q
+         GK+/z6HYf9AkE9LNlIXLPj+iu5zzL24rQGXcag3EIA8qP5ZQNauqCA7B1aBf0Gam2Qqm
+         Xj2MbI4mYBZ9QQye/j2JVw3/klAoONydjcBp+FOYoyYJ/97LFmMViIpEnvX1x0DZ0FlK
+         uN+g==
+X-Forwarded-Encrypted: i=1; AKwUvByoarN14wHDdv+ZpKZXt3xbhhrO3P1URjUfFaQWA0zOx0/k44laisF4/uQbgkV79uDLRKs5Ypbyw1o=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJnWcdjdEbuTz/HywdkIaRT3aR2wgKlOdGPZGTdL4dgfDy/rhzZ
+	R90BWKy0klqAXKps31B+PEDokF2pFs1QCfCvoy3W+jM0ZrlLR/deadI5
+X-Gm-Gg: AYBFou22TrmhCdvMWQaeQDuXI8V+Zu9AmlkFDZqxnJTT/r/cJEnhQ1Rba6e1uxoyy7g
+	H2Lf9vOLtFV2qhQITYlOdrMz+gC6O92dALCD/xQifQbKY/+QbuzpQMhiHs3PsAWqBbatn0hn1j2
+	VCD/xnLBuIO0G+eZjssA+XSskl35jXejAzrpgO6vAv0QA4DIrj16yafWckPKMi3R99rUeDB6tJs
+	fIrNXcfcZ/QDtwOMc22hh8C5DTIx42i6Gk6qsiZZt/B8mHSohGNwoBGyeTK+1HMg9GBACY1iuF8
+	XoOS//bqwoR7dak2KZTVdsdG2XQeV0W0dkbiNl96x5egh28vLpLa+orlVnSJ6lEnHCDj8GLFM2J
+	9dqVNhk88s+nDOfgRvqPrxZ1t2YWn0MuXmeeE10GmIHhedUYui8uILTH4hW/jFWSNw8OFjgRgsx
+	fjNnvSaAyNh3UB+/C0nYc8j+yhEmSIxwxwiUolqXCWzyNDl0dk/NYzHYTX7LO0N4prMOBZ6Syjd
+	cBv9VoTGtKOa4HEBW82aYUQ6xWCFwOe1x4RfUk3yIcLTUa4H8Ap5iw=
+X-Received: by 2002:a05:6000:24ca:b0:48e:b32:9d1c with SMTP id ffacd0b85a97d-48e0b329f47mr14655865f8f.19.1792411346320;
+        Mon, 19 Oct 2026 05:02:26 -0700 (PDT)
 Received: from localhost.localdomain ([2a00:23c4:a702:d301:1439:c865:be43:6676])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfdc4eecasm22400720f8f.13.2026.10.19.05.02.23
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48dfdc4eecasm22400720f8f.13.2026.10.19.05.02.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 19 Oct 2026 05:02:24 -0700 (PDT)
+        Mon, 19 Oct 2026 05:02:25 -0700 (PDT)
 From: Biju <biju.das.au@gmail.com>
 X-Google-Original-From: Biju <biju.das.jz@bp.renesas.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -74,10 +76,12 @@ Cc: Biju Das <biju.das.jz@bp.renesas.com>,
 	Chris Paterson <Chris.Paterson2@renesas.com>,
 	Biju Das <biju.das@bp.renesas.com>,
 	Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH v5 0/4] Add support for Renesas RZ/G3L CANFD
-Date: Mon, 19 Oct 2026 13:02:12 +0100
-Message-ID: <20261019120220.166163-1-biju.das.jz@bp.renesas.com>
+Subject: [PATCH v5 1/4] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S has no Classical CAN mode
+Date: Mon, 19 Oct 2026 13:02:13 +0100
+Message-ID: <20261019120220.166163-2-biju.das.jz@bp.renesas.com>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261019120220.166163-1-biju.das.jz@bp.renesas.com>
+References: <20261019120220.166163-1-biju.das.jz@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -88,49 +92,36 @@ Content-Transfer-Encoding: 8bit
 
 From: Biju Das <biju.das.jz@bp.renesas.com>
 
-Add support for Renesas RZ/G3L CANFD.
-The RZ/G3L CANFD IP has 3 channels and 11 interrupts compared to 2 channels
-and 8 interrupts that of RZ/G3S. RZ/G3L has 288 buffers compared to 192
-buffers on RZ/G3S SoC.
+The description of the property that selects Classical CAN mode implies
+that every supported SoC can operate in that mode. This is not true for
+RZ/G3S, whose CAN-FD controller supports only CAN-FD mode.
 
-This patch series depend upon [1]
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/commit/?id=2b4a5055d517b11bf4a5671cef32e4d77bc45626
+Update the description to say that Classical CAN mode is not available on
+RZ/G3S, so the property is not mistakenly used for that SoC.
 
-v4->v5:
- * Added patches for Documenting RZ/G3{L,S} SoC has no Classical CAN mode.
- * Dropped the patch "can: rcar_canfd: Derive max_channels from the device
-   tree"
- * Dropped the tags as there are new changes.
- * Restored maxItems on interrupts and interrupt-names.
- * Added resets/reset-names required property for RZ/G3L.
- * Added r9a08g046_hw_info to device data.
-v3->v4:
- * Dropped maxItems from interrupts,interrupt-names and resets.
- * Collected tags.
-v2->v3:
- * Collected tags.
- * Added check against RCANFD_NUM_CHANNELS, to avoid overrunning the
-   fixed-size rcar_canfd_global.ch[] and transceivers[] arrays.
- * Fixed typo 198->192 buffers in commit description.
-v1->v2:
- * Added support for deriving max_channels from the device tree.
- * Dropped clock patch as it is accepted.
- * Dropped devicetree patches, will send it later.
- * Updated commit description
- * Dropped RZ/G3S fallback as there are lot of differences.
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+v5:
+ * New patch.
+---
+ .../devicetree/bindings/net/can/renesas,rcar-canfd.yaml       | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-
-Biju Das (4):
-  dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S has no Classical
-    CAN mode
-  can: rcar_canfd: Document that RZ/G3S has no Classical CAN mode
-  dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
-  can: rcar_canfd: Add support for Renesas RZ/G3L
-
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 32 +++++++++++++++++--
- drivers/net/can/rcar/rcar_canfd.c             | 31 +++++++++++++++---
- 2 files changed, 55 insertions(+), 8 deletions(-)
-
+diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+index 1a7a9ce45e97..7d3330f8fc1a 100644
+--- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
++++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
+@@ -146,8 +146,8 @@ properties:
+     $ref: /schemas/types.yaml#/definitions/flag
+     description:
+       The controller can operate in either CAN-FD mode (default) or FD-Only
+-      mode (RZ/{G2L,G3E} and R-Car Gen4) or Classical CAN mode. Specify this
+-      property to put the controller in Classical CAN mode.
++      mode (RZ/{G2L,G3E} and R-Car Gen4) or Classical CAN mode(except RZ/G3S}.
++      Specify this property to put the controller in Classical CAN mode.
+ 
+   renesas,fd-only:
+     $ref: /schemas/types.yaml#/definitions/flag
 -- 
 2.43.0
 
