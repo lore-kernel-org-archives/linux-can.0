@@ -1,30 +1,31 @@
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-alma10-1.taild15c8.ts.net [100.103.45.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E86F04E5334;
-	Mon, 19 Oct 2026 12:14:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A194E535A;
+	Mon, 19 Oct 2026 12:14:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=100.103.45.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792412043; cv=none; b=KESO3RS4Gh3G1LYf7WA8Kp9qJzoL9T/+1bvglHQcvvvmaHQ+9bpTxMP3KrZWsUPLhE3n1qfD2hjNin5quN2xMoNP4rg0D9GbJusiwNpt/0R5LvZ80HYuxdAUnxlRcwyCfDQtGNBKMQlMCzXgZt/1k2T+FNLv/EK4UBjfPVpxgyc=
+	t=1792412049; cv=none; b=QKEXNJDERDrSaGj0YE6/AJJaVpdAoI1R4Q/KAvTk3sos9aASYjnKhSUuH+cV3TuGhPI8Xw4LiISVYidAcOUw/vXSRs7QQXxculbu1PRqK73Cc//Fk3oYD28huJjWTPqmNu6N17R+JHMMLIbbBS3UNKXJNOoAYvno4gtKsQFxyho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792412043; c=relaxed/simple;
-	bh=AYRSMic3LaoLZ/qdbv+3inxM1mzKMpieZZq3I6RfW5U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NB1jgs5ojzT+hTRC+MjusXsH+6+jktZXd0afIyyndqvfWZbwoKe98tSNlaa4yY4ZdtvuZ9zormRjqQ3MowgfGNHXk9INeF2guVL1p0ycO5qm9hLdoRqOW7d+3pz6G/cquvAQ9z4Y2+aXeOklS7QWkXaGqAS9hmfLQp37g0R/uiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H4Iz/vCD; arc=none smtp.client-ip=100.103.45.18
+	s=arc-20240116; t=1792412049; c=relaxed/simple;
+	bh=nOE4hbRvtXLh4mpItQg10eEhc7nhQLi21HzpXDfa1MY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=XcQGI0lJLtlql/Ou7difjXdLuf1Y/LIpsEwhVIiEZrQ+go+fUsa5V1mFLCuJIuyXKWjniYQ2GSC1v6CRMVsxNrOQI+QI+PGnexYT8m8PsF1ly9JbD1yf7ouqsztiuzDOhFo63PZl4uBxm3f53J3dnoTLbeEDFHW9FqYx+uE60tk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kFujewNv; arc=none smtp.client-ip=100.103.45.18
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H4Iz/vCD"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 204381F000C4;
-	Mon, 19 Oct 2026 12:13:59 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kFujewNv"
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E261B1F000C6;
+	Mon, 19 Oct 2026 12:14:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792412042;
-	bh=yWTI9pJXuL8mjNlBexYwiNzXFCGapO59WeYYXPZiovk=;
-	h=From:To:Cc:Subject:Date;
-	b=H4Iz/vCDw5y7vKTtJUjx/6Qi9xMWGCOq1peQltvu8iNe13K5gu7DBLaX21IbURTrs
-	 4aNVLPYkY87Ap0rtuqogx3CCi6o6gDGb3UNlQhB5CY2P8czSODmKmKDMxtcf012x+2
-	 6HARDxSiyixYjNdnfL9GksxqoW9T4a1WGVbpMYLd1+48K+BGK8WP6PEY4TjS6WwWJA
-	 ZH5HLFsFqUgNINfX2Qr6pipX95zieoWn2KTicTS8KJW4jrMaqE2k3ZKJmSAjRzFnZp
-	 OZMxdxSDwW7q2bSXrnKdhQ0eimQfliEueEV4F5BEtXvzGxEmwlKay4cSaclCLWr35N
-	 6fFNNSO2Peh2A==
+	s=k20260515; t=1792412045;
+	bh=Mp1MjvYNSiMazg3J3t2uaa1/HZac8fuqtGiyiGLK5JQ=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=kFujewNvM2vCZVHnzhoEkYlE7YMri0OEDvU+gbfICjzfuk1No0V6wvHcRRr+yIeQb
+	 B+ONfWzXWvYzlcacU504tv1AkdVBSkdA9S41oBZazf0edYq8hJSmQwHgio4BoIbcKe
+	 r6SgZwvpsyNwGLNByZ/oNFzpV7cigfsYOBYT8KJWI2z6zLobb8nj7+6BuiZQlStgUk
+	 2FFauKvqhr30I3dWN/yJpvXQ7fGnG4r4dmA0FZmfwJ0f7hYeWv2c1WZPm00O7AgRTb
+	 aFuFx20vXdFo9/teonAXbDs1asAmHNqdTKvkYia5gypq1JGacy7x/E0fzCVmZCTcpd
+	 9hj8yxu4i4i5g==
 From: Claudiu Beznea <claudiu.beznea@kernel.org>
 To: mkl@pengutronix.de,
 	mailhol@kernel.org,
@@ -36,10 +37,12 @@ Cc: claudiu.beznea@tuxon.dev,
 	linux-renesas-soc@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Subject: [PATCH 0/2] can: rcar_canfd: Follow-up patches for RZ/G3S
-Date: Mon, 19 Oct 2026 15:13:54 +0300
-Message-ID: <20261019121356.2421761-1-claudiu.beznea@kernel.org>
+Subject: [PATCH 1/2] can: rcar_canfd: Check can_clk request for errors
+Date: Mon, 19 Oct 2026 15:13:55 +0300
+Message-ID: <20261019121356.2421761-2-claudiu.beznea@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20261019121356.2421761-1-claudiu.beznea@kernel.org>
+References: <20261019121356.2421761-1-claudiu.beznea@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -50,23 +53,44 @@ Content-Transfer-Encoding: 8bit
 
 From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
 
-Hi,
+If the provider of can_clk is not yet probed, devm_clk_get() returns
+-EPROBE_DEFER. The driver treats any error as can_clk being absent and
+falls back to the other clocking options, so the wrong clock may be
+selected instead of deferring the probe.
 
-Series addresses issues pointed by sashiko. The dt-bindings concerns
-will be addressed by Biju as discussed [1].
+Request can_clk with devm_clk_get_optional() and propagate its errors.
+While at it, add a comment mentioning that the canfd or fck clocks are
+used as a fallbacks when the external clock is not available or it is
+described in device tree with a rate of 0.
 
-Thank you,
-Claudiu
+Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+---
+ drivers/net/can/rcar/rcar_canfd.c | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-[1] https://lore.kernel.org/all/TY3PR01MB11346BB7B48E311542BD7226A86982@TY3PR01MB11346.jpnprd01.prod.outlook.com
-
-Claudiu Beznea (2):
-  can: rcar_canfd: Check can_clk request for errors
-  can: rcar_canfd: Use DT clock names in the probe message
-
- drivers/net/can/rcar/rcar_canfd.c | 13 ++++++++-----
- 1 file changed, 8 insertions(+), 5 deletions(-)
-
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 74c3c3f20991..bb2d03b75142 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -2220,11 +2220,14 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 		return dev_err_probe(dev, PTR_ERR(gpriv->clkp),
+ 				     "cannot get peripheral clock\n");
+ 
+-	/* fCAN clock: Pick External clock. If not available fallback to
+-	 * CANFD clock
++	/* fCAN clock: Pick External clock. If not available or its rate is
++	 * zero fallback to CANFD clock or fck (when info->fcan_pclk = 1).
+ 	 */
+-	gpriv->can_clk = devm_clk_get(dev, "can_clk");
+-	if (IS_ERR(gpriv->can_clk) || (clk_get_rate(gpriv->can_clk) == 0)) {
++	gpriv->can_clk = devm_clk_get_optional(dev, "can_clk");
++	if (IS_ERR(gpriv->can_clk))
++		return dev_err_probe(dev, PTR_ERR(gpriv->can_clk), "cannot get can_clk");
++
++	if (!gpriv->can_clk || (clk_get_rate(gpriv->can_clk) == 0)) {
+ 		if (info->fcan_pclk) {
+ 			fcan_freq = clk_get_rate(gpriv->clkp);
+ 			gpriv->can_clk = NULL;
 -- 
 2.43.0
 
