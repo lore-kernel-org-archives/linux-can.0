@@ -1,69 +1,72 @@
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93FAE40D578
-	for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 08:02:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792396922; cv=none; b=lkK2fLtV8mc8BlbwCoY3i2RNVzOtWZbx2VvvgfSpf80mLVU+QDid1rWuiROOM84yFcnxulecIvo1nKPbboMrOomr0Ufn+83GQXJLZx7tdUIinoBwCCIQZeUzNw0xlczMsHpAYfi4sVhOsfQWCGqzare5b593P0EGYjVHg30Iiys=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792396922; c=relaxed/simple;
-	bh=hP4wF+WPnK0B2Q1KKFEnxgTNrut6FSSKnsRv3RZJ50A=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=fX6l3duVjk/kcnaXIUsCYgebch0Mt2CMjLxijvX9zHEObMHg9uW0v+yP7Nswbul1jgwqItz+PSW9dLtdcAjDIQToLpbhYgHZY5duGbdklVhiUAYr7RLeU4+8v/7Sfo+AYEuPA2EiNqqPWue39z6I+tcGDl50qkQkTevNlQAQR0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev; spf=pass smtp.mailfrom=tuxon.dev; dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b=Utao0K7C; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97CEE455629
+	for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 08:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=85.215.255.51
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1792397338; cv=pass; b=D/GuPlpQofSe4SG3OFC7a2yjJyLr7Z1UOt6RjzFJz5dNnI9QcOPZdVhbDNYwoNBSJM/NxXRWBdKyfsWJ72eQ66IhuZMy+dBLVr3a4BEjcfk5UX3GkGo+83baKnIcBkvPmUuZKstCr80dybW61JaHk56MGpSri9XRbI0IMPy/Mho=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1792397338; c=relaxed/simple;
+	bh=reBd+OcjXMbahZaREWZkjeEzFNdSWPfYbBOa+mNDlA4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=A26eEawbZZFOWgeBeZCT6zcu+EM+oTNmb3j7fJ7QoB4nYckmF/VBnSnVRyTkhgKFPOsTKRxqE03mx/eNHG/3NUg4cqlwRKbnmG3ZvFowGQxXw1NqAtS/SkROO/VsqaXt5WryyE3hErSg4BLnVlg02tLYSmtFhGPte30xKItYywY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net; spf=fail smtp.mailfrom=hartkopp.net; dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=eLlCoEnf; dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b=5r64w6kW; arc=pass smtp.client-ip=85.215.255.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tuxon.dev header.i=@tuxon.dev header.b="Utao0K7C"
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-4a1cef0439aso18920195e9.0
-        for <linux-can@vger.kernel.org>; Mon, 19 Oct 2026 01:01:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1792396918; x=1793001718; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=ocLaY0WHvEptQ8Kwyj8wyj7j+7F9Bumbj27CCmpTaLg=;
-        b=Utao0K7C7jQ9lwDr4a7gcLnou4U7qG2PjAv9asy6+1mPFi6GMYif9fql1+GfMQGy6p
-         hBAn+pE2NPY4kaNBhbe/z9zudJ/tEWMnoI0sR7Di5srb1EVmNZBp39e1SScBwk0oYrT9
-         BYH2/p6XpwzY4HRiU/A9dqZpEJCOLkGwWTWThJu67FLa3YgXs/r8ipJId+3tRd3+dVCk
-         al+M9AtdW60/Z9/cPA9S5BpK3x4KalRzcmvP6CAT6ozFXUHDL5WDlmEZPQgb1q/AvK7T
-         TMykXJKHI+xn/NPT8V9Ri00pO+0KNQJo9FaTGE+YAaSZt4MuBU16xMTY4QZowNnzHUIH
-         42ng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792396918; x=1793001718;
-        h=content-transfer-encoding:content-type:in-reply-to:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to:content-type;
-        bh=ocLaY0WHvEptQ8Kwyj8wyj7j+7F9Bumbj27CCmpTaLg=;
-        b=WGi37z2B2P9RNL8n6pKo2vlJM1uAEOaDW2uXnuLxjelkbVnCqlTzmjJrVyoionh414
-         4TcU5SCgPIKrSzzDGqIO9Lxg/xTRMKhacmnI2CzWt7jYq4MYByJEjXjfwez63nf/X/K9
-         WD6OyFVNit5VhYo5wuOtoPMGvWg2+bnA5Ssy4V+mIxHx6E9VRoiwCGAAn1+evFzcG0Va
-         sLD/S+5AwYfUU+U0cbYxLCyyWztPmMxz/PCp7yAIzdEw8coc5olsRUjEpoVGnUIt6Ssz
-         sY4i48+3Q8AHlU2BvbUEtPdOMxQiQ/WuFIqtaBhUpUFUJ5nObY3taDdxWlZ7PblGZ0yd
-         aE2g==
-X-Forwarded-Encrypted: i=1; AKwUvByBBkqU3NTQcBoDVXlUFe+JLo1LAP5205zU2HFvjQd2JP74v/Ds80VtCzNVKE3oLDvTSLQgaRXBkrM=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ3XTJLVTvPag1Oa4FBGgy8VcCDdgAVk+eetzESlQ27cLCrC638
-	2KUAAwkkyS3r2VpoNclADeN5Q0mcc7eUhv02nn/2n3IoH4DOFgLkhLGF4SwL59GBLks=
-X-Gm-Gg: AYBFou3uLVAHPfpxEvsTBRAho7rOMlylzGxJRHtsgy/ic0DcFr6MuRIaV+FblDxY8Z+
-	a3zIFZNSCS3kPdx22u05lTDqPe4ainMqJC0L7kvhzvKWosBusdjzbMDJfEFYM/tL9dZf1TpE7Qc
-	h3g8pwIiGGyOXKiYcNc20NvNCLxkL1SuqAwRXjFbcf7XnfpiULHBeNkewgpauGehbHlCRJTEqA8
-	49R6daVhkXo2SkhN9xoTT6j2bSIuO2N7OVFM249/4hvCIH01pMDPinQJp1aNabLKInup9wCASUh
-	o9GEVSdAoGbvEpLerQB9wFQGXKIorZ1w76sB72dHrc1F9t0cRvMYvVd/RUvc4A2x03L7rWUmHaK
-	SDLa8NIdtZBsRK+5T1Z2gojA9divfVUuKiaOz7xnAWiswUO+condRDKCtmej+M6zErogFcQm2zv
-	yED8ot0T3JeZ2OqGLJ9j2Fbo5zTJF+R3RXvrCkSMoJsMLWjJeiM1dr5W+okRb2mOwjb006loC0U
-	ssgjr73dIILoFspRw==
-X-Received: by 2002:a05:600c:8709:b0:4a1:7b05:3a6d with SMTP id 5b1f17b1804b1-4a1d75e6fa6mr126442275e9.8.1792396917972;
-        Mon, 19 Oct 2026 01:01:57 -0700 (PDT)
-Received: from [192.168.50.4] ([82.78.167.221])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1dea678cdsm174349695e9.1.2026.10.19.01.01.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 19 Oct 2026 01:01:57 -0700 (PDT)
-From: Claudiu Beznea <claudiu.beznea@tuxon.dev>
-X-Google-Original-From: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
-Message-ID: <3ac7b72a-3468-49f6-b4d3-6b33e252ffc6@tuxon.dev>
-Date: Mon, 19 Oct 2026 11:01:55 +0300
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="eLlCoEnf";
+	dkim=permerror (0-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.b="5r64w6kW"
+ARC-Seal: i=1; a=rsa-sha256; t=1792397321; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=KwwuxW2j2qmKXXKQu1N+GEq3u3mE4QBp2GqEFY15Tow6QN36EB4nRBXdBH9kGDo0ex
+    WMAt0WLL2cmb9lgkcfNcufu+ibHH90sfxsuywaHVmpxF1cVQuNQfuZPh7UoVAiHNjzkm
+    aIjBvT4tbvzIXMdLqDgsIzhzQYq64mVm5nH0f6BlvxDzBa4326SEi3lMsb3SiVvy7Nwu
+    Z//W/VRfj7/f/zkMSZmFxikUvcwe8scUf2f/Esz1tFPm9MUL3Kw19lShxWqKhLOoKwSA
+    j4CaM/E9g8/1bN1LcbqGFZW4mad4VTrxZnUWrWQftXr3itQe4HY85iv+A69y+7HoaiN9
+    b7XQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792397321;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ax4WbjHhcP3QE1+obLX5BAjM2aDflIruHdjY/HnwNlA=;
+    b=jj+PoXlIC66j7DE36Mi/rv8xiDk4TdB0m2SNv91Vf97U4iSsLZxcQ3x5Wmnm/cMw7y
+    srSxG6HfytueiB3wC3xc49Adebk66vRL7Mjj+ls3aWbHWxZPBjg0PaGtwA3+H8SOmebj
+    FNBokoEAGR3pdh61DdbGPZtfZbwNIelfZcQ9SLvBFDBWbGmznrR+ZL22NXsicpBEpIAB
+    zxyLNRkdCZ9oDUHHfq8gOi0TibKmo9ihJjY/ViH/KDzBaS4ncga+zWWi13i/xSSgth+E
+    866f0ts1lLZjxm2ALlO/sHr2K7EQSy7/CFB2Q5hoZape3MU3RW6jP0LFjdyX/4vQO+ur
+    dCQw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792397321;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ax4WbjHhcP3QE1+obLX5BAjM2aDflIruHdjY/HnwNlA=;
+    b=eLlCoEnf1j294qyi+YC9Ob+FEggyEwwWU3N/nt1FRvMEI9PeOLC+Vkm6Ml+EeLR0vE
+    rkO8KXTxDtzh1jNIPdDUGkIQoh2w4jwtbWLFZQyGZsPpUu+N8+vJ0OuBU675RZ1Hwvq+
+    ft7PCmJndAMFZ4gGUlpSse5h/0wIAyUTlVDOcU4ZgL/QESl7jeYJyXki5Z9ZmAbAyFj3
+    jXKRYwCCsPeiMj3B4vAwRZhbL8AxsywnPhitxNnmq9Swu3Wz/V+EUa3Su2If3tEbgAlp
+    dW8CFmbWdG4CVLcJI84ffyVAWaIsRZiu2ZDPoEI1GyY1VdTC/PjYnfv/hKRWOLBTPsEB
+    AnPw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792397321;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=ax4WbjHhcP3QE1+obLX5BAjM2aDflIruHdjY/HnwNlA=;
+    b=5r64w6kW4WMowTY8q2PA8C+VinTtW0qU8zk8WIHJ8Qppq5HwH32o1VGYANmDK2NPcl
+    L2lzDBXhjVy9rN0XfsBg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29J88fV3m
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 19 Oct 2026 10:08:41 +0200 (CEST)
+Message-ID: <83241d6c-ae67-4de9-8582-b958ec836dd1@hartkopp.net>
+Date: Mon, 19 Oct 2026 10:08:35 +0200
 Precedence: bulk
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -71,157 +74,201 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/7] dt-bindings: can: renesas,rcar-canfd: Document
- RZ/G3S SoC
-To: Biju Das <biju.das.jz@bp.renesas.com>,
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: "mailhol@kernel.org" <mailhol@kernel.org>,
- "robh@kernel.org" <robh@kernel.org>, "krzk+dt@kernel.org"
- <krzk+dt@kernel.org>, "conor+dt@kernel.org" <conor+dt@kernel.org>,
- "geert+renesas@glider.be" <geert+renesas@glider.be>,
- "magnus.damm" <magnus.damm@gmail.com>,
- Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
- "Claudiu.Beznea" <claudiu.beznea@tuxon.dev>,
- "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-renesas-soc@vger.kernel.org" <linux-renesas-soc@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
- <20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev>
- <20261016-elite-feathered-rook-5dcf2b-mkl@pengutronix.de>
- <TY3PR01MB1134682A7E8AEDB860F02752D86982@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+Subject: Re: [PATCH can-next v3 1/4] can: proc: reset pkg_stats atomics
+ individually
+To: sashiko-reviews@lists.linux.dev, linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>,
+ Oleksij Rempel <o.rempel@pengutronix.de>
+References: <20261019074244.50391-1-socketcan@hartkopp.net>
+ <20261019074244.50391-2-socketcan@hartkopp.net>
+ <sashiko-outbox-176764@kernel.org>
 Content-Language: en-US
-In-Reply-To: <TY3PR01MB1134682A7E8AEDB860F02752D86982@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <sashiko-outbox-176764@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi, Biju,
 
-On 10/19/26 10:24, Biju Das wrote:
-> Hi Claudiu,
+
+On 19.10.26 09:53, sashiko-bot@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential issue(s) to consider:
+> - [Medium] can: proc: stale counter snapshots in can_stat_update() overwrite reset stats
+> --
 > 
->> -----Original Message-----
->> From: Marc Kleine-Budde <mkl@pengutronix.de>
->> Sent: 16 October 2026 14:34
->> Subject: Re: [PATCH v4 1/7] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
->>
->> On 02.09.2026 17:15:38, Claudiu Beznea wrote:
->>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>>
->>> The CAN FD controller found on the Renesas RZ/G3S SoC is largely
->>> compatible with the variant present on the RZ/G3E SoC. The main differences are:
->>> - the RZ/G3S provides only two CAN FD channels
->>> - the RZ/G3S supports only CAN FD operation; the Channel n CAN FD
->>>    Configuration Register does not implement the bits used to select
->>>    classical CAN-only mode (bit 30) or CAN FD-only mode (bit 28);
->>>    consequently, bit 31 (CAN FD Frame Distinction Enable) of the same
->>>    register is also not implemented
->>> - some bits in several registers (mainly reserved or status bits) are
->>>    read-write on the RZ/G3S but read-only on the RZ/G3E; their behavior is
->>>    otherwise identical: the bits read back as 0 on both SoCs and software
->>>    is allowed to write only 0 to them on the RZ/G3S
->>> - the RZ/G3S provides 256 acceptance filters, compared to 768 on the
->>>    RZ/G3E
->>> - the RZ/G3S can use PCLK clock as the CAN FD clock source through an
->>>    internal clock divider, while also supporting an external CAN FD clock
->>>    source
->>>
->>> Since:
->>> - the SoC clock generator provides to the CAN IP only the peripheral and
->>>    the RAM clocks
->>> - when sourced from the peripheral clock, the CAN-FD clock is obtained
->>>    inside the IP itself by dividing the peripheral clock
->>> - the assigned-clocks and assigned-clock-rates properties are specific to
->>>    the CAN-FD clock
->>> the assigned-clocks and assigned-clock-rates properties were dropped
->>> from the required properties list of the Renesas RZ/G3S SoC.
->>>
->>> Add documentation for the Renesas RZ/G3S SoC.
->>>
->>> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
->>> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
->>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> the netdev review bot has found a nitpick, it's about the comment in "rcar_canfd.c". Can you fix it, if
->> you re-spin the series.
->>
->> regards,
->> Marc
->>
->> pw-bot: cr
->>
->> --- Patch [11]: [PATCH net-next 11/37] dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC ---
->> commit 69b4e37d18e5229e1c800b45a5df061af8a98eb9
->> Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->>
->> dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
->>
->> This adds the renesas,r9a08g045-canfd compatible for the RZ/G3S CAN FD controller. It adds the compatible
->> to the existing conditional blocks. It also forbids renesas,no-can-fd and renesas,fd-only on RZ/G3S, and
->> makes assigned-clocks and assigned-clock-rates required only for the other SoCs.
->>
->> Link: https://patch.msgid.link/20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev
->>
->>> diff --git
->>> a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
->>> b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
->>> index b9d9dd7a7967..bbaaef8f4282 100644
->>> ---
->>> a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
->>> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yam
->>> +++ l
->>
->> [ ... ]
->>
->>> @@ -350,6 +352,20 @@ allOf:
->>>         properties:
->>>           reset-names: false
->>>
->>> +  - if:
->>> +      properties:
->>> +        compatible:
->>> +          contains:
->>> +            const: renesas,r9a08g045-canfd
->>> +    then:
->>> +      properties:
->>> +        renesas,no-can-fd: false
->>
->> Discovered by: opus-5-5 · Missed by: fable-5-1, gpt-6-astra, sashiko-gemini · Confirmed by: fable-5-1
->> This isn't a bug, but should the renesas,no-can-fd description be updated to match this new constraint?
->>
->> The property description in the same binding still says that every controller can run in Classical CAN
->> mode:
->>
->>    renesas,no-can-fd:
->>      $ref: /schemas/types.yaml#/definitions/flag
->>      description:
->>        The controller can operate in either CAN-FD mode (default) or FD-Only
->>        mode (RZ/{G2L,G3E} and R-Car Gen4) or Classical CAN mode. Specify this
->>        property to put the controller in Classical CAN mode.
->>
->> With this patch the property is forbidden for renesas,r9a08g045-canfd, because RZ/G3S does not have the
->> mode select bits.
->>
->> The header comment in drivers/net/can/rcar/rcar_canfd.c says the same
->> thing:
->>
->>   * To switch the controller to Classical CAN (CAN 2.0) only mode, add
->>   * "renesas,no-can-fd" optional property to the device tree node. A h/w reset is
->>   * also required to switch modes.
->>
->> Neither text is changed later in the series. Both now contradict the schema for RZ/G3S, and for RZ/G3L
->> once it is added the same way.
->>
->> Could the description exclude the SoCs that only support CAN FD mode?
+> commit 947871fd730bb7740551ee6c8b42c7ac5ed61308
+> Author: Runyu Xiao <runyu.xiao@seu.edu.cn>
 > 
+> can: proc: reset pkg_stats atomics individually
 > 
-> Do you plan to update description of renesas,no-canfd in bindings/driver exempting Classical CAN mode
-> for RZ/G3S? Or do you want me to update?
+> This patch replaces the whole-struct memset() in can_init_stats() with
+> individual atomic_long_set() and scalar field resets in can_reset_pkg_stats(),
+> and switches can_stat_update() to use atomic_long_xchg() when reading and
+> clearing the delta counters.
+> 
+>> diff --git a/net/can/proc.c b/net/can/proc.c
+>> index de4d05ae34597..70104f13077e0 100644
+>> --- a/net/can/proc.c
+>> +++ b/net/can/proc.c
+>> @@ -76,16 +76,39 @@ static const char rx_list_name[][8] = {
+>>    * af_can statistics stuff
+>>    */
+>>   
+>> +static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
+>> +{
+>> +	atomic_long_set(&pkg_stats->rx_frames, 0);
+>> +	atomic_long_set(&pkg_stats->tx_frames, 0);
+>> +	atomic_long_set(&pkg_stats->matches, 0);
+>> +
+>> +	pkg_stats->total_rx_rate = 0;
+>> +	pkg_stats->total_tx_rate = 0;
+>> +	pkg_stats->total_rx_match_ratio = 0;
+>> +
+>> +	pkg_stats->current_rx_rate = 0;
+>> +	pkg_stats->current_tx_rate = 0;
+>> +	pkg_stats->current_rx_match_ratio = 0;
+>> +
+>> +	pkg_stats->max_rx_rate = 0;
+>> +	pkg_stats->max_tx_rate = 0;
+>> +	pkg_stats->max_rx_match_ratio = 0;
+>> +
+>> +	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+>> +	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
+>> +	atomic_long_set(&pkg_stats->matches_delta, 0);
+>> +}
+>> +
+>>   static void can_init_stats(struct net *net)
+>>   {
+>>   	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
+>>   	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+>>   	/*
+>> -	 * This memset function is called from a timer context (when
+>> +	 * This stats reset is called from a timer context (when
+>>   	 * can_stattimer is active which is the default) OR in a process
+>>   	 * context (reading the proc_fs when can_stattimer is disabled).
+>>   	 */
+>> -	memset(pkg_stats, 0, sizeof(struct can_pkg_stats));
+>> +	can_reset_pkg_stats(pkg_stats);
+>>   	pkg_stats->jiffies_init = jiffies;
+>>   
+>>   	rcv_lists_stats->stats_reset++;
+>> @@ -121,9 +144,10 @@ void can_stat_update(struct timer_list *t)
+>>   	long rx_frames = atomic_long_read(&pkg_stats->rx_frames);
+>>   	long tx_frames = atomic_long_read(&pkg_stats->tx_frames);
+>>   	long matches = atomic_long_read(&pkg_stats->matches);
+>> -	long rx_frames_delta = atomic_long_read(&pkg_stats->rx_frames_delta);
+>> -	long tx_frames_delta = atomic_long_read(&pkg_stats->tx_frames_delta);
+>> -	long matches_delta = atomic_long_read(&pkg_stats->matches_delta);
+>> +	/* fetch and clear values for 'current rate' calculation */
+>> +	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
+>> +	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
+>> +	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+>>   
+>>   	/* restart counting in timer context on user request */
+>>   	if (user_reset)
+> 
+> [Severity: Medium]
+> Does can_stat_update() overwrite the freshly reset scalar statistics in
+> pkg_stats with stale pre-reset counter snapshots after calling
+> can_init_stats()?
 
-I intend to send follow up patches today. If you already have something prepared 
-for this, please send it.
+Yes, but this is not introduced by this patch. The local snapshots were
+added by 80b5f90158d1 (the commit this patch fixes) and this patch does
+not change the resulting values.
 
-Thank you,
-Claudiu
+I would rate this as Low, as the impact is limited to cosmetic procfs
+statistics:
+
+- total_rx_match_ratio keeps its pre-reset value until new frames are
+   received.
+- current_* and max_* show the last pre-reset interval for one timer
+   period (one second).
+- A jiffies tick between snapshot and reset only increments stats_reset
+   twice; calc_rate() returns 0 in this case, no crash.
+
+I'll address this in a separate patch with the same Fixes: tag by
+returning early from can_stat_update() after a reset.
+
+Best regards,
+Oliver
+
+
+pw-bot: cr
+
+> 
+> At the beginning of can_stat_update() in net/can/proc.c, the counters are
+> snapshotted into local variables before checking for a reset or overflow:
+> 
+> 	unsigned long j = jiffies; /* snapshot */
+> 
+> 	long rx_frames = atomic_long_read(&pkg_stats->rx_frames);
+> 	long tx_frames = atomic_long_read(&pkg_stats->tx_frames);
+> 	long matches = atomic_long_read(&pkg_stats->matches);
+> 	/* fetch and clear values for 'current rate' calculation */
+> 	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
+> 	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
+> 	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+> 
+> 	/* restart counting in timer context on user request */
+> 	if (user_reset)
+> 		can_init_stats(net);
+> 
+> 	/* restart counting on jiffies overflow */
+> 	if (j < pkg_stats->jiffies_init)
+> 		can_init_stats(net);
+> 
+> 	/* prevent overflow in calc_rate() */
+> 	if (rx_frames > (LONG_MAX / HZ))
+> 		can_init_stats(net);
+> 	...
+> 
+> When user_reset is set (for example, after reading /proc/net/can/reset_stats)
+> or when one of the overflow conditions triggers, can_stat_update() calls
+> can_init_stats() -> can_reset_pkg_stats(), which zeroes the atomic counters
+> and the derived scalar fields (total_*, current_*, max_*).
+> 
+> However, the local variables rx_frames, tx_frames, matches, rx_frames_delta,
+> tx_frames_delta, and matches_delta still hold the pre-reset values when
+> can_stat_update() continues immediately below:
+> 
+> 	/* calc total values */
+> 	if (rx_frames)
+> 		pkg_stats->total_rx_match_ratio = (matches * 100) / rx_frames;
+> 
+> 	pkg_stats->total_tx_rate = calc_rate(pkg_stats->jiffies_init, j,
+> 					    tx_frames);
+> 	pkg_stats->total_rx_rate = calc_rate(pkg_stats->jiffies_init, j,
+> 					    rx_frames);
+> 
+> 	/* calc current values */
+> 	if (rx_frames_delta)
+> 		pkg_stats->current_rx_match_ratio =
+> 			(matches_delta * 100) /	rx_frames_delta;
+> 
+> 	pkg_stats->current_tx_rate = calc_rate(0, HZ, tx_frames_delta);
+> 	pkg_stats->current_rx_rate = calc_rate(0, HZ, rx_frames_delta);
+> 
+> 	/* check / update maximum values */
+> 	if (pkg_stats->max_tx_rate < pkg_stats->current_tx_rate)
+> 		pkg_stats->max_tx_rate = pkg_stats->current_tx_rate;
+> 	...
+> 
+> As a result, those pre-reset local variables overwrite total_rx_match_ratio,
+> current_*, and max_* right after can_reset_pkg_stats() cleared them (and if
+> the reset was triggered by the rx_frames, tx_frames, or matches overflow
+> checks, the overflowing values are still passed into the ratio and calc_rate()
+> calculations).
+> 
+> Additionally, because can_init_stats() sets pkg_stats->jiffies_init = jiffies
+> by reading live jiffies rather than using the snapshot j, if jiffies ticks
+> between the snapshot and can_init_stats(net) during a user_reset, the
+> subsequent check (j < pkg_stats->jiffies_init) will also evaluate to true,
+> calling can_init_stats(net) a second time and then passing jiffies_init > j
+> along with the stale non-zero tx_frames and rx_frames into calc_rate().
+> 
+> Should can_stat_update() re-arm the timer and return early (or zero the local
+> snapshot variables) when can_init_stats() is called?
+> 
+> [ ... ]
+> 
 
