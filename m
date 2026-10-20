@@ -1,57 +1,161 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792484477;
-	b=r0PUugh3TWxObfsgzxum4rYFcXgBdb0mzyHDxHNNm0MzTODkvnpamB6XibRLx6iY+wK4
-	 gas0myJlWPsya+s0VQo42z0gIqXiqt2UPI4SGGAeELhn7eNIHc8Y0vhtEmrrPrmLEktkp
-	 Fve7Dgar2WA1qnnfPgHd7HIAvLmu1m6LujLgWesTtZwr7PovuXKk73YfgczZYkbjd9/PB
-	 9wm4BantSCovPklwWcDFRJriOJIv0IzJyJHEoqRKh/adfDNVl07njy4v+Zhvqi0obZ6/E
-	 VGyOuGPri0H2BwdJ2qHx7QTVpKzqIOOTM8CDwPsFmp7j7yxmeTFf9POn0KW5vktV+Hw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792484477;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=GOiYOwDTMLuI377qcDRM3BT7G1PIxpU75EHZh9LEOHc=;
-	b=lUP0TugBmOiU9u4hq2fwtS0IKqT/cQycTGQ590Q/WL1pAhEsGvZ+BHDIWRhB+zlFv3aV
-	 okdlqfXyIhq2dWPYHOqh7CtH0sAfj7JxTgDWvN4PvGB6lsrglJAK/IiZ3AnvXugEGE8e4
-	 gBLu12Jmu69/fVCufaGmaPXt6B6Q8DCxyCv4vks0em/A75fiFVuKCPBO9onQRmWK3GZvY
-	 VilqtU3stALK6MnGrDXPmR67ayNdnYCjYYQwIGBN0HhBp17Hoevt58fiGQ9C+SbQpuzpN
-	 3RZNE4VWQTdaqRoOlRUnerfSVBzVwCi3ab1WuK81akCdPWtCVLNcmm9W2OT01lmSpmA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hmQVj9D2;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.229.27
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792485045;
+	b=LgDyD9onJeGT7hk5xDKTaYsw1pmQ/y4cKZ1cATTnJCeArv3LeNhoCenkT9obic7EFM+A
+	 JKugtNnWoHMo/mttS1kptgUEJcJtvY/3cFG4JWp9P4OwY/hYvKx/IclxMcDXDDRd15lpk
+	 SG1zdD4XOXDTWi9q4dUQ49omD1drG3bGZFwOBSh+6P92DK6mnINZt+6o2IY4P1z7KwgiJ
+	 a79PsK3K7IxUO/DBum2uPvsWWu/+W8I0VVN+zdRgvTGu+J3phvy2gV9TGrytFHvG/aeKL
+	 lb86dGjbPyA/aq4x2XWpuvouS4CnT2F9VcXSgq3Q+7zi2ybyly/8CvfSmtzI9D8nVQQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792485045;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:CC:Subject:
+	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
+	 Accept-Language:Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 x-ms-publictraffictype:x-ms-traffictypediagnostic:
+	 x-ms-office365-filtering-correlation-id:x-ld-processed:
+	 x-ms-exchange-senderadcheck:x-ms-exchange-antispam-relay:
+	 x-microsoft-antispam:x-microsoft-antispam-message-info:
+	 x-forefront-antispam-report:
+	 x-ms-exchange-antispam-messagedata-chunkcount:
+	 x-ms-exchange-antispam-messagedata-0:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-AuthAs:X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-originalarrivaltime:
+	 X-MS-Exchange-CrossTenant-fromentityheader:
+	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+	 X-MS-Exchange-CrossTenant-userprincipalname:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=r2RbBGW5VhjWCTmRrhNx7wPkrO+sdHBGgw+rnHeG+ac=;
+	b=cB6TZ3mbQCpvAvzY2wbZHMSMEBejTuYqOqjoqQz1bN0EDwEA0vpWbdlVce7aId4EkUEa
+	 B42jfmj6PZP3urV61TvK+yLoWT8c39MPUF5RI6dEC6jGtxV20FAWY3FHkdvV1utLCWI6L
+	 9PK9c2SrxgB88DYxkGAFBTcNHOvb6mZV3nRbvzMp38fgQwP+qEQ8cv/fIYWAqnoNEFrwb
+	 CRfR1CrokO515Hvuk6m+Au4fcKG4lSPSbmpIn61HtWET5vymNmOb1mmTa/BRBzVQgpXoq
+	 JmTBrN26nqh2ZJ0xlViIwB0jK66S7PMzmDUkB+/Nw+zKDG2cCG3TmJjw2Fy9tBgLMZQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=bp.renesas.com;
+	spf=pass smtp.mailfrom=bp.renesas.com;
+	dkim=pass header.d=bp.renesas.com header.i=@bp.renesas.com header.a=rsa-sha256 header.s=selector1 header.b=DGOc5W8j;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.229.27
+Received: from TY3P286CU002.outbound.protection.outlook.com (mail-japaneastazon11010027.outbound.protection.outlook.com [52.101.229.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2458E606A31E
-	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 08:21:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C3EB606A319;
+	Tue, 20 Oct 2026 08:30:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5C3EB606A319
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hmQVj9D2
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149021F000CD;
-	Tue, 20 Oct 2026 08:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792484476;
-	bh=GOiYOwDTMLuI377qcDRM3BT7G1PIxpU75EHZh9LEOHc=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=hmQVj9D21ZgE93W9Il8mktTAExd3Z3/2TZI/X5XghW15SZ0lr0+yImHUNyfJs1ESW
-	 xoxrwxx/D4cB9yYAUFEkiFC0WR6bIbpWRKcPQ3bTgsmKGwx1oGjGttZapvwH72zwWy
-	 2ICdvUlhcuDXv7T024BhrI5mIg8uHTESk7v9Me6PyKhLKCiNKf3kiZYOqUQGx80iKU
-	 D3RQS7pkwGRLFke7kVK+ysJJ25yEYmVdX7/M1pHKvn0E0wTaJN+RwSnFeeTGMxMpE5
-	 MCbS+3c44fu+fr5hoILvEaajRqkYfurCtKJTK0XeWOBNGHSttk444QaJc6sICshv9K
-	 Xb+duuENi7v7g==
-Message-ID: <sashiko-outbox-178529@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net v5] can: j1939: validate the EDPO packet number
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Chaosheng Qu" <quchaosheng000406@163.com>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261020025036.74454-1-quchaosheng000406@163.com>
-References: <20261020025036.74454-1-quchaosheng000406@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 20 Oct 2026 08:21:15 +0000
+	dkim=pass (1024-bit key, unprotected) header.d=bp.renesas.com header.i=@bp.renesas.com header.a=rsa-sha256 header.s=selector1 header.b=DGOc5W8j
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=rNHGwppxTfzVfvmVz+DCdO0NaVeASwv0axSLehKyB3znb3lIXnaPMfchzFHCJRj23PTJ4P/exxitbWIUfXCSFr7SQ6I5PnUWNwmTfbJEgRNbXt6VoS5Rv0Nfz6trB17+4+j1XzdwWjSDjbo5ksDJPhpEtuiFQxgfI2rZe3swR/7pD84FxMdqWfSwfNpKgeLlNEk9Rwii5rD9tgrYBFISEM0Jeo6KShspzSlJfyR2bFGUjKawtSM2rDldPfv+6cAx4mzfFvKyJf1fPGzPFpLvzZMAazz8gB81YBn9eDJleYPm4gBNxa7+Q+Pw4RyyHEQU7lrbk+q3LsH/YqykAOVSug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=r2RbBGW5VhjWCTmRrhNx7wPkrO+sdHBGgw+rnHeG+ac=;
+ b=vt15TdF/36d2gDyYwqofANictZmvxEJxAfWaCeP+g2eLYnAqj/QpVzI0WKWYNp0BfW3fmQuKmiW4UAP4bs+JhrBRhjcZ/fZZBjOfGjFAp4qolELS5MZ6fxNfjk3UM7WlZjkGbqteWBJaE4hkcRIDZnYhrXbUk6oTRnPGI9eWWXrPlyyObpSiE5rbAErcUc4mHBA2/xy2TovPLQpJgX/1oxMS+EYsvRdTC7rwn4wIL3g4ZB44rBuJW0TcaEzFOIENLfQUh1vEjxQWUvcGdKqTuEzlR/4DVUiXInMzV8NsfDtPoODR6Cpt8oVM7z5wAd5eiI61YGKma0GHp3GToF5k7g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r2RbBGW5VhjWCTmRrhNx7wPkrO+sdHBGgw+rnHeG+ac=;
+ b=DGOc5W8jMnESdrUSg1gfN/3OjPMKS+oe47GOXnZY6pp4PCrGAhk+l2mLsTEpWvKWWklHBLUc6LbfSh00OAayUBgkhCRyhXbld2sBW4pNWQJja4lQLRUXzB3mWuvjkFp9EHPHUKDaEp/1Bxnv7Gyf6O4aZgzRku9aOZGpCGlWpvA=
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com (2603:1096:400:3d0::7)
+ by TYCPR01MB8328.jpnprd01.prod.outlook.com (2603:1096:400:15f::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.522.19; Tue, 20 Oct
+ 2026 08:30:40 +0000
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de]) by TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de%6]) with mapi id 15.21.0496.021; Tue, 20 Oct 2026
+ 08:30:40 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, Krzysztof Kozlowski
+	<krzk@kernel.org>
+CC: "biju.das.au" <biju.das.au@gmail.com>, Vincent Mailhol
+	<mailhol@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, Geert Uytterhoeven
+	<geert+renesas@glider.be>, "magnus.damm" <magnus.damm@gmail.com>, Fabrizio
+ Castro <fabrizio.castro.jz@renesas.com>, "linux-can@vger.kernel.org"
+	<linux-can@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-renesas-soc@vger.kernel.org"
+	<linux-renesas-soc@vger.kernel.org>, Chris Paterson
+	<Chris.Paterson2@renesas.com>, Prabhakar Mahadev Lad
+	<prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: RE: [PATCH v5 0/4] Add support for Renesas RZ/G3L CANFD
+Thread-Topic: [PATCH v5 0/4] Add support for Renesas RZ/G3L CANFD
+Thread-Index: AQHdX8G33+JWXuwTZkSn31raahBWCLcGFjCAgAACNYCAAAHkgA==
+Date: Tue, 20 Oct 2026 08:30:39 +0000
+Message-ID:
+ <TY3PR01MB1134698B07654C48820BCD41986672@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+References: <20261019120220.166163-1-biju.das.jz@bp.renesas.com>
+ <20261020-auburn-kangaroo-of-diversity-dbd8e6@quoll>
+ <20261020-bold-wealthy-wyvern-891012-mkl@pengutronix.de>
+In-Reply-To: <20261020-bold-wealthy-wyvern-891012-mkl@pengutronix.de>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY3PR01MB11346:EE_|TYCPR01MB8328:EE_
+x-ms-office365-filtering-correlation-id: 2d8e5246-7bd0-4e39-6b51-08df2e846c79
+x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|23010399003|366016|376014|1800799024|7416014|18002099003|22082099003|38070700021|11063799006|4143699003|10067099003|261009223027099003|56012099006;
+x-microsoft-antispam-message-info:
+ wNiF/kkZ4z2KPWwXJnBLWw3vK0nRFbW/HjVVr2nWQZ08WDbDq7WZGW41Q1AaPqadxDyP3UeeySNqfshiegYYvS2TIO3ElEwkL0PxNskmFkGjUUlozGhhl7psx5f9fccWC5pm08lkPdQTTjf/fXkJzUo20umMZ6rlDW2TO2kcVYOP2WUmm1BC7btAJWEOMLdrzW+Dz42kKwzTqIKTbjb2RrwGt1/PC98HLhgXukGsS7M+MEUdcAKRI7WESHxhnChm42LjBb1dxRx6Wt+FqQfElt1n5bVRfI0vhZRX4fGIXOj/99nIhAfrHMmG+NOTRT5vhdcdWI7vX3zBHQ6t6C6xDSS3Iazzd0yIc/Rhu3t84la33J9/cLwDj3dRHbEfzDY1SdScZaUBNsw6dwYpw6gbi5LVsUZrgS8upDeTa4K9lOpzpUR0UDMamlENVbhoLXk2HqvQRIv+5nDZn0RhNUxwsW0DioGGv9g2Ff9rFC4z+h2LYMkZIdVs0TCmXp3N3St55N/rvHJ2+1wgvL+dC1ohVy3Z22ZcgmcCU6FBXyFuDmEcP042Nd7dkb+48mkSvrSc0RcPwmJKkAD/w5BausWNC6IINy5bfj5yAzW2nb2Zj+9VM/OEegGLV8VVBlUJMBl/2Ealw68WssZMHCmrvAOMHZIH9oqWCjVx8JWzLq3oPmU=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY3PR01MB11346.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(23010399003)(366016)(376014)(1800799024)(7416014)(18002099003)(22082099003)(38070700021)(11063799006)(4143699003)(10067099003)(261009223027099003)(56012099006);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VEt0TjJmYVlwZlZCOHpvdFVNZ1p0T09uSUl4dXI3TVNFVStkYmhNVWY5Z2Rs?=
+ =?utf-8?B?MTRwRzFjR0ZKaXFzOUpsN3ZUQ1NndGViS2d5bkwyTEd3dXp2V0FtdHFZeTBE?=
+ =?utf-8?B?eDZhUmMzakdIQWJNUm1HKzNjdmwzdmlGTTdsUGhsT3lSU093RTNoMjc4RzNk?=
+ =?utf-8?B?MHFUMW9Jdlk4V2o1bm9OZUUvdjhuTnRnRXlxc3NLVS9YVHRHKzF0alZjM0ZK?=
+ =?utf-8?B?YjUybmVmT1J5VmFsdlFYWjhJYjJmYWRTMnU4NjhvcGR6dHY1M0pNOEFuR2x5?=
+ =?utf-8?B?UFhtUWxkZVNkSElrYkVISkRLMGpET3VVU0FoaDN4Y09oanBzVVdpSDlPSFg0?=
+ =?utf-8?B?RWFGT0EyRXVDNjFWSmVNSGE4enJwMXVIaFVYbDVvelN1UzhUUEdhNW1mbHkz?=
+ =?utf-8?B?bTRsdk9xeWhhRUtQejJUN09GZFBGTVhxNGl4MmNVU0haeDJEeVBiQ29tc1hz?=
+ =?utf-8?B?bDVaZHBHOExncHhaR3FJU3dtazJYdUdwSVA5S1RROHNjUG1scXZCWUM4Rkkz?=
+ =?utf-8?B?a3RESHFHWFE2amFlNXgxN2hxTERKK1E2OFVMSzNWQ0tMdTUyUWVLU3ZPWk5u?=
+ =?utf-8?B?LzdCdWx0ZzQwMGZpNnRvOG1SaExua0pmRjZWMXh3ckN1djN5ZEtxMDRhUXVz?=
+ =?utf-8?B?blBNU3lzcmxtWDB2Y3dxUFJ4dzduVW5sN00zS29rS2M0RGdWRVlxV1hKZHA3?=
+ =?utf-8?B?Q0NQOUdBcVdCMXBZOTdmNzZiY1pVdXZsRkZkRndKKzZQbHJmdXplZFVNeS8w?=
+ =?utf-8?B?OURJZmtaL2w0N0QwMVpWSWRGM0UwYkJLZFg0VGxBU3JXcFR4R2V6dEhtL1Ji?=
+ =?utf-8?B?Slc4MUdydTVLUElZNS9VOEZQalliR1Y1VTdwdmZzamJrVzB5M1RrcENpYlFl?=
+ =?utf-8?B?VUVVSVNhczd3TGRsV01PVllYdG5LYlVXRmlKLzJuS0k2bWM4eHFzcTRndnZI?=
+ =?utf-8?B?cFZrZi9xVXdHUU1tVWRCYnJqbG9UenJyS3ZDSVBNMlVtckRYbDBndTRWekU1?=
+ =?utf-8?B?MzUyb2hyWnJvbVhpejE0bEg5VE5aTGhwblNLSVBoc1BINk1oY251VjQ1dks4?=
+ =?utf-8?B?M1dQNUMrekhFM3dDZHNXU2pza3NjU3BySkxkOTBIYXlVQjZYR01ZQjBQT3Iv?=
+ =?utf-8?B?eVZXcC9aS0gzaVVERmpPK0tLTjc0eUYyNktvMkVtNnNaNGR4RDNsTkczNXdR?=
+ =?utf-8?B?SWtpaW4vNlBKSThZUFQ2RkhBOVFtdzNKZXFzK21zNUdXeEkrOXltTitlT1dM?=
+ =?utf-8?B?TnVTNGE3dU51OHFuV2dJR2NscUJTcDV6Rks4aHJ2WkdidFRpOFBmQUhCenVU?=
+ =?utf-8?B?aTJvdDBNd0N5MHE1NTZOMWJvVitGOGFQb2hrbnF4Z0d4SFUxUVViNk9uTUd1?=
+ =?utf-8?B?eU9XL0RXK01TN0greTBod2VrZjBnTzhVZnlKeWVpYmxLR2szbUhuUXpXOGxr?=
+ =?utf-8?B?d2xaUE9WUWRwNk5LOW1kVFp1YlIxTUR1TzdFNXNIUC9wdXRQTjYyVXdCTG1T?=
+ =?utf-8?B?NERWd2FRZmdWZ3lwald6aU93a3NEY1h2L0xCdzZtVDJpZE5EZE0zOFlURm1y?=
+ =?utf-8?B?WW9tc2ZsMVhQSThrSE1nUUdpRmVNSnZXNHhNaUw5dHZtQ1crNEk5RHZHWFA4?=
+ =?utf-8?B?UmdPM1JxR0xyTFJvQi9sQVp5OFhFWHZIb29TMm1zamExbkpFa0NJWm53NmNn?=
+ =?utf-8?B?cmIrS3ZYd3BGRlZLc1dpWGNMdTRPcjNqMGJpNDM5SzZCQ2dvdjU0amc4dHd6?=
+ =?utf-8?B?T1pmdkl0MWpGclBXWmgzaUtRc29yUTBFNWN4ZS9lYjYwZmJJQTBtV3QwWHFs?=
+ =?utf-8?B?SXBlTmRtZ2NlSU8xOEUxcFBiNGJ5RkxCYzVrT0dpS2xQVTdGQkp3NFIxOG9t?=
+ =?utf-8?B?TUsvRGRwR0MxMzFCbitWU0x0WGd4K0lhQ2ppWWhza3NMVHZiNmU0SFI4QWtW?=
+ =?utf-8?B?bkdwUTRwRHp2dlovWnhLWXkwaEoySmlNYjhYQW1NbUNuTWdxV3NWWU1LcXND?=
+ =?utf-8?B?VXdxTGNucjNVaEdDRlVhTXJmdnFHYWY4WXdTMzlGQnQ2QW5qNXY5bHNqZ1NS?=
+ =?utf-8?B?bWdQeWJqY21ySWQ4dExYMWZsVmx1a1FUcDVoYlJNdlFwd1BOU0RLdVZXWWVG?=
+ =?utf-8?B?REhRQmZQRTRjRStIRllod1lTODJDY2xhTXBCYjM3WnZDQ3ptbHJ1NWE2NTZH?=
+ =?utf-8?B?ekZzU3FWNDFxaWlWbGJVRitRbHdrTnhIVXBzZUs4MGNQWEhvanJITkpkaklM?=
+ =?utf-8?B?dGt5cVFpMVdBbjNtQmlxZXdOSkFhejBENGRHU1ZWNTZKZm9PVTZWT2pxeTdQ?=
+ =?utf-8?B?dS92S20wTzJQd2hNOHFUd0xSVkt3VTZqMWV1LzA2czhzTUllRWhLdz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -60,176 +164,45 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY3PR01MB11346.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2d8e5246-7bd0-4e39-6b51-08df2e846c79
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 Oct 2026 08:30:39.9923
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9pZSdE4e8Kd+QYshC+eMmh4m8sWrUW5qzOk1fTJ+nIrLfwcbY9zx+2AgzBC/+MsnPbCRrGvaweTm9zGVxO/8fcB6mwIr0szMeMbgP7pOQ2k=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB8328
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
-- [High] can: j1939: stranded session in j1939_xtp_rx_dat_one() after bad E=
-DPO
-- [Medium] can: j1939: aborted ETP session in j1939_xtp_rx_dpo_one() still =
-accepts data
---
-
-commit f0380724094c96563fb623cd857d2412a9cce46d
-Author: Chaosheng Qu <quchaosheng000406@163.com>
-
-can: j1939: validate the EDPO packet number
-
-This commit validates the packet number in ETP.CM_DPO (EDPO) against
-session->pkt.total and aborts the session if the offset is out of range.
-It also makes j1939_session_cancel() return whether the abort timer was
-armed and adds a NULL check in j1939_session_completed().
-
-Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutroni=
-x.de?part=3D3
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..8e171b7138594 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1158,13 +1158,16 @@ static void __j1939_session_cancel(struct j1939_s=
-ession *session,
->  		j1939_sk_send_loop_abort(session->sk, session->err);
->  }
-> =20
-> -static void j1939_session_cancel(struct j1939_session *session,
-> +static bool j1939_session_cancel(struct j1939_session *session,
->  				 enum j1939_xtp_abort err)
->  {
-> +	bool active =3D false;
-> +
->  	j1939_session_list_lock(session->priv);
-> =20
->  	if (session->state >=3D J1939_SESSION_ACTIVE &&
->  	    session->state < J1939_SESSION_WAITING_ABORT) {
-> +		active =3D true;
->  		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
->  		__j1939_session_cancel(session, err);
->  	}
-> @@ -1173,6 +1176,8 @@ static void j1939_session_cancel(struct j1939_sessi=
-on *session,
-> =20
->  	if (!session->sk)
->  		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-> +
-> +	return active;
->  }
-
-[ ... ]
-
-> @@ -1823,14 +1837,36 @@ static void j1939_xtp_rx_dpo_one(struct j1939_ses=
-sion *session,
->  				 struct sk_buff *skb)
->  {
->  	const u8 *dat =3D skb->data;
-> +	unsigned int dpo;
-> =20
->  	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
->  		return;
-> =20
->  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
-> =20
-> +	dpo =3D j1939_etp_ctl_to_packet(dat);
-> +
-> +	/*
-> +	 * EDPO is peer controlled.  It names the packet the announced window
-> +	 * starts at, and j1939_xtp_rx_dat_one() places data at
-> +	 * "dat[0] - 1 + pkt.dpo", so it has to stay inside the message.  A
-> +	 * value past the end moves pkt.dpo beyond the reassembled buffer and
-> +	 * makes the ETP completion path look up offset "pkt.dpo * 7", which is
-> +	 * no longer covered by any queued skb.
-> +	 */
-> +	if (dpo >=3D session->pkt.total) {
-> +		netdev_warn(session->priv->ndev,
-> +			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
-> +			    __func__, session, dpo, session->pkt.total);
-> +		j1939_session_timers_cancel(session);
-> +		if (!j1939_session_cancel(session,
-> +					  J1939_XTP_ABORT_BAD_EDPO_OFFSET))
-> +			j1939_session_deactivate_activate_next(session);
-> +		return;
-> +	}
-
-[Severity: High]
-Can an ETP.DT frame arriving right after a rejected ETP.CM_DPO strand the
-struct j1939_session and leak its net_device references?
-
-When the first out-of-range ETP.CM_DPO arrives on an active receiving ETP
-session from a non-local peer, j1939_xtp_rx_dpo_one() calls
-j1939_session_cancel(), which transitions session->state to
-J1939_SESSION_WAITING_ABORT, arms session->rxtimer for 500 ms, and returns
-true. The session remains on priv->active_session_list with session->last_c=
-md
-and session->pkt.dpo unchanged (and for a non-local peer SA, the echoed abo=
-rt
-frame has J1939_ECU_LOCAL_SRC set and J1939_ECU_LOCAL_DST unset, so
-j1939_tp_cmd_recv() does not deactivate the receiving session on loopback).
-
-In ETP, ETP.CM_DPO is immediately followed by ETP.DT data frames (such as in
-the 5-frame sequence in the commit description). When that ETP.DT frame
-arrives within 500 ms and fails validation in j1939_xtp_rx_dat_one() (for
-example, because session->last_cmd was not updated to J1939_ETP_CMD_DPO, or
-because dat[0] =3D=3D 0 with session->pkt.dpo =3D=3D 0 evaluates packet to =
--1), it
-jumps to out_session_cancel:
-
-net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
-    ...
- out_session_cancel:
-	kfree_skb(se_skb);
-	j1939_session_timers_cancel(session);
-	j1939_session_cancel(session, abort);
-	j1939_session_put(session);
-}
-
-Here j1939_session_timers_cancel() cancels the pending 500 ms abort rxtimer,
-and j1939_session_cancel() sees session->state =3D=3D J1939_SESSION_WAITING=
-_ABORT,
-does not re-arm rxtimer, and returns false. Because j1939_xtp_rx_dat_one()
-(and similarly out_session_cancel in j1939_xtp_rx_cts_one()) ignores the
-return value of j1939_session_cancel(), the session is left on
-priv->active_session_list with no active timers, leaking struct j1939_sessi=
-on,
-struct j1939_priv, and the net_device references if the socket is closed
-before interface teardown.
-
-> +
->  	/* transmitted without problems */
-> -	session->pkt.dpo =3D j1939_etp_ctl_to_packet(skb->data);
-> +	session->pkt.dpo =3D dpo;
->  	session->last_cmd =3D dat[0];
->  	j1939_tp_set_rxtimeout(session, 750);
-> =20
-
-[Severity: Medium]
-What happens if a remote peer follows an out-of-range ETP.CM_DPO with a val=
-id
-in-range ETP.CM_DPO and ETP.DT frames before the 500 ms abort timeout expir=
-es?
-
-After the first out-of-range ETP.CM_DPO puts the receiving session into
-J1939_SESSION_WAITING_ABORT, the session stays on priv->active_session_list
-for 500 ms with its previous session->pkt.dpo and session->last_cmd intact.
-
-Because neither j1939_xtp_rx_dpo_one(), j1939_xtp_rx_dat_one(), nor
-j1939_session_completed() checks session->state or session->err:
-
-net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
-    ...
-	switch (session->last_cmd) {
-	case 0xff:
-		break;
-	case J1939_ETP_CMD_DPO:
-		if (skcb->addr.type =3D=3D J1939_ETP)
-			break;
-    ...
-}
-
-Wouldn't subsequent valid ETP.CM_DPO and ETP.DT frames received within that
-500 ms window overwrite rxtimer, reassemble the payload, send ETP.CM_EOMA, =
-and
-deliver the already-aborted session's payload to user space via
-j1939_session_completed() -> j1939_sk_recv()?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261020025036.7445=
-4-1-quchaosheng000406@163.com?part=3D1
+SGkgTWFyYy9Lcnp5c3p0b2YsDQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJv
+bTogTWFyYyBLbGVpbmUtQnVkZGUgPG1rbEBwZW5ndXRyb25peC5kZT4NCj4gU2VudDogMjAgT2N0
+b2JlciAyMDI2IDA5OjIxDQo+IFN1YmplY3Q6IFJlOiBbUEFUQ0ggdjUgMC80XSBBZGQgc3VwcG9y
+dCBmb3IgUmVuZXNhcyBSWi9HM0wgQ0FORkQNCj4gDQo+IE9uIDIwLjEwLjIwMjYgMTA6MTM6MTMs
+IEtyenlzenRvZiBLb3psb3dza2kgd3JvdGU6DQo+ID4gT24gTW9uLCBPY3QgMTksIDIwMjYgYXQg
+MDE6MDI6MTJQTSArMDEwMCwgQmlqdSB3cm90ZToNCj4gPiA+IEZyb206IEJpanUgRGFzIDxiaWp1
+LmRhcy5qekBicC5yZW5lc2FzLmNvbT4NCj4gPiA+DQo+ID4gPiBBZGQgc3VwcG9ydCBmb3IgUmVu
+ZXNhcyBSWi9HM0wgQ0FORkQuDQo+ID4gPiBUaGUgUlovRzNMIENBTkZEIElQIGhhcyAzIGNoYW5u
+ZWxzIGFuZCAxMSBpbnRlcnJ1cHRzIGNvbXBhcmVkIHRvIDINCj4gPiA+IGNoYW5uZWxzIGFuZCA4
+IGludGVycnVwdHMgdGhhdCBvZiBSWi9HM1MuIFJaL0czTCBoYXMgMjg4IGJ1ZmZlcnMNCj4gPiA+
+IGNvbXBhcmVkIHRvIDE5MiBidWZmZXJzIG9uIFJaL0czUyBTb0MuDQo+ID4gPg0KPiA+ID4gVGhp
+cyBwYXRjaCBzZXJpZXMgZGVwZW5kIHVwb24gWzFdDQo+ID4gPiBbMV0NCj4gPiA+IGh0dHBzOi8v
+Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L21rbC9saW51eC1jYW4tbmV4
+dC5nDQo+ID4gPiBpdC9jb21taXQvP2lkPTJiNGE1MDU1ZDUxN2IxMWJmNGE1NjcxY2VmMzJlNGQ3
+N2JjNDU2MjYNCj4gPiA+DQo+ID4gPiB2NC0+djU6DQo+ID4NCj4gPiBiNCBkaWZmICcyMDI2MTAx
+OTEyMDIyMC4xNjYxNjMtMS1iaWp1LmRhcy5qekBicC5yZW5lc2FzLmNvbScNCj4gPiBMb29raW5n
+IHVwIDIwMjYxMDE5MTIwMjIwLjE2NjE2My0xLWJpanUuZGFzLmp6QGJwLnJlbmVzYXMuY29tDQo+
+ID4gQ2hlY2tpbmcgZm9yIG9sZGVyIHJldmlzaW9ucw0KPiA+IEdyYWJiaW5nIHNlYXJjaCByZXN1
+bHRzIGZyb20gbG9yZS5rZXJuZWwub3JnDQo+ID4gLS0tDQo+ID4gQW5hbHl6aW5nIDUgbWVzc2Fn
+ZXMgaW4gdGhlIHRocmVhZA0KPiA+IENvdWxkIG5vdCBmaW5kIGxvd2VyIHNlcmllcyB0byBjb21w
+YXJlIGFnYWluc3QuDQo+ID4NCj4gPiBJIGRvIG5vdCBnZXQgd2h5IHlvdSBrZWVwIG1ha2luZyB0
+aGluZ3MgZGlmZmljdWx0IGZvciByZXZpZXcsIGJ1dCBpdCdzDQo+ID4geW91ciByaWdodC4gSSds
+bCBza2lwIHRoZSBwYXRjaCBmb3Igc29tZSB0aW1lLg0KPiANCj4gSWYgeW91IHVzZSBiNCBbMV0g
+Zm9yIHNlbmRpbmcgcGF0Y2hlcywgeW91IG1ha2UgdGhpbmdzIGEgbG90IGVhc2llciBmb3IgdGhl
+IHJldmlld2VycyAoYW5kIHlvdXJzZWxmKS4NCg0KVGhhbmtzIGZvciB0aGUgcG9pbnRlci4gU28g
+ZmFyLCBJIHVzZSAiZ2l0IHNlbmQtZW1haWwgLS1hbm5vdGF0ZSAqLnBhdGNoIiB0byBzZW5kIHRo
+ZSBwYXRjaGVzLiBJIG5lZWQgdG8gZXhwbG9yZQ0KaG93IHRvIHNlbmQgdGhlIHBhdGNoZXMgdXNp
+bmcgYjQuDQoNCkNoZWVycywNCkJpanUgIA0KDQo+IA0KPiBbMV0gaHR0cHM6Ly9iNC5kb2NzLmtl
+cm5lbC5vcmcvZW4vbGF0ZXN0Lw0K
