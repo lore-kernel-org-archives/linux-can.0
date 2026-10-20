@@ -1,91 +1,117 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.167
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792513227;
-	b=ANnG0Lg1cpUO/XYSmB9WcUYU3VG1pPfspUDxK/j+lCYqHpkYOSJ7WA+Xp6LYtCztuKl4
-	 X4SGjh6FX1TuMD2rmRUXY6rsOrzxdflw2/74/DMRrDSbqaFqv174A2EoMjunrIT2u9AE2
-	 YVcEg8ow2zrgy/6B/OVZ6ijd0vQHg774eWF1YuEauSV52r8mLYL19Nz30NLxAljAJnuEj
-	 5eZ5CQ3+P9kbCOIMMikZtCpwe+wVTsFPRZ3engYTZSPwbhkGhJB320Vx72gWoHa+d+7iS
-	 pwUUecntyzHm4x8AN8qB95/UIQLMHcmIELLuWe5EtfVPUABSidPnwWMMElt4O3DqI9A==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792513227;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=GRoGB9NhrtDuFk45/ynnsvabRomHrLHWAPk5WoIiboA=;
-	b=JUGz8+KMux0CxXNyb+2M7D67esoyAJmItlomJS7yWFNfbepD0v9MqGix8Jy0JFtcsMPh
-	 8gg/tTF+E1DYRLKhQ/ttpmh/HHjizPTgQn1LrmllO/aX8ms00clVSLYaukeTjJf/qHeAn
-	 2RO6HudDMOAAj2Sw26Tm012FtPuchYY/B1eWm52sDlP5ccbUIpkL1N/4M4JsR1HaJif4I
-	 Wt2NkILrupmYmPQ34AGJEPObTe6B6ivC1DwVSMoODAa4qiphT5l4PTmeEVmE+aDsM6Or9
-	 VCgHuLyEqDjZpvapnmGkHcYfjQ/Iql8BPTypMjHJS/RuMXLXSJ+zGirRgjqc5e1+/KQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=aSCRHejH;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="Fzd/WG9K";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.167
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792514011;
+	b=mU0Bm8sALdDSMw3ZDA1VJRSIdhvFD7DQvRfj/lrko1dX6TkxOZBVjiu66/Ja3GBrpARh
+	 NXR9xKiZRfTfwH0t+5ILooOjhnJjVTQsswKx+IyeIkYxHUocCXfWXIhXADVLR6UIp7jWB
+	 lxH2WOybt4hZvMZsL2onmkgtXtZZD2SxaNMZL1DkTKzzfQ6DqW/farzIHO8VBCmpt2mfd
+	 z/56fse9g5DsIVeoa3MVelDte1tkocB7JQoHwe5mSroZu1X3Mli12klA08ceWGDlMq5da
+	 aT84TUtgUwgmiAtPZxrbTFGPM8Hjg5IuDSi1ZqvJTdDnMBwRzZADuwBC8dRG9myYecQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792514011;
+	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
+	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 X-Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=OgtRdYhx0nvtYafb9qO3e/2HBoxq1mY/MOIHjFCCk40=;
+	b=lmyE+0G7UCsgwvPkP6yl6wQe7ZdH7ScNVQ9bQ8h4yE/hN0tI8MksxEO3s/dUi06obA5t
+	 fot+ldhmiyEovUCAMeLgHqxsBp0n5g5v9GHnFrOTYVI3vJeT8yPuVhlosZJ2sD96aY8TZ
+	 SdWZR3YJv1Syh2+dYOn6PqDxADuyeuWjNpjPOu3pB21YaoEnYluo3Zmeph3zmPZzLN7Xc
+	 9ft9Hk1e9G9g5vU8cu1zrcwXmgcix+XDtgxEbh6rNj0eR6shYKPuUADhqYYFCMSmbgcwx
+	 QKitjDkrR2NFcWjv+vKUFippgKyI+rvImKsgSB2hNLMlP7CWRSF4ATDKEoepwKtl+Mw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=redhat.com;
+	spf=pass smtp.mailfrom=redhat.com;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=I0nhtCBY;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=M1whx3OY;
+	arc=none smtp.remote-ip=170.10.129.124
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8969606A32E
-	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 16:20:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C8969606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4012C606A31B
+	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 16:33:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4012C606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=aSCRHejH;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Fzd/WG9K
-ARC-Seal: i=1; a=rsa-sha256; t=1792513223; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=YBEm1SYT9Bl4UenX7yCbwu5rfKAllRHeSOpUvhov/Xy8fKJsOQu1oyz6wnZLNvEeAY
-    3sZdAkGxYubyY8GDq+x/BfXI1IJaU6GhL8GasUeXOBjGR6PaIqfeNL+fQ1PO2YVx4FuU
-    byV59aUqQbm3ewdUQZ8Xshc30Rj7E+xgheKjpK51TNIS/0NPiQmhO3o1HyvxDW4ozNZ+
-    wX/GA6go9bwxrDyTrvgaFo5y183B0To1QitSr2aKNYIQIHW57MfR+AmQ2FBlVbVpqMAd
-    l9Bx2/nJvV8hDmoqoXA4MjJHd7NGclki11ATgu0JKTLk22O5e5VwRQvj7JtXt8PUha7E
-    8mMA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792513223;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=GRoGB9NhrtDuFk45/ynnsvabRomHrLHWAPk5WoIiboA=;
-    b=MjTZhxegAwRzVDc49GqJRC8cyIXiEw5Q2Iqw6jLIHzMts0SU09Bfyb0DnN0x8WSgj5
-    4JdEOo/eQsB6n/VStpIZBZQZRIA2iQFf6nb/8aTCYR4KUvt/F5PsD3NigJQ73FhNh/62
-    EZu8KzcfoGRM7Cvrj/HhaiGSJkaZbUCnfpm+N6pYSwLyqq2HuzrovRs5Y2C17HBGGlPs
-    ch7az7u/CAByqthO3P93onsj6v5QmdRCgqFOOxdxA8QIYOPWe9WbkKGQ9cfVDVmXKexB
-    0PDUoFmHIQQp+JXADx84XZlovsKL/s33Z3nls3PiynDoSZLsd94FNlhw+MHx/IxCZOrq
-    4qiw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792513223;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=GRoGB9NhrtDuFk45/ynnsvabRomHrLHWAPk5WoIiboA=;
-    b=aSCRHejHdPigTvB53eMyGpepHO/NlhT9RnSqye6syBDtZprvonOLMsDwJzrAL09A8j
-    utLXx17YRImZOTG20U7PLSTbL28nVQKYa4yQ+okY/7diPMLxAb16At1dB8PxrUEKfc5y
-    KLKoi77KnA+qADsty1FxZdIELS9FYaxsHrxaY7zY6KXi0rUI/uhH8VMs2E94w5B+Jk9a
-    hNveKFGEGVpJM7xbCovruDlk1jJ94oiizo+U2u6s5a7J8WgYEChPPQ6Z+8wnbzZtiHzT
-    IeBY2R65rLTQlTAsoxpsnXkTHRfbybxFGia3N+dyopDBnC0Xk9etPdNtyjfoY1Sj2l6S
-    tWmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792513223;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=GRoGB9NhrtDuFk45/ynnsvabRomHrLHWAPk5WoIiboA=;
-    b=Fzd/WG9Kssa7U5tB3p/8VL/MtLdvVJ61uV+fAdEoHEkzz9SCUPO7JuVXHiRGe+AE7k
-    jAtgeC9L4+R2kUvAPGCQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29KGKNcfy
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 20 Oct 2026 18:20:23 +0200 (CEST)
-Message-ID: <d23196e0-6307-458b-ba31-15f54ef46b73@hartkopp.net>
-Date: Tue, 20 Oct 2026 18:20:22 +0200
+	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=I0nhtCBY;
+	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=M1whx3OY
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1792514010;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OgtRdYhx0nvtYafb9qO3e/2HBoxq1mY/MOIHjFCCk40=;
+	b=I0nhtCBYagI28Q6u4XHklpQ5Z4t/KnGK0mvtLFzrxjoJKGb5WTkjPNtM3SXzKytzC4Kzyh
+	8DsI2SQggd7QWJziGLH6i0AfuEHUQCPvm+4T7Eh07VpXGopEui5H9xr0lsUDqvYR4qMdJ4
+	qbYsxXNexpWyH3tWsOF6qLPI4ZvFp3w=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-97-oYfOhM04M02fpY3FAAGlNQ-1; Tue, 20 Oct 2026 12:33:28 -0400
+X-MC-Unique: oYfOhM04M02fpY3FAAGlNQ-1
+X-Mimecast-MFC-AGG-ID: oYfOhM04M02fpY3FAAGlNQ_1792514007
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4a1e672580aso18211835e9.3
+        for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 09:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1792514007; x=1793118807; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=OgtRdYhx0nvtYafb9qO3e/2HBoxq1mY/MOIHjFCCk40=;
+        b=M1whx3OY4QDZKuc76QlVNR86Z6IhjvrFJr+I14pyXZYPljmqBtdVMC7CTBjHeKwpmO
+         SjN2pkwHfuVHpQ7BOEwx6XAB4eEt2jhH2G8umorQT6Mxv8uTco+WfIR6jEw8ZRmYs1LG
+         SCvsDuSJxVivUDwpcSLbNfn4TI26O/HBBl17deQtMM8fHaLNIgY49cE+/+joZQIBeoHl
+         ua9vMGGevzlHzc0H5R7PzNAbokxBWkwhhsRGxq2514w3ObSgea8RRKVLr0NKXjjxLDu5
+         KD+sw6EPvIEVMvqfXM78wLCyx3qI+4iZOiHcWY/BsCSWEdAEB9ZVbZy0VylPlpouviRi
+         rrWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792514007; x=1793118807;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=OgtRdYhx0nvtYafb9qO3e/2HBoxq1mY/MOIHjFCCk40=;
+        b=A3UgDzXKw4F4cFtqjSA4+c2lWpqxmTOvorMcGaQbu5V7X37ulaPJ72i/+c3IRG9hBi
+         ReJ3TjGnuI9wowvAFTWTAdUn4XnT28sWrAuMtWoa0ryRxa9JRL0DBRjTBe6RtIUVJrPc
+         iRUwgrfJnD1pT/n0pn4fsR0prOijZvXqTNMBFt2vwgaipi44N6LZrQ8gAInn4TWvQ2nG
+         JGha9Sb4rGT5AjT/rBIqrbV33B14n9uIFOIGXCQo3/bedsi7Ry5cLscjpH3UcM/caALz
+         NqIHMqzfT2NT2XO/lJ8ZD4at9Q8djxwjJ7mceUU1ksNeqvDYu45jdxYbZK6Wt5P94Fmz
+         xe1g==
+X-Forwarded-Encrypted: i=1; AKwUvBzeQDEoGJBSjvZ5Nhy7BJ/lKuZx/vjOiVyNI8Pe1CSKqLuVPmRVsZb2N4GqmVwqmFp8S1esHBhZhDo=@vger.kernel.org
+X-Gm-Message-State: AFq9FYIz+sGeL6eVnXsSzfrnAmIvdB7TZ25Tvf+tNGYaidr0QrhNrEFi
+	ETFTZ+HfzWam9/M2w6kRhhPmpW0xH1XL4ISutr3RyCwH1pg8ArUDn+LeztOMHzFy9XgsOkEeQR1
+	0/f3XJLG+U7D/JiUpPPmFgO8a0lowoAji1sqdE23DYXaoLFYvYJvobCXBeOyYbQ==
+X-Gm-Gg: AYBFou0wInccD7kT/538rZgUJnX7kxIsSvakaj9iVulWbCcOj/UgKgyJqv9VcSK69Bq
+	Q/pb5Y9x+IswB5KKFeGjg6qzeSYVABbR/5pS0i7VKKwkVwSFqPNVBoCHLwIYS0gCGggunxzjZ4g
+	LQscLaEVDFhA2RsXPjVp+NbQ4DSeywhSAzN+f0q3mU1FUR4g5/uOILkT62B7gMyQ22e5mLiAvyR
+	vNAoAGOMa0TosPf8S/P+nIEJ7Q+ZZhgwC/eiE2KeOsqJQl/E8c5iE7CgrAuv+fR+EnpreVRxoM0
+	IoSFOKHY7N+4KxrpdwNJDavnc8jLnzeWUOd76+uBDD1cJbXf1Wrom4R+omKBl8EGzxGq2fe5/oq
+	qpeHdeg==
+X-Received: by 2002:a05:600c:6095:b0:4a1:f688:a5d5 with SMTP id 5b1f17b1804b1-4a1f688a607mr49127075e9.23.1792514007496;
+        Tue, 20 Oct 2026 09:33:27 -0700 (PDT)
+X-Received: by 2002:a05:600c:6095:b0:4a1:f688:a5d5 with SMTP id 5b1f17b1804b1-4a1f688a607mr49126715e9.23.1792514007072;
+        Tue, 20 Oct 2026 09:33:27 -0700 (PDT)
+Received: from storniolo-redhat ([130.25.253.240])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1fc0aef8fsm867165e9.0.2026.10.20.09.33.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2026 09:33:26 -0700 (PDT)
+Date: Tue, 20 Oct 2026 18:33:24 +0200
+From: Filippo Storniolo <fstornio@redhat.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Jakub Kicinski <kuba@kernel.org>, sashiko-reviews@lists.linux.dev, 
+	Vincent Mailhol <mailhol@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Oliver Hartkopp <socketcan@hartkopp.net>, linux-can@vger.kernel.org
+Subject: Re: [PATCH can-next v3 3/3] can: add can diag interface
+Message-ID: <ateWxIr8FNtNqWt1@storniolo-redhat>
+References: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
+ <20260904-feat-can-diag-v3-3-bdcebf07b373@redhat.com>
+ <20260904142606.6FB371F00A3D@smtp.kernel.org>
+ <atJHPuFD8dZyoDaj@storniolo-redhat>
+ <20261017-delectable-mackerel-of-calibration-1fad6d-mkl@pengutronix.de>
+ <20261019134500.58a76643@kernel.org>
+ <20261020-reliable-loris-of-typhoon-255038-mkl@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,91 +121,38 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH can-next v3 0/3] Introduce diag support for CAN
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
- Filippo Storniolo <fstornio@redhat.com>
-Cc: Robin van der Gracht <robin@protonic.nl>,
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
- Urs Thuermann <urs.thuermann@volkswagen.de>, Paolo Abeni
- <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
- linux-can@vger.kernel.org, Davide Caratti <dcaratti@redhat.com>
-References: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
- <20261020-funky-buffalo-of-progress-fa4bf9-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261020-funky-buffalo-of-progress-fa4bf9-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20261020-reliable-loris-of-typhoon-255038-mkl@pengutronix.de>
 
-
-
-On 20.10.26 17:50, Marc Kleine-Budde wrote:
-> On 04.09.2026 16:12:54, Filippo Storniolo wrote:
->> In the current state of the art, it is not possible for userspace to use
->> tool like ss(8) to query open AF_CAN sockets.
+On Tue, Oct 20, 2026 at 02:27:25PM +0200, Marc Kleine-Budde wrote:
+>On 19.10.2026 13:45:00, Jakub Kicinski wrote:
 >>
->> This patch series adds the netlink can_diag interface for AF_CAN. Userspace
->> is  now able to send a netlink request to request information about open
->> AF_CAN sockets that are retrieved by the can-diag.ko module.
->>
->> Patch 1 is a fix that is mandatory to the correct behaviour of the diag
->> module: the field sk_protocol is not assigned during `can_create()` instead
->> of being assigned only in case the CAN socket belong to the j1939 transport
->> protocol. This is needed to the correct filtering of the can diag module.
->>
->> Patch 2 introduces a list per network namespace containing open CAN sockets.
->> The list is protected by a mutex.
->> CAN sockets are added in `can_create()` to the list and removed from it
->> in the `release()` calls defined for each transport protocol.
->>
->> Patch 3 is the core patch that introduces the userspace structures to query
->> and receive netlink messages for CAN sockets and the actual CAN diag module.
->> The latter will use the userspace structures defined in <linux/can/diag.h>
->> to filter and retrieve open CAN sockets.
->>
->> In the current implementation, every CAN sockets in the list is
->> returned to the userspace, however a filtering could be implemented:
->> Userspace could possibly request only bound CAN sockets or CAN sockets
->> belonging to a specific transport protocol (raw, iso-tp, j1939, bcm)
->> and so on.
->>
->> An example of the output given by ss -cpe:
->>
->> Netid                     Recv-Q                 Send-Q                                 Local Address:Port                                   Peer Address:Port                 Process
->> CAN_ISOTP                 0                      0                                              vcan1:1110                                          vcan1:291                   uid:1001 ino:50324 sk:0 users:(("can2",pid=9210,fd=4))
->> CAN_ISOTP                 0                      0                                              vcan1:291                                           vcan1:1110                  uid:1001 ino:50323 sk:0 users:(("can2",pid=9210,fd=3))
+>> Sort of up to you, TBH. The AI loves to point this out,
+>> but I think the fact most Netlink families don't handle
+>> the inconsistency for 20 years almost proves that we're
+>> fine without it?
+>
+>Ok, I think we accept these, too. Filippo, can you update the patch
+>description with this information to make the bots happy.
+>
+>pw-bot: cr
+>
+>Can you fold in this patch that adds context-analysis (and removes not
+>needed "depends on CAN"). Compile with >= clang-23, see
+>Documentation/dev-tools/context-analysis.rst for details.
+>
+>Also pleae adjust the subject to always start with "can:".
+>
+>regards,
+>Marc
+>
 
-The fact that the inode number of the socket is visible fits great to 
-the upcoming CAN procfs output:
+Hi, thank you both for the feedback.
 
-https://lore.kernel.org/linux-can/20261018164417.1540449-8-mkl@pengutronix.de/
-
-But I'm not sure about "Local Address:Port" being "vcan1:1110".
-
-A CAN-ID together with a CAN interface is a unique "content address" to 
-identify the content which is in the CAN frames data.
-
-I assume "1110" to be the decimal representation of an 11 bit SFF CAN ID 
-0x456, right?
-
-Having a CAN ID in decimal representation is generally unusual - 
-especially in Linux. Additionally you can have 29 bit EFF CAN IDs which 
-does not fit into a 16 bit port value.
-
-And 29 bit IDs have to be marked as you can have the value 0x456 in 11 
-bit and 29 bit CAN IDs. We usually do this with 456 and 00000456 to 
-indicate 11/29 bit IDs.
-
-So the "Local Address:Port" output does not really fit to CAN here ...
+I'll soon send the v4 with the changes you suggested here and in the other
+threads.
 
 Best regards,
-Oliver
-> 
-> Nitpick: can you remove the most of the spaces from this output, so that
-> it fits better on the screen.
-> 
-> regards,
-> Marc
-> 
+Filippo
 
