@@ -1,96 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792504435;
-	b=lbTYJD/ke7YCre8nQQnpYS/GLVzwWdRhqjTk5nuM/ZTRgkkQ2ZiCLZvc1NU0Wzr+487C
-	 FoRbqbV6EyhJeZiyWueD9w7hHWUt8vwWps/641OYXAFa0p7ILfc/DdRULsk+PH0VugAt6
-	 /1G3Jb9MddeOePttRthgzYnwQJtAzT7XffssO+qOyPkXF7uiX6GnWRFgv7Psr/3hX64I/
-	 cAzdXlOL2p7B91WzAAqfnlUcPRFxo5Bu/93X1rixcHdGmV6FB68cFqFYq+2Wn6fH9/pr3
-	 VZMjRZ2eg6ETMNC+tzKhkHg2c8hQirDiD6KHs1i4RcRc2e+oaYEzuZLLZVKyZpGsZbg==
+	t=1792505827;
+	b=3AIBqu0HNM4hmJA+ph674mtX3MKb8vnN7VYC7tWc4RraQ+MvUuISsPMnB3XGV19841HH
+	 4DVWsHKtN7OxVXRZTpVlE1p5Xxf5OvUh0GEUMfxt1drbgICVZf2pfFuhP/x9ze0JxZo9Y
+	 9gwo7xsaov2iZUKTFkkCSAgJ7R7vYPNzr9YB+k+7T7MaS6BfwZ4hW0kxN0Mtv47e0C1TD
+	 9tWqRE/MGtV7CXE3AAyqagdRgObwLqZrnX+yqs3IBPepm3OZJz6DoaFMDeX5eqcrW9L6/
+	 A9kQQr+xRG3M6LylJGCUSTmCFKo3gcQ31FT1cUZds8opFAKXudPCwCgwfaK/mPCiErw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792504435;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To;
-	bh=F4S/z3wLn6j43Kaqn3bJJAq9gOmklL0Dy1KFsPWVhCQ=;
-	b=v3Nw80SGmOFHfk7VvBs/tLfiJDG5pl+XT1JFQJrMa0clCw+PIQ4P2ElqLfLl3fRC8/Bm
-	 XsIkHhd3Uns4AeJjn4jhUhZv2vIq+odI15cylcYzsTgOLpACy5nKaXVDEHyFrbfD2S5bB
-	 +bJ2ffnR06ny5roLbe4AfYmIPJ7JEMR1eI0kXSptIscnNoAZ1TSboIMs4HNH15PuTcPEH
-	 nc5WI/78Bb1ITUCbZlgLvS67LegxyD4PcStlviA8IFe2OeERWQOLvC9wH77vjpxlkwjPV
-	 Ols26QrZwLcqnLUDpeE8iqSHfEO3cdzCGMRLlAK465yXx4yXxFrCuUupRWJh3jNGACw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792505827;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=+fP5LZselHKKxJ1B5TkCcTWkgPio9liMTjr8xdAXZcQ=;
+	b=JQAr+CGddL24sh6HFRBVd/aYqwoYNK5hJuYJvAgTZlD+aevJu4/sNtYKtfxpK86z8N12
+	 zMV4DrGlHjRv1L3Trkk7rDkn13SQMLjSvBLgTlTEMl2FP/aDzDidWykKzYMTqlP5fscTN
+	 DA5a/LstMg3j6T2ZwaBdvBG7n8X0VVzHNiW6xxjIq3+bGwMZHAbLbiIySAunKAqpEvgxs
+	 iu3TmUFvCHJ4gUwj84YRE+1IEVeXyWsuZk9llsGnKhIebGw53g5v68sK3g2EMOdxN7yFJ
+	 0By4EfiJvHL49SpQMhUec5fix6Ab/r/3oD87jOsQY0sHvL/GrxwDs2+HzgCi7tLBWhw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b="DNI/c0Gl";
-	arc=none smtp.remote-ip=209.85.128.45
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Wb0k2EXQ;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADAAA606A327
-	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 13:53:54 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ADAAA606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8034E606AA13
+	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 14:17:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=DNI/c0Gl
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4a1fa22006cso3016665e9.1
-        for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 06:53:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792504433; x=1793109233; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=F4S/z3wLn6j43Kaqn3bJJAq9gOmklL0Dy1KFsPWVhCQ=;
-        b=DNI/c0Glu19KVbXdrcsZDBVHr/o1y1q7ftTjBHkscyJsr4xq1wT6ttvP4qz0Boqcha
-         ZH/mF1PJxNuvG1Y8GnpqjBvq1dSum/g6n+7gciaY1PYXG21EONxrGtcj7dMUTnv1dWgE
-         QLEmfb3MeaSfVRnUt1O2RwqyAmC/UI5+caKFEHj9PKiKjQ7J/M4meo/dZ9/QQ+MBD71l
-         4lXkr0O6shR14m3dDEjqtcsNfsJ6qY984Q8/6fKZ2boar+feHOdFlaSECZrsOCd1E+JS
-         Ly9307HnZCJ27m+OIHMt1NKv8IlYYdPvGKEUgsCWpFYLjQcyxQsKBdFf84lQRSvaLF+L
-         1Vnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792504433; x=1793109233;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=F4S/z3wLn6j43Kaqn3bJJAq9gOmklL0Dy1KFsPWVhCQ=;
-        b=UpsKbpP3U31YVueCzSxrywAhuE0WtsvhD9xfPMwgdN3iOGXBfAOzeASkPiKRuF8go0
-         oBqwi+F52ixcGQewpd0Bam/kugZmy5u7nOg32tuXPf0JJL/kvQBVo+ugQNt3AS273j63
-         g1lM0jhm+6GgYEyHjyjNHnqVjrRVGx9AcPwC2/5Q+mv3bFQ5amZzXRK10VQ2VLnGjBBy
-         p+QiDAQEDIpFxpb5YT+ExbLvlWTVoZTIe6Hc3otFZ/YiDhc5b976S0a0D6NQsqWJLH3k
-         Kk2nL/5YMgnLV8uHkRKXMTV+k8SlO4pZLgznAsVmIneb9AmOrjb2BvqwbGlMECR1ejL0
-         LTFg==
-X-Forwarded-Encrypted: i=1; AKwUvBz1/vE/jinxiUV3BV9enaT/vYAPFFXUpcE6oI0OVPL+9nKZPpXWtVMqqulCmCIrbrVZyIGCetWVbho=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIXFKs3Qd4Sex71VULLXGpVcTfFpl4BrL6elNawI9xwftw3aYHN
-	IuJvZM3WqQSUKirPyyFvi6Rqb8vhmYgSNeq5PyfvspzUIEUQdB0JNsY+
-X-Gm-Gg: AYBFou25g0n2vLJVFtZFZ+oC7LQzwAzB2RCyOa8yKk/BfFfd4w6WXgZdZBsSmWI5P3N
-	SQiFm2eFM49ftUP+i9rsIOSAYYfRdNgRYvIuwm1DRrHSB/IwUpeRMH5RSX6agaFi6UUmB/qgdzL
-	FkPngzNU9XxWQXyaiuQ1knYYv5zk95xgh+YK32U125i+ok5I9gZ4pAAP51fbp7/vhBGhIl5cEv3
-	XPmEqGzT5MCcMvUSkhjdK6iiNpZYbmg+fGHyVJIlTYdF6O8onEOEsRrTQ23/HXRBJ4dOTHkEppv
-	UByE2LHCtSYiausXt5Wcr3x6zG3OgEhH1uevDMJ3FNUve0ECcjS/R5/2C7hF23bgzZU3iGAAoiS
-	GmUW9swR/h2csosCiSX7tkhxXmbaZTqC8R2aOoHMufvBmUbn6XYcmO6oWEGYkCuTX1wUA/Js6DK
-	2x5X1AR0QQpjj68y37fCsd6VvVZRH1JT9GABWq9NKH5abn+zcfGL7Q9m+AYFn0wR7hvlJfvMlY6
-	dXw3A==
-X-Received: by 2002:a05:600c:4e0d:b0:4a1:e7ce:107b with SMTP id 5b1f17b1804b1-4a1e7ce1570mr128096285e9.2.1792504432871;
-        Tue, 20 Oct 2026 06:53:52 -0700 (PDT)
-Received: from localhost ([2c0f:3d00:6be:8900:ce5e:9212:ea4b:f30])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1f2cb6d82sm68132705e9.5.2026.10.20.06.53.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2026 06:53:52 -0700 (PDT)
-Date: Tue, 20 Oct 2026 16:53:48 +0300
-From: Dan Carpenter <error27@gmail.com>
-To: s.grosjean@peak-system.fr
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Wolfgang Grandegger <wg@grandegger.com>, linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Stefan =?iso-8859-1?Q?G=FCnther?= <stefangun@pm.me>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v5 00/10] can: peak_usb: fixes, cleanup and input
- validation hardening
-Message-ID: <atdybEUQ9EUdZ9A4@stanley.mountain>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Wb0k2EXQ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A98701F000C4;
+	Tue, 20 Oct 2026 14:17:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792505826;
+	bh=+fP5LZselHKKxJ1B5TkCcTWkgPio9liMTjr8xdAXZcQ=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Wb0k2EXQzlJWOL2bskrPViYy5sjQegebTOYpp3eS/eRax9ov9jAm8CPEp+uM8vL0E
+	 4UpZGbrLG3RXY6dPPoejX1uTxU3hHzCzCvfxZWULXWhv+KL5oGG5fLVO+8ZWCZrHRj
+	 LeRkNN/G+SyJLVaOLZK0gwHWqGUeg2j3F/rLLBMmrE1MV0oHdOFIejas9CnBMIHHfB
+	 +8hgao2iU5LiCTNSBeyrHz48EJru3P7S5xMidUJacl2Q8wnS7baNND9VstdRfi/1wC
+	 FwOVMgNg4PUcUcvRft1T2W2e9HiC83PKV+WTRmhRAG+pJGncc1EDLfsCpwDJuPtjGO
+	 9fF1/h16RkLUg==
+Message-ID: <sashiko-outbox-179109@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v5 06/10] can: peak_usb: harden channel handling in
+ PCAN-USB FD
+Reply-To: sashiko-reviews@lists.linux.dev
+To: =?utf-8?b?U3TDqXBoYW5lIEdyb3NqZWFu?= <s.grosjean@peak-system.fr>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261020-canfd_check_channel_idx-v5-6-a62b35b867f0@peak-system.fr>
 References: <20261020-canfd_check_channel_idx-v5-0-a62b35b867f0@peak-system.fr>
+ <20261020-canfd_check_channel_idx-v5-6-a62b35b867f0@peak-system.fr>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 20 Oct 2026 14:17:05 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,14 +62,149 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20261020-canfd_check_channel_idx-v5-0-a62b35b867f0@peak-system.fr>
 
-Could you please slow down.  Only resend once per day.  Otherwise it's
-a bit like involuntary pair programming for people who are on the list.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [High] can: peak_usb: race and livelock between peak_usb_ndo_open() and p=
+eak_usb_stop_rx()
+--
 
-regards,
-dan carpenter
+commit a785087e84d7ed9d274560d9a3d814cad1b1ffde
+Author: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
 
+can: peak_usb: harden channel handling in PCAN-USB FD
+
+This patch validates the CAN channel number reported in PCAN-USB FD
+firmware messages against the adapter's controller count and checks for
+NULL device slots. It also stops RX URBs on sibling channels when probe
+fails or during disconnect before freeing or unregistering devices.
+
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/c=
+an/usb/peak_usb/pcan_usb_core.c
+> index a1b17e1e6fea6..4c08656e77681 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> @@ -574,6 +574,9 @@ static int peak_usb_ndo_open(struct net_device *netde=
+v)
+>  	struct peak_usb_device *dev =3D netdev_priv(netdev);
+>  	int err;
+> =20
+> +	if (!test_bit(PCAN_USB_STATE_CONNECTED, &dev->state))
+> +		return -ENODEV;
+> +
+>  	/* common open */
+>  	err =3D open_candev(netdev);
+>  	if (err)
+> @@ -904,6 +907,22 @@ int pcan_get_ts_info(struct net_device *dev, struct =
+kernel_ethtool_ts_info *info
+>  	return 0;
+>  }
+> =20
+> +/*
+> + * stop RX on dev and on all its previous siblings: clearing CONNECTED m=
+akes
+> + * peak_usb_ndo_open() fail, then poisoning the RX anchors waits for run=
+ning
+> + * completion handlers and makes any later submission on them fail.
+> + */
+> +static void peak_usb_stop_rx(struct peak_usb_device *dev)
+> +{
+> +	struct peak_usb_device *d;
+> +
+> +	for (d =3D dev; d; d =3D d->prev_siblings)
+> +		clear_bit(PCAN_USB_STATE_CONNECTED, &d->state);
+> +
+> +	for (d =3D dev; d; d =3D d->prev_siblings)
+> +		usb_poison_anchored_urbs(&d->rx_submitted);
+> +}
+
+[Severity: High]
+Can peak_usb_stop_rx() race with a concurrent peak_usb_ndo_open() and
+trigger a livelock in usb_poison_anchored_urbs() or leave the device open
+with all RX URBs killed?
+
+peak_usb_ndo_open() runs under rtnl_lock, whereas peak_usb_stop_rx() is
+called from peak_usb_disconnect() and the peak_usb_create_dev() error path
+without holding rtnl_lock. If peak_usb_ndo_open() passes the
+PCAN_USB_STATE_CONNECTED check before peak_usb_stop_rx() clears the bit,
+peak_usb_ndo_open() proceeds into peak_usb_start():
+
+drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_start() {
+    ...
+		usb_anchor_urb(urb, &dev->rx_submitted);
+
+		err =3D usb_submit_urb(urb, GFP_KERNEL);
+		if (err) {
+			if (err =3D=3D -ENODEV)
+				netif_device_detach(dev->netdev);
+
+			usb_unanchor_urb(urb);
+			usb_free_urb(urb);
+			break;
+		}
+    ...
+}
+
+In peak_usb_start(), each newly allocated RX URB is anchored to
+dev->rx_submitted before usb_submit_urb() is called (and remains anchored
+with use_count =3D=3D 0 until usb_unanchor_urb() if submission fails). If
+peak_usb_stop_rx() calls usb_poison_anchored_urbs(&d->rx_submitted) during
+that window:
+
+drivers/usb/core/urb.c:usb_poison_anchored_urbs() {
+	do {
+		spin_lock_irq(&anchor->lock);
+		anchor->poisoned =3D 1;
+		while (!list_empty(&anchor->urb_list)) {
+			victim =3D list_entry(anchor->urb_list.prev,
+					    struct urb, anchor_list);
+			/* make sure the URB isn't freed before we kill it */
+			usb_get_urb(victim);
+			spin_unlock_irq(&anchor->lock);
+			/* this will unanchor the URB */
+			usb_poison_urb(victim);
+			usb_put_urb(victim);
+			spin_lock_irq(&anchor->lock);
+		}
+		surely_empty =3D usb_anchor_check_wakeup(anchor);
+
+		spin_unlock_irq(&anchor->lock);
+		cpu_relax();
+	} while (!surely_empty);
+}
+
+Because the unsubmitted URB has urb->ep =3D=3D NULL and urb->use_count =3D=
+=3D 0,
+usb_poison_urb() returns immediately without sleeping or unanchoring it, so
+usb_poison_anchored_urbs() spins in the inner while loop without yielding.
+If peak_usb_stop_rx() preempted peak_usb_start() on the same CPU, could
+this cause a soft lockup?
+
+Also, if peak_usb_start() submits at least one RX URB (i >=3D 1) before
+peak_usb_stop_rx() poisons dev->rx_submitted, usb_poison_anchored_urbs()
+kills the already-submitted URB(s) and causes the next usb_submit_urb() to
+fail with -EPERM. Since peak_usb_start() only treats RX submission failure
+as fatal when i =3D=3D 0:
+
+drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_start() {
+    ...
+	if (i < PCAN_USB_MAX_RX_URBS) {
+		if (i =3D=3D 0) {
+			netdev_err(netdev, "couldn't setup any rx URB\n");
+			return err;
+		}
+
+		netdev_warn(netdev, "rx performance may be slow\n");
+	}
+    ...
+}
+
+and pcan_usb_fd_send_cmd() returns 0 once PCAN_USB_STATE_CONNECTED is
+cleared, wouldn't peak_usb_ndo_open() succeed with all RX URBs killed after
+teardown has begun?
+
+[ ... ]
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261020-canfd_chec=
+k_channel_idx-v5-0-a62b35b867f0@peak-system.fr?part=3D6
