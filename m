@@ -1,61 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.4
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=115.124.28.193
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792466574;
-	b=vgQCBdgZVRVa9Yb5+QzMoI0T+1ma9iVws/xOQotu4G/EuNQm3q071jee8u8kCpYSi5ef
-	 UGfaC8HC+VjPyc6bLdd/AQPXlIbVvY10sBtOSnhWBI5WkZRqDcaQNSKcFck0dsqS04Edm
-	 CLxn4PNdSSpKaDbXjyYm4A/KXXaUNHZcXLepYWOWqfF4+kq8m75UYq/LjROAOu869WZuU
-	 3lT7KZ2zZlLAVrUAKF8md+23ShPyD/NxDKElM6F5N3sFP0VpuvI7t6lrYZESpBpd/swNe
-	 wL9M/rWwwUi0T9GAByG0yBO3GJJoRr5LQAGuzBBUoV7d46Dw21ePU9mqhY6i++XUnUA==
+	t=1792483062;
+	b=nEY61gF21jtFFGRrCFT1rIvQ8l1lyysMVzh8R3lbw9nFyx3F8DOHtcGa2TFqlr8nvW6z
+	 9Z6Jf8PgNa8gnJzyBBEsDOCuDnzI6mgIXHw3tAwUNk5kmHEvVDoYWsYjFB3jvKEfv4Qnk
+	 bLMLJpWqMTQOt6ypw/K5yy5HfSUi02LdPAjTjusZdcwRMH6J9DcGLyYIsAI8zyVU32+tl
+	 I0OBBDXR/xoRN5nEOxxuONztEjRoJkgCsFwgq/B5NInAQzVAIauRcydvouUXndLh2/vWA
+	 W2LDiT53CILo+ny4JbuN6VPXX2gVQBg9xh5e+k4yVycpKP1VZ/zi/C8FR/RVfnl0JUw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792466574;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
-	bh=/uRS3Vea5xa2usxGVceBMi/4OQCMX3rft1XIK4h03p4=;
-	b=Ju54g+u8Fjhpaqjss0Ie4//sOTXv/s1PMvKQEQyiO0oGdhrCU1yW/LQoQEec8+tQ7gVN
-	 /4PuGyviv9LIZ71MyXOO4pThaIIQUegZari/pYtq/WPt3jNLYLatnE70VkYKnjI7+myk2
-	 3k+ej2pT3C4UCBuz/NMzLjD4XQEzHUko9VWJJWN4GAeIarWXcPmLPqum/a709d+BaaXzB
-	 Vq4+ShIKwAB2m07ibOCmfXM8DniXFyt/h7wpvKgItrT4Hexiu+VokbyPf4oDMuMV7tOn5
-	 JV/lf+o8jRkngsz5+BYuk2vTlOTkyVvpNcWrwu9PGtFQyMkwR8rAIBQgWIwJin8UYuA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792483062;
+	h=DMARC-Filter:DKIM-Signature:X-Alimail-AntiSpam:Received:From:To:Cc:
+	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=TSMUNBIMLq6k47P6585PC+8d39w6JNFD5duvSGlLkG4=;
+	b=MC4n0+3p/yXOF5LizYlt0rjuHGITe/jt3guRNnu2/JPK9OvD8lF3gc/qDYv2I+3fcdk9
+	 f/PXIJEnueUUWpjdnwv6Tbz/L8NsvLaadQqhH/O9/7Bd7tkbDVtB+bPClCxfVG0+swrF/
+	 VPjuPCqXmb5JCkOoZgD6OedSVmhWTKOEzdCaJBmHVirEXONaHeW0H4+HME5azfIG5/Sm9
+	 cMG5I0DrQd3aQ18POeBSJ9pv3T6hNrmxw8C+I29silUaZs6Ee+R1bcExdXOXOkMH7V37g
+	 ke7leLepqL74AXVCkdU1tQmRyIHAdhcz8e4fLMfNKpH0j0ECgMzVfIFm7jtVzFkLRwg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=163.com;
-	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=FZgC5hh5;
-	arc=none smtp.remote-ip=117.135.210.4
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
+	dmarc=none header.from=yinhe.ht;
+	spf=pass smtp.mailfrom=yinhe.ht;
+	dkim=pass header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=Mbo+9Vgj;
+	arc=none smtp.remote-ip=115.124.28.193
+Received: from out28-193.mail.aliyun.com (out28-193.mail.aliyun.com [115.124.28.193])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAE4606A319;
-	Tue, 20 Oct 2026 03:22:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EDAE4606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D007E606A322;
+	Tue, 20 Oct 2026 07:57:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D007E606A322
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yinhe.ht
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=FZgC5hh5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=/u
-	RS3Vea5xa2usxGVceBMi/4OQCMX3rft1XIK4h03p4=; b=FZgC5hh5WpEjpYVlTc
-	Ej/Z4Dm4L3RnmZ4KNhv9Z9UfkMMlTxcZ1eY7SrCHzJ7rsxc2uxoaUD9WtfMS92Nu
-	TxHdP1FTnDmBO/6AhkRthXlX7fweLIi/WFb/Jn5uJyoPsGvBvxBOKCv03QhctReW
-	Hq2eStyiLFK24CrYlxodW/1OQ=
-Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wD3n1Br3tZq_fh2BQ--.18789S2;
-	Tue, 20 Oct 2026 11:22:21 +0800 (CST)
-From: Chaosheng Qu <quchaosheng000406@163.com>
-To: quchaosheng000406@163.com,
-	Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
+	dkim=pass (2048-bit key, unprotected) header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=Mbo+9Vgj
+DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=yinhe.ht; s=default;
+	t=1792483051; h=From:To:Subject:Date:Message-ID:MIME-Version;
+	bh=TSMUNBIMLq6k47P6585PC+8d39w6JNFD5duvSGlLkG4=;
+	b=Mbo+9VgjcoaLP4hHnqsAykr40B9qmT9q2NUWY67g8LXl0etDOWx1mT4PeCEV1rnBZ8CN8Slp4PyfWUXT4kdT/GU8htxsLuRFAXvK/Q95mQFveT8V4Z9hJWvvGcRP9N5d/L1vNdOy041DBTe1O0Kj7yRPz1Es9znQhkDRa5C05hlSTKhOWhMGYdA4qrcWF2nWY9TxRp6/UF25w/ZyIWiCJUtoESKLhzwatfHyXgA4NgunVlSqmt6Fl3AvWigWaniFC2Sv32boeo5R/UOlb4LCwvExHNjAmYxrTvTJuT75ZoJnQ5FBE83kFF+3WCbnKmt01o8mzZxgK6XHoW5beVWnng==
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07436621|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.0248096-0.00467838-0.970512;FP=594139034435604405|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam011083032240;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DS;RN=10;RT=10;SR=0;TI=SMTPD_---.jlc4-op_1792483049;
+Received: from galx..(mailfrom:chunyuzhiqiang@yinhe.ht fp:SMTPD_---.jlc4-op_1792483049 cluster:ay29)
+          by smtp.aliyun-inc.com;
+          Tue, 20 Oct 2026 15:57:30 +0800
+From: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+To: netdev-bot+sinfo@kernel.org
+Cc: netdev@vger.kernel.org,
 	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Sashiko <sashiko-bot@kernel.org>
-Subject: [PATCH net v5] can: j1939: validate the EDPO packet number
-Date: Tue, 20 Oct 2026 11:22:19 +0800
-Message-ID: <20261020032219.80117-1-quchaosheng000406@163.com>
-X-Mailer: git-send-email 2.43.0
+	mkl@pengutronix.de,
+	kernel@pengutronix.de,
+	haibo.chen@oss.nxp.com,
+	shawnguo@kernel.org,
+	imx@lists.linux.dev,
+	stable@vger.kernel.org,
+	ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+Subject: [PATCH v5] can: dev: can_fill_info(): don't wake up controller if interface is down
+Date: Tue, 20 Oct 2026 15:53:40 +0800
+Message-ID: <20261020075340.417899-1-chunyuzhiqiang@yinhe.ht>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20261018101744.93657-1-chunyuzhiqiang@yinhe.ht>
+References: <20261018101744.93657-1-chunyuzhiqiang@yinhe.ht>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -66,188 +69,99 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3n1Br3tZq_fh2BQ--.18789S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxtr1UurWrCFWrAr17KryUWrg_yoW3WF47pF
-	W3KryUGryDJr4xAr4xJrWDX34Syws3XryrJFy7t3s2k3y5AF45tFn8tryfWayqy3s5u3y3
-	u3Z8Xan8Gr40g37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pR_MaUUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4w8jmGrW3m-nwAAA39
 
-ETP.CM_DPO is peer controlled and its packet number is accepted without
-any validation.  It names the packet a transmission window starts at, and
-j1939_xtp_rx_dat_one() places incoming data at "dat[0] - 1 + pkt.dpo", so
-a value past the end of the message moves pkt.dpo beyond the reassembled
-buffer.
+If the interface is down, the CAN controller might be powered down, the
+clock disabled, and/or its external reset asserted.
 
-The transfer can still complete in that case.  With pkt.dpo == pkt.total,
-a closing ETP.DT frame with dat[0] == 0 evaluates to packet pkt.total - 1,
-which is the last in-order packet, so pkt.rx reaches pkt.total and the
-receiver emits its own EOMA.  The local loopback of that EOMA runs
-j1939_session_completed(), which asks j1939_session_skb_get() for offset
-"pkt.dpo * 7".  That offset is past the end of the queued skb, so the
-lookup returns NULL.  Before this patch the NULL was passed to
-j1939_sk_recv(), which dereferenced oskb->sk.
+Don't call do_get_berr_counter() or do_get_auto_tdcv() to read the CAN
+controller if the interface is down. This fixes a generic logic problem
+that exists on all platforms.
 
-  ETP.CM_RTS (size 1786)  -> total = 256 packets
-  ETP.CM_DPO (packet 0)
-  ETP.DT seq 1..255       -> packets 0..254, pkt.rx = 255
-  ETP.CM_DPO (packet 256) -> pkt.dpo = 256, unvalidated
-  ETP.DT seq 0            -> packet 255 == pkt.rx, completes the transfer
+As a result, IFLA_CAN_BERR_COUNTER and IFLA_CAN_TDC are no longer
+reported for down interfaces. This is intentional: the counters are not
+meaningful in that state, and calling into the driver can wake a
+runtime-suspended controller or touch registers whose clocks are gated.
 
-Reject an EDPO that names a packet at or past pkt.total and abort the
-session with J1939_XTP_ABORT_BAD_EDPO_OFFSET, the SAE J1939-21 abort code
-for this case.  The check has to be ">=" and not ">": pkt.total is a
-packet count, so the last valid packet is pkt.total - 1.
-
-The EDPO is also looped back to the transmitter session.  A peer can make
-that role see an out-of-range EDPO too by putting an oversized packet
-number in ETP.CM_CTS: j1939_xtp_rx_cts_one() only rejects packet 0, and
-stores "packet - 1" in pkt.tx_acked without comparing it to pkt.total.
-j1939_session_tx_dpo() then copies pkt.tx_acked into the EDPO.  Rejecting
-the looped-back EDPO aborts the transmission instead of letting it run
-with an offset that cannot be encoded.  Validating ETP.CM_CTS is a
-separate change.
-
-The abort branch must not strand a session that is already waiting for
-an abort.  j1939_session_cancel() re-arms the abort timer only while the
-state is below J1939_SESSION_WAITING_ABORT.  On a second out-of-range
-EDPO the first call has already moved the session to that state, so
-j1939_session_timers_cancel() removes the pending timer and the second
-j1939_session_cancel() does nothing.  Make j1939_session_cancel() report
-whether it started the abort, and force-deactivate the receiver when it
-did not.  This is the same recovery used by the second-RTS path.
-
-Guard j1939_session_completed() against a NULL skb as defense in depth,
-so a future regression in the offset arithmetic degrades to a dropped
-message instead of a kernel panic.
-
-Tested on v7.3.0-rc5 under QEMU, with the reproducer below:
-
-  - an unpatched kernel panics in j1939_sk_recv()
-  - the guard alone does not fix the bug: it drops the message but the
-    transfer still completes, so it is not the fix for the bad offset
-  - the range check alone survives the single-EDPO reproducer
-  - two out-of-range EDPOs followed by two RTS frames leave the receiving
-    session deactivated; no netdev reference remains stuck
-  - a full 1786 byte ETP transfer between two J1939 sockets still
-    completes with the payload intact.  Its last EDPO announces
-    pkt.total - 1, one below the rejected boundary, and exercises both
-    the receiver and the transmitter loopback
-
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutronix.de?part=3
-Assisted-by: LLM
-Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
+Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
+Cc: stable@vger.kernel.org
+Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
 ---
 v5:
- - Make j1939_session_cancel() report whether it armed the abort timer.
-   A second out-of-range EDPO now force-deactivates a receiver that is
-   already waiting for an abort instead of leaving it without a timer.
- - Drop the claim that the range check and the NULL guard are both
-   required for the original reproducer.  Both survive that sequence;
-   the guard is defense in depth, while the range check is the fix for
-   the bad offset.
- - Drop the incorrect "one full packet past the end" description.  The
-   offset starts six bytes past a 1786 byte reassembly skb.
- - Correct the transmitter-role statement.  An oversized ETP.CM_CTS can
-   make the looped-back EDPO out of range, because the CTS path does not
-   validate its packet number against pkt.total.
- - Add the Fixes tag.
- net/can/j1939/transport.c | 46 ++++++++++++++++++++++++++++++++++-----
- 1 file changed, 41 insertions(+), 5 deletions(-)
+ - Gate can_tdc_fill_info() on netif_running() for IFLA_CAN_TDC, as
+   requested by Marc Kleine-Budde. This branch has no IFLA_CAN_XL_TDC
+   definition or call path at all.
+ - Keep the TDC part of can_get_size() consistent with can_fill_info(),
+   without hiding the non-TDC data bittiming attributes.
+ - Document that IFLA_CAN_BERR_COUNTER is no longer reported for down
+   interfaces, and explain why this is acceptable for stable.
+ - Clarify the Fixes: rationale.
+---
+ drivers/net/can/dev/netlink.c | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f..8e171b713859 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1158,13 +1158,16 @@ static void __j1939_session_cancel(struct j1939_session *session,
- 		j1939_sk_send_loop_abort(session->sk, session->err);
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 6f83b87d54fc..66b37257b76b 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -548,8 +548,9 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+ 	return size;
  }
  
--static void j1939_session_cancel(struct j1939_session *session,
-+static bool j1939_session_cancel(struct j1939_session *session,
- 				 enum j1939_xtp_abort err)
+-static size_t can_data_bittiming_get_size(struct data_bittiming_params *dbt_params,
+-					  u32 tdc_flags)
++static size_t
++can_data_bittiming_get_size(struct data_bittiming_params *dbt_params,
++			    u32 tdc_flags, bool tdc_if_running)
  {
-+	bool active = false;
-+
- 	j1939_session_list_lock(session->priv);
+ 	size_t size = 0;
  
- 	if (session->state >= J1939_SESSION_ACTIVE &&
- 	    session->state < J1939_SESSION_WAITING_ABORT) {
-+		active = true;
- 		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
- 		__j1939_session_cancel(session, err);
- 	}
-@@ -1173,6 +1176,8 @@ static void j1939_session_cancel(struct j1939_session *session,
+@@ -560,7 +561,8 @@ static size_t can_data_bittiming_get_size(struct data_bittiming_params *dbt_para
+ 	if (dbt_params->data_bitrate_const)		/* IFLA_CAN_DATA_BITRATE_CONST */
+ 		size += nla_total_size(sizeof(*dbt_params->data_bitrate_const) *
+ 				       dbt_params->data_bitrate_const_cnt);
+-	size += can_tdc_get_size(dbt_params, tdc_flags);/* IFLA_CAN_TDC */
++	if (tdc_if_running)
++		size += can_tdc_get_size(dbt_params, tdc_flags);/* IFLA_CAN_TDC */
  
- 	if (!session->sk)
- 		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-+
-+	return active;
+ 	return size;
  }
+@@ -584,7 +586,7 @@ static size_t can_get_size(const struct net_device *dev)
+ 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_STATE */
+ 	size += nla_total_size(sizeof(struct can_ctrlmode));	/* IFLA_CAN_CTRLMODE */
+ 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_RESTART_MS */
+-	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
++	if (priv->do_get_berr_counter && netif_running(dev))	/* IFLA_CAN_BERR_COUNTER */
+ 		size += nla_total_size(sizeof(struct can_berr_counter));
+ 	if (priv->termination_const) {
+ 		size += nla_total_size(sizeof(priv->termination));		/* IFLA_CAN_TERMINATION */
+@@ -598,7 +600,8 @@ static size_t can_get_size(const struct net_device *dev)
+ 	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
  
- static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
-@@ -1243,9 +1248,18 @@ static void j1939_session_completed(struct j1939_session *session)
+ 	size += can_data_bittiming_get_size(&priv->fd,
+-					    priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
++					    priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK,
++					    netif_running(dev));
  
- 	if (!session->transmission) {
- 		se_skb = j1939_session_skb_get(session);
--		/* distribute among j1939 receivers */
--		j1939_sk_recv(session->priv, se_skb);
--		consume_skb(se_skb);
-+
-+		/* The offset "pkt.dpo * 7" is not necessarily covered by a
-+		 * queued skb, e.g. when a peer names a packet past the end of
-+		 * the message in an EDPO.  j1939_simple_txnext() already
-+		 * guards its call the same way; dropping the message is
-+		 * better than handing a NULL skb to j1939_sk_recv().
-+		 */
-+		if (se_skb) {
-+			/* distribute among j1939 receivers */
-+			j1939_sk_recv(session->priv, se_skb);
-+			consume_skb(se_skb);
-+		}
- 	}
+ 	return size;
+ }
+@@ -735,7 +738,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
+ 	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
  
- 	j1939_session_deactivate_activate_next(session);
-@@ -1823,14 +1837,36 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
- 				 struct sk_buff *skb)
- {
- 	const u8 *dat = skb->data;
-+	unsigned int dpo;
+-	    (priv->do_get_berr_counter &&
++	    (priv->do_get_berr_counter && netif_running(dev) &&
+ 	     !priv->do_get_berr_counter(dev, &bec) &&
+ 	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
  
- 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
- 		return;
+@@ -764,7 +767,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+ 		     sizeof(priv->bitrate_max),
+ 		     &priv->bitrate_max)) ||
  
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+-	    can_tdc_fill_info(skb, dev, IFLA_CAN_TDC) ||
++	    (netif_running(dev) && can_tdc_fill_info(skb, dev, IFLA_CAN_TDC)) ||
  
-+	dpo = j1939_etp_ctl_to_packet(dat);
-+
-+	/*
-+	 * EDPO is peer controlled.  It names the packet the announced window
-+	 * starts at, and j1939_xtp_rx_dat_one() places data at
-+	 * "dat[0] - 1 + pkt.dpo", so it has to stay inside the message.  A
-+	 * value past the end moves pkt.dpo beyond the reassembled buffer and
-+	 * makes the ETP completion path look up offset "pkt.dpo * 7", which is
-+	 * no longer covered by any queued skb.
-+	 */
-+	if (dpo >= session->pkt.total) {
-+		netdev_warn(session->priv->ndev,
-+			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
-+			    __func__, session, dpo, session->pkt.total);
-+		j1939_session_timers_cancel(session);
-+		if (!j1939_session_cancel(session,
-+					  J1939_XTP_ABORT_BAD_EDPO_OFFSET))
-+			j1939_session_deactivate_activate_next(session);
-+		return;
-+	}
-+
- 	/* transmitted without problems */
--	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
-+	session->pkt.dpo = dpo;
- 	session->last_cmd = dat[0];
- 	j1939_tp_set_rxtimeout(session, 750);
- 
+ 	    can_ctrlmode_ext_fill_info(skb, priv)
+ 	    )
 -- 
-2.43.0
+2.47.3
 
