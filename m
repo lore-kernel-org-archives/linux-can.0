@@ -1,101 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792484471;
-	b=gh9iCxdNS5lP4oW5X9Dt8tnRCT+ADxQLtaNniYga6j47uf9yJzc0UiCTOc7s1K2zI51W
-	 jwiHNnYYjC+fOP8n8hzdKOuU86UuEeKjaTZU8e+KQGzxbsDl5A8WS3MIn+ZcF/XpzjpAp
-	 oIxNc40pXBhOUNuat4uzYNmCIh6FNN1hNaJBkY0bDLVCkP6m8fXWlE/TgitZcreBGMYKl
-	 LhRRKyESQuyBwCWMIffnr8SAhh2DQ2cQvZNBmsb+6GDF0z7Z6KgQrnz1blXYaJkmBszfY
-	 /MZgjea7/1bU58sqB2Rz31eWzb2Inr8tJrugv0+zUq55BdQPNxwJ82aiNubz0NHJkHg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792484471;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=Xw9S0WSiL/aIA7HCNO3ve67hb2njoysBpfIt6SzbMo4=;
-	b=N+ja2UX2Qfkopzg8naabksgauinWfR2OPi31MZ8OAGrYpObkKSZGNwX7LbucnCTcu0sD
-	 9lkNKMjp4/kwS7ImQsE9iERqK0w0urrfk39C8aSU59D0AElusLAlFJQWtdbEguAPeiX5a
-	 k+YG3LMsQn5F4Xwi5IP4+iMnHAvLJJSJ80vaKUSDFQ6uGN6OxQ2AfkYjbhQKtUiDZUY4K
-	 wvxDUW5LQl+XEaH+A5ZAopcgg/zmzjCdRr/B7eGoKZfkf1yEgyCW+KazxIHdSgfDbaWCI
-	 F85KhnLThyPw872furnUAfUqScKaDDlWAUbHwLF5SB21KECt6odEfzEYZGbDIor4k4w==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aIkBYOxE;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792484477;
+	b=r0PUugh3TWxObfsgzxum4rYFcXgBdb0mzyHDxHNNm0MzTODkvnpamB6XibRLx6iY+wK4
+	 gas0myJlWPsya+s0VQo42z0gIqXiqt2UPI4SGGAeELhn7eNIHc8Y0vhtEmrrPrmLEktkp
+	 Fve7Dgar2WA1qnnfPgHd7HIAvLmu1m6LujLgWesTtZwr7PovuXKk73YfgczZYkbjd9/PB
+	 9wm4BantSCovPklwWcDFRJriOJIv0IzJyJHEoqRKh/adfDNVl07njy4v+Zhvqi0obZ6/E
+	 VGyOuGPri0H2BwdJ2qHx7QTVpKzqIOOTM8CDwPsFmp7j7yxmeTFf9POn0KW5vktV+Hw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792484477;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=GOiYOwDTMLuI377qcDRM3BT7G1PIxpU75EHZh9LEOHc=;
+	b=lUP0TugBmOiU9u4hq2fwtS0IKqT/cQycTGQ590Q/WL1pAhEsGvZ+BHDIWRhB+zlFv3aV
+	 okdlqfXyIhq2dWPYHOqh7CtH0sAfj7JxTgDWvN4PvGB6lsrglJAK/IiZ3AnvXugEGE8e4
+	 gBLu12Jmu69/fVCufaGmaPXt6B6Q8DCxyCv4vks0em/A75fiFVuKCPBO9onQRmWK3GZvY
+	 VilqtU3stALK6MnGrDXPmR67ayNdnYCjYYQwIGBN0HhBp17Hoevt58fiGQ9C+SbQpuzpN
+	 3RZNE4VWQTdaqRoOlRUnerfSVBzVwCi3ab1WuK81akCdPWtCVLNcmm9W2OT01lmSpmA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hmQVj9D2;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BC59606A31B;
-	Tue, 20 Oct 2026 08:21:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9BC59606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2458E606A31E
+	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 08:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aIkBYOxE
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E2EA5200582;
-	Tue, 20 Oct 2026 10:21:07 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792484467;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xw9S0WSiL/aIA7HCNO3ve67hb2njoysBpfIt6SzbMo4=;
-	b=aIkBYOxEEZf96VE6uu/R90F+1clZ6IR53CDTCJBOTH/JR6rXcr1uq7X8jjMELkxwnANcyY
-	izD86ur4siPj5MEEWpk1gzJJSXi/2Wnjkq3kWxcM6vqq+vgV2DWkiGaz1mUAxxcOQ36/0m
-	H8KozNNrz9SsX9nnbq5mrDtnYEXywsrA8ynNpj0GWthX/Qhk+e4iU4pmwJHmTAFZ9Z2j8I
-	KpuJ+VzKpCRVjpRaLWYrLXyUklv4nKgLaJIAthIwk3Vz/jmQr3G7QiRjA4SyyUieiAJQJ2
-	b88vOQbwZvWXMypIcpoR4aygiuIkYgFiDzFjU6J3IWGBhoZZEqoGwJtNr60Kvg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792484467; a=rsa-sha256;
-	cv=none;
-	b=bso4HCbQAX7LdTw1Vhc7HFrux4PWiU6ZqXwEByP0ZFqKkHBUDwB59op/kwMOBvtx6Nl0Kb
-	EW+iDAUIUUYG4z2ZYbh7q0w1hDHc47iF3MJ1crlq7HM3Z0yw8549uHJfGCpQ3qmyA3yDFC
-	n5fzIszd6GPUb3tRvYZcBXcY5UpiNL8uIxIDdkNKWwXIJMJM/e98DxJVGD9Sz+z0moq3LQ
-	GneaALmhRY0/gIeqi6jFAF8S/ox3Vv71ArOgHbDVrwE2jyKWB8zmSDhprJAyR2CE60gIVc
-	NnFFgzldmHITbpWfMqRHP38G3VTWfcfQ1C8WI5fj+BG7GlmXhiJ1VCgXuRKFqQ==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792484467;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Xw9S0WSiL/aIA7HCNO3ve67hb2njoysBpfIt6SzbMo4=;
-	b=GFw7uJLzSle6rK0CBZ2Kia/il/JTKnr1+1kf+h7FonCqZdMo6A66WZiHRh+9HAoLx6BXrY
-	v0YWeSJc6Q0aEmaa05WKYmNO/3DUGh06Nn5VjDKwbOwOoDA2FZIOEOOkfj7jbcjNKTPCBR
-	iR8P7+SYEgIHAyFi7Q4E4qV+vmLzNyxaSLuFG/bQuBMntKmkHbK1G6ax62Uaqa/aH8io5j
-	mwc/hKQxfL0xSthn/oxq2Enh0+KPqDC0Gkwo1Mt4QN+A53rQ6ZmhxlBMh6AKEXjxmkc9Ut
-	9yofmWAFS+przCbWhGrXvTVf4xjMKHDoklnfsMh65Jhdjc46ayAyVwyFwS+TUw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xJ55n-000LNA-2b;
-	Tue, 20 Oct 2026 10:21:07 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7748B5C9CDE;
-	Tue, 20 Oct 2026 08:21:07 +0000 (UTC)
-Date: Tue, 20 Oct 2026 10:21:07 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Krzysztof Kozlowski <krzk@kernel.org>
-Cc: Biju <biju.das.au@gmail.com>, Vincent Mailhol <mailhol@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Magnus Damm <magnus.damm@gmail.com>, Biju Das <biju.das.jz@bp.renesas.com>, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, Chris Paterson <Chris.Paterson2@renesas.com>, 
-	Biju Das <biju.das@bp.renesas.com>, Prabhakar Mahadev Lad <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: Re: [PATCH v5 0/4] Add support for Renesas RZ/G3L CANFD
-Message-ID: <20261020-bold-wealthy-wyvern-891012-mkl@pengutronix.de>
-References: <20261019120220.166163-1-biju.das.jz@bp.renesas.com>
- <20261020-auburn-kangaroo-of-diversity-dbd8e6@quoll>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hmQVj9D2
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149021F000CD;
+	Tue, 20 Oct 2026 08:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792484476;
+	bh=GOiYOwDTMLuI377qcDRM3BT7G1PIxpU75EHZh9LEOHc=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=hmQVj9D21ZgE93W9Il8mktTAExd3Z3/2TZI/X5XghW15SZ0lr0+yImHUNyfJs1ESW
+	 xoxrwxx/D4cB9yYAUFEkiFC0WR6bIbpWRKcPQ3bTgsmKGwx1oGjGttZapvwH72zwWy
+	 2ICdvUlhcuDXv7T024BhrI5mIg8uHTESk7v9Me6PyKhLKCiNKf3kiZYOqUQGx80iKU
+	 D3RQS7pkwGRLFke7kVK+ysJJ25yEYmVdX7/M1pHKvn0E0wTaJN+RwSnFeeTGMxMpE5
+	 MCbS+3c44fu+fr5hoILvEaajRqkYfurCtKJTK0XeWOBNGHSttk444QaJc6sICshv9K
+	 Xb+duuENi7v7g==
+Message-ID: <sashiko-outbox-178529@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net v5] can: j1939: validate the EDPO packet number
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Chaosheng Qu" <quchaosheng000406@163.com>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261020025036.74454-1-quchaosheng000406@163.com>
+References: <20261020025036.74454-1-quchaosheng000406@163.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Tue, 20 Oct 2026 08:21:15 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -104,70 +60,176 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bb3562xeknxs3abn"
-Content-Disposition: inline
-In-Reply-To: <20261020-auburn-kangaroo-of-diversity-dbd8e6@quoll>
 
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
+- [High] can: j1939: stranded session in j1939_xtp_rx_dat_one() after bad E=
+DPO
+- [Medium] can: j1939: aborted ETP session in j1939_xtp_rx_dpo_one() still =
+accepts data
+--
 
---bb3562xeknxs3abn
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v5 0/4] Add support for Renesas RZ/G3L CANFD
-MIME-Version: 1.0
+commit f0380724094c96563fb623cd857d2412a9cce46d
+Author: Chaosheng Qu <quchaosheng000406@163.com>
 
-On 20.10.2026 10:13:13, Krzysztof Kozlowski wrote:
-> On Mon, Oct 19, 2026 at 01:02:12PM +0100, Biju wrote:
-> > From: Biju Das <biju.das.jz@bp.renesas.com>
-> >
-> > Add support for Renesas RZ/G3L CANFD.
-> > The RZ/G3L CANFD IP has 3 channels and 11 interrupts compared to 2 chan=
-nels
-> > and 8 interrupts that of RZ/G3S. RZ/G3L has 288 buffers compared to 192
-> > buffers on RZ/G3S SoC.
-> >
-> > This patch series depend upon [1]
-> > [1] https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.=
-git/commit/?id=3D2b4a5055d517b11bf4a5671cef32e4d77bc45626
-> >
-> > v4->v5:
->
-> b4 diff '20261019120220.166163-1-biju.das.jz@bp.renesas.com'
-> Looking up 20261019120220.166163-1-biju.das.jz@bp.renesas.com
-> Checking for older revisions
-> Grabbing search results from lore.kernel.org
-> ---
-> Analyzing 5 messages in the thread
-> Could not find lower series to compare against.
->
-> I do not get why you keep making things difficult for review, but it's
-> your right. I'll skip the patch for some time.
+can: j1939: validate the EDPO packet number
 
-If you use b4 [1] for sending patches, you make things a lot easier for
-the reviewers (and yourself).
+This commit validates the packet number in ETP.CM_DPO (EDPO) against
+session->pkt.total and aborts the session if the offset is out of range.
+It also makes j1939_session_cancel() return whether the abort timer was
+armed and adds a NULL check in j1939_session_completed().
 
-regards,
-Marc
+Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutroni=
+x.de?part=3D3
 
-[1] https://b4.docs.kernel.org/en/latest/
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..8e171b7138594 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1158,13 +1158,16 @@ static void __j1939_session_cancel(struct j1939_s=
+ession *session,
+>  		j1939_sk_send_loop_abort(session->sk, session->err);
+>  }
+> =20
+> -static void j1939_session_cancel(struct j1939_session *session,
+> +static bool j1939_session_cancel(struct j1939_session *session,
+>  				 enum j1939_xtp_abort err)
+>  {
+> +	bool active =3D false;
+> +
+>  	j1939_session_list_lock(session->priv);
+> =20
+>  	if (session->state >=3D J1939_SESSION_ACTIVE &&
+>  	    session->state < J1939_SESSION_WAITING_ABORT) {
+> +		active =3D true;
+>  		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+>  		__j1939_session_cancel(session, err);
+>  	}
+> @@ -1173,6 +1176,8 @@ static void j1939_session_cancel(struct j1939_sessi=
+on *session,
+> =20
+>  	if (!session->sk)
+>  		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+> +
+> +	return active;
+>  }
+
+[ ... ]
+
+> @@ -1823,14 +1837,36 @@ static void j1939_xtp_rx_dpo_one(struct j1939_ses=
+sion *session,
+>  				 struct sk_buff *skb)
+>  {
+>  	const u8 *dat =3D skb->data;
+> +	unsigned int dpo;
+> =20
+>  	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+>  		return;
+> =20
+>  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+> =20
+> +	dpo =3D j1939_etp_ctl_to_packet(dat);
+> +
+> +	/*
+> +	 * EDPO is peer controlled.  It names the packet the announced window
+> +	 * starts at, and j1939_xtp_rx_dat_one() places data at
+> +	 * "dat[0] - 1 + pkt.dpo", so it has to stay inside the message.  A
+> +	 * value past the end moves pkt.dpo beyond the reassembled buffer and
+> +	 * makes the ETP completion path look up offset "pkt.dpo * 7", which is
+> +	 * no longer covered by any queued skb.
+> +	 */
+> +	if (dpo >=3D session->pkt.total) {
+> +		netdev_warn(session->priv->ndev,
+> +			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
+> +			    __func__, session, dpo, session->pkt.total);
+> +		j1939_session_timers_cancel(session);
+> +		if (!j1939_session_cancel(session,
+> +					  J1939_XTP_ABORT_BAD_EDPO_OFFSET))
+> +			j1939_session_deactivate_activate_next(session);
+> +		return;
+> +	}
+
+[Severity: High]
+Can an ETP.DT frame arriving right after a rejected ETP.CM_DPO strand the
+struct j1939_session and leak its net_device references?
+
+When the first out-of-range ETP.CM_DPO arrives on an active receiving ETP
+session from a non-local peer, j1939_xtp_rx_dpo_one() calls
+j1939_session_cancel(), which transitions session->state to
+J1939_SESSION_WAITING_ABORT, arms session->rxtimer for 500 ms, and returns
+true. The session remains on priv->active_session_list with session->last_c=
+md
+and session->pkt.dpo unchanged (and for a non-local peer SA, the echoed abo=
+rt
+frame has J1939_ECU_LOCAL_SRC set and J1939_ECU_LOCAL_DST unset, so
+j1939_tp_cmd_recv() does not deactivate the receiving session on loopback).
+
+In ETP, ETP.CM_DPO is immediately followed by ETP.DT data frames (such as in
+the 5-frame sequence in the commit description). When that ETP.DT frame
+arrives within 500 ms and fails validation in j1939_xtp_rx_dat_one() (for
+example, because session->last_cmd was not updated to J1939_ETP_CMD_DPO, or
+because dat[0] =3D=3D 0 with session->pkt.dpo =3D=3D 0 evaluates packet to =
+-1), it
+jumps to out_session_cancel:
+
+net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
+    ...
+ out_session_cancel:
+	kfree_skb(se_skb);
+	j1939_session_timers_cancel(session);
+	j1939_session_cancel(session, abort);
+	j1939_session_put(session);
+}
+
+Here j1939_session_timers_cancel() cancels the pending 500 ms abort rxtimer,
+and j1939_session_cancel() sees session->state =3D=3D J1939_SESSION_WAITING=
+_ABORT,
+does not re-arm rxtimer, and returns false. Because j1939_xtp_rx_dat_one()
+(and similarly out_session_cancel in j1939_xtp_rx_cts_one()) ignores the
+return value of j1939_session_cancel(), the session is left on
+priv->active_session_list with no active timers, leaking struct j1939_sessi=
+on,
+struct j1939_priv, and the net_device references if the socket is closed
+before interface teardown.
+
+> +
+>  	/* transmitted without problems */
+> -	session->pkt.dpo =3D j1939_etp_ctl_to_packet(skb->data);
+> +	session->pkt.dpo =3D dpo;
+>  	session->last_cmd =3D dat[0];
+>  	j1939_tp_set_rxtimeout(session, 750);
+> =20
+
+[Severity: Medium]
+What happens if a remote peer follows an out-of-range ETP.CM_DPO with a val=
+id
+in-range ETP.CM_DPO and ETP.DT frames before the 500 ms abort timeout expir=
+es?
+
+After the first out-of-range ETP.CM_DPO puts the receiving session into
+J1939_SESSION_WAITING_ABORT, the session stays on priv->active_session_list
+for 500 ms with its previous session->pkt.dpo and session->last_cmd intact.
+
+Because neither j1939_xtp_rx_dpo_one(), j1939_xtp_rx_dat_one(), nor
+j1939_session_completed() checks session->state or session->err:
+
+net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
+    ...
+	switch (session->last_cmd) {
+	case 0xff:
+		break;
+	case J1939_ETP_CMD_DPO:
+		if (skcb->addr.type =3D=3D J1939_ETP)
+			break;
+    ...
+}
+
+Wouldn't subsequent valid ETP.CM_DPO and ETP.DT frames received within that
+500 ms window overwrite rxtimer, reassemble the payload, send ETP.CM_EOMA, =
+and
+deliver the already-aborted session's payload to user space via
+j1939_session_completed() -> j1939_sk_recv()?
 
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---bb3562xeknxs3abn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatckcAAKCRDMOmT6rpmt
-0nT5AQCJjSrakBP6meeNrxrUnR/IwmbbFq/gpUd5C484uZfrjgD9GeJWB9cDXTpS
-PqI0T1asCFE4/STL3FU22J3qwUIG3wA=
-=UQOI
------END PGP SIGNATURE-----
-
---bb3562xeknxs3abn--
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261020025036.7445=
+4-1-quchaosheng000406@163.com?part=3D1
