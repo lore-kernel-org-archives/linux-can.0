@@ -1,92 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.220
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792528393;
-	b=0eYE64ANOR0E+8jZTI9thhtvw7J6rdrv4aBtcL3ODOgxnmcjTJ6xfryCShzLeByzI1/m
-	 Qx4kfGEcIBk46rSGxUkbwixJjDWaOA+PPLkEFGxFheVf73MEQZ85LuCko7AG7cZOkXlJu
-	 UoncRD/pVNlV+OAgQO/Krqs5uljLEVKON3VW8+ni3LdiYDY9sHQH13xh8NFOcJ1ak7bHn
-	 vJ3e0WQQEK2uxNljb/9nG8M7Ny/sIKy6/usvaya++lPWvcHBr3ynB1uyXxYztGC//53jk
-	 Vo65vv1SECPW+Oke0Py/0N8kCkPpIwZybOsYcyC+pCuX/moQDwUazzPE4CY+xhNNXpw==
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.163
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792528397;
+	b=etWNOPVEfMOi6eisA8CKm2IU6EKYdNLoI7q545tmRf6C+HikomlUZdHjP5Bw15o1Eziy
+	 RuqKeXZ54quyqk78ksSK5wT8FWxKUIs1+iNFA6P4bT49Ecoi62e5b2GbCYmM6qJluzEkz
+	 1N1/CkKSw/Lnmmru2idCxfuY88bUK/3zZyHfYEDh6AV9n4j5SjVj4PYVkcYAWyMf9bIG9
+	 /zfDSgSn4VmkqT8A+4ibGfWMVzAig3jYkZ7O58queqKDKO34sy2pjJX8mSTff/Zu5tJjm
+	 uvi1MOWbWHrNiw7+TArL+C41cx+A8uZbLEIkVOj9b0ob6ZuFmTVZugqT+M8dZe79GWw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792528393;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792528397;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding:Content-Type;
-	bh=gHsO5dim0fknWdsEO0o9xGQ2S9fCioQOJdqm2mEv6EY=;
-	b=TrvZxbWncM+fgk3QgnAS+8jykR0Af+xqJvAINe5RVeumS5aqhTOogHlHEVCnukjQ9v7i
-	 TawPPjOuITD9MqwCts/RcPnseovI50ooUxLPEGfdrLT803zSmZN74AR2iIVOGcWvTZGO/
-	 rteETMxSYBT1lXCsIvmhEvk/BxnIBtfoKhmM4et8XywG/G5Z5H5tpUKTzHWIdOIGJG6ln
-	 BgleJXXaSdzxFzVYSjMQ28tJg5JdhIc4lWawOL+8cZPU0S6cEKSzuGnWt4m50eKRH2QVB
-	 H8TWeGrLEfjtFxq93g2Vi7+dim5qqxW/Z+z0c5FetXWcEhT1bxTndC6FeooLYPk0nEg==
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
+	 References:MIME-Version:Content-Transfer-Encoding:Content-Type;
+	bh=nIXVAY1OU1D7ohN1HEmJkRT/3xMBDrW5js7tDESAf4A=;
+	b=ChpR35FPdZG3DejdUf2/pYV9QxA3pIczKrJNDviOsEVYsjjvhWnI9kfCsTK4My76owih
+	 /qngjyGMh45Unkvggii6UaFl04K1GPFXrLpw7UpSkrp2Xcnvh3WHD5RDUkpRSQe4rrsEg
+	 aIDsO611sa4lnHvycFDOppJYITcsUHGD9azfgzDW3hUsNdhhrbjtqHKRsOq6+WOzEfdD5
+	 XAoq3CTAF8V9wW5Hujz/GFiuLx7+4KeS0WtvgcLPzB8kL0a6AZPX1OWozVQBjKqXxt5b1
+	 wWa6mpYVRfbaFE3GfKHB4N8Y0LDsUAZROS+xK69qjz5zWLUWPbUOjqvXofqk7bKjO/g==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=UGUIL411;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=cRN6Pc9N;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.220
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=jzxEvLy1;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=iSIF32Xy;
+	arc=fail smtp.remote-ip=81.169.146.163
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C007E606A31A
-	for <linux-can@vger.kernel.org>; Tue, 20 Oct 2026 20:33:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C007E606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3311606A323;
+	Tue, 20 Oct 2026 20:33:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E3311606A323
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=UGUIL411;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=cRN6Pc9N
-ARC-Seal: i=1; a=rsa-sha256; t=1792528384; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=jzxEvLy1;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=iSIF32Xy
+ARC-Seal: i=1; a=rsa-sha256; t=1792528385; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=C9iWgsJEnEzQGG8uKqKQXqhTg7UWJfyIENTnirvLjj6V85x0VkUEGabMFzvgJN227r
-    OG7WD+QlbTmTTXe1exv6m+LT3ArHdRl+rGrtuCNkf1BiRuMULqZwBNkwCHjYtLL4m08k
-    xgBrlkSu6sKMzPfV6/bnD59U3sIviCt1QgVkFjweWjpvx9rWNfebvFuajU6NiFd64JWn
-    3+fi3rRe87pmQCLf20KepUbfoqbwTxJWYq9serpfnTM9BRHeK6Wy/wZFiu0FXr1dpcFE
-    Tlr9OrkuXfnm45GRvQM2idaZ9/ZfSjhiDVspe48yHbNmtPIRTezG7/sRx8EsLE5AwF+Z
-    EZuw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792528384;
+    b=Om02ZkDRxQGpcJAkuyvlfsBXKd72EUUDRWwUsIVXidBNvLuBxXCd8Gihd3qQDtPP0N
+    ehEU5cPrc6gmiY9Z4QccpUqaDwbA5XTXnImTphPmQUHT4a8tHNlO68sBx1z3LZ76AczO
+    hAoGYnwcUnZTBFUBIm8oq1Xqy10XmnKSmaMQ/WKkVg5T5ZEkfL236JSvfS/2dvxmCxTx
+    Hl9bL+16J9x8Zdv8LQh5ZjxsBC3RuJU75HJC1eaWgaOqYQdOdkJ8UFgs+lVJOV3gD/hw
+    6XfkFnwoSkUKvMMEHHy8jo2ewZW9VdMUfiYze8EYazNzwQgxFfXR7QGGMHDSrAeKGXWp
+    zwUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792528385;
     s=strato-dkim-0002; d=strato.com;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=gHsO5dim0fknWdsEO0o9xGQ2S9fCioQOJdqm2mEv6EY=;
-    b=FxJhOxTJ4IltxHz4jrODFuw4AgKpJ4ZKZiC85s6Dbb+FO2mr0girQvWA0QTfytr8Mi
-    YEexUsWDjLTlN05YMWnhi551Dzeev5mvkjju6/l6j6SuVdQmfIOhZHIAoaWb6V8JH871
-    53sSHG4DOFYrFiwV4t/vYHWuPWno0PKkv+JXehZD0/bgWPjx7UN39Wqpof9XaocTm/VH
-    Qu2Dsr9fw0izUNe+wjXzJpUr8Fk83m5b7tZTXQRyAaDz7m4fWHu2t1wAZ7EINrxc3gsm
-    zu3rXIr3hA8u04EelVR33dgMkqBlyqYTzUWzlvqYmHVnFDcFEKLo8tk6R2OWfWUwMvbm
-    66gA==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=nIXVAY1OU1D7ohN1HEmJkRT/3xMBDrW5js7tDESAf4A=;
+    b=YR9eJfWOfjWsjbN3hAm8Mze+GfX0IxbGH4qclOuWgCutzm/UY3pAffVtc5pAtvly2w
+    gPFlqdIBC58VBbDgJ4QoJXCACXhX/x39ugWxzaoizb53Un3UMBBCdUeCzpooteVM8sYu
+    vMdZHyiBUew2bPptVihBKsR9aayx+SgY6lHXtRjXl0JPODcD3ZfqWPTVBat/W44NdTAb
+    tytNd2tA4xKPe+q6eyNsAQSEKj195sAZKBT34oNi13zuyfPUc56jSvVJAXm0Jyrn8LFj
+    +2QWlW8oeRT7FRa/xUM4GUHpLLl77SnVFJobrOdZL5TbvPBJzD6ozzcuDYG8EsT4+u+i
+    Lnzw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792528384;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792528385;
     s=strato-dkim-0002; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=gHsO5dim0fknWdsEO0o9xGQ2S9fCioQOJdqm2mEv6EY=;
-    b=UGUIL411KKDDZ0zoeBvR9XDxCpP6ZX3hJHsVKQBWxZQELKS4FeZX7I7WhlKf5w1Mjh
-    xwje1siz+H8fL4kCAeudEHyLCrCtkHhX3AvfCpXkWtJntkh0Gsg+Ue/cma58die4U+j4
-    NUasBwmO5K115ugjZwVFvFsXvqSl+aabCyR4kE65L30Woul59XnDCUyL8UKwUvVR9gEo
-    JSw4lhT5lgBCdVgUdWXcWsFfNO21SoFabvBCgv7HEZqbvXbLxmtC/mIsPd9iTZZhF/KF
-    qxlXRaylhm2dMN/Qe6/3iSSVOUA+CFLCoRpIOewhpnyPjyb0iOIwwjixIGZv4eY4AfQd
-    gTaQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792528384;
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=nIXVAY1OU1D7ohN1HEmJkRT/3xMBDrW5js7tDESAf4A=;
+    b=jzxEvLy1GqVgLwvKbr/BidBeJirtgpdYZnE4oMVm+YQV3Xn32yPAffepLuMXJ4Lpr+
+    rNTf2zOqoucB51CCgzQyp3lWKio/U1f9AT6egvhBXSvEt5L+aTGyDUKbpG+2vSv/DjP8
+    Ioodzl2SsV6dZUqKCI9OZgKP4ZtcALQ4gf6bt/sI638HtYWpTZ/C53FahxOZvnNLPQXr
+    jNxmBJ7Th3h7jiyUHjWRLR0UaVy0AS5SunUeTLm4P3J6sF9VxV/8sknY1kuNjHPujz6p
+    v336L1mtOWdJu2VWAHAawMMvLmt7pv7eJQyPYkEjwKOPDjDPP0Y6aYGZ6DrGqv3t7oKn
+    OigA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792528385;
     s=strato-dkim-0003; d=hartkopp.net;
-    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
-    bh=gHsO5dim0fknWdsEO0o9xGQ2S9fCioQOJdqm2mEv6EY=;
-    b=cRN6Pc9NSvC3YOCoDZe08NnS2RmjgFt3Xp5auitJMRkt/PThWJlWEPDlOUEQU6FfBv
-    BUvwBHENRbY16rxme2Bw==
+    h=References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Cc:Date:
+    From:Subject:Sender;
+    bh=nIXVAY1OU1D7ohN1HEmJkRT/3xMBDrW5js7tDESAf4A=;
+    b=iSIF32XyUxm3vsJsEVApeuCVQvqQuGpv3OwMbbAmzkSVtf9NhGXsXfuz2KROT585Po
+    JqW4579/UROL10Js/oBA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from vivo.lan
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29KKX4dMo
+    with ESMTPSA id Kfdf2a29KKX4dMp
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
     Tue, 20 Oct 2026 22:33:04 +0200 (CEST)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 To: linux-can@vger.kernel.org
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH can-next v5 0/5] can: protect the receive lists with a per-device lock
-Date: Tue, 20 Oct 2026 22:32:52 +0200
-Message-ID: <20261020203257.230955-1-socketcan@hartkopp.net>
+Cc: Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	stable@vger.kernel.org,
+	Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH can-next v5 1/5] can: proc: reset pkg_stats atomics individually
+Date: Tue, 20 Oct 2026 22:32:53 +0200
+Message-ID: <20261020203257.230955-2-socketcan@hartkopp.net>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261020203257.230955-1-socketcan@hartkopp.net>
+References: <20261020203257.230955-1-socketcan@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,102 +106,135 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset="us-ascii"
 
-This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
-triggered when a CAN device is moved to another network namespace while
-a socket bound to this device is released [1].
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
 
-Only patch 5 is new. Patches 1-4 are already applied to the testing
-branch of linux-can-next, and patches 1, 3 and 4 are on their way to
-net-next with the linux-can-next pull request [2]. They are included
-only to provide a sequence on which the sashiko bot is able to build and
-review patch 5. Please do not apply patches 1-4 from this series.
+Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+converted several members of struct can_pkg_stats to atomic_long_t and
+updated the hot TX/RX and procfs read paths to use atomic_long_*()
+helpers. However, can_init_stats() still clears the whole struct with
+memset().
 
-The code of patches 1-4 is unchanged. Only the commit message of patch 4
-has been updated after the Sashiko review of v4 to describe the actual
-NULL pointer dereference in can_rx_unregister() and the CAN_ISOTP path
-that reaches it.
+can_init_stats() is reached from can_stat_update() in timer context and
+also from the procfs reset path. Those paths can run while the TX/RX hot
+paths are concurrently updating rx_frames, tx_frames, matches and their
+*_delta counters. Hitting the whole-struct memset() in that window
+performs plain writes to fields that otherwise follow an atomic_long_t
+access contract, which can lose or mix live statistics updates.
 
-The series is based on linux-can-next/testing, which also contains
-"can: raw: remove redundant NULL check before netdev_hold()" from [2].
+This issue was found by source-level API-misuse analysis looking for
+whole-object resets left behind after atomic_long_t conversions, then
+manually audited on Linux v6.18.21.
 
-The idea behind patch 5:
+Replace the whole-struct memset() with a helper that resets the
+atomic_long_t counters via atomic_long_set() and clears the derived
+scalar statistics explicitly. This preserves the existing reset
+semantics for scalar fields while restoring atomic access discipline for
+the live counters.
 
-The receive lists of a CAN device are located in the device's
-can_ml_priv and travel with the device when it is moved to another
-network namespace. But they are protected by the per-netns
-rcvlists_lock, so the lock that protects a device's lists depends on
-the namespace the caller passes to can_rx_register() and
-can_rx_unregister(). can_rx_unregister() silently returns when this
-namespace does not match dev_net(dev) anymore.
+Build-tested by compiling net/can/proc.o on x86_64 netdev/main.
+Runtime-tested with a QEMU + vcan setup on Linux v6.18.21 by driving
+concurrent traffic and reset_stats reads, which reproduced inconsistent
+exported statistics before the fix.
 
-isotp_release() and bcm_release() leave the netdev notifier list before
-they can serialize against the notifier. When the device changes its
-namespace in this window, their filters are not removed and the
-remaining receivers point to the freed socket or bcm op.
+[Hartkopp] can_stat_update() also read the *_delta counters at the
+beginning and cleared them with atomic_long_set() at the end. Increments
+from the hot path in between were lost for both the current and the next
+interval. Use atomic_long_xchg() to fetch and clear the *_delta counters
+in one atomic step instead.
 
-Taking RTNL in these release paths is no option, as CAN_RAW already
-holds RTNL while adding and removing up to CAN_RAW_FILTER_MAX filters
-per socket, which unprivileged users can trigger repeatedly.
+Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+Cc: stable@vger.kernel.org
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/proc.c | 39 +++++++++++++++++++++++++++++----------
+ 1 file changed, 29 insertions(+), 10 deletions(-)
 
-Instead, patch 5 protects the receive lists where they are located: A
-spinlock in struct can_dev_rcv_lists protects the lists of a CAN device
-(initialized in can_set_ml_priv()) or the 'any' CAN device lists of a
-namespace (initialized in can_pernet_init()). can_rx_unregister() then
-finds the subscription independently of the current namespace of the
-device, which is kept accessible by the tracked device references the
-protocols already hold. The per-netns rcvlists_lock only protects the
-receive list statistics, for which CAN_RAW, CAN_BCM and CAN_ISOTP pass
-the namespace that has been used for can_rx_register().
-
-As a consequence, CAN_RAW and CAN_ISOTP do not need RTNL in bind(),
-setsockopt() and release() anymore. bind() is serialized against
-NETDEV_UNREGISTER by publishing the device inside the RCU section of
-its lookup, as unlist_netdevice() and synchronize_net() precede
-NETDEV_UNREGISTER both on unregistration and on a namespace change.
-The notifiers recheck the binding under lock_sock(). As RTNL does not
-keep NETDEV_DOWN out of bind() anymore, bind() checks IFF_UP after
-publishing the bound device, with an smp_mb() pair against the
-notifiers, so a down transition during bind() is still reported with
-ENETDOWN.
-
-Changes in v5 (details in patch 5):
-- report ENETDOWN for a down transition during bind() again
-- comment and kernel-doc updates
-- patch 4: commit message describes the actual crash path
-(all from the Sashiko review of v4)
-
-[1] https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-[2] https://lore.kernel.org/linux-can/20261018164417.1540449-1-mkl@pengutronix.de/
-
-Previous versions of patch 5:
-v4: https://lore.kernel.org/linux-can/20261019152741.54854-6-socketcan@hartkopp.net/
-v3: https://lore.kernel.org/linux-can/20261019074244.50391-5-socketcan@hartkopp.net/
-v2: https://lore.kernel.org/linux-can/20261018180739.689750-1-socketcan@hartkopp.net/
-v1: https://lore.kernel.org/linux-can/20261017201935.399233-1-socketcan@hartkopp.net/
-
-Oliver Hartkopp (4):
-  can: proc: skip stats calculation after reset in can_stat_update()
-  can: proc: remove pointers from CAN specific proc output
-  can: replace ARPHRD_CAN type checks with can_get_ml_priv()
-  can: protect the receive lists with a per-device lock
-
-Runyu Xiao (1):
-  can: proc: reset pkg_stats atomics individually
-
- Documentation/networking/can.rst |  16 +--
- include/linux/can/can-ml.h       |   3 +
- include/linux/can/core.h         |   2 +-
- include/net/netns/can.h          |   2 +-
- net/can/af_can.c                 |  60 +++++++-----
- net/can/af_can.h                 |   2 +-
- net/can/bcm.c                    |  64 +++++-------
- net/can/gw.c                     |   9 +-
- net/can/isotp.c                  |  57 ++++++++---
- net/can/j1939/main.c             |   2 +-
- net/can/proc.c                   |  95 +++++++++++-------
- net/can/raw.c                    | 163 ++++++++++++++++++++-----------
- 12 files changed, 284 insertions(+), 191 deletions(-)
-
+diff --git a/net/can/proc.c b/net/can/proc.c
+index de4d05ae3459..70104f13077e 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -74,20 +74,43 @@ static const char rx_list_name[][8] = {
+ 
+ /*
+  * af_can statistics stuff
+  */
+ 
++static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
++{
++	atomic_long_set(&pkg_stats->rx_frames, 0);
++	atomic_long_set(&pkg_stats->tx_frames, 0);
++	atomic_long_set(&pkg_stats->matches, 0);
++
++	pkg_stats->total_rx_rate = 0;
++	pkg_stats->total_tx_rate = 0;
++	pkg_stats->total_rx_match_ratio = 0;
++
++	pkg_stats->current_rx_rate = 0;
++	pkg_stats->current_tx_rate = 0;
++	pkg_stats->current_rx_match_ratio = 0;
++
++	pkg_stats->max_rx_rate = 0;
++	pkg_stats->max_tx_rate = 0;
++	pkg_stats->max_rx_match_ratio = 0;
++
++	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->matches_delta, 0);
++}
++
+ static void can_init_stats(struct net *net)
+ {
+ 	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 	/*
+-	 * This memset function is called from a timer context (when
++	 * This stats reset is called from a timer context (when
+ 	 * can_stattimer is active which is the default) OR in a process
+ 	 * context (reading the proc_fs when can_stattimer is disabled).
+ 	 */
+-	memset(pkg_stats, 0, sizeof(struct can_pkg_stats));
++	can_reset_pkg_stats(pkg_stats);
+ 	pkg_stats->jiffies_init = jiffies;
+ 
+ 	rcv_lists_stats->stats_reset++;
+ 
+ 	if (user_reset) {
+@@ -119,13 +142,14 @@ void can_stat_update(struct timer_list *t)
+ 	unsigned long j = jiffies; /* snapshot */
+ 
+ 	long rx_frames = atomic_long_read(&pkg_stats->rx_frames);
+ 	long tx_frames = atomic_long_read(&pkg_stats->tx_frames);
+ 	long matches = atomic_long_read(&pkg_stats->matches);
+-	long rx_frames_delta = atomic_long_read(&pkg_stats->rx_frames_delta);
+-	long tx_frames_delta = atomic_long_read(&pkg_stats->tx_frames_delta);
+-	long matches_delta = atomic_long_read(&pkg_stats->matches_delta);
++	/* fetch and clear values for 'current rate' calculation */
++	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
++	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
++	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+ 
+ 	/* restart counting in timer context on user request */
+ 	if (user_reset)
+ 		can_init_stats(net);
+ 
+@@ -170,15 +194,10 @@ void can_stat_update(struct timer_list *t)
+ 		pkg_stats->max_rx_rate = pkg_stats->current_rx_rate;
+ 
+ 	if (pkg_stats->max_rx_match_ratio < pkg_stats->current_rx_match_ratio)
+ 		pkg_stats->max_rx_match_ratio = pkg_stats->current_rx_match_ratio;
+ 
+-	/* clear values for 'current rate' calculation */
+-	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
+-	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+-	atomic_long_set(&pkg_stats->matches_delta, 0);
+-
+ 	/* restart timer (one second) */
+ 	mod_timer(&net->can.stattimer, round_jiffies(jiffies + HZ));
+ }
+ 
+ /*
 -- 
 2.43.0
 
