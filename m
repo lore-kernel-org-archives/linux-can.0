@@ -1,98 +1,56 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792487320;
-	b=2XZkLtHQq4oLDC4Op4cjZM5F69CPL9LsZFVqdLQsO1px3Yd4NhXNqYXX/PXKVgkMvkxj
-	 clX5FZeY+tTwmyoMarWCpZd0DdYzpkJPhBfIZla3af2hGpARy2X/9KCg+9BqpYCAANj3s
-	 WufqWjd5sBITH/kY6lKY20aa+Gi24B3Ub+4ddI3x6/t9amJ46d8BNGRiV+06tMrMUlcLC
-	 W/NdapuzUkSkjGrM9IhzML2hd+uDMVVpTL+Fh3ifwxf7/xUVZ4xihgfL5I79Ti5GsUvj1
-	 YEURAHM4XWiG10/NLC8+7/QTk7SRDDTZ4jQHK5HK6SoMVWnGLywyMVTQqYcWMJ0OrSQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792487320;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=SI3NG50e0qifw8rcKAfg82Rn2PZGsgRISScsgeSFDRY=;
-	b=hHYeZWEr38oLZ+9zuaDv4M08LHra8DzC2EkyG8ZsiZ17Lyinte/iIQoiuNTYZf/lsaIe
-	 xQYrGEZ/qGA5boZEyd5nt4KN+LGgmoULWAEe9/VBxw8K5tLbK38pPkHZBPjUkKxBRznXw
-	 +bwfw9q+JLkYd4/T02Vw4X7ZWnl8FFbxTQTLqLNBFK/y8g8eAUTxVLDgVj4vvtr4lWpdZ
-	 bV4FuLxf+i+YTE1uvZBja8lFzKl4UyDZfjyr9G7TB8i7uAhyPYahDGD37JsoXYeoJZNHn
-	 C5N5mIH3TGHCfncRmZyWW88HaQDMlMo+nYxzBPjYVXvS2USqw3QdufKpQ62n6G3675A==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=SIEaPCGK;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.6
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792487354;
+	b=IgZecmKSoe/nYvQuBb/IDH5h52O7paLfiH6NxHiqLUqXqvytYO34Bngm21/r7EGE5b5N
+	 RE7CxAhNx4BHqXy+jYv/f+pvOiDGJ0vsRsoSLyz0Q7aFPMFUvkE3wrJme9Qhm7LVltRnz
+	 wjIqzoSDR33TSY52+D4LJh+y5E3DZ76M5hmLuoBaiTIC9jmaHCnuoTHTeqxj8oTZOIgg5
+	 qTeCsF+Gyp7yexqcjPUsdjX1siuqx94BMweogrjt5b7MNCR76SE938pXUx8UGzmmJbJzm
+	 nG1S6A3zifhWi2bL+tYmFd1iLy7FUN4eumATfFKOuN+sxp8SNG3zjKfMdP/qdkrSLQQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792487354;
+	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer;
+	bh=PchrU+Va3DZaNKNckQ858GV5JoQCVK375UKKXHl3JXA=;
+	b=OL99dIiIfg1Ewtrd9psy3K73AnUK2L843TeIEQJeaJ3KgIbwPal4Po15Xemj6Y54lZYh
+	 ORNiot3OG9N33YRVmdeTB89MjHD6qJW2cPgIJZj1bpf+CyPYfCJDcF6j3PHKQr3Grs5qf
+	 twvdkwRM4+oAbsMNn5C5a7tMIysA9kBP8k645BwScadrGi37c4/tpGcLe4oROu1SYDsmp
+	 xIK1hlasSk12at1TtRCiXP9r1OOhg5BXXsEkUDmY2Nx6FrwJKjl05Z7mgn7rlB/dHoMXi
+	 heGerDPoDb9O6P3u3kzN+iF/Dk0W66pZMrGaf2JwAwuyOBHHJoRviWntMUb6oGYpxRQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=free.fr;
+	spf=pass smtp.mailfrom=free.fr;
+	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=kjsWr9Ao;
+	arc=none smtp.remote-ip=212.27.42.6
+Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D00606A325;
-	Tue, 20 Oct 2026 09:08:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 46D00606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29DAD606A31C;
+	Tue, 20 Oct 2026 09:09:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 29DAD606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=SIEaPCGK
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id A22EA201EDB;
-	Tue, 20 Oct 2026 11:08:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792487316;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SI3NG50e0qifw8rcKAfg82Rn2PZGsgRISScsgeSFDRY=;
-	b=SIEaPCGK1H9u0hn8qedTLfpXNn+Yo4MptoDtAENBu1oorp9X6fToxUxqA8r455VAqWeb86
-	1EIejGU6KVu+D1f4ytKe9n7EYvOt9DoVcZXX43Q4JdEtX5faUABUvp5TGyMJssLvIA7MYp
-	syMgjHkfdqPcDMJEw1Puqowmra1fZLx55arx30o0+LRNGFZZNrmAGNLWvhrfQmng4crx4i
-	ocPcJdhV1L37VJr+45Ilhdzhhr10tkQH1eRiRBfgAP/FtajS+JNbrLCvP+Y9qpem1tkdKs
-	eOAO4IzMIZslTQscYdVZP5cOMHT5Fqtzt8rnHXvstaJbjUYETyIYtEibeIfV3Q==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792487316; a=rsa-sha256;
-	cv=none;
-	b=MnU0gGfUhlKxmHnBdRI4GhC5Or7Q5fGUG48Hk7brgTTvnqPGOpxDzG9sgd23Lf+LNbXbgs
-	y63K5012keYShgs1MtyezQHsCdf/wFebF8YzSHqSxzG1EqgzZcwvlY8+da9Xk51EQ5OT5o
-	Z6ndNLUc0OyVw/lLhW76UsPmqAhoEO/65Ev02go39N6kGgMEdSzR4csoWZQZO5uyl2K8wP
-	AkUGaDDV8D0duJ0N5HXdtWhfywAw0h9oC4RDTbJ8DFd2KmdEPo3epQrJh5mirNrZl0H4FU
-	j1GN+41hd3T0YEH6pTzAe+O+AcUDnRhDcVatzEqTQx1YmvO22WmT42/ZGMmPow==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792487316;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SI3NG50e0qifw8rcKAfg82Rn2PZGsgRISScsgeSFDRY=;
-	b=HgNbthJPzXtrs5PHZB3CFOmjJ4566bwTMpg+SmWcJZqNUgENZ6Kz2gpdg/2EsPE08uAJOQ
-	htDPnNG3cAPia7umd+DGdH+yPTvfcqMzd9UlgQ++GHJ9Y12+NrNV/RDGj6YPxsZ100QtX1
-	9mq0higEGkQm6/hEGEP+1ap9MEy7E2XRwjV85CeM9R8LkmXDk/g1wIHe6/vOOtQ7Czj7mm
-	9aCLOVC96CkOItY/HbG+Xon8qN6Q3YL8i3oMHTYNk7r9uygr8HhTZFQ4V1CLCwnZ9jiufy
-	5OOddYHFQCYH/V7MXFlxOFEDDTU37AG1xyf++80GAUXA1+RtQ5kKHZnl5tfVCw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xJ5pk-000LmT-1l;
-	Tue, 20 Oct 2026 11:08:36 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 3C1355C9D7C;
-	Tue, 20 Oct 2026 09:08:36 +0000 (UTC)
-Date: Tue, 20 Oct 2026 11:08:35 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-Cc: netdev-bot+sinfo@kernel.org, netdev@vger.kernel.org, 
-	linux-can@vger.kernel.org, kernel@pengutronix.de, haibo.chen@oss.nxp.com, 
-	shawnguo@kernel.org, imx@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: [PATCH v5] can: dev: can_fill_info(): don't wake up controller
- if interface is down
-Message-ID: <20261020-purring-cute-ocelot-54ef8b-mkl@pengutronix.de>
-References: <20261018101744.93657-1-chunyuzhiqiang@yinhe.ht>
- <20261020075340.417899-1-chunyuzhiqiang@yinhe.ht>
+	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=kjsWr9Ao
+Received: from [127.0.1.1] (unknown [82.96.140.143])
+	(Authenticated sender: stephane.grosjean@free.fr)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id CAB2F78050A;
+	Tue, 20 Oct 2026 11:09:01 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
+	s=smtp-20201208; t=1792487351;
+	bh=fBbRmFAYB/NxTIZ3ycFIOuPJeZJ2J3FRaVle6IV6m5I=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
+	b=kjsWr9AoLqHqXpxwKDtWDWshat+T7QCVoTEEtaf10DNJpUxzl8NKeYk5/mhx2yBuw
+	 MHgGwCCn5/miA1jxk9f10dUgv9icN0+1EiutLDPcyNSjpYxTxz4leUZ2R2iA1D5tI9
+	 WLFMnyS1szoKFVQU0cePXT4yG6h2GYJLmTlTl+fAnGgn40UYcjqFufJPz5TmKiTO8X
+	 1N0im/m8voqow4aS3IQn3svzB+nF4+wEnV2uvXNPf9pVESby4iJDZOOkhCl/CCLYVd
+	 YiT+GcYUOcSCgjL0m6UpKL0oPRTxSA2RDi11VcU07jEhRGPWzfivcVgTrXjFbGIUZV
+	 PThlF/fpgzrpg==
+From: =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@free.fr>
+Date: Tue, 20 Oct 2026 11:08:06 +0200
+Subject: [PATCH v3 01/10] can: peak_usb: fix missing CAN_ERR_FLAG when
+ reporting error counters
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -102,69 +60,50 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xhtixbv4xfmns22l"
-Content-Disposition: inline
-In-Reply-To: <20261020075340.417899-1-chunyuzhiqiang@yinhe.ht>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20261020-canfd_check_channel_idx-v3-1-74d17c5a599e@peak-system.fr>
+References: <20261020-canfd_check_channel_idx-v3-0-74d17c5a599e@peak-system.fr>
+In-Reply-To: <20261020-canfd_check_channel_idx-v3-0-74d17c5a599e@peak-system.fr>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, Dan Carpenter <error27@gmail.com>, 
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ =?utf-8?q?Stefan_G=C3=BCnther?= <stefangun@pm.me>, stable@vger.kernel.org
+X-Mailer: b4 0.14.3
 
+From: Stefan Günther <stefangun@pm.me>
 
---xhtixbv4xfmns22l
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v5] can: dev: can_fill_info(): don't wake up controller
- if interface is down
-MIME-Version: 1.0
+When the device reports error counters, the driver incorrectly uses an
+assignment (=) instead of a bitwise OR (|=) for CAN_ERR_CNT. This wipes
+out the CAN_ERR_FLAG and CAN_ERR_CRTL flags, causing the error frame to
+be sent to userspace as a regular CAN frame with ID 0x200.
 
-On 20.10.2026 15:53:40, ChunYuZhiQiang wrote:
-> If the interface is down, the CAN controller might be powered down, the
-> clock disabled, and/or its external reset asserted.
->
-> Don't call do_get_berr_counter() or do_get_auto_tdcv() to read the CAN
-> controller if the interface is down. This fixes a generic logic problem
-> that exists on all platforms.
->
-> As a result, IFLA_CAN_BERR_COUNTER and IFLA_CAN_TDC are no longer
-> reported for down interfaces. This is intentional: the counters are not
-> meaningful in that state, and calling into the driver can wake a
-> runtime-suspended controller or touch registers whose clocks are gated.
->
-> Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch o=
-n clocks before accessing ecr register")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-> ---
-> v5:
->  - Gate can_tdc_fill_info() on netif_running() for IFLA_CAN_TDC, as
->    requested by Marc Kleine-Budde. This branch has no IFLA_CAN_XL_TDC
->    definition or call path at all.
->  - Keep the TDC part of can_get_size() consistent with can_fill_info(),
->    without hiding the non-TDC data bittiming attributes.
->  - Document that IFLA_CAN_BERR_COUNTER is no longer reported for down
->    interfaces, and explain why this is acceptable for stable.
->  - Clarify the Fixes: rationale.
+Fix this by using a bitwise OR to preserve the flags.
 
-Thanks for the patch. In the future, please don't send vN+1 as a reply
-to vN.
+Signed-off-by: Stefan Günther <stefangun@pm.me>
+Cc: stable@vger.kernel.org
+Fixes: 3e5c291c7942 ("can: add CAN_ERR_CNT flag to notify availability of error counter")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-regards,
-Marc
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 8fd058c32856..785224e00c4e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -526,7 +526,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 			/* Supply TX/RX error counters in case of
+ 			 * controller error.
+ 			 */
+-			cf->can_id = CAN_ERR_CNT;
++			cf->can_id |= CAN_ERR_CNT;
+ 			cf->data[6] = mc->pdev->bec.txerr;
+ 			cf->data[7] = mc->pdev->bec.rxerr;
+ 		}
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+-- 
+2.53.0
 
---xhtixbv4xfmns22l
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatcvkQAKCRDMOmT6rpmt
-0rQsAP44p13C0FJDoheLomyTm1VKGdoHw1GCjJoCA7idRbdqewD/aQFNnROx2OGI
-kU7F50XIuO/F9m2zEK9DjzJ3dXYEcg8=
-=BMlh
------END PGP SIGNATURE-----
-
---xhtixbv4xfmns22l--
