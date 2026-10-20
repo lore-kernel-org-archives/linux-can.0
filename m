@@ -1,91 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792518714;
-	b=mm9Osgsf3Ps4ijAxb1Ul0zz0sZ+UG1R8x5aAXYT6Jh0gXaQ/NE7JQ7nEE1bvp6UeAunF
-	 sbwOuKNnrwwY3/Jpts1tjgKIeaiNn3TUGIUsbcHY7D4kQc6MyVOg1XXxvRVX7LbO+bEL2
-	 gBN2yAr3lhmEac5qG3DzVKHTPDGPqnRjun1yQwgrAAW/mY6QCH8FHhCYwTWmI/GmD4Tv5
-	 vfZdgGv4Odii7doQtMYptFeFe7TuEZqkNOTRv2xpNFfd76WXqsXrVZV4YB3pHOCxqrih5
-	 nckFkvLMdmuLZho4LySnJ+8Y/vErDzlGuAHoWzAS9+X/wcF6v6bVtTIkDZMdGupwnoA==
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.165
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792522893;
+	b=ra77sdXi/+QWZARjH0RjOdzNPL7HYU+Vnf8Sp9FKGQa9JmRCGJN1ddzxc+u3YZSlRXou
+	 TsdSJ4vh0k7fnYRYjlX+wVJjSyIW+h2272yw4sYpFGnqdRYereuqgVVDRtWGPsLBu7vTa
+	 xEpc5E3n48FIjc/DB5nxe5ZRDSKlOWpK73pM7gMvmqNt1YffweZmOorWXecMm/h0D2q2g
+	 lHDelfIstdR2uGYOFmOH0auDv0CiGXG4lQmt+NloqXkdDvMmuwONYsHxXrQG0wKpqNctu
+	 opK30ytFr4NQ/yB48Wa9ru3DmYyw7V8EWvaLLAPoMedujWESUVwxERGbY0PM2TKOcfw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792518714;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792522893;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
 	 References:Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=/lWhkwvW5Kg+2rQ8alcge5uahNeabNpwNFOn2oIPdwY=;
-	b=QIIxMrA9VopjkwBRf+otiWfWI8ceLcAps9iT53fTrvo5xGS1Ad7tvrCF680YXPUaWObz
-	 tNylgBEv89dtyrESNujSQCkmzHlemGtbG3/aT+Hrv2+kPl49Mk14pHkGZoBZg+MEkTpaw
-	 o9NWZr+6TI93akphtKsXMGIfjqY81seddtjbHIeGWSOIRlmgQkdfD4uFNYczQqY5Nh80C
-	 2Ygez7atny2K3TNgf2Dve81RveW7ZhcKzVYW3BihABrxvsM5OXhyXYa/IisrVFg7d2+0M
-	 PsL4hq8PxKbAOhJvqFfLQp2kK2BD0Q/Um2mH4MxAbSC7/vVBNDXjMA0sCJ1XqCZjrmg==
+	bh=L94ISj9l4H3Wuk6RHQZ+sIUxjHr69Z3PAjUEKXQG0iU=;
+	b=Ne6j08FZYvluJWXcKd5sF3zme5IfiM4gymrJWmpu9667opmQKxvQmJKs4aViYfgR3yIN
+	 +A63HwTWkcu4dnMy++1a29uQf7Y5GbdpwCxenrFOB6J7MRT+HOTnmMRYUi9eGEyADG5QE
+	 WH84XKG/rxtWwsEYyIEYzQFM3z3F2I45Kos6NkDuFYkQFoUT/rq2eJ85jibP6U4B02/r1
+	 Ujb7vvKZ5mPhhCWrjy4B2Jn7iFAe1CeWFvRC1xnkHzlFKI311OWO1TnGdgGq06vpKgs3k
+	 V0RyjMIiYCqq0zrRtH0Zb7t8Oba7p9IeYAGclhPv0ZeCVR07EWnzLpcr09RuRKgS5VA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=qsrdJ736;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=PpKCZH2l;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.51
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=aPZfXEmy;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Z4Koh+me;
+	arc=fail smtp.remote-ip=81.169.146.165
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F218D606A319;
-	Tue, 20 Oct 2026 17:51:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F218D606A319
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0142606A31B;
+	Tue, 20 Oct 2026 19:01:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D0142606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=qsrdJ736;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=PpKCZH2l
-ARC-Seal: i=1; a=rsa-sha256; t=1792518639; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=aPZfXEmy;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Z4Koh+me
+ARC-Seal: i=1; a=rsa-sha256; t=1792522826; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=PoIdf2JB6Bga4xLIk3/OkYraJUbzqEoQ7tA6TuPPTq77/Z7VRc/8JZq+4R4G18r5E0
-    fw6xnQLGyGjKou5zY4CYfh4mAyDtyL9wUYvN/TthEIGbGJnwJJWQEazfyGcAOJlhHtIz
-    IV05/s9T+v/H/r4Dkmvred00QbslQOdAnwaLf0m1mqiy7je4PwZ+R0NVunfQApvkcjRi
-    aoNo0VFhekvVbJqqPEn9Qd7oNd5A0bX5sfiv6m+uBmG6M3TGOBWvaNpyYRHAuCG1Jl9z
-    hmp5OJVwkt7oJDwg33fGI7SVPjYlpQt21FV0j2hhHCnST1tgL7b4rwASmioAJZE57snz
-    Y8xA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792518639;
+    b=Subt+VLwroiKxzMDMAtb3lPfFX5KZUv7RoKiXME7wUnC/MNSAlKG4ho98Lh4S6qCTP
+    Ny+0ujCGYGLlQVOF/JktRc6+APYqtQ/0p519CkDEi8b2a72KkcgWRVrg3JwRLHeDY7Eg
+    2fKvAUdJa4QvEW4AafJ9Nz7biWbKdlqE/YLu6bzPFYEUCZVvKLSdWwcGqUuJZQeiRd2u
+    G0QpL1ebZkXrbYu30iLNXkPBug8d3rXcZ4vZ65y+kg9I6qRcSj4WehezJhyi7OFT3qpI
+    sHEeZETc8ZmoWcturF4ZclmeoMKNDEmZf/HNnUJQHslk46xwEhRnvjdfTPyeyyI3j4ZA
+    eMdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792522826;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=/lWhkwvW5Kg+2rQ8alcge5uahNeabNpwNFOn2oIPdwY=;
-    b=MCobCW37K0Aum5wzm/wa+G93um4P1G3NpUNi0tM0XIB4CqyydFsCylYu88aa1I+eo2
-    7wFDWvtDNZvayyScB1V3S8uKRRRSRN6uL+cWl1YZRK6bqwf1AfsxtahzijHf+oL5mPd5
-    VGVp24SV75MOiJqufcbVUqJkoKG8R1QPsEAQ3J8H6rHeaz1q8KQYyFytqW4rs3+VIl6P
-    1n/F0ARW7mY2rJ52pBp9vvpqfTSRrgS1SuYwuKI2Y1DolMXORU4IP5oi+aXMsQUksjCk
-    mXB3Fh4HV1shs3G2jzuxefaSQgYL6eNMEJciUj+O+A8Y8PYwbTeDPa+q0YHhQ+Lj+eGb
-    WQ5w==
+    bh=L94ISj9l4H3Wuk6RHQZ+sIUxjHr69Z3PAjUEKXQG0iU=;
+    b=lYkOHlT64kusUD8NqC0Y1KsB/YlNt0C57JDyphULVrQFzWvA87jHs3QXItObjGYSN/
+    bX5AIeF61NHIXTNPAJJhaeOHEIPgB6kv/HMyxy2gmE589/uw7t84sySu2RCr4ELOmriM
+    hGJCSPSuBrL4Lb/DGEG/19IzLDByQqc9utSQ4JVMSMf9WUbZ1dxb/Pe1cpjzSTRRnZYM
+    BkiWQ1Y1TgHhsxhAFZFkeNNbOrZ/e0rk1va2XHR0FfLZ8HNiWih/V2uwSXMZVzEu06+f
+    LiKO48Q722uHcLJLzLakztAIg610/lLnZqle6ahlR9m7lDsErR6tMhKL9F1lJRe6ULQC
+    6yYQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792518639;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792522826;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=/lWhkwvW5Kg+2rQ8alcge5uahNeabNpwNFOn2oIPdwY=;
-    b=qsrdJ736iy5dxaPNpq4xzuhhjEVfHoD78VUZ9iCMUc9rGrb9MAuVEenzVcMWJIfKM0
-    TL/rY1PBRTn8leBE4mfKW8NfPH32WFjxhMT5FYbE5FWohM8WEIGR9SEzJpiE45OzsTcA
-    vCOhjtGmsr+SHjP4wpZBeEVSTB4oRIJaW+tpAk6wMCiZWVXXqBK+vC4VEdsTwcGLa/vO
-    SVTLVS7BYhCADDuDvPWfR35HSJkomMYCQ/T1vriIxYwjo3zaAvfzaI0dGw0dFHx5tQbR
-    +nZfkvBiubDDTLfHdjazDrNlelZWUso+3BjmcRx7DzrTtbCyKDFJi8QjixcXptfO9UHb
-    TgLw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792518639;
+    bh=L94ISj9l4H3Wuk6RHQZ+sIUxjHr69Z3PAjUEKXQG0iU=;
+    b=aPZfXEmyQNebWJ1EOpR67gJvt7DOiXKfpQ2njE1XIR1Ol5Rh5AFA32qvMN6uqLz26n
+    kueo5KAgRrSXfSjwHWxKAWyLHH+iLg6yNlIF8KBygFRy6RPuQF1wLfdnctceUnkLD10m
+    QW7/BJMjw/6X/LI/96foIt7N5/KL+LCuW1bd2wC9I/jsR7XKNHAHXcSSJvAluHVx5bLh
+    HsE5TTwnwN0VtX2wMzWE55moxu0X/eBv+LzoFrAnzGr4ffB1Nf7qZ8gsqoYasQCqo20k
+    mNRAdNl7sZxq7V61ufgiEa7v2g7I3ktz/M+5iJtYZk3IOP5EQXmpUmKFsJGBDKFepMUr
+    4vNg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792522826;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=/lWhkwvW5Kg+2rQ8alcge5uahNeabNpwNFOn2oIPdwY=;
-    b=PpKCZH2lwbuVOO0agjMWUilNAChmp4BlDVe9Jv9H20x2bgiTqliGW7OYfcRplyybbb
-    QisLTwca1ne1IUSBneAg==
+    bh=L94ISj9l4H3Wuk6RHQZ+sIUxjHr69Z3PAjUEKXQG0iU=;
+    b=Z4Koh+mebxiPPaw4aAClUSL+xE7fFzSVwRxp0unbbPQnniLeC9IvOIsQjWgV/Idao3
+    EXkTR2Y0P1Pef2htOUCg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::989]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29KHobcw6
+    with ESMTPSA id Kfdf2a29KJ0Pd5f
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 20 Oct 2026 19:50:37 +0200 (CEST)
-Message-ID: <508dfe04-805a-4872-a95c-c29d5fd4b4e6@hartkopp.net>
-Date: Tue, 20 Oct 2026 19:50:31 +0200
+    Tue, 20 Oct 2026 21:00:25 +0200 (CEST)
+Message-ID: <bc3bf21e-0437-4947-9541-0d10657aac02@hartkopp.net>
+Date: Tue, 20 Oct 2026 21:00:25 +0200
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,166 +96,245 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 10/11] can: replace ARPHRD_CAN type checks with
- can_get_ml_priv()
+Subject: Re: [PATCH net-next 11/11] can: protect the receive lists with a
+ per-device lock
 To: netdev-bot+sashiko@kernel.org, mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, 1579567540@qq.com,
  stable@vger.kernel.org, mailhol@kernel.org
-References: <20261019170834.1727150-11-mkl@pengutronix.de>
- <179251627911.3135.5362969890074772101@kernel.org>
+References: <20261019170834.1727150-12-mkl@pengutronix.de>
+ <179251629957.3135.180755777057921325@kernel.org>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179251627911.3135.5362969890074772101@kernel.org>
+In-Reply-To: <179251629957.3135.180755777057921325@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 
 
 On 20.10.26 19:11, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found more severe
-> issue(s) in other patches of this series. This mail is only an FYI, in case
-> you want to address the nit picks below when you respin.
+> Thank you for your contribution! Sashiko AI review found 3 potential
+> issue(s) to consider.
 > 
-> Low priority / nit picks for your consideration:
+> Critical: 0 · High: 0 · Medium: 1 · Low: 2
 > 
-> - [Low] The commit message is inaccurate about where the crash happens.
+> If you believe none of the issues are legitimate, please reply to each
+> issue of Medium severity or higher and explain why the AI is wrong.
+> If any of them are legitimate and you plan to respin, please let patchwork
+> know by including "pw-bot: cr" as a separate line at the end of your reply
+> (one such reply per series is enough).
 > 
-> Pre-existing issues:
-> - [Medium] This problem wasn't introduced by this patch, but isotp_bind()
->    in net/can/isotp.c still ignores the return value of both…
+> - [Medium] raw_bind() no longer holds RTNL, so the socket can miss a
+>    NETDEV_DOWN that arrives while it is binding.
+> - [Low] The commit message says "the callers pass the namespace that has
+>    been used for can_rx_register()", and the new kernel-doc of…
+> - [Low] The new comment on netns_can.rcvlists_lock in
+>    include/net/netns/can.h says it "protects rcv_lists_stats".
 > 
-> --
-> 
-> can: replace ARPHRD_CAN type checks with can_get_ml_priv()
-> 
-> This patch replaces the remaining dev->type == ARPHRD_CAN checks in
-> af_can, bcm, gw, isotp and raw with can_get_ml_priv(). The TUNSETLINK
-> ioctl can switch a TUN/TAP device to ARPHRD_CAN while dev->ml_priv stays
-> NULL, and such a device passes the old type checks.
-> 
-> Link: https://patch.msgid.link/20261012164802.94113-1-socketcan@hartkopp.net
-> Link: https://patch.msgid.link/20261019152741.54854-5-socketcan@hartkopp.net
-> 
->> The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
->> type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
->> netdevice passes the ARPHRD_CAN checks and triggers a NULL pointer
->> dereference when CAN filters are created and when they are removed,
->> e.g. by the CAN protocols' netdevice notifier handlers.
-> 
-> [Severity: Low]
-> Is the "when CAN filters are created" part accurate for this tree?
-> 
-> Commit 8aa59e3559494 ("can: af_can: fix NULL pointer dereference in
-> can_rx_register()") already made can_rx_register() reject devices
-> without ml_priv:
-> 
->      if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
->          return -ENODEV;
 
-The commit message refers to the CAN filter register/unregister
-procedure as a whole, not to a single code path in a specific tree.
+Thanks for the review.
 
-Commit 8aa59e3559494 only added the ml_priv check to can_rx_register().
-can_rx_unregister() and the CAN protocols kept checking dev->type only.
-So that commit fixed the problem only partially, and the NULL pointer
-dereference is still reachable on the unregister side.
+[Medium] NETDEV_DOWN during raw_bind():
 
-This patch completes that fix. It uses can_get_ml_priv() as the only
-criterion for a real CAN device in all register/unregister paths and in
-the protocols' bind/notifier code. It no longer relies on each caller
-handling the can_rx_register() return value correctly.
+The window exists, but it only affects a down transition in the middle
+of raw_bind(). Missing the asynchronous ENETDOWN there is harmless and
+not worth an additional barrier pair in raw_bind() and raw_notify():
 
-> 
-> raw, bcm, gw (through cgw_register_filter()) and isotp all create filters
-> through can_rx_register(). So creating a filter can't reach the NULL
-> ml_priv.
-> 
-> The only dereference left seems to be on removal. can_rx_unregister()
-> checked only dev->type, and then can_dev_rcv_lists_find() does:
-> 
->      struct can_ml_priv *can_ml = can_get_ml_priv(dev);
->      return &can_ml->dev_rcv_lists;
-> 
-> The spin_lock_bh() on dev_rcv_lists->lock then goes through a near-NULL
-> pointer.
-> 
-> The path that actually gets there looks like isotp. isotp_bind() ignores
-> the -ENODEV from both can_rx_register() calls and sets so->bound = 1
-> anyway. Later, unregistering the filters crashes:
-> 
-> isotp_bind()
->      can_rx_register() -> -ENODEV, ignored
->      so->bound = 1
-> 
-> isotp_release() or isotp_notify(NETDEV_UNREGISTER)
->      can_rx_unregister()
->          can_dev_rcv_lists_find()
->          spin_lock_bh(&dev_rcv_lists->lock)
-> 
-> The code change itself looks correct. Could the commit message describe
-> the crash on removal and the isotp path instead? That would show stable
-> backporters which code is affected.
-> 
->> diff --git a/net/can/isotp.c b/net/can/isotp.c
->> index 64ff203a37f4..5e1c3971ebfc 100644
->> --- a/net/can/isotp.c
->> +++ b/net/can/isotp.c
-> 
-> [ ... ]
-> 
->> @@ -1618,7 +1619,7 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
->>   		err = -ENODEV;
->>   		goto out;
->>   	}
->> -	if (dev->type != ARPHRD_CAN) {
->> +	if (!can_get_ml_priv(dev)) {
->>   		err = -ENODEV;
->>   		goto out_put_dev;
->>   	}
-> 
-> [Severity: Medium]
-> This is a pre-existing issue and was not introduced by this patch.
-> Further down in isotp_bind(), the return values of both can_rx_register()
-> calls are still ignored:
+- Every transmission on a CAN_RAW socket goes through can_send(), which
+   checks IFF_UP and returns -ENETDOWN to sendmsg(). So the state is
+   reported reliably on every send attempt.
 
-Right. That's a separate issue, and it doesn't belong to this patch. The
-missing error handling in isotp_bind() will be addressed in a separate
-patch.
+- The missed notification does not affect the binding: the CAN_RAW
+   socket stays bound and its filters stay registered across down/up,
+   and frames are received again once the interface is up.
+
+- Applications can not rely on this notification anyway: a CAN_RAW
+   socket bound to all CAN interfaces (ifindex 0) never gets ENETDOWN.
+   Applications that need the link state have to track it via
+   rtnetlink, not via the CAN socket.
+
+[Low] rcvlists_lock comment / j1939 @net: These are documentation
+details; the j1939 statistics behaviour is unchanged by this patch, as
+noted in the patch description.
 
 Best regards,
 Oliver
 
+
+> --
 > 
-> 	if (isotp_register_rxid(so))
-> 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
-> 				isotp_rcv, sk, sock_i_ino(sk), sk);
-> 	...
-> 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
-> 			isotp_rcv_echo, sk, sock_i_ino(sk), sk);
+> can: protect the receive lists with a per-device lock
 > 
-> 	/* switch to new settings */
-> 	...
-> 	so->bound = 1;
+> This commit adds a spinlock to struct can_dev_rcv_lists. The receive lists
+> of a CAN device are now protected per device instead of by the per-netns
+> rcvlists_lock, so can_rx_unregister() still finds subscriptions after the
+> device has moved to another namespace. It also drops RTNL from raw_bind(),
+> raw_setsockopt(), raw_release(), isotp_bind() and isotp_release(), and
+> relies on lock_sock() plus a device pointer published inside the RCU
+> lookup to serialize with the netdev notifiers.
 > 
-> The new can_get_ml_priv() check rules out the -ENODEV cases. However,
-> can_rx_register() can still return -ENOMEM:
+> Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+> Link: https://patch.msgid.link/20261019152741.54854-6-socketcan@hartkopp.net
 > 
-> 	rcv = kmem_cache_alloc(rcv_cache, GFP_KERNEL);
-> 	if (!rcv)
-> 		return -ENOMEM;
+>> diff --git a/include/net/netns/can.h b/include/net/netns/can.h
+>> index 48b79f7e6236..ef7aefdf7b23 100644
+>> --- a/include/net/netns/can.h
+>> +++ b/include/net/netns/can.h
+>> @@ -29,7 +29,7 @@ struct netns_can {
+>>   
+>>   	/* receive filters subscribed for 'all' CAN devices */
+>>   	struct can_dev_rcv_lists *rx_alldev_list;
+>> -	spinlock_t rcvlists_lock;
+>> +	spinlock_t rcvlists_lock; /* protects rcv_lists_stats */
 > 
-> In that case, does bind() report success even though the socket has no RX
-> receiver, no echo receiver, or neither? RX frames would be dropped without
-> any error, and isotp TX would wait for echo frames that never arrive.
+> [Severity: Low]
+> This isn't a bug, but is this comment accurate? The lock only serializes
+> the rcv_entries and rcv_entries_max updates in can_rx_register() and
+> can_rx_unregister().
 > 
-> A later isotp_release() or isotp_notify() for NETDEV_UNREGISTER would
-> only print "receive list entry not found" from can_rx_unregister(). It
-> would not crash.
+> can_init_stats() in net/can/proc.c updates other fields of the same
+> structure without taking rcvlists_lock. It runs from the stats timer, or
+> from the reset_stats proc read when the timer is disabled:
 > 
-> Other CAN protocols handle this: raw_enable_filters() rolls back on error,
-> and bcm_rx_setup() checks err. Should isotp_bind() check these results and
-> unwind too? The last patch in this series ("can: protect the receive lists
-> with a per-device lock") still leaves both calls unchecked.
+> net/can/proc.c:can_init_stats() {
+>      ...
+> 	rcv_lists_stats->stats_reset++;
+> 
+> 	if (user_reset) {
+> 		user_reset = 0;
+> 		rcv_lists_stats->user_reset++;
+> 	}
+> }
+> 
+> can_stats_proc_show() also reads these counters without the lock.
+> 
+> Could the comment name rcv_entries and rcv_entries_max specifically?
+> 
+> [ ... ]
+> 
+>> diff --git a/net/can/af_can.c b/net/can/af_can.c
+>> index d97f85fc3232..bf612c4b983d 100644
+>> --- a/net/can/af_can.c
+>> +++ b/net/can/af_can.c
+> 
+> [ ... ]
+> 
+>> @@ -509,6 +513,13 @@ static void can_rx_delete_receiver(struct rcu_head *rp)
+>>    *
+>>    * Description:
+>>    *  Removes subscription entry depending on given (subscription) values.
+>> + *  The receive lists of a CAN device are protected by a per-device lock,
+>> + *  so the subscription is found even when the device has been moved to
+>> + *  another network namespace after can_rx_register(). The caller has to
+>> + *  ensure that @dev stays valid, e.g. by holding a reference to @dev or
+>> + *  RTNL. @net is the namespace that has been used for can_rx_register().
+>> + *  It selects the 'any' CAN device lists for @dev == NULL and is used for
+>> + *  the receive list statistics.
+>>    */
+> 
+> [Severity: Low]
+> The new kernel-doc says @net is the namespace that was used for
+> can_rx_register(). The commit message says the same: "the callers pass
+> the namespace that has been used for can_rx_register()".
+> 
+> Does j1939 follow this? It reads dev_net(ndev) again at unregister time:
+> 
+> net/can/j1939/main.c:j1939_can_rx_register() {
+>      ...
+> 	ret = can_rx_register(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
+> 			      j1939_can_recv, priv, 0, NULL);
+>      ...
+> }
+> 
+> net/can/j1939/main.c:j1939_can_rx_unregister() {
+>      ...
+> 	can_rx_unregister(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
+> 			  j1939_can_recv, priv);
+>      ...
+> }
+> 
+> A j1939 registration can outlive a namespace move. j1939_sk_bind() does
+> not hold RTNL. It calls j1939_netdev_start(), which registers with the old
+> namespace, before it calls j1939_jsk_add().
+> 
+> Suppose the NETDEV_UNREGISTER from __dev_change_net_namespace() runs
+> j1939_sk_netdev_event_unregister() in that window. The socket is not
+> J1939_SOCK_BOUND yet, so it is skipped and the registration survives the
+> move. The final release then passes the new namespace:
+> 
+> j1939_netdev_stop()
+>    __j1939_rx_release()
+>      j1939_can_rx_unregister()
+>        can_rx_unregister(dev_net(ndev), ...)
+> 
+> The receiver is still found through the per-device lists. However,
+> rcv_entries is decremented in the new namespace's rcv_lists_stats
+> (clamped at 0) and stays elevated in the old one. This accounting matches
+> the behaviour before the patch.
+> 
+> Should j1939_priv store the registration namespace (with a netns
+> reference)? Or should the kernel-doc and commit message describe a looser
+> rule?
+> 
+> [ ... ]
+> 
+>> diff --git a/net/can/raw.c b/net/can/raw.c
+>> index dfea48768b23..0d8edfa772fb 100644
+>> --- a/net/can/raw.c
+>> +++ b/net/can/raw.c
+> 
+> [ ... ]
+> 
+>> @@ -305,16 +309,28 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
+>>   		       struct net_device *dev)
+>>   {
+>>   	struct sock *sk = &ro->sk;
+>> +	struct net_device *bind_dev;
+>>   
+>>   	if (!net_eq(dev_net(dev), sock_net(sk)))
+>>   		return;
+>>   
+>> -	if (ro->dev != dev)
+>> +	/* Lockless fast path, ro->bind_dev covers a concurrent bind().
+>> +	 * Read it before ro->dev, pairs with smp_store_release() in
+>> +	 * raw_bind(). A stale ro->bind_dev only costs a lock_sock().
+>> +	 */
+>> +	bind_dev = smp_load_acquire(&ro->bind_dev);
+>> +	if (READ_ONCE(ro->dev) != dev &&
+>> +	    (msg != NETDEV_UNREGISTER || bind_dev != dev))
+>>   		return;
+> 
+> [Severity: Medium]
+> Can a NETDEV_DOWN be lost while raw_bind() is running? The bind_dev hint
+> is only checked for NETDEV_UNREGISTER, and raw_bind() no longer holds
+> RTNL.
+> 
+> raw_bind() now runs these steps in order:
+> 
+>      smp_store_release(&ro->bind_dev, dev);
+>      ...
+>      if (!(READ_ONCE(dev->flags) & IFF_UP))   /* device still up here */
+>          notify_enetdown = 1;
+>      ...
+>      err = raw_enable_allfilters(sock_net(sk), dev, sk);  /* cond_resched() */
+>      ...
+>      WRITE_ONCE(ro->dev, dev);
+> 
+> Suppose dev_close() runs after the IFF_UP check but before ro->dev is
+> published. raw_notifier()->raw_notify() then sees ro->dev != dev with
+> msg == NETDEV_DOWN, so it returns at the check above and never reaches
+> case NETDEV_DOWN. raw_bind() finishes with notify_enetdown == 0.
+> 
+> The socket ends up bound to a down interface, and sk_err = ENETDOWN /
+> sk_error_report() is never raised. Before this patch, rtnl_lock() in
+> raw_bind() kept dev_close() out of this window.
+> 
+> isotp_bind() publishes so->dev before it reads IFF_UP, so it does not seem
+> to have this problem.
+> 
+> Could raw_notify() also check bind_dev for NETDEV_DOWN? Alternatively,
+> raw_bind() could publish ro->dev before the IFF_UP check.
+> 
+> [ ... ]
 > 
 
