@@ -1,47 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792464666;
-	b=Vb6g+YqbgOyc9OFz3mcSU7NoiiX1ONhsmMA2S9Y+UkQdB/D3GTDDUZeVy5uVhsc5yGnN
-	 ImftfqACBhpnt4Sq4WqojN5SGYmqCnLx1ZXMebCtcUK9Maa+NcMR6hJQZQ3P6MT2iMG1A
-	 UeSZ1ErK6p3URilUGz6TSD8SNQ15lZiGLTDvkMmq+qWQbkRn2U945c4frMF0bHTZREVlk
-	 qnulN9NB6AzhbxPu39jZ/yBkPkxWyc1oJffqSs+56mHwRsBsx7R7lAYT3CbxCi+ejGU6f
-	 D22mYKAI62UiRXlPTe3ivR9jhsmnXGooXbOWExnnzB2flZRIkhxhD1MPAK5e2R3zAyQ==
+	t=1792466574;
+	b=vgQCBdgZVRVa9Yb5+QzMoI0T+1ma9iVws/xOQotu4G/EuNQm3q071jee8u8kCpYSi5ef
+	 UGfaC8HC+VjPyc6bLdd/AQPXlIbVvY10sBtOSnhWBI5WkZRqDcaQNSKcFck0dsqS04Edm
+	 CLxn4PNdSSpKaDbXjyYm4A/KXXaUNHZcXLepYWOWqfF4+kq8m75UYq/LjROAOu869WZuU
+	 3lT7KZ2zZlLAVrUAKF8md+23ShPyD/NxDKElM6F5N3sFP0VpuvI7t6lrYZESpBpd/swNe
+	 wL9M/rWwwUi0T9GAByG0yBO3GJJoRr5LQAGuzBBUoV7d46Dw21ePU9mqhY6i++XUnUA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792464666;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792466574;
 	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
 	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
 	bh=/uRS3Vea5xa2usxGVceBMi/4OQCMX3rft1XIK4h03p4=;
-	b=hcM2ldYG6q5W1WHOrZB/GaLydjzFf2xtXLdUssKJIwPmHxNs91smpRhnTnUfR2sKcXtl
-	 nIB7sDEEV7jwwEpL7mp4wY6Qn2pD56m+ix78cXCWjZjLawLRTBrfclqNGRuqeM8/L1oyL
-	 vfRhBNPoyUj2HERTf/HUQPwR3B2cfi4vBCqtq4orEnNSRMFHfSt1LILvhNFkUrsIbf2Jl
-	 UwQQHRndRM/rzep8IHfN6t2Yj707k1Qeoe1KhisrooCxP/3jWB3nLTEi0lZM9zBDWgY/h
-	 /yezmZvt/VKriy/ESD6aHK1XImNuKAvZvIla3vN21CkoGIoV+M7wlYdmT+glmY51mlQ==
+	b=Ju54g+u8Fjhpaqjss0Ie4//sOTXv/s1PMvKQEQyiO0oGdhrCU1yW/LQoQEec8+tQ7gVN
+	 /4PuGyviv9LIZ71MyXOO4pThaIIQUegZari/pYtq/WPt3jNLYLatnE70VkYKnjI7+myk2
+	 3k+ej2pT3C4UCBuz/NMzLjD4XQEzHUko9VWJJWN4GAeIarWXcPmLPqum/a709d+BaaXzB
+	 Vq4+ShIKwAB2m07ibOCmfXM8DniXFyt/h7wpvKgItrT4Hexiu+VokbyPf4oDMuMV7tOn5
+	 JV/lf+o8jRkngsz5+BYuk2vTlOTkyVvpNcWrwu9PGtFQyMkwR8rAIBQgWIwJin8UYuA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=163.com;
 	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=F71XTr1K;
-	arc=none smtp.remote-ip=220.197.31.3
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=FZgC5hh5;
+	arc=none smtp.remote-ip=117.135.210.4
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89683606A31F;
-	Tue, 20 Oct 2026 02:51:05 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 89683606A31F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDAE4606A319;
+	Tue, 20 Oct 2026 03:22:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EDAE4606A319
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=F71XTr1K
+	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=FZgC5hh5
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=/u
-	RS3Vea5xa2usxGVceBMi/4OQCMX3rft1XIK4h03p4=; b=F71XTr1KWqj8R9BkOT
-	QyuIYc/JK1f2kd8fO/rOHfVvmKDBdqWXOmb/IoYT4oiCoItzP5+88dvbVAOE5h0v
-	UpHYMsfZlAErdCKsrOzITX5TgjQFllpfEMcpP6DP/WLRY/abwaiz7lPINS8nDwRe
-	fUm1Hdt1NzSO2jITEySDVymAY=
+	RS3Vea5xa2usxGVceBMi/4OQCMX3rft1XIK4h03p4=; b=FZgC5hh5WpEjpYVlTc
+	Ej/Z4Dm4L3RnmZ4KNhv9Z9UfkMMlTxcZ1eY7SrCHzJ7rsxc2uxoaUD9WtfMS92Nu
+	TxHdP1FTnDmBO/6AhkRthXlX7fweLIi/WFb/Jn5uJyoPsGvBvxBOKCv03QhctReW
+	Hq2eStyiLFK24CrYlxodW/1OQ=
 Received: from chaosheng-ASUS-TUF-Gaming-F16-FX607JV-FX607JV.lan (unknown [])
-	by gzsmtp5 (Coremail) with SMTP id QCgvCgC3Z6b81tZqKuWeAw--.50653S2;
-	Tue, 20 Oct 2026 10:50:37 +0800 (CST)
+	by gzga-smtp-mtada-g0-2 (Coremail) with SMTP id _____wD3n1Br3tZq_fh2BQ--.18789S2;
+	Tue, 20 Oct 2026 11:22:21 +0800 (CST)
 From: Chaosheng Qu <quchaosheng000406@163.com>
 To: quchaosheng000406@163.com,
 	Robin van der Gracht <robin@protonic.nl>,
@@ -53,8 +53,8 @@ Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
 	linux-kernel@vger.kernel.org,
 	Sashiko <sashiko-bot@kernel.org>
 Subject: [PATCH net v5] can: j1939: validate the EDPO packet number
-Date: Tue, 20 Oct 2026 10:50:36 +0800
-Message-ID: <20261020025036.74454-1-quchaosheng000406@163.com>
+Date: Tue, 20 Oct 2026 11:22:19 +0800
+Message-ID: <20261020032219.80117-1-quchaosheng000406@163.com>
 X-Mailer: git-send-email 2.43.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -66,12 +66,12 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:QCgvCgC3Z6b81tZqKuWeAw--.50653S2
+X-CM-TRANSID:_____wD3n1Br3tZq_fh2BQ--.18789S2
 X-Coremail-Antispam: 1Uf129KBjvJXoWxtr1UurWrCFWrAr17KryUWrg_yoW3WF47pF
 	W3KryUGryDJr4xAr4xJrWDX34Syws3XryrJFy7t3s2k3y5AF45tFn8tryfWayqy3s5u3y3
 	u3Z8Xan8Gr40g37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0JUUHUhUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC-x5FumrW1v7rbgAA3P
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0pR_MaUUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4w8jmGrW3m-nwAAA39
 
 ETP.CM_DPO is peer controlled and its packet number is accepted without
 any validation.  It names the packet a transmission window starts at, and
