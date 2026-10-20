@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.6
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792487370;
-	b=WRsV8mfeVVm/8BBBoDTbmWS9fM4l3QYYPrf10CkUXNWtEv/cJ9O2raqVHRKFW1/9kNnx
-	 wondvjl8T0YrXht4usOcMGlFUvhlh9TzHGZG9kT3L7TAximjDPAVuaI9q3mF/hv7yMbN5
-	 2EAk2FYi5uMCsPpXjTmYT1+PxsCOli6qh1z9Gqpg1pDKCat4Egd+4PSj92tweEBvuhoyf
-	 6qp0Gc5VG9Bi1nKZEAvg+yFt5opP003fer8zAKhxbNxeb7Gxl+PgOGbA1Ss1EaOgmdIzj
-	 krZMOJeoH1ATzSOTB1UXBiqdSnrEGogUM1sXWgGQY07JWjO9tZLx6l4h8ht3w/bZE9w==
+	t=1792487377;
+	b=GOnLeSqBh14nopi+JhSBDUJXP87USdTxcbuzNKKfx4NZh46xs08pMdXzISZka7n00Fp2
+	 HjZEoVwYANYuRQk0y+nI+YRZcXbj2YrNvc3Czmt5MdXzZV/PugtbpJHcAR1pC/Aq1hxyS
+	 DYEQ6LdnMLlZ/fQM9U6DDJAwr+p+u+4lqJ+fFMyIk4JutYeB6HV7X+SjU86NiCgT9bcr6
+	 OjgvdDb1u9olVRkVYMwC42iNwbBYrIAXe6wy2cB78hfzeQ+IKdhCje5q67Wxa2fGHOhlQ
+	 6jDIwnMwC/5fRO/EVscM0YlK2pRhTvKJOJinpCsH/SU4Lqj7pjZgUnMlDiT4TMxzFuA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792487370;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792487377;
 	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer;
-	bh=aRXYllM9CBSwb+oBFdWQ8OrqxDITeiZO+tNWy7el8F8=;
-	b=TakFCxfjpkNjhxinCZvLTdNdwqJb0vzCliYIT2wPy0hEB+7OBTXpdtrK42phhtExPPFX
-	 c+exWYZYJI8a6j9tkcb5LH5LhGFF3WlU+lkLwYlEkOJkU1u+xvcZlDZ2r5rrMd1bx+0o2
-	 SM8X04HkT6BRJq1Q9FNM8SuH9jSkCmTpF339UNsQBNU+0LrDFZJc2U6sE7ow+RdVLG45p
-	 KJPHYr+SvSYog06LUkN6GVy6fZFiis7f6BejXWTK89FlTqYDPMm9Rk3uXEamRZ6YHo3lw
-	 QcI9Otyw4JvyvnHSqwoy2Sc4xI4LVQR3DCEYVbEIdpOdNrAMVERy6tuluUooyYm/5Qg==
+	bh=HyeN6ww5mXakN+R/to/QG84N6/KL7dfMRy/h3T6vDnU=;
+	b=TEkPsyIIvlvthpYSgDEWK8rqHwznNOoJfOllAhfo0XITffRQdl0DkqeSj/Qx2TnLdzJ1
+	 Vfp/ZzfEZHQINd6uI6UUY3Q1QjX02FKNe7sc5ogSOFK4mDWy+RA+cihE0+uUSmtKKZhvf
+	 nEgSZ2ZD+SobeuZi7qiwWeJdwSYqaYe42L68JHbOjFaUn2dhh3CKimXjygMjlhL8LsqXb
+	 6zdpR84NsQ+MM1gTWz4n5RhdDb898tm44nmOmbJxW4zvEr8LF3SBPYWCA+GlDMZ7GdlQ6
+	 1Nbrhv8Qj707rGqoHry4EJkDPGNDU+5/ci9N/wzaVenRhR5vqAEKxLL8QwzJQ06syWQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=free.fr;
 	spf=pass smtp.mailfrom=free.fr;
-	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b="C/mO8dtP";
+	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=QfUqmD+O;
 	arc=none smtp.remote-ip=212.27.42.6
 Received: from smtp6-g21.free.fr (smtp6-g21.free.fr [212.27.42.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3293C606A333;
-	Tue, 20 Oct 2026 09:09:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3293C606A333
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6504606A31D;
+	Tue, 20 Oct 2026 09:09:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E6504606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=C/mO8dtP
+	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=QfUqmD+O
 Received: from [127.0.1.1] (unknown [82.96.140.143])
 	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp6-g21.free.fr (Postfix) with ESMTPSA id E4F3A78050E;
-	Tue, 20 Oct 2026 11:09:19 +0200 (CEST)
+	by smtp6-g21.free.fr (Postfix) with ESMTPSA id D967B780383;
+	Tue, 20 Oct 2026 11:09:27 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1792487367;
-	bh=aXDnm0PSvFHlAN8Q/+HYFyVjpWFDSHHA4kE+39o0oHU=;
+	s=smtp-20201208; t=1792487375;
+	bh=tljyezjBvKA4hNJ3cD+XPPj0Gfqx4rlDANDus6f6/oc=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=C/mO8dtPidthUWtzuepo9NYid04jfq/l+KKHwAjDZJLyfm2DV8ZAwClXRwygxLhv0
-	 pmvX+x7opEGWBpdCUXFEWGSnh7wUQbFstZM4VHVKoRLQwPr3zWsG3qve+35q/nWuXx
-	 FPtVfCAqNlZtc8vjdV4QeOcDqpyQl0iHWD3cqECJZs9DdLlc8Smodra8vDeWHP2sIO
-	 ajz2r02Kxq6mW8Uo6bD2MyK+N7Gx/w/XewWcjtMOs3gd+US+DSmbzyMBmbMOkAQjTS
-	 4BlFpkfgTkchjUsSX8NDX77RLt7qy/w/gtBaTLIItIwP0S8PmEhae2VkCN/4F1c77V
-	 WW3sLlmVFzwIQ==
+	b=QfUqmD+O3b7rdF/LysedEWQGK1gHaAnakftn3lQQJ59MWsAiuTlu1N/UJ6kE0hdpn
+	 HYIpNrn2+QKWuTq+CQ1AbligBhipZ9k6UiZltoLdUL+lnhYkzVoAjc6+uV9BTaC9Gn
+	 rHvVD+WcMUa8KlMkEHIzjIq+lDbCbCBvIZEgmDRhHjJUqbuPkl51q5Qiux9yV+0f0S
+	 9B7h12TGE1WuOWbv8WxfwEbgd0jf5DG4yXMwl6+D9mOw5NgsM/y22WTf5sxmetIUim
+	 1jJ5cq/iSQpm4eenNGSDSHH0u+Zhsj/h6m/ZUeSSnbAC6ynLP+usKp4MxOfoFv0TDI
+	 o0EtOAdndgbMA==
 From: =?utf-8?q?St=C3=A9phane_Grosjean?= <stephane.grosjean@free.fr>
-Date: Tue, 20 Oct 2026 11:08:08 +0200
-Subject: [PATCH v3 03/10] can: peak_usb: sort ctrlmode_supported flags
+Date: Tue, 20 Oct 2026 11:08:09 +0200
+Subject: [PATCH v3 04/10] can: peak_usb: harden PCAN-USB message validation
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -61,7 +61,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-Message-Id: <20261020-canfd_check_channel_idx-v3-3-74d17c5a599e@peak-system.fr>
+Message-Id: <20261020-canfd_check_channel_idx-v3-4-74d17c5a599e@peak-system.fr>
 References: <20261020-canfd_check_channel_idx-v3-0-74d17c5a599e@peak-system.fr>
 In-Reply-To: <20261020-canfd_check_channel_idx-v3-0-74d17c5a599e@peak-system.fr>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -73,111 +73,72 @@ X-Mailer: b4 0.14.3
 
 From: Stéphane Grosjean <s.grosjean@peak-system.fr>
 
-Order the CAN_CTRLMODE_* flags in ctrlmode_supported according to
-their numerical values.
+Add boundary checks when parsing PCAN-USB messages and reject
+malformed buffers whose contents would otherwise lead to accesses
+outside the received USB data area.
 
-This is a cosmetic change only and does not alter the driver
-behavior.
+This prevents potential out-of-bounds memory accesses caused by
+corrupted or malicious device messages.
 
+Fixes: 46be265d3388 ("can: usb: PEAK-System Technik PCAN-USB specific part")
 Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb.c     |  3 ++-
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c  | 32 ++++++++++++++++++-----------
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c |  3 ++-
- 3 files changed, 24 insertions(+), 14 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-index 785224e00c4e..169c00d93463 100644
+index 169c00d93463..5da91d5dc67a 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-@@ -1016,7 +1016,8 @@ const struct peak_usb_adapter pcan_usb = {
- 	.name = "PCAN-USB",
- 	.device_id = PCAN_USB_PRODUCT_ID,
- 	.ctrl_count = 1,
--	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
-+	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_3_SAMPLES |
- 			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_USB_CRYSTAL_HZ / 2,
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 0d46f4ce5dca..82502594a409 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -1198,9 +1198,11 @@ const struct peak_usb_adapter pcan_usb_fd = {
- 	.name = "PCAN-USB FD",
- 	.device_id = PCAN_USBFD_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
--	.ctrlmode_supported = CAN_CTRLMODE_FD |
--			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
-+	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_3_SAMPLES |
-+			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_FD |
-+			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-@@ -1274,9 +1276,11 @@ const struct peak_usb_adapter pcan_usb_chip = {
- 	.name = "PCAN-Chip USB",
- 	.device_id = PCAN_USBCHIP_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBFD_CHANNEL_COUNT,
--	.ctrlmode_supported = CAN_CTRLMODE_FD |
--		CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--		CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
-+	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_3_SAMPLES |
-+			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_FD |
-+			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-@@ -1350,9 +1354,11 @@ const struct peak_usb_adapter pcan_usb_pro_fd = {
- 	.name = "PCAN-USB Pro FD",
- 	.device_id = PCAN_USBPROFD_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
--	.ctrlmode_supported = CAN_CTRLMODE_FD |
--			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
-+	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_3_SAMPLES |
-+			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_FD |
-+			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-@@ -1426,9 +1432,11 @@ const struct peak_usb_adapter pcan_usb_x6 = {
- 	.name = "PCAN-USB X6",
- 	.device_id = PCAN_USBX6_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBPROFD_CHANNEL_COUNT,
--	.ctrlmode_supported = CAN_CTRLMODE_FD |
--			CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
--			CAN_CTRLMODE_ONE_SHOT | CAN_CTRLMODE_CC_LEN8_DLC,
-+	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_3_SAMPLES |
-+			      CAN_CTRLMODE_ONE_SHOT |
-+			      CAN_CTRLMODE_FD |
-+			      CAN_CTRLMODE_CC_LEN8_DLC,
- 	.clock = {
- 		.freq = PCAN_UFD_CRYSTAL_HZ,
- 	},
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index b6be8c19e537..4c3d89a160af 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -1072,7 +1072,8 @@ const struct peak_usb_adapter pcan_usb_pro = {
- 	.name = "PCAN-USB Pro",
- 	.device_id = PCAN_USBPRO_PRODUCT_ID,
- 	.ctrl_count = PCAN_USBPRO_CHANNEL_COUNT,
--	.ctrlmode_supported = CAN_CTRLMODE_3_SAMPLES | CAN_CTRLMODE_LISTENONLY |
-+	.ctrlmode_supported = CAN_CTRLMODE_LISTENONLY |
-+			      CAN_CTRLMODE_3_SAMPLES |
- 			      CAN_CTRLMODE_ONE_SHOT,
- 	.clock = {
- 		.freq = PCAN_USBPRO_CRYSTAL_HZ,
+@@ -558,6 +558,8 @@ static int pcan_usb_handle_bus_evt(struct pcan_usb_msg_context *mc, u8 ir)
+ 	switch (ir) {
+ 	case PCAN_USB_ERR_CNT_DEC:
+ 	case PCAN_USB_ERR_CNT_INC:
++		if ((mc->ptr + 3) > mc->end)
++			return -EINVAL;
+ 
+ 		/* save rx/tx error counters from in the device context */
+ 		pdev->bec.rxerr = mc->ptr[1];
+@@ -696,8 +698,11 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 		mc->ptr += rec_len;
+ 
+ 		/* Ignore next byte (client private id) if SRR bit is set */
+-		if (can_id_flags & PCAN_USB_TX_SRR)
++		if (can_id_flags & PCAN_USB_TX_SRR) {
++			if ((mc->ptr + 1) > mc->end)
++				goto decode_failed;
+ 			mc->ptr++;
++		}
+ 
+ 		/* update statistics */
+ 		mc->netdev->stats.rx_bytes += cf->len;
+@@ -733,14 +738,19 @@ static int pcan_usb_decode_msg(struct peak_usb_device *dev, u8 *ibuf, u32 lbuf)
+ 	int err;
+ 
+ 	for (err = 0; mc.rec_idx < mc.rec_cnt && !err; mc.rec_idx++) {
+-		u8 sl = *mc.ptr++;
+-
+-		/* handle status and error frames here */
+-		if (sl & PCAN_USB_STATUSLEN_INTERNAL) {
+-			err = pcan_usb_decode_status(&mc, sl);
+-		/* handle normal can frames here */
++		/* check if status_len byte can be read next */
++		if (mc.ptr >= mc.end) {
++			err = -EINVAL;
+ 		} else {
+-			err = pcan_usb_decode_data(&mc, sl);
++			u8 sl = *mc.ptr++;
++
++			/* handle status and error frames here */
++			if (sl & PCAN_USB_STATUSLEN_INTERNAL) {
++				err = pcan_usb_decode_status(&mc, sl);
++			/* handle normal can frames here */
++			} else {
++				err = pcan_usb_decode_data(&mc, sl);
++			}
+ 		}
+ 	}
+ 
 
 -- 
 2.53.0
