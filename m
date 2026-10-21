@@ -1,63 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.3
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792578034;
-	b=FicKcI6gYTZgtED8M13vYpZJxU4v/esnfKcyTVc4zqGLnyEA7eVm4Hw772VbXE36ENOY
-	 vFot26H0s58UgV+wg3UwJYgfwaSTE2l5CI5crSXavNHrQIzrhDuyHmjRa6W1pMYPpmvHw
-	 jXf2oQ3KEfikqkkTtk4v+ApXclK/TFK3ytCUXQzaBH/SBAQylUZazZ5IanhHIy6fZc4Du
-	 eg4B+hYQ814j+N0LGJbiIhXsisMbw0BUxuPtQUJD6bH8i+s2mCfvUx1r+xXW2x4pxgcgE
-	 m2a2JLVs+3/1zvfxRAvXklyp5UGNQWkYAuWuPgLz5z+Jwkw+o4PS49Z/jAf6pLqmANw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792578034;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Message-ID:
-	 In-Reply-To:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-Originating-IP:X-Mailer:
-	 X-Authenticated-User;
-	bh=9pFhfcV00oJEJQFN/3lguD9gsSxLp2OeXDi7RJYbI5Q=;
-	b=SjR7NSS8d+c8LvnjquqECkF6udwq0TQbYaAigcrzJg8Ga86/k4Ul1cvEQuhBo+N9nghB
-	 27Zz1sdeBypZ2hshIFgwFFaZ8QrREYzfRR5vNLQollzHiNPhvmL6IfckItuk5ZyNL43n9
-	 816gvqvEzl5DVNOeVVozlQ6Z9EBD5di0syAJVwH7ZwbU7cabo1ba6SB+VBPstfDVzli2u
-	 sjD6asAbv77JMKqJx0+3tBvuHisM4o0B45TE6tvQyVw/m50ffMN7/l3tLcWxHIJAl2i50
-	 LMkfgHLOupEfMxbudrqXwQX/9IHZCsuIZBmoJnXLbxovHwIqo81UuRkz6f/PKyBiM7A==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=free.fr;
-	spf=pass smtp.mailfrom=free.fr;
-	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=EhJ0XhV7;
-	arc=none smtp.remote-ip=212.27.42.3
-Received: from smtp3-g21.free.fr (smtp3-g21.free.fr [212.27.42.3])
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792578482;
+	b=QwT6KPgTJmh4TGn31712Vuhpv35dCqOUsl2Q10Tw/eqUIFwJ8zwu65lU/iu4aWqkUumI
+	 viu9KW457Wg1bEVa+SdZ9svop/rwCUuDHX1Ff3K6N+Zlkqf5KzZAzdBG4brBhAvXVccy1
+	 SHIELA+oUFN24/IysbQMYVzZLcgscKy1IOBXi14HhlN/iuq32BWdAH4j89zWvO2yDxcmH
+	 la1GF5j5ZGkKFskhqrTp1j05bee2lJlfJSYUMfIE26AcR6bJ1ck/X2fFSrE6vdXGMB/iX
+	 hrt2TKwaxYO3Bg0yBuSj8nLX67qDOgZ9aWvsqWKHHeaLMnyOiC0TbvDxmjrBsItC3OQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792578482;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
+	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=AlrfPzT5jQTLXkKxox6WIsAY0BepfJdkXAFH0ccIzwY=;
+	b=4CejPjllyG/X8sSEdZmot0qSI8xkTTb2m13ugQJSHAh3ZSrPiq85UtlMFwTcRYCymfL0
+	 OGuQAhpdcig0drncqFd16I1ySsW8N/6UJB6rfL+3VPU2CFISN6LJq8e02KbzT4vFBr3S9
+	 SCz9vWpaKam2u6lffPOKBNH4XmiBCEmyWBsCe2/Ietvs9xBucdfnRM4kcDK/EyY3vltrL
+	 s9CIht4omiFuGeNbId/DkvF2+Ne3gjh1BiyTtZ1smN441LHxJdM/W6j/+y7lGfvgpDjCO
+	 GKR7BEb0Orgp/BlHzV32i4UOWfA3zaW7SZFkGGj0+H84/K+29zf9D2fbIX/NPBbVTSg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KYIL244a;
+	arc=fail smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44485606A328;
-	Wed, 21 Oct 2026 10:20:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 44485606A328
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4FF606A320;
+	Wed, 21 Oct 2026 10:28:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0B4FF606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=EhJ0XhV7
-Received: from zimbra65-e11.priv.proxad.net (unknown [172.20.243.215])
-	by smtp3-g21.free.fr (Postfix) with ESMTP id 0AC5C13F89C;
-	Wed, 21 Oct 2026 12:20:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1792578031;
-	bh=UaxqiMpEEGmZ50v/CvqoyOgfJ41T2J5xAaT4f0Fh3wY=;
-	h=Date:From:To:Cc:In-Reply-To:Subject:From;
-	b=EhJ0XhV75VcmDBYkByTEv5mn5ysqlc6ceqiVXxhhpgHn1Nq5Fn6znjrS5AZZt1sxp
-	 bY+ZfgLHkbMIVBeIxdkj4HxBUjXjdg0CaNX6WXmfmbvMMBabbzA72ecK1ovVUYhfct
-	 tUHrawYSyA9SaGo7s2kVvxgrJTv01FQvhmjunzrXQ2CIPDPV5gY4IYuaU7X/d4wAvh
-	 a5ktkmEov4WuUxpIp5pYeBwFJaNfmjlDSE3MTgnuuVp5GZMVdpqWg7avnyBvp1gIbM
-	 gh6e8BMZjoMCB6JlZScbjCeHw+YwV8W0BZ8Rsc+MpkUz153vrMOYW9Q3CPiTV9m4nq
-	 K/c5ZCHjGa70A==
-Date: Wed, 21 Oct 2026 12:20:29 +0200 (CEST)
-From: =?utf-8?Q?St=C3=A9phane?= Grosjean <stephane.grosjean@free.fr>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
-	Pengpeng Hou <pengpeng@iscas.ac.cn>, linux-kernel@vger.kernel.org, 
-	=?utf-8?Q?St=C3=A9phane?= Grosjean <s.grosjean@peak-system.fr>, 
-	Liu Changjie <liucj1228@outlook.com>
-Message-ID: <942111184.1248111675.1792578029862.JavaMail.root@zimbra65-e11.priv.proxad.net>
-In-Reply-To: <20261021-hospitable-gentle-sheep-a15164-mkl@pengutronix.de>
-Subject: Re: [PATCH net] can: peak_usb: accept short uCAN end-of-list
- records
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KYIL244a
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4FFCB20291D;
+	Wed, 21 Oct 2026 12:27:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792578479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AlrfPzT5jQTLXkKxox6WIsAY0BepfJdkXAFH0ccIzwY=;
+	b=KYIL244aWfLc/Fygra/QGCll/lB1dXJfLot6+SVY13TeucGeWF+/UxK8femBcbO8CytUTQ
+	mCWBsbUFjp1JzQIrpwls9LCIHuY09gjZi/nCb+fjoDtqqUXUH15W6W2R5158Vr9bCyoHk8
+	TiZhOxRodbQuB64Fgq7cW7VqT8MAnmddutsqg37fvH2PN1rGH7d3uFNfk0mDrJ97qSgv7o
+	WoSnqTU6vtnU1wbgNCHkJ6uMs1ywSvD3Kfs2b7FnNPjGnFjYniKOXCdgrSQ/9hVOMwXJmO
+	bppRyQcBxIwy2gWbpUkNiM7YXt+6hcwr76EtpMz7AIX9cO7sj9QUef7XoGzM0Q==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792578479; a=rsa-sha256;
+	cv=none;
+	b=GQ8Hxcd7jNEZeBnejQEEi/zjbzS/l+ooHt3mzE+Cf9MXlva6ks4iIRNBaxlFal4CQQYQp/
+	eBLXy+9q87Tugsg8NA/to6ZmcS446f/bMo2Au3364d03Ccl0rJbAEqfMHZMS7j2z+aYvTg
+	J6DuYmwXm+ZfAEvd4ZV4rfLC5B8UPI+bWKyONc7i6TjxK01vvXJcUu80O7fyfnZXUE5w6+
+	mc78JtCUHdsFIdprK3ROUn7FUE9pItSBmvCvykBAC8JIwKAW8PBUROE369MUj+Z3zRgxRH
+	Tr+23d+JvnLKjIRizjYVpROgv9HYEXO3ioARs7ZdK0CXQMLxZU/pFJa7y6tvpA==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792578479;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AlrfPzT5jQTLXkKxox6WIsAY0BepfJdkXAFH0ccIzwY=;
+	b=AFCjUBwl9459eD3DfbEzJlSMLpLaSrYJGV0y+DlscA6lobfddRrAJQOKJVV8c+5cT++TBj
+	6pSZyDIsEzrb7lkGBFRM8oELSIr9TgKvit/PjjeboqePC47vFpJCXaAZNI4NXjvnJKdsnN
+	rQ4k/lY4u/yoNxerxz2UoBIBx422CH01K0GDMY0ndipMx1A9ct0VNhonQZDM/MtpcVchxc
+	FNB7NzcINrh5OPzTuHJKxpeleoo3AytY52cWiKAuykiDLd6lyp+PTEybMcS+hFN1t+4SEA
+	VQXo2Pcdwp3tPMS2Kic8Hf9njJ9bBANHI7Zl6en3JBD64MJWYuXZ1WLBiR1g4w==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xJTY7-000Xjg-0h;
+	Wed, 21 Oct 2026 12:27:59 +0200
+Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EC0015CAFD9;
+	Wed, 21 Oct 2026 10:27:58 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de,
+	Cunhao Lu <1579567540@qq.com>,
+	stable@kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 02/11] can: skb: make echo skb freeing safe in any IRQ context
+Date: Wed, 21 Oct 2026 12:24:33 +0200
+Message-ID: <20261021102756.1900679-3-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261021102756.1900679-1-mkl@pengutronix.de>
+References: <20261021102756.1900679-1-mkl@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -67,70 +108,111 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: Zimbra 7.2.0-GA2598 (ZimbraWebClient - GC154 (Linux)/7.2.0-GA2598)
-X-Authenticated-User: stephane.grosjean@free.fr
+Content-Transfer-Encoding: 8bit
 
-Hi Marc,
+From: Cunhao Lu <1579567540@qq.com>
 
-On 19.10.2026 00:46:34, Liu Changjie wrote:
-> A PCAN-USB FD v2 running firmware 3.2.0 sends a 16-byte status
-> record followed by a four-byte zero-size end marker. These transfers
-> cause repeated receive-buffer dumps while the interface is up.
->
-> pcan_usb_fd_decode_buf() requires a complete 12-byte struct pucan_msg
-> before checking the size field, so it rejects the end marker with
-> -EBADMSG.
+can_put_echo_skb() can be called with hardware interrupts disabled. Its
+direct drop paths use kfree_skb(), while can_create_echo_skb() uses
+kfree_skb() when cloning fails and consume_skb() after a successful clone.
+None of these helpers is safe in every IRQ context.
 
-Right: the firmware may terminate a list of records with a short null
-record, and it doesn't need to be a full struct pucan_msg. Only its size
-field matters.
+Use dev_kfree_skb_any() for all drop paths and dev_consume_skb_any() when
+consuming a successfully cloned skb. This preserves the respective skb drop
+and consumed semantics regardless of the caller IRQ context.
 
-The patch keeps all the record length checks added by 93fcab2c6968 and
-only accepts the end marker earlier, so:
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
+Link: https://patch.msgid.link/tencent_E84809CF236D0137885E7E4E4D58340B3208@qq.com
+Cc: stable@kernel.org
+Fixes: ae64438be192 ("can: dev: fix skb drop check")
+Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
+Fixes: 3ccd4c6167d3 ("can: Unify droping of invalid tx skbs and netdev stats")
+Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
+[mkl: also convert can_dropped_invalid_skb(), can_dev_dropped_skb()]
+[mkl: add stable on Cc + add Fixes tags]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
-Reviewed-by: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
+---
 
-Marc, since 93fcab2c6968 has been backported to the 6.6, 6.12 and 7.1
-stable trees, could you add "Cc: stable@vger.kernel.org" when applying?
+FAQ:
 
-Thanks,
+Q: What about the comment in drivers/net/can/virtio_can.c
+   virtio_can_start_xmit()? The error handling for virtqueue_add_sgs()
+   mentions that can_put_echo_skb() consumes the skb via consume_skb().
 
-St=C3=A9phane
+A: The comment in virtio_can.c will be updated in a separate series, to
+   ease backporting of this patch.
 
------ Mail original -----
-> St=C3=A9phane,
->=20
-> can you have a look at this?
->=20
-> On 19.10.2026 00:46:34, Liu Changjie wrote:
-> > A PCAN-USB FD v2 running firmware 3.2.0 sends a 16-byte status
-> > record followed by a four-byte zero-size end marker. These
-> > transfers
-> > cause repeated receive-buffer dumps while the interface is up.
-> >
-> > pcan_usb_fd_decode_buf() requires a complete 12-byte struct
-> > pucan_msg
-> > before checking the size field, so it rejects the end marker with
-> > -EBADMSG.
-> >
-> > Check that the size field is present before testing for an end
-> > marker.
-> > Require the full header for nonzero-size records and keep the
-> > remaining
-> > record and payload length checks.
-> >
-> > Fixes: 93fcab2c6968 ("can: peak_usb: validate uCAN receive record
-> > lengths")
-> > Assisted-by: LLM
-> > Signed-off-by: Liu Changjie <liucj1228@outlook.com>
->=20
-> Marc
->=20
-> --
-> Pengutronix e.K.                 | Marc Kleine-Budde          |
-> Embedded Linux                   | https://www.pengutronix.de |
-> Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
->=20
+[mkl: add FAQ section]
+---
+ drivers/net/can/dev/skb.c | 6 +++---
+ include/linux/can/dev.h   | 2 +-
+ include/linux/can/skb.h   | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index bc0787535b52..46c151eece8f 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -63,7 +63,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	    (skb->protocol != htons(ETH_P_CAN) &&
+ 	     skb->protocol != htons(ETH_P_CANFD) &&
+ 	     skb->protocol != htons(ETH_P_CANXL))) {
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return 0;
+ 	}
+ 
+@@ -91,7 +91,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	} else {
+ 		/* locking problem with netif_stop_queue() ?? */
+ 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return -EBUSY;
+ 	}
+ 
+@@ -403,7 +403,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
+ 	return false;
+ 
+ inval_skb:
+-	kfree_skb(skb);
++	dev_kfree_skb_any(skb);
+ 	dev->stats.tx_dropped++;
+ 	return true;
+ }
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 6d0710d6f571..346faddee02e 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -176,7 +176,7 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
+ 	return can_dropped_invalid_skb(dev, skb);
+ 
+ invalid_skb:
+-	kfree_skb(skb);
++	dev_kfree_skb_any(skb);
+ 	dev->stats.tx_dropped++;
+ 	return true;
+ }
+diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
+index 5d27843862fc..87ace09c0d8b 100644
+--- a/include/linux/can/skb.h
++++ b/include/linux/can/skb.h
+@@ -78,12 +78,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
+ 
+ 	nskb = skb_clone(skb, GFP_ATOMIC);
+ 	if (unlikely(!nskb)) {
+-		kfree_skb(skb);
++		dev_kfree_skb_any(skb);
+ 		return NULL;
+ 	}
+ 
+ 	can_skb_set_owner(nskb, skb->sk);
+-	consume_skb(skb);
++	dev_consume_skb_any(skb);
+ 	return nskb;
+ }
+ 
+-- 
+2.53.0
+
