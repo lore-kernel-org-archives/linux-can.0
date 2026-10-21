@@ -1,59 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792623535;
-	b=IDLdq6egtACanemE+e2pIfNHnrLrXILkvCP7YV9A8RuulBLarJP9PpPBLOKEKfGdz05N
-	 QETN8LuZG4YrRaBcbwYLvtThe5b0HSs7gAn+WeTY/HdauKLgvzrBTnrt5xsjRNduA7oMB
-	 Fp99Zxzdp62yoFy9bdfZl9UFSXz95zDQs6ZoF9/aT7/4OWrbxSh2NMY8qihX7AE9hJ/w5
-	 eod+GWvLJgGjVHynRUAx3DCUcAUAHXOL4k7JMnhfew4b14rBGpn2YXJpU3NOSGbRGssvs
-	 T38N4mBh9s/cjMVsnG/nO5n7av1Nz+ld6rg4sOBgNrWgFgmJmZrLWOk4SvaeRviXUjw==
+	t=1792623532;
+	b=Z9xtWjd9zB8eZZ4zd9pPqQ1wzwoaj3wE2B563ZWGSd9QdfLBoNcPTp3KDGk3igDseNRs
+	 i4WNWRHfxfB9LBSzMZPm3+kS/3vueY36NCwMxR1hziAcQZ3bY9XrB57275xQ03tqG9188
+	 dTleexIxo0lGBIleSE6IzqjK8N3VOyJ8naqrml6OiDFtuKjK7qH/f0D9r60eaoytLtusU
+	 ooRv7aL8k+mo3v57JNNyH6zhkzIPo3BrHrGxvlHa6iD+CErNfoD6eNuschlCEdXMdKeDw
+	 Mzq5JW/nhNIvGKqcYh17XuYLPku3IgqpRB1L5UseFqtSwiemZVr0LEHvP+kJ8Cl/3OA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792623535;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792623532;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=tlSKJT8HzkuZ0adk32vyh7qjQd77kLOszqukCnHcIyg=;
-	b=q1+090tRwDwp+wWQFKbAEIuxhnF4hSyUhhMCp2W0bz33tOHaG5sfPufZe7O1Pu1clrM+
-	 WiiBodcHqCdQ8PNP2OyqCr8AdwWlVHvwhFmwMhQkCV6+ood+JomIyXtnR6GN2B2faJApm
-	 zAZeki8qgRoBifbjvZgOwD/5PNbFBmir0z7MiBBM16GHEknLiQsTsD+GTEbzqJh1cu4/e
-	 bhobZXZvkXS+XiBeQE3m/Bk50wxwYFHBxsPnPcG0asYJm5mzjCIg6J5igNvlnEiyREb9k
-	 wNREP09N8l6FGfoBM3ls2ZW5rPmaM6H8kGk+dvPSiNxbe+Ngqfa9fYVTgDSCu6gqTQg==
+	bh=Qrw0QTI4Cx2Pl9bMSUFk83e+oqBDqQpK6OC1OOm7cuU=;
+	b=cV8B4qDExEJXxc89DAOpbzJrFDpPBaSjhHauFu1oCPutPuhP314PPzyuj3GRwDcflRlW
+	 sJWvt0K1d9/uzaRKRiL7gpYynNF3iPfoB4QZfQSxxFU27MfqbgEIh7ag5N/aoWmc5pDDb
+	 4V1UeFiHbz9hn/CCI5j7kx7fdZZ7kTP6dWCeDbx1erXBx4VoUS3zJ1cC8AUlLdosYhR25
+	 4t1W03dlAkCQ8kOLo748ugFpUmWItHsNeXe7nZhH2gQDZ/z0LU5s1xrFJYRxcmICnmWbd
+	 4nq+y1q3QB44z25mloXMMaw9QvMfNMjSvVFnO0SuejeS0uVAWhD3x+r/1yeLou25agg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ia7HUW87;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NaxNiRGE;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4CC606A31A;
-	Wed, 21 Oct 2026 22:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546F7606A325;
+	Wed, 21 Oct 2026 22:58:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Ia7HUW87
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8A351F000C2;
-	Wed, 21 Oct 2026 22:58:54 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NaxNiRGE
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A184D1F000C2;
+	Wed, 21 Oct 2026 22:58:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792623535;
-	bh=tlSKJT8HzkuZ0adk32vyh7qjQd77kLOszqukCnHcIyg=;
+	s=k20260515; t=1792623532;
+	bh=Qrw0QTI4Cx2Pl9bMSUFk83e+oqBDqQpK6OC1OOm7cuU=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Ia7HUW879PmbASSejt/wI4JhGygvjkg4/q2mEtLzMULkmafQizrYwbbLJniGimDbb
-	 UsV7oYpgYtQOG+jj0wNH0qbvMMONNu49MxbzDpz8exFVyrQId3S1tPgmQuvgFMWNEa
-	 O8sImoq70d8WC68cBClwvjmJ8a5Q1EIco+TAg2eaQHM5RaI+rXoDrOPtFZWej6pGO3
-	 yBkN53FTlQk1dLULSt4wn/JXsPY6jmWSPh4aqgPnA6aK6tbwgHWmxyl4uhVKkA+BZd
-	 MNupLWb1d15eeHFRx9yYHRLS66QUUUEfSuXuD8l35MaV3V9SIW5ueTJJNMw5xDBIDL
-	 vZaFi/kufMSlQ==
-Subject:
- Re: [PATCH v3 10/10] can: peak_usb: only dump received bytes on decode error
+	b=NaxNiRGEsz1LdRQV13UUqpjgN+3aQplIMY/lkTQ3mvOlxYQrg6sHE/SV0Dgv+5fOC
+	 rDeKxAujpFeIzW3U4Fd+NPtAeVWghsa78UBh5nnQkYl6NPk9ocvm/Zje/6u4bBXdkg
+	 wp4q0LC1XH82dtdkFTZqz0DNEDMkyJM2UkXnDZeB3zzWfkNkQzaiySOkFeF5cJzR9x
+	 NdaQsckws1hD+WD/jcMXEI2Tcpf78J1o0TBhiiniuJWT9fixCC4ureJb1VTRt+c9gm
+	 CjXI6uUUE3JnXxShkU2Dl87BLdpTDZPvU3FhiOIENVzKoVuyhDxfPjNMKCnqjZc+uo
+	 BmZ9RUDnj6I6g==
+Subject: Re: [PATCH v3 07/10] can: peak_usb: fix RX cursor desync for
+ self-received RTR frames with SRR
 From: netdev-bot+sashiko@kernel.org
 To: stephane.grosjean@free.fr
 Cc: mkl@pengutronix.de, mailhol@kernel.org, error27@gmail.com,
  wg@grandegger.com, s.grosjean@peak-system.fr, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Wed, 21 Oct 2026 22:58:54 +0000
-Message-ID: <179262353431.3131.13190579092278457529@kernel.org>
+Date: Wed, 21 Oct 2026 22:58:51 +0000
+Message-ID: <179262353124.3131.13235647451945152794@kernel.org>
 In-Reply-To:
- <20261020-canfd_check_channel_idx-v3-10-74d17c5a599e@peak-system.fr>
+ <20261020-canfd_check_channel_idx-v3-7-74d17c5a599e@peak-system.fr>
 References:
- <20261020-canfd_check_channel_idx-v3-10-74d17c5a599e@peak-system.fr>
-X-sashiko-severity: High
+ <20261020-canfd_check_channel_idx-v3-7-74d17c5a599e@peak-system.fr>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -66,133 +66,142 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 1 · Medium: 0 (1) · Low: 0
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] The patch only partly does what it says.
+- [Low] The rx_bytes counter in pcan_usb_decode_data()
+  (drivers/net/can/usb/peak_usb/pcan_usb.c) can now count bytes from a…
+- [Low] This patch is tagged `Cc: stable@vger.kernel.org` with `Fixes:
+  3a7939495ce8`, but it is written against the tree after the earlier…
 
 Pre-existing issues:
 - [Medium] This problem wasn't introduced by this patch, but
-  pcan_usb_pro_decode_buf() (pcan_usb_pro.c:737-758) runs its loop on…
+  pcan_usb_encode_msg() and pcan_usb_decode_data() use different payload…
 
 --
 
-can: peak_usb: only dump received bytes on decode error
+can: peak_usb: fix RX cursor desync for self-received RTR frames with SRR
 
-When decoding fails, peak_usb_read_bulk_callback() now dumps only the
-urb->actual_length bytes received from the device, not the whole RX
-buffer. That dump is also rate limited with net_ratelimit(), because a
-faulty or malicious device can make every transfer fail to decode.
+This commit moves the skip of the SRR client private id byte in
+pcan_usb_decode_data() out of the non-RTR branch. The byte is now skipped
+whenever PCAN_USB_TX_SRR is set. This matches pcan_usb_encode_msg(), which
+appends the writer id byte for both RTR and non-RTR frames.
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> index 981168fead927..a58317cdde4eb 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> @@ -265,10 +265,10 @@ static void peak_usb_read_bulk_callback(struct urb *urb)
->  		/* handle these kinds of msgs only if _start callback called */
->  		if (test_bit(PCAN_USB_STATE_STARTED, &dev->state)) {
->  			err = dev->adapter->dev_decode_buf(dev, urb);
-> -			if (err)
-> +			if (err && net_ratelimit())
->  				pcan_dump_mem("received usb message",
->  					      urb->transfer_buffer,
-> -					      urb->transfer_buffer_length);
-> +					      urb->actual_length);
+> Fixes: 3a7939495ce8 ("can: peak_usb: PCAN-USB: add support of loopback and one-shot mode")
+> Cc: stable@vger.kernel.org
 
-[Severity: High]
-Does this rate limit cover the case the commit message describes? The FD
-and Pro decoders dump the same buffer themselves, with no rate limit,
-before they return the error to this callback:
+[Severity: Low]
+Will this apply cleanly to stable trees? The hunk removed here is the
+braced form that includes the mc->end bounds check:
 
-drivers/net/can/usb/peak_usb/pcan_usb_fd.c:pcan_usb_fd_decode_buf() {
-    ...
-fail:
-	if (err)
-		pcan_dump_mem("received msg",
-			      urb->transfer_buffer, urb->actual_length);
-	return err;
-}
-
-drivers/net/can/usb/peak_usb/pcan_usb_pro.c:pcan_usb_pro_decode_buf() {
-    ...
-fail:
-	if (err)
-		pcan_dump_mem("received msg",
-			      urb->transfer_buffer, urb->actual_length);
-
-	return err;
-}
-
-Device-controlled data reaches these paths: "got frag rec", "got short
-rec", "got unsupported rec", and errors from the per-record handlers. The
-URB is resubmitted right away.
-
-Can a faulty or malicious device that presents as an FD-family or Pro
-adapter still flood the log on every bulk-IN completion? Each dump can be
-up to rx_buffer_size bytes, which is 2048 for FD and 1024 for Pro.
-
-As far as I can tell, only pcan_usb_decode_buf() gets the benefit of the
-net_ratelimit() here, since it has no dump of its own. For FD and Pro
-adapters, whenever net_ratelimit() allows it, the same bytes are printed
-twice.
-
-The netdev_err() messages on those failure paths aren't rate limited
-either. One example is in pcan_usb_pro_decode_buf():
-
-	if (!rec_ptr) {
-		netdev_err(netdev, "bad msg hdr len %d\n", urb->actual_length);
-		return -EINVAL;
+	if (can_id_flags & PCAN_USB_TX_SRR) {
+		if ((mc->ptr + 1) > mc->end)
+			goto decode_failed;
+		mc->ptr++;
 	}
 
-Another is the "usb message length error" message in pcan_usb.c.
+That bounds check comes from the earlier patch in this series, "can:
+peak_usb: harden PCAN-USB message validation", and that patch is not
+tagged for stable. Stable trees that have 3a7939495ce8 but not the
+hardening patch still have:
 
-One option is to drop the decoder-level dumps, so this rate-limited dump
-is the only one. Another is to put them behind net_ratelimit() too. In
-either case, the related netdev_err() calls could be guarded the same
-way.
+	if (can_id_flags & PCAN_USB_TX_SRR)
+		mc->ptr++;
+
+The hardening patch has a Fixes: tag, so it may get picked up anyway.
+Even so, should this patch name the prerequisite, for example with a
+"Cc: stable@vger.kernel.org # <prereq>" annotation as described in
+stable-kernel-rules? Or should the hardening patch also be Cc: stable?
+
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+> index 93da0fd4f10e7..4c8cfed31634a 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+> @@ -697,16 +697,19 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+>  		memcpy(cf->data, mc->ptr, cf->len);
+>  		mc->ptr += rec_len;
 
 [Severity: Medium]
-This is a pre-existing issue and wasn't introduced by this patch. While
-looking at the decoder dumps, though, is there an out-of-bounds read in
-pcan_usb_pro_decode_buf()? The loop count comes from the device, and
-pr->data_type is read before rec_ptr is checked against msg_end:
+This is a pre-existing issue and was not introduced by this patch. Can
+the RX cursor overshoot here when the DLC nibble is 9..15?
 
-	rec_cnt = le16_to_cpu(*usb_msg.u.rec_cnt_rd);
-	for (; rec_cnt > 0; rec_cnt--) {
-		union pcan_usb_pro_rec *pr = (union pcan_usb_pro_rec *)rec_ptr;
-		u16 sizeof_rec = pcan_usb_pro_sizeof_rec[pr->data_type];
-		...
-		/* check if the record goes out of current packet */
-		if (rec_ptr + sizeof_rec > msg_end) {
+pcan_usb advertises CAN_CTRLMODE_CC_LEN8_DLC. In that mode rec_len is
+status_len & PCAN_USB_STATUSLEN_DLC, which can be up to 15, and
+can_frame_set_cc_len() caps cf->len at 8. mc->ptr is then advanced by
+rec_len, not by cf->len.
 
-Suppose the records exactly fill urb->actual_length and rec_cnt claims
-more. Then rec_ptr ends up equal to msg_end, and the next iteration reads
-transfer_buffer[actual_length].
+On the TX side, pcan_usb_encode_msg() writes the raw DLC into the
+status/len byte. It then copies only cf->len data bytes before the SRR
+writer id:
 
-If actual_length is PCAN_USBPRO_RX_BUFFER_SIZE (1024), that byte is one
-past the kmalloc() buffer. KASAN would report it as slab-out-of-bounds.
+	/* status/len byte */
+	*pc = can_get_cc_dlc(cf, dev->can.ctrlmode);
+	...
+	/* can data */
+	if (!(cf->can_id & CAN_RTR_FLAG)) {
+		memcpy(pc, cf->data, cf->len);
+		pc += cf->len;
+	}
 
-pcan_usb_pro_wait_rsp() has the same pattern, and it has no
-end-of-buffer check at all:
+Suppose the device puts only 8 payload bytes in an RX record with a DLC
+of 9..15. The cursor would then skip rec_len - 8 bytes of the next
+record. That is the same kind of desync this patch fixes for RTR+SRR.
 
-		rec_cnt = le32_to_cpu(*rsp.u.rec_cnt);
+This depends on the firmware's RX record layout, which I could not
+confirm from the code. The mc->ptr += rec_len line dates back to
+46be265d3388. The len8_dlc handling came with 4c01fc87675e ("can:
+drivers: add len8_dlc support for various CAN adapters"), which carries a
+Tested-by.
 
-		/* loop on records stored into message */
-		for (r = 0; r < rec_cnt; r++) {
-			pr = (union pcan_usb_pro_rec *)pc;
-			rec_len = pcan_usb_pro_sizeof_rec[pr->data_type];
+>  
+> -		/* Ignore next byte (client private id) if SRR bit is set */
+> -		if (can_id_flags & PCAN_USB_TX_SRR) {
+> -			if ((mc->ptr + 1) > mc->end)
+> -				goto decode_failed;
+> -			mc->ptr++;
+> -		}
+> -
+>  		/* update statistics */
+>  		mc->netdev->stats.rx_bytes += cf->len;
+>  	}
+> +
+> +	/* Ignore next byte (client private id) if SRR bit is set.
+> +	 * Note: this test must be done even when the frame is an RTR frame.
+> +	 */
+> +	if (can_id_flags & PCAN_USB_TX_SRR) {
+> +		if ((mc->ptr + 1) > mc->end)
+> +			goto decode_failed;
+> +		mc->ptr++;
+> +	}
 
-With a u32 rec_cnt supplied by the device, can pc walk past
-actual_length here? If so, the out-of-bounds bytes could be printed by
-the "got unwanted rsp %xh" and "got rsp %xh but on chan%u" messages.
+[Severity: Low]
+Can rx_bytes now count bytes from a frame that is then dropped?
+
+Before this patch, the SRR bounds check in the non-RTR branch ran before
+the rx_bytes update. Take a non-RTR record with PCAN_USB_TX_SRR set whose
+URB data ends right after the payload. pcan_usb_decode_data() now does:
+
+	memcpy(cf->data, mc->ptr, cf->len);
+	mc->ptr += rec_len;
+	mc->netdev->stats.rx_bytes += cf->len;
+	...
+	if ((mc->ptr + 1) > mc->end)
+		goto decode_failed;
+
+decode_failed frees the skb, and rx_packets++ is skipped. rx_bytes is
+then out of step with rx_packets by up to 8 bytes. Hitting this needs a
+truncated URB from a faulty or malicious device.
+
+Would it make sense to move the rx_bytes update after the SRR check, next
+to rx_packets++?
+
+> +
+>  	mc->netdev->stats.rx_packets++;
+
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261020-canfd_check_channel_idx-v3-0-74d17c5a599e%40peak-system.fr
