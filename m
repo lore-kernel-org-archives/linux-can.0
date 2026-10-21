@@ -1,97 +1,92 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.20
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792569597;
-	b=FbZAb9kD0ttKi0MCpz4aqeBrmRfp1Tss+6mAD6Yg2n3tCfMcexiVEGXik2RUflrIGeJ0
-	 xeqcISdUPdHeDX5NDC0UJt+Vl6h7xaj25eGRL9ebYg6y1TVb1G2YWOAy6TDU433QR63Vg
-	 2+vMP4zhpJsbHoarylREqY4K2siUCNwkmMcJX5DJjWxEOxJcy019hzCVpnnqR5JS36iPE
-	 UednHtEu21bFQJoHTlXe0OtelNoEIY9ii7Bfhuo9zLjt8CtAJEU8F0BpqV+1eCQS3yJpP
-	 f/U7SjW9rmRz5CWmnEejFs52xrbFu+SfrqjB+zRUROs7yKhQqwiUcH/QP0c4mvpq5YA==
+	t=1792569769;
+	b=vObZy/VWPVqrhKA+hpcscA1GAJQuvF0jH4nwIhLYadKi6nsPvJvZEeVfyYNdwWcJN8IN
+	 B3s8mGKfxFqebpB2/w7Wmv/oHepQd6P4YjBeCICCWH+TqVw5lX69pmh50bpXX2eJHoMhl
+	 jSh2+N9ta4/VZUI9pmrTC0XHyI7SPLBwGruRR091AC0upF7g5y4ONiMn/2nLAVvnRq4u3
+	 AXDtKh9Xl5bZh81QlQASE80kR7t20tW5QG4fMiFbUN+A1+s24YqlJWNAkEJiym/qaTnCV
+	 aL9S+NA2+MgQqhIYWELsgN4ZgCqh+QbHGuX4ivYBqT20RpTt48FxFw74CX3zWULyKUA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792569597;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=bD8qXe7+YZGbdHyfVey15EVf3ObTYNGC5hxXkqHwpIk=;
-	b=1/yCmBvX1r3gjxi9bJx8OVxWG3Mfm0hLQSFwZgDYAmexOcJUImYhuhSaTXeS49aP22rR
-	 AXtIu5FxoXVSUXp1IzmJYQdJyKiqsf+WwGijYRI2uMr73t1lJSyc1FhKkGxfjNnr/SMQ9
-	 8NmXtc8CQZakmcKBaHJlrxALu5TeZAYgo+CtcecLjNInjQYk5jSKD1fz6Kqt8XIBXnA1j
-	 rSPKZ+sXUzRxfgli08er1MMC0Hp123Ll1vcDnDjSGc+xzW8Pwr7/UNDRdXOluF0VsSiVH
-	 jtghHM0N9GX0MpmZzNilT3M8DSAbr9bBX0si2oNIOQrd02N7leSffrLd9470yaAkDwg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792569769;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type;
+	bh=IcwKAgz3ruH+bjQcgpEPCvdlWUTt9+XugmnErvMzTJU=;
+	b=OpzfrDnnExgnPDCARo5jXM5sBw91u0ObZNyx+YERyDJQLz65rsEuw4Q0fzcj+EQWOwcD
+	 Zdq9sK1fazWbn8kLSWvpIiZzB48nbue8d9VyNQxe2tZ1VvFIcCq8NuBljURnS078TV8CU
+	 4LF1X8e9KIDpusxT6XWN4JNmS1ZhNdoOfAeLNT9DBzToE3pN5pSAKJmShPugZi5vJdi1J
+	 K0F6DLKEd1LrV9V8CJFk7ix+Wneehb1YP3iOYMSvBc3TyI5zK0l+yNUZKlS4rt58g9WK/
+	 DwNhhP5RUugW0IfL2GeMsamiAmWX9Y4NHEZRjwy6p6rNBHB6NA1uRQjRb6scnLgIwrg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=YZJ1GYEF;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=TXd7Ki7I;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=41Wxc8A0;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.20
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56E34606A319
-	for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 07:59:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56E34606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C0A606A319
+	for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 08:02:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 34C0A606A319
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=YZJ1GYEF
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 80A27201E7D;
-	Wed, 21 Oct 2026 09:59:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792569594;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bD8qXe7+YZGbdHyfVey15EVf3ObTYNGC5hxXkqHwpIk=;
-	b=YZJ1GYEFikNDEAUNl8NBewWTADOqIhvkIk/7399eFF3X6uNpcCxN9Dd4FIfGxjKJWkwYZl
-	i5AhItMF1wCur4rAcAkTSTgz1QxucLtuEEDAfHp2KCzFvau+VbaNjVzdTdAyhqvr0wutKK
-	X8dKdG+tdi3OuBqzHjPY661HzB6UEdB1eyElQMdoxC2PAx9XPcbQkwA59v5k5ghRoqjEod
-	2tHaz6AeRxMw2WT3g1Wy7idheoElEh3vdtAp9aWJj5HcIEzRfNliWVOAVayDx4T+9Y/+eW
-	/rFckx+jmlgbNEqAWaTo730o4TRUWgYv/nvK49OhzWiAU2Qc7F/iQ57bllJO6g==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792569594; a=rsa-sha256;
-	cv=none;
-	b=Ir/k/7FrA5XPDjo4Z6nQ7ac21zlVW6VFDNULK3FTUG3ydwdEP+A8cUIgubeIdtsluDpT5p
-	P6UHrNuvODv0UrL9JdVMExUc/sT4tEAlogPa5phvt9XQzEnK/oqzUKPv4jRkk2l5szRiTl
-	4caOzt3dQ7dk+4VmEpVVNi8RJ6zZSbvWwLnqQAzi+pJHFTSx8uyJHQlMI90z1K1E6DB37m
-	OuL8J5+XxBtdYE4dx7X1jf1TXYVa6SbgGhxf2HeJmHvKdz9LJyhc+pS2qqMeEYKTU/P7D3
-	b9/7JCmRjejezBUCEPEQWPeVJKUx0mtlCVkcRQQWbPLPMPW9CyrTiz4iIOXDEA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792569594;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=bD8qXe7+YZGbdHyfVey15EVf3ObTYNGC5hxXkqHwpIk=;
-	b=Er4OviZRcV5OFSs1lYyeOwXGbPRExWnAx9pxQdnAzfyUM7loAlSKJG8HdcUSb58qGIzi0n
-	Kdg/K1/xv39r6DJVlpf0IXxGGxYUbb9ocrTdGOq/zrhvn1CWYhJ8rEIFgakKIEQSOA26KY
-	i+/inl1WliItL1wzCKwj4Y78KYzeh1PCUFFfP34g9JE//rXKqq85xrCfp4PbvFsLb9QcMo
-	SfpAJCetxolT+/7DgEd6RB0jqR1sdPzMqVCWWPlRiZW+OErOt/iPuxU0YI2vAzDwWaYKHX
-	3oBuqAOhEewxQCFd1r27YnLatgZmu4cZlHjVVUJtrQGZrlMEByEgl4pZVpfgUg==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xJREo-000Wd7-1O;
-	Wed, 21 Oct 2026 09:59:54 +0200
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 2A8085CAD54;
-	Wed, 21 Oct 2026 07:59:54 +0000 (UTC)
-Date: Wed, 21 Oct 2026 09:59:53 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
-Subject: Re: [PATCH can-next v5 0/5] can: protect the receive lists with a
- per-device lock
-Message-ID: <20261021-humble-hospitable-malamute-c41ebb-mkl@pengutronix.de>
-References: <20261020203257.230955-1-socketcan@hartkopp.net>
- <20261021-infrared-mouflon-of-elevation-04cc4b-mkl@pengutronix.de>
- <edf7c988-4e58-4a9f-aad1-b5103bf235ae@hartkopp.net>
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=TXd7Ki7I;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=41Wxc8A0
+ARC-Seal: i=1; a=rsa-sha256; t=1792569760; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=q3nUxq6hoNb09tXTosjUj6/lFn+PabF+rPOfdWZZIYRGrJxI7jcrNjO5T/WrVI5Wb/
+    qcqYVFuw4kzMK9dx2u1Kt6QhEIicHHihDzj0NLhMqpp2b4k5kn6hi+QsTOcNzDyl3cuJ
+    PEGG/MlokMrZaSqmz/+maSAeJ71b9DJsYsuEmZ2YJUv0/s/kkGscc1llwnYTylU5p0tQ
+    72OvHfKUD7QaE/6ZUicRgm9EeeIbE/cU9MWQ7gGjxIHWYI2Zo6BiCz032Uqz5/dlE3Cq
+    gxlIPP6y2ReV9GsmJv72V/NoBiQVdHz62BnFPVQRLMXtjt3P5l9+2Epb86+OMeN1bpjh
+    stEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792569760;
+    s=strato-dkim-0002; d=strato.com;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=IcwKAgz3ruH+bjQcgpEPCvdlWUTt9+XugmnErvMzTJU=;
+    b=eX8g1pVGyVuW1ltAdUhVvSCZs++THsC79kEeWCgnPf5PIrhOiFM9AyDaEZuBshEiPT
+    3npn7rMe6YUAyM0yYfKL5yvEt6LLv+uz/R15c2+G4XeE8GH/q7DNnI5o0cKi4D0OCtHp
+    mtKZOubq6JqedvKhXRJST7rQH7zsum1rO/Ri8r2eLMxLw59HMeFUTBOA13FrMaDUslF8
+    zb+zhukplhUGauBB8PK63qfdfy1p+Te9XoA0Pt4CRSvOK5rRWGWKINUuAg+7QuDtK4mX
+    fLcAb1fkE9rPfFTzvvUf3AdYDORB+p9QxBmALm1eIFC/Rww2AAuBLlLSjjQiLdzrc7FF
+    WMPw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792569760;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=IcwKAgz3ruH+bjQcgpEPCvdlWUTt9+XugmnErvMzTJU=;
+    b=TXd7Ki7IJtm9pgs32x2LhQ2mLK00FHe9mqEHmpU4ru9ZCdYnn2HWKB+U+ScsWVvDOY
+    JwAh6fOjEemYlOR/h7If3jWPRcWYU5WGJTk6E56hPEUCY+foKWD+oeL3mT0jFjjF65E3
+    yytuI0UY0vWSVzXeSF/f6rN/02Yia75waO97uk26K179jskqIjYSwuFJLiDWhRP8Ls9Y
+    rr0Q49VBgk/JUHRMLfaH3vzbe1QeOVqLPhcK1XA3flUKg3QZww9EvaXHCf2t7rW0MfbS
+    wGXVhTDxfke9Bae1UE5aRuB54+bTlowNPH3pGcvC8y0SgIj7GY8n9vOibGODL1HubQTg
+    /EBw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792569760;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Message-ID:Date:Subject:Cc:To:From:Cc:Date:From:Subject:Sender;
+    bh=IcwKAgz3ruH+bjQcgpEPCvdlWUTt9+XugmnErvMzTJU=;
+    b=41Wxc8A0VcMLl2rqEx9nzXAgJaPV8Q+IvghDyNKGmaKeerZ0fPYE09Q/uak4Awl5Pr
+    ZnrneUf/1CibXyKHRqDg==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from vivo.lan
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29L82efom
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 21 Oct 2026 10:02:40 +0200 (CEST)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: [PATCH can-next v5 0/5] can: protect the receive lists with a per-device lock
+Date: Wed, 21 Oct 2026 10:02:31 +0200
+Message-ID: <20261021080231.16408-1-socketcan@hartkopp.net>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -101,70 +96,99 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vhilsg3vg6aonotn"
-Content-Disposition: inline
-In-Reply-To: <edf7c988-4e58-4a9f-aad1-b5103bf235ae@hartkopp.net>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
 
+This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
+triggered when a CAN device is moved to another network namespace while
+a socket bound to this device is released [1].
 
---vhilsg3vg6aonotn
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH can-next v5 0/5] can: protect the receive lists with a
- per-device lock
-MIME-Version: 1.0
+The code of patches 1-4 is unchanged. Only the commit message of patch 4
+has been updated after the Sashiko review of v4 to describe the actual
+NULL pointer dereference in can_rx_unregister() and the CAN_ISOTP path
+that reaches it.
 
-On 21.10.2026 09:50:15, Oliver Hartkopp wrote:
->
->
-> On 21.10.26 09:36, Marc Kleine-Budde wrote:
-> > On 20.10.2026 22:32:52, Oliver Hartkopp wrote:
-> > > This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can =
-be
-> > > triggered when a CAN device is moved to another network namespace whi=
-le
-> > > a socket bound to this device is released [1].
-> > >
-> > > Only patch 5 is new. Patches 1-4 are already applied to the testing
-> > > branch of linux-can-next, and patches 1, 3 and 4 are on their way to
-> > > net-next with the linux-can-next pull request [2]. They are included
-> > > only to provide a sequence on which the sashiko bot is able to build =
-and
-> > > review patch 5. Please do not apply patches 1-4 from this series.
-> >
-> > Can you adjust the patch description?
-> >
-> > Marc
-> >
-> > pw-bot: cr
-> >
->
-> The second section in the cover-letter (which does not land in the kernel=
- or
-> anywhere else) became obsolete.
->
-> Do you really want a v6 respin for that nitpick?
+The series is based on linux-can-next/testing, which also contains
+"can: raw: remove redundant NULL check before netdev_hold()" from [2].
 
-You can add an updated cover letter for this series as a reply here.
+The idea behind patch 5:
 
-Marc
+The receive lists of a CAN device are located in the device's
+can_ml_priv and travel with the device when it is moved to another
+network namespace. But they are protected by the per-netns
+rcvlists_lock, so the lock that protects a device's lists depends on
+the namespace the caller passes to can_rx_register() and
+can_rx_unregister(). can_rx_unregister() silently returns when this
+namespace does not match dev_net(dev) anymore.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+isotp_release() and bcm_release() leave the netdev notifier list before
+they can serialize against the notifier. When the device changes its
+namespace in this window, their filters are not removed and the
+remaining receivers point to the freed socket or bcm op.
 
---vhilsg3vg6aonotn
-Content-Type: application/pgp-signature; name="signature.asc"
+Taking RTNL in these release paths is no option, as CAN_RAW already
+holds RTNL while adding and removing up to CAN_RAW_FILTER_MAX filters
+per socket, which unprivileged users can trigger repeatedly.
 
------BEGIN PGP SIGNATURE-----
+Instead, patch 5 protects the receive lists where they are located: A
+spinlock in struct can_dev_rcv_lists protects the lists of a CAN device
+(initialized in can_set_ml_priv()) or the 'any' CAN device lists of a
+namespace (initialized in can_pernet_init()). can_rx_unregister() then
+finds the subscription independently of the current namespace of the
+device, which is kept accessible by the tracked device references the
+protocols already hold. The per-netns rcvlists_lock only protects the
+receive list statistics, for which CAN_RAW, CAN_BCM and CAN_ISOTP pass
+the namespace that has been used for can_rx_register().
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCathw9wAKCRDMOmT6rpmt
-0odZAP4o1D1lqydXKm7U1yNY2nfCdV+hSRXq9PRYCcooV0UGtQD/WEEevbK/yJzh
-fp1JqpzCJF860+unzwe62m/HJPx3vAE=
-=BFCP
------END PGP SIGNATURE-----
+As a consequence, CAN_RAW and CAN_ISOTP do not need RTNL in bind(),
+setsockopt() and release() anymore. bind() is serialized against
+NETDEV_UNREGISTER by publishing the device inside the RCU section of
+its lookup, as unlist_netdevice() and synchronize_net() precede
+NETDEV_UNREGISTER both on unregistration and on a namespace change.
+The notifiers recheck the binding under lock_sock(). As RTNL does not
+keep NETDEV_DOWN out of bind() anymore, bind() checks IFF_UP after
+publishing the bound device, with an smp_mb() pair against the
+notifiers, so a down transition during bind() is still reported with
+ENETDOWN.
 
---vhilsg3vg6aonotn--
+Changes in v5 (details in patch 5):
+- report ENETDOWN for a down transition during bind() again
+- comment and kernel-doc updates
+- patch 4: commit message describes the actual crash path
+(all from the Sashiko review of v4)
+
+[1] https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+[2] https://lore.kernel.org/linux-can/20261018164417.1540449-1-mkl@pengutronix.de/
+
+Previous versions of patch 5:
+v4: https://lore.kernel.org/linux-can/20261019152741.54854-6-socketcan@hartkopp.net/
+v3: https://lore.kernel.org/linux-can/20261019074244.50391-5-socketcan@hartkopp.net/
+v2: https://lore.kernel.org/linux-can/20261018180739.689750-1-socketcan@hartkopp.net/
+v1: https://lore.kernel.org/linux-can/20261017201935.399233-1-socketcan@hartkopp.net/
+
+Oliver Hartkopp (4):
+  can: proc: skip stats calculation after reset in can_stat_update()
+  can: proc: remove pointers from CAN specific proc output
+  can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+  can: protect the receive lists with a per-device lock
+
+Runyu Xiao (1):
+  can: proc: reset pkg_stats atomics individually
+
+ Documentation/networking/can.rst |  16 +--
+ include/linux/can/can-ml.h       |   3 +
+ include/linux/can/core.h         |   2 +-
+ include/net/netns/can.h          |   2 +-
+ net/can/af_can.c                 |  60 +++++++-----
+ net/can/af_can.h                 |   2 +-
+ net/can/bcm.c                    |  64 +++++-------
+ net/can/gw.c                     |   9 +-
+ net/can/isotp.c                  |  57 ++++++++---
+ net/can/j1939/main.c             |   2 +-
+ net/can/proc.c                   |  95 +++++++++++-------
+ net/can/raw.c                    | 163 ++++++++++++++++++++-----------
+ 12 files changed, 284 insertions(+), 191 deletions(-)
+
+-- 
+2.43.0
+
