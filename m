@@ -1,63 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=115.124.28.217
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792583435;
-	b=alCpDI1odWoQR4y9Ka4VMk0V3PXaGUMekF6tO6vBAgFtd7PDintHex5OsHjmRCJKcW0X
-	 rUdjHOmnWrV4mpIRqlnsxjssB9+5kZIpHTr19BZbPCM0C8Z/XII6dEB6a5sJHY2ZaGRXz
-	 NHEaH5KC/+/aT2LvhX8DKlyNbLGb/YAVgQnBofRtuMPAYHCzPzw0NYXUpIhNmkzBuTRkV
-	 nqlkBm+ZcI7gt0y+QAbNWnr06KnZADghrc7Ep7uxSzpTRxNmdB2UBLZAFnTi+O8zBcuJ2
-	 aBbgtD9Fo2UXi/H/QnVY8qvq3laGacE5y27IR21XKYIL9/R/YpWMLkjiqZS9Z3E9v8A==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792583435;
-	h=DMARC-Filter:DKIM-Signature:X-Alimail-AntiSpam:Received:Date:From:To:
-	 Cc:Reply-To:Message-ID:Subject:X-Mailer:MIME-Version:
-	 x-aliyun-im-through:References:x-aliyun-mail-creator:In-Reply-To:
-	 x-aliyun-mailtrack:Content-Type:Content-Transfer-Encoding;
-	bh=72FzsWQIjcY8v6oyt0wQCHWqJMzFBXUTwABFBwus7wg=;
-	b=rZM8LC+xmbrjYRVCa2szAn9cT+5/nt12GjRmgzGSPLfossXoGbrIXGxy52W8RCT/Of2b
-	 Fp3FkRvzGx0H2GCw23JX72Us6Hc6pfzlKAq9UhaNPFfErQ7U3j9OkC51e6fcM9FO86w9f
-	 /GKbDPvFaaUbR1QOZe059o8rbLP16RDZAvLTIKpxzXjFFs9VFvcPlGLcRCkyQ5kDmQOY8
-	 y3YH+5byz9W/kS38UWmfHcV1mjHrKuEKtCF+F3G1nFoqg20eDIunlua6TBS0xvWI/e/jg
-	 JjBCAYOO3dh/mIQdd0DqWGLRAoGuguGJULu4W5ADJqsZvQ3CMDsgXefY5k1S79OYASg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=yinhe.ht;
-	spf=pass smtp.mailfrom=yinhe.ht;
-	dkim=pass header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=bgMF+pv1;
-	arc=none smtp.remote-ip=115.124.28.217
-Received: from out28-217.mail.aliyun.com (out28-217.mail.aliyun.com [115.124.28.217])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792593219;
+	b=5O+81KQpKR1yjiPE0NdhKQh4xNCelTFJjffrZVe4x6BPtpXzk5MImwUpv5X86SLJZgDu
+	 iBk0v/PjWOlrDl3btfz3PDssvNWc0mXbczDPQV/TXidbbvQUzUQ7EEn13yXkL+rTj1d/R
+	 UxBOpqQ+mFZyef/o2/VYdSb0szTLhUZf74MHWh3AE0VJejD8Kt1w8P/GKsUxuY0XniGPx
+	 6eNzY5UgS6CTyPsHsW9Nd3gr3aC2lJw94F4RxtHCKhWSYh8yiYYRFaalT4yktk7hLSeRz
+	 yHLV57Kvr4JEPs0XD7t2RpTSKpAj/Y1f77kOj0r1V6O5yvvRwnGnLQsMRIVPCNQ0Alw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792593219;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=7ik/oiVjdkHBo7ElMCtTnZcFSpE3eIORkZ9pgCcWcjs=;
+	b=piPD4XPgm2jIqYVecqmUhLqtYzwhd9rPCxTWBndmYz+YBw1KNWncXYJc186WM12XDddE
+	 xfmoUE9A0m5I2mBWLG0RxC0DyxxcoonKyOb7nGMq018hjJzNps5bg/X1C4td9JMCByvmi
+	 O4azBEt2dcU1yKFCVKfESZA2F8hbcUESmZuGhzPQ9pvpYVxmh2xZHqF1Cc/3r253YmimZ
+	 o3cK1+V1L6bxYbgL8NVUNqqg7mXwbSYOPxyR2M4+JjoYbsA4WdtYnXtCq8yjYlkBEc59k
+	 zEpt2QMK8J6cMokBAp2VR+z3kMALReYVrla4HPqHpGCn4vkZ7L7bxRz+343FNRKgGrw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=SR+G0Fys;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9561606A319;
-	Wed, 21 Oct 2026 11:50:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A9561606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yinhe.ht
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06CAA606A319;
+	Wed, 21 Oct 2026 14:33:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 06CAA606A319
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=bgMF+pv1
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=yinhe.ht; s=default;
-	t=1792583430; h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type;
-	bh=72FzsWQIjcY8v6oyt0wQCHWqJMzFBXUTwABFBwus7wg=;
-	b=bgMF+pv1GPQkl57dOMNOU1b0VSwL7y9CH/rBzMKGrSHxkBGZwYxlinnM6ll+3RMILTphhZnY9W1xgD3ZejdNU71pmEr59SNzbMeMIAiSMBXIjKK87hnnTdEmh91TdDJ6JieHTXnkHhYbDN94hIcxGldWBgQ1JkJqWVNZONpYqfyTqhfROpFcWH+7+F5LvxI2RbLfj2OfbW9n/N+68XVwPfBQvbNEke4MjSg3rGxs5A25lxwyJxW7ecu+q5Aq3Ho/XOXBJ3DETM9QF9NVby7dNey2kDoSDtkO0KGokIuWvkrhMUN6wEvgG6OHkh5j2glfQLLDpU5/shgbfIO+dyxVfA==
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.135073|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.0351905-0.00102775-0.963782;FP=2045342384072965914|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033037034184;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DW;RN=10;RT=10;SR=0;TI=W4_0.2.3_21251643_1792583429724_o7001c188k;
-Received: from WS-web (chunyuzhiqiang@yinhe.ht[W4_0.2.3_21251643_1792583429724_o7001c188k] cluster:ay29) at Wed, 21 Oct 2026 19:50:29 +0800
-Date: Wed, 21 Oct 2026 19:50:29 +0800
-From: "=?UTF-8?B?5rez5LqO5pm65by6?=" <chunyuzhiqiang@yinhe.ht>
-To: "Vincent Mailhol" <mailhol@kernel.org>
-Cc: "netdev" <netdev@vger.kernel.org>,
-  "linux-can" <linux-can@vger.kernel.org>,
-  "mkl" <mkl@pengutronix.de>,
-  "kernel" <kernel@pengutronix.de>,
-  "haibo.chen" <haibo.chen@oss.nxp.com>,
-  "shawnguo" <shawnguo@kernel.org>,
-  "imx" <imx@lists.linux.dev>,
-  "stable" <stable@vger.kernel.org>,
-  "netdev-bot+sinfo" <netdev-bot+sinfo@kernel.org>
-Reply-To: "=?UTF-8?B?5rez5LqO5pm65by6?=" <chunyuzhiqiang@yinhe.ht>
-Message-ID: <7860eacb-9b7f-41f9-9e60-d48fdee47d4f.chunyuzhiqiang@yinhe.ht>
-Subject: =?UTF-8?B?UkXvvJpbUEFUQ0ggdjZdIGNhbjogZGV2OiBjYW5fZmlsbF9pbmZvKCk6IGRvbid0IHdha2Ug?=
-  =?UTF-8?B?dXAgY29udHJvbGxlciBpZiBpbnRlcmZhY2UgaXMgZG93bg==?=
-X-Mailer: [Alimail-Mailagent revision 74][W4_0.2.3][null][Chrome]
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=SR+G0Fys
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C41F0200F26;
+	Wed, 21 Oct 2026 16:33:30 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792593210;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ik/oiVjdkHBo7ElMCtTnZcFSpE3eIORkZ9pgCcWcjs=;
+	b=SR+G0FysfE69Ndd6CEhkgMGKnxVn/paFTue0PjcHJNquMB8fTFdJo5SCMvKardXtlAdiwW
+	08/RTqNo6+B8YX1zpM5oEeuZjYKR+uRmnVkf7qplxY10AK/PW27x6gqNYyIi7erygvX+IG
+	O1X9qg8dUpcXh4j6V5ITgWyYQ1XCKuzxxuU8Jgt5P1LnCwr1/FuItRv3NQnWNV5SVDekDh
+	OwKWI9bZAm7mZ9shFFYq418Rrj3Qji7HBvofBgJ0yDMMqO++IzMJGZzw8jallW9wZE0R8e
+	Q8MqzcvjuIIvMoxTn9fedIdgR+4jnco9oW4grbvXeSRXZpHojRBEd3Uk4abW8w==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792593210; a=rsa-sha256;
+	cv=none;
+	b=D2Q49JIbbz1k8eZCfllgFBn6TfO7P7336B73LKtrwcfvmAuAXD28Zq+28nrPse8d4LcBnf
+	VqFduH4vvqCTJ7f0/DeRsU64l9r37siEatciIf+K+yXR3dvYpA4qGJnDdAKc9dSWb1O6yj
+	nC2uHd8Vb/pz23Bfci5yma2AyVI+eL0n0p/1UrrNGJ+aVz78vtlWvFybeStI9rXZXYRANz
+	FeUW9AG/ayV/BNM8L9dMInB4ZNeS/cRmJB/xWzU0hxah7ms0jdTAyf/72iRBcnbR16+Jqo
+	RC1E91SRu5lzGhblTZE5TiilmRtr8wyW62kg1lKFYYiWW4gXSAbtHv158skVyg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792593210;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7ik/oiVjdkHBo7ElMCtTnZcFSpE3eIORkZ9pgCcWcjs=;
+	b=HbMvErN723eYYnN2A8MoTNqQ3PKExALb26xuxTpG+P1ZivyIL3gVr0VDUW0uPFD4VIa7H8
+	cQq2b4IFGDEx2s5vIxjTbTidQDOU/fqmvj5OOZ/GfPZjFvW9wBai/HfKBBPRtVPqo21ek0
+	fSnWCfzjEeKPbFVGD/sLX/8pmo77TsdSD5ffwz2NOjAk/R+mntrioPsRPx9YLXOi0vRHnX
+	RzP6hjJmZjTgSPp4g9e5hYj9uQ9gu/HbP7mCmnrzEz7Q4k6nvPcFRHb1sK1BOYJzITxJMx
+	cWEBPcPN3ABu/masP2nPgrhr6E+YZQe9O5waE2hOQhwvFRd/3rzTBHtYBkuDJw==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xJXNi-000ZPe-2I;
+	Wed, 21 Oct 2026 16:33:30 +0200
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 680995D01AC;
+	Wed, 21 Oct 2026 14:33:30 +0000 (UTC)
+Date: Wed, 21 Oct 2026 16:33:30 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: =?utf-8?B?U3TDqXBoYW5l?= Grosjean <stephane.grosjean@free.fr>
+Cc: Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, 
+	Pengpeng Hou <pengpeng@iscas.ac.cn>, linux-kernel@vger.kernel.org, 
+	=?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.fr>, Liu Changjie <liucj1228@outlook.com>
+Subject: Re: [PATCH net] can: peak_usb: accept short uCAN end-of-list records
+Message-ID: <20261021-gopher-of-exotic-tempest-0ccc5d-mkl@pengutronix.de>
+References: <20261021-hospitable-gentle-sheep-a15164-mkl@pengutronix.de>
+ <942111184.1248111675.1792578029862.JavaMail.root@zimbra65-e11.priv.proxad.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -67,23 +101,63 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-x-aliyun-im-through: {"version":"v1.0"}
-References: <20261021023334.11803-1-chunyuzhiqiang@yinhe.ht>,<4ef66cfe-9ff8-4d26-87de-48485e9d4fa3@kernel.org>
-x-aliyun-mail-creator: W4_0.2.3_null_QuNTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXT1c2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEwOS4wLjU0MTQuMTIwIFNhZmFyaS81MzcuMzYgZGluZ3RhbGstd2luLzEuMC4wIG53KDAuMTQuNykgRGluZ1RhbGsoOC4xLjAtUmVsZWFzZS42MDIxMTAxKSBNb2pvLzEuMC4wIE5hdGl2ZSBBcHBUeXBlKHJlbGVhc2UpIENoYW5uZWwvMjAyMTAwIChMaW51eDYuMTIuMTAwK2RlYjEzLWFtZDY0OC4xLjAtUmVsZWFzZS42MDIxMTAxKQ==uM
-In-Reply-To: <4ef66cfe-9ff8-4d26-87de-48485e9d4fa3@kernel.org>
-x-aliyun-mailtrack: {"foreign-track":"0"}
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tz7dh2zsqqjrego6"
+Content-Disposition: inline
+In-Reply-To: <942111184.1248111675.1792578029862.JavaMail.root@zimbra65-e11.priv.proxad.net>
 
-SGkgVmluY2VudCwKCj4gTml0cGljazogSSB0aGluayBpdCBpcyBzbGlnaHRseSBiZXR0ZXIgdG8g
-cGFzcyBkZXYgcmF0aGVyIHRoYW4KPiBhdXRvX3RkY3ZfcnVubmluZzoKPgo+ICBzdGF0aWMgc2l6
-ZV90IGNhbl90ZGNfZ2V0X3NpemUoY29uc3Qgc3RydWN0IG5ldF9kZXZpY2UgKmRldiwKPiAgICAg
-ICAgICAgIHN0cnVjdCBkYXRhX2JpdHRpbWluZ19wYXJhbXMgKmRidF9wYXJhbXMsCj4gICAgICAg
-ICAgICB1MzIgdGRjX2ZsYWdzKQo+Cj4gVGhlIHJlYXNvbiBpcyB0aGF0IGJ5IHBhc3NpbmcgZGV2
-LCBpdCB3b3VsZCBiZSBlYXNpZXIgaW4gdGhlIGZ1dHVyZSBpZgo+IGZvciB3aGF0ZXZlciByZWFz
-b24gd2UgbmVlZCB0byByZXRyaWV2ZSBvdGhlciB2YWx1ZXMuCgpBZ3JlZWQsIHRoYXQncyBjbGVh
-bmVyIGFuZCBtb3JlIGNvbnNpc3RlbnQgd2l0aCB0aGUgcmVzdCBvZiB0aGUgZmlsZS4KSSdsbCBm
-b2xkIHRoaXMgaW50byB2NzogY2FuX3RkY19nZXRfc2l6ZSgpIGFuZApjYW5fZGF0YV9iaXR0aW1p
-bmdfZ2V0X3NpemUoKSB3aWxsIHRha2UgZGV2IGluc3RlYWQgb2YgYSBib29sLCBhbmQgdGhlClRE
-Q1Ygc2l6ZSBjb25kaXRpb24gd2lsbCB1c2UgbmV0aWZfcnVubmluZyhkZXYpIGRpcmVjdGx5LgoK
-VGhhbmtzLApDaHVuWXVaaGlRaWFuZw==
+
+--tz7dh2zsqqjrego6
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net] can: peak_usb: accept short uCAN end-of-list records
+MIME-Version: 1.0
+
+On 21.10.2026 12:20:29, St=C3=A9phane Grosjean wrote:
+> On 19.10.2026 00:46:34, Liu Changjie wrote:
+> > A PCAN-USB FD v2 running firmware 3.2.0 sends a 16-byte status
+> > record followed by a four-byte zero-size end marker. These transfers
+> > cause repeated receive-buffer dumps while the interface is up.
+> >
+> > pcan_usb_fd_decode_buf() requires a complete 12-byte struct pucan_msg
+> > before checking the size field, so it rejects the end marker with
+> > -EBADMSG.
+>
+> Right: the firmware may terminate a list of records with a short null
+> record, and it doesn't need to be a full struct pucan_msg. Only its size
+> field matters.
+
+Thanks.
+
+> The patch keeps all the record length checks added by 93fcab2c6968 and
+> only accepts the end marker earlier, so:
+>
+> Reviewed-by: St=C3=A9phane Grosjean <s.grosjean@peak-system.fr>
+>
+> Marc, since 93fcab2c6968 has been backported to the 6.6, 6.12 and 7.1
+> stable trees, could you add "Cc: stable@vger.kernel.org" when applying?
+
+Done.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--tz7dh2zsqqjrego6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatjNNwAKCRDMOmT6rpmt
+0iMqAP9eWM8Tr67SpjlIHkyTipV1+jqYO1sroNw4iUH/4HlKlAD/QuI/NNqh3ADI
+PhMhp1kuSm7+eV2iV4qDvvetHTeizAo=
+=vLFc
+-----END PGP SIGNATURE-----
+
+--tz7dh2zsqqjrego6--
