@@ -1,114 +1,88 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.42
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792571167;
-	b=z59JbCg4bvhItFo4xTtLRQNwe4sJHNFkFYQwXsTZLpDnyVNTtipe7m/74QyxqWJhmyo6
-	 DH3O2N9Q0pp+jBifr1GY0kYYlBwRGVsLsJAhDMtIwdZa5l/KDM2PFZQTY+GPU/nV28AtV
-	 A665FAr2InLaWBrCaCQaALaJysWxSKVp9TMTLeGxy7kKJ/4y8UX0oMsv/wSRoEOJu2npW
-	 RZ47K1AeZVSxVYuo5zAw/KuKxZ+Yi+kxATLsCo592GphAsRzKiEhxyBw4dwpFA7iMCqE+
-	 q3HaP94GCsk5EXRWsGqW7Xt+22IIhqZtluoKzO6mlDlUAEDhxA4xHUCEKqpJJ1cRtdw==
+	t=1792571531;
+	b=RpzlSnjQRhgpqlX9qHlBGYvBKaYyGdHdUej7cMgZZZ+RSimMhd2N/NpHoV4DAZEMErhx
+	 8BpO6KL4SDLGRdzBAql6q1qZepFbsMydnYXSvqIXPMyuFpMyv27LlnxcXEy4nx/Aw0quT
+	 jExbXrf1KW1WACvQttyhUlKZiGTv+M1dG9y0CyaBGVePyu1AzZaBbtetw2BczdXfJpOZt
+	 gM82WEn3wLHIDxUIofPTqEDUCzxaR6Vj+biSg1YAaMfSmS53pRw3GRD7v7zlgWuax+HYz
+	 3ZG+3nkm+qXxke89bGuKPf13jwQ0iklbboyNW16rhWf79pEZRmta7p0/ttMmL6YEX7w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792571167;
-	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
-	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
-	 X-Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=fIZs8nGdZXNty0t58NAfFIss/aXd2UkNafg7OSbEIpI=;
-	b=215TB0fRXYbZeUWHpxI86cL9wfsS3p0xVPv97CreG9eEgaHrMpZ6Pv4drH+tDLyNhjyW
-	 7KuBEh/VTZJ0IuEhDSkZt8pjfCctERzL7m0hJ8Ih4sxhMZAvF/23nOMqd9YgtFSUHXlXy
-	 XPb7jVO/qaYGeWru/Dgi7di10xj8mHsOeXY0qzUECh8bMvTehzERcw8aB2TqDt5lpfGg2
-	 kAFzDru/zoeuKtiCNdze84vHwrpcWI3n7M75xwa8FXiV4kxpVkK4WAftsf30CpuDA36Pq
-	 tI2D7uhfGzIiG5/8QffTBiB2bWUuK2dFNjASFQYu0D18aisBlP1uNk4vg4gY8CfdvJQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792571531;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:
+	 X-Google-Original-From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key;
+	bh=KdtZs5yQ0gfzkZioTR0NXAt7OEmNZc3GQ0ICx13Lmw4=;
+	b=GQq5x6HR9Wg2H3UBTaRrA4Rr2b8KpWa0XZDwStX0+hs6bA+7mo0pHRFjUcfpWJKP2GYI
+	 XMaGuqeETH7g/++3zpiD4TbkmDprKkJNGWzm0i9ivsqh47O5zbXvONSKvDsMwvi9qaJVj
+	 WFumEiB8sEy5VZXBNjIPlrWlwZu74KA/UPCWY+dSY0U9VUR21HOcR80Y1/u1OMsFbXfbu
+	 6/LGNQXn3xO67ZcDrt/UvSSNf4xbSESp4fMNlxz614u5rY+OHx8CMWLtTrf1wrRjuSTq0
+	 vmVffAsjJPE+QjI6gX8kQU/X0+cxkhHInIw+m4A+FbcwXlFeURN9yUeEJv57h5HSEPA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=redhat.com;
-	spf=pass smtp.mailfrom=redhat.com;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=YwPq1XdL;
-	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=eEw2ybo7;
-	arc=none smtp.remote-ip=170.10.133.124
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=Y8uIgJUd;
+	arc=none smtp.remote-ip=209.85.128.42
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12C1C606A319
-	for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 08:26:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 12C1C606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E664606A31A
+	for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 08:32:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3E664606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=YwPq1XdL;
-	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=eEw2ybo7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1792571165;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fIZs8nGdZXNty0t58NAfFIss/aXd2UkNafg7OSbEIpI=;
-	b=YwPq1XdL6AFIS0NSuRPd6DOXWe1Zom7lX8sgbtnh75+bB9jkCYdYD4WtrenAFlZMjPEyMI
-	z2UKJAgy3bwt9TL4lsjUMRFf9q4cP086iTaqyp02YgxRVFYmdt1i01lijivyPHyocUQpo4
-	aSW/fP2Ojtmpo7gv67DzxG073fnqvbI=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-122-qJf9tgKbMw25TeT8FPOnCg-1; Wed, 21 Oct 2026 04:26:04 -0400
-X-MC-Unique: qJf9tgKbMw25TeT8FPOnCg-1
-X-Mimecast-MFC-AGG-ID: qJf9tgKbMw25TeT8FPOnCg_1792571163
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4a0284121c6so4220395e9.3
-        for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 01:26:04 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=Y8uIgJUd
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4a1e477fe16so2430235e9.1
+        for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 01:32:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1792571163; x=1793175963; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=fIZs8nGdZXNty0t58NAfFIss/aXd2UkNafg7OSbEIpI=;
-        b=eEw2ybo7N0R3izXXWLmhLfcu6J3AXPrOrdQVTievsd4remumpVKGDCfsIIz2hBNrwX
-         9medW9wuER2ZWhtTQvkwvKfdWShBxBBrODNuOp36Axmr8wg7tBvcBYPV/3i10ouy/5WL
-         h+fRajCJRT/3sClyAlSM2PXnvaHhJVYWtYvj/pOaWdxgFIPCjTPHJt1y/AqVEIRBK680
-         mq/yRN/6oZLLeC8H9Z4bbZjZH2tJwHXrCofn72WYZNgcJ3omNl9kSmpHcYAs6c6I1nXa
-         YJB1d4x7IpiXydIeG0fh+PpmnkWRwM2X5kKVfnyqQGbpb3bMXr50JULX8COz9ovy9iUu
-         ufcg==
+        d=gmail.com; s=20251104; t=1792571530; x=1793176330; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=KdtZs5yQ0gfzkZioTR0NXAt7OEmNZc3GQ0ICx13Lmw4=;
+        b=Y8uIgJUdOgZFBBhxNjfUhdZtiZnQVL0ehbAHn1ZJws1zHbjdt+SnFEdFBg3xkaWjHV
+         zhUxljw71zls7swvmgMQdOhs/4f6htNo0RO4xP54GtmicFtP51UnMZAToG1GUbgB5kBi
+         gxBKSTEU2eEQeexcg6csolsSvem1YjJmXelUmQjkW8cB5jVe8s/U3nHVBy82Xr0N4+lF
+         +6CqUeOO4PPETjajztvOd81R/EkwrR6aqTJ5JK2SUAd2sLHi02tMPq2aR7dmX9ADypfD
+         /oE6+ux+IqXxdRIXQ1iZC/LrnXNKRpWqeCER8GHsJ4n7iutNR33kUFz3a+xabQDCy7Y0
+         0NJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792571163; x=1793175963;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=fIZs8nGdZXNty0t58NAfFIss/aXd2UkNafg7OSbEIpI=;
-        b=KGPSsnbCo9U5URiP+DDO9o8tCZp43wGqjBV2TY/aihMj42IXUVQaphGy7Ev29hpAVf
-         bAn70aNqzRug2ucfgmZSvAaRLg3I2TLssYoqmmYMeyA2hn+CYd0WWJF3cU0ovZn7226W
-         H02UmY8P+8MP4NM2yNulTi/JoV6/SqupZ3HR341k9BC5dAms7Zwfzgyrnqides4qC2jR
-         n/sDEpFfc3lgYt64tjcb82+geyByxesfOxoqngTyG4UHieuGinzgsX45hwKsnBGX1D1E
-         yQ/xgKunJqwR2oqWW6dXxqy7mEjLUGkgGAl75nG0xg4XCMrEeD24q4PgX/1sEOh5aA+Y
-         lYgQ==
-X-Forwarded-Encrypted: i=1; AKwUvBxVC8V/+kTZdST57PhMuGtW8Ab8nWERi4q9YmHNyAfWhgzIt0+Q4mcWyo1e0ihoQWxLSj2HeIgslrc=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIPySUSCJztbf3nVWU/nfTRQVwkOOCwc+9I7VrdozmbHO6/N2ix
-	gBNqqxTkp1heqe/11ShmnnWFsS+jM560Qf4mWPlqaB7oYmiyBim07YQvftn0vtNI1PHienwICaM
-	F6RFLvgzRRYCtSBAIv/CFQu3NW3i7bnoIjkPOG9SefAEfoyOddbhz1vMWfxheIQ==
-X-Gm-Gg: AYBFou14GhE7oxrLUH8zpIImdz3PdTwzL+CFv/4LVt1YMza0nh3f5OplwNLsksLsZNz
-	Eh7T2hhUenkvCZ6mUq4BN1e+byuj4ydVQ513gS8STAR+QYT3YWA9fNcdQAlSqzDbxf7fyKmNiNC
-	vp+gi58exjKq8UStDMG28pL5gbOylyHEc+kBA9GdmBzLC0S9psEWxP/iIjT+sDNBSK67GSTYVgf
-	Cqfxw81DZ4/SXmkeTZALYuyhpaVOIDIodQRZFCGfibwrtD3hQxapU2mNzq9MSrnDxH3Iv4RlQHF
-	WCo1qSjl9fgnSNjhSP36S04Tv82IdIxrwMStWUpfBu0ZwfE5bAzN/2GlN5zFnYmR1JMd9KL1Lbo
-	jl/fTLQ==
-X-Received: by 2002:a05:600c:c094:b0:4a1:faa1:3813 with SMTP id 5b1f17b1804b1-4a1fdd26e79mr20791445e9.27.1792571163103;
-        Wed, 21 Oct 2026 01:26:03 -0700 (PDT)
-X-Received: by 2002:a05:600c:c094:b0:4a1:faa1:3813 with SMTP id 5b1f17b1804b1-4a1fdd26e79mr20790995e9.27.1792571162696;
-        Wed, 21 Oct 2026 01:26:02 -0700 (PDT)
-Received: from storniolo-redhat ([130.25.253.240])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1fe5239e9sm25898645e9.0.2026.10.21.01.26.01
+        d=1e100.net; s=20260707; t=1792571530; x=1793176330;
+        h=cc:to:content-transfer-encoding:content-type:mime-version
+         :message-id:date:subject:from:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=KdtZs5yQ0gfzkZioTR0NXAt7OEmNZc3GQ0ICx13Lmw4=;
+        b=sVlgx0Bnyru0FCtugyYmye8BPkX+ZwreuOT5sp8omIT34gRqdmXSPBLv+rU/MVfDBi
+         q7UksqzHDwkE163zeTx+yHSg/R2JsnI2bcaxn52iiGlBmOGjnVp1AlOV/CiGE+mAHJUZ
+         tQHFMHMVf97q8mvdT3oCrf0EsPaM4HZlJvA0A0gqqLdt4idwZGQn9WZJ7F7gesYZwLKG
+         At5vtlXhJjWw7iUuZKTLXVWZuSwRFotG73VRuTJ7il1hYDQ37LsfgX+mdfZxlZlX8koB
+         OhYAGNX7LuW4RPll45VrdSU73WmAg70MnVIqLq8jyT/TgyahOCdvHzNcJcXFZJNyw8mp
+         fvtw==
+X-Gm-Message-State: AFq9FYKEJ0L1SqzWYA2MrOi1FkRe6MUMBeLiy8WOyOBAocN0UcXFo3QA
+	pOD42Dv6x0jjWrkck0OEaaCyqDeDbCAPHraa2UvXp4roqYOHQ0S9BGqk
+X-Gm-Gg: AYBFou3Q0QJ+w7PnphLKUm3V/XBvwKhv/R5Qk/K64n4LfYl1mFdCjOpiMKasMfVu1bz
+	bRonR183GZA/1w8GIeSmPcGzfPA2+2J+LIxFcu+tg8JhIACKKHXPI7b88swy/lV59tnqk5pjKtV
+	2b0YjSusNvejWUb0KCeY26gW6eznlD+BcrpicRKdoUPF44UEAAhUpqoLLxMdA2iAOpsUFloAoAx
+	98CDx9apz12EcDn8prAWjh1MC/yl7UTtpXr8JlVEWsaU2XT9PtR3No7RVt3cbzqyTGAiJhirl0J
+	ZfM7XetlVTsLt8u7gNdDLrZpBheCpSnwoB0FNH8TTtO8B/0uL1aH+RNWWHTKL8s5zLUoxMsyNKm
+	AO2kczAwQZTK4cEO1FQp+PNHT3Qqvr9nyT63ZbTvAqc58kS8wRx4ZHbLABdGCB0zq4vXuCmqByj
+	3FOGiz7UowiMF1MagHtvvSiTsjE84mzGe0DQvegrTr0cTp3DNpiLm5Yje8GlVaPmE5Q9AcFHibj
+	AKjScax1Mg9kzmkLq7UkJEDUe5Fd21pB1vfhFHwhqmthvM8+ljmU7NRpYnjXkSQxvtYa14I9sH1
+	ZTP497HI0LHlNL24aljlflXf
+X-Received: by 2002:a05:600c:c04e:b0:4a1:fc66:b62b with SMTP id 5b1f17b1804b1-4a1fdd417admr15959935e9.35.1792571529448;
+        Wed, 21 Oct 2026 01:32:09 -0700 (PDT)
+Received: from [127.0.1.1] ([2a00:23c4:a702:d301:39f4:e118:e272:79d8])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a1fcd2eff9sm36250145e9.4.2026.10.21.01.32.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2026 01:26:02 -0700 (PDT)
-Date: Wed, 21 Oct 2026 10:26:00 +0200
-From: Filippo Storniolo <fstornio@redhat.com>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
-	Urs Thuermann <urs.thuermann@volkswagen.de>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
-	linux-can@vger.kernel.org, Davide Caratti <dcaratti@redhat.com>
-Subject: Re: [PATCH can-next v3 0/3] Introduce diag support for CAN
-Message-ID: <atfFeR_OEaWrcQSS@storniolo-redhat>
-References: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
- <20261020-funky-buffalo-of-progress-fa4bf9-mkl@pengutronix.de>
- <d23196e0-6307-458b-ba31-15f54ef46b73@hartkopp.net>
+        Wed, 21 Oct 2026 01:32:09 -0700 (PDT)
+From: Biju Das <biju.das.au@gmail.com>
+X-Google-Original-From: Biju Das <biju.das.jz@bp.renesas.com>
+Subject: [PATCH v6 0/4] Add support for Renesas RZ/G3L CANFD
+Date: Wed, 21 Oct 2026 09:32:00 +0100
+Message-Id: <20261021-canfd_rzg3l-v6-0-b4abfdba8e70@bp.renesas.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -118,75 +92,84 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <d23196e0-6307-458b-ba31-15f54ef46b73@hartkopp.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIB42GoC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyzHQUlJIzE
+ vPSU3UzU4B8JSMDIzNDAyMD3eTEvLSU+KKqdOMcXSMTiyRzoLBBWpKhElBHQVFqWmYF2LTo2Np
+ aACrmW0FdAAAA
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzk+dt@kernel.org>, 
+ Conor Dooley <conor+dt@kernel.org>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Magnus Damm <magnus.damm@gmail.com>, 
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+Cc: linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Biju Das <biju.das.jz@bp.renesas.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1792571528; l=2403;
+ i=biju.das.jz@bp.renesas.com; s=20261020; h=from:subject:message-id;
+ bh=U2NizDx5e/ZaD4R2wi+ffJ644tq73i8imRwCaeagpUo=;
+ b=KtxVPj9hvLegzG5upX5EOnw3PtCx418FqPvfZoglAt2bhk1uaBarM5Gcppkjjfim4ghOFnogD
+ 6kngtyDTfUPDOGw6QsefAC7QlKLmMXtckj9wdbtu/edTtrdzbPJ3lnL
+X-Developer-Key: i=biju.das.jz@bp.renesas.com; a=ed25519;
+ pk=yzD2T1OLS3lEYflbk64xhLlxhk75lZ+NoOtkTOqrlVw=
 
-On Tue, Oct 20, 2026 at 06:20:22PM +0200, Oliver Hartkopp wrote:
->
->
->On 20.10.26 17:50, Marc Kleine-Budde wrote:
->>On 04.09.2026 16:12:54, Filippo Storniolo wrote:
->>>An example of the output given by ss -cpe:
->>>
->>>Netid                     Recv-Q                 Send-Q                                 Local Address:Port                                   Peer Address:Port                 Process
->>>CAN_ISOTP                 0                      0                                              vcan1:1110                                          vcan1:291                   uid:1001 ino:50324 sk:0 users:(("can2",pid=9210,fd=4))
->>>CAN_ISOTP                 0                      0                                              vcan1:291                                           vcan1:1110                  uid:1001 ino:50323 sk:0 users:(("can2",pid=9210,fd=3))
->
+Add support for Renesas RZ/G3L CANFD.
+The RZ/G3L CANFD IP has 3 channels and 11 interrupts compared to 2 channels
+and 8 interrupts that of RZ/G3S. RZ/G3L has 288 buffers compared to 192
+buffers on RZ/G3S SoC.
 
-Hi Oliver
+This patch series depend upon [1]
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git/commit/?id=2b4a5055d517b11bf4a5671cef32e4d77bc45626
 
->The fact that the inode number of the socket is visible fits great to 
->the upcoming CAN procfs output:
->
->https://lore.kernel.org/linux-can/20261018164417.1540449-8-mkl@pengutronix.de/
->
->But I'm not sure about "Local Address:Port" being "vcan1:1110".
->
+v5->v6:
+ * Updated commit header and description of patch#1
+ * Simplified renesas,no-can-fd description by removing the mode list and
+   keep only the statement of what the property does.
+ * Updated commit description of patch#3.
+ * Dropped adding RZ/G3L in the description of renesas,no-can-fd as the
+   description is generic.
+v4->v5:
+ * Added patches for Documenting RZ/G3{L,S} SoC has no Classical CAN mode.
+ * Dropped the patch "can: rcar_canfd: Derive max_channels from the device
+   tree"
+ * Dropped the tags as there are new changes.
+ * Restored maxItems on interrupts and interrupt-names.
+ * Added resets/reset-names required property for RZ/G3L.
+ * Added r9a08g046_hw_info to device data.
+v3->v4:
+ * Dropped maxItems from interrupts,interrupt-names and resets.
+ * Collected tags.
+v2->v3:
+ * Collected tags.
+ * Added check against RCANFD_NUM_CHANNELS, to avoid overrunning the
+   fixed-size rcar_canfd_global.ch[] and transceivers[] arrays.
+ * Fixed typo 198->192 buffers in commit description.
+v1->v2:
+ * Added support for deriving max_channels from the device tree.
+ * Dropped clock patch as it is accepted.
+ * Dropped devicetree patches, will send it later.
+ * Updated commit description
+ * Dropped RZ/G3S fallback as there are lot of differences.
 
-You are right and probably the example in the cover letter does not
-fit the best use for the netlink message.
+Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+Biju Das (4):
+      dt-bindings: can: renesas,rcar-canfd: Simplify renesas,no-can-fd description
+      can: rcar_canfd: Document that RZ/G3S has no Classical CAN mode
+      dt-bindings: can: renesas,rcar-canfd: Document RZ/G3L SoC
+      can: rcar_canfd: Add support for Renesas RZ/G3L
 
-This is just how ss show numbers. I used this tool as proof of
-concept during development and I didn't put too much effort on it.
-
->A CAN-ID together with a CAN interface is a unique "content address" 
->to identify the content which is in the CAN frames data.
->
->I assume "1110" to be the decimal representation of an 11 bit SFF CAN 
->ID 0x456, right?
-
-Yes, it comes from 0x456. During development, I was using some C
-program to just create CAN sockets. The socket configuration for the
-shown example was the following:
-
-`
-addr_send.can_family = addr_recv.can_family = AF_CAN;
-addr_send.can_ifindex = addr_recv.can_ifindex = if_nametoindex("vcan1");
-addr_send.can_addr.tp.tx_id = addr_recv.can_addr.tp.rx_id = 0x123;
-addr_send.can_addr.tp.rx_id = addr_recv.can_addr.tp.tx_id = 0x456;
-`
-
->
->Having a CAN ID in decimal representation is generally unusual - 
->especially in Linux. Additionally you can have 29 bit EFF CAN IDs 
->which does not fit into a 16 bit port value.
->
->And 29 bit IDs have to be marked as you can have the value 0x456 in 11 
->bit and 29 bit CAN IDs. We usually do this with 456 and 00000456 to 
->indicate 11/29 bit IDs.
->
->So the "Local Address:Port" output does not really fit to CAN here ...
->
-
-I can update the ss example in the cover letter with something
-that better fits a real case scenario if you want. 
-
->Best regards,
->Oliver
+ .../bindings/net/can/renesas,rcar-canfd.yaml       | 31 +++++++++++++++++++---
+ drivers/net/can/rcar/rcar_canfd.c                  | 31 ++++++++++++++++++----
+ 2 files changed, 53 insertions(+), 9 deletions(-)
+---
+base-commit: ef2fff76f76133f4f02bc4bd116858b040c17fef
+change-id: 20261020-canfd_rzg3l-248b76100fb1
 
 Best regards,
-Filippo
->
->
+-- 
+Biju Das <biju.das.jz@bp.renesas.com>
 
