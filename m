@@ -1,91 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.167
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1792582441;
-	b=WqiI9UIMYwv74QOGIOS3aljGRuV0O7SZTGAGneucRDtfHHMmdBeDSB06pFo7Vsbnuhqw
-	 Veo3BGsOmH9RNAR09ns2PQc0HL4c6eNgbfIxMOJMhxLm/dYtt+trNl2eQkSHuyZ3vnpN8
-	 sDJhLH0URwK7f6bHZmVa2pjvO6JGEWbCF774K6uFhR3KwuZdPjeJJZN9XxFGfKEDv2XCR
-	 EOmjKM/AFRhGac4Xtj3GpiB49RP7tFS+2SAD52vasvhEvhJA8kqCjmUUM7+SEdL2/fZwU
-	 xiswig7N0K93BfxtVUkgRvXT1xh8JQ6UnvemZu1Yr1GHI0xcAEnCu3f+WakAN+TznXA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792582441;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=XZbpYx2QT8SRqRQMd9EWM51qhGzQzVjgKxv8x7jW8MY=;
-	b=FRjbXYgcT3mlU9U04k8E9d1z4XF0858cJm93KIr2VQ0Fc+uFeNF3rcdWtqYr8RyVOs3d
-	 MpOhj/p0108Vq8JLX1oexBAtz5qZRtmuoHBLdd9mrwyvAu7xsgV26WPljV3FC1+gNWI9Y
-	 by2/XjiQf4tgx0m3f+GNZLAw+3hy2XADdv813I3KVtrG0XJtj2vkeIxXhcQQ4A6JFkQsx
-	 wfZ0o2jFIT65QQWaWhIwkmPmdI+M1ubbReHDhxT/jB9SBTixug/zLys4zvM919A1ApAIi
-	 Y/IufRPwuV7QSPkbmieq+J5kUquXW7qD8SK7bYYcTg6hwRceGrveAj7C5GHHPck9JCg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=qoKfKa1n;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="/eF1EWpk";
-	arc=fail smtp.remote-ip=81.169.146.167
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792583319;
+	b=Ib9pAvOb1cW3xMLcg47QM7Gq8je84YhEkmKO0/AhbdbRQwIv436pTXAHvTFzjqZqhPGP
+	 BORCSJZY7zERh3mKjYKzwyq6Xm0NwRMJotFn7+BqH56LSf4Jdn0SOu1WjCfLTmD2qYMI3
+	 yZa2cDZnPteAM/OX2hUCBiCedAeywFU6Vffg4l82DCYg4/Nb2XshdOZaM/dBiCW5Vez5w
+	 4/J2iALUBj3MLyfCsRMCItlyEJdZr76dwnqkaqPQONub8A7GtD+VkMm7yQO8BJi9ZgdYa
+	 lu0ZUSbUhh+TE7jWYRjLVnYNJXBbxHR3gCGvRiJStEnfdCOc1K6mwbRujjZ4wi+02qA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792583319;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:From:Content-Language:Autocrypt:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=P+P5ZMQTBAwifUc4og7voZXXPSPAoXdrR3ly/exkImc=;
+	b=1M+HlccLKEk2Ok5hJ1KRxVgsLCdP9DCj8kFhDXZLzMfgu6LQL0JKeQEu2Ud/xsapWLhz
+	 OyBWFXZxFVDA6RMWbiQxSQzrfFOYImw3ttuOlmvi+MexSADBjfcEHA6Em3VI1igcTvCgE
+	 /elXgpNYb+OKxq5L+/fctaVx29noRPMGaBFB5rXy366ec39GOaTnNx1z1+Iac6/P2vzim
+	 7S6RSjd3WYyxfth1iE6Wcc16Cq+YQmbbv2SeyLEb225lIN7U2ZIp9lXkZHnrdrIH75R3+
+	 53rZDBoRwQJmp8rbNw8eaiRkGJMtvclyTHp+pHn3NY2zI/QTwQM9YZbE4+9VDqiwEKA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UIAXE+9t;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8D5606A319;
-	Wed, 21 Oct 2026 11:33:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3D8D5606A319
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66E24606A328;
+	Wed, 21 Oct 2026 11:48:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=qoKfKa1n;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=/eF1EWpk
-ARC-Seal: i=1; a=rsa-sha256; t=1792582424; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=kQsJCEKykk1OKrTFFmYQkbT47Lbrt+2jAPr6cOUcsEZ+t8Xkd1fN5d/gbacYHcACeA
-    2EC5I5jQHHSAe4k31kUQJbVzpWwwoexSZqZ95vD8xXZpCgVoY16VS5IUIwGrDqQIpoBd
-    2ato1AYLLq6jEhUZ4Ac5rMsqouOYsOFknHS9QeHZ3KECLnZsmuPukW3hlcnhj23b+9V1
-    HDyx+0etKPXgoqRM1L/8opQBspAGpSJOZxyZLUz9It+QYftB2orwxmhSqGYRL1K7KQwa
-    QfDPOxqWDYb3oRTKKljRI0m3LLp4U67oE5Mav5XuN+D2hDgJ1HhWhfkXBbAdVoz3CmQG
-    DmAA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792582424;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=XZbpYx2QT8SRqRQMd9EWM51qhGzQzVjgKxv8x7jW8MY=;
-    b=NwieL3BAqxtwMCCyz6nzohoJ9+zM0yNe5va+EsBIenmVGpvsBBsYGABLR0UYUG5a/x
-    qIVUVh6hNKpXTwJtVjwnpX8oOh2GI3zdwOopVrtWRNcgovzliTtv67EJipq3XLmFuUNR
-    PBB0xRbvQnM4NPzf24DP4Ax24QdwujKc/eK/eSd58L/bkk60Vx+2ONpqPrh5DA75DRqq
-    21yxf0I+QATU24U/KDeeLmjfGiNLLzNXjYdW9VAdKGTkJ1pLNn2b0nne49a464hSaSpi
-    WrhbnRokL/frulwb12gEpt0TjXs1PvM95dGC2TJ1yluGe1f0cVM55QjyE/VZg2YeAERG
-    KloA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792582424;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=XZbpYx2QT8SRqRQMd9EWM51qhGzQzVjgKxv8x7jW8MY=;
-    b=qoKfKa1n3aMqI+c1cHVqogZRZy2YQv0Wt/ArFqgtYgk+eaFfXoso+kXA/kP28Qxn5g
-    ljcm09IxRq9XBNJg0jwPeoYGDizruDWJKcybNdJWQ2irqJK+eCf5fFpwj+U4nAzowk+W
-    kOrP0+bwTSgkG4fhnOjV8TT7inpDtiGwORCnmPJOTB8X4d8Kze77FjZD3KSyCQpQ5Ih4
-    A83ojexJv6R4AfRESNKSZhFINFV2/+0Y3YaViuyVj4pZKkUqJtEu8G6oPIlh39LqoLot
-    R18i/8749sZlTgcHJQjZvMJMpJy7Yy4RL55oEDa/JYkHwtYi2cfIv8+rJlPjQoUbo7QU
-    nQhA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792582424;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=XZbpYx2QT8SRqRQMd9EWM51qhGzQzVjgKxv8x7jW8MY=;
-    b=/eF1EWpkDFIHDuutZNK3CdiMtTogAPRZmtmLOmS3iMu0/OWrVxlCbAtIZ3dqzvmczB
-    0e9Jq+85pxS/+J7GJaBQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29LBXhhiQ
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 21 Oct 2026 13:33:43 +0200 (CEST)
-Message-ID: <37e1db71-eaeb-40ab-8589-099f9d5611d9@hartkopp.net>
-Date: Wed, 21 Oct 2026 13:33:38 +0200
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UIAXE+9t
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56D641F000C4;
+	Wed, 21 Oct 2026 11:48:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792583319;
+	bh=P+P5ZMQTBAwifUc4og7voZXXPSPAoXdrR3ly/exkImc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=UIAXE+9twiE2YHeUN7Y9SD9H2FrwBPp0T+KEKufY7AGbTtLYv0cxySK0uYXAj57GO
+	 msSiSqwWKhvotgBfsZZoQjmD6r2bPxl0XbHoMSRl2KgtRbqqpZlF0SOh4QyDusDxbx
+	 OnxtNB983yISKBOeZ3EdQTbo/ofK9sqijAbC/S0n8sVuM5wiQBQS8ZHI5uRBpmg20M
+	 AekqusowJ0X3TLrQI3dQn6nZ/SkCQNViPQ1Uzy7RC0o7rxVkswn2HSGEMq/HUdRiN0
+	 IAme8nSXbSqXyXBuCLzYIm4IdtQA0Oc8gME2vigxscYgX+FRkZotMV3zQLcLCGL3eJ
+	 Jh4zjjvB+OJLw==
+Message-ID: <4ef66cfe-9ff8-4d26-87de-48485e9d4fa3@kernel.org>
+Date: Wed, 21 Oct 2026 13:48:35 +0200
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,45 +52,105 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net-next 0/11] pull-request: can-next 2026-10-21
-To: Paolo Abeni <pabeni@redhat.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
- netdev@vger.kernel.org
-Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
- kernel@pengutronix.de
-References: <20261021102756.1900679-1-mkl@pengutronix.de>
- <313fdacc-a8e9-40b0-a125-2317ffaae79d@redhat.com>
+Subject: Re: [PATCH v6] can: dev: can_fill_info(): don't wake up controller if
+ interface is down
+To: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, mkl@pengutronix.de,
+ kernel@pengutronix.de, haibo.chen@oss.nxp.com, shawnguo@kernel.org,
+ imx@lists.linux.dev, stable@vger.kernel.org, netdev-bot+sinfo@kernel.org
+References: <20261021023334.11803-1-chunyuzhiqiang@yinhe.ht>
+From: Vincent Mailhol <mailhol@kernel.org>
 Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <313fdacc-a8e9-40b0-a125-2317ffaae79d@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmdfB/kCGwMFCQp/CJcFCwkIBwICIgIGFQoJCAsCBBYCAwECHgcC
+ F4AACgkQq1/riG27mcKBHgEAygbvORJOfMHGlq5lQhZkDnaUXbpZhxirxkAHwTypHr4A/joI
+ 2wLjgTCm5I2Z3zB8hqJu+OeFPXZFWGTuk0e2wT4JzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmFiEE7Y9wBXTmfyDl
+ dOjiq1/riG27mcIFAmceMvMCGwwFCQPCZwAACgkQq1/riG27mcJU7QEA+LmpFhfQ1aij/L8V
+ zsZwr/S44HCzcz5+jkxnVVQ5LZ4BANOCpYEY+CYrld5XZvM8h2EntNnzxHHuhjfDOQ3MAkEK
+In-Reply-To: <20261021023334.11803-1-chunyuzhiqiang@yinhe.ht>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-Hi Paolo,
-
-the original PR is pull-request: can-next 2026-10-18
-
-https://lore.kernel.org/linux-can/20261018164417.1540449-1-mkl@pengutronix.de/
-
-and I had to fix some sashiko-bots reports that didn't show up in 
-previous postings on the CAN mailing list and its LMM.
-
-So its really just a fixes version of can-next 2026-10-18.
-
-Sorry for the re-sending :-/
-My faults.
-
-Best regards,
-Oliver
-
-On 21.10.26 13:19, Paolo Abeni wrote:
-> On 10/21/26 12:24, Marc Kleine-Budde wrote:
->> this is a pull request of 11 patches for net-next/main and obsoletes
->> pull-request: can-next 2026-10-19.
+On 21/10/2026 at 04:33, ChunYuZhiQiang wrote:
+> If the interface is down, the CAN controller might be powered down, the
+> clock disabled, and/or its external reset asserted.
 > 
-> This is a bit tricky. We are already into the merge window, we should
-> defer all 'next' material posted after the merge window start.
+> Don't call do_get_berr_counter() or do_get_auto_tdcv() to read the CAN
+> controller if the interface is down. This fixes a generic logic problem
+> that exists on all platforms.
 > 
-> /P
+> As a result, IFLA_CAN_BERR_COUNTER is no longer reported for down
+> interfaces, and the automatic TDCV readback is skipped. The other TDC
+> parameters are still reported, as they are meaningful while the
+> interface is down. This is intentional: the counters and the automatic
+> TDCV are not meaningful in that state, and calling into the driver can
+> wake a runtime-suspended controller or touch registers whose clocks are
+> gated.
 > 
+> Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+> ---
+> v6:
+>  - Only gate do_get_auto_tdcv() on netif_running(), as suggested by
+>    Vincent Mailhol and Marc Kleine-Budde. The other TDC parameters are
+>    still reported for down interfaces.
+>  - Adjust can_tdc_get_size() so that only the automatic TDCV size is
+>    skipped when the interface is down.
+>  - Keep the berr-counter gating unchanged.
+> ---
+>  drivers/net/can/dev/netlink.c | 21 ++++++++++++---------
+>  1 file changed, 12 insertions(+), 9 deletions(-)
 > 
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index 6f83b87d54fc..ae0cef791ef3 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
+> @@ -517,7 +517,7 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>  }
+>  
+>  static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+> -			       u32 tdc_flags)
+> +			       u32 tdc_flags, bool auto_tdcv_running)
 
+Nitpick: I think it is slightly better to pass dev rather than
+auto_tdcv_running:
+
+	static size_t can_tdc_get_size(const struct net_device *dev,
+				       struct data_bittiming_params *dbt_params,
+				       u32 tdc_flags)
+
+The reason is that by passing dev, it would be easier in the future if
+for whatever reason we need to retrieve other values. (And to be
+honest, I was not going to comment just for this, but because a v7 is
+needed anyway, I think you can add this small change while at it).
+
+>  {
+>  	bool tdc_manual = tdc_flags & CAN_CTRLMODE_TDC_MANUAL_MASK;
+>  	size_t size;
+> @@ -538,7 +538,7 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+>  	}
+>  
+>  	if (tdc_flags) {
+> -		if (tdc_manual || dbt_params->do_get_auto_tdcv)
+> +		if (tdc_manual || (dbt_params->do_get_auto_tdcv && auto_tdcv_running))
+
+And by passing dev, this becomes:
+
+		if (tdc_manual || (dbt_params->do_get_auto_tdcv && netif_running(dev)))
+
+making the pattern slightly more consistent throughout the file.
+
+>  			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
+>  		size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO */
+>  		if (dbt_params->tdc_const->tdcf_max)
+> @@ -548,8 +548,9 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+>  	return size;
+>  }
+
+
+Yours sincerely,
+Vincent Mailhol
