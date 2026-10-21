@@ -1,97 +1,104 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
 	t=1792624301;
-	b=QcMXk2zihh3VmdKaHg7ZrxMSgdsBUKCi0ykEXmxTVM2f8r2rJnnAGXB3qD+win02Kf7y
-	 Q50/hiLlHk7q9YWcSzT6jcwGb1t67S4umpTzaY++42AgVfNvmTjPWe0LELNPyATt3xU8N
-	 1CxdEFd7ekSDMPbCeSQNvlGK++Vui3Pvvjq/4qIvgXECP2B07Am1gjHTJL/IO/TKapJNR
-	 zOjrb/3Py1n1L5XJA0uHJgllmS8Yy4ux7v+0ScSdbukQN5DOP9CUtITejOyh6U8HKHeY3
-	 mqswHFfyZy3ds5xHMBUXquc+WXRgRGXfosXrXttIxBJjHiQtkCgyptO+UGsjTAGds4Q==
+	b=T9qJMtpgWpJmPQ3hG9y4lG/Q7eDoibTImrtkbPgWUHmiIiFo8Mh/qkW4dWivdO4HTGHE
+	 n5ruUTEFykDWgoWzsc9tqDY5bAXi+DTe8ya7Dr1RZyzQEK3eKy2BxaMa/7AFLGOAo169P
+	 hZiJnEhFrJSybZcv5rqb0ESCWOS9w2WT4npiRfPOUp5mHhe2NNmkLqqbIUqGKEiOxJTVu
+	 wtobwQYlBq8ptTLHSeipTKk9WBn+xd9lBD5sOf8hWXDxpioTSM6kosN958tdV8nd8SMy7
+	 RTwlqvhNo0nTVP0f8qJHWaN1vkDwy/ATqxwWa5wRhra+PWzzGoKgLRzLHS3xqTT18zg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1792624301;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=UOLd5u+mTeUZU74qOwLNqkVdCULazO++sp3bYRqN8rE=;
-	b=SwE/eb+c2QGC+XS5kdOnST/+K0K4dM6X8exy8QAyt5hW2bFtE4N9x6ivndLgzXVBkNv1
-	 rkoJJqMxAdlvEohL8hLb6JEYKkxfDJlt5NSDwNGexf+MP7vaFRD/BbMU9Use00gl1P99L
-	 BpKofrV7lDVoO7Y2/cJCoXAnZblp/wDr+8kCiUQortLuwGydvXezVySMmLmesiivZ8Nyp
-	 VLwASaIOZKXZWGy5BjRRti+3NdXgc16AP3obF3yOuhcOEC2aFDf6NjeQ+iabBEYXhCVYE
-	 lUpf1ke0UQ5/Ut+O/CQA2gkLLmHZxozqITBHcKdQa0ods/7q3loc3qECjOOTuJiIdgg==
+	bh=GuuCj5FgUwZxYjIYXBjDzyPTNHukyGNgbaxYgigr4OE=;
+	b=DOjM2ULyM4oak+DnnYzvwWgbU7XX+jv0LBJS8ZecDst22tZG2UuC7tHkJi3kCTq5W8lg
+	 5hTfq2bWeH+Ij07XhK0AwoMylxuQF0EgIgyXVwBUiekbcKnnLl9kn7+hczoSKuKey0UjG
+	 HlnyDtdWO53KwF+8/pVF4GTydHxS8yAq2c+p18BAWomQn7PKexoI4ug/pvvDoEQbygeXV
+	 /eZ9h4OBXy4fSUcQ3iwwnmYZPPwvjO8GKIcIwYvjSJqdREf8SZCucokVruE62Is/xzLD+
+	 uvfVwnQhITYdK1Nhr8s8+dGI9goj9m1cVINjbkxkwXVeUxYcghpsUo66VybwYJuoczQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=U5tsV6wa;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="TfiS9/0z";
+	arc=fail smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72E53606A31A;
-	Wed, 21 Oct 2026 23:11:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 72E53606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49C17606A31D;
+	Wed, 21 Oct 2026 23:11:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 49C17606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=U5tsV6wa
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=TfiS9/0z
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 33C79200F60;
-	Thu, 22 Oct 2026 01:11:33 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id AB336201B9F;
+	Thu, 22 Oct 2026 01:11:34 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792624293;
+	s=20260414; t=1792624294;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=UOLd5u+mTeUZU74qOwLNqkVdCULazO++sp3bYRqN8rE=;
-	b=U5tsV6wa5092ifeoA9UxivYtULYFLf53+Srfym9SKpf0kptROfjlFOAJdOJf0nhjcQ7vyg
-	J3cZ34oxSwPHvdEjS1ki06ZpjK9V584XXLi0+lCxhI+97tJ4tfY9HEJgA+MUo3diJ7qEnp
-	iWQtN+ME6dt4zvVAgUHOaW9n0MLwiPrro8NdrHw1PNc5L1v6gt8slnXfNxtk8xOKBQgep3
-	/LaTipqzx8us6wpxSxwVrgA1SJCZRnoUDgneJsbo285s31aKDHtwHFecmhkR769B8FysLS
-	FtqrmNVwX9qmyYLz23vwuHTSJ5w6xM5mafzmRmai8p6pjFokTZb16Wow6mHYnA==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792624293; a=rsa-sha256;
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GuuCj5FgUwZxYjIYXBjDzyPTNHukyGNgbaxYgigr4OE=;
+	b=TfiS9/0zVsFwPcWV4hdrfEvtZcXlmst4DQwBOQaglriu22lNRgHG7HaoY1sFJU7N3C+o0T
+	6U6NaeStWYgTu7f4s7mv+1QfBqzVMj+tF5Tx1C3/Hd2EUShVKBfV9AoqvIpsq16P0rmK42
+	SGEdHmVpmZ4FCRR2LA5r8dvKb2hV3FLmi+rLKYHcOyBtM4FtU87g/Vvqup3c/MdOBrd2IJ
+	tA4GOrqsHpBY7LP6dkCkQf7NBTZPmZiCTblJyQ+dhPrZEjw9EVjM3516h0AE8cW2M2SSPn
+	df0b3n7DpdlJbrqvECRwDw+457D5CcbRXekJx9ZX+plLUkbRavIBagTFqdiysw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792624294; a=rsa-sha256;
 	cv=none;
-	b=MhmtsvAsKFqzvhN8Ua8HR4JCnSR2OT+93+K+cxXa3y4jeGwgM7p/okLOfDj+CbigS6bysw
-	lZWbDxpdq3cDXMBzMF5qBdfh7b9ezXj5XjfjOAJ1b2+Bd7m37DVVOfJkvBN36sN635flIM
-	zf1obVgrgsGFKNVZ/rC/efdq3waE3n1zxCq/cFT0gziS7+CdtE9KVJxxbhlTY+xvpspUZP
-	xd/zpfseyXBkfkNl2s3//gLSa2KAGFKeCR6QvcS7XWCkBbf/TB5jdToQodvcmAfBF2BEDM
-	kKbM9J1ZEjmPUXH3OBZdzW8eJ12UfiyBHG3XhT93LQPkcb540dTxY3zX5XKWdg==
+	b=Svjb5KZQFTQKmRnpjnMdMmUeMPU9IyZGAyASA5Y9XP0wsvE3GfXjdJVPKQzOvbY/ayFBIT
+	RcpBqIbWCMt6I6cD7LOVDsw/f6+Jtd1tPiRuJw8Kxonvv/Eb3+k7iwTaZOTbnkpytp0Ro/
+	DoDYP10Mupnx7R5pAD+mYmCrYrhLe2YN9OSW9SrxBOiwNoycRbojLh6k+zWclxOMTxgcTO
+	vHic8YQh4m2yMOECpK6CcjYFptE8MjFonmd6kCfGXH1MOaDZtUhOo6YpU7D7jrXeJM81W4
+	2OoKbcjmZYXIoTfR+2BD4GnhlEn47bWJZ4TZx9TPZH70Ro72e5gFTVHAlMVsHA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792624293;
+	s=20260414; t=1792624294;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=UOLd5u+mTeUZU74qOwLNqkVdCULazO++sp3bYRqN8rE=;
-	b=PQsqWKQhOGB4kqWHgwufEGsLMZjfLSn3V5qXddU40XedjcRCzb60D/zsVXxguNU+7rVCTA
-	tM68r6GoHEUTXT9roD/oKcGJoYzZ3zG44tChZ4KknBDmJWpz2byzTg7o7R//9W4tUK71bc
-	eDVOGCil+DwQcjzK2osVsnG/9ejK2j5nBl+/z5kLmMrUt9/AoZwSySlCA1KUYe1V2QF2G5
-	0EKlCheOeIJY5LiG39fpA0Zd/HdAyXrDB+6PYuy0D+S7MkuisNXSCTY9jxf++BntyPGCMg
-	AOj6Y1yiTatnRvrKpRXz615LqzJsSRbuiy6w245Ihz6vGE74w4nWpmhsOX/dow==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GuuCj5FgUwZxYjIYXBjDzyPTNHukyGNgbaxYgigr4OE=;
+	b=D7Cp6uuk/9IOTVTuNwOj0LljDAZYEcAxnnlVKqe2cmInwFIsQOa5yl1XDbuVfiGcQ9TinA
+	OnsiBIAfD2sPSCBa/sK3PBu5QSQ5mv5AALIgvEdZWBT0LokSmuXXUtiM/rhrMSevBPPeKj
+	f4h/OcV2w/qbZapZyHauVkI+UrvkDu9s0QAyNPASFX51Xj3mX4Mlxy698VBBa0HeVsX8uw
+	yEoyiqIcwv3EWT2OUxIFOt7bJqT6U7HycY+ryv6uo+JtKQyFpjz+jQydSJ4IBmiyJHqaMK
+	9KLTHGBPTsOwJEv8V6BO1hEjpJ77PO082QjMch2hNvbEBSCe2gRr2AIshQEKRw==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xJfT3-000cW5-0N;
-	Thu, 22 Oct 2026 01:11:33 +0200
+	id 1xJfT4-000cWE-1q;
+	Thu, 22 Oct 2026 01:11:34 +0200
 Received: from blackshift.org (unknown [IPv6:2a03:2260:2009::])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 9272A5D06D5;
-	Wed, 21 Oct 2026 23:11:32 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id F0FD85D06D8;
+	Wed, 21 Oct 2026 23:11:33 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net-next 0/11] pull-request: can-next 2026-10-22
-Date: Thu, 22 Oct 2026 01:07:47 +0200
-Message-ID: <20261021231130.2085690-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Sang-Heon Jeon <ekffu200098@gmail.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 03/11] can: raw: remove redundant NULL check before netdev_hold()
+Date: Thu, 22 Oct 2026 01:07:50 +0200
+Message-ID: <20261021231130.2085690-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261021231130.2085690-1-mkl@pengutronix.de>
+References: <20261021231130.2085690-1-mkl@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -103,96 +110,39 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello netdev-team,
+From: Sang-Heon Jeon <ekffu200098@gmail.com>
 
-this is a pull request of 11 patches for net-next/main and obsoletes
-pull-request: linux-can-next-for-7.4-20261021.
+netdev_hold() does nothing if dev is NULL, so the check before the call
+is redundant.
 
-The first patch is by Vincent Mailhol and drops CAN-XL frames on non
-CAN-XL devices.
+So remove it. No functional change.
 
-A patch by Sang-Heon Jeon removes a redundant NULL check before
-netdev_hold() in the CAN RAW protocol.
+This is the result of running the Coccinelle script from
+scripts/coccinelle/free/ifnulldev_put.cocci after commit f83b8a58695c
+("coccinelle: ifnulldev_put: update outdated helper names").
 
-A patch by Kaixuan Li for the CAN ISOTP protocol improves the check
-for the correct CAN CC/FD frames.
-
-The next 3 patches are by Cunhao Lu and make CAN skb freeing safe in
-any context in several CAN helper functions.
-
-A series by Oliver Hartkopp et al fixes several problems in the CAN
-net-layer:
-
-3 patches target the CAN procfs: A patch by Runyu Xiao resets the CAN
-pkg_stats using atomics, a patch by Oliver Hartkopp fixes the stats
-calculation after a statistics reset. Followed by a patch to remove
-kernel pointers from the output.
-
-The last 2 patches are by Oliver Hartkopp as well, they convert the
-unreliable ARPHRD_CAN type check to the robust can_get_ml_priv() and
-protect the CAN receive lists with a per-device lock.
-
-regards,
-Marc
-
+Signed-off-by: Sang-Heon Jeon <ekffu200098@gmail.com>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20260831052031.902699-1-ekffu200098@gmail.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ net/can/raw.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-The following changes since commit 7dca8514c51ea5219daf7f28bc1a0536b907e611:
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 0acd4f6c6dd6..6944ebab3feb 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -529,8 +529,7 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+ 		ro->bound = 1;
+ 		/* bind() ok -> hold a reference for new ro->dev */
+ 		ro->dev = dev;
+-		if (ro->dev)
+-			netdev_hold(ro->dev, &ro->dev_tracker, GFP_KERNEL);
++		netdev_hold(ro->dev, &ro->dev_tracker, GFP_KERNEL);
+ 	}
+ 
+ out_put_dev:
+-- 
+2.53.0
 
-  Merge branch 'vsock-so_inq-for-stream-sockets' (2026-10-21 11:58:24 +0200)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-7.4-20261022
-
-for you to fetch changes up to 80cea9d8546f7533e9161c7f5b156ecd066647be:
-
-  Merge patch series "can: protect the receive lists with a per-device lock" (2026-10-22 01:04:07 +0200)
-
-----------------------------------------------------------------
-linux-can-next-for-7.4-20261022
-
-----------------------------------------------------------------
-Cunhao Lu (3):
-      can: skb: make echo skb freeing safe in any IRQ context
-      can: skb: make CAN skb allocation failure paths IRQ-safe
-      can: dev: can_put_echo_skb(): free skb on invalid echo index
-
-Kaixuan Li (1):
-      can: isotp: check the frame type, not just the length
-
-Marc Kleine-Budde (2):
-      Merge patch series "can: skb: make echo skb freeing safe in any IRQ context"
-      Merge patch series "can: protect the receive lists with a per-device lock"
-
-Oliver Hartkopp (4):
-      can: proc: skip stats calculation after reset in can_stat_update()
-      can: proc: remove pointers from CAN specific proc output
-      can: replace ARPHRD_CAN type checks with can_get_ml_priv()
-      can: protect the receive lists with a per-device lock
-
-Runyu Xiao (1):
-      can: proc: reset pkg_stats atomics individually
-
-Sang-Heon Jeon (1):
-      can: raw: remove redundant NULL check before netdev_hold()
-
-Vincent Mailhol (1):
-      can: dev: can_dropped_invalid_skb: drop CAN XL frames on non-CAN XL devices
-
- Documentation/networking/can.rst |  16 ++--
- drivers/net/can/dev/skb.c        |  16 ++--
- include/linux/can/can-ml.h       |   3 +
- include/linux/can/core.h         |   2 +-
- include/linux/can/dev.h          |   2 +-
- include/linux/can/skb.h          |   4 +-
- include/net/netns/can.h          |   2 +-
- net/can/af_can.c                 |  62 ++++++++-------
- net/can/af_can.h                 |   2 +-
- net/can/bcm.c                    |  64 ++++++---------
- net/can/gw.c                     |   9 ++-
- net/can/isotp.c                  |  73 +++++++++++------
- net/can/j1939/main.c             |   2 +-
- net/can/proc.c                   |  95 +++++++++++++---------
- net/can/raw.c                    | 166 +++++++++++++++++++++++++--------------
- 15 files changed, 305 insertions(+), 213 deletions(-)
