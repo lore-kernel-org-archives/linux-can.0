@@ -1,41 +1,41 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1792578482;
-	b=QwT6KPgTJmh4TGn31712Vuhpv35dCqOUsl2Q10Tw/eqUIFwJ8zwu65lU/iu4aWqkUumI
-	 viu9KW457Wg1bEVa+SdZ9svop/rwCUuDHX1Ff3K6N+Zlkqf5KzZAzdBG4brBhAvXVccy1
-	 SHIELA+oUFN24/IysbQMYVzZLcgscKy1IOBXi14HhlN/iuq32BWdAH4j89zWvO2yDxcmH
-	 la1GF5j5ZGkKFskhqrTp1j05bee2lJlfJSYUMfIE26AcR6bJ1ck/X2fFSrE6vdXGMB/iX
-	 hrt2TKwaxYO3Bg0yBuSj8nLX67qDOgZ9aWvsqWKHHeaLMnyOiC0TbvDxmjrBsItC3OQ==
+	b=lFic0HvRouV7qLSiP1l9h4zCVh9AYtOtYf5i97bVAhGYEbeynnUlCX9awoMxGp/RbYrU
+	 oIX8+QKU+2vhcLjFTjuEce1+l5+01Z01MBdzweZmgUMCc+6K29ADJnBQ0N8Ri0hAFZYdH
+	 3kfSPUGrNRWoK20iUYNa5vWku3/cHqY5fp34z0VHz4fKI3tdUrAF5xcgFn5psiaPBz+Yi
+	 pmoWxZXsyzHyzAqVUwpmlQTvK74fRvHiY/de1WHBkOLxpAEDvKxUPdKfH+MBpOXADa56m
+	 6FfEymrQo6J5J+OjanIVuIv3cjS2/WQGOAMiapUTV/scplSV069eh2LD5qZ/FGZJ+Fw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1792578482;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=AlrfPzT5jQTLXkKxox6WIsAY0BepfJdkXAFH0ccIzwY=;
-	b=4CejPjllyG/X8sSEdZmot0qSI8xkTTb2m13ugQJSHAh3ZSrPiq85UtlMFwTcRYCymfL0
-	 OGuQAhpdcig0drncqFd16I1ySsW8N/6UJB6rfL+3VPU2CFISN6LJq8e02KbzT4vFBr3S9
-	 SCz9vWpaKam2u6lffPOKBNH4XmiBCEmyWBsCe2/Ietvs9xBucdfnRM4kcDK/EyY3vltrL
-	 s9CIht4omiFuGeNbId/DkvF2+Ne3gjh1BiyTtZ1smN441LHxJdM/W6j/+y7lGfvgpDjCO
-	 GKR7BEb0Orgp/BlHzV32i4UOWfA3zaW7SZFkGGj0+H84/K+29zf9D2fbIX/NPBbVTSg==
+	bh=jmBq+kau38eq8xUhlmh08YcQWsEHQ9X5elckRx+lLtI=;
+	b=xEpx4Pj2JwCg98HidVlO86oSU3egP0yZNF0Z8V+THaI9+RUBq5cKR0zeb+EmFXBKCmq9
+	 LC6TmN+PTB12glBGJJ5fqmt41czDtheCeucg9CtuLWnmf2h9rF6tXAtYtfOPfgpN8pris
+	 I8gqOxq+XZSUM6dHBO/WTDXq+8Q/hX7mLvFRrUTd24iHmMyZyWlaAdz0zx1IKFnPYYDhr
+	 PcRDD0XOKJxbXdXVT60E+ABiG2zlTHue18KCuvVtiWjv89thjB49NHTMQhL8RdDe414qC
+	 eNBWA27GBxwXBXcqhxgIEO8zs/K6VJDYpMmZp77Gtnaa33cORQYHiNtVk/GqkCvgVOg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KYIL244a;
-	arc=fail smtp.remote-ip=185.203.200.13
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=FLIi7scX;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B4FF606A320;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36B6C606A31D;
 	Wed, 21 Oct 2026 10:28:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0B4FF606A320
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 36B6C606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KYIL244a
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=FLIi7scX
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4FFCB20291D;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6FA25202920;
 	Wed, 21 Oct 2026 12:27:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792578479;
@@ -43,19 +43,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AlrfPzT5jQTLXkKxox6WIsAY0BepfJdkXAFH0ccIzwY=;
-	b=KYIL244aWfLc/Fygra/QGCll/lB1dXJfLot6+SVY13TeucGeWF+/UxK8femBcbO8CytUTQ
-	mCWBsbUFjp1JzQIrpwls9LCIHuY09gjZi/nCb+fjoDtqqUXUH15W6W2R5158Vr9bCyoHk8
-	TiZhOxRodbQuB64Fgq7cW7VqT8MAnmddutsqg37fvH2PN1rGH7d3uFNfk0mDrJ97qSgv7o
-	WoSnqTU6vtnU1wbgNCHkJ6uMs1ywSvD3Kfs2b7FnNPjGnFjYniKOXCdgrSQ/9hVOMwXJmO
-	bppRyQcBxIwy2gWbpUkNiM7YXt+6hcwr76EtpMz7AIX9cO7sj9QUef7XoGzM0Q==
+	bh=jmBq+kau38eq8xUhlmh08YcQWsEHQ9X5elckRx+lLtI=;
+	b=FLIi7scXbjUCNrr1rXRAiZXegvtXF3L06DfcP9gShJrJKeAd8IFqLdbvv+UZxr0yFPzHb6
+	Q+8MUuPElmInwhqyjghz6T4/A7+wagxYdR3ZZhfSsiPXwe8GPLvry2NrrzkWInUf3I02Vk
+	jraWUi2Mq47g/2MOdQq4COF1MJI9q2bo/qXw2gqh7GbqXXF/wpZ+JUvp0nrxlCaghpB01U
+	SMKn1BQpa35iv4DyD+DIuCqJeZuKqqwtAMVhjb9/4VBcHfXcdHegj6b/f7nFlkei0Nqi5h
+	rRLu3VKxhB5I+/NSxW3bFnl+Mzek9oqL2zmw3HtQnBsBxBDddf8u5TBNTR6suw==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792578479; a=rsa-sha256;
 	cv=none;
-	b=GQ8Hxcd7jNEZeBnejQEEi/zjbzS/l+ooHt3mzE+Cf9MXlva6ks4iIRNBaxlFal4CQQYQp/
-	eBLXy+9q87Tugsg8NA/to6ZmcS446f/bMo2Au3364d03Ccl0rJbAEqfMHZMS7j2z+aYvTg
-	J6DuYmwXm+ZfAEvd4ZV4rfLC5B8UPI+bWKyONc7i6TjxK01vvXJcUu80O7fyfnZXUE5w6+
-	mc78JtCUHdsFIdprK3ROUn7FUE9pItSBmvCvykBAC8JIwKAW8PBUROE369MUj+Z3zRgxRH
-	Tr+23d+JvnLKjIRizjYVpROgv9HYEXO3ioARs7ZdK0CXQMLxZU/pFJa7y6tvpA==
+	b=dIi9UThYxDESj5pfkwO6XzAe3POjuWvWEISrgH/osaTKfezBJM3ybPMr2oYk3GxiiKU+q+
+	M9ixjLBJEknkSK73/3EhdErh4SnCg4xVTfC1XQoLPgOLzc2ymOE0VMFSc5Kt3fEn3OQiD9
+	320I1RjP1GU5/CnWZb9uX8NIWatEzNG5ETOe9BWOEixoxaBiUGGbI8ZXh14cYcjuFFZu+h
+	zBAm7lYI07rbnYEpdKui9GMTfKQIrZKZODF6L6TJ5pjcv+9wT49lHWw0782U9JAZwFM36X
+	OI2hlq0Bx62TaFVNNZNOHpYj0KPUjlAA3TFPUkwoN0Z/CRh+5dnZUg1LHrkPqw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -65,25 +65,25 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AlrfPzT5jQTLXkKxox6WIsAY0BepfJdkXAFH0ccIzwY=;
-	b=AFCjUBwl9459eD3DfbEzJlSMLpLaSrYJGV0y+DlscA6lobfddRrAJQOKJVV8c+5cT++TBj
-	6pSZyDIsEzrb7lkGBFRM8oELSIr9TgKvit/PjjeboqePC47vFpJCXaAZNI4NXjvnJKdsnN
-	rQ4k/lY4u/yoNxerxz2UoBIBx422CH01K0GDMY0ndipMx1A9ct0VNhonQZDM/MtpcVchxc
-	FNB7NzcINrh5OPzTuHJKxpeleoo3AytY52cWiKAuykiDLd6lyp+PTEybMcS+hFN1t+4SEA
-	VQXo2Pcdwp3tPMS2Kic8Hf9njJ9bBANHI7Zl6en3JBD64MJWYuXZ1WLBiR1g4w==
+	bh=jmBq+kau38eq8xUhlmh08YcQWsEHQ9X5elckRx+lLtI=;
+	b=eYam4mpIWUcVD81W0DmU1QPF+87x/76G+fXr2avzUGBGLl69WiKDf0xv06FJkFm8v207/a
+	bbrx0lsnkXL/BHVTJsW9nEuHuQcfN2lusndPjeuh95AiuQOj0WU6WYFbkwPQobGNe/FJrh
+	Qc9WHBExvh47CWSFYjLhA5E189oe9k7cSKrElUQz3+TXH5qmI57917sqJs6swuZgAlh0NG
+	H9bTtRtZT0ttHWcc+HGqof5fhUcnNtaOUfabSEI9U4a6+ZxmQE8+7ecs+BXzMu17Z09fSm
+	Fnk94ZbIx9qILJEXeH1vESiR6HNGAlVYiKim0WLiMvapTFlR7ip3iYqh73XChQ==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xJTY7-000Xjg-0h;
+	id 1xJTY7-000Xjk-17;
 	Wed, 21 Oct 2026 12:27:59 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id EC0015CAFD9;
-	Wed, 21 Oct 2026 10:27:58 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 0F1075CAFDB;
+	Wed, 21 Oct 2026 10:27:59 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
@@ -91,11 +91,10 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Cunhao Lu <1579567540@qq.com>,
-	stable@kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 02/11] can: skb: make echo skb freeing safe in any IRQ context
-Date: Wed, 21 Oct 2026 12:24:33 +0200
-Message-ID: <20261021102756.1900679-3-mkl@pengutronix.de>
+Subject: [PATCH net-next 04/11] can: skb: make CAN skb allocation failure paths IRQ-safe
+Date: Wed, 21 Oct 2026 12:24:35 +0200
+Message-ID: <20261021102756.1900679-5-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261021102756.1900679-1-mkl@pengutronix.de>
 References: <20261021102756.1900679-1-mkl@pengutronix.de>
@@ -112,106 +111,51 @@ Content-Transfer-Encoding: 8bit
 
 From: Cunhao Lu <1579567540@qq.com>
 
-can_put_echo_skb() can be called with hardware interrupts disabled. Its
-direct drop paths use kfree_skb(), while can_create_echo_skb() uses
-kfree_skb() when cloning fails and consume_skb() after a successful clone.
-None of these helpers is safe in every IRQ context.
+The CAN skb allocation helpers are used from hardware interrupt receive
+handlers. If can_skb_ext_add() fails, they release the newly allocated skb
+with kfree_skb(), which is not safe in hardware interrupt context.
 
-Use dev_kfree_skb_any() for all drop paths and dev_consume_skb_any() when
-consuming a successfully cloned skb. This preserves the respective skb drop
-and consumed semantics regardless of the caller IRQ context.
+Use dev_kfree_skb_any() for the allocation failure paths in
+alloc_can_skb(), alloc_canfd_skb(), and alloc_canxl_skb().
 
+Fixes: 96ea3a1e2d31 ("can: add CAN skb extension infrastructure")
 Signed-off-by: Cunhao Lu <1579567540@qq.com>
-Link: https://patch.msgid.link/tencent_E84809CF236D0137885E7E4E4D58340B3208@qq.com
-Cc: stable@kernel.org
-Fixes: ae64438be192 ("can: dev: fix skb drop check")
-Fixes: 0ae89beb283a ("can: add destructor for self generated skbs")
-Fixes: 3ccd4c6167d3 ("can: Unify droping of invalid tx skbs and netdev stats")
-Fixes: 39549eef3587 ("can: CAN Network device driver and Netlink interface")
-[mkl: also convert can_dropped_invalid_skb(), can_dev_dropped_skb()]
-[mkl: add stable on Cc + add Fixes tags]
+Link: https://patch.msgid.link/tencent_C825C17D442F801351CE2FBC4984064B4605@qq.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
-
----
-
-FAQ:
-
-Q: What about the comment in drivers/net/can/virtio_can.c
-   virtio_can_start_xmit()? The error handling for virtqueue_add_sgs()
-   mentions that can_put_echo_skb() consumes the skb via consume_skb().
-
-A: The comment in virtio_can.c will be updated in a separate series, to
-   ease backporting of this patch.
-
-[mkl: add FAQ section]
 ---
  drivers/net/can/dev/skb.c | 6 +++---
- include/linux/can/dev.h   | 2 +-
- include/linux/can/skb.h   | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
-index bc0787535b52..46c151eece8f 100644
+index 46c151eece8f..3e36c0368bae 100644
 --- a/drivers/net/can/dev/skb.c
 +++ b/drivers/net/can/dev/skb.c
-@@ -63,7 +63,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	    (skb->protocol != htons(ETH_P_CAN) &&
- 	     skb->protocol != htons(ETH_P_CANFD) &&
- 	     skb->protocol != htons(ETH_P_CANXL))) {
+@@ -228,7 +228,7 @@ struct sk_buff *alloc_can_skb(struct net_device *dev, struct can_frame **cf)
+ 
+ 	csx = can_skb_ext_add(skb);
+ 	if (!csx) {
 -		kfree_skb(skb);
 +		dev_kfree_skb_any(skb);
- 		return 0;
+ 		goto out_error_cc;
  	}
  
-@@ -91,7 +91,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 	} else {
- 		/* locking problem with netif_stop_queue() ?? */
- 		netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+@@ -259,7 +259,7 @@ struct sk_buff *alloc_canfd_skb(struct net_device *dev,
+ 
+ 	csx = can_skb_ext_add(skb);
+ 	if (!csx) {
 -		kfree_skb(skb);
 +		dev_kfree_skb_any(skb);
- 		return -EBUSY;
+ 		goto out_error_fd;
  	}
  
-@@ -403,7 +403,7 @@ bool can_dropped_invalid_skb(struct net_device *dev, struct sk_buff *skb)
- 	return false;
+@@ -297,7 +297,7 @@ struct sk_buff *alloc_canxl_skb(struct net_device *dev,
  
- inval_skb:
--	kfree_skb(skb);
-+	dev_kfree_skb_any(skb);
- 	dev->stats.tx_dropped++;
- 	return true;
- }
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 6d0710d6f571..346faddee02e 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -176,7 +176,7 @@ static inline bool can_dev_dropped_skb(struct net_device *dev, struct sk_buff *s
- 	return can_dropped_invalid_skb(dev, skb);
- 
- invalid_skb:
--	kfree_skb(skb);
-+	dev_kfree_skb_any(skb);
- 	dev->stats.tx_dropped++;
- 	return true;
- }
-diff --git a/include/linux/can/skb.h b/include/linux/can/skb.h
-index 5d27843862fc..87ace09c0d8b 100644
---- a/include/linux/can/skb.h
-+++ b/include/linux/can/skb.h
-@@ -78,12 +78,12 @@ static inline struct sk_buff *can_create_echo_skb(struct sk_buff *skb)
- 
- 	nskb = skb_clone(skb, GFP_ATOMIC);
- 	if (unlikely(!nskb)) {
+ 	csx = can_skb_ext_add(skb);
+ 	if (!csx) {
 -		kfree_skb(skb);
 +		dev_kfree_skb_any(skb);
- 		return NULL;
+ 		goto out_error_xl;
  	}
- 
- 	can_skb_set_owner(nskb, skb->sk);
--	consume_skb(skb);
-+	dev_consume_skb_any(skb);
- 	return nskb;
- }
  
 -- 
 2.53.0
