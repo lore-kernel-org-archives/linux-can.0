@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1792578485;
-	b=IVb8Hee2n7ILnMIOmCF8c2MGQnsQ/UB9WLB1HjAb8Ns085mcb1R2Lwm0niTkDxv3flsg
-	 WRo589kNG0lAMu4G4m9Ltktbsk2s5P5KTDLyo3V/NXEErUod1OwHRw1DlJvFEsp3Nu7cg
-	 y1hNJaG97eMSV6dPASjBZvcd3JzehWzPcQQp5d1/MOV3GbRfLdrsdDGluEJwyiMBlqD8Z
-	 1dAubCwzfv3+362jVwKORbw7mEnjOHioZcUF9Dul7yh24ShlVjzua6l74mqjH4/vWb+8j
-	 rKSFxv7pyb+WH4e9cwpclhTfJ1bmcLhgFh84CRfNFEX3qET2LAl7sRffe0AzxWbO7ew==
+	b=e0kzIUUIzun+PePbLO+M+sDvXiq4LJSTQyrDaHBpqF6fcboGFpnfTxq4nu2H61rXWBQu
+	 MyDQjGsin5VvGSJkSyW7P/gucuJFHGLSAy7aRPnvQM8nfe6MP8YvRDz/cqVBPzvHDRFWs
+	 sdktvdjToTqZ52zMO6o8TBS8AQXE1Ye7wI6OL9ot2AvL+TP4ND21aWXVLwCxhNLFR19UI
+	 VU3pHbDFkFS1wvcsWBYXomkFUS28TxQ+pbARHVpfvFCMlvdoVKzIi8JEDhHAXPIROJx0L
+	 qVeUoU5URbTUD3QuzlP0Rie1fsel8HO4FQSwLTrVmJb4aEKlqUiUbGYwKvQsO4LSrOQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1792578485;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=5EDJaaJUH62eTSVd7DvpA4h3w+nbrWV1+bE3usYzThw=;
-	b=O7qwXBUnhla0IEuQyYcr/frAZz80UvEZlSVJKfQwGX7X+ndOBa8N5bD/06UDL5Ql6TWf
-	 c5yRVha2SBYVk2VmkyhSRu06htasA2wdd548pymzIE3s8EmNqxXI45ORgDXWl5GnyHhLV
-	 RJl0eYutWti2/R/vjqT9pDGewTCC1cVsMtuY0B/uFTfUP2foQ3jAG7DmTl+KkjD8BzDLU
-	 OrS5Y6DUFps6sSaTziNzFhGPizHgknFOiA1nxewOHLK9MZajYWxjBBa0IwHjK027ZGGBa
-	 QBcPUre1APdgIvm7VEKYZYCpzaWuyYspQ4D7Z6dRDi8mXvwr6t2LZaL+tEPBWBWYaFQ==
+	bh=Rd5lSezKIyW/9dcGa/xeP6YPWeM5EbHyXW3FSFeJnHo=;
+	b=ZMIAL6+L7j869Q51XdlnM2bUIe6/Z3/sQ7o5owL+HmEJXbLrKsKaKfVKW+XLrABilY4s
+	 8eMJwLjhsN5gXvfTDpPrs/+oTGDD3+CdapkxAhE+Kk+JadqtgQJCvoBAlMZxYhoks+I2T
+	 0crgorTIrh/pHxmy799LnTWDIEXioC74QhCdSZL6yNOB95DIZ6srTyLsZZZiVSeLje+xT
+	 KjisFKfXru8OR44QoOsqPRgIlksnMrHGUeky/LJ2x+d99gx12zBHnW3sX0pIOlJ+Jo1kN
+	 pfNEM03ixjwGpjV5aKvmO4i70+PC7b4T1PnFwpN+JO6SQ0BkXqfdtxz6S4K8WgT6CkA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=RgcU06rJ;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=UipT9w1a;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB04606A335;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 447D0606A32D;
 	Wed, 21 Oct 2026 10:28:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2EB04606A335
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 447D0606A32D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=RgcU06rJ
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=UipT9w1a
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id AD935202924;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id CE176202926;
 	Wed, 21 Oct 2026 12:27:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792578479;
@@ -43,19 +43,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5EDJaaJUH62eTSVd7DvpA4h3w+nbrWV1+bE3usYzThw=;
-	b=RgcU06rJYDTopBkfB79aJ6E8GFhe3Mb+U9CZCg4kz7XkWee23LBK9C8ldWyX5WZs9Y4m9L
-	UpxPkrKvNpSsF96gdCDowxkK5LzvKtOXLFjc7I9F747cB4Yzxusd6rS160USWshgNtxRDn
-	qSg6Bz4mGPVBbqwDm8EsGZsUyGXeHLBPYVrGm8jMnRVB3gF9xi2sRzKqriv8mQPyqUqHzI
-	fGUXg5iWmNQIGSOl0ZstD2pB2E6HConez/oVaK2T4Nlyx9mFYT0Eq9jS3xQEGrTOP8J9eH
-	AlRSwvKl5bUZCd64EfDzCtNqZs35Box2GBVhzAOHYJL9Ry4kTh5c9JVDiro4NA==
+	bh=Rd5lSezKIyW/9dcGa/xeP6YPWeM5EbHyXW3FSFeJnHo=;
+	b=UipT9w1aX6kXAg6BbQMqCnZBBT4DQcKJ4nwu4O20EiUeXgKb2rvN8RRuR4Vz0LM+Lew1ju
+	NdnhHn4xrP1v/HwnX8L47m0IJ2WKuqvWi4VnLjcnIlJGmxU3DHx6dLnmJZBaF5TdM0C0E4
+	gdfiWnTsv/2/xirfg9QOzNNPbYWKkVdPIoUcWm0KaaJMtCdKV6RqKB9uda1u9vhuWlu17g
+	LF83/8wH60qwbiO2L/TNhS/95waAzwHDmEOWez5j0zOJikuQ53Mu8a+VBWKGPx3t2zoHa/
+	jy7LWmPPaDXf/bOMEFrbgIo0M88T1AqQy+9TrLdbegTIqJ9NffHDQqKN9wX+bg==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792578479; a=rsa-sha256;
 	cv=none;
-	b=MG3BWxPaf2WmwiWVQw5vhbBacdLSBQqBiNqjnrTf8Hiw7mr1c7rO7cbyhEh34c2yw5SJzV
-	LjTpgNyaChL9QdAk3T7Oxt+csFgFvJ9RLFv6g9VVpgO+0rkX47LVks9cEaciGVxlk6sOoC
-	TRqyi61+NwCdDXxKd8asLl/pDwLTILPTc7rhhGIrQXYe0O48IrF1M9qpH+bPxdSitBM1H1
-	fQO76tpd4DiQSGT+TcFobViImBVQhKWliElSQ/GFmxqPxQaj9ZbssOGS2MqVo7r3uL1bhA
-	YESCmbEkW2q6rPtJUiw8x16xx9QBBi9v3xPwcmfgM8VjA81g5xSAG29jFDKGfQ==
+	b=XBZwRjN+OdUpsYzAhAXjbla6utHAylIRjqrbHloetF6F7c/A3W9exOCS/83+ti7NbE9HAd
+	s3DhNwNWumSfnwFD+kl4YK7fREQMyaLUgjBkWTjXM4pElu217eR6JwdmEhi3flyNwdxBM7
+	4G9j360k/JbjsYNPMygHarbLV9ehxsKA5mDnG+/q6ZivokOWmx5vXZBvMEKn5EbzhJp3nM
+	qGowtqQ6/fYzIJ4Hc25PRegCVXY0y4jAl+6sLLs8qHP56yUbPOgnqrHMx6ETdUELCNJvPs
+	TXCGYI3oHdLladj4qJcPE5gSwmo5doHYC3ethjKLh0+wVxLdzmjkVnhKRlCKiQ==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -65,24 +65,24 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5EDJaaJUH62eTSVd7DvpA4h3w+nbrWV1+bE3usYzThw=;
-	b=Q5FZHJs8reaBiAUbW2uBnCCMdRIJQ/ioqxJ5KLGSEPmW/BPmA48L+iNBK1U6TMBjw5uWXx
-	tJGPnbyhnt9BqopffmLbD6uAL4aCtWJHgpmhG+RyjGooTb4XtnMGeQCzRV3yo4qk2T/uy/
-	GH5ouVLBj+9rxa3vpu0UegaZbrnUEXOdYShnWaecruzsPB0aTONMFURrm1w/681rrHfWhY
-	tf+QpibnYeWNGd3df6znuL3q8L8dKlGnRSYGLwOTth9PkKHaj0W6h75KOJX+hkvaxVpxTK
-	sJfFCsatyIOdNSjpLJdlHjdHysYn7CE8xeT7kw8HT2ha1d/FKUW/P5ae0hP1WA==
+	bh=Rd5lSezKIyW/9dcGa/xeP6YPWeM5EbHyXW3FSFeJnHo=;
+	b=TcWuK2dTiuOdfgNOBPaIb37NAlISx0DMnQoHXIr/AXcrOJn7iSzqBON5H9w+sCx1ybXYA0
+	9fU1x8Q2yBrySP2I3iZBoDrAzGdNOFbgOif0fYQ2CXAPgs0LfRvQ0ouVtA7h7RB1FrBd4X
+	brgB0N2dXj0iFoj/ehJOvaWVuA4x46GjLib38BxpKFBUilutDLN/e4DQPQPjazjHiqkwm2
+	wNoJpaq5DT3Vke5Tizl95TW4PO4XzEejRTTw/I+EGs/y2hFizfrNsw3JRwuc9OvlWqc2Vg
+	Vy6PfkqYgR8GxEgMf/otKpvsfrzB7MC8PGoXzd9K6dX67kYI1rkQHhGAjmJQnw==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xJTY7-000Xjz-1t;
+	id 1xJTY7-000Xk7-2M;
 	Wed, 21 Oct 2026 12:27:59 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 55A4F5CAFDF;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7487A5CAFE1;
 	Wed, 21 Oct 2026 10:27:59 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,12 +90,13 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+	Cunhao Lu <1579567540@qq.com>,
+	stable@vger.kernel.org,
+	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/11] can: proc: remove pointers from CAN specific proc output
-Date: Wed, 21 Oct 2026 12:24:39 +0200
-Message-ID: <20261021102756.1900679-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 10/11] can: dev: can_put_echo_skb(): free skb on invalid echo index
+Date: Wed, 21 Oct 2026 12:24:41 +0200
+Message-ID: <20261021102756.1900679-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261021102756.1900679-1-mkl@pengutronix.de>
 References: <20261021102756.1900679-1-mkl@pengutronix.de>
@@ -110,289 +111,70 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Cunhao Lu <1579567540@qq.com>
 
-The proc content in /proc/net/can/ and /proc/net/can-bcm/ is intended to
-check the internal filter lists (af_can, can_raw) and the efficiency and
-functionality of can_bcm jobs. While exposing kernel addresses was
-acceptable when this code was written the times have changed and multiple
-attempts have been made to hash or remove such now sensitive data.
+can_put_echo_skb() consumes the skb on all paths except when the echo
+index is out of bounds. This leaves ownership with the caller on -EINVAL,
+unlike the other error paths, and can leak the skb if the caller expects
+consistent semantics.
 
-This patch removes the disclosure of pointers and instead provides the
-function names and sock inode numbers when available. When the function
-name can not be resolved (e.g. KALLSYMS=n or stripped module symbols)
-%ps would fall back to the raw text address. Therefore (unknown) is
-printed instead in this case. As there's no known tooling around the CAN
-specific proc output breaking the ABI with this rework creates no issue.
+Free the skb before returning -EINVAL so that all return paths consume it.
 
-Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20261020203257.230955-4-socketcan@hartkopp.net
+Fixes: 6411959c10fe ("can: dev: can_put_echo_skb(): don't crash kernel if can_priv::echo_skb is accessed out of bounds")
+Cc: stable@vger.kernel.org
+Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
+Link: https://patch.msgid.link/tencent_683AA16E643DE00211CD2FB62991264DC605@qq.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- Documentation/networking/can.rst | 16 ++++++++++------
- include/linux/can/core.h         |  2 +-
- net/can/af_can.c                 |  6 +++---
- net/can/af_can.h                 |  2 +-
- net/can/bcm.c                    | 14 +++++++-------
- net/can/gw.c                     |  2 +-
- net/can/isotp.c                  |  4 ++--
- net/can/j1939/main.c             |  2 +-
- net/can/proc.c                   | 26 ++++++++++++++++----------
- net/can/raw.c                    |  4 ++--
- 10 files changed, 44 insertions(+), 34 deletions(-)
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index 536ff411da1d..51bc70748f75 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -1040,17 +1040,21 @@ As described in :ref:`socketcan-receive-lists` the SocketCAN core uses several f
- lists to deliver received CAN frames to CAN protocol modules. These
- receive lists, their filters and the count of filter matches can be
- checked in the appropriate receive list. All entries contain the
--device and a protocol module identifier::
-+CAN network device, the filter (can_id/can_mask), the number of filter
-+matches, the inode number of the subscribing socket and the name of the
-+receive function. A sock_inode of 0 denotes a kernel internal subscriber
-+without a socket (e.g. CAN gateway or J1939). When the function name can
-+not be resolved (e.g. with CONFIG_KALLSYMS=n) "(unknown)" is printed::
- 
-     foo@bar:~$ cat /proc/net/can/rcvlist_all
- 
-     receive list 'rx_all':
--      (vcan3: no entry)
--      (vcan2: no entry)
--      (vcan1: no entry)
--      device   can_id   can_mask  function  userdata   matches  ident
--       vcan0     000    00000000  f88e6370  f6c6f400         0  raw
-       (any: no entry)
-+      device   can_id   can_mask   matches  sock_inode  function
-+       vcan0     000    00000000         0       63586  raw_rcv [can_raw]
-+      (vcan1: no entry)
-+      (vcan2: no entry)
-+      (vcan3: no entry)
- 
- In this example an application requests any CAN traffic from vcan0::
- 
-diff --git a/include/linux/can/core.h b/include/linux/can/core.h
-index 2de74c2b78b6..effb5c31ef40 100644
---- a/include/linux/can/core.h
-+++ b/include/linux/can/core.h
-@@ -51,7 +51,7 @@ extern void can_proto_unregister(const struct can_proto *cp);
- int can_rx_register(struct net *net, struct net_device *dev,
- 		    canid_t can_id, canid_t mask,
- 		    void (*func)(struct sk_buff *, void *),
--		    void *data, char *ident, struct sock *sk);
-+		    void *data, u64 ino, struct sock *sk);
- 
- extern void can_rx_unregister(struct net *net, struct net_device *dev,
- 			      canid_t can_id, canid_t mask,
-diff --git a/net/can/af_can.c b/net/can/af_can.c
-index 34fe3b28d576..6ebe9d3689ac 100644
---- a/net/can/af_can.c
-+++ b/net/can/af_can.c
-@@ -418,7 +418,7 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
-  * @mask: CAN mask (see description)
-  * @func: callback function on filter match
-  * @data: returned parameter for callback function
-- * @ident: string for calling module identification
-+ * @ino: inode number of sock (0 = unknown)
-  * @sk: socket pointer (might be NULL)
-  *
-  * Description:
-@@ -443,7 +443,7 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
-  */
- int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
- 		    canid_t mask, void (*func)(struct sk_buff *, void *),
--		    void *data, char *ident, struct sock *sk)
-+		    void *data, u64 ino, struct sock *sk)
- {
- 	struct receiver *rcv;
- 	struct hlist_head *rcv_list;
-@@ -472,7 +472,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
- 	atomic_long_set(&rcv->matches, 0);
- 	rcv->func = func;
- 	rcv->data = data;
--	rcv->ident = ident;
-+	rcv->ino = ino;
- 	rcv->sk = sk;
- 
- 	hlist_add_head_rcu(&rcv->list, rcv_list);
-diff --git a/net/can/af_can.h b/net/can/af_can.h
-index 87887014f562..6e593ed5db5f 100644
---- a/net/can/af_can.h
-+++ b/net/can/af_can.h
-@@ -55,7 +55,7 @@ struct receiver {
- 	atomic_long_t matches;
- 	void (*func)(struct sk_buff *skb, void *data);
- 	void *data;
--	char *ident;
-+	u64 ino;
- 	struct sock *sk;
- 	struct rcu_head rcu;
- };
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3d637a1e0ac1..6c85a76477c3 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -220,9 +220,7 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	struct bcm_op *op;
- 
--	seq_printf(m, ">>> socket %pK", sk->sk_socket);
--	seq_printf(m, " / sk %pK", sk);
--	seq_printf(m, " / bo %pK", bo);
-+	seq_printf(m, ">>> sock inode %s", bo->procname);
- 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
- 	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
- 	seq_printf(m, " <<<\n");
-@@ -1536,7 +1534,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 						      op->can_id,
- 						      REGMASK(op->can_id),
- 						      bcm_rx_handler, op,
--						      "bcm", sk);
-+						      sock_i_ino(sk), sk);
- 
- 				/* keep a tracked reference so that a later
- 				 * unregister can safely reach the device even
-@@ -1560,7 +1558,8 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
- 		} else {
- 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
- 					      REGMASK(op->can_id),
--					      bcm_rx_handler, op, "bcm", sk);
-+					      bcm_rx_handler, op,
-+					      sock_i_ino(sk), sk);
- 		}
- 
- 		if (err) {
-@@ -2040,8 +2039,9 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	if (net->can.bcmproc_dir) {
--		/* unique socket address as filename */
--		sprintf(bo->procname, "%llu", sock_i_ino(sk));
-+		/* use unique socket inode number as filename */
-+		snprintf(bo->procname, sizeof(bo->procname),
-+			 "%llu", sock_i_ino(sk));
- 		bo->bcm_proc_read = proc_create_net_single(bo->procname, 0644,
- 						     net->can.bcmproc_dir,
- 						     bcm_proc_show, sk);
-diff --git a/net/can/gw.c b/net/can/gw.c
-index 5793cb2420ed..36f9aa0f7026 100644
---- a/net/can/gw.c
-+++ b/net/can/gw.c
-@@ -579,7 +579,7 @@ static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
- {
- 	return can_rx_register(net, gwj->src.dev, gwj->ccgw.filter.can_id,
- 			       gwj->ccgw.filter.can_mask, can_can_gw_rcv,
--			       gwj, "gw", NULL);
-+			       gwj, 0, NULL);
- }
- 
- static inline void cgw_unregister_filter(struct net *net, struct cgw_job *gwj)
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index d3e43ab48425..64ff203a37f4 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1633,14 +1633,14 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
- 
- 	if (isotp_register_rxid(so))
- 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
--				isotp_rcv, sk, "isotp", sk);
-+				isotp_rcv, sk, sock_i_ino(sk), sk);
- 
- 	/* no consecutive frame echo skb in flight */
- 	WRITE_ONCE(so->cfecho, 0);
- 
- 	/* register for echo skb's */
- 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
--			isotp_rcv_echo, sk, "isotpe", sk);
-+			isotp_rcv_echo, sk, sock_i_ino(sk), sk);
- 
- 	/* switch to new settings */
- 	so->ifindex = ifindex;
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 5e5e6c228f22..d9384cf0e356 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -184,7 +184,7 @@ static int j1939_can_rx_register(struct j1939_priv *priv)
- 
- 	j1939_priv_get(priv);
- 	ret = can_rx_register(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
--			      j1939_can_recv, priv, "j1939", NULL);
-+			      j1939_can_recv, priv, 0, NULL);
- 	if (ret < 0) {
- 		j1939_priv_put(priv);
- 		return ret;
-diff --git a/net/can/proc.c b/net/can/proc.c
-index fb144d2adc35..b7496d2a37cd 100644
---- a/net/can/proc.c
-+++ b/net/can/proc.c
-@@ -204,26 +204,32 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
- 	struct receiver *r;
- 
- 	hlist_for_each_entry_rcu(r, rx_list, list) {
-+		char symcheck[4];
- 		char *fmt = (r->can_id & CAN_EFF_FLAG)?
--			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
--			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
-+			"  %6s  %08x  %08x  %8ld  %10llu" :
-+			"  %6s     %03x    %08x  %8ld  %10llu";
- 
- 		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
--			   r->func, r->data, atomic_long_read(&r->matches),
--			   r->ident);
-+			   atomic_long_read(&r->matches), r->ino);
-+
-+		/* %ps falls back to the raw text address when the symbol
-+		 * can not be resolved (KALLSYMS=n, stripped module symbols)
-+		 */
-+		snprintf(symcheck, sizeof(symcheck), "%ps", r->func);
-+		if (strncmp(symcheck, "0x", 2))
-+			seq_printf(m, "  %ps\n", r->func);
-+		else
-+			seq_puts(m, "  (unknown)\n");
+---
+
+FAQ:
+
+Q: `can_skb_init_valid()` directly modifies `skb->data` without checking if
+   the SKB is cloned or shared. Is this violating SKB shared buffer rules and
+   causing data corruption?
+
+A: The finding about can_skb_init_valid() modifying skb->data on a
+   potentially shared buffer is not relevant for this (correct) patch.
+
+   The FDF-flag write in can_skb_init_valid() only matters for PF_PACKET
+   use: PF_CAN allocators already set CANFD_FDF. The write exists to
+   normalize frames for PF_PACKET observers (tcpdump/Wireshark) so they can
+   distinguish classic CAN from CAN FD at the netdev level, and to
+   compensate for PF_PACKET senders that omit the bit. That normalization
+   is functionally required.
+
+   The shared-buffer concern only becomes realistic through a specific
+   chain: a PF_PACKET sender injects a CANFD-sized frame, the CAN driver's
+   loopback puts an echo skb back into can_rcv(), and cgw (without
+   modfuncs) clones it for forwarding to another interface. Only on that
+   second can_skb_init_valid() call is the skb cloned. By then the bit was
+   already set on the exclusive skb during the initial xmit path, so the
+   flags |= CANFD_FDF write is strictly idempotent for any parallel
+   consumer of the shared buffer - no memory-safety or
+   information-disclosure consequence. It's a formal violation of the skb
+   sharing rules without an observable effect, so the current code can stay
+   as-is.
+
+Link: https://lore.kernel.org/all/54a3cc01-abcf-4a33-b932-39bb1f68cdd5@hartkopp.net/
+[mkl: convert Oliver's mail to FAQ section]
+---
+ drivers/net/can/dev/skb.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/can/dev/skb.c b/drivers/net/can/dev/skb.c
+index 3e36c0368bae..738d5968dfa6 100644
+--- a/drivers/net/can/dev/skb.c
++++ b/drivers/net/can/dev/skb.c
+@@ -55,6 +55,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+ 	if (idx >= priv->echo_skb_max) {
+ 		netdev_err(dev, "%s: BUG! Trying to access can_priv::echo_skb out of bounds (%u/max %u)\n",
+ 			   __func__, idx, priv->echo_skb_max);
++		dev_kfree_skb_any(skb);
+ 		return -EINVAL;
  	}
- }
  
- static void can_print_recv_banner(struct seq_file *m)
- {
- 	/*
--	 *                  can1.  00000000  00000000  00000000
--	 *                 .......          0  tp20
-+	 *    device   can_id   can_mask   matches  sock_inode  function
-+	 *     vcan0     000    00000000         0       43798  raw_rcv [can_raw]
- 	 */
--	if (IS_ENABLED(CONFIG_64BIT))
--		seq_puts(m, "  device   can_id   can_mask      function          userdata       matches  ident\n");
--	else
--		seq_puts(m, "  device   can_id   can_mask  function  userdata   matches  ident\n");
-+	seq_puts(m, "  device   can_id   can_mask   matches  sock_inode  function\n");
- }
- 
- static int can_stats_proc_show(struct seq_file *m, void *v)
-diff --git a/net/can/raw.c b/net/can/raw.c
-index 6944ebab3feb..3e57f72a3afe 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -226,7 +226,7 @@ static int raw_enable_filters(struct net *net, struct net_device *dev,
- 	for (i = 0; i < count; i++) {
- 		err = can_rx_register(net, dev, filter[i].can_id,
- 				      filter[i].can_mask,
--				      raw_rcv, sk, "raw", sk);
-+				      raw_rcv, sk, sock_i_ino(sk), sk);
- 		if (err) {
- 			/* clean up successfully registered filters */
- 			while (--i >= 0)
-@@ -247,7 +247,7 @@ static int raw_enable_errfilter(struct net *net, struct net_device *dev,
- 
- 	if (err_mask)
- 		err = can_rx_register(net, dev, 0, err_mask | CAN_ERR_FLAG,
--				      raw_rcv, sk, "raw", sk);
-+				      raw_rcv, sk, sock_i_ino(sk), sk);
- 
- 	return err;
- }
 -- 
 2.53.0
 
