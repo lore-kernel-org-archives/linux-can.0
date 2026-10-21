@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792578484;
-	b=d9XpazMKcWnHjZmo4//7PaFVlSdUps0sQEohXGBTkENqhpAYuiN0q7hF+H9BVsnbremr
-	 MYnEXwWvQLOMYfATxEvjhfApRJxEwKkbbnPS0SKGs/YyARKKeT3eXN7hafqf6RuWcvjDK
-	 fYbMAayhe7l7/hDEIcYuRLzmZ6o+QpzeeuA76PtYqD6ZwEapo5MRCH8ybASmpXq6QASHq
-	 CIg2By2zZCLqEUgTM0URBKbQXSqOrE1l0BAxURLSSmVFQoWtGSdrfmA/VxFW+zbf0WsKl
-	 I6DacFWnhTaipdtEf/v0sYIme5iW2jb31XpIYY656FyeZNbIrDcEnJGmWVHujvOHDWA==
+	t=1792578485;
+	b=IVb8Hee2n7ILnMIOmCF8c2MGQnsQ/UB9WLB1HjAb8Ns085mcb1R2Lwm0niTkDxv3flsg
+	 WRo589kNG0lAMu4G4m9Ltktbsk2s5P5KTDLyo3V/NXEErUod1OwHRw1DlJvFEsp3Nu7cg
+	 y1hNJaG97eMSV6dPASjBZvcd3JzehWzPcQQp5d1/MOV3GbRfLdrsdDGluEJwyiMBlqD8Z
+	 1dAubCwzfv3+362jVwKORbw7mEnjOHioZcUF9Dul7yh24ShlVjzua6l74mqjH4/vWb+8j
+	 rKSFxv7pyb+WH4e9cwpclhTfJ1bmcLhgFh84CRfNFEX3qET2LAl7sRffe0AzxWbO7ew==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792578484;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792578485;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=80thSI5HycD0mfH9L5G/r9XGQUAVEVqRZZah+I5MS7Q=;
-	b=VsDXJwxHWD9AyiJK8DzkQgRsxbWsg0QdGXRWA8F75/3SBglL5dc27xlPGb6HOYNyYU9L
-	 ZHZVaxzkWTUFLZld16rShh4Uo5qAb3vuUraK7UO5ykEEc3vROVjd2i3oQ3mD4m6rjDg7G
-	 2DOtBXAGo5zeZeBLj7DkC8P2gNnMLDQb9BwxgbZ7L2FrZjTzMKpnPWQtAee2hXhtm/PTu
-	 YeE911Ylw0skdPCwJlgn+BTbQwJaWi7C+LoOkuM8Z55omEds7Whw6wo/cW/kyfyuWv4zX
-	 7OrfdDwRfCYZwOq0hH1ZI3dl9diJjfS4eluv0PfPGssOYWPkIsxLUo2leEadA5IQj7w==
+	bh=5EDJaaJUH62eTSVd7DvpA4h3w+nbrWV1+bE3usYzThw=;
+	b=O7qwXBUnhla0IEuQyYcr/frAZz80UvEZlSVJKfQwGX7X+ndOBa8N5bD/06UDL5Ql6TWf
+	 c5yRVha2SBYVk2VmkyhSRu06htasA2wdd548pymzIE3s8EmNqxXI45ORgDXWl5GnyHhLV
+	 RJl0eYutWti2/R/vjqT9pDGewTCC1cVsMtuY0B/uFTfUP2foQ3jAG7DmTl+KkjD8BzDLU
+	 OrS5Y6DUFps6sSaTziNzFhGPizHgknFOiA1nxewOHLK9MZajYWxjBBa0IwHjK027ZGGBa
+	 QBcPUre1APdgIvm7VEKYZYCpzaWuyYspQ4D7Z6dRDi8mXvwr6t2LZaL+tEPBWBWYaFQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KGgRQetK;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=RgcU06rJ;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB24606A336;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EB04606A335;
 	Wed, 21 Oct 2026 10:28:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2EB24606A336
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2EB04606A335
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KGgRQetK
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=RgcU06rJ
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9C381202923;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id AD935202924;
 	Wed, 21 Oct 2026 12:27:59 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1792578479;
@@ -43,19 +43,19 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=80thSI5HycD0mfH9L5G/r9XGQUAVEVqRZZah+I5MS7Q=;
-	b=KGgRQetKK6jYHc8Tl5dCIcHfaJ4gK9GFK1eU5pgxRpxCKoXHkUObkcmRfa6+X2LiEo6LFP
-	LZB/G3MunwVKDFiVZJq7xy3iYIij1kRIfCQ1INCc5Su2VJKR+i4Uute0danYWHoUlqUkHl
-	cAE7FXCUkJBR/lB4FeeOFC0/8Ya1ZsGqpLRnJo01RDzWdJkv41ytBsqxtkkL18YKKFklF+
-	sNJVnoIVFLRl9V+IipWOn2Hmc6nbmNonF/k4vgabjao+qMoSjVFv3PXaYu+YwkGPvDFOkp
-	hbxpWtH6RF/0gW1uyodiq/J7S+4pUtd7p1pO2JWdD7pZ6czgtAt4KmmVNtFE6Q==
+	bh=5EDJaaJUH62eTSVd7DvpA4h3w+nbrWV1+bE3usYzThw=;
+	b=RgcU06rJYDTopBkfB79aJ6E8GFhe3Mb+U9CZCg4kz7XkWee23LBK9C8ldWyX5WZs9Y4m9L
+	UpxPkrKvNpSsF96gdCDowxkK5LzvKtOXLFjc7I9F747cB4Yzxusd6rS160USWshgNtxRDn
+	qSg6Bz4mGPVBbqwDm8EsGZsUyGXeHLBPYVrGm8jMnRVB3gF9xi2sRzKqriv8mQPyqUqHzI
+	fGUXg5iWmNQIGSOl0ZstD2pB2E6HConez/oVaK2T4Nlyx9mFYT0Eq9jS3xQEGrTOP8J9eH
+	AlRSwvKl5bUZCd64EfDzCtNqZs35Box2GBVhzAOHYJL9Ry4kTh5c9JVDiro4NA==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792578479; a=rsa-sha256;
 	cv=none;
-	b=D3VFb76xK64ajMR4uiR6ueFt5ArPv2ds9iYRZn5x1Kt5u5HU3+eCsvCFzCnTUImXbclvKD
-	Sw6JArnCPFGwgykjBBdUIdbx10e6cOnwghWabuAkXo2H5hVBvXmQ801dEIoudA7ESDGA2O
-	HjWdeWhkzMsBmWk9iJ7YJqsjss6g5yPV5UzpkpIhIf1doI/yQPKrLK3xxT6cpKvDAHZzVP
-	FFH6Xbg8bUwr81KIARDfvLpDuWUwgYl6zBNDVfh5cXBugWNLQmIwB9yXwUBEohpBqWp0Cj
-	ogRgLRgFubjfcCP34Hf8S5h1nf/n0YxBR4tbwTkrIZR1pQ2Jpirqai8ijhohmQ==
+	b=MG3BWxPaf2WmwiWVQw5vhbBacdLSBQqBiNqjnrTf8Hiw7mr1c7rO7cbyhEh34c2yw5SJzV
+	LjTpgNyaChL9QdAk3T7Oxt+csFgFvJ9RLFv6g9VVpgO+0rkX47LVks9cEaciGVxlk6sOoC
+	TRqyi61+NwCdDXxKd8asLl/pDwLTILPTc7rhhGIrQXYe0O48IrF1M9qpH+bPxdSitBM1H1
+	fQO76tpd4DiQSGT+TcFobViImBVQhKWliElSQ/GFmxqPxQaj9ZbssOGS2MqVo7r3uL1bhA
+	YESCmbEkW2q6rPtJUiw8x16xx9QBBi9v3xPwcmfgM8VjA81g5xSAG29jFDKGfQ==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -65,24 +65,24 @@ ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=80thSI5HycD0mfH9L5G/r9XGQUAVEVqRZZah+I5MS7Q=;
-	b=Z7OaVo/w5mclz8E74XrnIqbs+StYyzIDZZAjvcC8hvI4VlYN07WiubKaNlFvaFiGx7C6MB
-	KAH8s5gV4L91sJ0uT7Y8aQTYN6VnQhY5Gsfd5jfWVyhZ59EDM0AOYOCFDh2PB+QIw8CkSq
-	iEwHt3+NC0V3ourYGlk415Bw/TalYBrKtJjeQD/JFnwGpvk2joxnoxMtZuoZi/7OMHzGlH
-	lmDL5INOWpZWjexuX2FhyW6d/lfutqLm1yICzdkRqVbNdikhuwG1VyNgdV0fTk2IRVInQG
-	1yEHwGeKH7elgio/dDYEY/imkKJcBQquMhZZrZLHztWRxebKylp162BirUyODw==
+	bh=5EDJaaJUH62eTSVd7DvpA4h3w+nbrWV1+bE3usYzThw=;
+	b=Q5FZHJs8reaBiAUbW2uBnCCMdRIJQ/ioqxJ5KLGSEPmW/BPmA48L+iNBK1U6TMBjw5uWXx
+	tJGPnbyhnt9BqopffmLbD6uAL4aCtWJHgpmhG+RyjGooTb4XtnMGeQCzRV3yo4qk2T/uy/
+	GH5ouVLBj+9rxa3vpu0UegaZbrnUEXOdYShnWaecruzsPB0aTONMFURrm1w/681rrHfWhY
+	tf+QpibnYeWNGd3df6znuL3q8L8dKlGnRSYGLwOTth9PkKHaj0W6h75KOJX+hkvaxVpxTK
+	sJfFCsatyIOdNSjpLJdlHjdHysYn7CE8xeT7kw8HT2ha1d/FKUW/P5ae0hP1WA==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xJTY7-000Xjv-1h;
+	id 1xJTY7-000Xjz-1t;
 	Wed, 21 Oct 2026 12:27:59 +0200
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 405BD5CAFDE;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 55A4F5CAFDF;
 	Wed, 21 Oct 2026 10:27:59 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -91,10 +91,11 @@ Cc: davem@davemloft.net,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
 	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/11] can: proc: skip stats calculation after reset in can_stat_update()
-Date: Wed, 21 Oct 2026 12:24:38 +0200
-Message-ID: <20261021102756.1900679-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 08/11] can: proc: remove pointers from CAN specific proc output
+Date: Wed, 21 Oct 2026 12:24:39 +0200
+Message-ID: <20261021102756.1900679-9-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261021102756.1900679-1-mkl@pengutronix.de>
 References: <20261021102756.1900679-1-mkl@pengutronix.de>
@@ -111,73 +112,286 @@ Content-Transfer-Encoding: 8bit
 
 From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
-introduced local snapshots of the statistics counters at the beginning
-of can_stat_update(). When can_init_stats() resets the statistics, these
-stale pre-reset snapshots are still used for the following total/current
-/max calculations and overwrite the freshly reset values. Additionally a
-jiffies tick between the snapshot and the reset could trigger a second
-can_init_stats() call.
+The proc content in /proc/net/can/ and /proc/net/can-bcm/ is intended to
+check the internal filter lists (af_can, can_raw) and the efficiency and
+functionality of can_bcm jobs. While exposing kernel addresses was
+acceptable when this code was written the times have changed and multiple
+attempts have been made to hash or remove such now sensitive data.
 
-Merge the reset conditions into a single check and skip the calculation
-for the current interval when the statistics have been reset.
+This patch removes the disclosure of pointers and instead provides the
+function names and sock inode numbers when available. When the function
+name can not be resolved (e.g. KALLSYMS=n or stripped module symbols)
+%ps would fall back to the raw text address. Therefore (unknown) is
+printed instead in this case. As there's no known tooling around the CAN
+specific proc output breaking the ABI with this rework creates no issue.
 
-Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+Suggested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20261020203257.230955-3-socketcan@hartkopp.net
+Link: https://patch.msgid.link/20261020203257.230955-4-socketcan@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/proc.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+ Documentation/networking/can.rst | 16 ++++++++++------
+ include/linux/can/core.h         |  2 +-
+ net/can/af_can.c                 |  6 +++---
+ net/can/af_can.h                 |  2 +-
+ net/can/bcm.c                    | 14 +++++++-------
+ net/can/gw.c                     |  2 +-
+ net/can/isotp.c                  |  4 ++--
+ net/can/j1939/main.c             |  2 +-
+ net/can/proc.c                   | 26 ++++++++++++++++----------
+ net/can/raw.c                    |  4 ++--
+ 10 files changed, 44 insertions(+), 34 deletions(-)
 
+diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+index 536ff411da1d..51bc70748f75 100644
+--- a/Documentation/networking/can.rst
++++ b/Documentation/networking/can.rst
+@@ -1040,17 +1040,21 @@ As described in :ref:`socketcan-receive-lists` the SocketCAN core uses several f
+ lists to deliver received CAN frames to CAN protocol modules. These
+ receive lists, their filters and the count of filter matches can be
+ checked in the appropriate receive list. All entries contain the
+-device and a protocol module identifier::
++CAN network device, the filter (can_id/can_mask), the number of filter
++matches, the inode number of the subscribing socket and the name of the
++receive function. A sock_inode of 0 denotes a kernel internal subscriber
++without a socket (e.g. CAN gateway or J1939). When the function name can
++not be resolved (e.g. with CONFIG_KALLSYMS=n) "(unknown)" is printed::
+ 
+     foo@bar:~$ cat /proc/net/can/rcvlist_all
+ 
+     receive list 'rx_all':
+-      (vcan3: no entry)
+-      (vcan2: no entry)
+-      (vcan1: no entry)
+-      device   can_id   can_mask  function  userdata   matches  ident
+-       vcan0     000    00000000  f88e6370  f6c6f400         0  raw
+       (any: no entry)
++      device   can_id   can_mask   matches  sock_inode  function
++       vcan0     000    00000000         0       63586  raw_rcv [can_raw]
++      (vcan1: no entry)
++      (vcan2: no entry)
++      (vcan3: no entry)
+ 
+ In this example an application requests any CAN traffic from vcan0::
+ 
+diff --git a/include/linux/can/core.h b/include/linux/can/core.h
+index 2de74c2b78b6..effb5c31ef40 100644
+--- a/include/linux/can/core.h
++++ b/include/linux/can/core.h
+@@ -51,7 +51,7 @@ extern void can_proto_unregister(const struct can_proto *cp);
+ int can_rx_register(struct net *net, struct net_device *dev,
+ 		    canid_t can_id, canid_t mask,
+ 		    void (*func)(struct sk_buff *, void *),
+-		    void *data, char *ident, struct sock *sk);
++		    void *data, u64 ino, struct sock *sk);
+ 
+ extern void can_rx_unregister(struct net *net, struct net_device *dev,
+ 			      canid_t can_id, canid_t mask,
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 34fe3b28d576..6ebe9d3689ac 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -418,7 +418,7 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
+  * @mask: CAN mask (see description)
+  * @func: callback function on filter match
+  * @data: returned parameter for callback function
+- * @ident: string for calling module identification
++ * @ino: inode number of sock (0 = unknown)
+  * @sk: socket pointer (might be NULL)
+  *
+  * Description:
+@@ -443,7 +443,7 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
+  */
+ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+ 		    canid_t mask, void (*func)(struct sk_buff *, void *),
+-		    void *data, char *ident, struct sock *sk)
++		    void *data, u64 ino, struct sock *sk)
+ {
+ 	struct receiver *rcv;
+ 	struct hlist_head *rcv_list;
+@@ -472,7 +472,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+ 	atomic_long_set(&rcv->matches, 0);
+ 	rcv->func = func;
+ 	rcv->data = data;
+-	rcv->ident = ident;
++	rcv->ino = ino;
+ 	rcv->sk = sk;
+ 
+ 	hlist_add_head_rcu(&rcv->list, rcv_list);
+diff --git a/net/can/af_can.h b/net/can/af_can.h
+index 87887014f562..6e593ed5db5f 100644
+--- a/net/can/af_can.h
++++ b/net/can/af_can.h
+@@ -55,7 +55,7 @@ struct receiver {
+ 	atomic_long_t matches;
+ 	void (*func)(struct sk_buff *skb, void *data);
+ 	void *data;
+-	char *ident;
++	u64 ino;
+ 	struct sock *sk;
+ 	struct rcu_head rcu;
+ };
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 3d637a1e0ac1..6c85a76477c3 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -220,9 +220,7 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 	struct bcm_sock *bo = bcm_sk(sk);
+ 	struct bcm_op *op;
+ 
+-	seq_printf(m, ">>> socket %pK", sk->sk_socket);
+-	seq_printf(m, " / sk %pK", sk);
+-	seq_printf(m, " / bo %pK", bo);
++	seq_printf(m, ">>> sock inode %s", bo->procname);
+ 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
+ 	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
+ 	seq_printf(m, " <<<\n");
+@@ -1536,7 +1534,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 						      op->can_id,
+ 						      REGMASK(op->can_id),
+ 						      bcm_rx_handler, op,
+-						      "bcm", sk);
++						      sock_i_ino(sk), sk);
+ 
+ 				/* keep a tracked reference so that a later
+ 				 * unregister can safely reach the device even
+@@ -1560,7 +1558,8 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
+ 		} else {
+ 			err = can_rx_register(sock_net(sk), NULL, op->can_id,
+ 					      REGMASK(op->can_id),
+-					      bcm_rx_handler, op, "bcm", sk);
++					      bcm_rx_handler, op,
++					      sock_i_ino(sk), sk);
+ 		}
+ 
+ 		if (err) {
+@@ -2040,8 +2039,9 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 
+ #if IS_ENABLED(CONFIG_PROC_FS)
+ 	if (net->can.bcmproc_dir) {
+-		/* unique socket address as filename */
+-		sprintf(bo->procname, "%llu", sock_i_ino(sk));
++		/* use unique socket inode number as filename */
++		snprintf(bo->procname, sizeof(bo->procname),
++			 "%llu", sock_i_ino(sk));
+ 		bo->bcm_proc_read = proc_create_net_single(bo->procname, 0644,
+ 						     net->can.bcmproc_dir,
+ 						     bcm_proc_show, sk);
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 5793cb2420ed..36f9aa0f7026 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -579,7 +579,7 @@ static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
+ {
+ 	return can_rx_register(net, gwj->src.dev, gwj->ccgw.filter.can_id,
+ 			       gwj->ccgw.filter.can_mask, can_can_gw_rcv,
+-			       gwj, "gw", NULL);
++			       gwj, 0, NULL);
+ }
+ 
+ static inline void cgw_unregister_filter(struct net *net, struct cgw_job *gwj)
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index d3e43ab48425..64ff203a37f4 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -1633,14 +1633,14 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 
+ 	if (isotp_register_rxid(so))
+ 		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
+-				isotp_rcv, sk, "isotp", sk);
++				isotp_rcv, sk, sock_i_ino(sk), sk);
+ 
+ 	/* no consecutive frame echo skb in flight */
+ 	WRITE_ONCE(so->cfecho, 0);
+ 
+ 	/* register for echo skb's */
+ 	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+-			isotp_rcv_echo, sk, "isotpe", sk);
++			isotp_rcv_echo, sk, sock_i_ino(sk), sk);
+ 
+ 	/* switch to new settings */
+ 	so->ifindex = ifindex;
+diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+index 5e5e6c228f22..d9384cf0e356 100644
+--- a/net/can/j1939/main.c
++++ b/net/can/j1939/main.c
+@@ -184,7 +184,7 @@ static int j1939_can_rx_register(struct j1939_priv *priv)
+ 
+ 	j1939_priv_get(priv);
+ 	ret = can_rx_register(dev_net(ndev), ndev, J1939_CAN_ID, J1939_CAN_MASK,
+-			      j1939_can_recv, priv, "j1939", NULL);
++			      j1939_can_recv, priv, 0, NULL);
+ 	if (ret < 0) {
+ 		j1939_priv_put(priv);
+ 		return ret;
 diff --git a/net/can/proc.c b/net/can/proc.c
-index 70104f13077e..fb144d2adc35 100644
+index fb144d2adc35..b7496d2a37cd 100644
 --- a/net/can/proc.c
 +++ b/net/can/proc.c
-@@ -149,25 +149,18 @@ void can_stat_update(struct timer_list *t)
- 	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
- 	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+@@ -204,26 +204,32 @@ static void can_print_rcvlist(struct seq_file *m, struct hlist_head *rx_list,
+ 	struct receiver *r;
  
--	/* restart counting in timer context on user request */
--	if (user_reset)
--		can_init_stats(net);
--
--	/* restart counting on jiffies overflow */
--	if (j < pkg_stats->jiffies_init)
--		can_init_stats(net);
--
--	/* prevent overflow in calc_rate() */
--	if (rx_frames > (LONG_MAX / HZ))
--		can_init_stats(net);
--
--	/* prevent overflow in calc_rate() */
--	if (tx_frames > (LONG_MAX / HZ))
--		can_init_stats(net);
--
--	/* matches overflow - very improbable */
--	if (matches > (LONG_MAX / 100))
-+	/*
-+	 * Restart counting in timer context on user request, on jiffies
-+	 * overflow or to prevent overflows in calc_rate() and in the
-+	 * match ratio calculation. The local snapshots are stale after
-+	 * the reset, so skip the calculation for this interval.
-+	 */
-+	if (user_reset || j < pkg_stats->jiffies_init ||
-+	    rx_frames > (LONG_MAX / HZ) || tx_frames > (LONG_MAX / HZ) ||
-+	    matches > (LONG_MAX / 100)) {
- 		can_init_stats(net);
-+		goto out;
-+	}
+ 	hlist_for_each_entry_rcu(r, rx_list, list) {
++		char symcheck[4];
+ 		char *fmt = (r->can_id & CAN_EFF_FLAG)?
+-			"   %-5s  %08x  %08x  %pK  %pK  %8ld  %s\n" :
+-			"   %-5s     %03x    %08x  %pK  %pK  %8ld  %s\n";
++			"  %6s  %08x  %08x  %8ld  %10llu" :
++			"  %6s     %03x    %08x  %8ld  %10llu";
  
- 	/* calc total values */
- 	if (rx_frames)
-@@ -196,6 +189,7 @@ void can_stat_update(struct timer_list *t)
- 	if (pkg_stats->max_rx_match_ratio < pkg_stats->current_rx_match_ratio)
- 		pkg_stats->max_rx_match_ratio = pkg_stats->current_rx_match_ratio;
+ 		seq_printf(m, fmt, DNAME(dev), r->can_id, r->mask,
+-			   r->func, r->data, atomic_long_read(&r->matches),
+-			   r->ident);
++			   atomic_long_read(&r->matches), r->ino);
++
++		/* %ps falls back to the raw text address when the symbol
++		 * can not be resolved (KALLSYMS=n, stripped module symbols)
++		 */
++		snprintf(symcheck, sizeof(symcheck), "%ps", r->func);
++		if (strncmp(symcheck, "0x", 2))
++			seq_printf(m, "  %ps\n", r->func);
++		else
++			seq_puts(m, "  (unknown)\n");
+ 	}
+ }
  
-+out:
- 	/* restart timer (one second) */
- 	mod_timer(&net->can.stattimer, round_jiffies(jiffies + HZ));
+ static void can_print_recv_banner(struct seq_file *m)
+ {
+ 	/*
+-	 *                  can1.  00000000  00000000  00000000
+-	 *                 .......          0  tp20
++	 *    device   can_id   can_mask   matches  sock_inode  function
++	 *     vcan0     000    00000000         0       43798  raw_rcv [can_raw]
+ 	 */
+-	if (IS_ENABLED(CONFIG_64BIT))
+-		seq_puts(m, "  device   can_id   can_mask      function          userdata       matches  ident\n");
+-	else
+-		seq_puts(m, "  device   can_id   can_mask  function  userdata   matches  ident\n");
++	seq_puts(m, "  device   can_id   can_mask   matches  sock_inode  function\n");
+ }
+ 
+ static int can_stats_proc_show(struct seq_file *m, void *v)
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 6944ebab3feb..3e57f72a3afe 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -226,7 +226,7 @@ static int raw_enable_filters(struct net *net, struct net_device *dev,
+ 	for (i = 0; i < count; i++) {
+ 		err = can_rx_register(net, dev, filter[i].can_id,
+ 				      filter[i].can_mask,
+-				      raw_rcv, sk, "raw", sk);
++				      raw_rcv, sk, sock_i_ino(sk), sk);
+ 		if (err) {
+ 			/* clean up successfully registered filters */
+ 			while (--i >= 0)
+@@ -247,7 +247,7 @@ static int raw_enable_errfilter(struct net *net, struct net_device *dev,
+ 
+ 	if (err_mask)
+ 		err = can_rx_register(net, dev, 0, err_mask | CAN_ERR_FLAG,
+-				      raw_rcv, sk, "raw", sk);
++				      raw_rcv, sk, sock_i_ino(sk), sk);
+ 
+ 	return err;
  }
 -- 
 2.53.0
