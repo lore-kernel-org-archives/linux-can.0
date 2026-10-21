@@ -1,95 +1,99 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792568215;
-	b=DEWFv4oEDktGdvcD7RW5d+Qr8UPBwiiT9Kq4CZtClOr0bRCoAoZdM5auBrHeYROe2Kh8
-	 CKHTKkG48V3+Hgzw2/twPrFkJk6CMYhOAqanVSIsP1MFiT6nDRVCZAz3HC3fA+bxFq7gK
-	 sKYrAhnhSYdpojg1nhWaotyt547ApWyUntndjb7ZmC8XvgnyQCR4xEejhSyIi8geqxndM
-	 m3MCeMl7TevNG4/hxRDNtm7Yi4bDnfARmpvbxuroQk38+P1cEMWyyb0o5zAh18L1ZriGI
-	 T3V4kIH69Juiqb9bIxP4/9eNRRgboantMjQvUpyIfdDaa6hmWsdhCkpRHlsc5gwfwkQ==
+	t=1792568272;
+	b=aUpVc2dDzRwVq1oPQgPqM1mNO9r9aI0lgptPkBaTA2ydyV6sCLGNbEVQ5u4NY5IkaVjy
+	 O2Y3rjEdh5WBI8Sx3cMDQcT5Zoa+tS+4duSTIw7xY6Pprg4H+PJ2CttRXvNep3NSwpGtt
+	 IJh6lObnYWKsrCG1dj/PrVFtO+gY5PI9aIUnqUYLZ1H4crQXuxfyPjLfsxB1sOyJxQQX8
+	 UGMLfgdqcuGR9Msh24XnutjCeVBZOw69L4DV5b014Z9nhTtSAdb5WsHdewITFKpSVqX7t
+	 Kf83fCsPv4rIsTQHFvYStd1O7PZq3ZSy6UK6QpvfPJNJBDMl8sDJDeeH21lQSbdbMMA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792568215;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792568272;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
 	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=0xxqoXf1/Boul2Ez92/44Gob0gkkH3CamzOh1sFVZGM=;
-	b=Fp1U/vTHDchdsCQ5Ym2H53qAz1k2Ln3gYIJ3y2/JgO03sT0ugYsKwgbPANoLUncSEFiU
-	 UWpEwiTy/ajW/Q5f8Nl/AKaOuoREx7ibriFTUKof/l4EbFILf1/1HTiLeyAQDsn0+uM+h
-	 KBdwPvPk9ZrT9HPz0VK9zPIORGqM509aFvtT73l7ESFrUrfH+eue+c8EeFgm9VSas/MlT
-	 lqmjzVoIFZ/CI8AzlLhmL5t1uJkmR7rLdZSBSNTfMcOtmyYAxJ+RjmonrU6A/bL5qPZ5b
-	 GrShullIvaHxd3K5h++go62WdnciuyveugrXMceVBOdLHiJ7ctifSk89SF2TEcju8kQ==
+	bh=9v0qix5bPn7iGIJ/fHA9RQFMWwQI/JfRfRPoZOz48tY=;
+	b=v9Sr5LdY+cDMFfFsDWkNlRH6NCNCE//y7qpp7y3mdIxrgvj/JUXvaC/NL8XhTMeHAi/b
+	 yjUQOl4w82R0fvjCEg3hdiMzhzqIXaIttxgMyZ5HyYqLP9FolpgZbcK+95wPLZ7395Jxu
+	 c4LnwYYc8Wd8Mt4oVKbhgL+ju+nZGjWXLzr1U4YOvkr15d0xC6rbltE07UWw/uDjQRKf6
+	 U5EO1gAwD1cH9OaxBGVFwBKby6icdznlVAziqkLjW/xffAriNdn9yJXIwT/V6rQLOnLZM
+	 ZZTEeNCudwc0JL2/gfatCBO0n68kwoEgiVQ/C+spXwXE3/2ldKv1tJxiXiY10nfg8YQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NQs1IzQm;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=WnidQAKn;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C5DF606A319
-	for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 07:36:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7C5DF606A319
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA992606A31B
+	for <linux-can@vger.kernel.org>; Wed, 21 Oct 2026 07:37:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BA992606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NQs1IzQm
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=WnidQAKn
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id ABF1C200F60;
-	Wed, 21 Oct 2026 09:36:51 +0200 (CEST)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0EE32201E7D;
+	Wed, 21 Oct 2026 09:37:50 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792568211;
+	s=20260414; t=1792568270;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0xxqoXf1/Boul2Ez92/44Gob0gkkH3CamzOh1sFVZGM=;
-	b=NQs1IzQmO0PopboblBMdLKMGS1cuxEQeAlSTDt7kcvQh9aOBJOJNMrD6WtplAlwcxdXlw+
-	marInLmsTBodht5vAeegInDuppwjr6MU+dzCqtsz0yb6DyC3DiehGnpakU6PzYR1affBvI
-	V9eu2nB629BcsZXaeMJoM5AlHGYt3mYRp2eMbu0gr15T4ISeW8rYzECFWR5G7ioRRR8I2J
-	Y8zjg0q8BJvupitdO3Tr2Mlc0I1CjWRZ9ExoB7Ro6sCglytkP3sDKn7Mi009tldoJ95/TI
-	8W6AMv3ttfuMSdJxXTfE20onhSYiNTmuOn0eE9xcvz7z2R4O8LIs+rrypzA0+w==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792568211; a=rsa-sha256;
+	bh=9v0qix5bPn7iGIJ/fHA9RQFMWwQI/JfRfRPoZOz48tY=;
+	b=WnidQAKnkSv3xwzIkGrAwzj6q1UFb3icXXnqVpWDtNMUwbEMlH3CNO2iNB2vIU2grzWfHc
+	CMjfaPuGlMaTaSC4cQyCcf+Y7PIF6WWYbLSxcvCZMV4lqOBOR5+rVlWfuEczJjsvlxGRjS
+	9VBWBkHRUnDdz6VSMR2XVOQYKNP3S98YaKPacB73roGxlunZxDmGCEGnkhUZohKEcfrqcy
+	U1rvJepZ6+z3muyx8cux+cylVOFrACiRQBv1yJE1/ehbsiPGbEjD2oClrFFZyRJ3PEoCNM
+	R0JIMIKMCi1spUiZghawqTZYZc/7O9fR5IoLmnBlKRfjsyl9dt6t1pBvmWKHrQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792568270; a=rsa-sha256;
 	cv=none;
-	b=WUO8LLRLL9T8eLlN+bYbL4CQNXJH+RniuBZQn0qDEzluBaTHeYj8o/VcMqgXIgq31+KB0P
-	Cy8ipo5qiWdZwvfUUlstcSV+bwquNKNJ5X6CR/dKLIwgpdA0J1iWWVD+G5bbk8Ubyo1phs
-	rP1Zd3av9rdrnI6862Rh1foZN0JCqOXX/6cn00cZN6jxl1RWgHZ+yqROKk1IlEY/kklAAy
-	X+/eXBrenGGxNcroQCOc0Qr4UEk4JpnIkguhv74IRFzEZoRUz71Tr05e4a4MVFnpH4cSWY
-	QiSWPor8qRg60jPZZgs+FREjoUF5oBfQbomQhetmhu3rUTLYNGmH9pIrwuWExg==
+	b=PnolOaaT00fXrwLi+rBO+1o/tDAGmt8buk+couMMSfBInoA4C6/NXS9Q4AgSkLZeYjLLIK
+	dgmLKRF5A10poa2LU462XasO/vwjclLIOk0gGAPMB0JBAI4aLSZ0TlaKZWfwD0olppFt5U
+	5knh1RMlMvtO55fgJvvSlLdsyGa3+ViwUKTg2hAvjLUodVrYqm1HZTrzMpr7bFe2fwkju8
+	gBu7JhtcJXdQafQ/qIgFmIMzzccFSFbShgt7b2AmoCDR15Voqx8we7EUcsUErh30LW5hrv
+	DdTEvLayQaj3Ak2KO+GBYYixi1Ie9B5agAKQ0JhP1FHfcC0UKbdL7074j6GECg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792568211;
+	s=20260414; t=1792568270;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0xxqoXf1/Boul2Ez92/44Gob0gkkH3CamzOh1sFVZGM=;
-	b=MME1UHZ9q791JbP5JzVy3OkMxC4s493Y8tWAjWb6t1XwrXVyYYICV/0/p6+KekEXB/fMf9
-	8SYblNB9skKVZKWVAY6i4eSdg+xYrIuiCEaus5VqeBWV6YOTcp6sIGUo1y5WdlcIpl5wft
-	/pwUD6fUOmjlssZKwqcozggfiGmRokJ1SjhpGOSO4S9xpMMPVaRhop+sHtGrnOmSlY4ZQt
-	VWiI5qwoIz1ydmtCI/PhDqtm61K3W4IE6QHP9FzqIj+fwHjSuEzQc6+czvsG+OOdRmssZt
-	WRTkWvoX3N/36EK+9wXCxK5BiwGKF9jhC05OrelfjvqxwtV6Y7bc0vg07EPRiA==
+	bh=9v0qix5bPn7iGIJ/fHA9RQFMWwQI/JfRfRPoZOz48tY=;
+	b=TVOzPf01/H7MsxGVsxpeBxyBaeA79YZ9qdqUf0bJAl/DOaJUYWqS+Hu2t1LWsx/caR5bN0
+	Dl+No/8RpTNSpqr1y8553v5VcFSzvpBSoJBJDj1LsYf5n+n29ycYWaH8q8YDyhnInUZaKM
+	25GVzm+e7TErDwNXZTnggdDP2sZxB4Xd6LxvOIj/QNvCberMf0t1l5HoJqOKe1vrMX8UTa
+	1EzW42KZscJ4fYxQ2rS0EDC0LMJokMvYZeFW9EFHcaEvkfBkNemS1Aq++S3wyBCrCOu8wt
+	iEHgRlFMrtEQGZ/iX9tKIM4J9pdB8Ov2r8QoVkX/+R2AfQ6VWH9Nu82cAEqaHw==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xJQsV-000WbJ-1y;
-	Wed, 21 Oct 2026 09:36:51 +0200
+	id 1xJQtR-000WbN-33;
+	Wed, 21 Oct 2026 09:37:49 +0200
 Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 5ACD35CACF8;
-	Wed, 21 Oct 2026 07:36:51 +0000 (UTC)
-Date: Wed, 21 Oct 2026 09:36:50 +0200
+	by smtp.blackshift.org (Postfix) with ESMTPSA id B4AF75CACFB;
+	Wed, 21 Oct 2026 07:37:49 +0000 (UTC)
+Date: Wed, 21 Oct 2026 09:37:49 +0200
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org
-Subject: Re: [PATCH can-next v5 0/5] can: protect the receive lists with a
- per-device lock
-Message-ID: <20261021-infrared-mouflon-of-elevation-04cc4b-mkl@pengutronix.de>
-References: <20261020203257.230955-1-socketcan@hartkopp.net>
+Cc: Filippo Storniolo <fstornio@redhat.com>, 
+	Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
+	Urs Thuermann <urs.thuermann@volkswagen.de>, Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>, 
+	linux-can@vger.kernel.org, Davide Caratti <dcaratti@redhat.com>
+Subject: Re: [PATCH can-next v3 0/3] Introduce diag support for CAN
+Message-ID: <20261021-aggressive-musical-bettong-bd84da-mkl@pengutronix.de>
+References: <20260904-feat-can-diag-v3-0-bdcebf07b373@redhat.com>
+ <20261020-funky-buffalo-of-progress-fa4bf9-mkl@pengutronix.de>
+ <d23196e0-6307-458b-ba31-15f54ef46b73@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -100,35 +104,47 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2r5tum67bacvwcmr"
+	protocol="application/pgp-signature"; boundary="kewsyiomvco2xnkm"
 Content-Disposition: inline
-In-Reply-To: <20261020203257.230955-1-socketcan@hartkopp.net>
+In-Reply-To: <d23196e0-6307-458b-ba31-15f54ef46b73@hartkopp.net>
 
 
---2r5tum67bacvwcmr
+--kewsyiomvco2xnkm
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH can-next v5 0/5] can: protect the receive lists with a
- per-device lock
+Subject: Re: [PATCH can-next v3 0/3] Introduce diag support for CAN
 MIME-Version: 1.0
 
-On 20.10.2026 22:32:52, Oliver Hartkopp wrote:
-> This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
-> triggered when a CAN device is moved to another network namespace while
-> a socket bound to this device is released [1].
+On 20.10.2026 18:20:22, Oliver Hartkopp wrote:
+> The fact that the inode number of the socket is visible fits great to the
+> upcoming CAN procfs output:
 >
-> Only patch 5 is new. Patches 1-4 are already applied to the testing
-> branch of linux-can-next, and patches 1, 3 and 4 are on their way to
-> net-next with the linux-can-next pull request [2]. They are included
-> only to provide a sequence on which the sashiko bot is able to build and
-> review patch 5. Please do not apply patches 1-4 from this series.
+> https://lore.kernel.org/linux-can/20261018164417.1540449-8-mkl@pengutroni=
+x.de/
+>
+> But I'm not sure about "Local Address:Port" being "vcan1:1110".
+>
+> A CAN-ID together with a CAN interface is a unique "content address" to
+> identify the content which is in the CAN frames data.
+>
+> I assume "1110" to be the decimal representation of an 11 bit SFF CAN ID
+> 0x456, right?
+>
+> Having a CAN ID in decimal representation is generally unusual - especial=
+ly
+> in Linux. Additionally you can have 29 bit EFF CAN IDs which does not fit
+> into a 16 bit port value.
+>
+> And 29 bit IDs have to be marked as you can have the value 0x456 in 11 bit
+> and 29 bit CAN IDs. We usually do this with 456 and 00000456 to indicate
+> 11/29 bit IDs.
+>
+> So the "Local Address:Port" output does not really fit to CAN here ...
 
-Can you adjust the patch description?
+This probably needs changes to the "ss" tool, right?
 
 Marc
-
-pw-bot: cr
 
 --=20
 Pengutronix e.K.                 | Marc Kleine-Budde          |
@@ -136,15 +152,15 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---2r5tum67bacvwcmr
+--kewsyiomvco2xnkm
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCathrkAAKCRDMOmT6rpmt
-0l0VAQD3pYmq8kH8uiyXzX+3yOhGHiL2DZwrYdoN2TF3DTByiwD/cuFUZlBgrgx9
-u4/Ib16jcp1BL08XxnIdhqJ+ylGDXgs=
-=XAZQ
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCathrywAKCRDMOmT6rpmt
+0vHKAP4rHUA8U8WQSLApQYtbx8uudIVWNDnMf+bZZdW+MWQdoAEA8KN0/OpoUwBU
++AxFjHLPFDisfr9LGQeEj/hxO0hr6g8=
+=KXC9
 -----END PGP SIGNATURE-----
 
---2r5tum67bacvwcmr--
+--kewsyiomvco2xnkm--
