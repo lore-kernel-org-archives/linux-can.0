@@ -1,52 +1,52 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.1
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792678377;
-	b=aMzQHmSqJMit+Q8UmewA72os4tezGSkuRZiokZLfhTCKZ0Q9WM7nTdxjx1z7dtt9uUry
-	 3qHcuenaLqcEqgikx1Jjw+JeMT5oYIIBeFSPzjdTmHTVSnbD5NTtor9f+nSK0ytP93xHP
-	 zvfWOW6bNx08w/0ih7bGWbBCw7jqgfMPKCbg9v9Q+SViRR3H/p7Uf/9gpAA38FfJdICw9
-	 EnQnvVNaPYwh7p8Ul9rOH7wkz4WYkDpd25TibB3C37SMWN04sL2lhCMgTGrPceLbO2PU7
-	 0mYFt2a8Hqh1h/JIDLIh5TNc2t7f2OyCB7cchTh/pCkxbFcmdiMcezdZbORVuDuR7Tw==
+	t=1792678472;
+	b=zHdd4sOamqUjM/EtP2GCKShMp1HZ6cgclxi6/Y8I/o6qk5hpuyeoFFO0Urqk7ar11jX4
+	 OhPKiRcsGhglLUpjduaURqzEAL+2B5HXI4peYVXVB4GCeA1/b6J74kb1gzz4FdoPpXyLN
+	 N3g62Lr/zJnLu0U20vFqOVnzNo8dDlRWTD0IK4AWQ23pzbrFJYfn6tHdovadif+zGC4EA
+	 CgVsZNlhMXUOqp2YDOIRnetn+cVnRcrjtIHSmNiE3ueiUIOSmC+6wPjhlDABSkJ9AjxP+
+	 cg7kAf1rrXvp2FTF17XcsXrcpyunKA5/hLlfidUebiU/+5nrg2LV9diBDUdSvPBQzpQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792678377;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792678472;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:Content-Type:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=ltFEvG0g3YhmCq0fgB0vbyzeeoZVkOCdA6qoEBtDgR0=;
-	b=IE2vRrkx+vHC1ZXaFHbRBoASZuNC3MFxSzPd8oQ+tQPtj6zlGscti/VssbKkkxJQbA5p
-	 VUJgiqCFybsgQV/geYr3idDxt9EiV+RrIUd08zzZNL0FL/OOOk8vK1UNFU2U81TpRrKI4
-	 TDd6gAdBtSNeSLq3LHSB7FPBvlLk+ZW7DFQhKoou5Yk/RHuWYf1E6DhejqtJACxavSRGh
-	 fR2ZoIAWh8oe+18O74WA6lLsb1NEb9LxTDiud3hKZYZHLkLAN2UbaGXQNXRfuSeHW++wZ
-	 7QKXPuqPKfZ+K9iWFfEXJnfWvOG5ZWByW9uH6CzFBA5ctYDVYwiTprnK1c8YiJWK7gw==
+	bh=Toe3fW/9OcEs91PQjKDA3fusgEgWleJga8wYfhw7eus=;
+	b=dBz4xcjW9mQcfxLqZ3e6P64I+4CgU1+GDC1gucXIStQELd/BwNYzyTPXwaW7yOubZsN/
+	 tMfeMJjH89VqTIDYAauLkcvZBo/V0Cgbt8yXI2jmaQJe70dBnmSVLDX/TeCppKeyeqga2
+	 lFqnO1Hz27KiKAtwjRy6VnQdUrdGaUaKhPlBiWkOyZZuBGlm0h8ryh1dqP1eewXopCXkb
+	 NUo6jku3BK2ugY+Jmrp0n+5GOwcPJEEr3cgax8ImcvJ/WxANY9Wv39RcdEmAaOAW8uwDQ
+	 7Vgq8rchnddk0F3tIsPlwAMHyfH/8pdwrpcfAng4tXhdvTCajs33EJN/rc6rkzu2oJw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=free.fr;
 	spf=pass smtp.mailfrom=free.fr;
-	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=X1q1eZEC;
+	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=PlE4nS6A;
 	arc=none smtp.remote-ip=212.27.42.1
 Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D5AA606A31B;
-	Thu, 22 Oct 2026 14:12:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8D5AA606A31B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1AF606A319;
+	Thu, 22 Oct 2026 14:14:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EB1AF606A319
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=X1q1eZEC
+	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=PlE4nS6A
 Received: from stf-laptop (unknown [IPv6:2a02:8424:8fef:6e01:68ea:cb82:d40f:9275])
 	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp1-g21.free.fr (Postfix) with ESMTPSA id 48BB5B00565;
-	Thu, 22 Oct 2026 16:12:47 +0200 (CEST)
+	by smtp1-g21.free.fr (Postfix) with ESMTPSA id B2E2DB0051B;
+	Thu, 22 Oct 2026 16:14:22 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1792678374;
-	bh=ltFEvG0g3YhmCq0fgB0vbyzeeoZVkOCdA6qoEBtDgR0=;
+	s=smtp-20201208; t=1792678470;
+	bh=Toe3fW/9OcEs91PQjKDA3fusgEgWleJga8wYfhw7eus=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=X1q1eZECCgQ9jYPlKB2gqdaWRaWoGtkfoqb4rbIXXaeWNB+WwiHgUqb5m1eBQLisI
-	 sfD4yq4WY8mHastKl7mgW7zrXncW3IiDELcHOpKyz2nk+/sb8djPT8ePoGFTMKyU3M
-	 ziARA/Vgci4WSzkYAcTJ0Xf5w44/MGe3o77IePsx3byGTkDAa3aqmndhBLJ74zSSO8
-	 Pn4DnnW6H4J24eyNpBZTF1Z/6kGxqlVOPE+eRREDh595M774xwby0gME+cC5U+B8d/
-	 y/Ufk5lp46cM6+jL6Ya4lKbA/8ayuK13VPPnsZS4BgAeDQR8SSFI59tRo+ebeYndqz
-	 lQg2Fcf9C5Syw==
+	b=PlE4nS6Ai9CJdR5448FJ13bTPd0dPxoWoERcO3zNNdAIWKCEkUc4mSoICGTnibzmt
+	 xsYSUoW2ursUOsavPFBYzfv3b0thood/rVSR5SWeawNkkawZx5qV29gPiA5gj0N9ej
+	 iMPt4v+suy71mUypwqBqwXiSr4lhdlNDxoGkl73l8SnmBefur6l9uoRYpN23RgKaYh
+	 MxIBYLDtYOkFIkb0D13CpkmfkMTpe0pbWLoxWPwvxl0dMFL73JboPB83PR10mHovTW
+	 9uvRP26ymf30QZrRW8fFofhXgjGqfgFnmwxTSmMRYd4rFhZ7mmto/9kLchwYwrAIVm
+	 p9Eaa+8s15Vww==
 From: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@free.fr>
 To: netdev-bot+sashiko@kernel.org
 Cc: mkl@pengutronix.de,
@@ -56,12 +56,12 @@ Cc: mkl@pengutronix.de,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kuba@kernel.org
-Subject: Re: [PATCH v5 07/10] can: peak_usb: fix RX cursor desync for self-received RTR frames with SRR
-Date: Thu, 22 Oct 2026 16:12:33 +0200
-Message-ID: <20261022141233.221511-1-stephane.grosjean@free.fr>
+Subject: Re: [PATCH v5 08/10] can: peak_usb: reject records for unset channels in PCAN-USB Pro
+Date: Thu, 22 Oct 2026 16:14:10 +0200
+Message-ID: <20261022141410.222366-1-stephane.grosjean@free.fr>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <179264019805.3131.3239897056475962964@kernel.org>
-References: <20261020-canfd_check_channel_idx-v5-7-a62b35b867f0@peak-system.fr> <179264019805.3131.3239897056475962964@kernel.org>
+In-Reply-To: <179264019905.3131.17443314322038603114@kernel.org>
+References: <20261020-canfd_check_channel_idx-v5-8-a62b35b867f0@peak-system.fr> <179264019905.3131.17443314322038603114@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -77,14 +77,62 @@ Content-Transfer-Encoding: 8bit
 On 22/10/2026 05:36, netdev-bot+sashiko@kernel.org wrote:
 [...]
 > [Severity: Low]
-> Can rx_bytes now be over-counted for a frame that gets dropped?
+> Should a well-formed record for an unset channel cause the rest of the
+> transfer to be dropped?
 [...]
-> Would it work to move the rx_bytes update below the SRR check, for
-> example next to the rx_packets++?
+> Would it be better to skip just this record, for example by returning 0?
+> The same applies to the new check in pcan_usb_pro_handle_error().
+>
+> Later in the series, "can: peak_usb: register the netdevs only once all
+> channels are set up" moves register_candev() into peak_usb_probe(),
+> after all channels are initialized. That seems to make this branch
+> unreachable by the end of the series.
 
-Yes, this is the same point as in the first review of this patch. v6
-updates rx_bytes together with rx_packets, once the SRR byte has been
-checked.
+Right, the rest of the transfer is dropped, as for the other malformed
+records, and as patch 6 does for the PCAN-USB FD. I kept it that way on
+purpose: as you note, patch 9 makes this branch unreachable, so this
+only matters to a tree that would take this patch without patch 9. The
+v6 changelog says so.
+
+[...]
+> [Severity: High]
+> This is a pre-existing issue and was not introduced by this patch. Since
+> this function is being changed anyway: can the payload memcpy() further
+> down in pcan_usb_pro_handle_canmsg() read past the record and past the
+> RX buffer?
+[...]
+> Could the code
+> reject len > CAN_MAX_DLEN? It could also reject any length larger than
+> the record format provides: 0 for RXMSG0 and RXRTR, 4 for RXMSG4, and 8
+> for RXMSG8.
+
+Confirmed. v6 adds a new patch, "can: peak_usb: validate the data
+length of PCAN-USB Pro CAN records", which converts the DLC with
+can_cc_dlc2len() and rejects a data frame whose length exceeds the
+number of data bytes of its record type. Tested on a PCAN-USB Pro:
+frames of all lengths are still received.
+
+> [Severity: Medium]
+> This isn't a bug introduced by this patch, but does the caller,
+> pcan_usb_pro_decode_buf(), read pr->data_type before checking rec_ptr
+> against msg_end?
+
+Confirmed too, and pcan_usb_pro_wait_rsp() had the same issue, with a
+32-bit record count and no bound at all. Another new patch in v6, "can:
+peak_usb: don't read past the message in PCAN-USB Pro decoders", stops
+both loops at the end of the received data.
+
+[...]
+> [Severity: High]
+> This is a pre-existing issue and was not introduced by this patch, but
+> can usb_if still be used after this kfree() for channel 0?
+[...]
+> Later in the series, "can: peak_usb: register the netdevs only once all
+> channels are set up" removes register_candev() and the
+> lbl_unregister_candev label from peak_usb_create_dev(). After that, no
+> netdev can be open when adap_dev_free runs, which seems to fix this.
+
+Agreed, this is fixed by patch 9 of the same series.
 
 Thanks!
 
