@@ -1,58 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792664894;
-	b=caE+xNL8pS1CFk8pkg+gtzD99PSSFwrEU+7b3Qy6Mnjt889r+z2DdH02shQ2PZdyRVs/
-	 BFZ+O6eLD4tFBFW6K7OyynxM+7OF7T+AJAO9tSUxx6hLkoDfGkP8UEwTXNE0udEMgTjIO
-	 MDLspu2bQ05vs5WXQJw3hBLwu2vdg0eOH5+vnRW1KFs4xOlvWfGlfAdXNYGAcAmaLRmkW
-	 msk1LMaVc13b5ZhEqR9i0ZK0rKOjbB+Tej1K5iSeCIXM/Ode6yqNGhhkvB6BEYgb/yyVw
-	 i9obTuqt5oiKYwdUrZxiFpUOCd+qup6pRsuJiqUMdAHBJ4A+nZ69SWFWOx1v5T+yyKA==
+	t=1792667678;
+	b=S2jtRFsj3eI+ttDCM6nbpu0qjVHVKuz4QgFysntZJQVWB+OArQacf7m4sIfSC5oBJRqs
+	 dWU2c2+gZNf2zq7qqu5amWjlUYIsAj8Tm/STNrI8uf1tODikIG6mMVABeLI+X8gZrmI5s
+	 8a8hzFcoqN0TcjFl4n2m5mIjXwYgfx1BKutTYZwx5Jnu9aQpJs8jG3+me1EfXnnGXY8Ya
+	 bN/MVT24K0rPV03exZFVpE7gNAe/wkc0Cdr6tBaaQyGLJZOFkt6obuVys67vV3/BAG5M8
+	 BSxHKL2Bh3+cXTY44CtrjhyKlzjjKZY1LpIqhpQkKPfZzu+1hqV03v6Y0jWG4RrqS/g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792664894;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=2tuVHPeBsSMDqbaageFYjY6u9zxj6cJEEJgdvZIvtHg=;
-	b=xHB9h+M2lWmSx0bUNpmWd/PIMh9orPefOdH7k3Davk8vrUQ4q66tZz9GNTNkE9djNC/2
-	 QTPLp3qWEwaGSs7NKDr7LqOQDCJ9ktnWM0iWRqIhfq3VPfaOyzzwztWD70UX2+QlGFYrQ
-	 0I/zfagyEmfgxNn5hpLoYqzKULjQaHJ/MzgHwtBFkOyzoLGNCAB6rr/toS1T6Ee5faq4R
-	 QqHsbhezMgJOgGY8pPKNG6jYxhhrgeK8iri2BOg+zUKcbc+c5jJlIR6YHwYbuj/z0aTWk
-	 gLuDjTzWcfXy/Bc4d/xFX07n2GA2CRgfuyctDNc04X1rX9k583ZVHhF/LX9hBSXeLPA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792667678;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=t+yL5LIQB/XmcvJ8XLaIeDs48TsCXFtavG5KeRNid4c=;
+	b=HXJ8eg36w2/AdriSmA57j3ZV6VaF/ODyBKrZGgN2XsUuTNLyw3lNd0a0/hryq6zfqPMS
+	 w9gVvocsyvZ67n6yHiGSVH2SnG1ysbqizFIWK1f1KzDq/JsKRfIGqP5QOgluci9OghGH3
+	 b32PQTOlk/03OeVwS85cdVuFXXEWtqYlyx5G3S5VPen/Egt/E0/vcHhn+gd7UJLBuaJh6
+	 5HGH8hKx+gkzuzIzvN45xjR9CK0NKkTJ/3LPCZHGHqvMZe74WZaZLsaU6/HbqFriZbeB0
+	 rhmdoH9X47xHEJHtF5eoNFQzy8LrgQ/DO/Zex0135dMGsP17i+DDG1VD2tR75U9u5ZQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=flh3Zw23;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GIlf13MG;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96982606A319
-	for <linux-can@vger.kernel.org>; Thu, 22 Oct 2026 10:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4E5606A31A;
+	Thu, 22 Oct 2026 11:14:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=flh3Zw23
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 274811F000C1;
-	Thu, 22 Oct 2026 10:28:14 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GIlf13MG
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 411B51F000C1;
+	Thu, 22 Oct 2026 11:14:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792664894;
-	bh=2tuVHPeBsSMDqbaageFYjY6u9zxj6cJEEJgdvZIvtHg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=flh3Zw231XPa9nb/f59QNBOn0/OxNE6eWoxDwSmEJSD65XstbmpRA4uxizA1C5tlX
-	 C+X87Iktca5Z2mabmKdXpExz9E1wwxqxK2Xs6vvmdFVCZ38dXdY6mZykGIY706PgL7
-	 nD7MHf2/EHE6G+SbkBJJz6YIEo/Sk7PmDdwO4mWB4Reh5mg9WR2JjzoZgFco92QHJg
-	 WmKKszHA2b7cTxNGIk8T7ww8wz2ljDTFJ3AJA1UB+i3Nw6XJNvE0plh/s5I2NOaOOx
-	 9xwzIcFiO8sQyi9WlC7DDvWTlzusW0jup4vc8iJ7ddpSZNvTL/XK7iRdaPMWvtp/OK
-	 1Cv/75bN0rsBg==
-Message-ID: <sashiko-outbox-181335@kernel.org>
-From: sashiko-bot@kernel.org
+	s=k20260515; t=1792667677;
+	bh=t+yL5LIQB/XmcvJ8XLaIeDs48TsCXFtavG5KeRNid4c=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=GIlf13MGlXhAX/mXk5BsRycqLHftbyuOxyQnVjsBO8hLoRnZQ0VjikgebF0P4ejmQ
+	 WUTa4omRJ3wCX+kxUkcFYCUXpsbGZVpTNGQIFDtB7vqw7WKc2o42DfD/xf5aKqJbK6
+	 KQlu+Z95/SnJs1nLV85YoJAbFyRhuyFOl4x1vCycsRXOxpDX8aLlMrd6tVKIzaC+Ru
+	 RGXnwvnRwIhFijAOKFkqhToOxWAEN8WXfwMfi6/8+3xDz4F+88vmZIaTvtSGnlndxH
+	 R8nac2q575zxBJz9D6RkN825n/7GVSwTpj/wH4nS7XMo0Gv/q4z2BkXFBfpZ5BO/uY
+	 3WgVY2LMHZSwA==
 Subject: Re: [PATCH net-next 11/11] can: protect the receive lists with a
  per-device lock
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+From: netdev-bot+sashiko@kernel.org
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, mailhol@kernel.org,
+ stable@kernel.org
+Date: Thu, 22 Oct 2026 11:14:36 +0000
+Message-ID: <179266767682.3135.6448103178144570295@kernel.org>
 In-Reply-To: <20261021102756.1900679-12-mkl@pengutronix.de>
-References: <20261021102756.1900679-1-mkl@pengutronix.de>
- <20261021102756.1900679-12-mkl@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 22 Oct 2026 10:28:13 +0000
+References: <20261021102756.1900679-12-mkl@pengutronix.de>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -61,30 +62,46 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 2 potential issue(=
-s) to consider:
-- [Medium] can: raw/isotp: race in bind() overwrites ENODEV with ENETDOWN o=
-n unbind
-- [Medium] can: isotp: premature so->dev publication in isotp_bind() races =
-with NETDEV_DOWN
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
+
+Critical: 0 · High: 0 · Medium: 2 · Low: 1 (1)
+
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [Medium] After this patch, CAN_RAW serializes bind/setsockopt/release
+  against NETDEV_UNREGISTER only with lock_sock().
+- [Medium] can: raw/isotp: race in bind() overwrites ENODEV with ENETDOWN
+  on unbind
+- [Low] isotp_bind() now publishes so->dev with WRITE_ONCE(so->dev, dev)
+  inside the RCU lookup (net/can/isotp.c:1623).
+
+Pre-existing issues:
+- [Low] isotp_bind() calls can_rx_register() twice: for rx_id when
+  isotp_register_rxid(so) is true (net/can/isotp.c:1648-1650), and for…
+
 --
-
-commit 8449957dc1b032324bb9194614a09818da738dd0
-Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
 can: protect the receive lists with a per-device lock
 
-This commit adds a per-device spinlock to struct can_dev_rcv_lists so that
-CAN receive list registrations and unregistrations are protected
-independently of network namespace moves. This allows CAN_RAW, CAN_BCM, and
-CAN_ISOTP to manage their receive filters under lock_sock() without holding
-rtnl_lock().
+This commit adds a spinlock to struct can_dev_rcv_lists. The receive lists
+of a CAN device are now protected per device instead of by the per-netns
+rcvlists_lock, so can_rx_unregister() can find subscriptions after the
+device has moved to another namespace.
 
-Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8=
-E@doyensec.com/
-Link: https://patch.msgid.link/20261020203257.230955-6-socketcan@hartkopp.n=
-et
+RTNL is dropped from raw_bind(), raw_setsockopt(), raw_release(),
+isotp_bind() and isotp_release(). These paths now use lock_sock() and a
+device pointer published under RCU to serialize against the netdev
+notifier.
+
+Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+Link: https://patch.msgid.link/20261020203257.230955-6-socketcan@hartkopp.net
 
 > diff --git a/net/can/isotp.c b/net/can/isotp.c
 > index 5e1c3971ebfce..8ec37d252557e 100644
@@ -93,143 +110,103 @@ et
 
 [ ... ]
 
-> @@ -1614,7 +1612,17 @@ static int isotp_bind(struct socket *sock, struct =
-sockaddr_unsized *uaddr, int l
+> @@ -1614,7 +1612,17 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
 >  		goto out;
 >  	}
-> =20
-> -	dev =3D dev_get_by_index(net, addr->can_ifindex);
+>  
+> -	dev = dev_get_by_index(net, addr->can_ifindex);
 > +	/* Publish the device inside the RCU section of the lookup: When it
 > +	 * is unlisted concurrently, either isotp_notify() sees so->dev after
 > +	 * synchronize_net() or the lookup fails.
 > +	 */
 > +	rcu_read_lock();
-> +	dev =3D dev_get_by_index_rcu(net, addr->can_ifindex);
+> +	dev = dev_get_by_index_rcu(net, addr->can_ifindex);
 > +	if (dev) {
 > +		dev_hold(dev);
 > +		WRITE_ONCE(so->dev, dev);
 > +	}
 > +	rcu_read_unlock();
 >  	if (!dev) {
->  		err =3D -ENODEV;
+>  		err = -ENODEV;
 >  		goto out;
-> @@ -1627,7 +1635,12 @@ static int isotp_bind(struct socket *sock, struct =
-sockaddr_unsized *uaddr, int l
->  		err =3D -EINVAL;
+> @@ -1627,7 +1635,12 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+>  		err = -EINVAL;
 >  		goto out_put_dev;
 >  	}
-> -	if (!(dev->flags & IFF_UP))
-> +
-> +	/* Either isotp_notify() sees so->dev on NETDEV_DOWN or we see the
-> +	 * cleared IFF_UP, pairs with isotp_notify()
-> +	 */
-> +	smp_mb();
-> +	if (!(READ_ONCE(dev->flags) & IFF_UP))
->  		notify_enetdown =3D 1;
-> =20
->  	ifindex =3D dev->ifindex;
-> @@ -1653,15 +1666,17 @@ static int isotp_bind(struct socket *sock, struct=
- sockaddr_unsized *uaddr, int l
->  	 * can safely reach the device later, even if a concurrent
->  	 * NETDEV_UNREGISTER has already unlisted it by ifindex.
->  	 */
-> -	so->dev =3D dev;
->  	netdev_hold(so->dev, &so->dev_tracker, GFP_KERNEL);
-> =20
->  out_put_dev:
-> -	/* remove potential reference from dev_get_by_index() */
-> +	/* the published so->dev is only valid for a successful bind() */
-> +	if (err)
-> +		WRITE_ONCE(so->dev, NULL);
 
-[Severity: Medium]
-In net/can/isotp.c, isotp_bind() publishes so->dev inside the RCU read-side
-critical section before validating can_get_ml_priv(dev) and
-READ_ONCE(dev->mtu) < so->ll.mtu:
+[Severity: Low]
+so->dev is now visible to the lockless check in isotp_notify() before the
+remaining checks in isotp_bind() run, and before so->bound is set. The MTU
+check can still fail the bind:
 
-	rcu_read_lock();
-	dev =3D dev_get_by_index_rcu(net, addr->can_ifindex);
-	if (dev) {
-		dev_hold(dev);
-		WRITE_ONCE(so->dev, dev);
-	}
-	rcu_read_unlock();
-	...
 	if (READ_ONCE(dev->mtu) < so->ll.mtu) {
-		err =3D -EINVAL;
+		err = -EINVAL;
 		goto out_put_dev;
 	}
 
-Unlike raw_bind(), which publishes ro->bind_dev early (used only for
-NETDEV_UNREGISTER under lock_sock(sk)) and only sets ro->dev once validation
-and filter registration succeed, isotp_notify() checks READ_ONCE(so->dev)
-locklessly for NETDEV_DOWN:
+so->dev is only cleared again at out_put_dev.
 
-	if (READ_ONCE(so->dev) !=3D dev)
-		return;
+isotp_bind() no longer holds RTNL. Can a NETDEV_DOWN for the same device
+run isotp_notifier()->isotp_notify() inside this window?
 
-	switch (msg) {
-	...
+The NETDEV_DOWN case only checks READ_ONCE(so->dev) != dev. It does not
+look at so->bound or recheck under lock_sock():
+
 	case NETDEV_DOWN:
-		sk->sk_err =3D ENETDOWN;
+		sk->sk_err = ENETDOWN;
 		if (!sock_flag(sk, SOCK_DEAD))
 			sk_error_report(sk);
 		break;
-	}
 
-If isotp_bind() fails the MTU check (for example when CAN_ISOTP_LL_OPTS sets
-ll.mtu =3D CANFD_MTU and the target device has dev->mtu =3D CAN_MTU) while a
-concurrent NETDEV_DOWN notifier runs on that device before out_put_dev clea=
-rs
-so->dev, won't isotp_notify() observe READ_ONCE(so->dev) =3D=3D dev and set
-sk->sk_err =3D ENETDOWN on the still-unbound socket?
+Would this set a stale ENETDOWN on a socket that was never bound, whose
+bind() then returns -EINVAL? A later successful bind() to another device
+(after fixing ll.mtu with CAN_ISOTP_LL_OPTS) would then get that error from
+the next recvmsg() or poll().
 
-Would checking can_get_ml_priv(dev) and READ_ONCE(dev->mtu) < so->ll.mtu
-inside rcu_read_lock() before writing so->dev avoid this window?
+raw_bind() avoids this. It only publishes ro->bind_dev early, which
+raw_notify() uses for NETDEV_UNREGISTER only, and it sets ro->dev after
+success. Could isotp use the same approach?
 
-> +
-> +	/* remove reference from the device lookup */
->  	dev_put(dev);
->  out:
->  	release_sock(sk);
-> -	rtnl_unlock();
-> =20
->  	if (notify_enetdown) {
->  		sk->sk_err =3D ENETDOWN;
-> @@ -1864,12 +1879,21 @@ static void isotp_notify(struct isotp_sock *so, u=
-nsigned long msg,
->  	if (!net_eq(dev_net(dev), sock_net(sk)))
->  		return;
-> =20
-> -	if (so->dev !=3D dev)
-> +	if (msg =3D=3D NETDEV_DOWN)
-> +		smp_mb(); /* pairs with isotp_bind(), see raw_notify() */
-> +
-> +	/* lockless fast path, see raw_notify() */
-> +	if (READ_ONCE(so->dev) !=3D dev)
->  		return;
-> =20
->  	switch (msg) {
->  	case NETDEV_UNREGISTER:
->  		lock_sock(sk);
-> +		if (so->dev !=3D dev) {
-> +			release_sock(sk);
-> +			break;
-> +		}
-> +
->  		/* remove current filters & unregister */
->  		if (so->bound) {
->  			if (isotp_register_rxid(so))
-> @@ -1885,7 +1909,7 @@ static void isotp_notify(struct isotp_sock *so, uns=
-igned long msg,
-> =20
->  		so->ifindex =3D 0;
->  		so->bound  =3D 0;
-> -		so->dev =3D NULL;
-> +		WRITE_ONCE(so->dev, NULL);
->  		release_sock(sk);
-> =20
->  		sk->sk_err =3D ENODEV;
+> @@ -1653,15 +1666,17 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+>  	 * can safely reach the device later, even if a concurrent
+>  	 * NETDEV_UNREGISTER has already unlisted it by ifindex.
+>  	 */
+> -	so->dev = dev;
+>  	netdev_hold(so->dev, &so->dev_tracker, GFP_KERNEL);
+
+[Severity: Low]
+This isn't a bug introduced by this patch, but isotp_bind() ignores the
+return values of both can_rx_register() calls just above this:
+
+	if (isotp_register_rxid(so))
+		can_rx_register(net, dev, rx_id, SINGLE_MASK(rx_id),
+				isotp_rcv, sk, sock_i_ino(sk), sk);
+	...
+	can_rx_register(net, dev, tx_id, SINGLE_MASK(tx_id),
+			isotp_rcv_echo, sk, sock_i_ino(sk), sk);
+
+It then sets so->bound = 1 unconditionally.
+
+can_rx_register() returns -ENOMEM if kmem_cache_alloc(rcv_cache,
+GFP_KERNEL) fails. Can the socket then report a successful bind() while it
+is missing its FC/RX receiver or its echo receiver?
+
+Later, isotp_release() and isotp_notify() would call can_rx_unregister()
+for an entry that was never added and hit the "receive list entry not
+found" warning. raw_enable_filters() and bcm_rx_setup() check this return
+value and unwind.
+
+-ENODEV from the net_eq() check does not look reachable here.
+isotp_notify() waits on lock_sock() for NETDEV_UNREGISTER, so dev_net(dev)
+cannot change during the registrations. That leaves -ENOMEM as the only
+error.
+
+The earlier commit "can: replace ARPHRD_CAN type checks with
+can_get_ml_priv()" in this series already notes that isotp_bind() ignores
+these return values.
+
+[ ... ]
+
 > diff --git a/net/can/raw.c b/net/can/raw.c
 > index dfea48768b231..d07f3bb68cd5c 100644
 > --- a/net/can/raw.c
@@ -237,59 +214,92 @@ igned long msg,
 
 [ ... ]
 
-> @@ -305,16 +309,31 @@ static void raw_notify(struct raw_sock *ro, unsigne=
-d long msg,
->  		       struct net_device *dev)
+> @@ -750,18 +772,47 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+>  			  sockptr_t optval, unsigned int optlen)
 >  {
->  	struct sock *sk =3D &ro->sk;
-> +	struct net_device *bind_dev;
-> =20
->  	if (!net_eq(dev_net(dev), sock_net(sk)))
->  		return;
-> =20
-> -	if (ro->dev !=3D dev)
-> +	if (msg =3D=3D NETDEV_DOWN)
-> +		smp_mb(); /* IFF_UP is cleared before, pairs with raw_bind() */
-> +
-> +	/* Lockless fast path, ro->bind_dev covers a concurrent bind().
-> +	 * Read it before ro->dev, pairs with smp_store_release() in
-> +	 * raw_bind(). A stale ro->bind_dev only costs a lock_sock().
-> +	 */
-> +	bind_dev =3D smp_load_acquire(&ro->bind_dev);
-> +	if (READ_ONCE(ro->dev) !=3D dev &&
-> +	    (msg !=3D NETDEV_UNREGISTER || bind_dev !=3D dev))
->  		return;
-> =20
->  	switch (msg) {
->  	case NETDEV_UNREGISTER:
->  		lock_sock(sk);
-> +		if (ro->dev !=3D dev) {
-> +			release_sock(sk);
-> +			break;
-> +		}
-> +
->  		/* remove current filters & unregister */
->  		if (ro->bound) {
->  			raw_disable_allfilters(dev_net(dev), dev, sk);
-> @@ -326,7 +345,7 @@ static void raw_notify(struct raw_sock *ro, unsigned =
-long msg,
-> =20
->  		ro->ifindex =3D 0;
->  		ro->bound =3D 0;
-> -		ro->dev =3D NULL;
-> +		WRITE_ONCE(ro->dev, NULL);
->  		ro->count =3D 0;
->  		release_sock(sk);
-> =20
+>  	struct sock *sk = sock->sk;
 
 [ ... ]
 
-> @@ -528,16 +557,24 @@ static int raw_bind(struct socket *sock, struct soc=
-kaddr_unsized *uaddr, int len
->  		ro->ifindex =3D ifindex;
->  		ro->bound =3D 1;
+> -	rtnl_lock();
+> +	if (optname == CAN_RAW_FILTER) {
+> +		/* Copy the filters before lock_sock(), so a stalled copy can
+> +		 * not block raw_notify() waiting for lock_sock() under RTNL.
+> +		 */
+
+[ ... ]
+
+> +	}
+> +
+>  	lock_sock(sk);
+>  
+> -	err = raw_setsockopt_locked(sock, optname, optval, optlen);
+> +	err = raw_setsockopt_locked(sock, optname, optval, optlen,
+> +				    filter, &sfilter, count);
+
+[Severity: Medium]
+The comment says a stalled copy must not block raw_notify() while it waits
+for lock_sock() under RTNL. The early copy only covers CAN_RAW_FILTER,
+though. Do the other options still copy from user memory with lock_sock()
+held?
+
+In raw_setsockopt_locked(), CAN_RAW_ERR_FILTER still does:
+
+	if (copy_from_sockptr(&err_mask, optval, optlen))
+		return -EFAULT;
+
+CAN_RAW_LOOPBACK, CAN_RAW_RECV_OWN_MSGS, CAN_RAW_FD_FRAMES,
+CAN_RAW_XL_FRAMES, CAN_RAW_XL_VCID_OPTS and CAN_RAW_JOIN_FILTERS do the
+same after lock_sock(sk) is taken here.
+
+raw_getsockopt(CAN_RAW_FILTER) also writes to the user buffer with
+lock_sock() held:
+
+	lock_sock(sk);
+	...
+		if (copy_to_iter(ro->filter, len,
+				 &opt->iter_out) != len)
+			err = -EFAULT;
+
+Suppose one of these copies stalls on a FUSE-backed mapping while the
+socket is bound, or while ro->bind_dev matches the device. Would a
+NETDEV_UNREGISTER of that device then leave raw_notify() sleeping in
+lock_sock() with RTNL held?
+
+raw_notifier()
+  raw_notify()
+    lock_sock(sk)   <- waits for the stalled setsockopt/getsockopt
+
+The unregister could come from ip link del of a vcan device in the user's
+own network namespace, a namespace move, or a USB unplug.
+
+The new ro->bind_dev hint also adds cases where raw_notify() takes
+lock_sock(): a stale bind_dev that matches the unregistered device leads
+there too.
+
+Before this patch, raw_setsockopt() held rtnl_lock() itself across these
+copies, so overall exposure is lower than before. The new design relies on
+lock_sock() never being held across a user copy, though. Should the
+remaining copies in raw_setsockopt_locked() and raw_getsockopt() also move
+out of the locked section?
+
+isotp_setsockopt() has the same pattern against isotp_notify(), since every
+option is copied under lock_sock():
+
+	lock_sock(sk);
+	ret = isotp_setsockopt_locked(sock, level, optname, optval, optlen);
+	release_sock(sk);
+
+That code predates this patch. With RTNL gone from isotp_bind(), however,
+bind relies on lock_sock() alone to serialize with isotp_notify().
+
+[ ... ]
+
+> @@ -528,16 +557,24 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+>  		ro->ifindex = ifindex;
+>  		ro->bound = 1;
 >  		/* bind() ok -> hold a reference for new ro->dev */
-> -		ro->dev =3D dev;
+> -		ro->dev = dev;
 > +		WRITE_ONCE(ro->dev, dev);
 >  		netdev_hold(ro->dev, &ro->dev_tracker, GFP_KERNEL);
 > +
@@ -299,10 +309,10 @@ kaddr_unsized *uaddr, int len
 > +			 */
 > +			smp_mb();
 > +			if (!(READ_ONCE(dev->flags) & IFF_UP))
-> +				notify_enetdown =3D 1;
+> +				notify_enetdown = 1;
 > +		}
 >  	}
-> =20
+>  
 >  out_put_dev:
 > -	/* remove potential reference from dev_get_by_index() */
 > +	/* remove reference from the device lookup */
@@ -310,53 +320,59 @@ kaddr_unsized *uaddr, int len
 >  out:
 >  	release_sock(sk);
 > -	rtnl_unlock();
-> =20
+>  
 >  	if (notify_enetdown) {
->  		sk->sk_err =3D ENETDOWN;
+>  		sk->sk_err = ENETDOWN;
 
 [Severity: Medium]
-Can raw_bind() and isotp_bind() overwrite sk->sk_err =3D ENODEV with ENETDO=
-WN
-when racing against a concurrent NETDEV_UNREGISTER?
+With RTNL gone from raw_bind(), can a concurrent NETDEV_UNREGISTER now
+leave the socket reporting ENETDOWN instead of ENODEV?
 
-During unregister_netdevice_many_notify() or __dev_change_net_namespace(),
-netif_close() clears IFF_UP before unlist_netdevice(dev), synchronize_net(),
-and call_netdevice_notifiers(NETDEV_UNREGISTER, dev).
+unregister_netdevice_many_notify() and __dev_change_net_namespace()
+close the device first, which clears IFF_UP. Only after that do they
+call unlist_netdevice(), synchronize_net() and the NETDEV_UNREGISTER
+notifier.
 
-If raw_bind() or isotp_bind() looks up and publishes the device just before
-unlist_netdevice(dev), the following sequence can occur:
+Suppose raw_bind() looks up the device before it is unlisted. It then
+publishes ro->bind_dev, sees IFF_UP already cleared, and sets
+notify_enetdown. raw_notify() for NETDEV_UNREGISTER matches
+ro->bind_dev and sleeps in lock_sock() with RTNL held.
 
-1. Under lock_sock(sk), raw_bind() or isotp_bind() sees !(READ_ONCE(dev->fl=
-ags) & IFF_UP)
-   and sets notify_enetdown =3D 1.
-2. Concurrent raw_notify() or isotp_notify() for NETDEV_UNREGISTER sees the
-   published ro->bind_dev or so->dev and waits on lock_sock(sk).
-3. raw_bind() or isotp_bind() calls release_sock(sk).
-4. raw_notify() or isotp_notify() acquires lock_sock(sk), removes the
-   filters, resets bound =3D 0 and dev =3D NULL, calls release_sock(sk), an=
-d sets
-   sk->sk_err =3D ENODEV.
-5. raw_bind() or isotp_bind() runs its post-unlock notify_enetdown block:
+Once raw_bind() calls release_sock(), both threads write sk->sk_err
+outside the socket lock:
 
-	release_sock(sk);
+raw_notify()                    raw_bind()
+  lock_sock(sk)
+  unbind, ro->dev = NULL
+  release_sock(sk)
+  sk->sk_err = ENODEV
+                                  sk->sk_err = ENETDOWN
+                                  sk_error_report(sk)
 
-	if (notify_enetdown) {
-		sk->sk_err =3D ENETDOWN;
-		if (!sock_flag(sk, SOCK_DEAD))
-			sk_error_report(sk);
-	}
+sk_err holds a single value, so the later write wins and the ENODEV is
+lost. Userspace then sees ENETDOWN on a socket that is no longer bound
+and has ro->count == 0 with no filters registered.
 
-This clobbers sk->sk_err =3D ENODEV with ENETDOWN on a socket that is now
-unbound. For CAN_RAW sockets in particular, raw_recvmsg() does not check
-ro->bound and relies on sk->sk_err =3D ENODEV to report that the device went
-away, so overwriting ENODEV with ENETDOWN leaves a subsequent blocking
-recvmsg() waiting on an unbound socket with no filters.
+An application that treats ENETDOWN as "interface is down, wait for it
+to come back" keeps blocking in recvmsg(). It never learns that the
+device is gone and that it has to rebind.
 
-Should sk->sk_err and sk_error_report(sk) be updated while still holding
-lock_sock(sk) in raw_bind(), isotp_bind(), raw_notify(), and isotp_notify()?
+The old code also wrote sk_err after rtnl_unlock(). There,
+NETDEV_UNREGISTER could only start after bind() dropped RTNL, and the
+synchronize_net() before the notifier made this ordering practically
+unreachable. With this patch the notifier is already queued on
+lock_sock() and runs as soon as bind() releases it.
 
-[ ... ]
+isotp_bind() and isotp_notify() have the same pattern. so->dev is
+published early and IFF_UP is already clear, so notify_enetdown gets
+set. isotp_notify() then writes ENODEV after its release_sock(), while
+isotp_bind() writes ENETDOWN after its own.
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261021102756.1900=
-679-1-mkl@pengutronix.de?part=3D11
+Would it work to set sk_err and call sk_error_report() before
+release_sock() in both bind() paths and in the NETDEV_UNREGISTER case
+of raw_notify() and isotp_notify()? The reported error would then
+follow lock_sock() ownership. Or do you prefer another way to keep the
+ENODEV from being clobbered?
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261021102756.1900679-2-mkl%40pengutronix.de
