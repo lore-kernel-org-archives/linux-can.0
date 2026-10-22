@@ -1,52 +1,52 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.1
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792678497;
-	b=UZbrjk5c4ZG8GGJ1ZdXEWffpXA5FWNeBN0XmpxWJILHaYiWm6D1YxdqSuQEzyyw1/Nxb
-	 dtazb1L6dsFF9RMrSFH5HQ2OQm2tuKsA0rGl/epuChaHIv6cyg1Zj3Fx1K4kvBnpYJEzI
-	 zC0ups7zugnaOEjpqbuH7eDAXRWh2769C+SiziscIPdNu/Sx5w+DV1Wx3v6hHJvbMCDb/
-	 l8Iz14e0yo6+DrszNxCTk8IEZLEBhvpBE3CsQ6voNyG0NR2gT6Yt0bRyIWxbMWdfiedGx
-	 FKW+/R9D65KxmcK3GVUy9I3JcFNgn96GHSGsXFfehPvBwwrMqkZsVgbIHcpaiM8bKTQ==
+	t=1792678524;
+	b=3Z/yDVKNyvV65+jWS+V/CGB++8+XNRNEBA3HBXreY8VIz0gIllC7neLC0iIVOgfR8fJs
+	 Cmjlg2Nno67ot7HYlhsNAD9IcEvxfZvNwHtkerCqktve9UEu4kxtmPIpxrRCOjg5TbOW4
+	 saRQTf1U45/cVo/QtIybbvWqGptKXLoyPMTZ1hgU72sQ55s74V3zU4K+sS4NGjp+OxXHj
+	 xm7SZT077fKj6/P0+GcRctGArbIcSbKzg8su/g5Wdq6n63ow3IB1YDvJfWkQQzID+A5a9
+	 yVvDx5IGVIKg9S47ykP+zZvWlYr21yOp9x8/i0Pn0S7sZJNWFcHQHWF/oA4P7tNz2Vw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792678497;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792678524;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:Content-Type:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=aUAsBe58vjJoSWr3z0ocsdPiHgrUDfhN/DsjzzMI6Lo=;
-	b=pPBaOyPPfmS/LVKVktZkMzS9y2vKhuoZ5CjFI6JYAzFqUFZ6OmQJqKQiZnYSCdLCp3hL
-	 Us5PmATxhvG87nG2CQywfqRHY9DBUymYvtqdhA8KioODPxFzSYsHDPJXFpBQqeNM6UC+s
-	 WjPVktqdX3q5q/g3C84JLTg6lHicfq0FDFHQ/uwTePZNrUSY4VwM28CYt/sEgDb5tMKWW
-	 whd91w6d6IbHrqJnDTZ62rzyMoTPASq23wz82k7mknnLSSTezKrm9EIqDoF5HnctTNM1t
-	 1RUiOckTpDLzIWaINfIwSWNg0ZfLrTiVygU+sBcM019S+Ak92SSyxggT3QfBFoPt0sw==
+	bh=2UaCelFKwSvlDwAx0qoUh5UH+vXQ0rUeP4Ohw7vmt5k=;
+	b=ytEcTcXTpDHm/xAdizwgvXrbDo1bY3Ger5IYOi5IT5UT11ra08duQRaibajQtHMVTZVn
+	 q+xnwAShOpTPqWQWr5IoW7jP1sHUxyKSLh9Hzv0dxdWAq2ewHpZcqbtzWOqC8zayM5VSQ
+	 mOioIE8HDk8QPR9M0kM5mfaVwA9S8w0kMb6kI2+fySJ14pONM/KXy7ZKiQNzGkC0Zgk7j
+	 90Q0U82zje1owa7xfrQN3XhNRr8c64XLzvYcde5h8aEWiOSfYyhR7cVXpQGj7RFzjRojr
+	 D0IJfrBlIEgFH5Hb3Bx7Mp9FVfsJKeMG84UX3k5S0xgXeyEP+4zyFzyqiUv/L4RZo7w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=free.fr;
 	spf=pass smtp.mailfrom=free.fr;
-	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=nXYxF03s;
+	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=k5CbTgzI;
 	arc=none smtp.remote-ip=212.27.42.1
 Received: from smtp1-g21.free.fr (smtp1-g21.free.fr [212.27.42.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9B6606A31A;
-	Thu, 22 Oct 2026 14:14:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1A9B6606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22B7E606A322;
+	Thu, 22 Oct 2026 14:15:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 22B7E606A322
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=nXYxF03s
+	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=k5CbTgzI
 Received: from stf-laptop (unknown [IPv6:2a02:8424:8fef:6e01:68ea:cb82:d40f:9275])
 	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp1-g21.free.fr (Postfix) with ESMTPSA id AEE84B0059B;
-	Thu, 22 Oct 2026 16:14:47 +0200 (CEST)
+	by smtp1-g21.free.fr (Postfix) with ESMTPSA id 506F4B0053D;
+	Thu, 22 Oct 2026 16:15:15 +0200 (CEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1792678495;
-	bh=aUAsBe58vjJoSWr3z0ocsdPiHgrUDfhN/DsjzzMI6Lo=;
+	s=smtp-20201208; t=1792678522;
+	bh=2UaCelFKwSvlDwAx0qoUh5UH+vXQ0rUeP4Ohw7vmt5k=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nXYxF03smpD7V+zYuz6Cp/b81U/VFxJcnkD5qPK/IqCRXlSBXQNpJiBkQAST3voHs
-	 Hu0XIspdUQp+dfgE3xxWHLYrhG3Yh6BywO6NcoxSfXGI1Ifw+lg+i5FKFtqLusKh5M
-	 S6dX52kkeco4cNMpbPRGelZfSUTaB7THvzoQu6Qq59ZxLN+i2aH69YgM5L/LI95Xay
-	 G5K/SVGEYCSBC5vZSwvfGKW8xnc+OP0pjwfNxavnig+cYFKGayvy17TP04HaQiY7p5
-	 EcEmR8ELKlhzbFWzVtUeMFWvPaWJeFP4UDph8zJKPIoXsfpzv7SsE1emWNvbBHCpcb
-	 a0FmVQ7LPTdoA==
+	b=k5CbTgzIcBTViRfBpZPrkS/B4KhcT7u2yb7FRIAIzWIuysdwrUl31+AdLOFHnx8PC
+	 ip1g5n2/mL4r8F/cGMzluhGLqznNuZRfTL/cArm+bhXX0ICEfoWAp1lq3dQM8888r+
+	 TDFP7XoQjZESxfxA6jn0Et/CXDc6Isj+i3X6cnn1Wga4iR8zic0yKr+OosB7BGWNNN
+	 Y07hzKmsROhRBxcQ4TtEc85ESPF5z9Nbr4SP+EINxYSYSWF5WQddnipGoXK89sQ/nA
+	 +xp9n/wWHNk+uHPq9+sfknvUkDseYOSj4nYBGtR+zyJst46QQC0Yg6kb4UzjPOs6yU
+	 ifBu8VC+R2YYQ==
 From: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@free.fr>
 To: netdev-bot+sashiko@kernel.org
 Cc: mkl@pengutronix.de,
@@ -56,12 +56,12 @@ Cc: mkl@pengutronix.de,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kuba@kernel.org
-Subject: Re: [PATCH v5 09/10] can: peak_usb: register the netdevs only once all channels are set up
-Date: Thu, 22 Oct 2026 16:14:37 +0200
-Message-ID: <20261022141437.222645-1-stephane.grosjean@free.fr>
+Subject: Re: [PATCH v5 10/10] can: peak_usb: only dump received bytes on decode error
+Date: Thu, 22 Oct 2026 16:15:04 +0200
+Message-ID: <20261022141504.222900-1-stephane.grosjean@free.fr>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <179264020017.3131.2617691177294766125@kernel.org>
-References: <20261020-canfd_check_channel_idx-v5-9-a62b35b867f0@peak-system.fr> <179264020017.3131.2617691177294766125@kernel.org>
+In-Reply-To: <179264020123.3131.12155600294986434879@kernel.org>
+References: <20261020-canfd_check_channel_idx-v5-10-a62b35b867f0@peak-system.fr> <179264020123.3131.12155600294986434879@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -76,73 +76,30 @@ Content-Transfer-Encoding: 8bit
 
 On 22/10/2026 05:36, netdev-bot+sashiko@kernel.org wrote:
 [...]
-> [Severity: Low]
-> The comment says this also runs during probe, before the netdev is
-> registered. The helpers this function calls still log through
-> netdev_err(), though. Was the conversion meant to stop here?
+> [Severity: High]
+> Does this rate limit cover the FD and Pro adapters?
 [...]
-> Should those helpers be converted as well?
+> Should the adapter-level dumps and their netdev_err() calls also be rate
+> limited? Or could the core dump be skipped for adapters that already
+> dump? Either way, each decode error would be dumped at most once and
+> always under a rate limit.
 
-These helpers are mostly used at run time, where the interface name is
-useful, and during probe their messages still start with the driver and
-USB device names. So I'd rather leave them as they are in this fix, and
-clean them up later on, if needed.
-
-[...]
-> [Severity: Medium]
-> This is a pre-existing issue, not introduced by this patch, but can
-> args[0] be read here without ever being initialized?
-
-Confirmed. v6 adds a new patch, "can: peak_usb: don't return an
-uninitialized PCAN-USB CAN channel ID", which initializes args[]. The
-PCAN-USB Pro and FD versions of this callback aren't affected.
-
-[...]
-> [Severity: Low]
-> peak_usb_disconnect() now also cleans up netdevs that were never
-> registered. The PCAN_USB_STATE_REGISTERED test only guards
-> unregister_candev(). The name is still copied and printed for every
-> sibling:
-[...]
-> Will each unregistered channel then log
-> a literal "can%d removed"?
-
-Right, on a failed probe only. This is cosmetic, so I'll fix it along
-with the teardown issues below rather than in this series.
+Right, the PCAN-USB FD and Pro decoders dump the URB themselves, without
+any rate limit. In v6, this patch also removes these two dumps, so that
+an undecodable URB is dumped only once, by
+peak_usb_read_bulk_callback() and rate limited, and it rate limits the
+error messages the decoders print about the received data. The subject
+changes accordingly.
 
 > [Severity: Medium]
-> This isn't a bug introduced by this patch, but does the bus-off command
-> sent on close ever reach the device on this path?
-[...]
-> [Severity: Low]
-> This is a pre-existing issue, but the hardware state set by dev_init()
-> does not seem to be undone on this path.
-
-Both are right, and both predate this series: CONNECTED was already
-cleared before ndo_stop, and dev_exit() is only called at module
-unload. They only matter when the adapter stays plugged in (unbind, or
-probe failure), and fixing them means sending commands to the device
-once its RX is stopped, which needs some care. I'll address them in a
-separate series.
-
-> [Severity: High]
-> This isn't a bug introduced by this patch, but can this teardown lead to
-> a use-after-free? Neither this error path nor peak_usb_disconnect()
-> drains the asynchronous restart URBs or cancels the PCAN-USB
-> restart_timer before free_candev().
-
-Confirmed: the restart URBs aren't anchored, and the PCAN-USB
-restart_timer is never deleted. The window already exists on unplug
-without this series, so I'll fix it in that same separate series, which
-is about the teardown, rather than grow this one further.
-
-> [Severity: High]
-> This is a pre-existing issue in pcan_usb_pro.c and is not related to the
-> code changed here. Can pcan_usb_pro_handle_canmsg() copy past the end of
-> the record and past can_frame->data[]?
+> This isn't a bug introduced by this patch, but I noticed it in the Pro
+> decode path. pcan_usb_pro_decode_buf() in pcan_usb_pro.c reads
+> pr->data_type before it checks rec_ptr against msg_end:
 
 Yes, fixed by a new patch in v6, see my reply to patch 8.
 
 Thanks!
 
 Stéphane
+
+pw-bot: cr
