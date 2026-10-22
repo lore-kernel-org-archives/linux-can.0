@@ -1,81 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=147.32.210.153
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792673989;
-	b=jB8CLhcIfq1n4elkPsjwQ8OJBy+mR0cDpogAkPaqCHNEE4umyJabyZCQcJphrwijSH7b
-	 V4ZF3TiP1hMKV1ji/5495Dwzze/0V3f+EQwE8diCXGfrzpSqLQG/SJlWJmLMQDI/hbPhK
-	 uUZlK/gOEcrHZqqSryPIzvm/s/N252bdjmMd6lnmko2uduvGXbA8iYi6N4gVff+pd6jpW
-	 LzU8wh+A1srCGIomd5kcPoB8MygTEsCeMUtkBhLCW4tsTNB4KEEOsqNO4nloZ6u41lvRt
-	 LqwgoG13cqNaEi/8Yg1u6upAJb8+Ji6RKuf+geJ+uqAKq5XA7tvivnQ6wYao2IO12Gw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792673989;
-	h=DMARC-Filter:Received:X-Virus-Scanned:Received:DKIM-Signature:
-	 Received:From:To:Subject:Date:User-Agent:Cc:References:In-Reply-To:
-	 X-KMail-QuotePrefix:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Content-Disposition:Message-Id;
-	bh=zd7yJ/RnWTOCBnaUFHbPGYWo73OWzFvn3QDUHe+308g=;
-	b=FT87H36wNrF2bVFWFFeOxYtXQYZYlBz4wA9gDTylKKW9zvHudrhAlJcHep9XvGWPDv90
-	 gpzcI2Nty7l1RYgstotu5a0+y+s8+sX4ldStRU9kcC+/BKV/5SK5T6YO2rjGGxmQYzeTq
-	 gLYugVhMKBM6HRWn7PGCrIi/IjmsMzvoIB4RZA+OSFTjePAND3ErgjMybBlk0RB3eqCKF
-	 wwTD/qqOKJT1mKHn/xUrmE9eZHCdsqpJC7625yY1pUNF0YVn42CwGSqnXoLNV2Mlb+TG+
-	 HBfPqQszuqanIvFpuYeXx2krVUYKttec6fYLqJ1ZGBxdjaCfNP9trnjdcIlIvMHCfVg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=fel.cvut.cz;
-	spf=pass smtp.mailfrom=fel.cvut.cz;
-	dkim=pass header.d=fel.cvut.cz header.i=@fel.cvut.cz header.a=rsa-sha256 header.s=felmail header.b=I8qhYii5;
-	arc=none smtp.remote-ip=147.32.210.153
-Received: from smtpx.fel.cvut.cz (smtpx.feld.cvut.cz [147.32.210.153])
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.164
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792678102;
+	b=oTilbbWsRm1n3J3b2vVQLnB8lc0HVzO+HXQF8WCdvPiVk3Gb+hQWEgPD7fIq7HyDIehv
+	 +ubjkc66McfVY2mjvx2m4DAj/eVQtUcPmcwBgfsiOTyY5fOnlFsDWlPEUQURLpBw3dJ3D
+	 3dw/ubO5PeDZOFOPtYSrYesYISkNO0vn5hUceRMFlNQnaAsv9N/TUePVFvijBMONs5ykb
+	 Rh1gBSZuzgKeTvSZ9bd4pVUiAevI6n3/fd5Lcu+EJCjy69YD+6PgYMRnj++uNbRVnY17B
+	 3jZXtFTjZ8M6rS6LEvYFFJfHy6M1TEHnB7LChwiGE3KauRu7TPACUePGZcQuEBGkShg==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792678102;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=kOHvr9tzBaDdrfbvtULL7K2rzEWIQvjIeFn8Av/masY=;
+	b=U6r/tpSIKtLTA34SOrafHO8SvBRn/4KDYIJEBvCJ2F7ybby25gwUJFsiAUJM5i2Hpo9X
+	 PAeJuV5OZGImXS/RKiWjoFEhyi62ShaLcMRmfCluRpKbjqdFyKhgXVW+uMx3N0CyZ8ewC
+	 XSMioN0ZpHpsc2zBcBfaNSTLpJ+iU1Y1tYLU525Xh0/5tzwcL9DCoKSpsI/ftrxLb5ux8
+	 jGXDlqhRlbyYjzjFDnQa2DaU+6gqQRsfHKwBPonYZYxYpRY/WPK79SqdR8fG6SqaQK+Gc
+	 mDqvnWWTOI2ggXR7i83GAL2nBdUkAlacSVlzzpuCWx8EJ2TUrt+3RBXQzr1zzr7mUMw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=jh6goxT7;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=jZvhxiLT;
+	arc=fail smtp.remote-ip=81.169.146.164
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 004AE606A31B;
-	Thu, 22 Oct 2026 12:59:46 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 004AE606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fel.cvut.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fel.cvut.cz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0380F606A31B;
+	Thu, 22 Oct 2026 14:08:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0380F606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=fel.cvut.cz header.i=@fel.cvut.cz header.a=rsa-sha256 header.s=felmail header.b=I8qhYii5
-Received: from localhost (unknown [192.168.200.27])
-	by smtpx.fel.cvut.cz (Postfix) with ESMTP id 20FFBBDE9;
-	Thu, 22 Oct 2026 14:59:38 +0200 (CEST)
-X-Virus-Scanned: IMAP STYX AMAVIS
-Received: from smtpx.fel.cvut.cz ([192.168.200.2])
- by localhost (cerokez-250.feld.cvut.cz [192.168.200.27]) (amavis, port 10060)
- with ESMTP id JmNNU5Z5_G85; Thu, 22 Oct 2026 14:59:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fel.cvut.cz;
-	s=felmail; t=1792673975;
-	bh=zd7yJ/RnWTOCBnaUFHbPGYWo73OWzFvn3QDUHe+308g=;
-	h=From:To:Subject:Date:Cc:References:In-Reply-To:From;
-	b=I8qhYii58iF3YZdY4dAY9cqR+sAtngsqX9pRUO4BAu0ivzS3/slJhgVNd1GUFhQBL
-	 NWf8tA58Oi4i8+5HIr+hUwQwzpZ63wHTgJSqsouy1K9DQjqZ1D1Q9n/tHjn5UBo7CR
-	 16/3fDMKXh4LTZKJnJLlR+iVNMu17QxSqye1MDgj1yAbiR5R1dOI9LTYcbWxdTSOfx
-	 86zqW3/K1POZGdnU3xcYKbvHBoxiMjiDixRLZHCLCtUgeDrx3EVZPWl88P+24rTRT/
-	 Mk+Lp5pnQdpXtgoaiEAQWdaVbMlJibG391UWaUKel1to/GoZL5rtxdoG4PkebRnp4I
-	 ni+V7YcRHddhg==
-Received: from [147.32.86.168] (unknown [147.32.86.168])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: pisa)
-	by smtpx.fel.cvut.cz (Postfix) with ESMTPSA id 22EF3C0E5;
-	Thu, 22 Oct 2026 14:59:34 +0200 (CEST)
-From: Pavel Pisa <pisa@fel.cvut.cz>
-To: Patrick Zhang <patrzhan@amazon.com>
-Subject: Re: [PATCH 1/3] can: ctucanfd: enable NAPI before starting the controller
-Date: Thu, 22 Oct 2026 14:59:33 +0200
-User-Agent: KMail/1.9.10
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>,
- Vincent Mailhol <mailhol@kernel.org>,
- linux-can@vger.kernel.org,
- Ondrej Ille <ondrej.ille@gmail.com>,
- Harini T <harini.t@amd.com>,
- Michal Simek <michal.simek@amd.com>,
- linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org,
- stable@vger.kernel.org,
- Jiri Novak <jnovak@fel.cvut.cz>
-References: <20261021205924.2538511-1-patrzhan@amazon.com> <20261021205924.2538511-2-patrzhan@amazon.com>
-In-Reply-To: <20261021205924.2538511-2-patrzhan@amazon.com>
-X-KMail-QuotePrefix: > 
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=jh6goxT7;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=jZvhxiLT
+ARC-Seal: i=1; a=rsa-sha256; t=1792678080; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=iPQjh8/zI4U7XaWy4pqkFyRFhga8MapedqIPS6hDsTfoFb5ztnFL5coF8y8Y4L6IdR
+    McFbo0Yt6lTOzshVwmPDaFsfcIjHYoHnKwQZUz7p39FJathzJLhYr5BZx5IaRY4yQZdL
+    rEUdtWe7CXQuEaWjNRzUgbu+a2LoHcIhjnD4ZN8kJzeN5vDC6ssRH+5qtMQ5AWe29K/9
+    UUYz9whEokKKnQuhIjZH83keSdYfnEZkrjr63Fb3MJPLgStrE9rY0D2FyKrG7XK/DwN4
+    UNNSqclI74ymU/96Lq4zlbtL86JaEBKqwpqDJUt5gYmYGHPmGE0UnNPBRUeFUdL4yRCu
+    AMGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792678080;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=kOHvr9tzBaDdrfbvtULL7K2rzEWIQvjIeFn8Av/masY=;
+    b=sZ5EuEyhaYfR3bZrwEYnxhRhHikg1aFCDch64k9RqXsN1GjHUmT4dVAACSxRBJC3cF
+    MzVToh2aUyOs7VE0gaftF4pujLrmpXxYVjhCUfnlIHXJ9W3S0k256euueaZBKgocZ+/n
+    0aEZqlvOjWOElcdbGY2r+JL5N9+kWZh2LIQCJgEMyVf8NI97FDDS66J6sXh0kk0BM5w7
+    70Ow5WL2vNQW0t485iVWb7WTr3q+SPCslmfirEUGNDFy/cbEJgeuKiAbBt3NhRr+lmf/
+    gcPG+D6AqS7FJQJPdARl9x4HM5xCqQhPHrQsrtUCEdG43IwHqKysZZyLPTZx7RzfCcSv
+    3zqA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792678080;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=kOHvr9tzBaDdrfbvtULL7K2rzEWIQvjIeFn8Av/masY=;
+    b=jh6goxT7qKEfNjlQg1c8SDk0Haw/ryvaxZEqp5mD+zdk0S6KQ5K5rnNoVTSe4ivB7i
+    k57z8dbrROVhnx7tyxuTGsIixmbBCcuaobD3qcNiyR7mrnvqJA7MyAaWkyKHZMDEbYgc
+    cIX3D9aZ7E1uBrXubPvfTHa0aCeuin9OEB1hs+Eklj43dlWSvDbvSbigQr/XxMr8EBmI
+    PUSF0YTv+329QKq+1CkPxpIxT41w93FuA5LLyBWhQu5MWbdSZSPmMiL8a0PocCLBVeiD
+    t7JMDd8iipGm1x+sscGCZHF399Yphfdhbpc2RVm783dhvU7KwnxJ1EUAKXME8+zuLDyl
+    6Kmg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792678080;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=kOHvr9tzBaDdrfbvtULL7K2rzEWIQvjIeFn8Av/masY=;
+    b=jZvhxiLTz5iRbG3njQ2jbx7OYJD5JKO4k/7od2vVnu1XoKx9ZzVXjprAKOdiQKBRTt
+    hZb1ff1lgpVJwgudnZDw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29ME7xp2T
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Thu, 22 Oct 2026 16:07:59 +0200 (CEST)
+Message-ID: <00ecd34e-9296-4db0-b78e-49b4f9440db5@hartkopp.net>
+Date: Thu, 22 Oct 2026 16:07:54 +0200
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -85,116 +95,72 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-Message-Id: <202610221459.33827.pisa@fel.cvut.cz>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/11] pull-request: can-next 2026-10-22
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Paolo Abeni <pabeni@redhat.com>, netdev@vger.kernel.org,
+ davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+ kernel@pengutronix.de
+References: <20261021231130.2085690-1-mkl@pengutronix.de>
+ <eb3b2eee-3460-4b03-a180-1d3806a7f8f7@redhat.com>
+ <5fdffd4b-7f80-471b-93b3-706c00cb51da@hartkopp.net>
+ <20261022-unique-famous-dachshund-f51d3d-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20261022-unique-famous-dachshund-f51d3d-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Hello Patrick Zhang,
 
-thanks for the problem finding and patch.
 
-On Wednesday 21 of October 2026 22:59:22 Patrick Zhang wrote:
-> ctucan_open() starts the controller and unmasks RBNEI in
-> ctucan_chip_start(), prints "ctu_can_fd device registered", and only
-> then calls napi_enable(). A frame that arrives in that window raises
-> RBNEI. ctucan_interrupt() masks RBNEI and calls napi_schedule(). NAPI is
-> still disabled, so napi_schedule_prep() finds NAPI_STATE_SCHED set and
-> the schedule is dropped. napi_enable() then clears SCHED without
-> scheduling anything. Only ctucan_rx_poll() unmasks RBNEI again, and it
-> never runs. The interface receives nothing until the next close.
-> Transmit still works. The RX FIFO fills up and the core sets DOR, but
-> the overrun is only accounted in ctucan_rx_poll(), so rx_errors and
-> rx_over_errors stay at zero and nothing is logged. Every re-open (ip
-> link down/up, a driver rebind) runs the same race again.
->
-> The netdev_info() in the window makes it much wider on a slow console.
-> This can be reproduced by sending continuous traffic with cangen from
-> another node and repeating "ip link set down/up" on the test device.
->
-> Enable NAPI before the controller starts, so that an early RX interrupt
-> can schedule the poll. NAPI can be enabled while the controller is in
-> reset, because nothing schedules it until an interrupt arrives. If
-> ctucan_chip_start() fails, disable NAPI again. Otherwise the next open
-> would call napi_enable() on an already enabled instance and trip the
-> BUG_ON() in napi_enable_locked().
->
-> Tested on QEMU with the ctucan_pci device.
->
-> Fixes: 2dcb8e8782d8 ("can: ctucanfd: add support for CTU CAN FD open-source
-> IP core - bus independent part.") Cc: stable@vger.kernel.org
-> Assisted-by: LLM
-> Signed-off-by: Patrick Zhang <patrzhan@amazon.com>
+On 22.10.26 14:41, Marc Kleine-Budde wrote:
+> On 22.10.2026 13:19:08, Oliver Hartkopp wrote:
+>> Unfortunately sashiko-bot complained about something new in my patch 11/11
+>> and suggests to move some release_sock() calls 4 lines down behind
+>> sk_error_report(sk) :-/
+> 
+> Is this review already available to the public?
 
-Acked-by: Pavel Pisa <pisa@fel.cvut.cz>
-Tested-by: Pavel Pisa <pisa@fel.cvut.cz>
+Yes. It was some delayed v5 (PR 2026-10-21) review:
 
-I have added patch into our CAN latency testing system
+https://lore.kernel.org/linux-can/179266767682.3135.6448103178144570295@kernel.org/
 
-https://canbus.pages.fel.cvut.cz/#can-bus-channels-mutual-latency-testing
-https://canbus.pages.fel.cvut.cz/can-latester/
+- [Medium] After this patch, CAN_RAW serializes bind/setsockopt/release
+   against NETDEV_UNREGISTER only with lock_sock().
 
-See in the log for both master 7.3.0-gcac8667a979c
-and RT tested branch 7.1.1-rt2-g1661cb7f80a0
+This is the issue that sockopt() uses lock_sock() which might block the 
+rtnl_lock in the notifier. This has been partly addressed in patch 11/11 
+so that we are better than today's mainline status. On the TODO list.
 
--> Running pre-build script /var/lib/latester/patches-dut/apply-script.sh
-Applying: can: ctucanfd: enable NAPI before starting the controller
--> Setting up build dir
+- [Medium] can: raw/isotp: race in bind() overwrites ENODEV with 
+ENETDOWN on unbind
 
-I have spotted problem appearing in out-of-the-tree device tree overlay
-driver build which is consequence of CAN unrelated this night change
-in mainline which required next fix
+This is a new topic of v6 which wasn't remarked by sashiko in the v5 
+review before. Fixed in v7.
 
---- a/dtbocfg.c
-+++ b/dtbocfg.c
-@@ -263,7 +263,11 @@ static struct configfs_attribute *dtbocfg_overlay_attrs[] = {
-     NULL,
- };
+- [Low] isotp_bind() now publishes so->dev with WRITE_ONCE(so->dev, dev)
+   inside the RCU lookup (net/can/isotp.c:1623).
 
--static struct configfs_bin_attribute *dtbocfg_overlay_bin_attrs[] = {
-+static
-+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(7, 3, 0))
-+const
-+#endif
-+struct configfs_bin_attribute *dtbocfg_overlay_bin_attrs[] = {
-     &dtbocfg_overlay_item_attr_dtbo,
-     NULL,
- };
+Fixed in v6.
 
-As for fully-preemptive kernel testing, we have been on the git
+Pre-existing issues:
+- [Low] isotp_bind() calls can_rx_register() twice: for rx_id when
+   isotp_register_rxid(so) is true (net/can/isotp.c:1648-1650), and for…
 
-https://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git/refs/heads
+Groundhog day. Not critical. On the TODO list.
+> 
+>> Would you like to have that re-spin PR to be named as "net" PR ?
+>> And when would it be best to be sent?
+> 
+> I'll rebase the changes to net, and usually "net" is always open.
+> (Correct me, if this is outdated information.)
 
-at the branch for-kbuild-bot/current-stable but that seems to be no longer
-active to track latest RT development above stable branch so it is
-time to switch to some else branch or master. Ideal would be something
-above next with lattest RT fixes applied before they reach mainline.
-But we probably switch to mainline with RT config if nothing better
-to catch possible RT deviations (changes in latency or some bugs)
-is suggested.
+Ok. As you suggested to work on the two TODO topics, I'll post a new 
+series on CAN ML and wait for the cross-review.
 
-For the curiosity, we have run CTU CAN FD IP core on 64-core
-RISC-V with 7.3 kernel and drivers to control motor servosystem
-based on ESP32C5 over CAN FD on the SUSE booth at Open Source
-Summit for most of the days and it performed well
+This should be fine for a 'net' PR then, after the current net-next hit 
+Linus' tree.
 
-  https://social.kernel.org/notice/BBBNKOIUZ3NnMKcsXQ
+Best regards,
+Oliver
 
-Best wishes,
-
-                Pavel
-
-                Pavel Pisa
-    phone:      +420 603531357
-    e-mail:     pisa@cmp.felk.cvut.cz
-    Department of Control Engineering FEE CVUT
-    Karlovo namesti 13, 121 35, Prague 2
-    university: http://control.fel.cvut.cz/
-    personal:   http://cmp.felk.cvut.cz/~pisa
-    social:     https://social.kernel.org/ppisa
-    projects:   https://www.openhub.net/accounts/ppisa
-    CAN related:http://canbus.pages.fel.cvut.cz/
-    RISC-V education: https://comparch.edu.cvut.cz/
-    Open Technologies Research Education and Exchange Services
-    https://gitlab.fel.cvut.cz/otrees/org/-/wikis/home
