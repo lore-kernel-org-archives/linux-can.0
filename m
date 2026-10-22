@@ -1,79 +1,129 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.154.28
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792679279;
-	b=SzmGQ4JSeucoL1Hq1EwHa1+YYIsmW1KZ145y+S8YbhXyn8QHXlDshRXrGjpnbf0y4Leh
-	 a58fZQfqniD2Fej7+s6sbM/pfvPPPmpnwcAumTU2uMPiq8wTI+GNQZQEASCymle1q42wF
-	 vMmLdk2bqK0icgVMh4OeyhmPxn18vobASlL39SzGtXgeMnaOJCpjHfAPdbXr9kAOD59AT
-	 cOVEZeWJi5flEl/GUAXwkncFVNslPlTZMo0+nLoB6QJbM0Al4eJeFcK7Dxdz+l3sN3PCr
-	 ORMorIcfjOHTJ+uFDmr/eYX4Oh0Oi/BHzMmDWpFSPnq1MHVAdJhMM5gbmZWH4k9xpDg==
+	t=1792681526;
+	b=kwuTWSwCP3w5UZh08ZbcFdgLNK6krNKlsTCfXIpthlvYSt0kipcGh82yBtPoyE+a29HK
+	 Gh9999vQGvIjWprehPiNpFJXDxn7dzmFQUa7ydJM8Pe21Spd9eQzFr4adFdZ2iNerTmcM
+	 KcXFPcxZyTJbneAmGhnk6y97nHoRT0vabYJv3XxJXNCib4Geqxq37vdyV8vtJXZUGCweK
+	 XYWh+1PZK9WsCUNEUh4FERHW18xgZvTnqernD3TGI3yKI7+ZA78Fazxp5nbP8t703Hk9S
+	 6C5JkBtwv5pKC71rfwq57Dkmap/xF86SnIHhlnRPuuT7kMO+0CiSd+YH0M4SSU3LGiA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792679279;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=YMTpGwMtuCdk8eeM1ATjk5r+ogZhvierRSm8aCm0NWw=;
-	b=aUmXtcmxr0isCnSPYcamjqSWK4R9V6OKiXtMwkfsSaQ9hLKB8qAHLrtDxSSS1GRgC7QK
-	 aciQR6bKXKfbSf7wzJMxj4iR44jTBwp65YsELrgl+VDQbKa0l/0kMXD0h2JDz5J5CRdHP
-	 gdGAg3AKKhgqBib+MtCRTnUhUquHHDRDXzSFlejvf4R3UBZwOFWfD5Eh5GFLMgOG4sAmg
-	 JXOsvliavK7jsjg+P23K3wICg74oS8H5H4dVkYJ9DD9r46/nYFsJdt1xfLjRgi4bdKdM6
-	 F/XP4i2bKGGu50tg/FvBhQlw7ANh3Oe2w2EO8FedcNg7CHHjakk3Fe7mp7CalLYgczg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792681526;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:DKIM-Signature:
+	 Received:Received:X-MS-Exchange-Authentication-Results:Received-SPF:
+	 Received:Received:Received:Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:CC:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-Exchange-RoutingPolicyChecked:
+	 X-OriginatorOrg:X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:
+	 X-Proofpoint-Spam-Details-Enc:X-Authority-Analysis:
+	 X-Proofpoint-ORIG-GUID:X-Proofpoint-GUID:X-Proofpoint-Spam-Info:
+	 X-Proofpoint-Virus-Version:X-Proofpoint-Spam-Details;
+	bh=ZUiVooNbtOW2seOJTJZEHpvrzgF2YZWWYiLnk8Kxn5g=;
+	b=pGTwUt0UW4KeXNNXgJhgHEKWBGT8wnVW2wRFlB6Cuol4ev6HxXiJoMLcp51H9w22qMGS
+	 RedqZ8OPvrLcHpMhge0Pxf7sdS2jpH3ka+EnlZ5Hw0fJqiwwh5n/Ll0HBgZkfBJ1kV30K
+	 IBxdF8Hl87lat3Z4Yy0FaVtZ+CgC+xvluBalAyRhV2NnhHJJ9uQnavo1GF5J9MeqWD5pc
+	 g0jJcNY6zsE6H+Dd+3n5F29+eESsyvFLN0DB3ToB+WpDaq0+8pZf7jEyHfCZ8kxqcegNf
+	 Vjfcv7wFx/X+y0AKuRFvt5ZhnQWdisCKd4dW6COo0Sm29S+v2JtqU93QV5fSCPhD2Lg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Lad6DL66;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0609060A2606;
-	Thu, 22 Oct 2026 14:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Lad6DL66
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1792679278;
-	b=mrGCA6p18/riaQasrjM+Otm9pNIyKtdmmPqPuV3JlJZ7xdShAOZuyo/ZO+4+lvOPExC8
-	 Bfy+43nMma73OUdcrW+/tzUMDicwA5KhWE1uSXZIPmkhbyRov6y40Fkee+IwQ52KipWFX
-	 qEzk8n1XvZiK91eAKu/g7XcmAz4kGPhFeLnZevKb0w7wBXoJPDC4uPimHKJlt1ARY2riU
-	 RT7legPAtARybbHHEDn3rlBadTtQcnW8CAYfx+kvxnTtDMkUuefNVklDqyLSf84NOKmBU
-	 T1LBQBsZLiuhWOfyzaBAvimEEU55448mFFq3lYhhKeswTytQ1A8ZKckZun02oPCsYzA==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1792679278;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=YMTpGwMtuCdk8eeM1ATjk5r+ogZhvierRSm8aCm0NWw=;
-	b=3rzWPN1YfT8/DLQpKvQ13Y0IqYJe3Phe4O9y7PmZogj5Rk1aI4txOSBs39qljuu0tj+8
-	 mUYq98A8UInh6gBlFgLYqQRlh5rw9hl/RA51Ccn1vNb5Nw58jbFYe64WeYETGos6H2R9n
-	 nSdmy03hhxEBERMWS86i7HmMGemRgw18wtsD8YK1GNr7pLgKoPUT7WJ4hU+IgUfruhxay
-	 eZ92kCBrvi68lEcnqTyDREe+ZYmhNDXTTDmse1BPUX3qcjaF4s+PV0CVdy1wVQ1Lop54x
-	 P+4wb1MKHa4f/OnxDKZ61AgupM1KMwDMkqtcqSnXzQerSyrUtQuaaXrKkZx9z6TRycw==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	dmarc=pass header.from=ti.com;
+	spf=pass smtp.mailfrom=ti.com;
+	dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256 header.s=proofpoint-05-2026 header.b=cxbeegPa;
+	dkim=pass header.d=ticloud.onmicrosoft.com header.i=@ticloud.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-ticloud-onmicrosoft-com header.b=QjEGQkE7;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.154.28
+Received: from mx0b-0002e601.pphosted.com (mx0b-0002e601.pphosted.com [148.163.154.28])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 171C51F000CB;
-	Thu, 22 Oct 2026 14:27:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792679278;
-	bh=YMTpGwMtuCdk8eeM1ATjk5r+ogZhvierRSm8aCm0NWw=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=Lad6DL66Iu2788E0F4B6UYyw/lkI8ITa3yKP7cNYKdv7h4ngb/XSAaOaal2nUI7rF
-	 gyXWAIPd8Wezd4Oj9JVKprS41/aJIKb4xAkqxAXl/Zwi8cywRe/VwjWbL9L1Gc1CUt
-	 7XmLJyThp5EBK2zPuhEDoxyW/rhfTqFvnPCbd9M4mU8TPf9B9kvH7uE7ljzTcEmbb/
-	 bwmuMcDHH7Paw1Xbo9xzsbTalTl5biu7TZbDBjXeAQc54FBseOimoWRwRyQT8Y3DEv
-	 UUDwqdQqe4WJUn8Ns1rtJZrMgyGpj+ohmYV9MPfsK5RzCUCut9OJtY40RI7ZNVABvi
-	 TJVPjy165vUqw==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id DE0AF435DB;
-	Thu, 22 Oct 2026 14:27:54 +0000 (UTC)
-From: =?utf-8?q?St=C3=A9phane_Grosjean_via_B4_Relay?= <devnull+s.grosjean.peak-system.fr@kernel.org>
-Date: Thu, 22 Oct 2026 16:27:56 +0200
-Subject: [PATCH v6 11/13] can: peak_usb: don't read past the message in
- PCAN-USB Pro decoders
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B6D606A334;
+	Thu, 22 Oct 2026 15:05:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B5B6D606A334
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256 header.s=proofpoint-05-2026 header.b=cxbeegPa;
+	dkim=pass (1024-bit key, unprotected) header.d=ticloud.onmicrosoft.com header.i=@ticloud.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-ticloud-onmicrosoft-com header.b=QjEGQkE7
+Received: from pps.filterd (m0374955.ppops.net [127.0.0.1])
+	by mx0b-0002e601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 69MEgHHA650230;
+	Thu, 22 Oct 2026 10:04:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	proofpoint-05-2026; bh=ZUiVooNbtOW2seOJTJZEHpvrzgF2YZWWYiLnk8Kxn
+	5g=; b=cxbeegPaXlrU4ER9UOgUoHdEa+nNmCHlpO4i78dEdJWsS189lPQ82NtQK
+	YXITVkG7vUfH4wM56u0FADB07lN0F0mb9OtlOTmUM2Mkt3NONIt6VQ2WZyQRIWax
+	YxQVdAkAeUxbTMHyGGrgIKniVBVnsokMxuze5fwMur55Ya+6jAM3hgTBmIA4OPQc
+	VxBC9pTXdEvb0eZA0YW+0pYi2uvmxvNuHrwWgwHwJSMBxdKmWQcXWhw7IixTL9cM
+	NJiE231bNYQSHbpRi2rZd3QNm4sByXWpIrxw6rF48iMoI2MqWhHXKpgr+zJ5IWEM
+	HxNoCNC069j7KeCFX0rCbSLU4M4hQ==
+Received: from ph0pr06cu001.outbound.protection.outlook.com (mail-westus3azon11011001.outbound.protection.outlook.com [40.107.208.1])
+	by mx0b-0002e601.pphosted.com (PPS) with ESMTPS id 4hfmg005q2-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Thu, 22 Oct 2026 10:04:56 -0500 (CDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=DJiUKxOzBBblBfkYT82YpvVdOB1Wn2bqMeEKHoMjROkmWsmCBvjjzizRUX2BIU4ZF2DCzkzxcpXYM9UnWN3agQhnE0o4tLgjnHbLXsm1/DiKrBMFlt2UlSNFNxCvzf822PWGouO+/LjmrFd9UcwpEIZ5x9H0t1HFWaf4BQOIvZ/sfaeuYKrbOaKKsH2iyyKGois9XV+CX6o0SMNO1EbYgCP+IbOvD3GgavRfYpqSzO3oM+IrODj3bWnAUu36NswHi31KZeA8q+/3/3v4NrECESBuWACm+bSd5UOQIAub7nLGLWMgU3QkQ9fQc9LZAKG3WBVrERVXfqgGi/FhempIMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ZUiVooNbtOW2seOJTJZEHpvrzgF2YZWWYiLnk8Kxn5g=;
+ b=QYF1UmXvv/iC1VKu2Ud3DB6UVBYz61JSbs/kuC3iGuQsmGPZwMUqTpUpLz0dcfPtJqOMUPlTNt00OPkVrIuOWEwf2Ugj4yVkQzeQTL5pOmUlH5hpRRB7n/jcnsFpA6u4cWZCHNMe1ui9nLU/45jlrVyeq8O/VMG3AYmna1d9+eXl96bMe5MItKqFfG+p+4uYxC3G6AA63id3fW9nh7EPiG+jZNI+ZK1qD6zFP0zoJlFTjO9LI5qatAcdPM2UOTXq17PMs/LHR/8JcgAw3pmtOH6GMga1eO1pn4ZtKGIQOvouGsaGgH+i2vFKk08ysTbPShC/GNDXX9tLQVRFpDRu6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=baylibre.com smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ticloud.onmicrosoft.com; s=selector1-ticloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZUiVooNbtOW2seOJTJZEHpvrzgF2YZWWYiLnk8Kxn5g=;
+ b=QjEGQkE7WBHUFAR16DBefrul298Mgwv5IrnlDWBGthrVxFEi9PwevXueZoyxMhicfSp/u1Ei7p7uy5XuPbmuAyfLr82NJ1gbTDhuIDtjCzGc6bRGKWKTpKQ4gyqUcgj+kyu4g1+jnye6qmtIJ89hZo7rb1ZU2NYeKG/LIjR5l4U=
+Received: from BN9PR03CA0509.namprd03.prod.outlook.com (2603:10b6:408:130::34)
+ by BLAPR10MB4915.namprd10.prod.outlook.com (2603:10b6:208:330::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.15; Thu, 22 Oct
+ 2026 15:04:54 +0000
+Received: from BN2PEPF000044A5.namprd04.prod.outlook.com
+ (2603:10b6:408:130:cafe::9e) by BN9PR03CA0509.outlook.office365.com
+ (2603:10b6:408:130::34) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.472.20 via Frontend Transport; Thu,
+ 22 Oct 2026 15:04:54 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 198.47.21.194) smtp.mailfrom=ti.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ BN2PEPF000044A5.mail.protection.outlook.com (10.167.243.104) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.546.15 via Frontend Transport; Thu, 22 Oct 2026 15:04:53 +0000
+Received: from DFLE206.ent.ti.com (10.64.6.64) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 22 Oct
+ 2026 10:04:00 -0500
+Received: from DFLE205.ent.ti.com (10.64.6.63) by DFLE206.ent.ti.com
+ (10.64.6.64) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 22 Oct
+ 2026 10:04:00 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE205.ent.ti.com
+ (10.64.6.63) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
+ Transport; Thu, 22 Oct 2026 10:04:00 -0500
+Received: from [10.249.135.178] ([10.249.135.178])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 69MF3rXP644359;
+	Thu, 22 Oct 2026 10:03:54 -0500
+Message-ID: <5cddfb8a-8ffa-4578-b2f1-3e57e82b2c95@ti.com>
+Date: Thu, 22 Oct 2026 20:33:52 +0530
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -83,113 +133,125 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261022-canfd_check_channel_idx-v6-11-197704231551@peak-system.fr>
-References: <20261022-canfd_check_channel_idx-v6-0-197704231551@peak-system.fr>
-In-Reply-To: <20261022-canfd_check_channel_idx-v6-0-197704231551@peak-system.fr>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Vincent Mailhol <mailhol@kernel.org>, 
- Wolfgang Grandegger <wg@grandegger.com>, 
- =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
- Dan Carpenter <error27@gmail.com>, Lukas Magel <lukas.magel@posteo.net>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1792679273; l=3195;
- i=s.grosjean@peak-system.fr; s=20261020; h=from:subject:message-id;
- bh=flMPKg1xIa7U4jARAjBvLBR6Xz2OZahn+0Fz2bTlglc=;
- b=RYpH9P4KoJ7SRI+sjY8/2tof1puaCeu/23xklN9hRabFPT651NEUswmjPgE+L2Xcg7GM3mMxU
- uatOiuoJ2xrAzhKKh3ncjxk+kQBk4MdcuJ9sMSv8VJhZZ1GAW4ICBOv
-X-Developer-Key: i=s.grosjean@peak-system.fr; a=ed25519;
- pk=bP7QV2zvvAKAfConZlUOGKGEcXL64SNUpVUm++Ai+/c=
-X-Endpoint-Received: by B4 Relay for s.grosjean@peak-system.fr/20261020
- with auth_id=1250
-X-Original-From: =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
-Reply-To: s.grosjean@peak-system.fr
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
+ i2279
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: <vigneshr@ti.com>, <gehariprasath@ti.com>, <rcsekar@samsung.com>,
+        <mailhol.vincent@wanadoo.fr>, <andrew+netdev@lunn.ch>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <linux-can@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <msp@baylibre.com>, <u-kumar1@ti.com>
+References: <20260514065511.3573223-1-a-dutta@ti.com>
+ <20260514-tiny-koel-of-order-65ade7-mkl@pengutronix.de>
+ <9787fdc5-8a51-4567-a576-a3b9f4fcc59d@ti.com>
+ <20261022-spiked-pigeon-from-mars-3f2786-mkl@pengutronix.de>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20261022-spiked-pigeon-from-mars-3f2786-mkl@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN2PEPF000044A5:EE_|BLAPR10MB4915:EE_
+X-MS-Office365-Filtering-Correlation-Id: 38a75350-b615-4278-c35e-08df304dd3f0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|82310400026|23010399003|1800799024|376014|7416014|36860700016|18002099003|22082099003|4143699003|261009223027099003|10067099003|56012099006;
+X-Microsoft-Antispam-Message-Info:
+	gCG1VurcN69o+lT2WASxR4A/c5iawrXWMSU65xWdcCBpEadeJQ2K2VvrOsO006+IAyGW/RPiSVgtz4e9Au+kkhipMTIyLHM0qXtMoQildY4RzyiWpknyrY5o1P3UgBJdpXFcb1RLcj7Z5Mwx7wA5qsVdIRovgLoyIpCxLG95aXHwSCU5hkndM3RKpOV2Uzfu+dGo35lEqkuW73kPVXxxhNqhHJ/pDc4uHXis3OS8rLIKGYgW9n6hnOKcMiWCb21BTyikh8tcvpKYskeYbcXG88MENIWpdT/o9Kvvb+miVrx4yZxVIo6ujxWHTfuuVsb+CSQaC0QagP0g2cbQqtC9q93KLpKRBN4cWNXP78XF5Gcqzewgh7r/b9AdOIgLC/ib4qY/cd/ypknrm0FKFvw6V44+994XpeQXf1DLYJqkK6dAONldbU4RSo5Kja1TWXyqPaZQEtEgkP7a6YuvoOWr9n/KV0E2l6mBBxaMx1f607quYZwgSckMkB9PTo/qFyOXvqmMSfwN09jIHVzWfoy16yGVLn1AuBIBRxqWADwat9Lfqh2jDs/9+7A0yoU/Ipl8ZzaPEd4dh4jFOrrpZ7T2N0xfqwzrUDIFeWOCchd6+ZT+7mQQOhJFSqsylosjfO08SrL4BfHRQHgyiyPNZL6TTA==
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(82310400026)(23010399003)(1800799024)(376014)(7416014)(36860700016)(18002099003)(22082099003)(4143699003)(261009223027099003)(10067099003)(56012099006);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	zo3XJIxAWYlTk2W4n0evHMHqImuVJjCrysFwaOr69f2z0Q2Q1UhVWnNb71sok4pa1i51Yd/z+F3qzAlRN6lVuhsTHVdd7c+bpenjMIfvPI1/Qxpf1XmCtN63qSPIyHDSZIXO52G3ZmeLww8hDviY02Y2tpVW2thm1WQxpUJxU8UyrGwHgrw5ZzD5fO4VyHsJeVVH9TX4r1mY5B9ySTBxNc3hHIo827cOk5thDecTfIvhvX7tADU9bsdqFAX+zZvEjIVjEsVftpL4Ej5YPXiI3iUBLSh2NxPysNh+b+oxQiCSv2x0BzSQeCUjAH5zt5XXepvdqNdJfm5qFJRBls6HG0ANprRNcF8i0X96kA7t/wncwHiedRppCKEyERCvwdBbSxsux3tz3V+rdAUGftW6J8xnvpc/YCV4daCAuUtdPlV+ley9KWY0+fztDwnNRHXr
+X-Exchange-RoutingPolicyChecked:
+	vj6sjZXbNC31kZXTzoXcv8AkbEtDnuctIGOUaj5QpWX/z5nudwPYbCzOfG6kCE9yzvAx4aHdmZlnN+cQC5DnBo1g16gIYsPiUu0UsdyZjTz2XXK4MshW9Fh7NYNRXS/2qa/hSvThAXNET2KOLrZzJquraL6DuqpVQtOUsaRIOqpTA3Fa9J12PSmmd559eiV4Rq0HwYYFu1msBGIMjUrIJ7EC/daCvCGX08UXBcSCwlmU5ILiW0bqFg88+qyQ84IvIk8+yDnNwPjSyoGbKVyy36gHbW0ur9ZY7Urd+UNr56grwNsKSrbSKcOEVze5KshASw4oL9CrjdRifSSdhfEJbg==
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2026 15:04:53.5145
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 38a75350-b615-4278-c35e-08df304dd3f0
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	BN2PEPF000044A5.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB4915
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDIyMDA1OSBTYWx0ZWRfX1KX3a7/zxEb8
+ 8WwA7LQi9Vxz2lKkpPoEeQ503+VLsOhW7dr+8izZG7fUZzxvMVAGc7oEraChc4DEk/DGjwqm7cZ
+ xgsGQDlBa/cLZp1KEAIWa6BrFHzaxjpDMBKmuA2YnDjJlXi4KmE7BcR9knnR0rRcx7bpHMN2Q7+
+ tMtiCDN0wzaANOA7kKAR34ucKYeBlHjyGLUGUhXUQDw897mcjVvYxEF3solkKvqeUXtgwZFjJLN
+ /BlIb9eSHvljrDuyexK9n3wcLMIagV4xyvQsaBLiZjgWrgF+edcC74H/LFk2MxeJ9+hapweeMUo
+ 5KwNY02pWHwkJbY19xaE9pvcuJWU0yongsOLxD7f6obJn3D9uEug66Fm121BwkukvMRj/1q3f64
+ JwTRulBAvVKHc75N/XBnEz5q06ffB6OlzBW5wGWsdnVQDgsahOn3CHg3hr1tYsiaFw4FEBLe6Te
+ 1UTwdCEoBZjhdOhQ25Q==
+X-Authority-Analysis: v=2.4 cv=QIL91QLL c=1 sm=1 tr=0 ts=6ada2618 cx=c_pps
+ a=+gGuMjfID3j0L7k8h/8w9A==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10
+ a=AlMIdn_sM9wA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
+ a=fPAWb5peG099m5CrUpKH:22 a=V_sKlfSfAAAA:8 a=sozttTNsAAAA:8
+ a=e3Pca7t6iPUCcC6mgncA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-ORIG-GUID: dD--MePgUL4pqIuaHxJJKuQ2I9QZKKo-
+X-Proofpoint-GUID: dD--MePgUL4pqIuaHxJJKuQ2I9QZKKo-
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDIyMDA1OSBTYWx0ZWRfX+uXhoh71J3BL
+ PwL5OVF6wBRmDPxsbGO5Tn9xPVWnLYwGTBt/IVbF+LJD0wHZpYPXIZbwcZzMKtZ539w8AddBkMg
+ 6VM0sYwi+aB/ZchCvYriwxTVdvJj9dw=
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-10-22_05,2026-10-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ bulkscore=0 priorityscore=1501 suspectscore=0 spamscore=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 impostorscore=0 malwarescore=0 clxscore=1015
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2610190000 definitions=main-2610220059
 
-From: Stéphane Grosjean <s.grosjean@peak-system.fr>
+Hi Marc,
 
-The messages received from a PCAN-USB Pro device start with a record
-count, followed by records whose size depends on their type, given by
-their first byte. Both pcan_usb_pro_decode_buf() and
-pcan_usb_pro_wait_rsp() trust this count:
+On 10/22/2026 12:30 PM, Marc Kleine-Budde wrote:
+> On 22.10.2026 08:49:22, Kumar, Udit wrote:
+>>> The latest Bosch m_can documentation doesn't mention this problem,
+>>> neither the TCAN4550 docs. Can this be an integration problem of the SoC
+>>> on TI's side?
+> 
+>> this is similar to Errata 22 from Bosch
+>> Message order inversion when transmitting from dedicated Tx Buffers
+>> configured with same Message ID.
+>> page-29, release doc REL20210625
+> 
+> Can you give me a link to the Bosch Errata sheet? 
 
-- pcan_usb_pro_decode_buf() reads the type of the next record before
-  checking that this record starts inside the URB. When the device
-  claims more records than the URB holds, it reads the byte following
-  the URB data, which is beyond the 1024-byte RX buffer when the URB
-  fills it;
-- pcan_usb_pro_wait_rsp() doesn't check the records against the
-  received length at all. Since the count is a 32-bit value, a bogus
-  response makes it walk the records past the command buffer.
 
-Stop decoding a message at its end in both functions, and in
-pcan_usb_pro_wait_rsp() also reject a record that doesn't fit in the
-message.
+I believe the Bosch errata document is subject to selective disclosure.
+However, the most relevant public documentation I can provide is the
+Bosch user manual [0], which states: 'The Tx FIFO enables transmission
+of messages with the same Message ID from different Tx Buffers in the
+order these messages have been written to the Tx FIFO.'
 
-Found by Sashiko AI review.
+For our public disclosure, we have the TI SoC errata [1].
 
-Fixes: d8a199355f8f ("can: usb: PEAK-System Technik PCAN-USB Pro specific part")
-Assisted-by: LLM
-Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
----
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+Regardless, I believe a v2 is necessary.
+What would you suggest as the best path forward:
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index f94494e01f4a..b869a20438cf 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -244,9 +244,9 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
- 	for (i = 0; !err && i < PCAN_USBPRO_RSP_SUBMIT_MAX; i++) {
- 		struct pcan_usb_pro_msg rsp;
- 		union pcan_usb_pro_rec *pr;
-+		u8 *pc, *rsp_end;
- 		u32 r, rec_cnt;
- 		u16 rec_len;
--		u8 *pc;
- 
- 		err = usb_bulk_msg(dev->udev,
- 			usb_rcvbulkpipe(dev->udev, PCAN_USBPRO_EP_CMDIN),
-@@ -271,13 +271,18 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
- 		pc = pcan_msg_init(&rsp, pum->u.rec_buffer,
- 			actual_length);
- 
-+		rsp_end = pum->u.rec_buffer + actual_length;
- 		rec_cnt = le32_to_cpu(*rsp.u.rec_cnt);
- 
- 		/* loop on records stored into message */
- 		for (r = 0; r < rec_cnt; r++) {
-+			/* rec_cnt comes from the device: stay in the message */
-+			if (pc >= rsp_end)
-+				break;
-+
- 			pr = (union pcan_usb_pro_rec *)pc;
- 			rec_len = pcan_usb_pro_sizeof_rec[pr->data_type];
--			if (!rec_len) {
-+			if (!rec_len || pc + rec_len > rsp_end) {
- 				netdev_err(dev->netdev,
- 					   "got unprocessed record in msg\n");
- 				pcan_dump_mem("rcvd rsp msg", pum->u.rec_buffer,
-@@ -745,8 +750,15 @@ static int pcan_usb_pro_decode_buf(struct peak_usb_device *dev, struct urb *urb)
- 	rec_cnt = le16_to_cpu(*usb_msg.u.rec_cnt_rd);
- 	for (; rec_cnt > 0; rec_cnt--) {
- 		union pcan_usb_pro_rec *pr = (union pcan_usb_pro_rec *)rec_ptr;
--		u16 sizeof_rec = pcan_usb_pro_sizeof_rec[pr->data_type];
-+		u16 sizeof_rec;
-+
-+		/* rec_cnt comes from the device: don't read past the message */
-+		if (rec_ptr >= msg_end) {
-+			err = -EBADMSG;
-+			break;
-+		}
- 
-+		sizeof_rec = pcan_usb_pro_sizeof_rec[pr->data_type];
- 		if (!sizeof_rec) {
- 			netdev_err(netdev,
- 				   "got unsupported rec in usb msg:\n");
+Apply this errata to the TI SoC where public disclosure is already
+available?
+Or
+apply it to the MCAN IP used within that SoC?"
 
--- 
-2.53.0
+[0]
+https://www.bosch-semiconductors.com/media/ip_modules/pdf_2/m_can/mcan_users_manual_v331.pdf
 
+
+[1] https://www.ti.com/lit/pdf/sprz530
+
+Do you know if TI's
+> tcan4x5x is affected by the erratum?
+
+I am checking internally within TI.
+
+> 
+> regards,
+> Marc
+> 
 
