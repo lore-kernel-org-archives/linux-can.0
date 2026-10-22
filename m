@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792628969;
-	b=EWrJ2p3paBL5wbzcALP7/DPReUzA8ktA8iRKwWkTXExu6noWo2Bj6X5n3IkudEy+g5lq
-	 k447PwICIc8bcBjrQMSzEkZjT+E9BeyNBnXzVf3W434YMiJLGE3fXVGjbW7kgGFz9AG0S
-	 tHrrjB5dV6qpJzSoO1mqR6LYSuRjXG9lheIO4f7fsgla78wEnIK19YQI1Cd35lEkTL75Z
-	 6a/elxAjg9SOLhL+va+wztNjzCn/NAR7NiwgUmVfhZA6AidyoflGQRn4ErtveDIHLqVhl
-	 0mhpRM85htJQsSE1zc4Kj6S3CAxv41ZP866EVtMTtLxGP/up7jmq7n+O25RPTYUj8EA==
+	t=1792628970;
+	b=CBlg2zQhzPJ6k6UtAf2M5Z7Q3uKgvI4T6uUh9m7/nxmwMuV1uoGqUFNyB4gRXtzkWjJ8
+	 JEsShGQjcnliS0g+6UzyajmHtI2FgZj2TkCINrGrq/xSEo5yjx8ueOHKC9grEeSVmU/SG
+	 pQvoHxXPDkZdFtVDfz1x41eDQ0mXHbszlP72sx+B/aMEC5tDWyIaQLxdJsDDgpUwQco8F
+	 I+9KDyQy7RU+AthTgnT3OQu3VOKkYfPh81ovi6tkUvc8AxKs9ow7Qjc9aDqLBWLLpdJuq
+	 hYPsRGOocunJa1X+oyViDGgd6fcNcF5iqRR/dFzVCoLmLu2FMK3d0EfhLQxQVn0FAJw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792628969;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792628970;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=rZct/Lel8zJTBY12234Z+EPTuMdyz1ZasuapRcQJ1AU=;
-	b=4AUqSo21qG5KNG7tIZVyqzc27Vk+/OUoxcIm/XBWOIcjtDCvOk5RLf1r5+Nw57gVFhYd
-	 hqYep3gSpVhaZ3VjugEPekh4d+8fdf3IvhhKGP62TqBGO+vW3tHpL2vym0erc0Sq0crrZ
-	 5fDs/qHcXkAZcXTH0dQqKadxXnUXlmQC0HFL+t0K+WOCcYhlDdZuWY96/AGgXdynq10iE
-	 2wjQ0J3oxNqok2UkKbHArVkjsWl++WFZqxaVwSriUz3wPzsiYNh0JK7/zIdl+uaAfvKTj
-	 0GkTWEAKfrwFO8qbWwjdrYjkb48BUOSc4iCORUxkqDZzCh9pF08jUHk7DHeAsXfQZvQ==
+	bh=St39qO/x9IS9K+zqaearH2V0C8qqdS0hqetmmfwcM2Y=;
+	b=eWqg46LVDXugZrgF/BSO5ryab3Y/GdLjdYrhLto+ef6g/TRLrr6WP3lQEzipCbG+i2gV
+	 gKzP55NfA6DUPqUptzok1Vs+A2DrLz/L7dpVXIsXdT0QMX9e3hLtVkUzXKaFKzLhkPfAz
+	 Uee/DJkRtYErN9PSiQjUt0koPoxH4k5UCi6JrwwsJzwRR6SMdNEdOJPS1OtNWPMyqgj20
+	 9TMFvk5RqbxaXEGcmUjZXXRPLiJEfGtc6V329ZXdIPNW8mvYAOhwsEIIhnxvGO+RPcnVT
+	 vSan5iwxgoOrqIzfkcTR3oae80XkTi9tyfjQIcsjPgLRg+tYtgBwJ1ThwJtehOXoVTw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PX2LvZZ8;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZbmlyaMq;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA24606A32C;
-	Thu, 22 Oct 2026 00:29:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BC4606A323;
+	Thu, 22 Oct 2026 00:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PX2LvZZ8
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2AC1F000C1;
-	Thu, 22 Oct 2026 00:29:28 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZbmlyaMq
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80E051F000C4;
+	Thu, 22 Oct 2026 00:29:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792628968;
-	bh=rZct/Lel8zJTBY12234Z+EPTuMdyz1ZasuapRcQJ1AU=;
+	s=k20260515; t=1792628970;
+	bh=St39qO/x9IS9K+zqaearH2V0C8qqdS0hqetmmfwcM2Y=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=PX2LvZZ8DKtJlIP7ILoOAMcdXeJosnvpv8kXYOFrkRdW0pcj6Pk7ZET9PRZ8u0AT3
-	 dJRFWPQOYiASaHNxeM7RF69wr8Xho3hegMA/gqAKEh10VHd88qQmlzJaWAivCr9FMg
-	 +6zpn8WE0M8/MaB3v/qj+l694Ilq8+qbogkr4PhIUAMVvA6jWBqJnId/w4x6IGJ+Xg
-	 FsKOSdzSszzWTdrRZ+RSqDQTsKzdQXJPV4vdzCDrR6J+Zais1LhcbkZ5d6uhJ8Hf5Q
-	 QluDzdkgKlF6xYqUIIsVRRN75ZPTKBHI2my2LV57Wly+9SPdokiUNWrzkepGd9x404
-	 oqA/IHjfUXAoQ==
-Subject: Re: [PATCH v4 09/10] can: peak_usb: register the netdev only once the
- channel is set up
+	b=ZbmlyaMqa8h+Ooh0/2pf/Z34B1SXhtNhFCeBKyjyNZsjXhMjler4y0e/RnOGgwVpG
+	 nb0tRyYDQcm+mL1oN8mtxKSV4fv80xrdl0cJvowagMyQrPrBCQ3RHxPaBwJnURN1b5
+	 aplS3oPi8BjuJeBfEcYrTZpRWQcnHKQJ43+bDmgIa7tPdG94k+gOOxNSHwEHzGN+GI
+	 50HamyBj2rfkbIauWmWgEJMIAbTnzmhVGKC4dyM1n+flruXDfa/Zy79sm7kBj4t4/y
+	 qZkx330J1z+xj+UMCh58NKhxivTLLc/bZIi1SYY2cDpuKAye0+ysZNOkCoxnzcMdEc
+	 kK3ls7Bu61qrA==
+Subject:
+ Re: [PATCH v4 10/10] can: peak_usb: only dump received bytes on decode error
 From: netdev-bot+sashiko@kernel.org
 To: stephane.grosjean@free.fr
 Cc: mkl@pengutronix.de, mailhol@kernel.org, error27@gmail.com,
  wg@grandegger.com, s.grosjean@peak-system.fr, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Thu, 22 Oct 2026 00:29:27 +0000
-Message-ID: <179262896798.3131.8641593926434967283@kernel.org>
+Date: Thu, 22 Oct 2026 00:29:29 +0000
+Message-ID: <179262896908.3131.10244045343253209518@kernel.org>
 In-Reply-To:
- <20261020-canfd_check_channel_idx-v4-9-bfbde81f8bab@peak-system.fr>
+ <20261020-canfd_check_channel_idx-v4-10-bfbde81f8bab@peak-system.fr>
 References:
- <20261020-canfd_check_channel_idx-v4-9-bfbde81f8bab@peak-system.fr>
+ <20261020-canfd_check_channel_idx-v4-10-bfbde81f8bab@peak-system.fr>
 X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -66,10 +66,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 2 potential
+Thank you for your contribution! Sashiko AI review found 1 potential
 issue(s) to consider.
 
-Critical: 0 · High: 1 · Medium: 0 · Low: 1
+Critical: 0 · High: 1 · Medium: 0 · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -77,142 +77,89 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] The fix does not close the command-buffer race on multi-channel
-  PCAN-USB FD family adapters (PCAN-USB Pro FD and PCAN-USB X6,…
-- [Low] The patch moves register_candev() (pcan_usb_core.c:1024) after
-  dev_init(), dev_set_bus(dev, 0) and dev_get_can_channel_id().
+- [High] The patch only partly achieves its second goal.
 
 --
 
-can: peak_usb: register the netdev only once the channel is set up
+can: peak_usb: only dump received bytes on decode error
 
-This patch moves register_candev() in peak_usb_create_dev() after
-dev_init(), dev_set_bus() and dev_get_can_channel_id(). The netdev then
-can't be opened or configured while the channel is still being set up.
-The error paths no longer unregister the netdev, and PCAN-USB now uses
-dev_err() when reading the channel id fails.
+This commit limits the dump in peak_usb_read_bulk_callback() to the
+urb->actual_length bytes the device actually sent, instead of the whole
+kmalloc()'ed RX buffer. It also puts the dump behind net_ratelimit(),
+because a faulty or malicious device can make every transfer fail to
+decode.
 
 > diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> index 4c08656e77681..ccfc26d3e5a6b 100644
+> index ccfc26d3e5a6b..b86ea6f6b07c6 100644
 > --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 > +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-[ ... ]
-
-> @@ -1027,6 +1018,18 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
->  	/* get CAN channel id early */
->  	dev->adapter->dev_get_can_channel_id(dev, &dev->can_channel_id);
->  
-> +	/* register the netdev only once the channel is fully set up, so that
-> +	 * it can't be opened or configured while being initialized.
-> +	 */
-> +	err = register_candev(netdev);
+> @@ -265,10 +265,10 @@ static void peak_usb_read_bulk_callback(struct urb *urb)
+>  		/* handle these kinds of msgs only if _start callback called */
+>  		if (test_bit(PCAN_USB_STATE_STARTED, &dev->state)) {
+>  			err = dev->adapter->dev_decode_buf(dev, urb);
+> -			if (err)
+> +			if (err && net_ratelimit())
+>  				pcan_dump_mem("received usb message",
+>  					      urb->transfer_buffer,
+> -					      urb->transfer_buffer_length);
+> +					      urb->actual_length);
 
 [Severity: High]
-Does this fully close the command buffer race on the multi-channel
-PCAN-USB FD adapters (PCAN-USB Pro FD and PCAN-USB X6)?
+Does this rate limit cover the flood described in the commit message for
+the FD and Pro adapters?
 
-The commit message says the patch addresses this case:
+dev->adapter->dev_decode_buf() runs before this check. For the PCAN-USB
+FD family (USB FD, Pro FD, X6, Chip) it is pcan_usb_fd_decode_buf(). For
+PCAN-USB Pro it is pcan_usb_pro_decode_buf(). Both decoders already dump
+the buffer on error, with no rate limit:
 
-  the commands sent by the open or bittiming callbacks may race with
-  the ones sent by dev_init() on the same command buffer;
-
-On those adapters, pcan_usb_fd_init() makes every channel after the
-first share the previous sibling's command buffer:
-
-drivers/net/can/usb/peak_usb/pcan_usb_fd.c:pcan_usb_fd_init() {
+drivers/net/can/usb/peak_usb/pcan_usb_fd.c:pcan_usb_fd_decode_buf() {
     ...
-		pdev->usb_if = ppdev->usb_if;
-		pdev->cmd_buffer_addr = ppdev->cmd_buffer_addr;
-    ...
+fail:
+	if (err)
+		pcan_dump_mem("received msg",
+			      urb->transfer_buffer, urb->actual_length);
+	return err;
 }
 
-So one buffer, and one fw_info, serves the whole interface. Nothing in
-peak_usb appears to lock either of them.
+pcan_usb_pro_decode_buf() in pcan_usb_pro.c ends the same way.
 
-peak_usb_probe() calls peak_usb_create_dev() for each channel in turn.
-With this patch, can0 is registered at the end of channel 0's
-peak_usb_create_dev(). Channel 1's peak_usb_create_dev() then runs
-without RTNL:
+The device fully controls the paths that set err here. In
+pcan_usb_fd_decode_buf() they are a truncated header, an oversized
+rx_msg->size ("got frag rec: should inc usb rx buf sze"), a short record
+("got short rec") and sub-decoder failures.
 
-peak_usb_create_dev(ch1)
-  dev_init() -> pcan_usb_fd_init()
-    pcan_usb_fd_set_clock_domain()
-    pcan_usb_fd_set_can_led(dev, PCAN_UFD_LED_DEF)
-  dev_set_bus(dev, 0) -> pcan_usb_fd_set_bus()
-  dev_get_can_channel_id() -> pcan_usb_fd_get_can_channel_id()
-    pcan_usb_fd_read_fwinfo(dev, &usb_if->fw_info)
-      pcan_usb_pro_send_req()   /* memsets the shared fw_info */
+In pcan_usb_pro_decode_buf() they are an unsupported data_type ("got
+unsupported rec in usb msg:"), a record that runs past msg_end ("got
+frag rec: should inc usb rx buf size") and handler errors.
 
-Meanwhile, userspace holding only RTNL can bring up can0:
+Each of these paths also calls netdev_err() with no rate limit.
 
-peak_usb_ndo_open() -> pcan_usb_fd_start()
-  pcan_usb_fd_set_filter_std() / pcan_usb_fd_set_options()
+After each failure, peak_usb_read_bulk_callback() resubmits the bulk-IN
+URB, so the cycle repeats:
 
-Userspace can also set can0's bittiming through
-pcan_usb_fd_set_bittiming_slow(). Both paths build commands in the same
-buffer and send them with pcan_usb_fd_send_cmd(). That function writes
-the EOC marker into the buffer and reads the shared fw_info->cmd_out_ep:
+peak_usb_read_bulk_callback()
+    dev->adapter->dev_decode_buf()
+        pcan_usb_fd_decode_buf() / pcan_usb_pro_decode_buf()
+            netdev_err(...)
+            pcan_dump_mem(...)    <- no rate limit
+    if (err && net_ratelimit())
+        pcan_dump_mem(...)        <- same buffer, dumped again
+    usb_submit_urb(...)
 
-drivers/net/can/usb/peak_usb/pcan_usb_fd.c:pcan_usb_fd_send_cmd() {
-    ...
-		memset(cmd_tail, 0xff, sizeof(u64));
-    ...
-		err = usb_bulk_msg(dev->udev,
-				   usb_sndbulkpipe(dev->udev,
-						   fw_info->cmd_out_ep),
-    ...
-}
+On these adapters, can a device that fails every transfer still flood
+the kernel log with up to rx_buffer_size bytes of hex per URB?
 
-Could channel 1's RESET_MODE and EOC overwrite can0's 64 FILTER_STD
-records, or the other way round? Could can0's bulk transfer use a
-cmd_out_ep that pcan_usb_pro_send_req() has just zeroed?
+Only the original PCAN-USB adapter seems fully covered, since its decoder
+in pcan_usb.c does not dump.
 
-The cross-channel form of this race was already there before this
-patch. Moving register_candev() within a single channel can't prevent
-it, though.
+Should the adapter-level dumps in pcan_usb_fd.c and pcan_usb_pro.c also
+be rate limited or removed? The other option would be to keep a single
+rate-limited dump here in the core.
 
-A fix probably needs to serialize command building and sending per
-interface. Two options are a mutex in struct pcan_usb_fd_if, or holding
-RTNL across the probe-time command sequence.
-
-The last patch in the series, "can: peak_usb: only dump received bytes
-on decode error", only touches peak_usb_read_bulk_callback(). So this
-race seems to remain at the end of the series.
-
-> +	if (err) {
-> +		dev_err(&intf->dev, "couldn't register CAN device: %d\n", err);
-> +		goto adap_dev_free;
-> +	}
-
-[Severity: Low]
-Can this error path now leave the firmware reporting that a driver is
-loaded?
-
-register_candev() now runs after dev_init() has already sent commands
-to the hardware. For channel 0, pcan_usb_fd_init() sends
-pcan_usb_fd_drv_loaded(dev, 1), programs the clock domain and sets the
-CAN LEDs to PCAN_UFD_LED_DEF. In the same way, pcan_usb_pro_init() sends
-pcan_usb_pro_drv_loaded(dev, 1) and turns the device LED on.
-
-register_candev() can fail, for example with -ENOMEM from
-register_netdev(), a netdevice notifier veto, or a can_get_termination()
-error. In that case the adap_dev_free path only calls peak_usb_stop_rx()
-and dev_free(). pcan_usb_fd_free() and pcan_usb_pro_free() only clear
-usb_if->dev[] and free memory.
-
-Only pcan_usb_fd_exit() and pcan_usb_pro_exit() send drv_loaded(0) and
-switch the LEDs off. dev_exit() is only called from
-peak_usb_do_device_exit() at module unload.
-
-Before this patch, register_candev() ran before any command reached the
-device, so a registration failure left the hardware untouched.
-
-The existing dev_set_bus() failure path and peak_usb_disconnect()
-already leave the device in this state. The effect is limited to the
-firmware status and the LEDs.
-
-[ ... ]
+>  		}
+>  	}
+>
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261020-canfd_check_channel_idx-v4-0-bfbde81f8bab%40peak-system.fr
