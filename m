@@ -1,61 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792640201;
-	b=GxFokTK6CIh3hggSMVo8gqw3iWz4zrCJe1Zx8Nz0+0xRBnU5AG+hAukoNIcC2R7bdqE7
-	 rhzl2RaLROJvWbnHw9Qk0zlBqNg3JSiMYYQBTqCUnpRDGubLRhWax4meln3GxT38lmqjT
-	 JPrFEYaD7APXdisW8t2/ORnrjJGeu+gHCz6HawvaUxwbL9eAxghCRPNGuXan+a+lfKfQU
-	 E8PFPudMExEigoKTi7ISSYxfVUzz8uIEGDacSG4FpOOILpfpBq2kKIqbbW9Dx7FufUfcx
-	 fBXFTetzztZAmaFoEJVGnBjRbou2CzVMgjAjYlTqEjQz/sumrj1RuhhUHwxxC6NZMaw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792640201;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=xQrKEfVfLJ4GWPWqI9/8PFh1dCHBfo7e7Bd+x3ArwCg=;
-	b=OvFznFJ4MywJAed6Qgt7kwTfJ5ettrD1DTPNuvFribBmFVahzKhiufth1rOjM2TyAvvv
-	 pRQXIBtbrmDabTKoxYCNnCtPrHdA4iMd+dauEWN/NRnCnJMEWWOeiwJRJl6HjSqElpdye
-	 KeVl57+lxVTF8EqHXnKoOCIqp81MTegp5AYVF+KBeiFQSq4bH0iOvzNLKbdD8IxH6LZ+g
-	 qqes/8V8W59aTU0wmZByP8P4xruLUG38YgT0g/uBevvpS/FU3pZGZMXivZg070xE/EKE9
-	 cVHZFA3bHosLnxlx04HZNi+YZyRg/g66NKcnAMFKuQCjzHh3kHHRhzoXPg10+Xeik/Q==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LE2Bpa7O;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792652452;
+	b=42zoYs1OF1GcLR6Nv1NBzw52cxAKjnDrYlhH5q8GVWPHjmjc3wFZ4gg/t3V6NNhAf3lB
+	 XiTrTYLqocpbvOtJiF7JDhKgYcdqJUpYkvsfRYkkI/UOMCy3kAKczAWZTafb/jyBfh8PK
+	 5Biz2GmnSfi2BMvApNj8F8UJa9UwOyCD7gcvBCSAxgWy1wlLRz3tez3mflhhBqb7hINmX
+	 5SyWWbskcTSIXeFIo23kMQcFhKCwTIBX2r6cgaD366r8rVGJFN+dDyhwC9OgH+OhvIqtS
+	 17nNQXFs++uEgOjVKxgYWLL7fdaruQMMrdxZXeAzE/FNQiSGd3C1L2NOYSb/V0//r1w==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792652452;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=g5nsSSjuBClHBx39NqG0kfSc5pljRc11IezXCRfp1Ic=;
+	b=x5aFtYQ6LxMwrTWmW3XvgOwrlTyxEBq1eDMKvyqN/4qBicvWyngjJQ6N2Oo4wnNfHvFI
+	 IZEa3bWAqh65uCDiTf8irsmOUUahRHJH3Q6ap+5lZuwfF0Vb5RNWe2diroWiS7dVgwNKt
+	 bs18J5qiNHQWc9NDjkl9Oi6p1CxvjcyXmjH5xN1Qrm8ko3wgOyu7pTGLoWUjxBlGu5Udd
+	 gsmbtFVAya93BS/kQgpkEHE8tVf21enWN3wUmOet/AS55k7Z0xjKmhoBmKzJbXrWPwxmk
+	 T3VczgXMcPE9mrWR/vhTPzI89dGJ6GmI2RRSuGBQnVMWiIpkVoESjbp4d9F5KNdm4Bw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=geXRJp1J;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7091E606A321;
-	Thu, 22 Oct 2026 03:36:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40535606A319;
+	Thu, 22 Oct 2026 07:00:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 40535606A319
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LE2Bpa7O
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9ADC61F000C1;
-	Thu, 22 Oct 2026 03:36:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792640201;
-	bh=xQrKEfVfLJ4GWPWqI9/8PFh1dCHBfo7e7Bd+x3ArwCg=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=LE2Bpa7OzmL8YvlhPF+5eUbuao3SNlzBFL1MHZ8CwZEYgqDZ5S4bOW+1gzC1+Aasr
-	 ucnuz6KrRQNZ+LN34VVXHxPjaxz1VoXtS/6tQBQjihdd2c5sLLqz2E7PuKO/P1d5sl
-	 8CzraNQ9EOE45Wfn2PXRNSqe7hgQoQzhv7p7rgwEH9HYQSGufHDNm0vzeFf2N0JRiE
-	 7Mp6T5BSlrejWXF8x19Ku9Bo9FWJLbBkj4OxKq1JGlbdBow2FysCZQPPbbx4qbIfj4
-	 Daur3Qo/Kkb5Bg91DwVHjapxD+8Wp8VmqEE/ztTXHSyIawW4YUJy3NjF+yBEm3a9Or
-	 mVS4ZJ0m0LtrA==
-Subject: Re: [PATCH v5 09/10] can: peak_usb: register the netdevs only once
- all channels are set up
-From: netdev-bot+sashiko@kernel.org
-To: s.grosjean@peak-system.fr
-Cc: mkl@pengutronix.de, mailhol@kernel.org, error27@gmail.com,
- wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- kuba@kernel.org
-Date: Thu, 22 Oct 2026 03:36:40 +0000
-Message-ID: <179264020017.3131.2617691177294766125@kernel.org>
-In-Reply-To:
- <20261020-canfd_check_channel_idx-v5-9-a62b35b867f0@peak-system.fr>
-References:
- <20261020-canfd_check_channel_idx-v5-9-a62b35b867f0@peak-system.fr>
-X-sashiko-severity: Low
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=geXRJp1J
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C90AF2008E4;
+	Thu, 22 Oct 2026 09:00:47 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792652447;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g5nsSSjuBClHBx39NqG0kfSc5pljRc11IezXCRfp1Ic=;
+	b=geXRJp1Jol3L9poDopu0R8VUKm/mRkb0evBpWIFUaXBiM3QyihnCPf5jnAQc+qeQZCPKWc
+	xrr1kvIl8Ent5lGr7y0+LEacoNBiClHFhWoVE1q29HaCl5pJOQ9U1SwgNy5RD0/FRlnshp
+	Jj0HEkilTLBMN8sf87/hlOwRQCBWowI5DfilxOYkrotCNCUBz6F/TCCLJIHT2ClkVGkie/
+	a/oWZStpy2ktHmF5fw1XsV0+wtfw45Yeaho9MW7r3+ygs9fQMTHj+tuUo/TB2cnEM0ye4e
+	h5amPe4kcHfIA35an2va+G4kchRWloI1i1w0E3rBqGLftgv5hG7UW6ASzNrDEg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792652447; a=rsa-sha256;
+	cv=none;
+	b=Cq6ACqQO3tLU849Qwl3nlOozR7OGPfVWKC2GnLc1JqK30uZQ1T1RdabasaJwDdU3EgHTzg
+	Jfg8HlwVwm7QQrVOxKTYwDUuruI0MyaSoEGs+Vj7PiyTb1bT4QLWzA/QxsTkYIP/zs6gzk
+	1hoaNX3uyTHu0UFqE3dL+sF/1DshnSBLFrAI3+E2j7JpBG7p1e/IoD9XhQs+d6rdwnmgSH
+	ERRRrBke0W/AQC0kM+mTZlldEMhV+ccNCKf/AgCp60LkGUtvxfosw94CtUsTgMbTn2bedb
+	RKEWJ9FPTnt+uGYJIEKcWPU3mEw5rzokEnm0MBvFopOyhdnZ7/Con9LVwU23Bw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792652447;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=g5nsSSjuBClHBx39NqG0kfSc5pljRc11IezXCRfp1Ic=;
+	b=SZwHrfPsuL99dHZQZL0piMR04UZJoEuler4kCfiAQlbnX0NHp67TtQYo1d9wC7h7dTRUFw
+	3qq4vLc4f0wBFa7iDv3NQy5t2LiW3MH6NJUfBCZr305HC9lNxjDCHDrpY8CmRGLVVqwuKW
+	w8kijStDsPVSNG5wEWsk/lkyl3wJrAxnYDDynwQJLIyriVOmVvfrZEPJfgSNGkGfzbdZpT
+	7WtMkKYvQH/fRSkSqk6eHApbSEeX8zKhHTOhw8zWzvC8d58yRG7HR2wLoOGLGCMp65yWpU
+	Qp2Ysiv1/Cib4qbxisi4P8+qUYrWLGrpGfHsjFlOlPducLFxPFiPqPBkjqNBkg==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xJmn9-000fOB-2L;
+	Thu, 22 Oct 2026 09:00:47 +0200
+Received: from pengutronix.de (unknown [IPv6:2a0a:edc0:0:701:97f1:546b:5b0f:c991])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 349905D0AA8;
+	Thu, 22 Oct 2026 07:00:47 +0000 (UTC)
+Date: Thu, 22 Oct 2026 09:00:46 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Kumar, Udit" <u-kumar1@ti.com>
+Cc: vigneshr@ti.com, gehariprasath@ti.com, rcsekar@samsung.com, 
+	mailhol.vincent@wanadoo.fr, andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, msp@baylibre.com
+Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
+ i2279
+Message-ID: <20261022-spiked-pigeon-from-mars-3f2786-mkl@pengutronix.de>
+References: <20260514065511.3573223-1-a-dutta@ti.com>
+ <20260514-tiny-koel-of-order-65ade7-mkl@pengutronix.de>
+ <9787fdc5-8a51-4567-a576-a3b9f4fcc59d@ti.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -65,292 +104,51 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ghmookne3nuwdo2i"
+Content-Disposition: inline
+In-Reply-To: <9787fdc5-8a51-4567-a576-a3b9f4fcc59d@ti.com>
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
 
-Low priority / nit picks for your consideration:
+--ghmookne3nuwdo2i
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
+ i2279
+MIME-Version: 1.0
 
-- [Low] The patch moves register_candev() from peak_usb_create_dev() to
-  the end of peak_usb_probe().
-- [Low] peak_usb_disconnect() is now also the probe-failure cleanup for
-  netdevs that were never registered.
+On 22.10.2026 08:49:22, Kumar, Udit wrote:
+> > The latest Bosch m_can documentation doesn't mention this problem,
+> > neither the TCAN4550 docs. Can this be an integration problem of the SoC
+> > on TI's side?
 
-Pre-existing issues:
-- [High] Channel teardown never drains asynchronous restart URBs and
-  never cancels the legacy PCAN-USB restart_timer before freeing the…
-- [High] pcan_usb_pro_handle_canmsg() sets can_frame->len = rx->len &
-  0x0f, a device-controlled value from 0 to 15.
-- [Medium] pcan_usb_get_can_channel_id() declares 'u8
-  args[PCAN_USB_CMD_ARGS_LEN];' with no initializer.
-- [Medium] peak_usb_disconnect() calls peak_usb_stop_rx() first, which
-  clears PCAN_USB_STATE_CONNECTED on every channel, and only then calls…
-- [Low] Channel 0's dev_init() (pcan_usb_fd_init()/pcan_usb_pro_init())
-  sends drv_loaded(1), sets the clock domain and sets the LEDs to their…
+> this is similar to Errata 22 from Bosch
+> Message order inversion when transmitting from dedicated Tx Buffers
+> configured with same Message ID.
+> page-29, release doc REL20210625
 
---
+Can you give me a link to the Bosch Errata sheet? Do you know if TI's
+tcan4x5x is affected by the erratum?
 
-can: peak_usb: register the netdevs only once all channels are set up
+regards,
+Marc
 
-This commit moves register_candev() from peak_usb_create_dev() into
-peak_usb_probe(). The netdevs are now registered only after every channel
-of the interface has been initialized. peak_usb_disconnect() unregisters
-only the netdevs flagged with the new PCAN_USB_STATE_REGISTERED bit, and
-PCAN-USB now logs a failed channel id read with dev_err().
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> index 4c8cfed31634a..c7246465dcc7b 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> @@ -390,9 +390,12 @@ static int pcan_usb_get_can_channel_id(struct peak_usb_device *dev, u32 *can_ch_
->  	int err;
->  
->  	err = pcan_usb_wait_rsp(dev, PCAN_USB_CMD_DEVID, PCAN_USB_GET, args);
-> +	/* explicit use of dev_xxx() instead of netdev_xxx() here: this is
-> +	 * also called during probe, before the netdev is registered.
-> +	 */
->  	if (err)
-> -		netdev_err(dev->netdev, "getting can channel id failure: %d\n", err);
-> -
-> +		dev_err(dev->netdev->dev.parent,
-> +			"getting can channel id failure: %d\n", err);
+--ghmookne3nuwdo2i
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[Severity: Low]
-The comment says this also runs during probe, before the netdev is
-registered. The helpers this function calls still log through
-netdev_err(), though. Was the conversion meant to stop here?
+-----BEGIN PGP SIGNATURE-----
 
-pcan_usb_get_can_channel_id()->pcan_usb_wait_rsp() still does:
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatm0mgAKCRDMOmT6rpmt
+0uubAQDF6lnULptj1zzExy4g0Yco4kYq7xT6SwW02f0gkeWykwEA0ZAB6twIeieA
+3RKf/U9c++yRfGVNGdDw0R/ESFWFLAY=
+=Dr6A
+-----END PGP SIGNATURE-----
 
-	if (err)
-		netdev_err(dev->netdev,
-			"waiting rsp f=0x%x n=0x%x failure: %d\n", f, n, err);
-
-pcan_usb_send_cmd() does the same with "sending cmd ...". The same holds
-for pcan_usb_fd_send_cmd() in pcan_usb_fd.c, and for
-pcan_usb_pro_send_cmd(), pcan_usb_pro_wait_rsp() and
-pcan_usb_pro_send_req() in pcan_usb_pro.c. All of them are reached from
-dev_init(), dev_set_bus(dev, 0) and dev_get_can_channel_id() in
-peak_usb_create_dev().
-
-register_candev() now runs later, in peak_usb_probe(), so netdev->name
-still holds the "can%d" template at this point. __netdev_printk() will
-print these messages as "(unnamed net_device) (uninitialized)". On
-PCAN-USB, a failed channel id read would now print an
-"(unnamed net_device) (uninitialized): waiting rsp ..." line just before
-the new dev_err() line.
-
-Should those helpers be converted as well?
-
->  	else
->  		*can_ch_id = args[0];
-
-[Severity: Medium]
-This is a pre-existing issue, not introduced by this patch, but can
-args[0] be read here without ever being initialized?
-
-args[] has no initializer. When the device is no longer connected,
-pcan_usb_wait_rsp() returns 0 without filling it:
-
-	/* usb device unregistered? */
-	if (!test_bit(PCAN_USB_STATE_CONNECTED, &dev->state))
-		return 0;
-
-peak_usb_disconnect() clears PCAN_USB_STATE_CONNECTED through
-peak_usb_stop_rx() before calling unregister_candev(), so the netdev is
-still registered during that window. An ETHTOOL_GEEPROM request that lands
-there would go through peak_usb_get_eeprom()->dev_get_can_channel_id().
-It would copy the uninitialized stack byte to userspace and cache it in
-dev->can_channel_id.
-
-The probe-time call this patch keeps runs with CONNECTED set, so it is
-not affected.
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> index 4c08656e77681..a12ee6ec71e68 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-[ ... ]
-
-> @@ -1073,7 +1055,8 @@ static void peak_usb_disconnect(struct usb_interface *intf)
->  		dev_prev_siblings = dev->prev_siblings;
->  		strscpy(name, netdev->name, IFNAMSIZ);
->  
-> -		unregister_candev(netdev);
-> +		if (test_bit(PCAN_USB_STATE_REGISTERED, &dev->state))
-> +			unregister_candev(netdev);
-
-[Severity: Low]
-peak_usb_disconnect() now also cleans up netdevs that were never
-registered. The PCAN_USB_STATE_REGISTERED test only guards
-unregister_candev(). The name is still copied and printed for every
-sibling:
-
-		strscpy(name, netdev->name, IFNAMSIZ);
-		...
-		dev_info(&intf->dev, "%s removed\n", name);
-
-alloc_candev() leaves the "can%d" template in netdev->name until
-register_netdevice() expands it. Will each unregistered channel then log
-a literal "can%d removed"? That would happen when peak_usb_create_dev()
-fails, or when register_candev() fails partway through the loop in
-peak_usb_probe().
-
-[Severity: Medium]
-This isn't a bug introduced by this patch, but does the bus-off command
-sent on close ever reach the device on this path?
-
-peak_usb_disconnect() starts with:
-
-	/* stop RX on all channels before unregistering and freeing them */
-	peak_usb_stop_rx(usb_get_intfdata(intf));
-
-This clears PCAN_USB_STATE_CONNECTED on every channel. For an opened
-channel, unregister_candev() then calls peak_usb_ndo_stop(), which sends
-dev_stop() and dev_set_bus(dev, 0).
-
-Once CONNECTED is clear, pcan_usb_send_cmd(), pcan_usb_wait_rsp(),
-pcan_usb_fd_send_cmd(), pcan_usb_pro_send_cmd() and
-pcan_usb_pro_send_req() all return 0 without sending anything. Even so,
-ndo_stop still sets dev->can.state = CAN_STATE_STOPPED.
-
-The adapter can stay attached here: on a sysfs unbind, or on the probe
-error path when a later register_candev() fails after an earlier sibling
-was registered and opened. Wouldn't its CAN controller then stay bus-on
-with no driver bound?
-
->  
->  		kfree(dev->cmd_buf);
->  		dev->next_siblings = NULL;
-
-[ ... ]
-
-> @@ -1108,13 +1092,40 @@ static int peak_usb_probe(struct usb_interface *intf,
->  
->  	for (i = 0; i < peak_usb_adapter->ctrl_count; i++) {
->  		err = peak_usb_create_dev(peak_usb_adapter, intf, i);
-> +		if (err)
-> +			goto lbl_disconnect;
-> +	}
-> +
-
-[ ... ]
-
-> +	for (; dev; dev = dev->next_siblings) {
-> +		err = register_candev(dev->netdev);
->  		if (err) {
-> -			/* deregister already created devices */
-> -			peak_usb_disconnect(intf);
-> -			break;
-> +			dev_err(&intf->dev, "couldn't register CAN device: %d\n",
-> +				err);
-> +			goto lbl_disconnect;
->  		}
-
-[Severity: Low]
-This is a pre-existing issue, but the hardware state set by dev_init()
-does not seem to be undone on this path.
-
-On PCAN-USB FD and Pro, channel 0's dev_init() (pcan_usb_fd_init() /
-pcan_usb_pro_init()) sends drv_loaded(1) and sets the clock domain and
-the LEDs. peak_usb_disconnect() only calls dev_free(), which frees memory
-and sends no command.
-
-The matching drv_loaded(0) and LED shutdown are in dev_exit()
-(pcan_usb_fd_exit() / pcan_usb_pro_exit()). dev_exit() is only called
-from peak_usb_do_device_exit() at module unload.
-
-Is it intended that a failed probe leaves the adapter in its "driver
-loaded" firmware state? With this patch, a register_candev() failure,
-including for channel 0 on a single-channel adapter, also reaches this
-teardown after the firmware has been initialized. A normal sysfs unbind
-leaves the adapter in the same state.
-
-> +		set_bit(PCAN_USB_STATE_REGISTERED, &dev->state);
-
-[ ... ]
-
-> +	return 0;
-> +
-> +lbl_disconnect:
-> +	/* unregister (if needed) and free already created devices */
-> +	peak_usb_disconnect(intf);
-> +
->  	return err;
->  }
-
-[Severity: High]
-This isn't a bug introduced by this patch, but can this teardown lead to
-a use-after-free? Neither this error path nor peak_usb_disconnect()
-drains the asynchronous restart URBs or cancels the PCAN-USB
-restart_timer before free_candev().
-
-On PCAN-USB, the restart URB completion always arms the timer, whatever
-the URB status:
-
-static void pcan_usb_restart_pending(struct urb *urb)
-{
-	struct pcan_usb *pdev = urb->context;
-
-	/* the PCAN-USB needs time to restart */
-	mod_timer(&pdev->restart_timer,
-			jiffies + msecs_to_jiffies(PCAN_USB_STARTUP_TIMEOUT));
-	...
-}
-
-Nothing in the driver calls timer_delete_sync() or timer_shutdown_sync()
-on restart_timer. On unplug or unbind, the endpoint flush completes the
-URB with -ESHUTDOWN, which arms the timer. peak_usb_disconnect() then
-frees the netdev, and the timer_list lives in that netdev's private area.
-Up to 10ms later, this would run on freed memory:
-
-pcan_usb_restart()
-  peak_usb_restart_complete(dev)
-    netif_wake_queue(dev->netdev)
-
-On Pro and FD, pcan_usb_pro_restart_async() and
-pcan_usb_fd_restart_async() submit unanchored URBs with the channel
-pointer as urb->context. On this probe error path the USB core has not
-disabled the interface.
-
-Suppose register_candev() fails for a later channel while an earlier,
-registered and opened channel has a restart in flight. Could
-pcan_usb_pro_restart_complete()->peak_usb_restart_complete(urb->context)
-then run after free_candev()?
-
-[Severity: High]
-This is a pre-existing issue in pcan_usb_pro.c and is not related to the
-code changed here. Can pcan_usb_pro_handle_canmsg() copy past the end of
-the record and past can_frame->data[]?
-
-	can_frame->len = rx->len & 0x0f;
-	...
-		memcpy(can_frame->data, rx->data, can_frame->len);
-
-The length comes from the device, ranges from 0 to 15, and is not checked
-against CAN_MAX_DLEN or the payload size of the record type.
-pcan_usb_pro_decode_buf() only checks the fixed record size:
-
-		if (rec_ptr + sizeof_rec > msg_end) {
-
-RXMSG0 records (12 bytes, no payload) and RXMSG4 records (16 bytes) both
-reach the same handler:
-
-	[PCAN_USBPRO_RXMSG4] = sizeof(struct pcan_usb_pro_rxmsg) - 4,
-	[PCAN_USBPRO_RXMSG0] = sizeof(struct pcan_usb_pro_rxmsg) - 8,
-
-A broken or malicious adapter could send such a record with a large
-length nibble. The memcpy would then read beyond the record:
-
-- into stale bytes of the non-zeroed kmalloc() RX buffer allocated in
-  peak_usb_start(), or
-- past the end of that buffer, when the record sits at its end.
-
-With len > 8 it would also write up to 7 bytes past can_frame->data[8].
-Frames with len <= 8 that carry this data go to CAN_RAW readers through
-netif_rx().
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261020-canfd_check_channel_idx-v5-0-a62b35b867f0%40peak-system.fr
+--ghmookne3nuwdo2i--
