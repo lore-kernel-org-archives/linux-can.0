@@ -1,57 +1,108 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.129.124
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792656216;
-	b=qel9Od66QsDp0aCDpUU9BOfG4H3X3BJPkeCNuRLSqv/BiYqCku92auzTmhkLCQG59bqY
-	 an+6cvFWUmt10jdr9ppgob5WelLagflyq2UgstGPvn8pMPaRHUFctB3QcI3ACmIcBe2zd
-	 2jXCa1i+rfreZLGF2VGji1qjX7Ef+m05uZl4U/LS8X3lD969vk+fGAPH1flCD8hx7JPii
-	 vRmAsnxG7gIVoPqRMFnWqUnMDvSO/mkcVLTWimrH6/kraf/T+qCTjv06RpDTw/cabssfX
-	 YuUeKKLn3nq+9LC2plK7LhvJ8z7bDd5fnmKBl5oVARlGpx32luNpopi6/kuJHGGqH4Q==
+	t=1792658271;
+	b=4PJk3bO2ctafgAyzEGjJQujwVVZMk3gA2HcrC2cL6h1LqqXqBPa3ej0Q1fWUvY11p9qY
+	 MdWoAz2aCdhQ11q4bTDEmBTYm1fmqB2DY9jdZ9qnuqtu84FN5fDaSxxmxL+Hh/Tp7Grsj
+	 ex85Dta6GzLgOyPDkMAFEZJxQuYZXqEw/VmcEgIazKTvrxy3SpsX71X+fMFhdQ6bKC9xZ
+	 b5tJE1CbmCQcvoPNbfFPMgq+K/VGEQCHll7VIe2RMOypgPyQ8bBZGCpp3z58l4CFMtAjr
+	 mXZWyiPQGIdu21f/e6MvYU9cN1hD1cyUdQFV/+5try44gIGNB5n6ubeLmYvdYK6OEOg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792656216;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=pC9Lx1W2Q8rGV5uVdOMy310EDsBgzPcP/cwOlSKI+4c=;
-	b=HpHlYzXx8c+/XKsniqB+lXZCqjg5LH7N0JPr9xeYJt0LJYbStAbk0+1pnE2zPLLIia2+
-	 /vgW2G2G1WGnJpVi9jIUxfo7LslsnjP5MA7ox69X4Y4fTus7LEMpZtx9Sm+9GxEIydjNg
-	 nRFrAfVrM2TWoH2+GHi4RePO7hd049BUEeaIgdWcMZAkwIMYLlkuq1jDcLnAcz7mn8fnW
-	 1bkrdhDXyvHe49Eps8Krt4StYpX+SoKCz4EWSn030oD7zo5YdeBE0AwnnR55Q2lw+8nkQ
-	 6UBPfKxiXhoxY07mQiZx0ZkcsiAKwtKUdAf9AxxE7RT2+PJWTnZnmSzbipCqb4ttuuQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792658271;
+	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
+	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 X-Received:Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 To:Cc:References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=DOooTUff7X5TAnLovj39ayLbqx8ey/Hg8MJZZ+hSrak=;
+	b=SAKEgSN8HeWd6IpUzLUFvsDgqnvOrp5WIARxBqCQCfoDYoX1uNCj/jrYHjkGNvIQFR1R
+	 vBQL8lZJ+5bJ87TzzRZAijrEzYOnoZEWSBc7O3uif0g+rRt2WLP+4mKQbC/MAq5P5gMI4
+	 mrAVvAp4houVlJSnjbIkvyARTh5xlijPq0h5g/QKT2TsYVwZqj2czsYSfD/UULD7vNWEm
+	 E4FuiWzdbzsTH+lyc5+Wc4qVMJK7v4ZZMSzFTEL+1XnuIHFj2E+kbrVR94zNQ85RRH4WW
+	 /gf39q5sp/bvGuH5qA40UhpcGcMqVXbQGoNChIWSHRMxyujE3oOpkkvEwcgYNbIyRdg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YW174poN;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=redhat.com;
+	spf=pass smtp.mailfrom=redhat.com;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b="A/Mmwau1";
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=ej0LLEa1;
+	arc=none smtp.remote-ip=170.10.129.124
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6F62606A319
-	for <linux-can@vger.kernel.org>; Thu, 22 Oct 2026 08:03:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09F1606A31D
+	for <linux-can@vger.kernel.org>; Thu, 22 Oct 2026 08:37:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B09F1606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YW174poN
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 320E01F000C1;
-	Thu, 22 Oct 2026 08:03:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792656215;
-	bh=pC9Lx1W2Q8rGV5uVdOMy310EDsBgzPcP/cwOlSKI+4c=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=YW174poNYBc6JbZFyEeTExjBqgzHqqWWjCpuJY3tkqtHsfu9QRb4SU7f9u/BWqN83
-	 VXnRwFh2Pe9ED+aWqOO7VZTthh2W05iW5ezvhN8j+6swC/5tjOsRUNbAIT+6KnW793
-	 j33nRMKHHopJyeRa8n+CEl3RJ/QiNfohjLxTZ/tVCTEspxG4m2m2oKNQc5MbhAG7at
-	 nc/1s2sc7gniOZMR2T7JmMUrsa+x4wAn29NNrxFFqaUXT4AKOmEwutOrBGNzQAbUO+
-	 CE91avv+FKLcCEsjorM8SAqswigOnW4OrsSj2lAyFDAosW6wUKzREt4Muy25EqPAMQ
-	 oGm2tQbbId+tA==
-Message-ID: <sashiko-outbox-181151@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net v6 1/1] can: j1939: validate the EDPO packet number
-Reply-To: sashiko-reviews@lists.linux.dev
-To: Quchaosheng <quchaosheng000406@163.com>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <179265494813.314254.14725785769836234084@163.com>
-References: <179265494813.314254.14725785769836234084@163.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 22 Oct 2026 08:03:34 +0000
+	dkim=pass (1024-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=A/Mmwau1;
+	dkim=pass (2048-bit key, unprotected) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=ej0LLEa1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1792658265;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DOooTUff7X5TAnLovj39ayLbqx8ey/Hg8MJZZ+hSrak=;
+	b=A/Mmwau1ifS5fM8g5xYGJ4DNLg+F8zsFs6054zqh/xOgAkmVA/g22xMWYUrK6iKzHckxA/
+	T/AsmdjYQTjIQpFxONdR1htTfP/wIY8WbHlCGzmEs0kFTPXuzEH0tmTN6By/tfytfv7ZqZ
+	rPOOnuszDmDOOVY/umi+x4Ow/2d6I3E=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-691-8GptimyqMWye6xy1lLYo1w-1; Thu, 22 Oct 2026 08:37:44 +0000
+X-MC-Unique: 8GptimyqMWye6xy1lLYo1w-1
+X-Mimecast-MFC-AGG-ID: 8GptimyqMWye6xy1lLYo1w_1792658263
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4a16faefac0so9538225e9.0
+        for <linux-can@vger.kernel.org>; Thu, 22 Oct 2026 01:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1792658263; x=1793263063; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=DOooTUff7X5TAnLovj39ayLbqx8ey/Hg8MJZZ+hSrak=;
+        b=ej0LLEa1COd0miBtYfh/Re7eVCX43R1PVUXERJQsuuzdKKJq/B1lf1gSgoGiaw+ADB
+         8ROJZyF++ZY0Ksx+LsYy4gmPWE9UFt4r/6/4RpjEqMv9tut4Bn+oM+0n3zdwFTeTX1Md
+         XG2NGzh+5odOVOu8sWSglmAWUHtw67EoV2lX+c3EopAfsr9C41UNfboXSF2ZOaYHmn9U
+         1+7GpTyRJMZS4FOFpzPgnib8mHMiFKb+GC76V9bD5rYO9JpulVxcVoYVWlfqQCO7Afwc
+         76KJoft4PY4fb75dixUVQv8McMHZ/1GxpIbZFxMG+KJMNvyoAgF93GGLy//zN900VA5e
+         01dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792658263; x=1793263063;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=DOooTUff7X5TAnLovj39ayLbqx8ey/Hg8MJZZ+hSrak=;
+        b=IyJSwRg+raqiMXxITD7OpWhC0j+BUW6NgImOEJKHkz1Kyikzq/vKhUU7CCfq245CwE
+         GF/LYaMGrupcl1G0VigcyyJhnszoBGXm574wKoGmQmiwA34D+MHFGwLMIRy7euxoZveP
+         OjCuIjujZVgW9v2LErLjG48iRX8j/z/vPqZoizteWNs4Bn2JYOn+stV+lVUepjWBvmPd
+         O7g4GOZFG0JsxPO3jiGUM6dPeL8nYOUXpzNj9ERVGxZ5+/K4aI4mCnRkFydsLIPcLZ3V
+         IaJwl8XDb0YACNRsyMTqJSxLqSUFCJw1co7fpmPMvT4QqEsbrLc1NsIZBQ6qDL5ZGVko
+         IZpA==
+X-Forwarded-Encrypted: i=1; AKwUvBwzCynUH+7Yox65tdJqdWsUGN+r9l35zbmn3WajolbRtyROBmdFTiLV0OlMPCfRnkSch0omzMrgar8=@vger.kernel.org
+X-Gm-Message-State: AFq9FYIPnXeY4SLGcX3hF2ndAyjV/Dogo+U+l5Hin1N1pccjEJPfJ3Ft
+	qNedEsohplZg2PU41Tfx3NFVs+bK1ngY28exMS8TYDmkLcvg/8S7r4dAm7H5nD37Rk88BcaTOXd
+	hO6xR6SyQhFpvXPalI5fL/7YcUNnjI4FJnv7Y/aYtxCc7O6/UP/LnDRfXD+XF0Q==
+X-Gm-Gg: AYBFou0zY9hXHhS8cEAMXt59QbT747i2tsvHwqiUQqInUwdBpg0egdvnmGyFrUg/Fk/
+	bO5y6u2O5iiRAKSxpo+VJ1LNNG7NrnWCQL7s6brihxXUCBxB9ZTtqpb8zH31EOs0t9SycuP0Z50
+	E3hdM9JaoF4yInbGcQ8qJIzkn+fvK6ltTfXUADM15WfXdw5dSIZiHQMoAxuRxRSs7Mf3PIwSvko
+	3EyuDopZIfmXCeOZ1NbOwIae0bA2NBvInya3nBC0Ptf0a5frLMt4kqzy0QjdcD+Q4ChFIMlpkn2
+	kcAKEdg7YvYYQ4ujMDCVpzOOtUBifDDJ+LzT7BFDYJRM6aHO3DCDN6j5IXH84bLtjHWEuVlWTgv
+	KgN9CyjAUuGHX5XKLnfMF4wJyHV3I6pH0H29v27kLCR1raUJYWEGeJgq0kYjuQc3PGdGCWBvMzw
+	==
+X-Received: by 2002:a05:600c:138e:b0:4a1:dec1:4e1 with SMTP id 5b1f17b1804b1-4a1fdb132a1mr95784475e9.22.1792658263067;
+        Thu, 22 Oct 2026 01:37:43 -0700 (PDT)
+X-Received: by 2002:a05:600c:138e:b0:4a1:dec1:4e1 with SMTP id 5b1f17b1804b1-4a1fdb132a1mr95784235e9.22.1792658262599;
+        Thu, 22 Oct 2026 01:37:42 -0700 (PDT)
+Received: from [192.168.188.234] (ip232-47-231-195.pool-bba.aruba.it. [195.231.47.232])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4a207b29276sm58527255e9.6.2026.10.22.01.37.41
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2026 01:37:42 -0700 (PDT)
+Message-ID: <eb3b2eee-3460-4b03-a180-1d3806a7f8f7@redhat.com>
+Date: Thu, 22 Oct 2026 10:37:40 +0200
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -60,139 +111,55 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 0/11] pull-request: can-next 2026-10-22
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+ kernel@pengutronix.de
+References: <20261021231130.2085690-1-mkl@pengutronix.de>
+Content-Language: en-US
+From: Paolo Abeni <pabeni@redhat.com>
+In-Reply-To: <20261021231130.2085690-1-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [High] can: j1939: race on rxtimer and state in j1939_session_cancel()
---
+On 10/22/26 01:07, Marc Kleine-Budde wrote:
+> Hello netdev-team,
+> 
+> this is a pull request of 11 patches for net-next/main and obsoletes
+> pull-request: linux-can-next-for-7.4-20261021.
+> 
+> The first patch is by Vincent Mailhol and drops CAN-XL frames on non
+> CAN-XL devices.
+> 
+> A patch by Sang-Heon Jeon removes a redundant NULL check before
+> netdev_hold() in the CAN RAW protocol.
+> 
+> A patch by Kaixuan Li for the CAN ISOTP protocol improves the check
+> for the correct CAN CC/FD frames.
+> 
+> The next 3 patches are by Cunhao Lu and make CAN skb freeing safe in
+> any context in several CAN helper functions.
+> 
+> A series by Oliver Hartkopp et al fixes several problems in the CAN
+> net-layer:
+> 
+> 3 patches target the CAN procfs: A patch by Runyu Xiao resets the CAN
+> pkg_stats using atomics, a patch by Oliver Hartkopp fixes the stats
+> calculation after a statistics reset. Followed by a patch to remove
+> kernel pointers from the output.
+> 
+> The last 2 patches are by Oliver Hartkopp as well, they convert the
+> unreliable ARPHRD_CAN type check to the robust can_get_ml_priv() and
+> protect the CAN receive lists with a per-device lock.
+I'm wrapping-up the net-next PR right now, and this will not make the
+cut. Still all the material here, after forwarding the trees post PR,
+looks like 'net' worthy. We could merge it afterwards.
 
-commit c1bc44e269c86cae99ab16d5fb0f92e924343f7e
-Author: Quchaosheng <quchaosheng000406@163.com>
+Note that there is other net-next material in the same status.
 
-can: j1939: validate the EDPO packet number
+Thanks,
 
-This commit validates the peer-controlled packet offset in ETP.CM_DPO frames
-against session->pkt.total and adds a NULL skb check in
-j1939_session_completed(). It also updates j1939_session_cancel() to cancel
-rxtimer before taking active_session_list_lock and to deactivate sessions
-already in J1939_SESSION_WAITING_ABORT.
+Paolo
 
-Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutroni=
-x.de?part=3D3
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..2cc6c46c4d50b 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1161,18 +1161,39 @@ static void __j1939_session_cancel(struct j1939_s=
-ession *session,
->  static void j1939_session_cancel(struct j1939_session *session,
->  				 enum j1939_xtp_abort err)
->  {
-> +	bool waiting;
-> +
-> +	/* Cancel the rxtimer before taking the list lock: hrtimer_cancel()
-> +	 * waits for a running callback, and j1939_tp_rxtimer() takes the
-> +	 * same lock.
-> +	 */
-> +	j1939_session_rxtimer_cancel(session);
->  	j1939_session_list_lock(session->priv);
-> =20
-> +	waiting =3D session->state =3D=3D J1939_SESSION_WAITING_ABORT;
->  	if (session->state >=3D J1939_SESSION_ACTIVE &&
->  	    session->state < J1939_SESSION_WAITING_ABORT) {
-> -		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
->  		__j1939_session_cancel(session, err);
-> +		/* hrtimer_start() does not wait for the callback, so arming
-> +		 * the abort timer here cannot deadlock.
-> +		 */
-> +		j1939_session_get(session);
-> +		hrtimer_start(&session->rxtimer,
-> +			      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
-> +			      HRTIMER_MODE_REL_SOFT);
->  	}
-> =20
->  	j1939_session_list_unlock(session->priv);
-> =20
->  	if (!session->sk)
->  		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-> +
-> +	/* The abort went out on an earlier call, and this caller has just
-> +	 * cancelled the timer that would have finished the session off, so
-> +	 * nothing else is left to deactivate it.
-> +	 */
-> +	if (waiting)
-> +		j1939_session_deactivate_activate_next(session);
->  }
-
-[Severity: High]
-In j1939_session_cancel(), j1939_session_rxtimer_cancel(session) is called
-before acquiring active_session_list_lock, while session->rxtimer is re-arm=
-ed
-and waiting is evaluated under that lock.
-
-Can this window between cancelling session->rxtimer and acquiring
-active_session_list_lock introduce two races with concurrent receive packet
-processing or a concurrent j1939_session_cancel() call?
-
-First, receive handlers such as j1939_xtp_rx_dat_one(),
-j1939_xtp_rx_cts_one(), and j1939_xtp_rx_dpo_one() call
-j1939_tp_set_rxtimeout(session, ...) without holding active_session_list_lo=
-ck.
-If another processor calls j1939_tp_set_rxtimeout() after
-j1939_session_rxtimer_cancel() returns here, but before
-active_session_list_lock is acquired:
-
-  j1939_session_cancel()
-    j1939_session_rxtimer_cancel(session);
-                                         j1939_tp_set_rxtimeout()
-                                           j1939_session_rxtimer_cancel(ses=
-sion);
-                                           j1939_session_get(session);
-                                           hrtimer_start(&session->rxtimer,=
- ...);
-    j1939_session_list_lock(session->priv);
-    __j1939_session_cancel(session, err);
-    j1939_session_get(session);
-    hrtimer_start(&session->rxtimer, ...);
-
-Doesn't hrtimer_start() in j1939_session_cancel() re-enqueue session->rxtim=
-er
-while it is already armed, overwriting it without dropping the reference
-taken by j1939_tp_set_rxtimeout() and permanently leaking session->kref
-(which also holds a netdev reference on priv->ndev and blocks
-unregister_netdevice())?
-
-Second, if two callers concurrently enter j1939_session_cancel() on the same
-session (for example, j1939_tp_txtimer() racing with an incoming packet),
-both can execute j1939_session_rxtimer_cancel(session) before either acquir=
-es
-active_session_list_lock:
-
-  j1939_session_cancel()                 j1939_session_cancel()
-    j1939_session_rxtimer_cancel()         j1939_session_rxtimer_cancel()
-    j1939_session_list_lock()
-    __j1939_session_cancel()
-      session->state =3D J1939_SESSION_WAITING_ABORT;
-    j1939_session_get(session);
-    hrtimer_start(&session->rxtimer, ...);
-    j1939_session_list_unlock()
-                                           j1939_session_list_lock()
-                                           waiting =3D session->state =3D=3D
-                                             J1939_SESSION_WAITING_ABORT;
-                                           j1939_session_list_unlock()
-                                           if (waiting)
-                                             j1939_session_deactivate_activ=
-ate_next()
-
-Wouldn't the second caller observe waiting as true and call
-j1939_session_deactivate_activate_next(session) even though its
-j1939_session_rxtimer_cancel() ran before the first caller armed the abort
-timer, removing the session from priv->active_session_list while
-session->rxtimer remains armed?
-
-[ ... ]
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/179265494813.314254=
-.14725785769836234084@163.com?part=3D1
