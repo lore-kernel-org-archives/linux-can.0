@@ -1,59 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792628968;
-	b=Y/Qs4mPUn+Xubc8a4agPVA2vrQJ5Yst0blLb0UgKG4gMk0yGvnVZ5yv8lPlg80/G5zDN
-	 wdP48P3c/TkTPLKFtVPL/x8WB4QvwEvl8czU9bZYpEImzHr6ZJ4VCC3++jY+l7JM/8Gqn
-	 Y+f8v3xahGugwxLFf2b+15kwZ2FLDKrFqGeqFxB6jxOg3CUgDQNjqve3v1lqzKM/ON5hn
-	 Ik6PwNmk5FcpM7OhTclnlCBsGEbh54UdsGu5NBZ9rzNO7vtDcmFFj2jOJGq9hP6RRGCzR
-	 AMBlPEpWqX/57/6Z0bKO6OR3bS10O3bqIYIR5GKCMhMsbeH/qwty4FJ6qp3NY1oWh7Q==
+	t=1792628969;
+	b=EWrJ2p3paBL5wbzcALP7/DPReUzA8ktA8iRKwWkTXExu6noWo2Bj6X5n3IkudEy+g5lq
+	 k447PwICIc8bcBjrQMSzEkZjT+E9BeyNBnXzVf3W434YMiJLGE3fXVGjbW7kgGFz9AG0S
+	 tHrrjB5dV6qpJzSoO1mqR6LYSuRjXG9lheIO4f7fsgla78wEnIK19YQI1Cd35lEkTL75Z
+	 6a/elxAjg9SOLhL+va+wztNjzCn/NAR7NiwgUmVfhZA6AidyoflGQRn4ErtveDIHLqVhl
+	 0mhpRM85htJQsSE1zc4Kj6S3CAxv41ZP866EVtMTtLxGP/up7jmq7n+O25RPTYUj8EA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792628968;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792628969;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=cWxFRUTcb/IyV74W9WQGkYLCYb/7xRti8tWVl0En80M=;
-	b=zh3GPeekzFmD5YWfWli4nFivGCZKn0/7eN4JoGD1ZfcwARxIBvL2Upi2eFq8pF5ZqDFO
-	 DeNP6Ft3VMcUHK1QGF9bQj+6YSQzbfLAqzexYUNPHW8ChlX3BEKldW0tZGaK1F4PT+eP9
-	 /77IHkJdI8kgJmZnWwzJ5VNLT29JwwA5WnP29Dhlq8NdSbQP0fpKzXHFieNZGKBWpw/xb
-	 f0MkVlvT8Nhq3O5Q3pDnSa0BVnviyKOrgpJyX98ZVxVh3n6ozKoj+UxPEin3Czg8Do2Rx
-	 5AOZvP9VqwWVS/Xb3yy0MfCL7qOXuIIpmOrxT70irQFcY7Aax3fXXJh5xc0QbkcWQlA==
+	bh=rZct/Lel8zJTBY12234Z+EPTuMdyz1ZasuapRcQJ1AU=;
+	b=4AUqSo21qG5KNG7tIZVyqzc27Vk+/OUoxcIm/XBWOIcjtDCvOk5RLf1r5+Nw57gVFhYd
+	 hqYep3gSpVhaZ3VjugEPekh4d+8fdf3IvhhKGP62TqBGO+vW3tHpL2vym0erc0Sq0crrZ
+	 5fDs/qHcXkAZcXTH0dQqKadxXnUXlmQC0HFL+t0K+WOCcYhlDdZuWY96/AGgXdynq10iE
+	 2wjQ0J3oxNqok2UkKbHArVkjsWl++WFZqxaVwSriUz3wPzsiYNh0JK7/zIdl+uaAfvKTj
+	 0GkTWEAKfrwFO8qbWwjdrYjkb48BUOSc4iCORUxkqDZzCh9pF08jUHk7DHeAsXfQZvQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QC0nRbpU;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PX2LvZZ8;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89A8606A322;
-	Thu, 22 Oct 2026 00:29:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA24606A32C;
+	Thu, 22 Oct 2026 00:29:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QC0nRbpU
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C7C1F000C1;
-	Thu, 22 Oct 2026 00:29:27 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PX2LvZZ8
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A2AC1F000C1;
+	Thu, 22 Oct 2026 00:29:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792628967;
-	bh=cWxFRUTcb/IyV74W9WQGkYLCYb/7xRti8tWVl0En80M=;
+	s=k20260515; t=1792628968;
+	bh=rZct/Lel8zJTBY12234Z+EPTuMdyz1ZasuapRcQJ1AU=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=QC0nRbpUZSTOe+CDu+Xclaz0FMpE11MH3SLEhEOr8kfyaIQHABsfPa63qy45ij0LQ
-	 bKnrJR+aXdqUMh49+vHjwdWOh/FYecTPqhDh2LtZ5kSziO6S5RgdMovrMqNDB3Z2NF
-	 Iv6ta2R+KvG0fu1L9wyQ6DKi8bQgzQIWJAGeurbxKQ40YAvprMx+f+t56mjVPV0oRW
-	 td/BVyH5y4HtHnIp5DZYLD0+x/IjshA81bqTi9xfEeWf3VBvIo+6WBSnJa59Ptt//P
-	 n7pDLdYTyzQ1rut8f3NtUE4/YhOYIcwHOkGS27tsRCqDuzQAr5CFsykq5ZpUQRIFnC
-	 tOLHm6i2V5g1Q==
-Subject: Re: [PATCH v4 08/10] can: peak_usb: reject records for unset channels
- in PCAN-USB Pro
+	b=PX2LvZZ8DKtJlIP7ILoOAMcdXeJosnvpv8kXYOFrkRdW0pcj6Pk7ZET9PRZ8u0AT3
+	 dJRFWPQOYiASaHNxeM7RF69wr8Xho3hegMA/gqAKEh10VHd88qQmlzJaWAivCr9FMg
+	 +6zpn8WE0M8/MaB3v/qj+l694Ilq8+qbogkr4PhIUAMVvA6jWBqJnId/w4x6IGJ+Xg
+	 FsKOSdzSszzWTdrRZ+RSqDQTsKzdQXJPV4vdzCDrR6J+Zais1LhcbkZ5d6uhJ8Hf5Q
+	 QluDzdkgKlF6xYqUIIsVRRN75ZPTKBHI2my2LV57Wly+9SPdokiUNWrzkepGd9x404
+	 oqA/IHjfUXAoQ==
+Subject: Re: [PATCH v4 09/10] can: peak_usb: register the netdev only once the
+ channel is set up
 From: netdev-bot+sashiko@kernel.org
 To: stephane.grosjean@free.fr
 Cc: mkl@pengutronix.de, mailhol@kernel.org, error27@gmail.com,
  wg@grandegger.com, s.grosjean@peak-system.fr, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Thu, 22 Oct 2026 00:29:26 +0000
-Message-ID: <179262896688.3131.17836055210871710516@kernel.org>
+Date: Thu, 22 Oct 2026 00:29:27 +0000
+Message-ID: <179262896798.3131.8641593926434967283@kernel.org>
 In-Reply-To:
- <20261020-canfd_check_channel_idx-v4-8-bfbde81f8bab@peak-system.fr>
+ <20261020-canfd_check_channel_idx-v4-9-bfbde81f8bab@peak-system.fr>
 References:
- <20261020-canfd_check_channel_idx-v4-8-bfbde81f8bab@peak-system.fr>
-X-sashiko-severity: Low
+ <20261020-canfd_check_channel_idx-v4-9-bfbde81f8bab@peak-system.fr>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -66,231 +66,153 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 1 · Medium: 0 · Low: 1
 
-- [Low] pcan_usb_pro_handle_canmsg() and pcan_usb_pro_handle_error() now
-  return -EINVAL when usb_if->dev[ctrl_idx] is NULL.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Pre-existing issues:
-- [High] At this commit, peak_usb_create_dev() registers the netdev
-  before dev_init()/dev_set_bus().
-- [High] At this commit, peak_usb_create_dev() calls register_candev()
-  before dev->adapter->dev_init().
-- [High] pcan_usb_pro_handle_canmsg() takes the payload length from the
-  device (`can_frame->len = rx->len & 0x0f`, so 0..15) and runs…
-- [Medium] pcan_usb_pro_decode_buf() loops on the device-supplied rec_cnt
-  and reads pr->data_type (`pcan_usb_pro_sizeof_rec[pr->data_type]`)…
+- [High] The fix does not close the command-buffer race on multi-channel
+  PCAN-USB FD family adapters (PCAN-USB Pro FD and PCAN-USB X6,…
+- [Low] The patch moves register_candev() (pcan_usb_core.c:1024) after
+  dev_init(), dev_set_bus(dev, 0) and dev_get_can_channel_id().
 
 --
 
-can: peak_usb: reject records for unset channels in PCAN-USB Pro
+can: peak_usb: register the netdev only once the channel is set up
 
-With this patch, the PCAN-USB Pro decoders reject CAN message and status
-records for a channel whose slot in usb_if->dev[] is NULL. The slot is
-now published with smp_store_release() in pcan_usb_pro_init() and
-cleared in pcan_usb_pro_free().
+This patch moves register_candev() in peak_usb_create_dev() after
+dev_init(), dev_set_bus() and dev_get_can_channel_id(). The netdev then
+can't be opened or configured while the channel is still being set up.
+The error paths no longer unregister the netdev, and PCAN-USB now uses
+dev_err() when reading the channel id fails.
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> index cbc23953ce610..151c5ea2859be 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-> @@ -543,7 +543,12 @@ static int pcan_usb_pro_handle_canmsg(struct pcan_usb_pro_interface *usb_if,
->  	if (ctrl_idx >= ARRAY_SIZE(usb_if->dev))
->  		return -EINVAL;
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> index 4c08656e77681..ccfc26d3e5a6b 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+
+[ ... ]
+
+> @@ -1027,6 +1018,18 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+>  	/* get CAN channel id early */
+>  	dev->adapter->dev_get_can_channel_id(dev, &dev->can_channel_id);
 >  
-> -	dev = usb_if->dev[ctrl_idx];
-> +	dev = READ_ONCE(usb_if->dev[ctrl_idx]);
-> +
-> +	/* reject records for a channel that is not (or no longer) set up */
-> +	if (!dev)
-> +		return -EINVAL;
+> +	/* register the netdev only once the channel is fully set up, so that
+> +	 * it can't be opened or configured while being initialized.
+> +	 */
+> +	err = register_candev(netdev);
 
-[Severity: Low]
-Is -EINVAL the right return value here? pcan_usb_pro_decode_buf() treats
-any negative return from the record handlers as fatal for the whole
-transfer:
+[Severity: High]
+Does this fully close the command buffer race on the multi-channel
+PCAN-USB FD adapters (PCAN-USB Pro FD and PCAN-USB X6)?
 
-pcan_usb_pro_decode_buf() {
+The commit message says the patch addresses this case:
+
+  the commands sent by the open or bittiming callbacks may race with
+  the ones sent by dev_init() on the same command buffer;
+
+On those adapters, pcan_usb_fd_init() makes every channel after the
+first share the previous sibling's command buffer:
+
+drivers/net/can/usb/peak_usb/pcan_usb_fd.c:pcan_usb_fd_init() {
     ...
-		case PCAN_USBPRO_RXRTR:
-			err = pcan_usb_pro_handle_canmsg(usb_if, &pr->rx_msg);
-			if (err < 0)
-				goto fail;
-			break;
+		pdev->usb_if = ppdev->usb_if;
+		pdev->cmd_buffer_addr = ppdev->cmd_buffer_addr;
     ...
-fail:
-	if (err)
-		pcan_dump_mem("received msg",
-			      urb->transfer_buffer, urb->actual_length);
 }
 
-Both channels share the PCAN_USBPRO_EP_MSGIN bulk-in endpoint, and their
-records sit back to back in a single transfer. Suppose one channel 1
-record arrives before pcan_usb_pro_init() has published dev[1]. Then
-every later record in that transfer is dropped, including valid
-channel 0 CAN frames, channel 0 RXSTATUS records, and the RXTS records
-that feed usb_if->time_ref.
+So one buffer, and one fw_info, serves the whole interface. Nothing in
+peak_usb appears to lock either of them.
 
-pcan_usb_pro_decode_buf() also hex dumps each such transfer without rate
-limiting. At this commit, peak_usb_read_bulk_callback() dumps it a
-second time. A later patch in the series, "can: peak_usb: only dump
-received bytes on decode error", rate limits that second dump. The
-dump in pcan_usb_pro_decode_buf() and the dropped records are still
-there at the end of the series.
+peak_usb_probe() calls peak_usb_create_dev() for each channel in turn.
+With this patch, can0 is registered at the end of channel 0's
+peak_usb_create_dev(). Channel 1's peak_usb_create_dev() then runs
+without RTNL:
 
-sizeof_rec has already been computed and bounds checked for this record.
-Could the handler return 0, or the loop skip just this record? Only the
-record for the unset channel would then be rejected, which is what the
-commit message describes. The same question applies to the new check
-in pcan_usb_pro_handle_error().
+peak_usb_create_dev(ch1)
+  dev_init() -> pcan_usb_fd_init()
+    pcan_usb_fd_set_clock_domain()
+    pcan_usb_fd_set_can_led(dev, PCAN_UFD_LED_DEF)
+  dev_set_bus(dev, 0) -> pcan_usb_fd_set_bus()
+  dev_get_can_channel_id() -> pcan_usb_fd_get_can_channel_id()
+    pcan_usb_fd_read_fwinfo(dev, &usb_if->fw_info)
+      pcan_usb_pro_send_req()   /* memsets the shared fw_info */
 
-> +
->  	netdev = dev->netdev;
->  
->  	skb = alloc_can_skb(netdev, &can_frame);
+Meanwhile, userspace holding only RTNL can bring up can0:
 
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch. Since
-this function now validates the channel from the device, should the
-payload length be validated as well? Further down in
-pcan_usb_pro_handle_canmsg():
+peak_usb_ndo_open() -> pcan_usb_fd_start()
+  pcan_usb_fd_set_filter_std() / pcan_usb_fd_set_options()
 
-	can_frame->len = rx->len & 0x0f;
-	...
-	} else {
-		memcpy(can_frame->data, rx->data, can_frame->len);
+Userspace can also set can0's bittiming through
+pcan_usb_fd_set_bittiming_slow(). Both paths build commands in the same
+buffer and send them with pcan_usb_fd_send_cmd(). That function writes
+the EOC marker into the buffer and reads the shared fw_info->cmd_out_ep:
 
-The device sets can_frame->len to any value from 0 to 15. Nothing checks
-it against CAN_MAX_DLEN or against the payload the record type actually
-carries. pcan_usb_pro_decode_buf() checks record bounds only against
-the fixed size for each type:
+drivers/net/can/usb/peak_usb/pcan_usb_fd.c:pcan_usb_fd_send_cmd() {
+    ...
+		memset(cmd_tail, 0xff, sizeof(u64));
+    ...
+		err = usb_bulk_msg(dev->udev,
+				   usb_sndbulkpipe(dev->udev,
+						   fw_info->cmd_out_ep),
+    ...
+}
 
-	[PCAN_USBPRO_RXMSG0] = sizeof(struct pcan_usb_pro_rxmsg) - 8,
-	[PCAN_USBPRO_RXRTR] = sizeof(struct pcan_usb_pro_rxmsg) - 8,
+Could channel 1's RESET_MODE and EOC overwrite can0's 64 FILTER_STD
+records, or the other way round? Could can0's bulk transfer use a
+cmd_out_ep that pcan_usb_pro_send_req() has just zeroed?
 
-A device could end a transfer with a 12 byte RXMSG0 record carrying
-len = 8 (or an RXRTR record with PCAN_USBPRO_RTR clear). That record
-passes the rec_ptr + sizeof_rec > msg_end check. Can the memcpy() then
-read 8 bytes past urb->actual_length?
+The cross-channel form of this race was already there before this
+patch. Moving register_candev() within a single channel can't prevent
+it, though.
 
-If the record ends exactly at the end of the 1024 byte RX buffer
-kmalloc()ed in peak_usb_start(), the read runs past the slab object.
-With a shorter transfer, it reads stale bytes from the buffer, which is
-not zeroed. In both cases those bytes reach CAN sockets through
-netif_rx().
+A fix probably needs to serialize command building and sending per
+interface. Two options are a mutex in struct pcan_usb_fd_if, or holding
+RTNL across the probe-time command sequence.
 
-Lengths 9 to 15 also write up to 7 bytes past can_frame->data[].
+The last patch in the series, "can: peak_usb: only dump received bytes
+on decode error", only touches peak_usb_read_bulk_callback(). So this
+race seems to remain at the end of the series.
 
-Could the length be clamped to CAN_MAX_DLEN and checked against the
-record size? This code is unchanged at the end of the series.
+> +	if (err) {
+> +		dev_err(&intf->dev, "couldn't register CAN device: %d\n", err);
+> +		goto adap_dev_free;
+> +	}
 
-[Severity: Medium]
-This is another pre-existing issue that this patch did not introduce.
-pcan_usb_pro_decode_buf() reads the type byte of the next record before
-it checks that the record is inside the transfer:
+[Severity: Low]
+Can this error path now leave the firmware reporting that a driver is
+loaded?
 
-	for (; rec_cnt > 0; rec_cnt--) {
-		union pcan_usb_pro_rec *pr = (union pcan_usb_pro_rec *)rec_ptr;
-		u16 sizeof_rec = pcan_usb_pro_sizeof_rec[pr->data_type];
-		...
-		if (rec_ptr + sizeof_rec > msg_end) {
+register_candev() now runs after dev_init() has already sent commands
+to the hardware. For channel 0, pcan_usb_fd_init() sends
+pcan_usb_fd_drv_loaded(dev, 1), programs the clock domain and sets the
+CAN LEDs to PCAN_UFD_LED_DEF. In the same way, pcan_usb_pro_init() sends
+pcan_usb_pro_drv_loaded(dev, 1) and turns the device LED on.
 
-rec_cnt comes from the device. Suppose it overstates the number of
-records and the previous record ended exactly at msg_end. Then
-pr->data_type reads transfer_buffer[actual_length]. When actual_length
-equals PCAN_USBPRO_RX_BUFFER_SIZE, is that a 1 byte out-of-bounds read
-of the RX buffer?
+register_candev() can fail, for example with -ENOMEM from
+register_netdev(), a netdevice notifier veto, or a can_get_termination()
+error. In that case the adap_dev_free path only calls peak_usb_stop_rx()
+and dev_free(). pcan_usb_fd_free() and pcan_usb_pro_free() only clear
+usb_if->dev[] and free memory.
 
-The value is only used as an index into pcan_usb_pro_sizeof_rec[], so
-nothing is passed on. Would a rec_ptr >= msg_end check at the top of
-the loop be enough? This is still present at the end of the series.
+Only pcan_usb_fd_exit() and pcan_usb_pro_exit() send drv_loaded(0) and
+switch the LEDs off. dev_exit() is only called from
+peak_usb_do_device_exit() at module unload.
 
-[ ... ]
+Before this patch, register_candev() ran before any command reached the
+device, so a registration failure left the hardware untouched.
 
-> @@ -933,7 +943,8 @@ static int pcan_usb_pro_init(struct peak_usb_device *dev)
->  	}
->  
->  	pdev->usb_if = usb_if;
-> -	usb_if->dev[dev->ctrl_idx] = dev;
-> +	/* publish dev to the decoders */
-> +	smp_store_release(&usb_if->dev[dev->ctrl_idx], dev);
-
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch. Does
-the new !dev check get reached at all while pdev->usb_if is still NULL?
-At this commit, peak_usb_create_dev() calls register_candev() before
-dev->adapter->dev_init():
-
-	err = register_candev(netdev);
-	...
-	if (dev->adapter->dev_init) {
-		err = dev->adapter->dev_init(dev);
-
-So the channel can be opened before pcan_usb_pro_init() sets
-pdev->usb_if. In that window, pcan_usb_pro_start() dereferences the NULL
-pointer:
-
-	if (pdev->usb_if->dev_opened_count == 0) {
-
-An RX completion that reaches pcan_usb_pro_decode_buf() in that window
-also gets usb_if == NULL from pcan_usb_pro_dev_if(). The record handlers
-then dereference usb_if->dev[] or usb_if->cm_ignore_count before the
-new check runs.
-
-This looks fixed later in the series by "can: peak_usb: register the
-netdev only once the channel is set up". That patch moves
-register_candev() after dev_init() and dev_set_bus().
+The existing dev_set_bus() failure path and peak_usb_disconnect()
+already leave the device in this state. The effect is limited to the
+firmware status and the LEDs.
 
 [ ... ]
-
-> @@ -981,6 +992,9 @@ static void pcan_usb_pro_exit(struct peak_usb_device *dev)
->   */
->  static void pcan_usb_pro_free(struct peak_usb_device *dev)
->  {
-> +	/* clear this channel's slot: dev is going to be freed */
-> +	WRITE_ONCE(pcan_usb_pro_dev_if(dev)->dev[dev->ctrl_idx], NULL);
-> +
->  	/* last device: can free pcan_usb_pro_interface object now */
->  	if (!dev->prev_siblings && !dev->next_siblings)
->  		kfree(pcan_usb_pro_dev_if(dev));
-
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch. Can
-this kfree() still race with channel 0's own RX URBs and with its
-ndo_stop? At this commit, peak_usb_create_dev() does the following when
-dev_set_bus() fails:
-
-adap_dev_free:
-	...
-	peak_usb_stop_rx(dev->prev_siblings);
-
-	if (dev->adapter->dev_free)
-		dev->adapter->dev_free(dev);
-
-lbl_unregister_candev:
-	unregister_candev(netdev);
-
-For channel 0, dev->prev_siblings is NULL, so no RX URBs are stopped.
-There is no sibling yet either, so pcan_usb_pro_free() frees the shared
-pcan_usb_pro_interface.
-
-If channel 0 was opened after pcan_usb_pro_init(), its RX completions
-still reach pcan_usb_pro_decode_buf(). That function reads
-usb_if->dev[], time_ref and cm_ignore_count from the freed object.
-
-unregister_candev() then calls ndo_stop, and pcan_usb_pro_stop() writes
-to the freed memory:
-
-	pdev->usb_if->dev_opened_count--;
-
-This also looks fixed later in the series by "can: peak_usb: register
-the netdev only once the channel is set up". In that patch,
-register_candev() comes after dev_set_bus(), and the adap_dev_free path
-no longer calls unregister_candev().
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261020-canfd_check_channel_idx-v4-0-bfbde81f8bab%40peak-system.fr
