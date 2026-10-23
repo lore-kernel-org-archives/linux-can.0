@@ -1,102 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792738133;
-	b=lpVhDk4cGqGoW+lLiLiK/OnAs3x6fmCNmqakTximvjex34PsV9d1Y2YqAUshJd5cHU1Y
-	 V7d69vP8ysk1y2a6gMoyJQgjpyonJTFqCIV42WkciJadCyOak1WrZTqRFsCU9Tx0s2bFc
-	 E1r/rZOUNFIdlylpnbfUl1NH3739jTUi0EFN6HWij9nKoB9hK3VwCpAtYqARZnY084kuj
-	 6YYAsuynGY2S48J3RabCS661fVtyeyJwIgxHSXeXUGneBp2KCyIfesN4DdCJmz4LB6EGG
-	 qfszgsrI23AchyNelIkpJs0xTQTK93EW1veS8yHPlt1sQuKG1TZf2mWrgB03WZFg9Ww==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792738133;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=u3kU7+i1NKyI1hY3A73N7hAbDsSzflqLglmlkB1dqYo=;
-	b=E6Qr6Ae7Su+CHEHoWe0TcybVyIdinmNJcZSn1CgIQFOd3XMlIcGJhOGH5wnTEGF1gdBg
-	 w8CvX6EGpPt/gwU+AVylAiDBwoph1BdNse3HsksMnbwZdQx9TEeXTlbFyJo5H8+PyeGVl
-	 kTtaq6n+LVwpWZeVlWF04UTSY46Wu3UvvTnQvDP/TpV2Ehu7uHRLT2bqwND8gwjamKLhT
-	 1PNCyE6ou1ScBMvKsU6Fobg+smtQVh99yotsklxGuh3yJCn/mg25HFBJEcMzO17eolbuA
-	 6qnf7/n/ISExNFtP0fo0KppGmtvb40fKytS7VNYgVIEmD2ASYGAfghAG0jmeIJDSOHw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZALF1L7g;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1792749507;
+	b=NAwV0yoafhdKivTkc2ZajX6fVRiBLcSYTqsRv7oB6a+Da44qsLmFL9HN0w8kbqO8ao/s
+	 AobdYUPwHjTv0gV8y1znl/EXcwATidsXTOn5LvlDeDC792LdCbe47690edlf/9zdQV21P
+	 rWsQM0kVzCS7mDHf8v8pPhtVhwinIItunbL19UqC0+UFmNfKCWd8cOdFG9kBSuQY57s1T
+	 473aDjGGUest8th1jcvU4GE7dNhvl4l30NWmZwzuosehV5HtPpTiyCQfESn3D6e2hCMAt
+	 xJYYC493lHylFXNbExvjGKGcJSs1fn7zvWHZSWKiF3NzTYNXVDa41N9jtNYEZRFdnzQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792749507;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=Ve7/ta2qXklayNEaTRWpAyY7NQ5wEHfm2ehfZ70xWKQ=;
+	b=wqA4074bHvcPeb5HrAgM7RKp9QXAKjhKmBI01HmWYaOj3JzK+CfP5uHwAxStkrRpxQ5T
+	 hMRl+uEZjZUM1hLgCf6bXVoZfOQkOmV/OeqS5puw2y5pCzwfn7N9TGsBEKYPF6JS5Ff8I
+	 K8gQhwsLCf4rGUbyNIyGgQpPYcG+hSY9g67G+eoWobg012OqNW5JtE9+KFQeSYt5lEiHo
+	 h+KhKu8eBf8VCSgKdHNoiPJWnlCx+WsSsx39VEnHWN+plq+yYvbXdoyvwT29tTlCYz9yM
+	 jHTb9ZixbZ+IQzKbD5olrrPETFWjQ3gaJbI6hoTNEYHGwnTDdRxn486CKWYopjGXY/Q==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K1lNtpLJ;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3FC606A31A;
-	Fri, 23 Oct 2026 06:48:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CF3FC606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66416606A31A;
+	Fri, 23 Oct 2026 09:58:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZALF1L7g
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 36394201BAC;
-	Fri, 23 Oct 2026 08:48:44 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792738124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u3kU7+i1NKyI1hY3A73N7hAbDsSzflqLglmlkB1dqYo=;
-	b=ZALF1L7gxBFn0WT4FDUvjdCZ47hY0qdiQPvkDDScMnEU1AyqASxWv+7GSizE/C+Dv6nXY7
-	1fNra1SoLVOdFEW4lq6LUJALuBdHm/fKTqEmyqeqUAYuuAhhQasmmcX/UCtXSC54Jtv2bv
-	6nYu8odB38Tr/X+DKnUgzhHLH86lE+zD9V9VQh5grgaRBTeSwR/bT9Ly50GTTPLPJy99dv
-	0q9Jx3/73+g7vR9ioSoXKNTHPHxhoZawBNgV06ZwwOpAK9JcitEFuKvk2HdMKEvpb0va3n
-	KTokDFS2DmLtIW/ExD7+Uwkov7xBFbczAYp0s8XvC4YdCSfoGFjOoF/Cf+e2uw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792738124; a=rsa-sha256;
-	cv=none;
-	b=HJkjbVFiHLbbSqdXOGESasBeI7ncpHgLAk5lURtEo77fG2NAjxCnPKm/xUPLUwBwooy2Eh
-	pNlFhuRSlsuhtbciKwEbP42EJyuy6817xku3++JAk+xJkSyuSSH0zkCnkWqfR8tPwdS1b6
-	BOTZDukiocvIWBDLM2aC2Le/M+J3qU+E8mow/P+HzLJCrSNOcz7UPG4DhXsHmAFqknxtO5
-	MjI7UJk1urgfBKUsQU7eckJaZH2/pPgokbwrIx3TWT8Sb0AyQ3POUF2qONsJl89x1TMLDY
-	RTzHzIK0+tpDueJzOjXx+3IC6NjzTgX2+i+ZrmbEDD0TlBsOT2A7otxS/6I/Sw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1792738124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=u3kU7+i1NKyI1hY3A73N7hAbDsSzflqLglmlkB1dqYo=;
-	b=VYAD/nUJD+XVoOBBanYARl+mkdRjlXbcuNg+Z7GZgsHA0+Q+WhKpxM8pgdQRkDEsDUVys2
-	2fy+4Hd/LkA0zXkuYrXdHH+V3QiCo9OuQ7sfsHTa+Zm0svSed1ALL3Px17H4rDUBcKAPTO
-	ElGMotSwui9JG0AOkWThI2qZospMMxR4ZmRg8k3/AJJpDh3KTwUqbOZ1iwX88JYc45Rd3H
-	82K6jKKB12nLBws3TRHs0kt9Or3onggZolXQKSoOFgi0wYF9Wut7A+PcCR5jmF6qOwiA2x
-	qfQdYqqjBDeUKgyNswvlg4KxujsszhpPcgjlA0XWN5raDTD9tMDf3jaFDZSm2g==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xK952-000oXk-0F;
-	Fri, 23 Oct 2026 08:48:44 +0200
-Received: from pengutronix.de (unknown [IPv6:2a0a:edc0:0:701:90a8:bcd0:249b:2b36])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 896295D1896;
-	Fri, 23 Oct 2026 06:48:43 +0000 (UTC)
-Date: Fri, 23 Oct 2026 08:48:43 +0200
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: "Kumar, Udit" <u-kumar1@ti.com>
-Cc: vigneshr@ti.com, gehariprasath@ti.com, rcsekar@samsung.com, 
-	mailhol.vincent@wanadoo.fr, andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
-	kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org, 
-	netdev@vger.kernel.org, msp@baylibre.com
-Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
- i2279
-Message-ID: <20261023-classy-cuscus-of-coffee-ec348f-mkl@pengutronix.de>
-References: <20260514065511.3573223-1-a-dutta@ti.com>
- <20260514-tiny-koel-of-order-65ade7-mkl@pengutronix.de>
- <9787fdc5-8a51-4567-a576-a3b9f4fcc59d@ti.com>
- <20261022-spiked-pigeon-from-mars-3f2786-mkl@pengutronix.de>
- <5cddfb8a-8ffa-4578-b2f1-3e57e82b2c95@ti.com>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=K1lNtpLJ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BB2F1F01829;
+	Fri, 23 Oct 2026 09:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1792749507;
+	bh=Ve7/ta2qXklayNEaTRWpAyY7NQ5wEHfm2ehfZ70xWKQ=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=K1lNtpLJ5hGgTEJHSo7X+occejhyWypLrDv/ENmR43gWm4csEY/tDA9KWScEyd4qB
+	 hZZ6cqWfRxR934Po00vYpLMEuX4eVbMzEzLRhYLprt2NJNUNyDJ20i6UnnFWRgqjGt
+	 1aZeiNgOA+nwkS+fsXOGsIghycIqdsEP5qtlXB64cD3RDYFnUBimIxiDxR0Jyg4bd7
+	 ZS4IEB+oii7QSiMCF3uNvF9GiH0I0LjjRe36Anghsu+kwDDV1n1p5n8rIU2PV44kpp
+	 vFTf8heq2IL9Zvdj91uxwghENinIbcNR/3uZ8JiGznBQMpGPtkg5Gxs++0Hz7S+svr
+	 zk9lRm1VQwgxA==
+Subject:
+ Re: [PATCH 3/3] can: ifi_canfd: enable NAPI before starting the controller
+From: netdev-bot+sashiko@kernel.org
+To: patrzhan@amazon.com
+Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+ pisa@cmp.felk.cvut.cz, ondrej.ille@gmail.com, harini.t@amd.com,
+ michal.simek@amd.com, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, kuba@kernel.org
+Date: Fri, 23 Oct 2026 09:58:25 +0000
+Message-ID: <179274950592.3130.11275892525697074934@kernel.org>
+In-Reply-To: <20261021205924.2538511-4-patrzhan@amazon.com>
+References: <20261021205924.2538511-4-patrzhan@amazon.com>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -106,70 +64,130 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="2bdtf3tea7rpjkrd"
-Content-Disposition: inline
-In-Reply-To: <5cddfb8a-8ffa-4578-b2f1-3e57e82b2c95@ti.com>
 
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue(s) to consider.
 
---2bdtf3tea7rpjkrd
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
- i2279
-MIME-Version: 1.0
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
 
-On 22.10.2026 20:33:52, Kumar, Udit wrote:
-> I believe the Bosch errata document is subject to selective disclosure.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Sigh. The VDHL code of the m_can core leaked, but they still keep the
-errata closed :/
+- [Medium] Because napi_enable() now runs before ifi_canfd_start(),
+  ifi_canfd_poll() can run against an IFI CAN FD IP that has not been…
 
-> However, the most relevant public documentation I can provide is the
-> Bosch user manual [0], which states: 'The Tx FIFO enables transmission
-> of messages with the same Message ID from different Tx Buffers in the
-> order these messages have been written to the Tx FIFO.'
->
-> For our public disclosure, we have the TI SoC errata [1].
->
-> Regardless, I believe a v2 is necessary.
-> What would you suggest as the best path forward:
->
-> Apply this errata to the TI SoC where public disclosure is already
-> available?
-> Or
-> apply it to the MCAN IP used within that SoC?"
+--
 
-The original patch [1] Anurag Dutta modified code paths that are only
-active for the peripheral case, i.e. the tcan4x5x SPI/CAN chip. The code
-path for the referenced TI SoC stays unchanged.
+can: ifi_canfd: enable NAPI before starting the controller
 
-[1] https://lore.kernel.org/all/20260514065511.3573223-1-a-dutta@ti.com/
+This patch moves napi_enable() ahead of ifi_canfd_start() in
+ifi_canfd_open(). The goal is that an RX interrupt raised right after the
+controller is enabled can schedule the poll, instead of being dropped and
+leaving the interrupts masked.
 
-> Do you know if TI's
-> > tcan4x5x is affected by the erratum?
->
-> I am checking internally within TI.
+> diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+> index 0f83335e4d07..feb738eb0c9a 100644
+> --- a/drivers/net/can/ifi_canfd/ifi_canfd.c
+> +++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+> @@ -846,9 +846,12 @@ static int ifi_canfd_open(struct net_device *ndev)
+>  		goto err_irq;
+>  	}
+>  
+> +	/* Keep before ifi_canfd_start(): the ISR masks the interrupts and only
+> +	 * the poll unmasks them.
+> +	 */
+> +	napi_enable(&priv->napi);
+>  	ifi_canfd_start(ndev);
 
-Thanks,
-Marc
+[Severity: Medium]
+With NAPI enabled before ifi_canfd_start(), can ifi_canfd_poll() now run
+against an IP that has not been reset yet? Can it also run alongside the
+reset and programming sequence in ifi_canfd_start()?
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+The handler is installed with IRQF_SHARED just above. So ifi_canfd_isr()
+can run because of another device on the line, or because of a line that
+is still asserted. The ISR acts on the raw status and does not AND it with
+IRQMASK:
 
---2bdtf3tea7rpjkrd
-Content-Type: application/pgp-signature; name="signature.asc"
+ifi_canfd_isr() {
+    ...
+	isr = readl(priv->base + IFI_CANFD_INTERRUPT);
+    ...
+	if (isr & rx_irq_mask) {
+		ifi_canfd_irq_enable(ndev, 0);
+		napi_schedule(&priv->napi);
+	}
+    ...
+}
 
------BEGIN PGP SIGNATURE-----
+Before this patch, NAPI was still disabled, so this schedule was dropped.
+The ifi_canfd_irq_enable(ndev, 1) inside ifi_canfd_start() then recovered.
+Now the schedule succeeds.
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatsDSAAKCRDMOmT6rpmt
-0sEKAP9OSQuOjzj5VsA4JmF0dKbbd8FYZsO83xtNSh7TuRPbYgD/dDvVU7y2zdqX
-AJIqud/qnUafn2y/HSDl5R/Ii+DJTgw=
-=lojx
------END PGP SIGNATURE-----
+ifi_canfd_plat_probe() only reads IP_ID, VER and CANCLOCK, and the driver
+has no .shutdown hook. After a kexec or warm boot, could the IP still hold
+RX data or error status when the device is first opened?
 
---2bdtf3tea7rpjkrd--
+If so, the poll can run on another CPU, or at irq_exit in the middle of
+ifi_canfd_start(). It would then do the following with no lock:
+
+  - read STCMD and RXSTCMD
+  - drain the RX FIFO through ifi_canfd_read_fifo()
+  - possibly write ERROR_CTR from ifi_canfd_handle_lec_err()
+  - call ifi_canfd_irq_enable(ndev, 1)
+
+Each of these could interleave with the HARDRESET, the RX/TX FIFO resets
+and the ERROR_CTR unlock/reset/enable writes in ifi_canfd_start().
+
+Possible results:
+
+  - a stale or half-reset FIFO entry delivered as a received frame
+  - a spurious ERROR_ACTIVE state-change frame with error_warning++,
+    because priv->can.state is still CAN_STATE_STOPPED
+  - a stale BUSOFF bit in STCMD, which makes
+    ifi_canfd_handle_state_change() do this:
+
+	priv->can.state = CAN_STATE_BUS_OFF;
+	ifi_canfd_irq_enable(ndev, 0);
+	priv->can.can_stats.bus_off++;
+	can_bus_off(ndev);
+
+In the bus-off case, ifi_canfd_start() then overwrites the state:
+
+	priv->can.state = CAN_STATE_ERROR_ACTIVE;
+
+With restart-ms set to 0, can_restart_now() would return -EBUSY, because
+the state is no longer CAN_STATE_BUS_OFF. Would the interface then stay
+carrier-off until the next down/up?
+
+The commit message says:
+
+  "NAPI can be enabled while the controller is in reset, because nothing
+  schedules it until an interrupt arrives."
+
+That seems to hold only after a previous close, where ifi_canfd_stop()
+writes HARDRESET, masks IRQMASK and clears INTERRUPT. It does not seem to
+hold for the first open after boot or kexec, or for ISR calls coming from
+the shared line.
+
+Would it be safer to quiesce the IP first? That would mean HARDRESET,
+masking IRQMASK and clearing INTERRUPT, either in probe or before
+napi_enable(). Another option is to move napi_enable() into
+ifi_canfd_start(), after the reset and interrupt clear and before
+ifi_canfd_irq_enable(ndev, 1).
+
+The bus-off restart path, ifi_canfd_set_mode() -> ifi_canfd_start(),
+already runs with NAPI enabled, so a similar overlap exists there. This
+change extends that existing weakness to the open path.
+
+>  
+> -	napi_enable(&priv->napi);
+>  	netif_start_queue(ndev);
+>  
+>  	return 0;
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261021205924.2538511-1-patrzhan%40amazon.com
