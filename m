@@ -1,60 +1,102 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792728912;
-	b=COntvFhvLt/KAzArAHs2GDl9KBL0M5k+curhcYdGL8o3LfddGWrKuXbwmJOOx6p/IaZL
-	 8Ov/bLbDHRgGgZdGPIzzjQoL5cRncTNcVg54TElJyx43HyD7sViKi9SYXKoRujkx9ytrq
-	 OHEvOotoS0waDOUNMSQYJumXqoLU0080qfq/NTv01Bwf4bJAiOHFSdcyxxY7veP7RbeEq
-	 Y2PEEbq1T5+TfvpDPNDr8ntuxOCj2OKlyXA2auAcitBD2nXMeSqpXLHrIrNcm+SAqa2fR
-	 fDQoIAFuoZhKBMIPvzqaLhKKn/pPYZjuHDD6b/bcooLtLOqLgcLrZX7eBCu0w1q2mgQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792728912;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=aAJMQvWLv6dMUeOuLQoFAGJiJnLdNrhHyRVCdhvYEhI=;
-	b=ZkEZHmG607wbKGxc2ZGfGC1d70+81EW1yptbgQXSYgKbn6DzbKt3IoqpOjhZl69W9C83
-	 5lCB/4BKfPFdy2OETTsM/2gaI71tlqrtZSPoBGIm2xIHAuheThcJnRia8FwtFtLMeMeeY
-	 58WZvjvV/ews76J75mj6AUXAhzDPRc6LpUHPm2RsNzH7/Ghc1nj3Y4J4pprly1Z0jKln2
-	 17YyjTpSp4gmE7cqEZd2C0y7yJIjhKH4Zn/HoVNjxyoKIyelgygfEAqBn0kqBTFyvmHrM
-	 X6xe5mYRT4SYLKWEuwycLdy7WNHwzRKf1YKjBjYhC10LvceZ9QOOdZ/R4a4foSiriHA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=k69b1PDf;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792738133;
+	b=lpVhDk4cGqGoW+lLiLiK/OnAs3x6fmCNmqakTximvjex34PsV9d1Y2YqAUshJd5cHU1Y
+	 V7d69vP8ysk1y2a6gMoyJQgjpyonJTFqCIV42WkciJadCyOak1WrZTqRFsCU9Tx0s2bFc
+	 E1r/rZOUNFIdlylpnbfUl1NH3739jTUi0EFN6HWij9nKoB9hK3VwCpAtYqARZnY084kuj
+	 6YYAsuynGY2S48J3RabCS661fVtyeyJwIgxHSXeXUGneBp2KCyIfesN4DdCJmz4LB6EGG
+	 qfszgsrI23AchyNelIkpJs0xTQTK93EW1veS8yHPlt1sQuKG1TZf2mWrgB03WZFg9Ww==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792738133;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=u3kU7+i1NKyI1hY3A73N7hAbDsSzflqLglmlkB1dqYo=;
+	b=E6Qr6Ae7Su+CHEHoWe0TcybVyIdinmNJcZSn1CgIQFOd3XMlIcGJhOGH5wnTEGF1gdBg
+	 w8CvX6EGpPt/gwU+AVylAiDBwoph1BdNse3HsksMnbwZdQx9TEeXTlbFyJo5H8+PyeGVl
+	 kTtaq6n+LVwpWZeVlWF04UTSY46Wu3UvvTnQvDP/TpV2Ehu7uHRLT2bqwND8gwjamKLhT
+	 1PNCyE6ou1ScBMvKsU6Fobg+smtQVh99yotsklxGuh3yJCn/mg25HFBJEcMzO17eolbuA
+	 6qnf7/n/ISExNFtP0fo0KppGmtvb40fKytS7VNYgVIEmD2ASYGAfghAG0jmeIJDSOHw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZALF1L7g;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A88606A31E;
-	Fri, 23 Oct 2026 04:15:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF3FC606A31A;
+	Fri, 23 Oct 2026 06:48:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CF3FC606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=k69b1PDf
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17A701F01825;
-	Fri, 23 Oct 2026 04:15:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792728910;
-	bh=aAJMQvWLv6dMUeOuLQoFAGJiJnLdNrhHyRVCdhvYEhI=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=k69b1PDf4BCRSakt8yAfW2iDBa9ugBSn4aWAL1ZL7UcX8pNgpTYOlg2IdmXG+vOAM
-	 wlEQBt46Gvr6Cl0D9Z7G/Udlsne8/aPle2LJ2aPUnyekkW8wmXtvwp/Ijq55ytdx6U
-	 xKBGbTf4bxj7QVekL1dPbgY5rjfI/nqzJO7YS+f6qMxor4veFf/lS/IfRjF6Kjz6d5
-	 zsjPPVJA3e7MrGYxLvbi1elIkqnyg06YR7r6XTunYebMsBxQbd1prnzlhY/nIjlWSB
-	 h0B3tlcfC9W/PGSO1XDfMs93DQEikTFvrjbEz+7t2ltenQPvG5QbBFiEEJIituq4TR
-	 Jgce65uhUQrbw==
-Subject: Re: [PATCH v7] can: dev: can_fill_info(): don't wake up controller if
- interface is down
-From: netdev-bot+sashiko@kernel.org
-To: chunyuzhiqiang@yinhe.ht
-Cc: netdev-bot+sinfo@kernel.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, mkl@pengutronix.de, kernel@pengutronix.de,
- haibo.chen@oss.nxp.com, shawnguo@kernel.org, imx@lists.linux.dev,
- stable@vger.kernel.org, kuba@kernel.org
-Date: Fri, 23 Oct 2026 04:15:09 +0000
-Message-ID: <179272890958.3130.8901186354506678802@kernel.org>
-In-Reply-To: <20261021145115.153107-1-chunyuzhiqiang@yinhe.ht>
-References: <20261021145115.153107-1-chunyuzhiqiang@yinhe.ht>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZALF1L7g
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 36394201BAC;
+	Fri, 23 Oct 2026 08:48:44 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792738124;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u3kU7+i1NKyI1hY3A73N7hAbDsSzflqLglmlkB1dqYo=;
+	b=ZALF1L7gxBFn0WT4FDUvjdCZ47hY0qdiQPvkDDScMnEU1AyqASxWv+7GSizE/C+Dv6nXY7
+	1fNra1SoLVOdFEW4lq6LUJALuBdHm/fKTqEmyqeqUAYuuAhhQasmmcX/UCtXSC54Jtv2bv
+	6nYu8odB38Tr/X+DKnUgzhHLH86lE+zD9V9VQh5grgaRBTeSwR/bT9Ly50GTTPLPJy99dv
+	0q9Jx3/73+g7vR9ioSoXKNTHPHxhoZawBNgV06ZwwOpAK9JcitEFuKvk2HdMKEvpb0va3n
+	KTokDFS2DmLtIW/ExD7+Uwkov7xBFbczAYp0s8XvC4YdCSfoGFjOoF/Cf+e2uw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792738124; a=rsa-sha256;
+	cv=none;
+	b=HJkjbVFiHLbbSqdXOGESasBeI7ncpHgLAk5lURtEo77fG2NAjxCnPKm/xUPLUwBwooy2Eh
+	pNlFhuRSlsuhtbciKwEbP42EJyuy6817xku3++JAk+xJkSyuSSH0zkCnkWqfR8tPwdS1b6
+	BOTZDukiocvIWBDLM2aC2Le/M+J3qU+E8mow/P+HzLJCrSNOcz7UPG4DhXsHmAFqknxtO5
+	MjI7UJk1urgfBKUsQU7eckJaZH2/pPgokbwrIx3TWT8Sb0AyQ3POUF2qONsJl89x1TMLDY
+	RTzHzIK0+tpDueJzOjXx+3IC6NjzTgX2+i+ZrmbEDD0TlBsOT2A7otxS/6I/Sw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792738124;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=u3kU7+i1NKyI1hY3A73N7hAbDsSzflqLglmlkB1dqYo=;
+	b=VYAD/nUJD+XVoOBBanYARl+mkdRjlXbcuNg+Z7GZgsHA0+Q+WhKpxM8pgdQRkDEsDUVys2
+	2fy+4Hd/LkA0zXkuYrXdHH+V3QiCo9OuQ7sfsHTa+Zm0svSed1ALL3Px17H4rDUBcKAPTO
+	ElGMotSwui9JG0AOkWThI2qZospMMxR4ZmRg8k3/AJJpDh3KTwUqbOZ1iwX88JYc45Rd3H
+	82K6jKKB12nLBws3TRHs0kt9Or3onggZolXQKSoOFgi0wYF9Wut7A+PcCR5jmF6qOwiA2x
+	qfQdYqqjBDeUKgyNswvlg4KxujsszhpPcgjlA0XWN5raDTD9tMDf3jaFDZSm2g==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xK952-000oXk-0F;
+	Fri, 23 Oct 2026 08:48:44 +0200
+Received: from pengutronix.de (unknown [IPv6:2a0a:edc0:0:701:90a8:bcd0:249b:2b36])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 896295D1896;
+	Fri, 23 Oct 2026 06:48:43 +0000 (UTC)
+Date: Fri, 23 Oct 2026 08:48:43 +0200
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: "Kumar, Udit" <u-kumar1@ti.com>
+Cc: vigneshr@ti.com, gehariprasath@ti.com, rcsekar@samsung.com, 
+	mailhol.vincent@wanadoo.fr, andrew+netdev@lunn.ch, davem@davemloft.net, edumazet@google.com, 
+	kuba@kernel.org, pabeni@redhat.com, linux-can@vger.kernel.org, 
+	netdev@vger.kernel.org, msp@baylibre.com
+Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
+ i2279
+Message-ID: <20261023-classy-cuscus-of-coffee-ec348f-mkl@pengutronix.de>
+References: <20260514065511.3573223-1-a-dutta@ti.com>
+ <20260514-tiny-koel-of-order-65ade7-mkl@pengutronix.de>
+ <9787fdc5-8a51-4567-a576-a3b9f4fcc59d@ti.com>
+ <20261022-spiked-pigeon-from-mars-3f2786-mkl@pengutronix.de>
+ <5cddfb8a-8ffa-4578-b2f1-3e57e82b2c95@ti.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,167 +106,70 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="2bdtf3tea7rpjkrd"
+Content-Disposition: inline
+In-Reply-To: <5cddfb8a-8ffa-4578-b2f1-3e57e82b2c95@ti.com>
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 1 (1)
+--2bdtf3tea7rpjkrd
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
+ i2279
+MIME-Version: 1.0
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+On 22.10.2026 20:33:52, Kumar, Udit wrote:
+> I believe the Bosch errata document is subject to selective disclosure.
 
-- [Medium] The commit message calls the issue "a generic logic problem
-  that exists on all platforms", but its own root-cause analysis points…
-- [Low] The patch carries `Fixes: ec56acfef2af1` (2014) and `Cc:
-  stable@vger.kernel.org`, but it is explicitly rebased onto net-next…
+Sigh. The VDHL code of the m_can core leaked, but they still keep the
+errata closed :/
 
-Pre-existing issues:
-- [Low] This problem wasn't introduced by this patch, but can_get_size()
-  reserves only `sizeof(priv->bitrate_max)` (4 bytes) for…
+> However, the most relevant public documentation I can provide is the
+> Bosch user manual [0], which states: 'The Tx FIFO enables transmission
+> of messages with the same Message ID from different Tx Buffers in the
+> order these messages have been written to the Tx FIFO.'
+>
+> For our public disclosure, we have the TI SoC errata [1].
+>
+> Regardless, I believe a v2 is necessary.
+> What would you suggest as the best path forward:
+>
+> Apply this errata to the TI SoC where public disclosure is already
+> available?
+> Or
+> apply it to the MCAN IP used within that SoC?"
 
---
+The original patch [1] Anurag Dutta modified code paths that are only
+active for the peripheral case, i.e. the tcan4x5x SPI/CAN chip. The code
+path for the referenced TI SoC stays unchanged.
 
-can: dev: can_fill_info(): don't wake up controller if interface is down
+[1] https://lore.kernel.org/all/20260514065511.3573223-1-a-dutta@ti.com/
 
-When the interface is not running, this patch skips the calls to
-do_get_berr_counter() and do_get_auto_tdcv() in the CAN netlink fill path,
-and changes can_get_size() to match. As a result, IFLA_CAN_BERR_COUNTER and
-IFLA_CAN_TDC_TDCV are no longer reported for down interfaces. The
-motivation is a synchronous external abort seen on i.MX8QXP when "ip link
-show" is run on a flexcan interface that was never brought up.
+> Do you know if TI's
+> > tcan4x5x is affected by the erratum?
+>
+> I am checking internally within TI.
 
-> Don't call do_get_berr_counter() or do_get_auto_tdcv() to read the CAN
-> controller if the interface is down. This fixes a generic logic problem
-> that exists on all platforms.
+Thanks,
+Marc
 
-[ ... ]
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-> On i.MX8QXP the
-> CAN clocks are gated through the SCU LPCG and the subsystem shares the
-> IMX_SC_R_CAN_0 power domain; there is a window where
-> pm_runtime_resume_and_get() has returned but the clock has not reached
-> the module yet, and the immediate ECR read raises a synchronous
-> external abort.
+--2bdtf3tea7rpjkrd
+Content-Type: application/pgp-signature; name="signature.asc"
 
-[ ... ]
+-----BEGIN PGP SIGNATURE-----
 
-> Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
-> Cc: stable@vger.kernel.org
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCatsDSAAKCRDMOmT6rpmt
+0sEKAP9OSQuOjzj5VsA4JmF0dKbbd8FYZsO83xtNSh7TuRPbYgD/dDvVU7y2zdqX
+AJIqud/qnUafn2y/HSDl5R/Ii+DJTgw=
+=lojx
+-----END PGP SIGNATURE-----
 
-[Severity: Medium]
-Is "a generic logic problem that exists on all platforms" an accurate
-description of what is going on here?
-
-The flexcan netlink path already takes a runtime PM reference before it
-reads ECR:
-
-drivers/net/can/flexcan/flexcan-core.c:flexcan_get_berr_counter() {
-    ...
-	err = pm_runtime_resume_and_get(priv->dev);
-	if (err < 0)
-		return err;
-
-	err = __flexcan_get_berr_counter(dev, bec);
-    ...
-}
-
-flexcan_runtime_resume() only calls flexcan_clks_enable(priv).
-
-Suppose pm_runtime_resume_and_get() really can return before the LPCG clock
-reaches the module. That looks like an i.MX8QXP clock or power domain
-problem. The SCU LPCG driver already has an erratum workaround on that
-enable path, lpcg_e10858_writel() in drivers/clk/imx/clk-lpcg-scu.c.
-
-This patch removes one trigger, a netlink query while the interface is
-down. The same enable-then-MMIO sequence seems to remain elsewhere:
-
-ip link set canX up
-  flexcan_open()
-    pm_runtime_resume_and_get()
-    ...
-    flexcan_chip_start()
-
-register_flexcandev()
-  flexcan_clks_enable()
-  flexcan_chip_disable()
-
-If that window exists, would these paths hit the same abort?
-flexcan_open() does other work between the resume and the first register
-access, so it may not show up there. register_flexcandev(), however,
-touches registers right after it enables the clocks.
-
-The v7 notes also say the Fixes: commit ec56acfef2af1 was not buggy. With
-Cc: stable, could this lead backporters to think the i.MX8QXP synchronous
-external abort has been root-caused and fixed?
-
-Not waking the controller while the interface is down looks reasonable,
-and it matches the m_can fix. The concern is only with the root cause and
-the Fixes/stable framing.
-
->  - Rebase onto current net-next/main, including e63281614747
->    ("can: netlink: add initial CAN XL support").
-
-[ ... ]
-
->  - TDC auto readback gating is based on code inspection; only the
->    berr-counter path was tested on i.MX8QXP hardware.
-
-[Severity: Low]
-The Fixes: and Cc: stable tags mark this for backporting to stable.
-However, the patch is based on net-next and depends on the CAN XL netlink
-support from e63281614747.
-
-The hunks that use priv->xl, CAN_CTRLMODE_XL_TDC_MASK, the dbt_params-based
-can_tdc_get_size() and can_data_bittiming_get_size(), and
-can_tdc_fill_info(..., IFLA_CAN_XL_TDC) don't look like they will apply to
-older stable branches.
-
-The same stable-tagged patch also combines the berr-counter change, which
-was tested on hardware, with the do_get_auto_tdcv gating, which came from
-code inspection only. Would it help stable reviewers if the TDCV gating
-were a separate patch?
-
-> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index 766d455950f5..ac30d2849543 100644
-> --- a/drivers/net/can/dev/netlink.c
-> +++ b/drivers/net/can/dev/netlink.c
-
-[ ... ]
-
-> @@ -825,10 +830,10 @@ static size_t can_get_size(const struct net_device *dev)
->  	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
-
-[Severity: Low]
-This isn't a bug introduced by this patch, but should this be
-nla_total_size(sizeof(priv->bitrate_max))?
-
-can_fill_info() emits the attribute with nla_put():
-
-	    (nla_put(skb, IFLA_CAN_BITRATE_MAX,
-		     sizeof(priv->bitrate_max),
-		     &priv->bitrate_max)) ||
-
-That needs nla_total_size(4) = 8 bytes of tailroom. can_get_size() reserves
-only 4, so it comes up 4 bytes short for each CAN interface. Every other
-attribute in can_get_size() is counted with nla_total_size().
-
-In practice the slack in if_nlmsg_size() and slab rounding probably hide
-the shortfall.
-
->  	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
->  
-> -	size += can_data_bittiming_get_size(&priv->fd,
-> +	size += can_data_bittiming_get_size(dev, &priv->fd,
->  					    priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
->  
-> -	size += can_data_bittiming_get_size(&priv->xl,
-> +	size += can_data_bittiming_get_size(dev, &priv->xl,
->  					    priv->ctrlmode & CAN_CTRLMODE_XL_TDC_MASK);
-
-[ ... ]
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261021145115.153107-1-chunyuzhiqiang%40yinhe.ht
+--2bdtf3tea7rpjkrd--
