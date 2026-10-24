@@ -1,58 +1,129 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792788688;
-	b=bMZH1ziDjomE6Gzs2VHyTmOTKw1q0HTxNwiVtYSKUUTeN6m2eFRKbRtZszwJbAsr3Qn5
-	 7QqQRXOzyGiPEtdWvajoqnnXlCLF714FiTi0VMTfffjK9yeZsRYthsKjzAMpowR6BOTz1
-	 vutA/ypT9aE2r+qD6dXzyrJ/cysoPWczm5rwsAfkCmvNMz2D0e9yQgxYuVRaVs81uBCCn
-	 AWvmLVCzDNSZC7YPUocLVpJ/qkP5ysOcV0xr5pj6UmYooNoiIc/zRkLES408SPuJVpjXF
-	 mEsd/3Qzhf1RCoDkgXTi+esDJcueiII7Hh5pkF4yl0D1EdDzasVy8BqHkK7m7uQzRpQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792788688;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=VUvOIWXM7GuPd9PkGOQHg8pnRxe4OjFabD76zKn4bzk=;
-	b=48TIh2uWQ7k7ImStXSl8wSLlMGIzHlki112HzYnAn29cB5tQMAUsQOKZ54Dpe1PLfwTx
-	 MDqwusnHsas4Zbky2bmkSlIbp3RNGelpMe5e3DlGyru8WlZsn1gK/wz/zYY0BLuhw3POE
-	 7yX6+SDt5sEhFH8POX6lU1UEv2kmAsNfoOyz6cD77JYoIH2XMZGT4JYbbkh4H5aFd2H8F
-	 z2qevtgg1xNw9cpxbGvQ6mc7WY0W+eZ12UQBi1zN/5qguCVCEx4iDyLpAQI1eqTtymw8Q
-	 NhKkL56JRzajxUE2Cd8BgR8+NOzj9mF1B9w3Hm0/+sc6vAT462LKe+XCjn3/IwAJzpg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jb+eXcln;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.150.75
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792812361;
+	b=BevZTUroup+IQ0Ji2WrFtXWK+ucOgu8w5QZxI68dqUw6Sn+/UzG32bFfp+pmbImdaUzv
+	 y+llq2rJhzejvE+cRMz52ed/+sWm6S+Px5cMQNxyxiRABCNQyKyQ3DMqIZyvwn2IQaqeP
+	 NzwC0eltR6Ap4iNuguTDOoAE6zCrmUY5oZCXguferpatKQadkGhFkiEOeZHvU1K4BKQGC
+	 2z5XmtSfjl+08qfb4uaIfRUfhNB4KCGmTe4SUgEK9GBLW7wLVT3JQHe6BKtQruhQ+gJv0
+	 55rN/LwwANld6NI8Cp3OmEclJlx7FVz6De0bXfMjjnbZMJmRkgYgvyCGm6z0bAtJsRA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792812361;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:DKIM-Signature:
+	 Received:Received:X-MS-Exchange-Authentication-Results:Received-SPF:
+	 Received:Received:Received:Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:CC:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 X-EOPAttributedMessage:X-MS-PublicTrafficType:
+	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
+	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
+	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
+	 X-Forefront-Antispam-Report:
+	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
+	 X-MS-Exchange-AntiSpam-MessageData-0:X-Exchange-RoutingPolicyChecked:
+	 X-OriginatorOrg:X-MS-Exchange-CrossTenant-OriginalArrivalTime:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-Id:
+	 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp:
+	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
+	 X-MS-Exchange-CrossTenant-FromEntityHeader:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-Proofpoint-GUID:
+	 X-Proofpoint-ORIG-GUID:X-Authority-Analysis:X-Proofpoint-Spam-Info:
+	 X-Proofpoint-Spam-Details-Enc:X-Proofpoint-Virus-Version:
+	 X-Proofpoint-Spam-Details;
+	bh=MWV6+5zn+RjBSwcDk9b+oTGETFILpuuQWvyHlonME4s=;
+	b=SVqUG6cyx8Uuo7PIKQ3GsWsbE5eNdNoSHGbvjN6f5PIFVCbmFp/Z0TaTJzXWE1SIfoqG
+	 bYl+bBWV9j6L9aDjTcnbZF5TazKRRXHZ2XcSDReGLj0tYeAeAap02m+829ZOfkakwcjtw
+	 opzOgofpR5vdRfovdbZ7WdyfJc4H3h4HkxzeQRC4UCncKvQH1wFzC5Y8RLl8CB0WpEvhI
+	 UEGY7Z9S4myLdBiuqt0A0Dy7lVMOWll56u+QDvl9ri1wxgr46v5a/y86XmSAGeJ2mI5YQ
+	 A9tdTjgGfmkBpcOinYkQXRWVKG+I0GV1jBDAaCmAXCXUXBu/sdXfIyXYjnCVUbfJTnw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=ti.com;
+	spf=pass smtp.mailfrom=ti.com;
+	dkim=pass header.d=ti.com header.i=@ti.com header.a=rsa-sha256 header.s=proofpoint-05-2026 header.b=LdRlRADm;
+	dkim=pass header.d=ticloud.onmicrosoft.com header.i=@ticloud.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-ticloud-onmicrosoft-com header.b=VUcrJ+ME;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=148.163.150.75
+Received: from mx0a-0002e601.pphosted.com (mx0a-0002e601.pphosted.com [148.163.150.75])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 213CD606A320;
-	Fri, 23 Oct 2026 20:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE35F606A31A;
+	Sat, 24 Oct 2026 03:26:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EE35F606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jb+eXcln
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A4F51F031E0;
-	Fri, 23 Oct 2026 20:51:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792788687;
-	bh=VUvOIWXM7GuPd9PkGOQHg8pnRxe4OjFabD76zKn4bzk=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=jb+eXclnicc7zmIMH2NIPxdXki9Nhl5p/mA0O8dUef99lZpmHG7cp57/30ZJFr2ld
-	 n33MS3c7Jr2fHkvN5paW7Dq1t8Jx0WrGNflvcCYRk/JWqN6mulzsPSuYoq/2/YJeiL
-	 mtO664NNJpGz9jxOoZszkgXSzxVajM/JukqJ1hbd3lvFfHJ2+phzNUFlgOUM2NY3YT
-	 EwdUVJ1O6EPyWubx0U3XYk6rAfZrsITeHKzVFV6TzP80zugGEg12Kog37vzaZbeJ3W
-	 WYWOzGO2OjEKkl/d9wzZBFJu0ldiB4ARvxfHppuSAe4GFP37XtLdWFgCLCdQgEV2Wm
-	 XCFNyqYLRtpTQ==
-Subject: Re: [PATCH net v6 1/1] can: j1939: validate the EDPO packet number
-From: netdev-bot+sashiko@kernel.org
-To: quchaosheng000406@163.com
-Cc: robin@protonic.nl, o.rempel@pengutronix.de, kernel@pengutronix.de,
- socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, sashiko-bot@kernel.org, kuba@kernel.org
-Date: Fri, 23 Oct 2026 20:51:26 +0000
-Message-ID: <179278868667.3130.12995219647320420687@kernel.org>
-In-Reply-To: <179265494813.314254.14725785769836234084@163.com>
-References: <179265494813.314254.14725785769836234084@163.com>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=ti.com header.i=@ti.com header.a=rsa-sha256 header.s=proofpoint-05-2026 header.b=LdRlRADm;
+	dkim=pass (1024-bit key, unprotected) header.d=ticloud.onmicrosoft.com header.i=@ticloud.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-ticloud-onmicrosoft-com header.b=VUcrJ+ME
+Received: from pps.filterd (m0380145.ppops.net [127.0.0.1])
+	by m0380145.ppops.net (8.18.1.11/8.18.1.11) with ESMTP id 69O1rMtE291679;
+	Fri, 23 Oct 2026 22:25:31 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=
+	proofpoint-05-2026; bh=MWV6+5zn+RjBSwcDk9b+oTGETFILpuuQWvyHlonME
+	4s=; b=LdRlRADmySx6mG27ajlG4rS3q5jpob9mYIbt5lt4r8TMTUo+SUA6N2mYy
+	gdh+l4ES7+VFd1KlHX4UIY5aellhtpbiqMJL4s8MPYYEYe219a2cagTXUGlfxsOi
+	t93d3Sn04FPfMF5qBKrD8LUQ0EH/XiayaG74KbstLgSjg4f4kWQ3gwZeLbewNCn4
+	aI8b4G/QLMyg0+R/h6U0U41oeexK2k+dMsipW31aRWVCab4nqO2AELudcXP7l6FJ
+	1z/nRIlfWFcD5+YKugIj2mvknYRl7GqYhdqAA3IEa6NfDtzaQ3uIsdpCD51J7CmB
+	Lbu+8uLOyosBDZh20Ipdi25WIgIKQ==
+Received: from sa9pr02cu001.outbound.protection.outlook.com (mail-southcentralusazon11013063.outbound.protection.outlook.com [40.93.196.63])
+	by m0380145.ppops.net (PPS) with ESMTPS id 4hg4v5mkhx-1
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
+	Fri, 23 Oct 2026 22:25:30 -0500 (CDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Pxt00xsIrDHX3zlo0aeCoOYJJHhT9PiOMGqVFk41VEEPygfJsQi2LBxMFnldqGuHDtxgamerEJhOM7k4QNDHjyf+j8mfmz4o2z+1aMJUpxCJJdX8hJiRBllxrmWrMUCHKRY93RGvur4w36rqppPFT6qYqYp9a+QXvZdDJFeZzafa8yRksNXDm83fW2fGZoptY55jAF1AB0BI5fwMUO+88Bm3CNbeLBP2xWOcXaRwjYpk3o5nm72bdwgCoL7tXhYtCSPKFVTB6WcaqsACc6KjdKasLLUQhjda1IpQl3FgiwotmKilxDBalS4ttco2tOk6NRtzgeTPUGrNgW4WG6qx+Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=MWV6+5zn+RjBSwcDk9b+oTGETFILpuuQWvyHlonME4s=;
+ b=uMlUQqvYZk7yIohgUIX/TIkN7JY/Pd1RT5Gg+JxddR6fuc/qGhROGNwvNsRxK0/i8iDp1KPsc9sPicfJl96h7DCBLOk+wtT3M+PFGxbCJlbZtqH0QsMx2VMSh04VtuWYDcEpbVOaktaNcE1onzuq7qN+e+vyLsmPgB0mpD0SfHDNyJMPqYSKqcS3u5IUeeZmiW1bv0Gl25OA67dYqkz4FDSDiqbRMm4z57fDMRmcdL42hYhaG1kbdWxhMUtsKjU3+jexPUFfgTTlFrhwZd+14ObqZ26kSodk28cUBEyBg2/bYq7tgQrA1OJfgObkX8V/uwfyBfR5tpvd8vguKSj9FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 198.47.21.194) smtp.rcpttodomain=baylibre.com smtp.mailfrom=ti.com;
+ dmarc=pass (p=quarantine sp=none pct=100) action=none header.from=ti.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=ticloud.onmicrosoft.com; s=selector1-ticloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MWV6+5zn+RjBSwcDk9b+oTGETFILpuuQWvyHlonME4s=;
+ b=VUcrJ+MEO4Csqzaaud329H5gRmug+rWiTUcSpvyLOib+WYk+rCINYlRtXwtSrju4BCntd+o/3Q413Oo+e5L+CD2VEsB/ZpTA45TQ2aKbPUZ6WMdfSO7gIydYnaaW4etzoq2PkidxrYTv5cAilB81YlmHJQJ05q4sKSz8+DJhwuM=
+Received: from CH2PR18CA0004.namprd18.prod.outlook.com (2603:10b6:610:4f::14)
+ by CH2PR10MB4344.namprd10.prod.outlook.com (2603:10b6:610:af::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.546.20; Sat, 24 Oct
+ 2026 03:25:26 +0000
+Received: from CH2PEPF000166C0.namprd04.prod.outlook.com
+ (2603:10b6:610:4f:cafe::48) by CH2PR18CA0004.outlook.office365.com
+ (2603:10b6:610:4f::14) with Microsoft SMTP Server (version=TLS1_3,
+ cipher=TLS_AES_256_GCM_SHA384) id 15.21.546.20 via Frontend Transport; Sat,
+ 24 Oct 2026 03:25:26 +0000
+X-MS-Exchange-Authentication-Results: mx.microsoft.com 1; spf=pass (sender IP
+ is 198.47.21.194) smtp.mailfrom=ti.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=ti.com;
+Received-SPF: Pass (protection.outlook.com: domain of ti.com designates
+ 198.47.21.194 as permitted sender) receiver=protection.outlook.com;
+ client-ip=198.47.21.194; helo=flwvzet200.ext.ti.com; pr=C
+Received: from flwvzet200.ext.ti.com (198.47.21.194) by
+ CH2PEPF000166C0.mail.protection.outlook.com (10.167.252.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.21.569.4 via Frontend Transport; Sat, 24 Oct 2026 03:25:24 +0000
+Received: from DFLE205.ent.ti.com (10.64.6.63) by flwvzet200.ext.ti.com
+ (10.248.192.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Fri, 23 Oct
+ 2026 22:25:06 -0500
+Received: from DFLE208.ent.ti.com (10.64.6.66) by DFLE205.ent.ti.com
+ (10.64.6.63) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Fri, 23 Oct
+ 2026 22:25:06 -0500
+Received: from lelvem-mr06.itg.ti.com (10.180.75.8) by DFLE208.ent.ti.com
+ (10.64.6.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45 via Frontend
+ Transport; Fri, 23 Oct 2026 22:25:05 -0500
+Received: from [10.249.135.178] ([10.249.135.178])
+	by lelvem-mr06.itg.ti.com (8.18.1/8.18.1) with ESMTP id 69O3P0773924271;
+	Fri, 23 Oct 2026 22:25:01 -0500
+Message-ID: <99a12aa2-f88a-4f92-bb25-9b0c03801a6f@ti.com>
+Date: Sat, 24 Oct 2026 08:55:00 +0530
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -62,292 +133,129 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] can: m_can: Implement workaround for errata i2278 and
+ i2279
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+CC: <vigneshr@ti.com>, <gehariprasath@ti.com>, <rcsekar@samsung.com>,
+        <mailhol.vincent@wanadoo.fr>, <andrew+netdev@lunn.ch>,
+        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <linux-can@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <msp@baylibre.com>, <u-kumar1@ti.com>
+References: <20260514065511.3573223-1-a-dutta@ti.com>
+ <20260514-tiny-koel-of-order-65ade7-mkl@pengutronix.de>
+ <9787fdc5-8a51-4567-a576-a3b9f4fcc59d@ti.com>
+ <20261022-spiked-pigeon-from-mars-3f2786-mkl@pengutronix.de>
+ <5cddfb8a-8ffa-4578-b2f1-3e57e82b2c95@ti.com>
+ <20261023-classy-cuscus-of-coffee-ec348f-mkl@pengutronix.de>
+Content-Language: en-US
+From: "Kumar, Udit" <u-kumar1@ti.com>
+In-Reply-To: <20261023-classy-cuscus-of-coffee-ec348f-mkl@pengutronix.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF000166C0:EE_|CH2PR10MB4344:EE_
+X-MS-Office365-Filtering-Correlation-Id: a4c5af68-3672-489d-d116-08df317e713d
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|23010399003|36860700016|82310400026|7416014|376014|1800799024|18002099003|22082099003|10067099003|13003099007|56012099006|4143699003|261022075727099003|261022105027099003;
+X-Microsoft-Antispam-Message-Info:
+	kjqGLF9cl0mdFt0DM/V8dVQsuDDj5CK3lzL1ik6XNtrSaZ+z2JfT0OUxs2JTsBiHR4ioz1JVzwmu0dizHRhEwauRzsXtm3KLzV4ZmcyIuziitMv7CJes2QdExJZKn+4yYlDlsApzza/DmJLgOaRsUK1DG8MUYgBWYoyQPdOSIP3GmdxRC+18tZN3HGNn+cuEamqInbugTPEvVgCXGfPJ4GWn9YLSK3iKUJtqWizCuJOzPvEeGgeCmh8GeTjG9msK8vrEBoJDh/oP1W3XZDE95lCjYPbMmczk5u545IbHlvxebSILwy5iJa+ziGiZREu+k8fk6sSXt6oSXG0zauxTMFmfuMjtwpeU1htktcyZgoD742T1BqG68c8YWzkYXx14IeN49565S98T4joG2HuStXRawsMQyhW9TZ2JYNvYBlaDG1WbIk/iQAhsiVODZ3/rQ9KjqlaTJX/ZtBbMi5ijTSbYYV3EHhrFvLIcNx+az6FkFGp4/w5txDYlnAwBWVa4the0U1CHB+UooL8rnns+VOsH4/6iuOX8M4vmHvETmVnUvaP9kOzlJiHivHpnvocIPpkupdQJlEGEt/OeaG2jTUXpaq5JavmjjG8ayLaoHvgxASfRQRUcrv7hp33O6uQU6DyilOf+t2V/Xsks2GRayw==
+X-Forefront-Antispam-Report:
+	CIP:198.47.21.194;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:flwvzet200.ext.ti.com;PTR:ErrorRetry;CAT:NONE;SFS:(13230040)(23010399003)(36860700016)(82310400026)(7416014)(376014)(1800799024)(18002099003)(22082099003)(10067099003)(13003099007)(56012099006)(4143699003)(261022075727099003)(261022105027099003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	IuFB6adTR/umJWTxuq/GH28cMKe64Fq4urJk3W6xdfqmmrZBkg6qmHDneBrAOGbFbHGeYHT0ruTkvmgyhleJPrbrLMxa+C+i4B4QnbuEUmxSogTntWbaY0WzxYsprvpXE9LeGoau85yBdGQ6+ZHUfNcvHCretwpPW+ZuPkb0p059y7zmHzet3VP8x4CJPzl6X2XbK5O/j6NIiaZG/n3ZyTP8vHHPkzR8eKpzhcXxBlhBm3RnLW2CMXzumo9SXB14cxZ6woMZ1D+4KDUd6u2LAv40C42+M3JrP2kjU+NACcaFSMc/LavppNQ8A96Dpcpd+xBlZTELKXqT6TH19SaeIW5GkzJoKJNafLsJt7LCDj0+LvMql6C/a2RWuVvw5CYaA07QtFzdYdxHESvJt5y9yRyoGRUP4ZM1Yy5aBX5ui7Hkh9+NC94hu9xEz436tHFs
+X-Exchange-RoutingPolicyChecked:
+	NkfJxyvzu6LME+dgV9an5uFL7ge9lNqQx+F8XpbJH76m4dRh0NceenO2Ly8MQdpXbKH3tAdRy1VwkL25ilPLNx1QjaMdzAFeWpRETSReCtIeeBLIhZF24mkeCmWj95XJddzSbCpNp5PtmeoWkf/WZT4C4pqiySnv4iO4MvpYarjr3sHt/eFqSBfmc7yPAILMXl9phTKuBxSfxEAFa5hmoL6tmoHWzxmuBkO2Yqn/Z61Yij3pCdu8YzDDr9GuYL/Xhw08fGqv4QmwMZDaBeIR5D3L5RGP8EbwG0rAb/8b6TKRWgu6LMVi6oJtZBKRN7+OHLRvaySU8Lg9F7jsSA6E/A==
+X-OriginatorOrg: ti.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2026 03:25:24.4411
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: a4c5af68-3672-489d-d116-08df317e713d
+X-MS-Exchange-CrossTenant-Id: e5b49634-450b-4709-8abb-1e2b19b982b7
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=e5b49634-450b-4709-8abb-1e2b19b982b7;Ip=[198.47.21.194];Helo=[flwvzet200.ext.ti.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF000166C0.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4344
+X-Proofpoint-GUID: vnAgjjPj6fooP6V3jioCYy-A4pftZENp
+X-Proofpoint-ORIG-GUID: vnAgjjPj6fooP6V3jioCYy-A4pftZENp
+X-Authority-Analysis: v=2.4 cv=NfVzRGD4 c=1 sm=1 tr=0 ts=6adc252a cx=c_pps
+ a=VUNJaWZlx74G+l0QYBOIDQ==:117 a=iwqwCZQqcuTv3JOpYdM7/Q==:17
+ a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=IkcTkHD0fZMA:10 a=660iZSQnnn4A:10
+ a=AlMIdn_sM9wA:10 a=VkNPw1HP01LnGYTKEx00:22 a=Z8NIEmU8O1QQgoT56wFK:22
+ a=gO1vWkAQAl3rybz1DQOp:22 a=VwQbUJbxAAAA:8 a=sozttTNsAAAA:8
+ a=oVRYQsHRcIjnumQUXZgA:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-Spam-Info: AW1haW4tMjYxMDI0MDAxMiBTYWx0ZWRfXzWSYjHynds4n
+ TdfzqbrrKyxWZYUnWAoYjBVGlmfsw1NytM/j7Rj8rkJamkyz+5ma20fGi+I7ZJKry3UkCGuwX65
+ Y5U/WCTXOE/piVYNUUaEs5DYjggQhkM=
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYxMDI0MDAxMiBTYWx0ZWRfXwCWSJwD+Swo4
+ kndpOTBNjxzXcdtZ3i47qrX7elPHXW1yNP2QPQwgK71A1hOK6Su8uXuHfAP934xcBA76HxAdzy9
+ T+mzaCuU9FLc6cYfphpJN0vNCGG8vtiEPGPXOkizmUGRDmXwRFZeY1FRltHH/mtmkpm6muXF9oO
+ OxN1ikcmNhTSZzQyQ8wXm+a2LTZTs2zZALpx8dDGgbcp6lgoEzXLfUHVy0/O8nG5u53ZEkX+4fp
+ unYo7FPjzxIw715Prlw/zYUfsY5EDA6MUCRbhq7kwh2EVMGKxdouuyiqQrGtPauAUEFFXgEoe+i
+ O8IT2abgK3Y1pqtq63tPXSkdA6a7O3ZUjk7rWht+0l5+2T47Y6+B8B/zd/ghBuQvNIGX4RiQxJD
+ v/JEohRMVC7AFAoCH2uLUeS7Qovy2OAQJaqfPNy49RzhSzVwP11fHhNVPfILLcsDzEI16Ry1J5E
+ bphyhbXskBDSwyTiAKg==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1176,Hydra:6.1.138,FMLib:17.12.100.49
+ definitions=2026-10-24_01,2026-10-21_02,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1015 lowpriorityscore=0 suspectscore=0 priorityscore=1501
+ spamscore=0 malwarescore=0 impostorscore=0 phishscore=0 adultscore=0
+ bulkscore=0 classifier=typeunknown authscore=0 authtc= authcc= route=outbound
+ adjust=0 reason=mlx scancount=1 engine=8.22.0-2610190000
+ definitions=main-2610240012
 
-Thank you for your contribution! Sashiko AI review found 5 potential
-issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 2 · Low: 3
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+On 10/23/2026 12:18 PM, Marc Kleine-Budde wrote:
+> On 22.10.2026 20:33:52, Kumar, Udit wrote:
+>> I believe the Bosch errata document is subject to selective disclosure.
+> 
+> Sigh. The VDHL code of the m_can core leaked, but they still keep the
+> errata closed :/
+> 
+>> However, the most relevant public documentation I can provide is the
+>> Bosch user manual [0], which states: 'The Tx FIFO enables transmission
+>> of messages with the same Message ID from different Tx Buffers in the
+>> order these messages have been written to the Tx FIFO.'
+>>
+>> For our public disclosure, we have the TI SoC errata [1].
+>>
+>> Regardless, I believe a v2 is necessary.
+>> What would you suggest as the best path forward:
+>>
+>> Apply this errata to the TI SoC where public disclosure is already
+>> available?
+>> Or
+>> apply it to the MCAN IP used within that SoC?"
+> 
+> The original patch [1] Anurag Dutta modified code paths that are only
+> active for the peripheral case, i.e. the tcan4x5x SPI/CAN chip. The code
+> path for the referenced TI SoC stays unchanged.
+> 
+> [1] https://lore.kernel.org/all/20260514065511.3573223-1-a-dutta@ti.com/
+>
 
-- [Medium] Deactivating a WAITING_ABORT session straight away in
-  j1939_session_cancel() can let that session's own ABORT echo, still in…
-- [Medium] j1939_session_cancel() now cancels the rxtimer at line 1170,
-  outside active_session_list_lock.
-- [Low] The new comment in j1939_xtp_rx_dpo_one() says the transmitter
-  'only sees this on the echo of an EDPO it built from an oversized…
-- [Low] The subject 'can: j1939: validate the EDPO packet number' covers
-  only one of several independent fixes in this patch.
-- [Low] Commit message process problems: (1) The body includes patch-
-  revision history and a test matrix comparing revisions ('stock, v5,…
+Hi Mark,
+For given SOCs we are using m_can_platform platform driver.
+Since this patch changes TX handling only for the TCAN chip, please drop
+it from your queue.
+We'll resubmit v2 if needed.
 
---
+Regards
+Udit
 
-can: j1939: validate the EDPO packet number
+>> Do you know if TI's
+>>> tcan4x5x is affected by the erratum?
+>>
+>> I am checking internally within TI.
+> 
+> Thanks,
+> Marc
+> 
 
-This commit makes j1939_xtp_rx_dpo_one() reject an ETP.CM_DPO whose packet
-number is at or past pkt.total. That stops a NULL skb from reaching
-j1939_sk_recv() when the transfer completes. It also changes
-j1939_session_cancel() to cancel the rxtimer outside
-active_session_list_lock and to deactivate sessions already in
-J1939_SESSION_WAITING_ABORT, simplifies second-RTS handling, and adds a
-NULL guard in j1939_session_completed().
-
-Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutronix.de?part=3
-
-> can: j1939: validate the EDPO packet number
-
-[Severity: Low]
-
-This isn't a bug, but the subject only describes the EDPO bound check. The
-patch also carries several independent changes:
-
-- j1939_session_cancel() now deactivates sessions already in
-  J1939_SESSION_WAITING_ABORT. This fixes an existing session/netdev
-  reference strand that needs no EDPO. In the T5/T6 cases, two unparsable
-  ETP.DT frames leave ip link del stuck on "unregister_netdevice: waiting
-  for vcan0 to become free".
-
-- The rxtimer cancel moves out from under active_session_list_lock. This
-  addresses the hrtimer_cancel() vs j1939_tp_rxtimer() wait on the
-  j1939_tp_txtimer() -EOVERFLOW and default paths.
-
-- The second-RTS handling in j1939_xtp_rx_rts_session_active() is
-  simplified.
-
-- A NULL guard is added in j1939_session_completed().
-
-The dpo >= pkt.total check by itself is enough to stop the T1 NULL
-dereference.
-
-Could the WAITING_ABORT deactivation and the timer/lock ordering change be
-split into their own patches with their own subjects? That would let them
-be bisected, reviewed and backported separately.
-
-> Tested on v7.3-rc7 under QEMU (KVM, vcan).  Three kernels from one tree and
-> one configuration (defconfig plus CONFIG_CAN_J1939=y, CONFIG_CAN_VCAN=y,
-> CONFIG_LOCKDEP=y, CONFIG_DEBUG_SPINLOCK=y), differing only in this hunk:
-> stock, v5, and this revision.  Each case is a standalone guest.
-
-[ ... ]
-
-> until the guest is killed.  v5 fixed only the caller it added, so T3
-> through T6 are unchanged from stock.  This revision deactivates in the
-> helper, and all four clear.
-
-[ ... ]
-
-> Reported-by: Sashiko <sashiko-bot@kernel.org>
-> Link: https://sashiko.dev/#/patchset/20260928193312.553632-1-mkl@pengutronix.de?part=3
-> Assisted-by: LLM
-> Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
-
-[Severity: Low]
-
-A few commit message process points. None of them affect the code.
-
-The body compares patch revisions ("stock, v5, and this revision", "v5
-fixed only the caller it added"). Could this history move below the ---
-line, as Documentation/process/submitting-patches.rst describes?
-
-The Author: line is "Quchaosheng <quchaosheng000406@163.com>", but the
-Signed-off-by: line is "Chaosheng Qu <quchaosheng000406@163.com>". The email
-is the same, but checkpatch will report a From:/Signed-off-by: name
-mismatch.
-
-Reported-by: is followed by Link: and not by the Closes: tag that
-checkpatch's BAD_REPORTED_BY_LINK check expects.
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..2cc6c46c4d50b 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1161,18 +1161,39 @@ static void __j1939_session_cancel(struct j1939_session *session,
->  static void j1939_session_cancel(struct j1939_session *session,
->  				 enum j1939_xtp_abort err)
->  {
-> +	bool waiting;
-> +
-> +	/* Cancel the rxtimer before taking the list lock: hrtimer_cancel()
-> +	 * waits for a running callback, and j1939_tp_rxtimer() takes the
-> +	 * same lock.
-> +	 */
-> +	j1939_session_rxtimer_cancel(session);
->  	j1939_session_list_lock(session->priv);
->  
-> +	waiting = session->state == J1939_SESSION_WAITING_ABORT;
->  	if (session->state >= J1939_SESSION_ACTIVE &&
->  	    session->state < J1939_SESSION_WAITING_ABORT) {
-> -		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
->  		__j1939_session_cancel(session, err);
-> +		/* hrtimer_start() does not wait for the callback, so arming
-> +		 * the abort timer here cannot deadlock.
-> +		 */
-> +		j1939_session_get(session);
-> +		hrtimer_start(&session->rxtimer,
-> +			      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
-> +			      HRTIMER_MODE_REL_SOFT);
->  	}
-
-[Severity: Medium]
-
-Can this leak a session reference? That happens if another path arms the
-rxtimer between the cancel at the top of j1939_session_cancel() and this
-get+start.
-
-The cancel now runs before spin_lock_bh(). The get+start runs only after
-__j1939_session_cancel() has sent the ABORT frame and called
-j1939_sk_send_loop_abort().
-
-The other arming path does not take active_session_list_lock:
-
-j1939_tp_set_rxtimeout() {
-	j1939_session_rxtimer_cancel(session);
-	j1939_session_get(session);
-	hrtimer_start(&session->rxtimer, ms_to_ktime(msec),
-		      HRTIMER_MODE_REL_SOFT);
-}
-
-It is called without that lock from j1939_xtp_rx_cts_one(),
-j1939_xtp_rx_dpo_one() and j1939_xtp_rx_dat_one(). So holding the list lock
-here does not serialize against it. For example:
-
-CPU0: j1939_tp_txtimer(), j1939_session_tx_dat() returned -EOVERFLOW
-  j1939_session_cancel()
-    j1939_session_rxtimer_cancel()  /* hrtimer_cancel() returns 0 */
-    spin_lock_bh(), __j1939_session_cancel() sends the ABORT
-
-CPU1: ETP.CM_CTS for the same session
-  j1939_xtp_rx_cts_one()
-    j1939_tp_set_rxtimeout()
-      j1939_session_get()           /* +1 */
-      hrtimer_start()
-
-CPU0:
-    j1939_session_get()             /* +1 */
-    hrtimer_start()                 /* re-queues the queued timer */
-
-One expiry of j1939_tp_rxtimer() drops only one reference. The session holds
-a netdev reference through priv_dev_tracker and also a priv reference. Would
-a later ip link del then hang in unregister_netdevice?
-
-The old code had the same cancel/get/start pattern. There it ran back to
-back inside j1939_tp_set_rxtimeout(). This patch widens the window to cover
-lock contention and a CAN frame transmit.
-
-The commit message says "The abort timer is then armed with hrtimer_start()
-under the lock", but the lock does not serialize rxtimer arming. One option
-is to call hrtimer_try_to_cancel() under the lock, since it does not wait.
-The reference would be put if it returns 1, before the get+start.
-
->  
->  	j1939_session_list_unlock(session->priv);
->  
->  	if (!session->sk)
->  		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-> +
-> +	/* The abort went out on an earlier call, and this caller has just
-> +	 * cancelled the timer that would have finished the session off, so
-> +	 * nothing else is left to deactivate it.
-> +	 */
-> +	if (waiting)
-> +		j1939_session_deactivate_activate_next(session);
->  }
-
-[Severity: Medium]
-
-Could deactivating the WAITING_ABORT session here let its own ABORT echo,
-still in flight, cancel the next transfer queued on the same socket?
-
-Consider a socket with transmitter session A active and session B queued
-behind it. Both use the same SA/DA, the same TP/ETP type and the same PGN,
-which j1939_sk_queue_session() allows. The peer sends two malformed
-ETP.CM_CTS frames back to back, for example with packet number 0.
-
-First CTS:
-
-j1939_xtp_rx_cts_one()
-  goto out_session_cancel
-  j1939_session_cancel()
-    __j1939_session_cancel()
-      j1939_xtp_tx_abort()       /* ABORT sent, echo is async */
-    A->state = J1939_SESSION_WAITING_ABORT
-
-The second CTS arrives before the echo is processed.
-j1939_session_get_by_addr() still finds A, because WAITING_ABORT sessions
-stay on active_session_list. last_cmd was not updated, so:
-
-j1939_xtp_rx_cts_one()
-  goto out_session_cancel
-  j1939_session_timers_cancel()  /* kills the abort timer */
-  j1939_session_cancel()
-    if (waiting)
-      j1939_session_deactivate_activate_next(A)
-        j1939_sk_queue_activate_next_locked()
-          j1939_session_activate(B)  /* B is ACTIVE on the list */
-
-Only B's txtimer is delayed, by 10-25 ms. A's ABORT echo then arrives with
-J1939_ECU_LOCAL_SRC set:
-
-j1939_tp_cmd_recv()
-  j1939_xtp_rx_abort(priv, skb, true)
-    j1939_xtp_rx_abort_one()
-      j1939_session_get_by_addr(..., false, true)  /* matches B */
-      j1939_xtp_rx_cmd_bad_pgn()                   /* PGNs equal */
-
-B is then aborted, and its sender gets an error before B has sent its RTS.
-Before this patch, the second CTS left A on the list, so the echo matched A
-and cleaned it up.
-
-[ ... ]
-
-> @@ -1823,14 +1846,42 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
-
-[ ... ]
-
-> +	if (dpo >= session->pkt.total) {
-> +		netdev_warn(session->priv->ndev,
-> +			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
-> +			    __func__, session, dpo, session->pkt.total);
-> +		j1939_session_timers_cancel(session);
-> +		/* The transmitter only sees this on the echo of an EDPO it built
-> +		 * from an oversized ETP.CM_CTS packet number, so it is the
-> +		 * responder's CTS that is too big, not the EDPO offset.
-> +		 */
-> +		j1939_session_cancel(session,
-> +				     session->transmission ?
-> +				     J1939_XTP_ABORT_ECTS_TOO_BIG :
-> +				     J1939_XTP_ABORT_BAD_EDPO_OFFSET);
-> +		return;
-> +	}
-
-[Severity: Low]
-
-Is the claim in this comment accurate? j1939_can_recv() sets
-J1939_ECU_LOCAL_SRC based on the SA alone:
-
-	if (j1939_address_is_unicast(skcb->addr.sa) &&
-	    priv->ents[skcb->addr.sa].nusers)
-		skcb->flags |= J1939_ECU_LOCAL_SRC;
-
-j1939_tp_cmd_recv() then sends any ETP.CM_DPO with that flag to the
-transmitter session:
-
-		if (j1939_tp_im_transmitter(skcb))
-			j1939_xtp_rx_dpo(priv, skb, true);
-
-This means any node on the bus that sends an out-of-range DPO with the local
-SA reaches this branch. It is not limited to the echo of a locally built
-EDPO. In that case the transmitter sends J1939_XTP_ABORT_ECTS_TOO_BIG to
-the responder for a CTS the responder never sent.
-
-The abort itself still happens. Only the comment and the abort reason code
-look wrong. Could the comment, and the matching sentence in the commit
-message, be reworded? Or could the code be chosen differently?
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/179265494813.314254.14725785769836234084%40163.com
