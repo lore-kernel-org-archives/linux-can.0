@@ -1,61 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.53
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792814333;
-	b=Rp2Jfc6qOKe1l2BSnfp+irvF2BLFrD3ClzXAcFF0kiJl9+eSbOTpsYz1ouDwcq4W+vel
-	 0MSNGdG1aMIdYJEJpNxonSk7u/V/rgbiuKl2kM25Zqz5/xKvvfki5BpQN85+DZajBX++g
-	 M3XpnLv6uQSXCaICAY/PVx3lg7OZWXbHB3v5cU1/1HHNRcSyimvDFkZB2Ol0kUH7wibkU
-	 Y1JhR/AOh55vVJOF5ZB81/dtjDfWDd4dfLuio56eRdY3z0QKk1aIB/n2qicpBkIiGJyVW
-	 e1O/Fer1V1RE1VcEUvCHz/bgW6nrqouGlRsbJv82eIW/nwxr1M+SR0AaXuf+AJ/LU2w==
+	t=1792895009;
+	b=vqFYpARjZ9B9fr3FMD41ZDyhyMAnYbeIAB5rVE2CblYxZCdCuXdd4oeWNqau9OvMm3j+
+	 AO+cjsygsJuvqRyFjxxEyCdGsYSQEKVR2X8icJwdncPgrB0A7L/mDrwdsezioIb7O5LaB
+	 CPj+X1J8pGVGFxEjp3bEagGGv2UCDCYadtQ3rCme03/i7hpWRfOIu4HyCF+E00MAqyejJ
+	 qYdTQqn8JiskP3joHWCNdZ0zdV9aTxFi3c2NpaKxu6ZKw5gw1w3tGpt98CtV7ZQVLrt25
+	 GpgWoBBWyHghfbIWB2xJdkq4woKZaD01rUjOCV5TEyDEbFNkDXeYSc6EamAd88P9BTg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792814333;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=3mTgRnLhsdY5CnedtJDb77nGg3hZqBLMMhQMdL5jNng=;
-	b=5t5K8zWLqL/SWfsNb/Suy4JfJetuD7i0fDo5iDhy6SOX6Z2iedv233HV2e7wefU0QYVv
-	 4mypQqPBgrVACxiOpGIhHu33DGyzCWF3BYKtGDRGCiGkbpFExDJIJcDxOOr8b9vpthKNw
-	 aAal2t12NXVXTAEF/0HnWWRrXEKFPVHtanFdM+1LePuoNIILuhTGFL8MUH6LFZ3hRdAxU
-	 T48+oItEGFIzDhITDGaoT72sCWNSGeW8staTlol67V0y8DLOVr/53BB+yQMgct497Wc8Q
-	 TX8WyI7kQmNbGk8P1wzooVQhl0H4/UT7jpatS0VXEQt7ZdyIP62D40YisiykT3DHAew==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792895009;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=8ivcDCD6sbT3HeyNxmBNTblO+eeeUzkaQd94WtAs7n4=;
+	b=j5o7ztblhwrQkGwvG7dP65N0blsgcye8A45gPHdqss7hnF6rFy7YZQaXG1KDoTCDdEHF
+	 3ngYY8TBEIQwBkUqIIGUWYy8I9k2oWXz+t9jox07ROuK2O8NIqjCYigK6iOUKGSyCx67Q
+	 CzN4afmzNOnIx7Vt/i93O4V1PcN8y+owCHHwD8qtaMZ6dTVQTtRGz0IimK0bvZ8wx5Ktm
+	 0tqJp2Nz77U2+T72Q9YjdbnOvaoQ1WITqfb4IadzdhvpyxLKSSbFb6GK8aeBrIryt5Su9
+	 ApBFq2bM5LPBa3/iAqAr96NTk8CMoHYj/7wro/mw2s5PDb99B9lrdMTlGKZ0yV7qFmQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GMjtceFh;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=KA6CYmBc;
+	arc=none smtp.remote-ip=74.125.82.53
+Received: from mail-dl1-f53.google.com (mail-dl1-f53.google.com [74.125.82.53])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86B76606A31F;
-	Sat, 24 Oct 2026 03:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB43F606A31E
+	for <linux-can@vger.kernel.org>; Sun, 25 Oct 2026 02:23:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CB43F606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GMjtceFh
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A151B1F01828;
-	Sat, 24 Oct 2026 03:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792814333;
-	bh=3mTgRnLhsdY5CnedtJDb77nGg3hZqBLMMhQMdL5jNng=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=GMjtceFhWIHzpL70r7B6WTxMSgJO96WAImetMBrYZ6oRQhpNPH10ZuK/8Y8fXIHiD
-	 7HRQFnBInJVfDau1Q5XMaPnePcvW9ILzvf3m0PAyYYwWpK55oWJfar1C1/zdrXclQs
-	 M2FgdHOnNiUnjjw6oxyCCWKNMEeRaHC1/auQNvtD6H2MfNSpOD/orLj4pFVfeBUH3a
-	 NX/huSIru/R6c8yAbWA1wUnwgg4tsvOvcGT66cNWCUuXqrERvQWNt6CQtk/tMTOIG8
-	 MRqd1CqVC1hb4vX4zZj2snFdC+qFD8xY1dLg6HRj5ipu7+UqLDL0VO6AiT3yf2XYMR
-	 4WZjpNPKgOuig==
-Subject:
- Re: [PATCH v6 06/13] can: peak_usb: harden channel handling in PCAN-USB FD
-From: netdev-bot+sashiko@kernel.org
-To: s.grosjean@peak-system.fr
-Cc: mkl@pengutronix.de, mailhol@kernel.org, wg@grandegger.com,
- error27@gmail.com, lukas.magel@posteo.net, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
-Date: Sat, 24 Oct 2026 03:58:52 +0000
-Message-ID: <179281433224.3130.6010222623227756144@kernel.org>
-In-Reply-To:
- <20261022-canfd_check_channel_idx-v6-6-197704231551@peak-system.fr>
-References:
- <20261022-canfd_check_channel_idx-v6-6-197704231551@peak-system.fr>
-X-sashiko-severity: High
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=KA6CYmBc
+Received: by mail-dl1-f53.google.com with SMTP id a92af1059eb24-16079d54c17so1058164c88.0
+        for <linux-can@vger.kernel.org>; Sat, 24 Oct 2026 19:23:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1792895008; x=1793499808; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=8ivcDCD6sbT3HeyNxmBNTblO+eeeUzkaQd94WtAs7n4=;
+        b=KA6CYmBcqsQvC/HFX0T1GLe65+gfKI4HeyLvBOp2ra0ohuc30NDAPlPT3ZOK0Y4csF
+         m399BDBg9cUw+07eP4ywoxkaPvZiGyR9gr9FRtxPmNmYsvEp2IZPWLpxGmIXNcgx0jC8
+         ctdDNw2lZCggf/ITO3oTzzfeLCaz0I6qAtDSaEHXt0Xi795KZmztElZYWhwlZenlLK09
+         yi1djcyDu5kgl91J6j6HiGeJdLQAY1Q9zhsbgbLDHTOI3QwtmgqS1TJeuL7TarkS/Bxi
+         xvKphuigbmylaaLgL1T6+Px42KezjZ4WzddBA5QZXyVMLP65iC0KJfgngy5Vd32SHiip
+         G9cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1792895008; x=1793499808;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=8ivcDCD6sbT3HeyNxmBNTblO+eeeUzkaQd94WtAs7n4=;
+        b=HuAZF4Q1kA9jDPYlCmQvMnYf065q8NzFo2pK93ezD5VWIf3idY6o8qtO9sU44rhaIZ
+         2cXkNk/0jIwNp8zYlk1elpBdSetlMdJ/C2W2PF2y0JKrGqrpuJhfB9adidQyIT9kAB65
+         zrFszrI7SQm1+FsHnMdAxkd+0g/nk7qcGo1cth8DBDFngSxSsE/OCU+htG49+F0RtIp+
+         xrTnqzxoHjFslk4wJYhm+bYhy6dpdyDAJiIxwA1z0DyDmjgoIakU9uOYQAX7r95IXNUO
+         F/i8IWjdCjt4ev5t+qe207HrZgKs0nhMEmjn5NlAXSsj1OMZoyVxJ61ijPjc+dEsGeMl
+         7waA==
+X-Forwarded-Encrypted: i=1; AKwUvByMc/0+6t3Z5RCx/2DrQnSAI7CrfFHO6etWaUd0HdiwgkB0Rsv5FfmdfdvpQOZTMiKqDg8y0morlXE=@vger.kernel.org
+X-Gm-Message-State: AFq9FYIGDoNdX2xhmobLhoJEx2qo5xONThHVVkg7IDusTQ5dr8x2g6Y4
+	hI8ANlxcPrMGIlJG/ueRCtYC+fuOY32bYWvVkWqooPzwSnjr9XyRAZyO
+X-Gm-Gg: AYBFou3rDpFnflrFdx6WCu4CUsgJLZVjSsITLpSih8eLTML+qqlUBRUx44MVHGgp9oX
+	OaUr9eDhmKeeBHZ/dojgyNjUVCpPxuA6odeLIQB2Q1BxzeMXYGK2uW+YQdh/J9uDDZQuIKJrHKh
+	SQ0lgWe1X8aCgmETJfJSyWgJKJeVlTEDWhmz8Da1Zh6jno1icKCev3oEtuex/gvHnYqyJGJ/lzD
+	l0s62H5zFQnVFOOAaAIjI19pkwpXk4OivVmM5G9wMnau70SG0NBCOlP+h2pcMZhtsozTIFl/ao1
+	FvCFmRhWG3uwYkQd9DstZqaLwOEgRvgn1qUsf8XuV5qYrJg/FrPorcp5tfmirkFedRzezpsB1SN
+	B8DpA/YQZMIukLgkQPC54NJ0pEIftQso/ckJGplTqTWQzIdsrDs9Up4RhN982A+nmDU8pDGqKIQ
+	sOMOkj8Y6UW7hk9D9YzT0cxEkbdXE7s7ggwiPD0sB4c1l2F2klMJjOXppDeM/k0xwBAxdxiVEgj
+	BFzkmPirgFzk3OgGP8peHd1eZh7oAN0nK3UfXz+qDh3WWC4oB0ntGJ7z/O+opV7I3DZ
+X-Received: by 2002:a05:7022:607:b0:15a:9834:73f2 with SMTP id a92af1059eb24-19937bb20afmr6922856c88.38.1792895007760;
+        Sat, 24 Oct 2026 19:23:27 -0700 (PDT)
+Received: from [127.0.1.1] ([183.242.161.82])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-198a1bfaebfsm11547267c88.15.2026.10.24.19.23.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Oct 2026 19:23:27 -0700 (PDT)
+From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+To: Jakub Kicinski <kuba@kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next 0/4] can: don't discard the platform_get_irq() error in probe
+Date: Sun, 25 Oct 2026 10:18:45 +0800
+Message-ID: <179289472574.8393.12094085935716992853@gmail.com>
+In-Reply-To: <20261021133130.2cf75b3c@kernel.org>
+References: <cover.1792118040.git.chaosheng.qu.linux@gmail.com> <20261021133130.2cf75b3c@kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -65,198 +95,27 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue(s) to consider.
+Hi Jakub,
 
-Critical: 0 · High: 1 · Medium: 0 (2) · Low: 0
+You are right, and thanks for pointing it out -- the Cc came from my send script,
+not from `get_maintainer.pl`, and I have fixed the script so it can't happen
+again.
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+To be explicit about what I am not doing: I am not resending. The patches
+already reached the people who matter, the CAN trees are the right path for
+them, and another copy in everyone's inbox would be exactly the noise you are
+asking me to stop making. This is just the acknowledgement.
 
-- [High] The probe-error cleanup in peak_usb_create_dev() (adap_dev_free
-  label) calls peak_usb_stop_rx(dev->prev_siblings).
+For the record, the same mistake went out in a second small series the same day
+(`can: slcan/can327: publish tty->disc_data only after register_candev()`,
+2 patches). Both were sent to linux-can@ plus the per-file people from
+`get_maintainer.pl`; the extra Cc is gone from the script, so neither can repeat
+it.
 
-Pre-existing issues:
-- [Medium] PCAN-USB Pro has the same NULL channel-slot bug that this
-  patch fixes for PCAN-USB FD.
-- [Medium] When peak_usb_disconnect() runs from the probe-error path,
-  peak_usb_stop_rx() clears PCAN_USB_STATE_CONNECTED on all siblings…
+Sorry for the noise.
 
---
+Chaosheng
 
-can: peak_usb: harden channel handling in PCAN-USB FD
-
-The PCAN-USB FD decoders now check the channel number against the
-adapter's controller count, and they drop records for a channel whose
-usb_if->dev[] slot is NULL. The slot is cleared in pcan_usb_fd_free().
-A new helper, peak_usb_stop_rx(), clears CONNECTED under RTNL and poisons
-the RX anchors. It is called from the probe error path and from
-peak_usb_disconnect().
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> index a1b17e1e6fea6..49d2c01b8ef7e 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
-
-[ ... ]
-
-> @@ -1014,6 +1041,12 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
->  	return 0;
->  
->  adap_dev_free:
-> +	/* the whole interface is released when probing a channel fails:
-> +	 * stop RX on the channels already created, since their RX URBs may
-> +	 * carry records for this one.
-> +	 */
-> +	peak_usb_stop_rx(dev->prev_siblings);
-
-[Severity: High]
-Should this also stop RX on dev, and not only on its previous siblings?
-The comment above peak_usb_stop_rx() says it stops "dev and on all its
-previous siblings", but this call skips the channel that is failing.
-
-At this commit, peak_usb_create_dev() calls register_candev() before
-dev_init() and dev_set_bus(). So userspace may already have opened the
-failing channel, and its RX URBs may be in flight, when
-dev_set_bus(dev, 0) fails.
-
-On a single-channel PCAN-USB FD, dev->prev_siblings is NULL, so nothing
-gets stopped. The error path then runs:
-
-peak_usb_create_dev()
-    dev->adapter->dev_free(dev)
-        pcan_usb_fd_free()
-            kfree(pdev->cmd_buffer_addr);
-            kfree(pdev->usb_if);
-    unregister_candev(netdev)
-        peak_usb_ndo_stop()
-            dev->adapter->dev_stop(dev)
-                pcan_usb_fd_stop()
-                    pdev->usb_if->dev_opened_count--;
-
-Can the RX completions of this channel, and then pcan_usb_fd_stop(), use
-usb_if and the command buffer after they have been freed here?
-
-The later patch in this series, "can: peak_usb: register the netdevs only
-once all channels are set up", seems to close this window. It moves
-register_candev() into peak_usb_probe(), after all channels have been
-created. At this commit, though, the window is still open.
-
->  	if (dev->adapter->dev_free)
->  		dev->adapter->dev_free(dev);
->  
-
-[ ... ]
-
-> @@ -1038,13 +1071,14 @@ static void peak_usb_disconnect(struct usb_interface *intf)
->  	struct peak_usb_device *dev;
->  	struct peak_usb_device *dev_prev_siblings;
->  
-> -	/* unregister as many netdev devices as siblings */
-> +	/* stop RX on all channels before unregistering and freeing them */
-> +	peak_usb_stop_rx(usb_get_intfdata(intf));
-> +
->  	for (dev = usb_get_intfdata(intf); dev; dev = dev_prev_siblings) {
->  		struct net_device *netdev = dev->netdev;
->  		char name[IFNAMSIZ];
->  
->  		dev_prev_siblings = dev->prev_siblings;
-> -		clear_bit(PCAN_USB_STATE_CONNECTED, &dev->state);
->  		strscpy(name, netdev->name, IFNAMSIZ);
->  
->  		unregister_candev(netdev);
-
-[Severity: Medium]
-This is a pre-existing issue, but when peak_usb_disconnect() is called
-from the probe error path, the device is still attached and its interface
-has not been disabled.
-
-peak_usb_stop_rx() clears PCAN_USB_STATE_CONNECTED on every channel before
-any unregister_candev() runs. For a channel that is already up,
-unregister_candev() then calls:
-
-peak_usb_ndo_stop()
-    dev->adapter->dev_stop(dev)
-    dev->adapter->dev_set_bus(dev, 0)
-        pcan_usb_fd_send_cmd()
-
-and pcan_usb_fd_send_cmd() starts with:
-
-	/* usb device unregistered? */
-	if (!test_bit(PCAN_USB_STATE_CONNECTED, &dev->state))
-		return 0;
-
-After a failed probe, is the CAN controller left bus-on, while
-peak_usb_ndo_stop() treats the bus-off command as successful?
-
-The old loop already cleared CONNECTED just before each
-unregister_candev(), so these commands were dropped before this patch
-too. The patch now clears it on all channels at once.
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> index 15d275d6a1277..eee5b5eaa247d 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-
-[ ... ]
-
-> @@ -536,10 +537,16 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
->  	struct sk_buff *skb;
->  	const u16 rx_msg_flags = le16_to_cpu(rm->flags);
->  
-> -	if (pucan_msg_get_channel(rm) >= ARRAY_SIZE(usb_if->dev))
-> -		return -ENOMEM;
-> +	/* Reject invalid channel numbers reported by the firmware */
-> +	if (pucan_msg_get_channel(rm) >= usb_if->adapter->ctrl_count)
-> +		return -EINVAL;
-> +
-> +	dev = READ_ONCE(usb_if->dev[pucan_msg_get_channel(rm)]);
-> +
-> +	/* reject records for a channel that is not (or no longer) set up */
-> +	if (!dev)
-> +		return -EINVAL;
->  
-> -	dev = usb_if->dev[pucan_msg_get_channel(rm)];
->  	netdev = dev->netdev;
-
-[Severity: Medium]
-This isn't a bug introduced by this patch, but the PCAN-USB Pro decoders
-look like they have the same problem that this patch fixes for PCAN-USB
-FD.
-
-In pcan_usb_pro.c, pcan_usb_pro_handle_canmsg() and
-pcan_usb_pro_handle_error() check ctrl_idx only against the table size,
-then dereference the slot:
-
-	if (ctrl_idx >= ARRAY_SIZE(usb_if->dev))
-		return -EINVAL;
-
-	dev = usb_if->dev[ctrl_idx];
-	netdev = dev->netdev;
-
-The channels share the bulk-in endpoint, so channel 0's RX URBs could
-carry a channel 1 record before pcan_usb_pro_init() has filled
-usb_if->dev[1]. Can that lead to a NULL pointer dereference in URB
-completion context? At this commit, register_candev() runs before
-dev_init() in peak_usb_create_dev(), so channel 0 can already be open at
-that point.
-
-Unlike the new pcan_usb_fd_free(), pcan_usb_pro_free() also leaves
-usb_if->dev[dev->ctrl_idx] set when the channel is freed.
-
-The commit message does not mention PCAN-USB Pro. Two later patches in
-this series appear to fix this: "can: peak_usb: reject records for unset
-channels in PCAN-USB Pro" and "can: peak_usb: register the netdevs only
-once all channels are set up".
-
->  
->  	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN) {
-
-[ ... ]
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261022-canfd_check_channel_idx-v6-0-197704231551%40peak-system.fr
