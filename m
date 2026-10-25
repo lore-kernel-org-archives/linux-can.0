@@ -1,91 +1,94 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1792957925;
-	b=Y7jBSKnbrzdH6Calzu5mum2HWd016lUCXIrRrCMaoPbP9GyUeuGvc0WAvY00yZu9Hl00
-	 UBv1nJosGJkR57jfmj1pR9FbNBKqQqa7a/FSQzd7Rov3SvhPfOWIqvzefsTmLRM5fwsEA
-	 3kFtqgoytKjyGIylnkkHSDeUdk5ZKBmaYZhuGjkjwvk8LUKh7aen21yhIuGPIGJEgxVex
-	 x6w1V6YurB6ZaOql/fGiPQ/AErqxxd9d1HpqNhYIAE2mYgSIQXP8vzXOt1vbBmA/+5VXu
-	 kC0PGhMRyMUL33zuOtqmahsZcVwMpYHItsesOwLWKP4sGRfZW9Bx/IYklgK6N8P34ng==
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1792957916;
+	b=NSz1bnLADEPU0xLzSFiYHVREALF54ASumn0TZMJIziLADDNLxMEjxmN5Cd8cpmAM7hRR
+	 j4xRN5UndDwvL5PC/dzm2CYiq/hdssYk+e+BPqHDTjLY+UtCKDNsktFxNuMQOHHDarj+r
+	 JxtDFV6NwtJVvx9bwfchn2h3qVCuTBXQ05wjwR2G747ViZ+55z0qmCZFusGm52gpIi29v
+	 OaN8bVOfaNpbVcedfCJ2fvjwg8HHrhO0Dq1QhfqWkaAgV9LYKoQGZnaL0plzo19dq7Xf8
+	 6iom4tJro4EEgVBgyW9Y8Clv1HpArrZfyEUwjgBwM40oqgcpX5DGIXXApcdcuSyB3aQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792957925;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=vuewZKJsHYc8qWzoNjgdMU2lcttQpXm1LlJhICyBRiM=;
-	b=X8SLKsaZg48pNwDqjGaYsYCZNzsHpFHxZRCCrV5SsccPO+aR9e/12Ez2FLV6P4QPssET
-	 RQTnu2YZTW/6nLST+JeOjLe26JY7WvH0lJwnMMyMUp0+BPlryFO2Z/PzRuCMKKVLBHlAj
-	 O8/tWjaUV1LuIt6TXkBdN8XRIQ/JjwWrx3ILk98O5b6SOOmt3v/6NGHWohhauWKutQ+Tg
-	 si5n4lb9v7UolzCkbVt1T5WGcH9Xk2PYKPEntf71Tt3UTNcQm043OmsR8WfvVoeLdYrTT
-	 qZzz2Yz37HQH0hIZp18NPjcXi+plp9w2u8no54DXPxwzEhL8p15QpTTs1Ro67+YLjRw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1792957916;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key;
+	bh=gzqvCXUxAiBvbMROfVnJpVOaWr7Kd+9TvqdSl276L7w=;
+	b=asX/QpMZQnQrM9ut6jEDkWLlz+WkG6rfGkYs3sTVhStECRTmPFgkJ7USjm1Wce+BRtaL
+	 Jxl9ocn4lzaD0Ee4jKynOBWsxcBs2qq2OtYE5cN/0bV/O/N8WbZBX1nFOQU1CEMq2/7Qe
+	 DMk42ZpZyfqogN1fAI5OKnDnNEQK/kaBIy3wMDB4pKMsyP5Jui5C1sXBewp/il2gDJyhG
+	 lY7c6qhV4U5B0u9v5zAHDQGOKxHrXPSYK9/S9o6N5hZCZGVSyccJJ+CZTRS1pIJFy9079
+	 sgFAAOyOcDFwNAVmxwVOApBj2YZseWXNVph15JrCGS0Jv6Le27fZUJXA//ovczldcXg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=tfQ6dw+N;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=fYrZVDHK;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.165
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=e+UaXVPq;
+	arc=fail smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA34B606A322
-	for <linux-can@vger.kernel.org>; Sun, 25 Oct 2026 19:52:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BA34B606A322
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A52FE606A31B;
+	Sun, 25 Oct 2026 19:51:54 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A52FE606A31B
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=tfQ6dw+N;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=fYrZVDHK
-ARC-Seal: i=1; a=rsa-sha256; t=1792957916; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=HsYS8d4n3qQnbAUltrO/eneQdF0K5DT/asoaU7Hu1ZyngyGDsVwuY/U88YzIb+IZxv
-    v0Yet+9SLotE/ECeiQbCXfyaSlYyVtIhYQvDcrCuClV9fg90v7U+tnLYzWTaSl8N9B86
-    lDb+jB00EUFjdKcYas35iIWLNdHlb3KpadTvc4RXj5+h4ame5zP5sCM8YHpprXdCoFMA
-    9spikfjxDUtExeLK6i+u7x/Xu/lsvaRIbsHBidpT8qN2r+UD6UvlyAZyz812zSH7Ysql
-    yZJjQIMfPsP263HPDsP+2QMV7UzXbYe+kG5WTCOUt70L0zvOkVPEl7rC247ApVK446vd
-    17lQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792957916;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=vuewZKJsHYc8qWzoNjgdMU2lcttQpXm1LlJhICyBRiM=;
-    b=gZEgSHd8w3sa1VwbY7u7nbwb2GPwzgMj6Re3Jp97r14A8T6u3CjJMXGSBrW7+PXfln
-    GzqcwaFA6e1Tu8xMCpAJ0f9RF/nD0aTFbzGi23Ma0XnjMI8FA2IqJbXGaXc/Pkq/iImp
-    Kv3pBPZ8O/0QEw/QkinetYYycB6ZJxwKQWfcaqEu3IdNczVApRPC8boNRqbGUhFcxFeH
-    iOp3IuBY2q8b6NTdKkQbw2Xdc/+cvA5S+ItTLc36BsiCL5QHi0zzFvVNAvRRCQU/oi2o
-    sZfx/2FVSHBdW0LwtCs7HeNfK8sen1a3+6Tfpt4KzcrmPRsytOvNG+W54g0VT+sVagLp
-    ykgg==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792957916;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=vuewZKJsHYc8qWzoNjgdMU2lcttQpXm1LlJhICyBRiM=;
-    b=tfQ6dw+Nfqy+VlLzsmKHIBtEbi/UhZQIMzxMwV6o4qbuujvT0/rE1FnHg7H12FDUgE
-    ouJi0YQ8GbdqGiqjaF39xUI+IU3WkIiu7IIQXlPMINcSbX9uoeUOj/b4k/+B1yI/jsJr
-    +M4YCjNTdCPXRB8LrmPmI8uwVmnfHVCG7tm+dvCDL5vfp2GLCdHVhz5tTxvh9nzH6nlQ
-    wLv19KRe0P5fz1P8393dY104hbpKu+VfrlG4yZHRcGdCya8JbF8gx+U+Ct9YT2SpHoE/
-    l0Z9tqKz8upWV9D8NR8eBtputdYm2wXVGzn/ZnIcPTVTXHpNKDm9tXlI1EW8LIYC7ONy
-    TjXg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792957916;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=vuewZKJsHYc8qWzoNjgdMU2lcttQpXm1LlJhICyBRiM=;
-    b=fYrZVDHKOysf6IrYKyNCr9DjHPzVghP1joFSRiQjyqaQBPsJ/AgOtpUJtaIg5ECHzM
-    Uv3XqlIYf44e3tTKr0CA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29PJpuz0r
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sun, 25 Oct 2026 20:51:56 +0100 (CET)
-Message-ID: <7e91a6f7-7922-4964-9f96-c8e9b9f2f5f3@hartkopp.net>
-Date: Sun, 25 Oct 2026 20:51:56 +0100
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=e+UaXVPq
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id DB2D9201E0D;
+	Sun, 25 Oct 2026 20:51:52 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792957912;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gzqvCXUxAiBvbMROfVnJpVOaWr7Kd+9TvqdSl276L7w=;
+	b=e+UaXVPqFiKQUlM60M5R2aZyVCabFa0zt7P3yPBdTvrQT/po5NwegvROGQrlj3XR4xyW6y
+	thKioIo76axU1bzIkpO/+dozoVAbDh0KeOw/CpUnkGhzP1Udtf+4NUAEqWfJU/fvE9F2yM
+	l9181PrqdQo2XLBnXgVaJ8i26FN8CzxPF7vTm+1dGhwoTM/kiwKCK1YFLlwdABWnAZ7NgR
+	1iYah4CVWokN7fuTWgyHqoAewKi2z4uOV3q1wk+4FBmyWnKe1uuiZrPRVA24jj43Vkh4kA
+	GZ6nuZ4jq+SdSKefiK8KqqiYtkrBJsKKb/9YgZPJGreS8X+V5YX6w9O0BRTIrw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1792957912; a=rsa-sha256;
+	cv=none;
+	b=N5TbPRorPNfpF99yzD2IhPtJB8Wbqd708AfdOcN9RTcup92/veMemdGA3G1aPMwdVHTi8b
+	HeOLyv4dA72RxXKLxBuRGuvA6pWU4tJ+cEqv6F3pEWzvicLMWyUBEhn5qkUWMlfwJh2brG
+	+h7x3vNwH1+RB3WYUAosHAnvAfHXtyxi7nVJ0ohtmeVuX+CjRNu9HJaTRA4rnNxwn2CSmD
+	/cqgUHdZ4SniAKpV56SjsNVN/NVn1RHSAlySlDucAC+JBwSK50WOXiVicf3cOp2+FlmHSa
+	h0hPASh1CS3DLVwcYMzaCZZklS051L2+koy7ZbyFmCB49HUWkm6wYcAv8TLa0A==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1792957912;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gzqvCXUxAiBvbMROfVnJpVOaWr7Kd+9TvqdSl276L7w=;
+	b=CY7rWDla+al34Z6wELEdZMwXC4B+TJezJtPrU3IzT0eMcRb1Pga7B4QVFtbt9nWo92YU7/
+	sWDZAj0xLoaPaaRWYGiijCQf38nShuK5POTRL/crrYQVz9l02CH8yrkjtWgreqN91cfCFF
+	FiHfloG4nY8FsrCYQ3N2Y4UD7qEcW+oPsX2CcQAnAeSfnj0dGmJTf5qSPPt/IP5b9NAqWP
+	V1LdMS7IKc3TtG/i0sr5oc8cJspBld1K0PwHrRUeEygV8dU6PNe/NZJaP1fZeEkbEsusUo
+	bBoI/fMh0UEZtq/J/NS1tlJpDuj3GmH/LdfqIoLFWvNkSw379w2+qV6TIUR7Zg==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xL4G0-001AwO-2V;
+	Sun, 25 Oct 2026 20:51:52 +0100
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 7FF105D41F4;
+	Sun, 25 Oct 2026 19:51:52 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Sun, 25 Oct 2026 20:51:41 +0100
+Subject: [PATCH v2 1/4] can: gs_usb: gs_can_start_xmit(): don't leak
+ uninitialized memory over USB
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,50 +98,57 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 0/7] can: protect the receive lists with a per-device
- lock
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org
-References: <20261023121801.3052075-1-socketcan@hartkopp.net>
- <20261025-pompous-mahogany-koala-f18498-mkl@pengutronix.de>
- <ee27f899-0ac1-4059-ac74-e4ddaab61b0c@hartkopp.net>
- <20261025-unstoppable-valiant-woodpecker-20c6dd-mkl@pengutronix.de>
- <6421fcb8-beb0-4d42-b94c-6c936af3d7cd@hartkopp.net>
- <20261025-vivid-inscrutable-poodle-cf558e-mkl@pengutronix.de>
- <4dd68aae-41e8-4b9b-b520-4f281c9a93c2@hartkopp.net>
- <20261025-eccentric-sweet-hedgehog-ff4c6b-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261025-eccentric-sweet-hedgehog-ff4c6b-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20261025-gs_usb-fixes-v2-1-535d45097f72@pengutronix.de>
+References: <20261025-gs_usb-fixes-v2-0-535d45097f72@pengutronix.de>
+In-Reply-To: <20261025-gs_usb-fixes-v2-0-535d45097f72@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>, 
+ Eric Evenchick <eric@evenchick.com>, 
+ Maximilian Schneider <max@schneidersoft.net>, 
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.17-dev-d7211
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1117; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=xMzMzZuOb1bhvyVgFQl8vx69LoqShxppSYb1Nul7mjw=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsi6F3spg+O6SIj19iDlhpZZig8XnFNb5hceqVgTU1Fh/
+ 2kl2332jlIWBjEuBlkxRZalP04oCgQ6lPa+TJgEM4eVCWQIAxenAEzEyYThN9unjRuP2Sm4tV7W
+ r1oTrH3VVOXz3vX3JnOJnd90btO0f7yMDBPTVgtMevCXb+3OqN2luxzfc81KvDDhVpjlj0SzJVM
+ T/jECAA==
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
+The driver allocates the transmission buffer using kmalloc(), which means
+the memory remains uninitialized. Then various headers are filled and, but
+only the actual CAN frame data payload (of length cfd->len or cf->len) is
+copied into the buffer, leaving the remaining buffer uninitialized.
 
+Fix this information leak, allocate the buffer with kzalloc().
 
-On 25.10.26 20:43, Marc Kleine-Budde wrote:
-> On 25.10.2026 20:22:30, Oliver Hartkopp wrote:
->>>> base-commit: linux-can-next/main
->>                  ^^^^^^^^^^^^^^^^^^^
->> My question was about the tree!
-> 
-> linux-can-next/main is an older version of net-next/main, so this
-> doesn't matter. Both don't have "can: raw: remove redundant NULL check
-> before netdev_hold()" applied.
-So it has to be
+Closes: https://sashiko.dev/#/bug/linux-0a8c0e8a-c623-426a-8db3-f55111f6cd84
+Fixes: 26949ac935e3 ("can: gs_usb: add CAN-FD support")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/gs_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-base-commit: linux-can-next/testing
-message-id: <20260831052031.902699-1-ekffu200098@gmail.com>
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 3b9b2f104d86..15f28833f2de 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -861,7 +861,7 @@ static netdev_tx_t gs_can_start_xmit(struct sk_buff *skb,
+ 	if (!urb)
+ 		goto nomem_urb;
+ 
+-	hf = kmalloc(dev->hf_size_tx, GFP_ATOMIC);
++	hf = kzalloc(dev->hf_size_tx, GFP_ATOMIC);
+ 	if (!hf)
+ 		goto nomem_hf;
+ 
 
-??
+-- 
+2.53.0
 
-My current idea would be letting b4 fork the branch for my patches in 
-linux-can-next/testing at commit 0c35fa862dab ("can: proc: remove 
-pointers from CAN specific proc output") where "can: replace ARPHRD_CAN 
-type checks with can_get_ml_priv()" would be the next commit (and the 
-start of my diverting patch set).
-
-Would this work?
-
-Best regards,
-Oliver
