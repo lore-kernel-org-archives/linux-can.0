@@ -1,59 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792918944;
-	b=3E/Wa/p+Es7+M+u4znmNnM/UPyqwfGRKkd5l7rtIlOqxex99yLhEztskvMKUbwQ1ngDh
-	 ofaAZBzoB4Ah/sh1ojIaVdPnkccg91H/spR9WN4JheQzoJ/93SDawnKSGt25R480lu6OK
-	 naZYgiGPKRFf9RvgKyASujV7xz6k4w5K7VYxPknQa9i0+Wz3BTmHmSCGG7s0USMcea5p7
-	 iJDjzVgjEthIOFZahUO+rZuxWJRMfIM308u05pVHI5ckqNUUgdnV/GqDGgwpdJuwIlcg5
-	 tFPNcxiue0/MraZZx+0hWU7zaoOW5Sm/OGnqSIU3HBtbc0Cf8P91guCwFAa+P0di8vw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792918944;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=fqJbvTGdqh7VqVzWzt3DZSgHVwGRSMEmH3rTArRygRE=;
-	b=cX9WC2PTUh9q9qRebGeLCzU8shf4NKyUYQgbFOAV8mO0HMs6lii+EoXsL95Kc2Y2H4de
-	 9mCuWHEMoBPvmyB7AATZ5jyfDJ3Ed9pnrrj9W03Mtfcgjy4H/EFu8/Dl6L03fa4suE5St
-	 dQYLPqLCVxs/vzrUIYWULfByRv6BJUGpY3bkKKWbgJhb7JgeaXycpgiNPxrcmx9KjL7rt
-	 Gi/B6oOboh4P95Y71cBdWhm7y4z6QpJk6oTuVJ1aOsKh4hFtugHW4xUtmz7uxTQ10xlh1
-	 mSd2N2I7AcYn+C79a97mmrpKDxgNBaPYtQpIJLDPpSeoyVC8nCcdBu8GnfHBIwuQxDQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MLfq8KMT;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.220
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1792928616;
+	b=luWxaaVL+S1C2RsvE/kHZYEueONxujS+xZiqayFWwnJpIhNrZEVvv2CsRkMnvej4lIxH
+	 Qc4wMDxLC57xbEVU08zF0qI9u3bw/493QEDZ2fNisLI5e1o6aZhlbT50ZU4n1QoH7n1Pz
+	 J2R0ZOkwd9j6KZ6Pdx/onDMkffxEgbFFafwAO3yDixuaihL81nnl75f4SotCM6ttafBQb
+	 tW0gRxGDqYs6vRmZSzvrDsjZvbsdHrkVajAvigcdDSHOg+pSkI4apVXGQKlsOZEf6C1CM
+	 j2uOWNC/uG7s3rlrYPWtsZb2blUMfgPR2PkwpbxPbgV1fEiHQ+RBRmezf5XyV6PHaQQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792928616;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:
+	 References:Content-Language:Cc:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=4q0hYP+Aag5ENXlHD39/tP7SPHl5wL+4LewZvavAmVk=;
+	b=zr9xKG5VWQolwODwS2Uukkmp2T/OT7XotHCzsud2Qeq18b2cjLc0BX+dCwq/Ht8j98yi
+	 MKIX+P8uUa55l5UWNSxZv2Bv6NVepWGhQabb2e50MFR1Te7HWcD5C+Qre24oDLS3jLPjn
+	 gkOO2NDD5d50zsgHo/F19P9hNSnA1+B379tD76laRPfmo3zQVykgMOAHLAGT/WD896ATH
+	 C3rwCvFxTC/+ij2ks9sEZc5SrRpnL3z1gc4LV29sfOhxNXLUT360Xu2sPbnTkfBYWJIBj
+	 DEzQpYnVED2vg/d3/23mfk8EWTOy9rpCq5FdOg1eh5zmUgvtOieyHAvJDv7tCA95rRQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=bR0CKkH2;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=winChasj;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.220
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6E9606A31A;
-	Sun, 25 Oct 2026 09:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6D91606A31D
+	for <linux-can@vger.kernel.org>; Sun, 25 Oct 2026 11:43:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D6D91606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MLfq8KMT
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9EFCD1F01825;
-	Sun, 25 Oct 2026 09:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1792918943;
-	bh=fqJbvTGdqh7VqVzWzt3DZSgHVwGRSMEmH3rTArRygRE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=MLfq8KMT6EiphOaV1Pif+gzSu0jqWM1l7KeH0dO70OV9EnI6iqkirtl+S94ioOUHh
-	 s7kLCossVRI5RMGVML7Qd2JMrQCVad0TxwET8bC5sUmjQ4+3r+GQb/D5DWF23vAEtW
-	 w4V4ERPrDFaXaAWYuIvEwiCKWJi1ZN+yBpEewLib0F8ufU6F/GSd+k6QIcwHJ4QKT1
-	 H+IEB9uBVc0mk3JoWaDjFd+/IFpIryH+5TbKgA7s2CC+TT+64WZ3f6jpCRYJ9ZzF8b
-	 rmTXggxKT6OozcP0R2oc7FOMV2CMe0E0uNRGhO1carWKmNxg4cL5tynV+Ukk1v4tqJ
-	 3orUAj+7Fk3Ng==
-Subject: Re: [PATCH net] can: peak_usb: add missing dev_free callback to
- cancel restart_timer
-From: netdev-bot+sashiko@kernel.org
-To: tristmd@gmail.com
-Cc: mkl@pengutronix.de, mailhol@kernel.org, s.grosjean@peak-system.fr,
- wg@grandegger.com, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, tristan@talencesecurity.com, kuba@kernel.org
-Date: Sun, 25 Oct 2026 09:02:22 +0000
-Message-ID: <179291894217.3130.4987191792366475143@kernel.org>
-In-Reply-To: <20261023195400.3531721-1-tristmd@gmail.com>
-References: <20261023195400.3531721-1-tristmd@gmail.com>
-X-sashiko-severity: High
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=bR0CKkH2;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=winChasj
+ARC-Seal: i=1; a=rsa-sha256; t=1792928607; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=Ym6SJ+3kWT+Kj8aUdJbSvUt0WIOi4e1oqOAHNnhVMdt8bIEG2a6zod4WgV9xtW67w8
+    55GNi1dXrRq137DBEm3iATw7i7uYZqeF2r8d25h+my8KoMZN4aWx5nccCN5H9+tLSRMG
+    7RR4qOlFLxia9jyDXbtBQ+yvpXKm/acQu2+bjjrwWq3/3Sp5OzY4a4/s/LkQz/7asD2z
+    j5oS68FVQEEyeU5MIUnDZ/Z5inhwQqTXyYuEQw0LLW9ZHR26eCtlLASDkdgQ+cDoBM9h
+    mxnSHd28Fej+ZtbbDA+vNJY3uNDZuTJ1ahR/l+/FKgWqGMTSIUdTTRtifnKzkXiWEXXI
+    DABw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1792928607;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=4q0hYP+Aag5ENXlHD39/tP7SPHl5wL+4LewZvavAmVk=;
+    b=HlhswNlUgyqXCBAsLxkqN73V09Iif3+67s6thGEDzkCoE6d36V/53eU8iM3rZfu960
+    oVpHUmfdgk2L9AH7GYwSBKWvo8/KAGQI0IDAXqwJmryLWLUxDp+CGHliszY3wg9OYL02
+    sz0o9FNVtkLZ14HGguNiOnXBTkEjXzCXOHKYY0SVULqy5t3QDx/Jkd+uRZZGHSip4UrJ
+    kkpdmbiYycuifV1OZ77u1CGPOld2JLzu4aQxOqG8ftou6Buh5+p3Z4EaoZLgeVbGp2Ko
+    cFB86VW5w9T3SzPT2LLJLIhBdgjE/tRrTGEWUABGdysMxVU190aV3Y199UKhgAsclu3K
+    /Jxw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1792928607;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=4q0hYP+Aag5ENXlHD39/tP7SPHl5wL+4LewZvavAmVk=;
+    b=bR0CKkH2Y4iWJGpX8z26ioaJtnVX6UoCsKP8duthO2933dP2LeeNh+5E3WS2hnio3g
+    hvxvAW3dGFyFrkhXEUQSrROnGOwmjYBbF2TCnYAqEzPyPLdtlitY4NsKW+k5yBJNBVKZ
+    0enKdeVPDNoyqJRRUl+nacHGz8FDlbZRf0uNM88YtqMaCwT/L9wA3GDP5FQAsbCgGQnR
+    KRpGn4RZcU5fc0AcFVM0FuoH7hdApbCQHUCdXL8szkjIRWaata8EM6vO+IWxmyCt2ZT0
+    PG0c8Q1LqKA2Vomd1d0rV+OmxZ3K2ABLs9c+1DAzZcyx2g16LK+oOmnuwVU86ftJt1SV
+    /sBg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1792928607;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:Cc:References:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=4q0hYP+Aag5ENXlHD39/tP7SPHl5wL+4LewZvavAmVk=;
+    b=winChasjp1snmyxS/MgbsRFIVi96wjdoMTlcXkksQCFFGUPcR57Pf52Mx8vCE8bVpB
+    +e66WBRWFXUuExrT0XDQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTRoMrpo2Pns16vtKmsoT3b16bLNh0YhzjPm4XMs1vBXW4E8fxBQ="
+Received: from [IPV6:2003:d5:5719:e000:2277:ece7:5bca:cf73]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29PBhRy4t
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Sun, 25 Oct 2026 12:43:27 +0100 (CET)
+Message-ID: <bd31fd1b-1fe7-44a5-99ee-635262a1ed33@hartkopp.net>
+Date: Sun, 25 Oct 2026 12:43:21 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -63,195 +95,181 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 0/7] can: protect the receive lists with a per-device
+ lock
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+References: <20261023121801.3052075-1-socketcan@hartkopp.net>
+Content-Language: en-US
+Cc: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20261023121801.3052075-1-socketcan@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issue(s) to consider.
+Hi Marc,
 
-Critical: 0 · High: 1 · Medium: 0 (1) · Low: 1 (1)
+this latest patch set does not apply to any of those 7 "Baseline" repos 
+tested by sashiko:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261023121801.3052075-1-socketcan%40hartkopp.net
 
-- [High] The patch only shuts down the restart timer in the new dev_free
-  callback, and the core never calls dev_free when pcan_usb_init()…
-- [Low] The commit message says "If a bus error armed the timer via
-  mod_timer()".
+The patches sashiko had problems with were
 
-Pre-existing issues:
-- [Medium] This problem wasn't introduced by this patch, but
-  pcan_usb_restart_pending() (pcan_usb.c:332-342) arms restart_timer…
-- [Low] This problem wasn't introduced by this patch, but
-  peak_usb_ndo_stop() never cancels restart_timer.
+patch 4: can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+patch 5: can: protect the receive lists with a per-device lock
 
---
+As requested I added two new patches addressing sahikos reports, which 
+increases this series from 5 to 7 patches:
 
-can: peak_usb: add missing dev_free callback to cancel restart_timer
+patch 4: can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+patch 5: can: isotp: check the return values of can_rx_register() in 
+isotp_bind()
+patch 6: can: protect the receive lists with a per-device lock
+patch 7: can: raw, isotp: copy socket options outside of lock_sock()
 
-This adds a pcan_usb_free() dev_free callback to the PCAN-USB adapter.
-The callback calls timer_shutdown_sync() on restart_timer. The goal is
-to stop the timer from firing on freed memory after
-peak_usb_disconnect() calls free_candev().
+My question: How can we get a sashiko review for this before sending a 
+new net PR?
 
-> The PCAN-USB adapter uses a restart_timer for bus error recovery
-> but does not define a dev_free callback.  When the device is
-> unplugged, peak_usb_disconnect() calls free_candev() without
-> cancelling the timer.  If a bus error armed the timer via
-> mod_timer() and USB disconnect races with it, the timer fires on
-> freed memory.
+One idea would be to set linux-can-next/HEAD to contain the last commit 
+before "can: replace ARPHRD_CAN type checks with can_get_ml_priv()":
 
-[Severity: Low]
-This isn't a bug, but is "If a bus error armed the timer via mod_timer()"
-fully accurate? The only mod_timer() call on restart_timer is in the
-completion handler for the async bus-on URB:
+b4b56efd3e30 ("can: proc: remove pointers from CAN specific proc output")
 
-drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_restart_pending() {
-	...
-	/* the PCAN-USB needs time to restart */
-	mod_timer(&pdev->restart_timer,
-			jiffies + msecs_to_jiffies(PCAN_USB_STARTUP_TIMEOUT));
-	...
-}
+so that I would send a v9 patch set containing only the 4 updated 
+patches (currently counted 4 .. 7) for review.
 
-That URB is only sent on the bus-off restart path:
+Best regards,
+Oliver
 
-peak_usb_set_mode(CAN_MODE_START)
-  -> peak_usb_restart()
-    -> pcan_usb_restart_async()
+On 23.10.26 14:17, Oliver Hartkopp wrote:
+> This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
+> triggered when a CAN device is moved to another network namespace while
+> a socket bound to this device is released [1].
+> 
+> Patch 5 makes isotp_bind() check the return values of can_rx_register(),
+> so that bind() does not succeed with missing receivers.
+> 
+> Patch 7 copies the CAN_RAW and CAN_ISOTP specific socket options from
+> and to user space outside of lock_sock(), so that a stalled copy can not
+> block raw_notify() waiting for lock_sock() under RTNL.
+> 
+> The code of patches 1-4 is unchanged. Only the commit message of patch 4
+> has been updated after the Sashiko review of v4 to describe the actual
+> NULL pointer dereference in can_rx_unregister() and the CAN_ISOTP path
+> that reaches it.
+> 
+> The series is based on linux-can-next/testing, which also contains
+> "can: raw: remove redundant NULL check before netdev_hold()" from [2].
+> 
+> The idea behind patch 6:
+> 
+> The receive lists of a CAN device are located in the device's
+> can_ml_priv and travel with the device when it is moved to another
+> network namespace. But they are protected by the per-netns
+> rcvlists_lock, so the lock that protects a device's lists depends on
+> the namespace the caller passes to can_rx_register() and
+> can_rx_unregister(). can_rx_unregister() silently returns when this
+> namespace does not match dev_net(dev) anymore.
+> 
+> isotp_release() and bcm_release() leave the netdev notifier list before
+> they can serialize against the notifier. When the device changes its
+> namespace in this window, their filters are not removed and the
+> remaining receivers point to the freed socket or bcm op.
+> 
+> Taking RTNL in these release paths is no option, as CAN_RAW already
+> holds RTNL while adding and removing up to CAN_RAW_FILTER_MAX filters
+> per socket, which unprivileged users can trigger repeatedly.
+> 
+> Instead, patch 6 protects the receive lists where they are located: A
+> spinlock in struct can_dev_rcv_lists protects the lists of a CAN device
+> (initialized in can_set_ml_priv()) or the 'any' CAN device lists of a
+> namespace (initialized in can_pernet_init()). can_rx_unregister() then
+> finds the subscription independently of the current namespace of the
+> device, which is kept accessible by the tracked device references the
+> protocols already hold. The per-netns rcvlists_lock only protects the
+> receive list statistics, for which CAN_RAW, CAN_BCM and CAN_ISOTP pass
+> the namespace that has been used for can_rx_register().
+> 
+> As a consequence, CAN_RAW and CAN_ISOTP do not need RTNL in bind(),
+> setsockopt() and release() anymore. bind() is serialized against
+> NETDEV_UNREGISTER by publishing the device inside the RCU section of
+> its lookup, as unlist_netdevice() and synchronize_net() precede
+> NETDEV_UNREGISTER both on unregistration and on a namespace change.
+> The notifiers recheck the binding under lock_sock(). As RTNL does not
+> keep NETDEV_DOWN out of bind() anymore, bind() checks IFF_UP after
+> publishing the bound device, with an smp_mb() pair against the
+> notifiers, so a down transition during bind() is still reported with
+> ENETDOWN.
+> 
+> Changes in v8:
+> - new patch 5: check the return values of can_rx_register() in
+>    isotp_bind() (Sashiko review)
+> - patch 6 rebased on patch 5: isotp_bind() resets the published so->dev
+>    again when the registration of a receiver fails and checks IFF_UP at
+>    the end of a successful bind(), as raw_bind() does
+> - patch 6: isotp_notify() reports NETDEV_DOWN only for a bound socket, so
+>    a failing isotp_bind() can not get a needless ENETDOWN
+> - patch 6: isotp_sendmsg() and isotp_recvmsg() read so->bound with
+>    READ_ONCE()
+> - patch 6: moved copying the user space data outside of lock_sock() in
+>    raw_setsockopt() to patch 7 to keep patch 6 focused on the locking
+>    changes and to ease review
+> - new patch 7: copy the CAN_RAW and CAN_ISOTP socket options outside of
+>    lock_sock() (Sashiko review)
+> 
+> Changes in v7 (details in patch 6):
+> - report ENETDOWN in bind() and ENODEV for NETDEV_UNREGISTER under
+>    lock_sock(), so ENODEV can not be overwritten by ENETDOWN (Sashiko
+>    review)
+> 
+> Changes in v6:
+> - isotp_bind() checks the device before publishing so->dev, so a
+>    failing bind() can not get a needless ENETDOWN (Sashiko review)
+> 
+> Changes in v5:
+> - report ENETDOWN for a down transition during bind() again (Sashiko
+>    review)
+> - comment and kernel-doc updates (Sashiko review)
+> - patch 4: commit message describes the actual crash path (Sashiko
+>    review)
+> 
+> [1] https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+> [2] https://lore.kernel.org/linux-can/20261018164417.1540449-1-mkl@pengutronix.de/
+> 
+> Previous versions of patch 6:
+> v7: https://lore.kernel.org/linux-can/20261022114202.180023-6-socketcan@hartkopp.net/
+> v6: https://lore.kernel.org/linux-can/20261021231130.2085690-12-mkl@pengutronix.de/
+> v5: https://lore.kernel.org/linux-can/20261020203257.230955-6-socketcan@hartkopp.net/
+> v4: https://lore.kernel.org/linux-can/20261019152741.54854-6-socketcan@hartkopp.net/
+> v3: https://lore.kernel.org/linux-can/20261019074244.50391-5-socketcan@hartkopp.net/
+> v2: https://lore.kernel.org/linux-can/20261018180739.689750-1-socketcan@hartkopp.net/
+> v1: https://lore.kernel.org/linux-can/20261017201935.399233-1-socketcan@hartkopp.net/
+> 
+> Oliver Hartkopp (6):
+>    can: proc: skip stats calculation after reset in can_stat_update()
+>    can: proc: remove pointers from CAN specific proc output
+>    can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+>    can: isotp: check the return values of can_rx_register() in
+>      isotp_bind()
+>    can: protect the receive lists with a per-device lock
+>    can: raw, isotp: copy socket options outside of lock_sock()
+> 
+> Runyu Xiao (1):
+>    can: proc: reset pkg_stats atomics individually
+> 
+>   Documentation/networking/can.rst |  16 +-
+>   include/linux/can/can-ml.h       |   3 +
+>   include/linux/can/core.h         |   2 +-
+>   include/net/netns/can.h          |   2 +-
+>   net/can/af_can.c                 |  60 ++++---
+>   net/can/af_can.h                 |   2 +-
+>   net/can/bcm.c                    |  64 +++----
+>   net/can/gw.c                     |   9 +-
+>   net/can/isotp.c                  | 206 ++++++++++++++---------
+>   net/can/j1939/main.c             |   2 +-
+>   net/can/proc.c                   |  95 ++++++-----
+>   net/can/raw.c                    | 278 ++++++++++++++++++-------------
+>   12 files changed, 427 insertions(+), 312 deletions(-)
+> 
 
-The timer also stays armed for only PCAN_USB_STARTUP_TIMEOUT (10 ms).
-
-Could the commit message mention the bus-off restart (CAN_MODE_START)
-path and the 10 ms window? That would help stable backporters judge
-how reachable this is.
-
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> index 8fd058c328564..b0b3c76b2ccb8 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> @@ -882,6 +882,14 @@ static int pcan_usb_start(struct peak_usb_device *dev)
->  	return pcan_usb_set_ext_vcc(dev, 0);
->  }
->  
-> +static void pcan_usb_free(struct peak_usb_device *dev)
-> +{
-> +	struct pcan_usb *pdev =
-> +		container_of(dev, struct pcan_usb, dev);
-> +
-> +	timer_shutdown_sync(&pdev->restart_timer);
-> +}
-
-[Severity: High]
-Does this cover every path that frees struct pcan_usb? In
-peak_usb_create_dev(), dev_free is only called under the adap_dev_free
-label, and a dev_init failure jumps past that label:
-
-drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_create_dev() {
-	...
-	err = register_candev(netdev);
-	...
-	if (dev->adapter->dev_init) {
-		err = dev->adapter->dev_init(dev);
-		if (err)
-			goto lbl_unregister_candev;
-	}
-	...
-adap_dev_free:
-	if (dev->adapter->dev_free)
-		dev->adapter->dev_free(dev);
-
-lbl_unregister_candev:
-	unregister_candev(netdev);
-	...
-lbl_free_candev:
-	free_candev(netdev);
-	...
-}
-
-pcan_usb_init() sets up the timer before a USB command that can fail:
-
-drivers/net/can/usb/peak_usb/pcan_usb.c:pcan_usb_init() {
-	...
-	timer_setup(&pdev->restart_timer, pcan_usb_restart, 0);
-	...
-	err = pcan_usb_get_serial(dev, &serial_number);
-	if (err) {
-		...
-		return err;
-	}
-	...
-}
-
-pcan_usb_get_serial() does a blocking usb_bulk_msg() with a 1000 ms
-timeout. It can fail with -ETIMEDOUT, -EPIPE, -ENODEV or -EPROTO.
-
-The netdev is already registered during that window, so something like
-udev or systemd-networkd can bring it up. Suppose the controller then
-goes bus-off and is restarted, either through restart-ms or by hand.
-The bus-on URB completes into pcan_usb_restart_pending(), which calls
-mod_timer() without checking urb->status. So the timer gets armed even
-if the device is unplugged mid-probe.
-
-If pcan_usb_init() then returns an error, free_candev() frees the
-private area holding restart_timer while the timer is still pending.
-
-Can pcan_usb_restart() then run on freed memory? That would be the same
-use-after-free the commit message describes for disconnect.
-
-A dev_set_bus failure goes through adap_dev_free, but a dev_init failure
-does not. Should the timer also be shut down in the pcan_usb_init()
-error return, or on the lbl_unregister_candev path?
-
-[ ... ]
-
-> @@ -1051,6 +1059,7 @@ const struct peak_usb_adapter pcan_usb = {
->  	.dev_decode_buf = pcan_usb_decode_buf,
->  	.dev_encode_msg = pcan_usb_encode_msg,
->  	.dev_start = pcan_usb_start,
-> +	.dev_free = pcan_usb_free,
-
-[Severity: Low]
-This is a pre-existing issue, not one introduced by this patch:
-peak_usb_ndo_stop() never cancels restart_timer. pcan_usb has no
-dev_stop callback, and the restart URB is not anchored, so
-peak_usb_unlink_all_urbs() does not kill it.
-
-If the timer is still pending after close, it can fire and overwrite
-the stopped state:
-
-peak_usb_ndo_stop()
-    dev->can.state = CAN_STATE_STOPPED;
-
-pcan_usb_restart()
-  -> peak_usb_restart_complete()
-       dev->can.state = CAN_STATE_ERROR_ACTIVE;
-       netif_wake_queue(dev->netdev);
-
-Is it expected that a downed interface can end up reporting
-CAN_STATE_ERROR_ACTIVE and have its queue woken?
-
-On disconnect, the new timer_shutdown_sync() only runs after
-unregister_candev() in peak_usb_disconnect(). The callback can therefore
-still run against a netdev that is being unregistered. This is not a
-use-after-free, because free_candev() comes after timer_shutdown_sync().
-
-[Severity: Medium]
-This is also a pre-existing issue that this patch does not introduce:
-pcan_usb_restart_pending() arms restart_timer without checking
-urb->status.
-
-Suppose the set bus on command failed or was cancelled (-EPIPE, -EPROTO,
--ENOENT, -ESHUTDOWN). Ten ms later, peak_usb_restart_complete() still
-marks the controller CAN_STATE_ERROR_ACTIVE and wakes the TX queue.
-
-Could the driver then report error-active and accept TX frames while
-the SJA1000 is still bus-off? The state is no longer CAN_STATE_BUS_OFF,
-so the CAN core would not try another restart.
-
-This same unconditional arming is what lets the timer be armed during an
-unplug in the dev_init failure case above.
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261023195400.3531721-1-tristmd%40gmail.com
