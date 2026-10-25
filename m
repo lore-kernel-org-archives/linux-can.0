@@ -1,91 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.53
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.47
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792895009;
-	b=vqFYpARjZ9B9fr3FMD41ZDyhyMAnYbeIAB5rVE2CblYxZCdCuXdd4oeWNqau9OvMm3j+
-	 AO+cjsygsJuvqRyFjxxEyCdGsYSQEKVR2X8icJwdncPgrB0A7L/mDrwdsezioIb7O5LaB
-	 CPj+X1J8pGVGFxEjp3bEagGGv2UCDCYadtQ3rCme03/i7hpWRfOIu4HyCF+E00MAqyejJ
-	 qYdTQqn8JiskP3joHWCNdZ0zdV9aTxFi3c2NpaKxu6ZKw5gw1w3tGpt98CtV7ZQVLrt25
-	 GpgWoBBWyHghfbIWB2xJdkq4woKZaD01rUjOCV5TEyDEbFNkDXeYSc6EamAd88P9BTg==
+	t=1792895223;
+	b=ZTxcyxIAet7PqjoGOYtQjSwWEE7Set6VsyooSVyE3bWTZioC3d2CSkoJFv/tm7fXGdo2
+	 i+Wq4GG4Xd1g+6lLBitBZEOOP32KcJW4thdOhT3QzOMqXSbLI/BD92qsD4B+7pYH4cXmj
+	 bQqVkTRhiPgdeGPzrBFEsHsjPVK+gnywFfvGoBXjRD5DK0Z7ubGcl78g1p/mdi8GO6Ib+
+	 U+Hf+y1Gu13gaNdwU/JA4lA7p2iAL74+wYLhL9ri5vKdKWIJLadDJFSXz2eNChCCNij/P
+	 ApAJf3GMwPSdOVn9As3yIAeO7BFiAqZLKzmmC4oVxfL8rtyDqEHYcmTtcJAeYnbQmfA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792895009;
+	a=rsa-sha256; c=relaxed/relaxed; t=1792895223;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=8ivcDCD6sbT3HeyNxmBNTblO+eeeUzkaQd94WtAs7n4=;
-	b=j5o7ztblhwrQkGwvG7dP65N0blsgcye8A45gPHdqss7hnF6rFy7YZQaXG1KDoTCDdEHF
-	 3ngYY8TBEIQwBkUqIIGUWYy8I9k2oWXz+t9jox07ROuK2O8NIqjCYigK6iOUKGSyCx67Q
-	 CzN4afmzNOnIx7Vt/i93O4V1PcN8y+owCHHwD8qtaMZ6dTVQTtRGz0IimK0bvZ8wx5Ktm
-	 0tqJp2Nz77U2+T72Q9YjdbnOvaoQ1WITqfb4IadzdhvpyxLKSSbFb6GK8aeBrIryt5Su9
-	 ApBFq2bM5LPBa3/iAqAr96NTk8CMoHYj/7wro/mw2s5PDb99B9lrdMTlGKZ0yV7qFmQ==
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=ATCK/wf05PnAiPqsKVWL6TJleCCGebvZE4TRERap5gw=;
+	b=hkP2JqWT9cMKlWF2G3uhcRPF/WaKTaQu52KlqHygp1BzqmoESTfiQ/qHo8hAeziT7xUs
+	 F6QdXjNaSm/Li3lR5j0XJvPJegzmaszNfNRTyuyKT5YpuHfjZWGINLN7CG8+iTzW0neCj
+	 z3qRI40F0pOzoLQoeNxkuvJSmg7w+34bnt+3ZcO9zFZKketKMQ5UESN4+U2il0oVMhp8F
+	 /KeG8nHIJLIDgmS9iBxyPo92Xe87/q0EXl7/OZvR8Vp3ABslzS/b02bsQL3KZ2erZPR56
+	 ToFGstB7XpFv6J3Coyt9JAwcVeNQ2sS8fd7cQZwLBbXL5tS4BctPbS6DGPKuBG4xwVQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=gmail.com;
 	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=KA6CYmBc;
-	arc=none smtp.remote-ip=74.125.82.53
-Received: from mail-dl1-f53.google.com (mail-dl1-f53.google.com [74.125.82.53])
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LpWnlcZ2;
+	arc=none smtp.remote-ip=74.125.82.47
+Received: from mail-dl1-f47.google.com (mail-dl1-f47.google.com [74.125.82.47])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB43F606A31E
-	for <linux-can@vger.kernel.org>; Sun, 25 Oct 2026 02:23:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CB43F606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B019606A31A
+	for <linux-can@vger.kernel.org>; Sun, 25 Oct 2026 02:27:02 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0B019606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=KA6CYmBc
-Received: by mail-dl1-f53.google.com with SMTP id a92af1059eb24-16079d54c17so1058164c88.0
-        for <linux-can@vger.kernel.org>; Sat, 24 Oct 2026 19:23:28 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=LpWnlcZ2
+Received: by mail-dl1-f47.google.com with SMTP id a92af1059eb24-1846bc43c28so2068630c88.0
+        for <linux-can@vger.kernel.org>; Sat, 24 Oct 2026 19:27:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1792895008; x=1793499808; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1792895222; x=1793500022; darn=vger.kernel.org;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to:content-type;
-        bh=8ivcDCD6sbT3HeyNxmBNTblO+eeeUzkaQd94WtAs7n4=;
-        b=KA6CYmBcqsQvC/HFX0T1GLe65+gfKI4HeyLvBOp2ra0ohuc30NDAPlPT3ZOK0Y4csF
-         m399BDBg9cUw+07eP4ywoxkaPvZiGyR9gr9FRtxPmNmYsvEp2IZPWLpxGmIXNcgx0jC8
-         ctdDNw2lZCggf/ITO3oTzzfeLCaz0I6qAtDSaEHXt0Xi795KZmztElZYWhwlZenlLK09
-         yi1djcyDu5kgl91J6j6HiGeJdLQAY1Q9zhsbgbLDHTOI3QwtmgqS1TJeuL7TarkS/Bxi
-         xvKphuigbmylaaLgL1T6+Px42KezjZ4WzddBA5QZXyVMLP65iC0KJfgngy5Vd32SHiip
-         G9cQ==
+        bh=ATCK/wf05PnAiPqsKVWL6TJleCCGebvZE4TRERap5gw=;
+        b=LpWnlcZ2SEGeKTw25poqISr5oQF360E7YNQyj1+HvB/izvAXBwzrEW7cZ2qieJtFzj
+         IKS8l8vm+eA5pyTs1YtjHhTzm1K7YJQv5qq0PjqAHdm5s+gXubwkst0WQYyivH+dhLQ0
+         oh33bInhRmXxrPhZGnnrcTDEbc8/Lt0cGiJdDHe/V0ejr11Ppv+HJWRlAyrcAVQmFQc/
+         V1f8CCPVJV413h4Rw3wV6BlmvUeYgOTHk/5NRzxOLPGF8ttTWOFsHK+2P8DnvALRORMO
+         jbG3WNHjz37+XdXQcgcgNDGjvt4KxhatL6ZBIzVN16iRtacjnQTxzdzY7wH8QTIDF75N
+         DMPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792895008; x=1793499808;
+        d=1e100.net; s=20260707; t=1792895222; x=1793500022;
         h=content-transfer-encoding:content-type:mime-version:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
          :content-type;
-        bh=8ivcDCD6sbT3HeyNxmBNTblO+eeeUzkaQd94WtAs7n4=;
-        b=HuAZF4Q1kA9jDPYlCmQvMnYf065q8NzFo2pK93ezD5VWIf3idY6o8qtO9sU44rhaIZ
-         2cXkNk/0jIwNp8zYlk1elpBdSetlMdJ/C2W2PF2y0JKrGqrpuJhfB9adidQyIT9kAB65
-         zrFszrI7SQm1+FsHnMdAxkd+0g/nk7qcGo1cth8DBDFngSxSsE/OCU+htG49+F0RtIp+
-         xrTnqzxoHjFslk4wJYhm+bYhy6dpdyDAJiIxwA1z0DyDmjgoIakU9uOYQAX7r95IXNUO
-         F/i8IWjdCjt4ev5t+qe207HrZgKs0nhMEmjn5NlAXSsj1OMZoyVxJ61ijPjc+dEsGeMl
-         7waA==
-X-Forwarded-Encrypted: i=1; AKwUvByMc/0+6t3Z5RCx/2DrQnSAI7CrfFHO6etWaUd0HdiwgkB0Rsv5FfmdfdvpQOZTMiKqDg8y0morlXE=@vger.kernel.org
-X-Gm-Message-State: AFq9FYIGDoNdX2xhmobLhoJEx2qo5xONThHVVkg7IDusTQ5dr8x2g6Y4
-	hI8ANlxcPrMGIlJG/ueRCtYC+fuOY32bYWvVkWqooPzwSnjr9XyRAZyO
-X-Gm-Gg: AYBFou3rDpFnflrFdx6WCu4CUsgJLZVjSsITLpSih8eLTML+qqlUBRUx44MVHGgp9oX
-	OaUr9eDhmKeeBHZ/dojgyNjUVCpPxuA6odeLIQB2Q1BxzeMXYGK2uW+YQdh/J9uDDZQuIKJrHKh
-	SQ0lgWe1X8aCgmETJfJSyWgJKJeVlTEDWhmz8Da1Zh6jno1icKCev3oEtuex/gvHnYqyJGJ/lzD
-	l0s62H5zFQnVFOOAaAIjI19pkwpXk4OivVmM5G9wMnau70SG0NBCOlP+h2pcMZhtsozTIFl/ao1
-	FvCFmRhWG3uwYkQd9DstZqaLwOEgRvgn1qUsf8XuV5qYrJg/FrPorcp5tfmirkFedRzezpsB1SN
-	B8DpA/YQZMIukLgkQPC54NJ0pEIftQso/ckJGplTqTWQzIdsrDs9Up4RhN982A+nmDU8pDGqKIQ
-	sOMOkj8Y6UW7hk9D9YzT0cxEkbdXE7s7ggwiPD0sB4c1l2F2klMJjOXppDeM/k0xwBAxdxiVEgj
-	BFzkmPirgFzk3OgGP8peHd1eZh7oAN0nK3UfXz+qDh3WWC4oB0ntGJ7z/O+opV7I3DZ
-X-Received: by 2002:a05:7022:607:b0:15a:9834:73f2 with SMTP id a92af1059eb24-19937bb20afmr6922856c88.38.1792895007760;
-        Sat, 24 Oct 2026 19:23:27 -0700 (PDT)
+        bh=ATCK/wf05PnAiPqsKVWL6TJleCCGebvZE4TRERap5gw=;
+        b=0bAaEKDyqYZT/jqH3/afdKSWMUk+biW8xPjFp4v/lUS9z19eP4dsQ0MJ9Lg8up+YP2
+         IGKTRayL+1dQdop+FCbTa5Yt7j99NPR64h63TQpQ3+1wE+Kic467F4xi0jyH7VM++hre
+         WK9q68nKpAFT24ny3sY+2AJG2X+kA84EE2olINk0P3X/QyDiHlFLS+VvznLzbFBJtPlN
+         3Es2pKA9534K7YeWPilo0X19wrzKiWvERVOsBXrh7BrGD6CNmJq7PgUq/zZV+h/thRU4
+         3qJgyV7qOkNRgq4FoJmlHQqZAUWooSp5h6WZTMjX9SAJebEczBAHC1cpG+OmMWCYV8cN
+         Lo1Q==
+X-Gm-Message-State: AFq9FYJuKmRMUvnL3xYhTHqZVrqzay6tTZuXG+g6BzV92yRfOsaxb72L
+	NpplTWUxchZAchPaKNQrFqY+D1Hl3VcoC8FdE3xfQbnpKORq7eveJUIw9FJuCxGoylI=
+X-Gm-Gg: AYBFou0oSlLrwg+L/PhDsEtiDBrj9Hju/C90dDcqxw0jtya/5WP8/4JWEoIpa/hMsKF
+	+cUUGvSxtXgMVONbwYoofc53/L+bVzXHbOzbcZr2+9gJwXKVTDgHhqlBqacHeo4YR9gdx5kSJ1P
+	oLKW/sz+1Q6Cl+Zv4eKr01wSbW9GZ+J0f5eMb+xqqHMvFNx9WDp+AqoIqUJpw8n6x50mUW1dQNi
+	RgEuXkKpDgWrDJ+HeYsUPQzm5Md/PXHnmNeHLUnY4C32zR2wKVaJvKYeok75Bhjg/50UwftSE+i
+	rMgkgfmfG2Fi6PgyXFfVZx1oka4baf6+5S6W/JQzpgtiv92NQkYrN38Ye3+xXoY0gfC1AxfY17v
+	teUNsqYZX8Y0TK9pgsGayD7Tq/eLVBlXP0XiudUZaC1DiTPk7FHPtB40T//eJA7LO0BznPg3Fjs
+	X/IeDD0Pi57TXCtB5Aq93W6AQ8JkEDTrDhuUSWwfvGvAozTvL8qadJ7AxA3UVefavqGa+JkE4SG
+	eLk+cRtKLbcIga096DSJzNOthTI6eL/QBt/1XcSYqQrJ01L0HCutKu6StFHE4AXG9mR
+X-Received: by 2002:a05:701b:2719:b0:14c:c947:6afb with SMTP id a92af1059eb24-1993505eb6fmr3911969c88.15.1792895221864;
+        Sat, 24 Oct 2026 19:27:01 -0700 (PDT)
 Received: from [127.0.1.1] ([183.242.161.82])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-198a1bfaebfsm11547267c88.15.2026.10.24.19.23.25
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-198a2a5937dsm11561347c88.20.2026.10.24.19.26.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2026 19:23:27 -0700 (PDT)
+        Sat, 24 Oct 2026 19:27:01 -0700 (PDT)
 From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
-To: Jakub Kicinski <kuba@kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/4] can: don't discard the platform_get_irq() error in probe
+To: sashiko-bot@kernel.org
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>, Oleksij Rempel <o.rempel@pengutronix.de>, Dario Binacchi <dario.binacchi@amarulasolutions.com>
+Subject: Re: [PATCH net-next 1/2] can: slcan: publish tty->disc_data only after register_candev()
 Date: Sun, 25 Oct 2026 10:18:45 +0800
-Message-ID: <179289472574.8393.12094085935716992853@gmail.com>
-In-Reply-To: <20261021133130.2cf75b3c@kernel.org>
-References: <cover.1792118040.git.chaosheng.qu.linux@gmail.com> <20261021133130.2cf75b3c@kernel.org>
+Message-ID: <179289472574.8393.6822604769258631913@gmail.com>
+In-Reply-To: <sashiko-outbox-175332@kernel.org>
+References: <cover.1792118038.git.chaosheng.qu.linux@gmail.com> <afc724d533dc3e7d6d423a641ecb6ca5b40451f7.1792118038.git.chaosheng.qu.linux@gmail.com> <sashiko-outbox-175332@kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -98,24 +97,74 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Hi Jakub,
+Hi sashiko,
 
-You are right, and thanks for pointing it out -- the Cc came from my send script,
-not from `get_maintainer.pl`, and I have fixed the script so it can't happen
-again.
+Thanks -- the mechanism is real and the cover letter is wrong about it. Let me
+confirm what you describe, then be precise about what this series does and does
+not fix.
 
-To be explicit about what I am not doing: I am not resending. The patches
-already reached the people who matter, the CAN trees are the right path for
-them, and another copy in everyone's inbox would be exactly the noise you are
-asking me to stop making. This is just the acknowledgement.
+The lost callback is real. `tty_wakeup()` is the only caller of
+`ld->ops->write_wakeup`, and it takes the ldisc reference with
+`tty_ldisc_ref()`, which is a `ldsem_down_read_trylock()`. While `slcan_open()`
+runs we hold `ldisc_sem` for writing (`tty_set_ldisc()` takes it around
+`tty_ldisc_open()`), so the trylock fails, `tty_ldisc_ref()` returns NULL, and
+the callback is silently skipped:
 
-For the record, the same mistake went out in a second small series the same day
-(`can: slcan/can327: publish tty->disc_data only after register_candev()`,
-2 patches). Both were sent to linux-can@ plus the per-file people from
-`get_maintainer.pl`; the extra Cc is gone from the script, so neither can repeat
-it.
+```c
+	if (test_bit(TTY_DO_WRITE_WAKEUP, &tty->flags)) {
+		ld = tty_ldisc_ref(tty);
+		if (ld) {
+			if (ld->ops->write_wakeup)
+				ld->ops->write_wakeup(tty);
+			tty_ldisc_deref(ld);
+		}
+	}
+	wake_up_interruptible_poll(&tty->write_wait, EPOLLOUT);
+```
 
-Sorry for the noise.
+So a UART `write_wakeup()` arriving inside that window loses
+`slcan_write_wakeup()` -> `schedule_work(&sl->tx_work)` never happens ->
+`slcan_transmit()` never runs -> `netif_wake_queue()` is never reached and the
+queue stays stopped. The only other thing `tty_wakeup()` does is wake the
+`write_wait` pollers, so nothing else notices. `slcan_transmit_cmd()` has the
+same hole: it waits on `xcmd_wait` for the `SLF_XCMD` completion that only
+`slcan_transmit()` can clear, so a wakeup lost there ends in `-ETIMEDOUT` after
+one second.
+
+Two caveats, in the interest of accuracy rather than defence:
+
+1. This window is not introduced by the series. Pre-series the pointer is
+   stored even earlier, just above `register_candev()`, so the same race exists
+   in the tree today. What the patch fixes is the other half: the dangling
+   `tty->disc_data` left behind when `register_candev()` fails, which both
+   `slcan_write_wakeup()` and `slcan_netdev_xmit()` dereference without a NULL
+   check.
+
+2. Deferring `register_candev()` until after the semaphore is released is not
+   expressible from `ldisc->open()`. `tty_set_ldisc()` holds `ldisc_sem` across
+   `tty_ldisc_open()` and only unlocks it at the `out:` label after `.open()`
+   has returned, and `tty_ldisc_setup()` opens the primary tty with `ldisc_sem`
+   already held. The only way to publish after the unlock is to move
+   `register_candev()` onto a work item queued at the end of `.open()` -- which
+   also means `.open()` can no longer report a registration failure:
+   `slcan_close()` would have to handle a not-yet-registered device, and the
+   ldisc change would succeed before we know whether the netdev exists.
+
+The failure is also bounded and recoverable: the window lasts only as long as
+`slcan_open()`, and afterwards a bring-down/bring-up of the interface (or a tty
+hangup) goes through `slcan_netdev_close()`/`slcan_open()`, which clear
+`TTY_DO_WRITE_WAKEUP`, `flush_work(&sl->tx_work)` and start the queue again. It
+needs the UART wakeup to land exactly inside the tail of `.open()`, so this is a
+narrow race, not a stall from normal use.
+
+For the next revision I will drop the "the stale pointer is not observable
+today" sentence from the cover letter -- you are right that it is wrong for the
+`write_wakeup` path -- and state the above instead. If you think moving the
+registration to a work item is the right trade-off, I would rather do it as a
+separate patch on top: folding an error-handling change into a two-line
+ordering fix is not something I want to hide in this series.
+
+Thanks,
 
 Chaosheng
 
