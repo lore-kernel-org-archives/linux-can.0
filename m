@@ -1,85 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=44.246.68.102
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793048367;
-	b=kxNfrVlB14fyddw4V8cTQG+A7C4NFv2WD5lHrTP7I956LYygfaT3NthIaJL5oiqo2NZG
-	 qYL+vcja8hwFmQvRBDo54DI9GDTiGvYH+dixU9fefzPbR3lmUSEbA//rqt6ZK6OjBIFC5
-	 mZ/PFu62v51HQ79r9hgvA3dGniBer/Y0ygGFnz9oou4p96UWP/Rq3ja49LiRXhuT9m5yN
-	 EpASjIt37iViCoc+wzvtFZatdG6n6vKhC3AI9NGUnFqAdSFOuj5nwV4DywU5XpugmSmB0
-	 LphMsmbruUnMCgkbKjFtK8U7t7d6Dy5Z+TNaca0ZE9Vd99MZaxosUX91pqTZRp/66xA==
+	t=1793048584;
+	b=NoARF7zA29XEn4kk3KfDVsWHlqP6GVbJnp43Gu/XJesYyjN7NchcwZAkPXR2s9jNMyYD
+	 Qs5Ye1EWL/smxP/N8uTxWD8/+aDpTmCM8e0qQejaJtQKS240QITHXS3b+tYdqLzYZtadd
+	 jnQNHCZawOL5R3SDyCjBn5GWcbLCl3oOkFf7wQcfuxNZrKJqtuqP+ks4IlsGTn2+RPs/F
+	 8FPCQVj/KlR65eijeSr5I5Z9vIkShiuEnth0DCACDI4J/FeId8qzBZvZ0ezyrussHXMSP
+	 e5fwgG2uVR5Vw/dbfsuD/f9swofcEAyqfcf4VE0Ph69CfvQfQ4pD/XBxiPk1pvu1dmg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793048367;
-	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
-	 X-IronPort-AV:Received:Received:X-Farcaster-Flow-ID:Received:Received:
-	 From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Transfer-Encoding:Content-Type:X-Originating-IP:
-	 X-ClientProxiedBy;
-	bh=Qrq3FNW/0SEN44vJvKEC14nzqvJcKELdScbHaQ9C9/o=;
-	b=EQIqGU+ZKT+ui4+euGP0se8TNkk32uIF20s4T1pjoeYTNTofj/zy00QZ7kTLYiWA+uCf
-	 bGFhBw+OVOICk0tpP860a+3p8+95A6VMnLT6OlBfPT2NuuOZs0YmQbEHAStc/KCJ8njSr
-	 wLfsEj5epmKXst2FwdtQRLWXK7mTeJqnX3J9rSsG2ptlFHT+nUzG/ocoL+upDrwPMaPsS
-	 oUOzGeV09sXzlcBeauQmY5TKG6w4izpMSmFBH8+vn+CjI7xvVnz1/9nVFfjguMEv0vT7W
-	 0pYwJS1hGZzWQ9ezj717bt0Kyf2gh8e7WpEtCLMVZmOpjKKuhZK/0AgO9JTwYB1h6Gg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793048584;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=LFkqjIv81T19voHWzA/o75LZt0tWb9aNUnrHiNKDn5I=;
+	b=VGwwCIksKDGLidkcy0ud0C9NZd9ekIwkH0ZI6wfPFPNusUOkMQYXH+urlasbhflh1Y7x
+	 bwhfgdhyieGcasi6QX9nfbX41wulXtYT9ONRUAoYk5AtxBzWeefiHv5nexj6CqLS3QJD4
+	 0CiheXtqy27xP+NT8+b3rvImdWiBvMziBZg4IaQbsheV2Im79ve3t13LQjPA1bTwpnxKY
+	 Osq1MLVBAwQJX88dQPzTMGpO4G6KM2jQA2RNq4D4jb7fMwKNoaBQZyZoEI3s0/ed+i7kX
+	 JVemZF22z5MZj+VKEWEa+xP7mWkCuYgBW8Rmtk6bJGwVpvRRRjf/AZ21hgI4h6xfSag==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=amazon.com;
-	spf=pass smtp.mailfrom=amazon.com;
-	dkim=pass header.d=amazon.com header.i=@amazon.com header.a=rsa-sha256 header.s=amazoncorp2 header.b=bS18TvyI;
-	arc=none smtp.remote-ip=44.246.68.102
-Received: from pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.68.102])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BahwtOYa;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D3D606A31A;
-	Mon, 26 Oct 2026 20:59:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9D3D606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99DA7606A31A;
+	Mon, 26 Oct 2026 21:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=amazon.com header.i=@amazon.com header.a=rsa-sha256 header.s=amazoncorp2 header.b=bS18TvyI
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
-  t=1793048366; x=1824584366;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=Qrq3FNW/0SEN44vJvKEC14nzqvJcKELdScbHaQ9C9/o=;
-  b=bS18TvyId33lhEPNrAGSuwlBRRdN/670GTWdFlEflov90N5DhXYvSD2D
-   XYfD4Ns8aUit4A16RU9wOUD9wzoy3xDSzjaef0yQigUuTxHxvYWIwGdd9
-   BpaWsXcgiOySFmzVIqoWywDuVT/zWZ1GXb2828s4wYIQk4IS1ClSdVPzG
-   etd7EK6mfXyYmRo8gBOmBn9A4M8Hy2cZwlcYV4qKP2ch3HRCkLyX+X4Fx
-   xsIbTfQlW76zus7jrubernlsazIWZppYpEmvWfCztQl6rAd5zQH8M6sOH
-   akGKWcNlPhtX+k4QdNmJwvRBIiFkvVstpnosmYbfImhd9lAr5LKkYOKPE
-   g==;
-X-CSE-ConnectionGUID: T/lN1pTdSIKq7SWI0pE8qw==
-X-CSE-MsgGUID: uyvTqbsmT1mmcWIkKx8aPA==
-X-IronPort-AV: E=Sophos;i="6.27,180,1787011200"; 
-   d="scan'208";a="32211838"
-Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
-  by internal-pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2026 20:59:26 +0000
-Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:31130]
- by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.41.86:2525] with esmtp (Farcaster)
- id 2862e1d7-248b-4929-83d9-7d6defe956f7; Mon, 26 Oct 2026 20:59:26 +0000 (UTC)
-X-Farcaster-Flow-ID: 2862e1d7-248b-4929-83d9-7d6defe956f7
-Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
- EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.56;
- Mon, 26 Oct 2026 20:59:25 +0000
-Received: from dev-dsk-patrzhan-2a-52a3f46b.us-west-2.amazon.com
- (172.22.91.11) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.56; Mon, 26 Oct 2026
- 20:59:25 +0000
-From: Patrick Zhang <patrzhan@amazon.com>
-To: <netdev-bot+sashiko@kernel.org>
-CC: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
-	<mailhol@kernel.org>, <linux-can@vger.kernel.org>, Pavel Pisa
-	<pisa@cmp.felk.cvut.cz>, Ondrej Ille <ondrej.ille@gmail.com>, Harini T
-	<harini.t@amd.com>, Michal Simek <michal.simek@amd.com>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	"Jakub Kicinski" <kuba@kernel.org>
-Subject: Re: [PATCH 3/3] can: ifi_canfd: enable NAPI before starting the controller
-Date: Mon, 26 Oct 2026 20:58:55 +0000
-Message-ID: <20261026205855.871681-1-patrzhan@amazon.com>
-X-Mailer: git-send-email 2.50.1
-In-Reply-To: <179274950592.3130.11275892525697074934@kernel.org>
-References: <179274950592.3130.11275892525697074934@kernel.org>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BahwtOYa
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1691C1F01828;
+	Mon, 26 Oct 2026 21:03:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793048584;
+	bh=LFkqjIv81T19voHWzA/o75LZt0tWb9aNUnrHiNKDn5I=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=BahwtOYaM95Vgk0WiLVqlRl9+bpMG/sIr8J6xiuG1xOsiUrIFEnszBL4HvRdIr/e9
+	 vQx3NS1MKmmiLjKkr5U9GkN9oWuRcpyS36+3sr4Yke2unNsrufw9ZnHYGN1askVpuc
+	 hkKHsk0gxqhwTavh4Mxepa7+4TUjv/LzzMixdVYz5ihjgNW4Sv+SDfCCSa4AthaK/+
+	 HZ7PUDBxL+c3V/HBcqL8jJpB0VaikwCQf2z4fEgdPveIYU2hzFadtI92uT1Qouthcg
+	 OQp0C8v+uN/cW5nRtok95KIToq0hxcsajYl52tp4PlEf2r2BP1gX3aY4S9ubUQohGt
+	 JoMDzAsbxwNiA==
+Subject: Re: [PATCH v2 net] can: peak_usb: fix use-after-free on PCAN-USB
+ disconnect and init failure
+From: netdev-bot+sashiko@kernel.org
+To: tristmd@gmail.com
+Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, mkl@pengutronix.de,
+ socketcan@hartkopp.net, s.grosjean@peak-system.com, stable@vger.kernel.org,
+ kuba@kernel.org
+Date: Mon, 26 Oct 2026 21:03:03 +0000
+Message-ID: <179304858361.3134.1029344134259623994@kernel.org>
+In-Reply-To: <20261025210256.629830-1-tristan@talencesecurity.com>
+References: <20261025210256.629830-1-tristan@talencesecurity.com>
+X-sashiko-severity: High
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -89,30 +63,116 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D031UWA003.ant.amazon.com (10.13.139.47) To
- EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-On Fri, 23 Oct 2026 09:58, netdev-bot+sashiko wrote:
-> With NAPI enabled before ifi_canfd_start(), can ifi_canfd_poll() now run
-> against an IP that has not been reset yet? Can it also run alongside the
-> reset and programming sequence in ifi_canfd_start()?
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue(s) to consider.
 
-I think this is a valid point. Unlike ctucanfd and xilinx_can, which reset
-the controller in open() before napi_enable(), ifi_canfd_open() does not
-quiesce the IP first, the handler is registered with IRQF_SHARED, and the
-ISR acts on the raw IFI_CANFD_INTERRUPT status. So on the first open after
-boot or kexec, the poll can now be scheduled before or during
-ifi_canfd_start().
+Critical: 0 · High: 1 · Medium: 0 · Low: 0
 
-In v2 I plan to call ifi_canfd_stop() in ifi_canfd_open() before
-request_irq(), so the IP is reset, its interrupts are masked and pending
-status is cleared before the handler is installed and NAPI is enabled.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-The bus-off restart path through ifi_canfd_set_mode() already runs with
-NAPI enabled. I will leave that alone in this series.
+- [High] The patch does not fully fix the init-failure use-after-free it
+  claims to fix.
 
-I will wait a few days for other comments on the series before sending v2.
+--
 
-pw-bot: cr
+can: peak_usb: fix use-after-free on PCAN-USB disconnect and init failure
+
+This patch adds a pcan_usb_free() dev_free callback that shuts down the
+restart_timer with timer_shutdown_sync(). It also shuts the timer down
+directly in pcan_usb_init() when reading the serial number fails. The goal
+is to stop the timer firing on freed memory after disconnect or after a
+failed init.
+
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+> index 8fd058c328564..440d8e2cfb6fe 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+
+[ ... ]
+
+> @@ -901,6 +909,7 @@ static int pcan_usb_init(struct peak_usb_device *dev)
+>  		dev_err(dev->netdev->dev.parent,
+>  			"unable to read %s serial number (err %d)\n",
+>  			pcan_usb.name, err);
+> +		timer_shutdown_sync(&pdev->restart_timer);
+>  		return err;
+>  	}
+
+[Severity: High]
+Does this fully close the init-failure use-after-free? An asynchronous
+restart URB can still re-arm this timer after pdev has been freed.
+
+In peak_usb_create_dev(), register_candev() is called before dev_init():
+
+drivers/net/can/usb/peak_usb/pcan_usb_core.c:peak_usb_create_dev() {
+    ...
+	err = register_candev(netdev);
+    ...
+	if (dev->adapter->dev_init) {
+		err = dev->adapter->dev_init(dev);
+		if (err)
+			goto lbl_unregister_candev;
+	}
+    ...
+}
+
+So the netdev can be brought up while pcan_usb_init() is blocked in
+pcan_usb_get_serial(). If a bus-off restart happens in that window
+(restart-ms or CAN_MODE_START), this path runs:
+
+peak_usb_set_mode()->peak_usb_restart()->pcan_usb_restart_async()
+
+and pcan_usb_restart_async() submits a URB with pdev as its context:
+
+	usb_fill_bulk_urb(urb, dev->udev,
+			usb_sndbulkpipe(dev->udev, PCAN_USB_EP_CMDOUT),
+			buf, PCAN_USB_CMD_LEN,
+			pcan_usb_restart_pending, pdev);
+
+	return usb_submit_urb(urb, GFP_ATOMIC);
+
+This URB is never anchored. Only rx_submitted and tx_submitted are
+anchored, so peak_usb_unlink_all_urbs() neither kills it nor waits for it.
+
+If the serial number command then fails, the timer_shutdown_sync() added
+here only waits for the timer callback. The timer is not armed yet,
+because the URB has not completed.
+
+The unwind then goes through unregister_candev() and free_candev(). The
+probe failure path in usb_probe_interface() does not flush the interface
+endpoints either.
+
+When the URB completes later, from a late device ACK or from an unplug
+that flushes the endpoint, can pcan_usb_restart_pending() touch the
+freed pdev?
+
+static void pcan_usb_restart_pending(struct urb *urb)
+{
+	struct pcan_usb *pdev = urb->context;
+
+	/* the PCAN-USB needs time to restart */
+	mod_timer(&pdev->restart_timer,
+			jiffies + msecs_to_jiffies(PCAN_USB_STARTUP_TIMEOUT));
+    ...
+}
+
+Once the memory has been reused, the shutdown marker on the timer is gone.
+That means mod_timer() could enqueue a timer that lives in freed storage.
+
+The disconnect path looks fine, since usb_unbind_interface() flushes the
+interface URBs before calling ->disconnect. The init-failure path the
+commit message names does not look closed, though.
+
+Would it work to delay register_candev() until dev_init() succeeds? The
+other option is to anchor the restart URB and drain it before shutting
+down the timer and freeing the candev.
+
+[ ... ]
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261025210256.629830-1-tristan%40talencesecurity.com
