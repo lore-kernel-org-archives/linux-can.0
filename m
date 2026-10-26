@@ -1,52 +1,94 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=178.251.229.89
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793027053;
-	b=np9+fau5Cx6z3mEOHcA9jgzugSIp3ANRVyoVDPhb5tmOLAuve6pqaO7oiZk+zyWBgg66
-	 X0Af8kOImUzdTxqeqBIXPmOHmSzNtYBB1+q8UhoSGBdu8Kvdqz1tTKZ6Zo7YoehJtGgVH
-	 o5d7tDTrfIOyJf5e55wCUWDTtCBWHlgbHOfhcO8itlZ3LIEwLA1or6RT6PLchX9E1+LU1
-	 r7j0/HnPIoL2bZH+gmjeNSrgeGCxW5fDoez0oJ1BZPcZULj1jD0cdFF+xcQsRkAe7LcBC
-	 AtQNlE5KFWyU7q1THTBmg3mVud2LK5U5LTlUwAri/3kZehqxrMvph9mrYMSxuTRzbNQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793027053;
-	h=DMARC-Filter:Received:DKIM-Signature:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:From:To:Cc:References:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Last-TLS-Session-Version;
-	bh=6hz5uza8UCAu1Jf83s707Rg61KRs8PkOBOl6V9Iw00E=;
-	b=4qzx6HTlPRFZZ/G6T1ShSR8VX7y6zW+R5l1hQe/0fehX/PgkSuBOuNTF48y85A2PkKkm
-	 FlGy7erBEyrRNNEICVc+JHxQp2mpcMH2BcvjxvxnZO3a2xf9rZ28f6XltZ1PqRpusuqZJ
-	 J5iKqNlF3Dl5K0n5K8GARhaCfpNIald8d6K6sCm0+KmW9iNI9dnqT9j683wkPomSxo26E
-	 gx8I6kzsZKO41MZXfXNdqSGrmaGSlqjdwhrCg8KB7e7fLsC07ZgpT3OUJkclxUuzV6j75
-	 GloZLyoTAxIllzz0oJ9hjYefITHMYzFeTWIzAxnIhdWe4FgIWdMk5dVCw3yjlW+/4SA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nabladev.com;
-	spf=pass smtp.mailfrom=nabladev.com;
-	dkim=pass header.d=nabladev.com header.i=@nabladev.com header.a=rsa-sha256 header.s=dkim header.b=QAD8j98g;
-	arc=none smtp.remote-ip=178.251.229.89
-Received: from mx.nabladev.com (mx.nabladev.com [178.251.229.89])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793033131;
+	b=1SmxIkrEw+8nJbipvTZNH902bsX2mwCvJExAEgdCV2+GUgoF1y3lVRBx5aOBzK8ovtFq
+	 01AevryetH/EP3IQd57WXkjZeTHMs2rOdczXTaXk+8PMnnx1pBD5iISSlwe28+qBSAmkg
+	 0473nKgb/cizdwvq8yzpcp6f7TpjMwQyFOXx3kOP283ChknQ7sYVs+/vWxLY0SdczGyM4
+	 6edbeQ+CnMZIokXANGs7j2ZU3OgMqU0R9K7eWj7sbvze4pVeuMCBuKwQkSnoc4b7MeXm9
+	 T41FYrCDXnJLc1uPUAe2t+Z2pS+Xm87nU5fxzOey/2XjnF50uWz63Qhz4t8G0Etw2UQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793033131;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key;
+	bh=9lNcbi/00HapmznVu9Lst2xGU1PENo4wfUKNt0U+SR4=;
+	b=LDwAatFu9yibGqui8HnTmO/ycA1JWUpS3FVPd/VSWOHevwWjpn/uNxKau1Mi4ZRGHbRX
+	 diAnlVb6EdUyK8GCbLk7sbEYb1UFmSzfrN/UyC+cteRB8zbhtGFFICFuKNcuMv2Dy9KRG
+	 wtlG2hifKkG3Eh6T792N46/bd0YKPSu6QOR6o7j81lHjsyTj+8TzX2ltCvQ+QIUiFIXkP
+	 zIYbUQVSxozztfB+QYloekqy2dues8PGVvai1AlG/C6haPSAlalbAGOtivGigv6smnraE
+	 DavO8kYKnACMsftr+ztusdKsm94IxCqp34pJOPn627OA/8O5qm9kw7yjtNCSaP71IZA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=HshfGUN8;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56DCF606A31A;
-	Mon, 26 Oct 2026 15:04:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 56DCF606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabladev.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F03C606A320;
+	Mon, 26 Oct 2026 16:45:30 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4F03C606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=nabladev.com header.i=@nabladev.com header.a=rsa-sha256 header.s=dkim header.b=QAD8j98g
-Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id 08B66109697;
-	Mon, 26 Oct 2026 16:04:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
-	s=dkim; t=1793027046;
-	h=from:subject:date:message-id:to:cc:mime-version:content-type:
-	 content-transfer-encoding:content-language:in-reply-to:references;
-	bh=6hz5uza8UCAu1Jf83s707Rg61KRs8PkOBOl6V9Iw00E=;
-	b=QAD8j98ggHzcW8yd8J1Ifh5uWQm69X822XjTfFT0rPzwR0ZNiYPNci8OXcst+l9ZbNbAqR
-	Ywd+teA3k/qiJidFn9pnBtGSWLvBxZl6/OvVlrE0p/t9+FTjQSQ4+YwdHF3s5vKUGjKnqX
-	oHP0Lp+fIcAI74SaVEFixa2ywzeuCacVYk8ezV/mzRt3XkNKgKl4z2kVVN7zeMoQkKqPZQ
-	9xe9jU3Kgy8c37lQBnUyTyfF2jUvMqrriJvfT7vL2TcP7CQJDA02v2fm0bEYxS/sE+2Rf9
-	FZi4imAAafJd6yU6c+LzHzwf0aaESkeXSRv67TUiblMEXtlkBC/jItlbjoGwOA==
-Message-ID: <eca44457-d3d3-4732-977d-d30a408b7b66@nabladev.com>
-Date: Mon, 26 Oct 2026 16:04:02 +0100
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=HshfGUN8
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6B73D202922;
+	Mon, 26 Oct 2026 17:45:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793033124;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9lNcbi/00HapmznVu9Lst2xGU1PENo4wfUKNt0U+SR4=;
+	b=HshfGUN8TjJTZueS2O++NoRfh3IpLJjG8TaZ3KN7YglxYUx22RMFlBjpseTG4p+WaSuhBd
+	XJOQDi7goSzx8KRU8/l0iyZaI3Gwke5EIjwW2Xvn8oXifx2LFPmIocJ9sA9Ylgc4P9bLn1
+	kvk79V/f+UQsyDdHDp9//VOHtu8QeF05AaW1eTVwPLroBw0p6Iw8dvTM1JIni83RRBfOuu
+	3Vso6VXz0/bRyQ44kkHAw0RgX+ueHeGTDbV1S7RGCEAY+c8qH8Tvx5UWwaifKEgeB6jCdF
+	6YNbyHk7l8/el2vTO0IDr76CpiJTprWFfHDABIulUlbBYVIi7l9nOX3ukH8rPg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793033124; a=rsa-sha256;
+	cv=none;
+	b=JiINnM6adpBM0YhqcndI3eB8y0wVsFdhzhd7L05y17vTHLL3nuQsGx4X3WILLQNEFyNqmy
+	fFq37P4TCUGyP/H1XndoLutljO2dR0PTt5enAAEvL0wCNsfgQXOKZ/8+vp/oA+EClEpvJW
+	mOskhHD0GbDZQ7qDzjbIAXdsMalutRCDzJyLD4SO2hVhNupwFDNUnUCN3vp6yj1M5FpDgk
+	Dg0raHYK6kMT4iE031sK6/rmHrywiuncIIXY9bxBQ67GOiSShDfuUGgWT8gyNcEmFzzJuQ
+	0Cupk3FsPFI7T9AcRyLa3kXfYBh72HvLPNCL076d81okeZ1DTXZPRveLfWzrrQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793033124;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9lNcbi/00HapmznVu9Lst2xGU1PENo4wfUKNt0U+SR4=;
+	b=bd7rarn4Qpa7haDpVzWOPACZqYxgJL7gXKlgxGpV9lAVCk+ouy1X2AXGFoKd/mFW6F7rrO
+	on0fdH7dAfF2JWRd7eL8V2R+M464pd4fXlnMG5MhQ6S5oBB4yPjliLWptMv2L07BGd2UYZ
+	Tq++b6pXJAURUfhXyIzQnpALjY1gbkxQoE/DmiziwAVhHHLJt6Lo5F9N4KueoqBHBkIVi2
+	KwPX1lf1gGqCMm6ysnsYgqLtn+NDZZxW1yECKeLuQP3vFPchsTkIhbyaL+FT5APPjisVWq
+	wIjjWVcolOGMUv7HNg0B2QEZ84fRozGOR4nzGrCYPioqEXv8lrc7RsMK8bgcQg==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xLNp6-001JFk-13;
+	Mon, 26 Oct 2026 17:45:24 +0100
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id D8BF55D716B;
+	Mon, 26 Oct 2026 16:45:23 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Mon, 26 Oct 2026 17:45:08 +0100
+Subject: [PATCH v3 4/4] can: gs_usb: gs_usb_receive_bulk_callback(): add
+ missing call to can_rx_offload_irq_finish
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -56,50 +98,64 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 3/3] arm64: dts: imx95: Add support for Data Modul
- i.MX95 eDM SBC
-From: Marek Vasut <marex@nabladev.com>
-To: Frank Li <Frank.li@oss.nxp.com>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
- linux-arm-kernel@lists.infradead.org, Aswath Govindraju
- <a-govindraju@ti.com>, Conor Dooley <conor+dt@kernel.org>,
- Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
- Krzysztof Kozlowski <krzk+dt@kernel.org>,
- Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh@kernel.org>,
- devicetree@vger.kernel.org, imx@lists.linux.dev, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260928204741.175754-1-marex@nabladev.com>
- <20260928204741.175754-3-marex@nabladev.com> <arvPDq8sjjv7na01@SMW015318>
- <49303872-5622-4e1d-8e1a-01394ec29367@nabladev.com>
- <20260930174413.GA2463938@francesco-nb> <ar1bhpji35CbArtY@SMW015318>
- <17f240e5-9c65-4562-ba51-535b0c69c5fd@nabladev.com>
- <ar19W4wX07p8u3_5@lizhi-Precision-Tower-5810>
- <4efdcea6-a099-46a6-8d07-dd5c583b962a@nabladev.com>
-Content-Language: en-US
-In-Reply-To: <4efdcea6-a099-46a6-8d07-dd5c583b962a@nabladev.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-Last-TLS-Session-Version: TLSv1.3
+Message-Id: <20261026-gs_usb-fixes-v3-4-3a68f1f62813@pengutronix.de>
+References: <20261026-gs_usb-fixes-v3-0-3a68f1f62813@pengutronix.de>
+In-Reply-To: <20261026-gs_usb-fixes-v3-0-3a68f1f62813@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>, 
+ Eric Evenchick <eric@evenchick.com>, 
+ Maximilian Schneider <max@schneidersoft.net>, 
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.17-dev-d7211
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1258; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=V70xppMYnTmZVIDljTzPiitow+b3ymMgyc5OPZswWIs=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsi637yw9crOMzMe1zvtuK/TrBX/6FONrftN4+W22fXPe
+ Pce/muZ1VHKwiDGxSArpsiy9McJRYFAh9LelwmTYOawMoEMYeDiFICJHFzB8D9Kvbzj+iWtxo2N
+ Sf3vljx9v3HzvPLXV8qWnuy6mlOosMaKkeFfobfZv1Z+h1WbGh2+/jOvjVd/L3G+lb3nxJrwz8s
+ Vc9gB
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-On 9/30/26 11:49 PM, Marek Vasut wrote:
+If the overflow flag is set for a host frame and the allocation of the
+error SKB fails, the URB should not be resubmitted immediately.
 
-Hello Frank,
+Instead, call can_rx_offload_irq_finish(), since an SKB may have been added
+to rx-offload.
 
->>>> So I suggest remove it now and add it when need.
->>> Can we please go with consistency between these boards from one vendor ?
->>
->> Yes, I am keeping consistency, then ask remove it. I applied alex's v2
->> version. I put v1 link to show krzy's concern.
->>
->> https://lore.kernel.org/imx/20260319125013.2421621-3- 
->> alexander.stein@ew.tq-group.com/
->>
->> Changes in v2:
->> * Changed commit message to imperative form
->> * Remove (currently unused) display and backlight nodes
-> I sent you a V6 with those nodes removed.
+Closes: https://sashiko.dev/#/bug/linux-441137e2-cd75-411f-9ff5-dc4d473c5ddb
+Fixes: 24bc41b45583 ("can: gs_usb: convert to NAPI/rx-offload to avoid OoO reception")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/gs_usb.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Have you had a chance to handle the V6 ?
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index 5b0c58fde53c..0e945f04d81b 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -741,7 +741,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 
+ 		skb = alloc_can_err_skb(netdev, &cf);
+ 		if (!skb)
+-			goto resubmit_urb;
++			goto can_rx_offload_irq_finish;
+ 
+ 		cf->can_id |= CAN_ERR_CRTL;
+ 		cf->len = CAN_ERR_DLC;
+@@ -750,6 +750,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+ 		gs_usb_rx_offload(dev, skb, hf);
+ 	}
+ 
++can_rx_offload_irq_finish:
+ 	can_rx_offload_irq_finish(&dev->offload);
+ 
+ resubmit_urb:
 
-Thank you !
+-- 
+2.53.0
+
