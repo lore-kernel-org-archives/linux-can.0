@@ -1,100 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793011900;
-	b=RLCPUEaRs5M0u12Q6NrlaDASnFvgax5h0XRaIEa6aduNZdTP83Mc4TwwfonZ33AQgdUZ
-	 Q2RLIcKi0omN1hD+IMAafEmgbyBaasuwejYKBamBDqbQYrEq+GNIo/XC2m+4rKweSFN+S
-	 Y0M+bOat782WTvQ1TSYn57EnanGZ5DCyDPhGYRxYL+ueA5M+NOF/3Xg4uqGp9v3gtOn/7
-	 Htp8SRXVdVmrjymyJ8Spm7Fv0xLXLsUTeRjbxJhzQ64W3O5MskfRmyvAwnv5p5qVMsVzJ
-	 Na49HnbBWBFMf0UIZ+w4vW2P5prDBvU+2x4E4w1pFNm7AX8lD6snMi0SeHtOqEnMP/w==
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.161
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+	t=1793014284;
+	b=C72DhWnZFpOKMHt+Byxj0qAlnOkGU3UJaljZuZX6utMnbQ9Vh0gI7oqYlj/XYtgNay1M
+	 QYnt/q4eXbvmwIYPn1XkuVdqjWo0oNGw5NjTDd+grhbnDnRTrIfGzbO7SbblK3kabeiKj
+	 PbZzzssHwtJw+BgYThAFD47S9Tyygx+7jLniDXjvddmRsqn4RaQ/P1UNcSraD6PCgZDWd
+	 hACnnE5O6U9fdvdEqEC+dBgcxyV+K5GPpJ5Iyh2HSsU+42mezAA9kECx/JSLhyCWi8mp/
+	 SVuIygxXYElBT3ldhrterd/8Pzb9MHBUMrQ4DJO8jjx705F7fbgk/9QrOpSroAnzmdQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793011900;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=9C1jzy0Jl1SbDDx89yYc5aUl9Knggx/PDZGr+xGgpg4=;
-	b=Vl64Xn1EJIhkjVtqbB0qfll5xQn+VRhYVL3lIAhIKBDNywkH1VZOPspHLPskggg5BM9G
-	 rBv8v285pWF3qcIo/mD67IeyGJ9X75Ad2EBRV0wEte1X1JU8ALx5v9AUp3XJzNWKmgSlq
-	 H3zGFN8BK4mTM4lPLKzrNFJBUR4FDBALvP4FrA+qXRiqCXcNvzFJoo3frPExB2HBe5kpy
-	 jKb8jk79fM+7rl9QJlx56H9GPv3hlSk+rrIdYYsm4LdayC7IIChquT85PYUv5RETni9B5
-	 5ZLP8clzegJ8ZZp0tkJoGx2W+dDimAeklmvZaqL28iQn7W4CJZV2sI3NS9wWn4PWk2g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793014284;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=TiuH045KiLpK/k9PzatxMdRr7zTYcll1PBib6jwPSTI=;
+	b=Pp2AUjRlIsoatNz6Qo1qrsUNPUyhUHfiuJ4b3bd82GKS8dkZeX2b86V5vJSTpYGtK624
+	 cpwq0rmT+Cxl6hNIFBRvDdTszjL19JevUOnPEXRSfSxmwcctn0yILYn+rvhzDBZRkcX/a
+	 wfWxkFpPscsu5miQYlLvIzNSQtCO/LVmUANgBkWJ9mboGbqacceocojbXzP8PrqKJXtZS
+	 F9aERMSgyTvETyPQr9shD7tHV8p9QBKwj6LpGmLj9le0lOAor0TI4Xx3y4ni9VmMI7FMB
+	 zlCyAc7WHBhHOI2GwKQgEigSpXvn6H8j3YV5SSwgxrdhcyGI+18uDYNq0xgTv7WSd0A==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="Tkyn4r/d";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=WZz9d9in;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=AKjbyfi1;
+	arc=fail smtp.remote-ip=81.169.146.161
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.161])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62D22606A31B
-	for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 10:51:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 62D22606A31B
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E115E6072C93
+	for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 11:31:22 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E115E6072C93
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Tkyn4r/d
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 749CF20233A;
-	Mon, 26 Oct 2026 11:51:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793011897;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9C1jzy0Jl1SbDDx89yYc5aUl9Knggx/PDZGr+xGgpg4=;
-	b=Tkyn4r/dyVisxXqL699JxDeUGtetwsJ6bmvU+e0qc8kDSwc2T1b6Wj/Dt7N8YsxF3vQAJF
-	sGmeKXJB4E8VuANeWcEX3kL2Yb1FmZTdw9M+/hOOGczeHiyXETOTDMJ2OhynTKZEqFMrTp
-	RRN+yIUFCnjSc6dcQQ3PtrVjZjdeJ0vuFc9DQapgSDl9oNW8B44/c3VAA9ttePT6cg4p3V
-	k+0yQaM8uDg5tssNaUoq52dDX2Y3LM8CIE9sBUjbeoMScXIuzV7lNWwl0vlurZSXjn2bSU
-	OHWTzKGNksuPtCW/nFjXIayhOpMKoOwPkg563DbEWMsXdOxZ5rMdvX85Fuohuw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793011897; a=rsa-sha256;
-	cv=none;
-	b=MI+kEizquvIwlgcdvV6HsupBwWlC6W+NmFRs8g9BNkDqXmjFqVzH1CV9oIKadrwt94+HVo
-	fqkMHyroxyjFJUsyB9RBK8AfcdmGNGc6438Ovxj2OogTtX4W8xmt0JacqUA1moWcV5s0ve
-	TDP2ezDk8yDFwlc9rESDYRISoSoCdWfoj4RJHSZEKOBz5D1zUOGvOH66h2IrPt9S8RrUs/
-	FM02k+KsuhoI7euLwEfNWuc+nWJPVrnOJ/hQWh+570uvLPufO4Sq+s4rdUcHn/jIlT0mR9
-	GSwKgWy1MMateT0DMiM/fia1ta66FkV5WyAZ9/g5ZELix62Nosa9X3TT2RFXTg==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793011897;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9C1jzy0Jl1SbDDx89yYc5aUl9Knggx/PDZGr+xGgpg4=;
-	b=Z9G9x9cEAPue4PRm/Dxd9GUjKfD0FIEr2PBh5X8Zs9s8mVtODcec4+zV/VldBDjwz04GXq
-	ROx3omgbn3K7ggYaI4YnKxWzZ8RG7HUWKA+7+7osKbyUxcdEXvmh5ZIeSNFfQYgdJGyiI/
-	H0SsNTgp1d3TEFLZayRKSm8MhiP2035JXyKaHGg0K+1u3gsNVAhib72D9Qx8bGrm22JyDw
-	pqCnb/pX4U7SeCw1aqhHZQh+XpybzK9fvXeV2m6uneKoDci9lz1fZNMA6fWHSOBDyIiGi2
-	vE3DkTaj/SHRih0Qi6VWuktaAO9ZGAtepcl/nf9JfJJWqhYxVtjbmF/rwAzyNw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xLIIj-001Gim-17;
-	Mon, 26 Oct 2026 11:51:37 +0100
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 032995D6B9B;
-	Mon, 26 Oct 2026 10:51:36 +0000 (UTC)
-Date: Mon, 26 Oct 2026 11:51:36 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: zihan xi <zihanx@nebusec.ai>
-Cc: sashiko-reviews@lists.linux.dev, linux-can@vger.kernel.org, 
-	Oliver Hartkopp <socketcan@hartkopp.net>, Vincent Mailhol <mailhol@kernel.org>, 
-	Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH 1/1] can: j1939: fix session reference leak on TX timer
- restart
-Message-ID: <20261026-deft-radical-wallaby-52a9f6-mkl@pengutronix.de>
-References: <cover.1792979091.git.zihanx@nebusec.ai>
- <6bbcca411ac9433ae4ed8b8e64f56ff16dfc20b0.1792979091.git.zihanx@nebusec.ai>
- <sashiko-outbox-184711@kernel.org>
- <CAANe3eQrZjWanuiFgNjhsoQb7W5fRm+JVFjnGOtD03Z3aNyTCQ@mail.gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=WZz9d9in;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=AKjbyfi1
+ARC-Seal: i=1; a=rsa-sha256; t=1793014275; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=XiduYZQl2J27hMAhH4rEzvm8x1y0vSNCfTAVSktQnwgmYxk1XNoxjZUkhcZ5h8h+uC
+    kUOKGCa8cHIyc1RKgBHrrLYUpiJFeumiYfnv/SxD8XQEKYm8St8ULmsL4WMAobX2w4lu
+    1jB0hwjwwabRpmLTxq3kF9Ae3FDXGvVU4zOQJ87wN+ly9hnb96GCvU/nF494S8U8N6a0
+    MILQk2o4rTStWBLU1YFkjmiXFy2lpIOM3aXcLaoitt2n6SIVBP047r/1adL9oajeTMls
+    n1x6WkgLL2l4QgN/FJFsMM8OW+nIitSEgxHspZvJIGCbvZQFvzyQTD3G/pVAReLg3rTj
+    BUUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793014275;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=TiuH045KiLpK/k9PzatxMdRr7zTYcll1PBib6jwPSTI=;
+    b=QEYdORB+dRs65hE8hK9v4aJfY30tj9PIHrYAfJejMMS16z4tXVgVcqEO8y8t4CKCU9
+    rpPXM2SoKQA01CoO8F925fPW0P+m6ut2a6vUz2AlLimzlxoTaWkS/UUM9ddL6LM2508o
+    ONnQtIoaED6HhC+Mv5C+S7Xl4NCEYSPw7cX35O+4Ut6EJ2N6IvBBDzlg8N76S2Yd/5lM
+    KCD7stqUvTxNpvDpwp15Hxy0UqzJxQTOpBCvdCCGrgTOnczkpuHebQhgFizWxe5V3ksP
+    Suu7gkLfo4bUrJGh4nxD3aXFjYGRQaP8UsVe7ECEXe28ZzEFbcCANt9ioMvPnHiyUXXN
+    pULw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793014275;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=TiuH045KiLpK/k9PzatxMdRr7zTYcll1PBib6jwPSTI=;
+    b=WZz9d9inG1f3xDbBRgXw8gu+ekr3HDLbPF3nx4TAMoYH3W7+LVZx0pfjML9ZD2vtGQ
+    XLg/FUAsVS0FrIvLhHstNOFdZkASaJF4Zc0/sDwTfD2Kukl1xr8bT4ZbZOF0bTPQAvKb
+    aPHCSGOIMM94wqlY03/WkGmKGxvRo8pZze2WLit3sE1bRuhqT2ZX+eNn+MNo18bMkWer
+    CY+evmlv5gceWqcnR+rad10TiUrcO4mL2JtSlL6LfCaP5SOOpjA0QdZ9sXt5M32YHcDM
+    Tmo5yGwFa45MmtiO4DnF5Il72FZ/d4YpNYQKcR3hpB3XaOsyiynhBIybLshNy32MSdvi
+    UxSw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793014275;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=TiuH045KiLpK/k9PzatxMdRr7zTYcll1PBib6jwPSTI=;
+    b=AKjbyfi1KCws5n8xlSi2rfG0Fs//sv62WzFvSB94uG+My19KOY+aakZo3FPNlZiOyA
+    2oeLidBJ3tG/kq3ibMAw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29QBVF1wl
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Mon, 26 Oct 2026 12:31:15 +0100 (CET)
+Message-ID: <89bb8afb-dbe5-4c8a-a6f8-66f9b0489924@hartkopp.net>
+Date: Mon, 26 Oct 2026 12:31:09 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -104,45 +95,38 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ryiybeakn34fgftr"
-Content-Disposition: inline
-In-Reply-To: <CAANe3eQrZjWanuiFgNjhsoQb7W5fRm+JVFjnGOtD03Z3aNyTCQ@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9 0/7] can: protect the receive lists with a per-device
+ lock
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+References: <20261025-can-rx-lock-v9-0-7ef2a2b5c2b4@hartkopp.net>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20261025-can-rx-lock-v9-0-7ef2a2b5c2b4@hartkopp.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Marc,
 
---ryiybeakn34fgftr
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 1/1] can: j1939: fix session reference leak on TX timer
- restart
-MIME-Version: 1.0
+On 25.10.26 22:32, Oliver Hartkopp wrote:
+> This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
+> triggered when a CAN device is moved to another network namespace while
+> a socket bound to this device is released [1].
 
-On 26.10.2026 18:10:09, zihan xi wrote:
-> The refcount race is valid: the queued-state check is not atomic with
-> callback completion, expiry, or cancellation. I=E2=80=99ll rework the
-> timer-reference ownership protocol before resubmitting.
+> ---
+> base-commit: 734bef548a96e8774d6eef5dfa2026c6edc4e80b
+> change-id: 20261025-can-rx-lock-cecab2ad832f
+> prerequisite-message-id: <20260831052031.902699-1-ekffu200098@gmail.com>
+> prerequisite-patch-id: 20f07b0b0e4dbbdb1263e9bae3b652ec5709d87c
+> 
+also with b4 and your suggestions this v9 patch set failed to apply:
 
-pw-bot: cr
+https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261025-can-rx-lock-v9-0-7ef2a2b5c2b4%40hartkopp.net
 
-regards,
-Marc
+As v10 has the same base commit settings it will likely fail for the 
+same reason :-(
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+Best regards,
+Oliver
 
---ryiybeakn34fgftr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCat8wtgAKCRDMOmT6rpmt
-0gwSAQD+kzZMgey7lY2qoLF6TW6p9/4v+W6mdcqoHWz9TpKPhQEAn/2M4G5YlBK5
-Gv7TwWfosBEF1Vkeh1NhVxmtH9rAVQ0=
-=yqMx
------END PGP SIGNATURE-----
-
---ryiybeakn34fgftr--
