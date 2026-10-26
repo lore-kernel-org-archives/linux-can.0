@@ -1,66 +1,85 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=199.89.1.14
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=44.246.68.102
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793046325;
-	b=30fdEvYuojUC1LkU1sMbTfRJP6biX+YarncS5M019b5SqUakgbhR51LZjwaMFB+NqdB7
-	 lTJdliZJZaQqHZCKzhMqgpmX0M3tsW+vVOzB58eh8irYa4obFA8/J+VEXhcFLgZ2bCISX
-	 ikOhiMppY2zYyad1iB9+9WYSL+wdeqEsozXRhW1+qRZInNlr7bHea5uFhxGNVa03u7QwR
-	 kjPHBklV6Xz/WMC+BgVp9yhueZkyFCPIS5CSKRmHBfGPwirKgiQMYHOnfWPdCEbINrEe7
-	 y5c2klk8QirK7OtfPxqvrde19svxM5oYeZslQaBz8wuBSoEIBj6yOcS523oxzqWzY6w==
+	t=1793048367;
+	b=kxNfrVlB14fyddw4V8cTQG+A7C4NFv2WD5lHrTP7I956LYygfaT3NthIaJL5oiqo2NZG
+	 qYL+vcja8hwFmQvRBDo54DI9GDTiGvYH+dixU9fefzPbR3lmUSEbA//rqt6ZK6OjBIFC5
+	 mZ/PFu62v51HQ79r9hgvA3dGniBer/Y0ygGFnz9oou4p96UWP/Rq3ja49LiRXhuT9m5yN
+	 EpASjIt37iViCoc+wzvtFZatdG6n6vKhC3AI9NGUnFqAdSFOuj5nwV4DywU5XpugmSmB0
+	 LphMsmbruUnMCgkbKjFtK8U7t7d6Dy5Z+TNaca0ZE9Vd99MZaxosUX91pqTZRp/66xA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793046325;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Virus-Scanned:Received:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=704mFSX16wC81X0dFjGpXon8/LqFUztOMihRtaFnr+I=;
-	b=hKKaUXQmEm3SlCfc0Bd+7tZRHQhSxZYmQCtXN6l+ptPvNYENdGV1FpqXdOVjANa6oMZu
-	 wZH1AS5rpAcIP6PMn1YJKDgjK0msWsASd/q8NXj5+vry9A6PT+z0rSJ58QFtUfqBnHm+R
-	 2gEjbBqkmtT/FWL4vJQ8cESgtmCCvKNfaEitZJsysUUdSx9kwRBMe2LF9DQ3M0xnwTzBc
-	 bO8m5G+lB/5vobkM45mkg7IhbybobeaIlqruwd/245ltlbqKCfWoAJ447kgZDUIJ8iDBF
-	 A+PVe6KAM4RXigclQKadu5VwlCrSxlZhhlF1vvNu7PqTB3h1x728j+neGJYD3JK6JGA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793048367;
+	h=DMARC-Filter:DKIM-Signature:X-CSE-ConnectionGUID:X-CSE-MsgGUID:
+	 X-IronPort-AV:Received:Received:X-Farcaster-Flow-ID:Received:Received:
+	 From:To:CC:Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+	 X-ClientProxiedBy;
+	bh=Qrq3FNW/0SEN44vJvKEC14nzqvJcKELdScbHaQ9C9/o=;
+	b=EQIqGU+ZKT+ui4+euGP0se8TNkk32uIF20s4T1pjoeYTNTofj/zy00QZ7kTLYiWA+uCf
+	 bGFhBw+OVOICk0tpP860a+3p8+95A6VMnLT6OlBfPT2NuuOZs0YmQbEHAStc/KCJ8njSr
+	 wLfsEj5epmKXst2FwdtQRLWXK7mTeJqnX3J9rSsG2ptlFHT+nUzG/ocoL+upDrwPMaPsS
+	 oUOzGeV09sXzlcBeauQmY5TKG6w4izpMSmFBH8+vn+CjI7xvVnz1/9nVFfjguMEv0vT7W
+	 0pYwJS1hGZzWQ9ezj717bt0Kyf2gh8e7WpEtCLMVZmOpjKKuhZK/0AgO9JTwYB1h6Gg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=acm.org;
-	spf=pass smtp.mailfrom=acm.org;
-	dkim=pass header.d=acm.org header.i=@acm.org header.a=rsa-sha256 header.s=mr01 header.b=hqlBCLY1;
-	arc=none smtp.remote-ip=199.89.1.14
-Received: from 011.lax.mailroute.net (011.lax.mailroute.net [199.89.1.14])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=pass header.from=amazon.com;
+	spf=pass smtp.mailfrom=amazon.com;
+	dkim=pass header.d=amazon.com header.i=@amazon.com header.a=rsa-sha256 header.s=amazoncorp2 header.b=bS18TvyI;
+	arc=none smtp.remote-ip=44.246.68.102
+Received: from pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com [44.246.68.102])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFDDC606A31F;
-	Mon, 26 Oct 2026 20:25:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DFDDC606A31F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=acm.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=acm.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9D3D606A31A;
+	Mon, 26 Oct 2026 20:59:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9D3D606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=acm.org header.i=@acm.org header.a=rsa-sha256 header.s=mr01 header.b=hqlBCLY1
-Received: from localhost (localhost [127.0.0.1])
-	by 011.lax.mailroute.net (Postfix) with ESMTP id 4jD4r42pSRz1XM30g;
-	Mon, 26 Oct 2026 20:25:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acm.org; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:from:from:content-language:references:subject:subject
-	:user-agent:mime-version:date:date:message-id:received:received;
-	 s=mr01; t=1793046321; x=1795638322; bh=704mFSX16wC81X0dFjGpXon8
-	/LqFUztOMihRtaFnr+I=; b=hqlBCLY16WH8063GIY/3fsNCiwGuwMkjUICRtXGM
-	pQN6oGgxQcWa0hiCvNdqpmzoJzhhIhbhFQoLitOAoXbJm+oi5fz7lRgNTq1KNx4/
-	uplc7/yufAfJ4z9/YxE4ZBlQR465VwTfkgyaCPjSCc/SC2m1ZOjDxFi+x5EC7U8/
-	NqOMR15vlOV+z1XuIfb6XFfMQ0MDJ3Nza93TuAIENsylaeYMUvgYb58LPIOUzxz2
-	Y4eFlE0V3S3AzXE+vAvE+zRx70JFU6TjHHGOH/eCIWv+9l6drBVoMCTfPq7lmFJO
-	ZCDOkcSuzPtJtJIF/6Bu3WYHoKSSte7Z+ZWji/LGW9wi2Q==
-X-Virus-Scanned: by MailRoute
-Received: from 011.lax.mailroute.net ([127.0.0.1])
- by localhost (011.lax [127.0.0.1]) (mroute_mailscanner, port 10029) with LMTP
- id hTa7JiA9mgOG; Mon, 26 Oct 2026 20:25:21 +0000 (UTC)
-Received: from [100.80.231.125] (unknown [104.135.182.41])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: bvanassche@acm.org)
-	by 011.lax.mailroute.net (Postfix) with ESMTPSA id 4jD4r13m8Wz1XM4Tl;
-	Mon, 26 Oct 2026 20:25:21 +0000 (UTC)
-Message-ID: <1428d48c-eede-4140-ae02-6b73e5b10a1f@acm.org>
-Date: Mon, 26 Oct 2026 13:25:20 -0700
+	dkim=pass (2048-bit key, unprotected) header.d=amazon.com header.i=@amazon.com header.a=rsa-sha256 header.s=amazoncorp2 header.b=bS18TvyI
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1793048366; x=1824584366;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=Qrq3FNW/0SEN44vJvKEC14nzqvJcKELdScbHaQ9C9/o=;
+  b=bS18TvyId33lhEPNrAGSuwlBRRdN/670GTWdFlEflov90N5DhXYvSD2D
+   XYfD4Ns8aUit4A16RU9wOUD9wzoy3xDSzjaef0yQigUuTxHxvYWIwGdd9
+   BpaWsXcgiOySFmzVIqoWywDuVT/zWZ1GXb2828s4wYIQk4IS1ClSdVPzG
+   etd7EK6mfXyYmRo8gBOmBn9A4M8Hy2cZwlcYV4qKP2ch3HRCkLyX+X4Fx
+   xsIbTfQlW76zus7jrubernlsazIWZppYpEmvWfCztQl6rAd5zQH8M6sOH
+   akGKWcNlPhtX+k4QdNmJwvRBIiFkvVstpnosmYbfImhd9lAr5LKkYOKPE
+   g==;
+X-CSE-ConnectionGUID: T/lN1pTdSIKq7SWI0pE8qw==
+X-CSE-MsgGUID: uyvTqbsmT1mmcWIkKx8aPA==
+X-IronPort-AV: E=Sophos;i="6.27,180,1787011200"; 
+   d="scan'208";a="32211838"
+Received: from ip-10-5-6-203.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.6.203])
+  by internal-pdx-out-003.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2026 20:59:26 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [205.251.233.111:31130]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.41.86:2525] with esmtp (Farcaster)
+ id 2862e1d7-248b-4929-83d9-7d6defe956f7; Mon, 26 Oct 2026 20:59:26 +0000 (UTC)
+X-Farcaster-Flow-ID: 2862e1d7-248b-4929-83d9-7d6defe956f7
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.56;
+ Mon, 26 Oct 2026 20:59:25 +0000
+Received: from dev-dsk-patrzhan-2a-52a3f46b.us-west-2.amazon.com
+ (172.22.91.11) by EX19D001UWA001.ant.amazon.com (10.13.138.214) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.56; Mon, 26 Oct 2026
+ 20:59:25 +0000
+From: Patrick Zhang <patrzhan@amazon.com>
+To: <netdev-bot+sashiko@kernel.org>
+CC: Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol
+	<mailhol@kernel.org>, <linux-can@vger.kernel.org>, Pavel Pisa
+	<pisa@cmp.felk.cvut.cz>, Ondrej Ille <ondrej.ille@gmail.com>, Harini T
+	<harini.t@amd.com>, Michal Simek <michal.simek@amd.com>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	"Jakub Kicinski" <kuba@kernel.org>
+Subject: Re: [PATCH 3/3] can: ifi_canfd: enable NAPI before starting the controller
+Date: Mon, 26 Oct 2026 20:58:55 +0000
+Message-ID: <20261026205855.871681-1-patrzhan@amazon.com>
+X-Mailer: git-send-email 2.50.1
+In-Reply-To: <179274950592.3130.11275892525697074934@kernel.org>
+References: <179274950592.3130.11275892525697074934@kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -70,28 +89,30 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: softing: Fix locking in softing_card_shutdown()
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Vincent Mailhol <mailhol@kernel.org>,
- Wolfgang Grandegger <wg@grandegger.com>,
- Kurt Van Dijck <dev.kurt@vandijck-laurijssen.be>, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <192450922df0eb9ce0cebccf381363680db65604.1793044027.git.bvanassche@acm.org>
- <20261026-adorable-furry-wildcat-0d5bf2-mkl@pengutronix.de>
-Content-Language: en-US
-From: Bart Van Assche <bvanassche@acm.org>
-In-Reply-To: <20261026-adorable-furry-wildcat-0d5bf2-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D031UWA003.ant.amazon.com (10.13.139.47) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
 
-On 10/26/26 1:14 PM, Marc Kleine-Budde wrote:
-> Are you actively using this driver? It's scheduled for removal in the
-> v7.15.
-I'm not using the driver. I'm working on fixing all locking bugs across
-the entire kernel tree. Removing this driver will also make the locking
-bug disappear :-)
+On Fri, 23 Oct 2026 09:58, netdev-bot+sashiko wrote:
+> With NAPI enabled before ifi_canfd_start(), can ifi_canfd_poll() now run
+> against an IP that has not been reset yet? Can it also run alongside the
+> reset and programming sequence in ifi_canfd_start()?
 
-Thanks,
+I think this is a valid point. Unlike ctucanfd and xilinx_can, which reset
+the controller in open() before napi_enable(), ifi_canfd_open() does not
+quiesce the IP first, the handler is registered with IRQF_SHARED, and the
+ISR acts on the raw IFI_CANFD_INTERRUPT status. So on the first open after
+boot or kexec, the poll can now be scheduled before or during
+ifi_canfd_start().
 
-Bart.
+In v2 I plan to call ifi_canfd_stop() in ifi_canfd_open() before
+request_irq(), so the IP is reset, its interrupts are masked and pending
+status is cleared before the handler is installed and NAPI is enabled.
+
+The bus-off restart path through ifi_canfd_set_mode() already runs with
+NAPI enabled. I will leave that alone in this series.
+
+I will wait a few days for other comments on the series before sending v2.
+
+pw-bot: cr
