@@ -1,101 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.171
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1792998193;
-	b=nH0OQk4mAI7mdgY3VhDcEhAlWlFl2wtbbS2MI3G6bMRAx61kDw1XFXV8MJST52pp9MW/
-	 48GUZFIY9CTNrZGf1q/dAiqML0lg93WXkN5PL9rCFOQm21PhbfpySNXA/hwYdvdrLHUCs
-	 /SwEdJHDuyDsjjVFQGi/0ih/PYQVkQUAuV5ZpDD88HehmAcxjDqBJCowWDz5DmrP7GN9W
-	 qQTTFnTe2XJwJdAi8pSaFELLY5tMWOZa2jajb4cHazAUcNhjG1DiJfNYVaJfONcZ0uMCv
-	 nR4WOVsjrfh4CjKPCqSKaLorZwPRWGJM5zJJLpVrejvi/6IYDBbFBRsv/84islZAufw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1792998193;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=5sFjBguLdb1R6cl/aittzu2hkJXaagJSVs59kF2Qwyk=;
-	b=ML/XxOe4BCPgXyLrV7xODY3gHA/xsufMwFi+gvaDR+NObXK7/sPZdy+Fqvlo3fQDJqN0
-	 P7+nSs6KOVcbMd0wTEosc9Gm/NhCv9r5pSd3k/uPhX3C4tPdhtazTUW3BVwyXQGZEpEkl
-	 DG+gotg16ARkXSeOecBHenZV08hOcS4D/u+T3AMyWveNdKsYOAybczOOEsaIZPNCzoUK5
-	 c6oxNgX30sMuNyaOYZGIs2G84q1G9Xgt6oFLBO3mO///NR8Ml11iIQDewFr6OYXSOJoaQ
-	 Col0ipcJqs7lw75+/5JxK4605OS00xVR0tiGtlOZsJhy4BJsmBOoB6U92L7vRTglMnA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nebusec.ai;
-	spf=pass smtp.mailfrom=nebusec.ai;
-	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=EKBchBZT;
-	arc=none smtp.remote-ip=209.85.214.171
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793000713;
+	b=J2hslApzUR6iLVP+WAFZOKDojqKYYjxAzxVy2JFXEcNZ08ryXcM13W0T1QbkMqacd7st
+	 e/l+hBq/rGeE3LwGX9E38wnCD29k96aaEIkiTlTKxBde0x23daLgbKaVxP5pSz0MyOoov
+	 PzrCwaT+osERAOMkw40AZF9v7jg+Ew2S1FPkdPxw6tsVqCT/1ZY423USn4n1PDPZh51Iv
+	 aDr7wEnMmHox6+DNFKlQfYqFfzqSxxVMJCiN/TQfXVS2kh8hrxr1mEFZ0m96YVZ2hm3Jj
+	 Nf56NLQbDXFOlJi+KSKHXQ2H/cmXGtvpBEALJjLxBurcZtFPAKFMpXpHqhcOLHXf4BQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793000713;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=FMoHyZk+rS5Hs34bS+7NR0VXf96oQN0+aVJQBDrC5Vs=;
+	b=vRsF9zVoWydbFD66dmHDln//ELV4xkJ/zvSWTy+dTGtm36x2q0JjwQ/3f+l7E2aJjrU4
+	 qAIZinSJh4eXIB/AxniMWPLuW5Kb/C2hTUB5C+NL8ltgQRhDsT9k4Mul+qzSpRSaZIT2E
+	 5ew5YgoPs38OVl/Z81zbyHA1+oRuZgyaqadPhydtrOLpdo40nney+Wfx05zRZD1GHyjp2
+	 RwuKa/1OeJBANXWu4C9mxrYW6xBGWKdxl6GyGKnDvWaCThqPRSVvScSqQ3S6k3pfaUphK
+	 PBnCUVztJ1H7F1yxlOLvoCLNnpHSMuwuQXLU2hJrjV06ll0Op9WFCJcqihFS9bswu5A==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=M8PePwja;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E335606A31A
-	for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 07:03:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7E335606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F85C606A31D
+	for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 07:45:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0F85C606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=EKBchBZT
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-2e8f2c3ad6bso16582655ad.1
-        for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 00:03:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nebusec.ai; s=google; t=1792998192; x=1793602992; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=5sFjBguLdb1R6cl/aittzu2hkJXaagJSVs59kF2Qwyk=;
-        b=EKBchBZTp9JC0EvHlfHrV+5BbCypYVfB/2w8v2S5HXFlHK+GeimlgeQOwf0aAWSX84
-         IdY1JJiwxUg8UU8iuJPwB75uZjJYkbQSce/dy3+RTS2w3I0OhOtlwzWYU5dirIGovpgo
-         cLn56/2qIQJh72ZO+V15bks5uLWeYcEN+OWaZcq0sfFnhBPervh4xSHWfIJ4UPAYgvWm
-         1g+XNtHNiE+Z8DzS6wlL+A8bKY+0ORSp0mHkzRJLv1SxKA1RiGPpq4emPMn/gKZU1y3Q
-         3E7OLwq001kdD5GN8H6YbnSeRLMVmpE/7SkpRiX39SOjNSYM32KPTTCqoZTdYmbr73vX
-         Jqsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1792998192; x=1793602992;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=5sFjBguLdb1R6cl/aittzu2hkJXaagJSVs59kF2Qwyk=;
-        b=oZ/hiF/E2XUiFtNXIH0DzUKHfz23DvIqfN76pdIH/HlXr8e2PZI3fMHBOUjFBEVxCS
-         aiWmmaDzPIoVQoxvbw0OhG3ZDlTcN+jd6k60Uy7Kna3TRBADdLF7FzRYBQ6gR24jK+y4
-         oXQCyGXEIq1NgbJW8SIH72hrT3mcxwLzDzqUR9MtzlB1R5/N6v2FvdFGNOHC3N8N1i7l
-         bY4QOYjF4kKzwzy6vrm3Rhx2+w4YyAtiEQV5W/X2pDjkIUOi3FPkAh73nWMu8Q8EMZfn
-         dwzSasl0M1tyKubwWySuveV48HaYR6RGZU1dW8pbLeXSWxu1YHD1+zW6RSthW1qr7p6x
-         FWHQ==
-X-Gm-Message-State: AFq9FYJ6BlEDcb1XfSV72bzK6BP7YoXRLKYFTvab64R+5W9ijQty1EiZ
-	jPShCfuTD3kEfkHOH9mwojCFyUmHF+HcNEo8/WYKd0PJAH+BaEkofTpDv+x7vgwHGbmC7e/8UGE
-	NNyzmqBbL
-X-Gm-Gg: AYBFou3F0mGS1uCVIBAqJHaf9vSkZQeCohF7x+K/TVNJ9Aa9znurBEh3oEfQnarao7k
-	R4OVy7DL+0wMsGdmPXqMbkfNrXIw4sleLB9TOEpl03FjekPrFHFwOzHI+IDsoXWOLH5oWwCD01s
-	FEQyYdAYNAJgSCQpawZbAd/LBxi9+6tQCo0JyOPDyhhYnKwTvhqwaONfCvQTc8hJJhwv+GQU7t3
-	iVvwJsCSD/k5gwk25mJtFuySWEANSls6nLpuXP9bU2lAzWe9qkyV2p9N8IExDrWGx5DtlWKgzni
-	bfwDf5cEpRYMnwtICurVdV9kVU5N5yIX6UL/LubX91bYSHfv/99ku2jwl5jgEcf2y2rvOHZdCf/
-	WJpiGLVB3/yVHeofgTYzKjrZBC0ArGOwUL/Ktb+l9dsZY9H3Tb9MH0TNsJ/cKAN83HNMA7M1+A1
-	peafcYJaJPvbU0FCpq8f3njCUWqsUfLdhFEXIDY/y3xeCEUvB71+hiuYv1apoy4rtni7g6dyr8W
-	rJ12lWlvfirxiIizBkcfRVJbbyNjJgVqp98CpaJu8r3ulF5+XierRAfIiBj8a/zp5DYDgLuFMhq
-	n1I5Opr0b/34
-X-Received: by 2002:a17:902:f68d:b0:2e2:aa17:477f with SMTP id d9443c01a7336-2ea9c94c61dmr45928535ad.58.1792998192381;
-        Mon, 26 Oct 2026 00:03:12 -0700 (PDT)
-Received: from 24c857d0c3be.. ([122.51.212.64])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ea9b14c296sm12049495ad.30.2026.10.26.00.03.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2026 00:03:11 -0700 (PDT)
-From: Zihan Xi <zihanx@nebusec.ai>
-To: linux-can@vger.kernel.org
-Cc: robin@protonic.nl,
-	o.rempel@pengutronix.de,
-	kernel@pengutronix.de,
-	socketcan@hartkopp.net,
-	mkl@pengutronix.de,
-	lkp@intel.com,
-	ecathinds@gmail.com,
-	dev.kurt@vandijck-laurijssen.be,
-	vega@nebusec.ai,
-	zihanx@nebusec.ai
-Subject: [PATCH 1/1] can: j1939: fix session reference leak on TX timer restart
-Date: Mon, 26 Oct 2026 07:02:48 +0000
-Message-ID: <6bbcca411ac9433ae4ed8b8e64f56ff16dfc20b0.1792979091.git.zihanx@nebusec.ai>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1792979091.git.zihanx@nebusec.ai>
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=M8PePwja
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 735DF200AD1;
+	Mon, 26 Oct 2026 08:45:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793000708;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FMoHyZk+rS5Hs34bS+7NR0VXf96oQN0+aVJQBDrC5Vs=;
+	b=M8PePwjaWVO/jIL7cWbYl5yuLXT1ySyaS7c0lJWrq8iFc7C2y177luGTvnaXBzA8gHwkzU
+	RZnqhrSBmhVOnO5ZPiZeEE1l1nSU8IyrzBb44Rsf/7E/vEkyiwVDw4WiyQ7W4Dd8tT2S2t
+	ysMPl9xuMgoQM6KIzCOk/i/rJzpJtZjAdhRrsc1JkSJxOmXyiHgW8nJ+DiRXVrDfJLjfPY
+	X8xLzR5/yDe6rjYZKixI7z9N8r4bRJIcICyjRNSugJEHUI5L8NKEWaSPxndODGxk/d+K1b
+	svUjWgPNjz2yUgnBg/4LRTX4Oy3cb4MHpX5VHgKCTuhMMAZBcBpAnjzg15MWsg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793000708; a=rsa-sha256;
+	cv=none;
+	b=d5Z93inl8nTeJQTGLSIGAHUBNz+HV0iCi34k2NKaeLL/ZLQz+RHAN4LvsutD8b0Wa+xJE6
+	cCFGc4dJU00Buoiw1XA8jsuifeo+Sd7A0OhizqFFoqX51VzkOznNrCRt2wfUfCabMzb6YY
+	GZpwG/BTIQNRNGMSRDak9bkd8dOKjuhub1Z1Un0YtHniIgoRnhNNuAoT7XNw7ry8PSsS0Y
+	0lYmO93h5C7l5wwrmxIP3fJsicKwDNM18LrdfEvruTyQhZPTv/llsiNaj/HAAWFGQZuLVG
+	9+YfG8aNIwWmHtCQJzPUBm3h1xBXsKGe/vZyjM0zO/wVgNLaYuA1/kMlHZxoVg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793000708;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FMoHyZk+rS5Hs34bS+7NR0VXf96oQN0+aVJQBDrC5Vs=;
+	b=fzskScmzPoD8nOPvTcqK/CBCcdKA8qkFWqzA6Q6Q1VTRQCmQseYp2bkcOHPc5yVcgYwcAL
+	38XXUpyFibgAlyFUA18zcCaofixyoHghOhoOY9vz0x17axqM7SHUNghYWkHrfYJIn1bVAm
+	Mv7gfBqkHQ4JwWwPrMzLvZLc+chfL3itjqlryOe8tBzT8WFOcUI57Vq5WdUL+PInhQKaOk
+	/jxMVCyZYoMqviTYxCIJmfJxfYRKIH09CP8aXuOCKindrjV83NBqd6N3F1mKZvkLK7lE3d
+	fBgquak9SRgxxr51TERVpOrMnEYgnHSadciioYIGjnmS3aH310rSpa2nDKJkZQ==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xLFOG-001FVK-18;
+	Mon, 26 Oct 2026 08:45:08 +0100
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 101B35D46A9;
+	Mon, 26 Oct 2026 07:45:08 +0000 (UTC)
+Date: Mon, 26 Oct 2026 08:45:02 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Zihan Xi <zihanx@nebusec.ai>
+Cc: linux-can@vger.kernel.org, robin@protonic.nl, o.rempel@pengutronix.de, 
+	kernel@pengutronix.de, socketcan@hartkopp.net, lkp@intel.com, ecathinds@gmail.com, 
+	dev.kurt@vandijck-laurijssen.be, vega@nebusec.ai
+Subject: Re: [PATCH 1/1] can: j1939: fix session reference leak on TX timer
+ restart
+Message-ID: <20261026-smiling-aloof-perch-f8368d-mkl@pengutronix.de>
 References: <cover.1792979091.git.zihanx@nebusec.ai>
+ <6bbcca411ac9433ae4ed8b8e64f56ff16dfc20b0.1792979091.git.zihanx@nebusec.ai>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -105,80 +102,126 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="tqbxsa5ykv2oym3l"
+Content-Disposition: inline
+In-Reply-To: <6bbcca411ac9433ae4ed8b8e64f56ff16dfc20b0.1792979091.git.zihanx@nebusec.ai>
 
-The TX timer holds a session reference while it is queued. Restarting an
-active timer only changes its expiry, so taking another reference for each
-restart can leak sessions.
 
-Serialize TX timer rearming and reuse the queued timer reference. Take a
-new reference when no queued timer owns one, including if a callback is
-running.
+--tqbxsa5ykv2oym3l
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 1/1] can: j1939: fix session reference leak on TX timer
+ restart
+MIME-Version: 1.0
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+On 26.10.2026 07:02:48, Zihan Xi wrote:
+> The TX timer holds a session reference while it is queued. Restarting an
+> active timer only changes its expiry, so taking another reference for each
+> restart can leak sessions.
+>
+> Serialize TX timer rearming and reuse the queued timer reference. Take a
+> new reference when no queued timer owns one, including if a callback is
+> running.
+>
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+>
 
-Cc: stable@vger.kernel.org
-Reported-by: Vega <vega@nebusec.ai>
-Link: https://bugtracker.nebusec.ai/f/11143
-Assisted-by: LLM
-Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
----
- net/can/j1939/j1939-priv.h |  3 +++
- net/can/j1939/transport.c  | 11 ++++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+Drop the newline after the Fixes: tag.
 
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index cf26352d1d8c..6c46dec73bbb 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -10,6 +10,7 @@
- #define _J1939_PRIV_H_
- 
- #include <linux/can/j1939.h>
-+#include <linux/spinlock.h>
- #include <net/sock.h>
- 
- /* Timeout to receive the abort signal over loop back. In case CAN
-@@ -290,6 +291,8 @@ struct j1939_session {
- 		unsigned int dpo;
- 	} pkt;
- 	struct hrtimer txtimer, rxtimer;
-+	/* Serialize concurrent TX timer rearming. */
-+	spinlock_t txtimer_lock;
- };
- 
- struct j1939_sock {
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f..e9af8547c69b 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -716,9 +716,17 @@ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
- 
- void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec)
- {
--	j1939_session_get(session);
-+	int ret;
+> Cc: stable@vger.kernel.org
+> Reported-by: Vega <vega@nebusec.ai>
+> Link: https://bugtracker.nebusec.ai/f/11143
+> Assisted-by: LLM
+
+Please remove the Assisted-by: tag, it's obsolete. Instead, please state
+in your cover letter that LLM were used to create the patch. See commit
+1e035297ffda ("docs: remove Assisted-by references") for details.
+
+> Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
+> ---
+
+What about the txtimer in transport.c?
+
+| net/can/j1939/transport.c:306:31: warning: passing pointer to variable 't=
+xtimer' requires holding spinlock '&j1939_session::txtimer_lock' [-Wthread-=
+safety-pointer]
+|   306 |         if (hrtimer_cancel(&session->txtimer))
+|       |                                      ^
+| net/can/j1939/transport.c:1552:26: warning: passing pointer to variable '=
+txtimer' requires holding spinlock '&j1939_session::txtimer_lock' [-Wthread=
+-safety-pointer]
+|  1552 |         hrtimer_setup(&session->txtimer, j1939_tp_txtimer, CLOCK_=
+MONOTONIC, HRTIMER_MODE_REL_SOFT);
+|       |                                 ^
+| net/can/j1939/transport.c:2254:40: warning: passing pointer to variable '=
+txtimer' requires holding spinlock '&j1939_session::txtimer_lock' [-Wthread=
+-safety-pointer]
+|  2254 |                         if (hrtimer_try_to_cancel(&session->txtim=
+er) =3D=3D 1)
+|       |                                                             ^
+
+
+>  net/can/j1939/j1939-priv.h |  3 +++
+>  net/can/j1939/transport.c  | 11 ++++++++++-
+>  2 files changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+> index cf26352d1d8c..6c46dec73bbb 100644
+> --- a/net/can/j1939/j1939-priv.h
+> +++ b/net/can/j1939/j1939-priv.h
+> @@ -10,6 +10,7 @@
+>  #define _J1939_PRIV_H_
+>
+>  #include <linux/can/j1939.h>
+> +#include <linux/spinlock.h>
+>  #include <net/sock.h>
+>
+>  /* Timeout to receive the abort signal over loop back. In case CAN
+> @@ -290,6 +291,8 @@ struct j1939_session {
+>  		unsigned int dpo;
+>  	} pkt;
+>  	struct hrtimer txtimer, rxtimer;
+
+Add __guarded_by to the txtimer:
+
+| struct hrtimer txtimer __guarded_by(&txtimer_lock);
+
+and switch on context analysis for j1939:
+
+--- a/net/can/j1939/Makefile
++++ b/net/can/j1939/Makefile
+@@ -1,5 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+
++CONTEXT_ANALYSIS :=3D y
 +
-+	spin_lock_bh(&session->txtimer_lock);
-+	/* Keep the timer's reference when only changing its expiry. */
-+	ret = hrtimer_try_to_cancel(&session->txtimer);
-+	/* A running callback may already have requeued the timer. */
-+	if (ret != 1 && !hrtimer_is_queued(&session->txtimer))
-+		j1939_session_get(session);
- 	hrtimer_start(&session->txtimer, ms_to_ktime(msec),
- 		      HRTIMER_MODE_REL_SOFT);
-+	spin_unlock_bh(&session->txtimer_lock);
- }
- 
- static inline void j1939_tp_set_rxtimeout(struct j1939_session *session,
-@@ -1526,6 +1534,7 @@ static struct j1939_session *j1939_session_new(struct j1939_priv *priv,
- 
- 	INIT_LIST_HEAD(&session->active_session_list_entry);
- 	INIT_LIST_HEAD(&session->sk_session_queue_entry);
-+	spin_lock_init(&session->txtimer_lock);
- 	kref_init(&session->kref);
- 	netdev_hold(priv->ndev, &session->priv_dev_tracker, gfp_any());
- 
--- 
-2.43.0
+ obj-$(CONFIG_CAN_J1939) +=3D can-j1939.o
 
+ can-j1939-objs :=3D \
+
+=2E..and compile with clang-23. See
+Documentation/dev-tools/context-analysis.rst for more details.
+
+regards,
+Marc
+
+--
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--tqbxsa5ykv2oym3l
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCat8E+wAKCRDMOmT6rpmt
+0uVOAP906Pb6EE4RpfC83bJSfd8Rz4OVwsOpQ4qpqf1OU98FlAD+OnpwfxFbzhYn
+WGjPp6X3KXiTHq4E1Wpo42zuGWVmnA0=
+=gbcC
+-----END PGP SIGNATURE-----
+
+--tqbxsa5ykv2oym3l--
