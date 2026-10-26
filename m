@@ -1,60 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.53
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.52
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793020122;
-	b=2Tq/YEKiwqUkeJ5KjIE6AWsxq5HIIqXhw+h82xZOjtQvcVpjtniAbB9zSoP+FWPjGgCL
-	 +G+I1hYgPPzqk6u2TtUU1Yg/XhHJLwYLjUjPB5Q9It8DPjgkq7WCN4lUG7bz/R9PBHfWv
-	 eWY0lWQIhelZn1OnRJiwCmtuxPrBCuyowTEnk/7EGZkCrApX2iNVnSvTTy4Ceq0CRMYcO
-	 D/YbvywFgV7auj8baowtmtnU02LTrWuUi1HtCU5B/bTgbXGOXXu9YfgYTFCij+VgMQm1g
-	 LboKRW7Bnma5thg/wIuch+JGko1bHqU9C+zB68aZzEoOofMXSZq7hsoPV8GXqNQWKaw==
+	t=1793020126;
+	b=g+JGACBk0TRTD2bty6DaWIvxsXDipthWibCelRI3Gtd3JSLabpqdRC68fdXQWz/DUK3j
+	 Tnh5wr0LzvVGYIFRovuEZZRE+AAuBbTFR1ePRyPQFBM3ufhpWKNZZoiLwwGV6eaxpbXdi
+	 9y7lTncp8C71+5MWGu9QZnddWWGRkozDGwxSEQBNGhgUsu2NRmKK9ft87//Aoni0HxJLJ
+	 VIl0U1wSNMGbBad0VlPUz3eoQKZrwAgcE+CoHwV8NxPk3ZgLT1+kBobUj6k9oot/L5COj
+	 rUbrhVqKWZ64hS0HhnOeV90utgkXoBO7RhNPaa5sbKNwavwXdbfgJRKAJ0+ZR8XL9OA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793020122;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793020126;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=Nu+dawTtCJs07taIh0/DxDgOD4/B8C6Q7zDwBtDhdMo=;
-	b=uqbQz28JFbWV7AOpJZIxdhtBcoJcuv843OMXhQLDVCqIE1Wr8fIGBtf0AJdbeLv3KyHU
-	 89DQxYiSQWI75aL1IDEFvWzr5p5qXilc+W0xEJ3SKXdeHVhMubXwsuGrMhprObcQVJNrV
-	 bhOZQYgnQ6VBUIjCPAG6Hxqe0kzc3NBrP4y3NHKhABJcNl4a1ooa3QrPWdMv/7eqbx7XB
-	 53HasTBIOFFVlmKkz4rjLrc5IvW8H5J8l5TodZAyy3EwmksVH4wiDK8o9LXnzoM/D++nJ
-	 Zd+kROUrYJ0JpABY8YKbGozswULs5Li8I9OWTKXTNTWYVcRyZVsoPlmWZ5d05fZbx8g==
+	bh=revTEDBrYxQTBJEeO0BqfGYRwYY08gjkaZtSyNOorsY=;
+	b=iUDrQRdBHDnZyKrPEs+GHap/ZPMPnuFZHaayp0tZwiYcMiQWTzBGC4BfkEPJJy1UB6wc
+	 1CeLdYYpzuvLpgOrAQT2u/afMKOaMqouc7tiej4S4c7keSAvndFOI/Iyz7r+Syq+B9vkc
+	 Emg7jPDvNUilFhnCoqUUoltbEg70Ounn6acfSmBh3V3HWRtx2M6J/1FNL6XiwT0AkWCnp
+	 IZDk594H9F1J1C9yOd0aUSusHyNkNJrXshUb6LPHwu+da7kvFTtTSnFTMezLLdpVUgp3L
+	 O87IC0LQe6/J8jr1J4wCA4skMwfEB3wDpUrycCUJI2IX81//mx4bxKwAOivw3g+CVBA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=G25jTbUK;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="Qr54/tH2";
-	arc=fail smtp.remote-ip=85.215.255.53
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=fCFg8lwT;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=SiuhjD46;
+	arc=fail smtp.remote-ip=85.215.255.52
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D16E606A323
-	for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 13:08:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4D16E606A323
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8DD6606A322
+	for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 13:08:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E8DD6606A322
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=G25jTbUK;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Qr54/tH2
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=fCFg8lwT;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=SiuhjD46
 ARC-Seal: i=1; a=rsa-sha256; t=1793020118; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=SNSRzyRAR7zXFvWRgUCuniApxdJdO/tc8TfagAbMyCn1NYwDtnuHi8aCwAGL2XTpBT
-    oqdCJ9Gkq8veKNStqeWI1PRybPh7eoTATkeeTanI/B0VDSoEN/SIqa8B1DhRs8Pi4OnE
-    oPNP0On3kD8uDhH/Qq8iGQwGh/ZMvnXhoZgB9+fNrG1ae7O+xY1BPgCSMRS17PrH9VD2
-    y6aipYmUuMqOcRWX+v/keNRqePPFQtpiKxjNahMtVk1AaX2p7UzOI3VsAz6xIn47Jm0B
-    LQbGj9/8Sx2/M4M9QDib9A8wRT76j8y7QRGsoL20zNHWW2GWBRnOZJbx7bt2tSDiBJxi
-    m+Mw==
+    b=kcnY2m9xgmf5m43JbrCro5mvDK+1aC2pHcdu/s0GmQogC/lfsXZcO42BW/ckVWz/Cv
+    WBN7u+blF3FsIDRT7bFR2XpyMayaowzHgGy/c9VasvfIAeSX7OUcL//gMD/p54tV90Et
+    NdKA3C1odwzwjgM2JGp45X/qkQqsJHMnyJh8EnbQXCm/YSw7KGCeP4bIc5h/ARUHXxVH
+    UygY1U1eK7N3g7W4QZ1I21vrZm2ZQESQmIjosWdAH2zu7xYDPMioLWhw01LlBim+Uv7R
+    kH/Rgjm8qR0Dro470nHkAjoii4wjSYYxyoV8Q85II8bjh3HSZ7V9H8nSqC5+pS0356BQ
+    bFBw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793020118;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=Nu+dawTtCJs07taIh0/DxDgOD4/B8C6Q7zDwBtDhdMo=;
-    b=M1D+RiL7PS61xlOPnE5fiIY0ezzWIRFyD2ShWTyGfdIh4N9c22I4HUwDe4DWD6alFL
-    6Yn6p3NQuvSxlshoOkPkFAtZ+1X71+EUvMABFbFh0Sc8Nr0osTS+mTh9tlG96V0ADpfF
-    p2rbBxjlXDS6Dclqo3xnJRRnLNVVBTlsuUZAuhge990su4S7U0tr2dBLtIQiF2GTFUoq
-    T8gZcojfCDrSkVHey/ISdLFGMPK31cINPhiRH9twhQq1kiEFOBieGp1VfRvBsnL2o9B6
-    WGrqcYJGX+E0+KWDtxazScBW2+7O/sphuzlNz6lIn/Dpozfei3+C/d9zFwG/EfLYkoQE
-    jSog==
+    bh=revTEDBrYxQTBJEeO0BqfGYRwYY08gjkaZtSyNOorsY=;
+    b=S8Wa5KQCy93L3BBx6iPQ3b+ZakDDO22UhYtPyGwmECVe1zCLxFdNTXdAxueteqNJ9b
+    Cg9CnJ8NgGTkigyA9boPsv0R0t2b43kAf2DRyVfrbdri3LgP0GIXjU94exFiAJKWauXY
+    6BEoM8vmy/fSX4/kwlRCWlyziiWRi1qsULuqkgctgC//PbSzhzhEjcF8KVrSkGVl523g
+    Pu3zcnMSl7VguDVB5CFW5GdVq2ieG7FxiWQ2YLPS6gXKk208fj0TOUF+FdaVSaM5naKG
+    5+2EcJA7qonWcbXFne6Oq4ifLZdzORHjL0wsDK0s1vF+QeFg/eUnjHVQKzMfiUh6MymI
+    kGgA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
@@ -63,31 +63,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793020118;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=Nu+dawTtCJs07taIh0/DxDgOD4/B8C6Q7zDwBtDhdMo=;
-    b=G25jTbUKMVq9q5wSiQiBQXSH8InVRPFDeeAb22mAlTTAeOeBKGEIk26irEdreJ72JL
-    m3rvbGmgT74ivyYwCS0R2FhPLUIfDtS0xS3oBGx63XQBlFproY2QKnpexjas3xDm2YRI
-    Mxo3pgWHPGK5uDR6dxxz2wpWZvcr5w6eYtI4+DWQGpxNxV96gxVjyMItYktNND83H6yO
-    xU0IKXKI9P3j1H6PjdvnfwIIKOv2J+PYND/TLgasyn0jHBGfelcqXsMD1wOU0PgepFQh
-    5I3wPLCGNxJUEsdP106oFc2l5Fo1oCotW3Pf90CQoVsXQf/65NfHYmGt0tvtHiKDLAVN
-    RgUA==
+    bh=revTEDBrYxQTBJEeO0BqfGYRwYY08gjkaZtSyNOorsY=;
+    b=fCFg8lwTbfDitcSTlO/Nsd1jNGW1yvyICyK04hFC3wGD/E7emEfLb7W6OPeC7Egod4
+    g5jhU1Xd9GsdUDRTS3tdwL0lzrhj9SuPGUyeyvPSuasGTOFp63YFDkF1soSrOQyKGUfX
+    yqRT8Nfg3JS60ygLwh5zm7J94LwbXPkb2HoYQF+KIkXaeKHOZIA+W3cPvG8N2sKls2rA
+    wd/JIxH6gVR9yCPzkUxAKqBgV+ovODQjtRSUszKdAE1Xxnx7MsuEsNWa5asaXhN9jD+7
+    xKN5gxLay9FeLMVYdZLzt5r0NL+GgbVURFF0fYY0WL8ZjaqhTzUKrOaKKjDjDBJ2T5Lz
+    dhvw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793020118;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=Nu+dawTtCJs07taIh0/DxDgOD4/B8C6Q7zDwBtDhdMo=;
-    b=Qr54/tH2b1+tXg5xwP5x68+VOM0QVvz8JY8mLkTkGVMOzuHA45r5WD1FO8ppquqfbD
-    5pZt2DDFTcQIkDj1oSAw==
+    bh=revTEDBrYxQTBJEeO0BqfGYRwYY08gjkaZtSyNOorsY=;
+    b=SiuhjD46pBMrZD/mp0FM0k6wsENWFYO5OkGoATCMOMGKrXKGVA1kbtRLdc9u4QbFt9
+    MLbhI6hbQmPbHb8uCxDA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [127.0.1.1]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29QD8c2Ww
+    with ESMTPSA id Kfdf2a29QD8c2Wv
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
     Mon, 26 Oct 2026 14:08:38 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Mon, 26 Oct 2026 14:08:30 +0100
-Subject: [PATCH v11 2/7] can: proc: skip stats calculation after reset in
- can_stat_update()
+Date: Mon, 26 Oct 2026 14:08:29 +0100
+Subject: [PATCH v11 1/7] can: proc: reset pkg_stats atomics individually
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,90 +98,146 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261026-can-rx-lock-v11-2-3b9a2b829dab@hartkopp.net>
+Message-Id: <20261026-can-rx-lock-v11-1-3b9a2b829dab@hartkopp.net>
 References: <20261026-can-rx-lock-v11-0-3b9a2b829dab@hartkopp.net>
 In-Reply-To: <20261026-can-rx-lock-v11-0-3b9a2b829dab@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Runyu Xiao <runyu.xiao@seu.edu.cn>, 
  Oliver Hartkopp <socketcan@hartkopp.net>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1793020116; l=2836;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793020116; l=5243;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=+5hJ80rWY4pSWIMbwYbqtFAao3PPiDuWjoVaSfLkTVo=;
- b=SFQ7rzSmiUD2TGW566ZFtgXLvEX1YiLV2BB1ROIA0z1TpxE3RbuxcvRVgetDNOBvq207EQQWo
- nRAWS7etVqKCrI7myHzq2aypSaiwsu99TO56JdV9vBJlOhLVOOFmx6I
+ bh=IL1mXqjDNcT5FWPKkirex05OmC25HeREvNFpHdeNVZQ=;
+ b=h52f+Lx2houv5zhB/xfjh9d5ySZVIz8d3mrti+jdXpN1NVZIPp+kb3I8khrdAgFXWVG2MvNGj
+ L5yoDU7ZAHfCfHyLeI9MgIp0TisZxdw4DKo7GP2EUX0xdmdViW32TYw
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
-introduced local snapshots of the statistics counters at the beginning
-of can_stat_update(). When can_init_stats() resets the statistics, these
-stale pre-reset snapshots are still used for the following total/current
-/max calculations and overwrite the freshly reset values. Additionally a
-jiffies tick between the snapshot and the reset could trigger a second
-can_init_stats() call.
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
 
-Merge the reset conditions into a single check and skip the calculation
-for the current interval when the statistics have been reset.
+Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+converted several members of struct can_pkg_stats to atomic_long_t and
+updated the hot TX/RX and procfs read paths to use atomic_long_*()
+helpers. However, can_init_stats() still clears the whole struct with
+memset().
+
+can_init_stats() is reached from can_stat_update() in timer context and
+also from the procfs reset path. Those paths can run while the TX/RX hot
+paths are concurrently updating rx_frames, tx_frames, matches and their
+*_delta counters. Hitting the whole-struct memset() in that window
+performs plain writes to fields that otherwise follow an atomic_long_t
+access contract, which can lose or mix live statistics updates.
+
+This issue was found by source-level API-misuse analysis looking for
+whole-object resets left behind after atomic_long_t conversions, then
+manually audited on Linux v6.18.21.
+
+Replace the whole-struct memset() with a helper that resets the
+atomic_long_t counters via atomic_long_set() and clears the derived
+scalar statistics explicitly. This preserves the existing reset
+semantics for scalar fields while restoring atomic access discipline for
+the live counters.
+
+Build-tested by compiling net/can/proc.o on x86_64 netdev/main.
+Runtime-tested with a QEMU + vcan setup on Linux v6.18.21 by driving
+concurrent traffic and reset_stats reads, which reproduced inconsistent
+exported statistics before the fix.
+
+[Hartkopp] can_stat_update() also read the *_delta counters at the
+beginning and cleared them with atomic_long_set() at the end. Increments
+from the hot path in between were lost for both the current and the next
+interval. Use atomic_long_xchg() to fetch and clear the *_delta counters
+in one atomic step instead.
 
 Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+Cc: stable@vger.kernel.org
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/proc.c | 30 ++++++++++++------------------
- 1 file changed, 12 insertions(+), 18 deletions(-)
+ net/can/proc.c | 39 +++++++++++++++++++++++++++++----------
+ 1 file changed, 29 insertions(+), 10 deletions(-)
 
 diff --git a/net/can/proc.c b/net/can/proc.c
-index 70104f13077e..fb144d2adc35 100644
+index de4d05ae3459..70104f13077e 100644
 --- a/net/can/proc.c
 +++ b/net/can/proc.c
-@@ -147,29 +147,22 @@ void can_stat_update(struct timer_list *t)
- 	/* fetch and clear values for 'current rate' calculation */
- 	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
- 	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
- 	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+@@ -74,20 +74,43 @@ static const char rx_list_name[][8] = {
  
--	/* restart counting in timer context on user request */
--	if (user_reset)
--		can_init_stats(net);
--
--	/* restart counting on jiffies overflow */
--	if (j < pkg_stats->jiffies_init)
--		can_init_stats(net);
--
--	/* prevent overflow in calc_rate() */
--	if (rx_frames > (LONG_MAX / HZ))
--		can_init_stats(net);
--
--	/* prevent overflow in calc_rate() */
--	if (tx_frames > (LONG_MAX / HZ))
--		can_init_stats(net);
--
--	/* matches overflow - very improbable */
--	if (matches > (LONG_MAX / 100))
-+	/*
-+	 * Restart counting in timer context on user request, on jiffies
-+	 * overflow or to prevent overflows in calc_rate() and in the
-+	 * match ratio calculation. The local snapshots are stale after
-+	 * the reset, so skip the calculation for this interval.
-+	 */
-+	if (user_reset || j < pkg_stats->jiffies_init ||
-+	    rx_frames > (LONG_MAX / HZ) || tx_frames > (LONG_MAX / HZ) ||
-+	    matches > (LONG_MAX / 100)) {
+ /*
+  * af_can statistics stuff
+  */
+ 
++static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
++{
++	atomic_long_set(&pkg_stats->rx_frames, 0);
++	atomic_long_set(&pkg_stats->tx_frames, 0);
++	atomic_long_set(&pkg_stats->matches, 0);
++
++	pkg_stats->total_rx_rate = 0;
++	pkg_stats->total_tx_rate = 0;
++	pkg_stats->total_rx_match_ratio = 0;
++
++	pkg_stats->current_rx_rate = 0;
++	pkg_stats->current_tx_rate = 0;
++	pkg_stats->current_rx_match_ratio = 0;
++
++	pkg_stats->max_rx_rate = 0;
++	pkg_stats->max_tx_rate = 0;
++	pkg_stats->max_rx_match_ratio = 0;
++
++	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->matches_delta, 0);
++}
++
+ static void can_init_stats(struct net *net)
+ {
+ 	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 	/*
+-	 * This memset function is called from a timer context (when
++	 * This stats reset is called from a timer context (when
+ 	 * can_stattimer is active which is the default) OR in a process
+ 	 * context (reading the proc_fs when can_stattimer is disabled).
+ 	 */
+-	memset(pkg_stats, 0, sizeof(struct can_pkg_stats));
++	can_reset_pkg_stats(pkg_stats);
+ 	pkg_stats->jiffies_init = jiffies;
+ 
+ 	rcv_lists_stats->stats_reset++;
+ 
+ 	if (user_reset) {
+@@ -119,13 +142,14 @@ void can_stat_update(struct timer_list *t)
+ 	unsigned long j = jiffies; /* snapshot */
+ 
+ 	long rx_frames = atomic_long_read(&pkg_stats->rx_frames);
+ 	long tx_frames = atomic_long_read(&pkg_stats->tx_frames);
+ 	long matches = atomic_long_read(&pkg_stats->matches);
+-	long rx_frames_delta = atomic_long_read(&pkg_stats->rx_frames_delta);
+-	long tx_frames_delta = atomic_long_read(&pkg_stats->tx_frames_delta);
+-	long matches_delta = atomic_long_read(&pkg_stats->matches_delta);
++	/* fetch and clear values for 'current rate' calculation */
++	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
++	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
++	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+ 
+ 	/* restart counting in timer context on user request */
+ 	if (user_reset)
  		can_init_stats(net);
-+		goto out;
-+	}
  
- 	/* calc total values */
- 	if (rx_frames)
- 		pkg_stats->total_rx_match_ratio = (matches * 100) / rx_frames;
- 
-@@ -194,10 +187,11 @@ void can_stat_update(struct timer_list *t)
+@@ -170,15 +194,10 @@ void can_stat_update(struct timer_list *t)
  		pkg_stats->max_rx_rate = pkg_stats->current_rx_rate;
  
  	if (pkg_stats->max_rx_match_ratio < pkg_stats->current_rx_match_ratio)
  		pkg_stats->max_rx_match_ratio = pkg_stats->current_rx_match_ratio;
  
-+out:
+-	/* clear values for 'current rate' calculation */
+-	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
+-	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+-	atomic_long_set(&pkg_stats->matches_delta, 0);
+-
  	/* restart timer (one second) */
  	mod_timer(&net->can.stattimer, round_jiffies(jiffies + HZ));
  }
