@@ -1,60 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.167.200
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793086650;
-	b=CrVwvITmR43zVnhYnTO/af+H/yRxyd/NES3AxoFY0PIwnmjmY8gKryJkRRDZbmGMb7jk
-	 eJnt1pBmEO3Con3uy6x9askwMriPYlxcNfSzP5FjT0ecg34baZdvKjdEJSD8hB1V2I1NJ
-	 HKyNbPWiWMPLgQoDKWg/KNYtcnWT++9x9NJaUh88CdYHQjZ/1mo3ZyTns4lFfWcDjR07h
-	 eOS+934BimXOwfIiwN4C4VNZ93NTn8Jm5InG5KxKodaAANc5KCDyQqNz1/+xra/RuU+2w
-	 ZyMprY2swqPKRhjW9by08H03VetWKmBbNQv+HoAq9r7+xNTLxbxYE0iNfuNsrj691Gg==
+	t=1793090070;
+	b=wFJc4C99COotkkRXsu/w3I4Cfy1SieOdSe7FfKnxt4RrnWshfeM7FkwrywfwLnLvs+iM
+	 x1UcKgqOPsyq3E67YMAiltZXGXGxf0F9pElSyOFvIy0IzPC2wAp/avh24+k7RAHCOwbOH
+	 dN76pPgEckCWJGiM7VwoMU/t3OwaRNps7itU87XXPxVdJoEZRVsvPRHS5fOrSFZcjSd3B
+	 w5MqbVAIeyNu3EwPFUJfyfbBBbyVelFiVozgkWRKmX2KlsWhnOtx21+lsMgUysTXZQi5h
+	 FpoZ/aVA/BRY+qG4Kk0uU9QjuS4FeGIX1Be62EUmxXnCWUXfhgahb2VqtNNoS2b0npQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793086650;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=2e0MsO9AHXoJdX9UWJnkLnX9r1+Gelx4hH11sNzcLnU=;
-	b=KcjVZMuXmVu0eUtZ8DOHA2TFolKt2Ha/uly1sVkd6NR9yKDd0hyDSLpZpWvjMpNzQgoP
-	 Y8S0hEXyqq6TPVMw7r+M54LtGYpvg5eqnxla39SqfcFFidAZP+gvxcz+MjolO58jpQ43S
-	 17j4nSZIpi3jdotR6iwBkUCUysIDi7eey2GnAQh2ohiY03r1DmALhIvzxuxFDI1WpWFZG
-	 UDFMlIfTLfFxeR04E/UoS3RO8UdEv4oBkTme9nYz7ogxMIeQgukt3R67BMsu8WWXmwvrX
-	 aOYA1p6BtoW7vv3OIAs34jGMLqTO6VMFKaUcML8wnEvOPC2WaJftvFeAggrCyJSMFnA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793090070;
+	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
+	 X-Gm-Message-State:MIME-Version:X-Received:Date:In-Reply-To:
+	 X-Google-Appengine-App-Id:X-Google-Appengine-App-Id-Alias:Message-ID:
+	 Subject:From:To:Cc:Content-Type;
+	bh=Tqtx97Mqlim2ETCdbAWzFT1K6COkig+THJDQuWiLO7A=;
+	b=koMtDC84ZtU2vgX6uad6vdNqLGUPoHQEOLT1LHOUwLrX2/95JYEb6wS/oor08MuIFhqz
+	 DNb0P2SXE3f1JMJmJCqh/fO5yyUJYlDD2jRPFc7lendw5RA3qYBtAKqmDwaHGRdIf8eYk
+	 es6ABJC3t90AXbpmTNXiaQbhZichgZy1zN8iLOcS9UylOFXUfj4O7m84WpK/pT95cN4Rw
+	 BC4eCeUn9B0HFWMK/EWLDSB1+v052jaHI+zvBMT57u5ffGN/yUrnTKzGjk/BGt+0EWloR
+	 28yI2/RDchlMw6VdojBbhvdZsHfm5T58E3Y9NMg3ulVWTQIE6iK9M+ZTysIAlcMeoeg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LiMiXO05;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=fail header.from=syzkaller.appspotmail.com;
+	spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com;
+	arc=none smtp.remote-ip=209.85.167.200
+Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com [209.85.167.200])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BDA4606ADA0;
-	Tue, 27 Oct 2026 07:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LiMiXO05
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D4E41F031E2;
-	Tue, 27 Oct 2026 07:37:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793086649;
-	bh=2e0MsO9AHXoJdX9UWJnkLnX9r1+Gelx4hH11sNzcLnU=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=LiMiXO059gYMjJvZr3VzMyWO43KUzF7Wp1TA4eVCncm5L4TF2HvEMMEPlmrQuxURQ
-	 7Qri08L+bSiekRaf8ahClnK+pH/yZZpL66bfaqi16kUFR74WaSNx2fUIW/Io/KjkD1
-	 ptoFnlFXzdZ6iJmcJVCDT6HjPOdbZrBcGF1OCEAtRZC8rilkLipcTQitTev10krH/+
-	 yEzaSwjgtsSruzupiE+YaAzIX0SAbe0kZR8mJGGuXbZ5HwEJ8wGaHcELskV2REmCvo
-	 DM3TfPoLLqL664GbPVq2E7xKldS4wCkDe0z5UijqVodsZ6OmlHX/E5RFNUv1FFWgGi
-	 tUo1gUXxDWqGw==
-Subject: Re: [PATCH 3/4] can: gs_usb: gs_usb_receive_bulk_callback(): check
- for overflow flag if SKB allocation fails
-From: netdev-bot+sashiko@kernel.org
-To: mkl@pengutronix.de
-Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
- max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
- linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, kuba@kernel.org
-Date: Tue, 27 Oct 2026 07:37:28 +0000
-Message-ID: <179308664876.3130.13155434112115626633@kernel.org>
-In-Reply-To: <20261025-gs_usb-fixes-v1-3-f74ebbd4da36@pengutronix.de>
-References: <20261025-gs_usb-fixes-v1-3-f74ebbd4da36@pengutronix.de>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B6AA606A31D
+	for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 08:34:29 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6B6AA606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-4eb0b989f0eso1032378b6e.0
+        for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 01:34:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793090068; x=1793694868;
+        h=content-type:cc:to:from:subject:message-id:in-reply-to:date
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=Tqtx97Mqlim2ETCdbAWzFT1K6COkig+THJDQuWiLO7A=;
+        b=Aw5oCqJRoas8X7Sdv+XfMMDJVg5NjpQe5czty563HVUURmh4uY+uRsipfPmlGfvWmq
+         wwz0xTlXrykepEs0ePVLSsyHZiEPD1Ga/eto4QNXtcyz3C6iiBjtSsEXZnaUGIE7aL4+
+         ko+8bBABflBosGdZCDbyTpo2OmdPYNtPSpnnxgW8a5BKGTob+baC5U/o0SVjiVZhE5Cw
+         n4FyRPE4E1q2GEY9g+0s+U99FiIVvbfC1HtXkRirM67sjYxNBvuvlakD1zaxLLmbPIlK
+         UXrDbDRC2pVYa5AzIYf1q2NZMCgVEuc9O2oybvvD6/K1vsEBWYEFV9wVr9aCsR18jWhf
+         mnzg==
+X-Forwarded-Encrypted: i=1; AKwUvBxIoomtK6e0Gle1vsLxKCo15m46EBMZWmb9UZrNW6gP+wX3RoPcGGceVnx6R7pIbVeoy36QJir5STE=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJGlfhgri3xCp+hV6HwIxC1rInzqV8/v0FqizFjDuu86TCDpt7K
+	UC/iLM73hxrBc5dy4DOpXPElDyCmHuEuXzKAvwaL4lO/0zd/JbB0xMs0Vb4MFwrid1S08G/xMqy
+	+9oI9VCUZPLFKRstrK7bveFTacJI0IWRBQ6JOE9BDErA9kYdNXQa/kIj8TWo=
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,186 +58,160 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+X-Received: by 2002:a05:6808:14d4:b0:4c2:e32c:1ee2 with SMTP id
+ 5614622812f47-55f7ef3ce97mr958316b6e.22.1793090068498; Tue, 27 Oct 2026
+ 01:34:28 -0700 (PDT)
+Date: Tue, 27 Oct 2026 01:34:28 -0700
+In-Reply-To: <20261026-gs_usb-fixes-v3-0-3a68f1f62813@pengutronix.de>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6ae06214.6200f071.51519.0f44.GAE@google.com>
+Subject: [syzbot ci] Re: gs_usb: fixes
+From: syzbot ci <syzbot+ci0e4b58e5e6ed7fb1@syzkaller.appspotmail.com>
+To: eric@evenchick.com, kernel@pengutronix.de, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mailhol@kernel.org, max@schneidersoft.net, 
+	mkl@pengutronix.de, pfink@christ-es.de, stable@vger.kernel.org, 
+	wg@grandegger.com
+Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue(s) to consider.
+syzbot ci has tested the following series
 
-Critical: 0 · High: 0 · Medium: 1 (1) · Low: 0 (1)
+[v3] gs_usb: fixes
+https://lore.kernel.org/all/20261026-gs_usb-fixes-v3-0-3a68f1f62813@pengutronix.de
+* [PATCH v3 1/4] can: gs_usb: gs_can_start_xmit(): don't leak uninitialized memory over USB
+* [PATCH v3 2/4] can: gs_usb: gs_usb_probe(): init netdev completely before register_candev()
+* [PATCH v3 3/4] can: gs_usb: gs_usb_receive_bulk_callback(): check for overflow flag if SKB allocation fails
+* [PATCH v3 4/4] can: gs_usb: gs_usb_receive_bulk_callback(): add missing call to can_rx_offload_irq_finish
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+and found the following issue:
+general protection fault in can_rx_offload_del
 
-- [Medium] In gs_usb_receive_bulk_callback()
-  (drivers/net/can/usb/gs_usb.c), both new SKB-allocation-failure…
+Full report is available here:
+https://ci.syzbot.org/series/0c1fc4c5-6a50-43da-a45c-fbc3a8685c3d
 
-Pre-existing issues:
-- [Medium] This problem wasn't introduced by this patch, but in
-  gs_usb_receive_bulk_callback() (drivers/net/can/usb/gs_usb.c) the…
-- [Low] At this commit, the check_overflow block in
-  gs_usb_receive_bulk_callback() (drivers/net/can/usb/gs_usb.c:744-746)…
+***
 
---
+general protection fault in can_rx_offload_del
 
-can: gs_usb: gs_usb_receive_bulk_callback(): check for overflow flag if SKB allocation fails
+tree:      axboe
+URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/axboe/linux.git
+base:      734bef548a96e8774d6eef5dfa2026c6edc4e80b
+arch:      amd64
+compiler:  Debian clang version 22.1.8 (1~deb13u4), Debian LLD 22.1.8
+config:    https://ci.syzbot.org/builds/03f4b948-ccf7-4d18-8177-b9847267246c/config
+syz repro: https://ci.syzbot.org/findings/e4142ca3-3d98-40ef-95df-e6f3ad59fd4e/syz_repro
 
-This commit changes the alloc_can_skb() and alloc_canfd_skb() failure
-paths in gs_usb_receive_bulk_callback(). They now update the RX statistics
-and jump to a new check_overflow label instead of resubmitting the URB
-directly. As a result, GS_CAN_FLAG_OVERFLOW in the host frame is still
-handled when the SKB allocation fails.
+gs_usb 1-1:0.0: Couldn't get bit timing const for channel 0 (-EPROTO)
+Oops: general protection fault, probably for non-canonical address 0xdffffc000000005f: 0000 [#1] SMP KASAN PTI
+KASAN: null-ptr-deref in range [0x00000000000002f8-0x00000000000002ff]
+CPU: 1 UID: 0 PID: 5651 Comm: kworker/1:4 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:__netif_napi_del include/linux/netdevice.h:3007 [inline]
+RIP: 0010:netif_napi_del include/linux/netdevice.h:3026 [inline]
+RIP: 0010:can_rx_offload_del+0x3c/0x1e0 drivers/net/can/dev/rx-offload.c:423
+Code: 48 89 fb 48 bd 00 00 00 00 00 fc ff df e8 9c 5f fc fa 4c 8d a3 d0 00 00 00 49 89 dd 4c 8d b3 00 01 00 00 4c 89 f3 48 c1 eb 03 <80> 3c 2b 00 74 08 4c 89 f7 e8 26 57 6d fb 41 bf 38 0e 00 00 49 8b
+RSP: 0018:ffffc90006a4eb30 EFLAGS: 00010206
+RAX: ffffffff86cbe694 RBX: 000000000000005f RCX: ffff8881ba5cbc00
+RDX: 0000000000000000 RSI: 000000000000009e RDI: 00000000000001f9
+RBP: dffffc0000000000 R08: ffffc90006a4e6c7 R09: 1ffff92000d49cd8
+R10: dffffc0000000000 R11: fffff52000d49cd9 R12: 00000000000002c9
+R13: 00000000000001f9 R14: 00000000000002f9 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8882a7ca4000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd875c71220 CR3: 0000000115016000 CR4: 00000000000006f0
+Call Trace:
+ <TASK>
+ gs_destroy_candev drivers/net/can/usb/gs_usb.c:1510 [inline]
+ gs_usb_probe+0x2201/0x2730 drivers/net/can/usb/gs_usb.c:1639
+ usb_probe_interface+0x788/0xe50 drivers/usb/core/driver.c:399
+ call_driver_probe drivers/base/dd.c:-1 [inline]
+ really_probe+0x254/0xae0 drivers/base/dd.c:706
+ __driver_probe_device+0x1e8/0x360 drivers/base/dd.c:868
+ driver_probe_device+0x4f/0x240 drivers/base/dd.c:898
+ __device_attach_driver+0x270/0x410 drivers/base/dd.c:1026
+ bus_for_each_drv+0x258/0x2f0 drivers/base/bus.c:503
+ __device_attach+0x2c4/0x450 drivers/base/dd.c:1098
+ device_initial_probe+0xa1/0xd0 drivers/base/dd.c:1153
+ bus_probe_device+0x12a/0x220 drivers/base/bus.c:623
+ device_add+0x7d7/0xb80 drivers/base/core.c:3776
+ usb_set_configuration+0x1bb5/0x2260 drivers/usb/core/message.c:2274
+ usb_generic_driver_probe+0x8d/0x150 drivers/usb/core/generic.c:250
+ usb_probe_device+0x1c3/0x3b0 drivers/usb/core/driver.c:293
+ call_driver_probe drivers/base/dd.c:-1 [inline]
+ really_probe+0x254/0xae0 drivers/base/dd.c:706
+ __driver_probe_device+0x1e8/0x360 drivers/base/dd.c:868
+ driver_probe_device+0x4f/0x240 drivers/base/dd.c:898
+ __device_attach_driver+0x270/0x410 drivers/base/dd.c:1026
+ bus_for_each_drv+0x258/0x2f0 drivers/base/bus.c:503
+ __device_attach+0x2c4/0x450 drivers/base/dd.c:1098
+ device_initial_probe+0xa1/0xd0 drivers/base/dd.c:1153
+ bus_probe_device+0x12a/0x220 drivers/base/bus.c:623
+ device_add+0x7d7/0xb80 drivers/base/core.c:3776
+ usb_new_device+0x9aa/0x1690 drivers/usb/core/hub.c:2713
+ hub_port_connect drivers/usb/core/hub.c:5585 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5725 [inline]
+ port_event drivers/usb/core/hub.c:5889 [inline]
+ hub_event+0x28e8/0x4d30 drivers/usb/core/hub.c:5971
+ process_one_work kernel/workqueue.c:3495 [inline]
+ process_scheduled_works+0xc3d/0x1630 kernel/workqueue.c:3578
+ worker_thread+0xa47/0xfb0 kernel/workqueue.c:3659
+ kthread+0x38b/0x480 kernel/kthread.c:436
+ ret_from_fork+0x514/0xb70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:__netif_napi_del include/linux/netdevice.h:3007 [inline]
+RIP: 0010:netif_napi_del include/linux/netdevice.h:3026 [inline]
+RIP: 0010:can_rx_offload_del+0x3c/0x1e0 drivers/net/can/dev/rx-offload.c:423
+Code: 48 89 fb 48 bd 00 00 00 00 00 fc ff df e8 9c 5f fc fa 4c 8d a3 d0 00 00 00 49 89 dd 4c 8d b3 00 01 00 00 4c 89 f3 48 c1 eb 03 <80> 3c 2b 00 74 08 4c 89 f7 e8 26 57 6d fb 41 bf 38 0e 00 00 49 8b
+RSP: 0018:ffffc90006a4eb30 EFLAGS: 00010206
+RAX: ffffffff86cbe694 RBX: 000000000000005f RCX: ffff8881ba5cbc00
+RDX: 0000000000000000 RSI: 000000000000009e RDI: 00000000000001f9
+RBP: dffffc0000000000 R08: ffffc90006a4e6c7 R09: 1ffff92000d49cd8
+R10: dffffc0000000000 R11: fffff52000d49cd9 R12: 00000000000002c9
+R13: 00000000000001f9 R14: 00000000000002f9 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8882a7ca4000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f58953fcfe0 CR3: 000000000fb48000 CR4: 00000000000006f0
+----------------
+Code disassembly (best guess):
+   0:	48 89 fb             	mov    %rdi,%rbx
+   3:	48 bd 00 00 00 00 00 	movabs $0xdffffc0000000000,%rbp
+   a:	fc ff df
+   d:	e8 9c 5f fc fa       	call   0xfafc5fae
+  12:	4c 8d a3 d0 00 00 00 	lea    0xd0(%rbx),%r12
+  19:	49 89 dd             	mov    %rbx,%r13
+  1c:	4c 8d b3 00 01 00 00 	lea    0x100(%rbx),%r14
+  23:	4c 89 f3             	mov    %r14,%rbx
+  26:	48 c1 eb 03          	shr    $0x3,%rbx
+* 2a:	80 3c 2b 00          	cmpb   $0x0,(%rbx,%rbp,1) <-- trapping instruction
+  2e:	74 08                	je     0x38
+  30:	4c 89 f7             	mov    %r14,%rdi
+  33:	e8 26 57 6d fb       	call   0xfb6d575e
+  38:	41 bf 38 0e 00 00    	mov    $0xe38,%r15d
+  3e:	49                   	rex.WB
+  3f:	8b                   	.byte 0x8b
 
-Closes: https://sashiko.dev/#/bug/linux-7b3fe6a0-4628-4d0e-aec0-69f4bf8ad5d4
 
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 985d6a9113d96..5687544af99c8 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -673,8 +673,12 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
->  	if (hf->echo_id == GS_HOST_FRAME_ECHO_ID_RX) { /* normal rx */
->  		if (hf->flags & GS_CAN_FLAG_FD) {
->  			skb = alloc_canfd_skb(netdev, &cfd);
-> -			if (!skb)
-> -				goto resubmit_urb;
-> +			if (!skb) {
-> +				netdev->stats.rx_dropped++;
-> +				netdev->stats.rx_errors++;
-> +
-> +				goto check_overflow;
-> +			}
+***
 
-[Severity: Medium]
-The commit message says "first update the dropped RX statistics". However,
-both new allocation failure branches (CAN FD here, and Classical CAN in the
-next hunk) also increment rx_errors. Is rx_errors the right counter for a
-host-side allocation failure?
+If these findings have caused you to resend the series or submit a
+separate fix, please add the following tag to your commit message:
+  Tested-by: syzbot@syzkaller.appspotmail.com
 
-The kernel-doc for struct rtnl_link_stats64 in include/uapi/linux/if_link.h
-defines the two counters like this:
+---
+This report is generated by a bot. It may contain errors.
+syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
- * @rx_errors: Total number of bad packets received on this network device.
- ...
- * @rx_dropped: Number of packets received but not processed,
- *   e.g. due to lack of resources or unsupported protocol.
+To test a fix for this bug, please reply with `#syz test`
+(on a separate line) and attach the patch to the email.
 
-In this path the frame arrived intact and only the SKB allocation on the
-host failed.
-
-Other CAN drivers that handle an alloc_can_skb() or alloc_canfd_skb()
-failure count only rx_dropped. Examples are m_can.c, c_can_main.c,
-mcp251xfd-rx.c, kvaser_usb_hydra.c and es58x_core.c. The shared rx-offload
-helper also leaves rx_errors alone:
-
-drivers/net/can/dev/rx-offload.c:can_rx_offload_offload_one() {
-    ...
-	if (IS_ERR(skb)) {
-		offload->dev->stats.rx_dropped++;
-		offload->dev->stats.rx_fifo_errors++;
-    ...
-}
-
-With this change, would memory pressure on the host show up as RX errors
-on a gs_usb interface? Those would look like bus or controller faults, and
-the change would reach stable through the Cc: stable tag.
-
-A minor point: the new lines use netdev->stats directly, while the rest of
-gs_usb_receive_bulk_callback() uses the local stats pointer.
-
->  
->  			cfd->can_id = le32_to_cpu(hf->can_id);
->  			cfd->len = data_length;
-> @@ -686,8 +690,12 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
->  			memcpy(cfd->data, hf->canfd->data, data_length);
->  		} else {
->  			skb = alloc_can_skb(netdev, &cf);
-> -			if (!skb)
-> -				goto resubmit_urb;
-> +			if (!skb) {
-> +				netdev->stats.rx_dropped++;
-> +				netdev->stats.rx_errors++;
-> +
-> +				goto check_overflow;
-> +			}
->  
->  			cf->can_id = le32_to_cpu(hf->can_id);
->  			can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
-
-[Severity: Medium]
-This isn't a bug introduced by this patch, but the Classical CAN error
-frame handling is still skipped when alloc_can_skb() fails. A little
-further down, after the allocation succeeds:
-
-	/* ERROR frames tell us information about the controller */
-	if (le32_to_cpu(hf->can_id) & CAN_ERR_FLAG)
-		gs_update_state(dev, cf);
-
-gs_update_state() is the only place where controller state reported by the
-device reaches dev->can.state and can_stats (restarts, bus_off,
-error_warning, error_passive). It reads cf->can_id and cf->data[1], and the
-same values are available in hf->can_id and hf->classic_can->data[1].
-
-An error frame can carry a BUS_OFF, RESTARTED, warning or passive
-transition. If one arrives while alloc_can_skb() fails, the goto
-check_overflow skips the state update. Can dev->can.state then stay stale
-until another state change frame arrives and its allocation succeeds?
-
-Some peer drivers update controller state even when the error SKB
-allocation fails. For example, esd_usb.c does:
-
-	skb = alloc_can_err_skb(priv->netdev, &cf);
-	if (!skb)
-		stats->rx_dropped++;
-
-	if (state != priv->old_state) {
-
-The original return, and the later goto resubmit_urb from commit
-68c5724ecd15, also skipped this update. The patch does not address it.
-
-[ ... ]
-
-> @@ -728,6 +736,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
->  		netif_wake_queue(netdev);
->  	}
->  
-> +check_overflow:
->  	if (hf->flags & GS_CAN_FLAG_OVERFLOW) {
->  		stats->rx_over_errors++;
->  		stats->rx_errors++;
-
-[Severity: Low]
-This is a pre-existing issue, but at this commit the overflow block
-continues like this:
-
-		skb = alloc_can_err_skb(netdev, &cf);
-		if (!skb)
-			goto resubmit_urb;
-		...
-	}
-
-	can_rx_offload_irq_finish(&dev->offload);
-
-resubmit_urb:
-
-If alloc_can_err_skb() fails, this path skips
-can_rx_offload_irq_finish(). An RX SKB queued earlier in the same callback
-by gs_usb_rx_offload(), or an echo SKB queued by gs_usb_get_echo_skb(),
-then stays on offload->skb_irq_queue. NAPI is not scheduled until a later
-URB completion calls irq_finish.
-
-On the new allocation failure paths added here, nothing has been queued
-before check_overflow, so this patch does not make the delay worse.
-
-The next patch in this series, "can: gs_usb:
-gs_usb_receive_bulk_callback(): add missing call to
-can_rx_offload_irq_finish", changes this to goto can_rx_offload_irq_finish
-and adds a matching label, which fixes the skipped irq_finish.
-
-One part is not covered by that patch: when alloc_can_err_skb() fails,
-rx_dropped is not incremented for the lost overflow error frame. The
-overflow event itself is still counted in rx_over_errors and rx_errors.
-Should rx_dropped be incremented here as well?
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261025-gs_usb-fixes-v1-0-f74ebbd4da36%40pengutronix.de
+Notes:
+- The patch will be applied on top of the tested series (as an
+  incremental fix).
+- To test a new version of the whole series, please send it directly
+  to syzbot@lists.linux.dev.
+- Arguments like custom git repos and branches are not supported.
