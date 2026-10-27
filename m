@@ -1,63 +1,63 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=115.124.28.218
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=115.124.28.98
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793084071;
-	b=HnYrwoI8+kr7Mads5W78gDJiexJcCR/LPOUvQJY9MkqaB+edS0a/1z9LImtDIbYcBiO8
-	 79Bm0R4qZ76WPnHxL+aLzJYTLARN5km2xprviZkzmHhDtDSRcQs4MCo7eqiVdtTJge/P0
-	 wuFMYuGckv4WstkwBs/zTJ94uhy0nEDl4i0KMyOaZMszKhPvgHPlY46Agg8B97DgWt8Bs
-	 yjbo6PbzmxI6FR+Gfq4uwawFsm+ghh3Rz50WWWXY5PGcYGp9edjwqKkwi1Akh2EPUJjxD
-	 Q+T/tGiJfJQcjAb3VEdjhgLMHYfMnoM+Qb9icuDoCWN4/+WTt/xi0hZaiHkJ41WkNIQ==
+	t=1793084127;
+	b=FH0pkxlgh5Nc+vzuoEGlvZ+XHdCItr+meIgAJRV8huPljFIQ53jkN2EcoAW7coU4Shp1
+	 86hAM6H6zUNk0q6RwLQHmiGjk+CG6RR1dV0HX+J6CABhbPaUbXv5jDIBlgiVJln+ayG7+
+	 912xpOLyNfVKYLBrUDFlPy6txCs9VDAaitLwG7BaSt1CvSKDkx0VOBLGcYtvyXvOW+EPk
+	 9NNStr7FCBZ5HYI2VR3ZUCrvtvm0b906f4v7UlUmHeQzkSOpbcEolPOd8f+TpV4vZVIbW
+	 xxlC4kp2Fsx17dH9Rpfmryu6iOtX/Zoph+j2i2rbeJwkhb+BWX7Fb4t2FTVjqruDhNg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793084071;
-	h=DMARC-Filter:DKIM-Signature:X-Alimail-AntiSpam:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=YrOHwr2cBOrKGm18bmWaUo32ETpL71CCu8ZjYKcsUSw=;
-	b=Y9yw0re5OrqnEbG/MO9fG6AEf04VRkrLr7dEfsrno/kbuUwyiT4AmxNVl/PDe1MP7ubR
-	 3C2xoRFnefcPIvaEMf343p+4bOjHhB/NpVJ2Lei2hemzRCay+z1Yuy6wK864g2VBVhwuA
-	 dTpJACg5QY1BfzPWPSl5DmhE/lJzQmDg1RtakfoRxYavEEXNDGvAFw6uxyBaxNDssaBvb
-	 1mVH6kwU5LByXXomH6b3x5RRGYk+jxl9gQ4P7jo53NtD/KH7zXyKX87VyzfklX/4oktdf
-	 OXqQJHeNxlgVnwa3GEBeaa54VLLYs+v0CQmYk108UMugDh7PEjzd4G/h27y2tbtp0Rw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793084127;
+	h=DMARC-Filter:DKIM-Signature:X-Alimail-AntiSpam:Received:Date:From:To:
+	 Cc:Reply-To:Message-ID:Subject:X-Mailer:MIME-Version:
+	 x-aliyun-im-through:References:x-aliyun-mail-creator:In-Reply-To:
+	 x-aliyun-mailtrack:Content-Type:Content-Transfer-Encoding;
+	bh=TUYyE2x5X4GA3HF7Xndot+b/wLGj5J9nNHL/77ySVmw=;
+	b=MIh7Dut0xbn54szI/8LOFhkLsd55mczdCcQ8byHfmCRNta0UmQ7/dOsk7qyt4GA9XtjR
+	 icNNCAkKSHWqWAlBYmCQB9ro2hIlWwJdNds1tRzw3nTqRHOwk/cKWlSNhwJEdFCJOUCZw
+	 shBqmOaZwZvjRmHx6tSxZrylBxwcBk8hdLQ3IGwlR7cW2Yh4eQaTZWj9cAm4tFeZhx8rC
+	 G9n02R3nvL6gYtuf4Wd3izI+aoLVorKs5/gFzYpTHrpVsGdLn+gwNvWBQY4YjRnldlrjW
+	 4Kj7NHBJ3QbUfIZmLb3QnxeAsVLVibgFQ0Jw3snH+DEHr/OcSUtXfdP5sMpzTqf3qzw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=none header.from=yinhe.ht;
 	spf=pass smtp.mailfrom=yinhe.ht;
-	dkim=pass header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=Wk5P6q9e;
-	arc=none smtp.remote-ip=115.124.28.218
-Received: from out28-218.mail.aliyun.com (out28-218.mail.aliyun.com [115.124.28.218])
+	dkim=pass header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=NoJf4wtu;
+	arc=none smtp.remote-ip=115.124.28.98
+Received: from out28-98.mail.aliyun.com (out28-98.mail.aliyun.com [115.124.28.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7D0606A32A;
-	Tue, 27 Oct 2026 06:54:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EB7D0606A32A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD78606A31A;
+	Tue, 27 Oct 2026 06:55:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1AD78606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yinhe.ht
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=Wk5P6q9e
+	dkim=pass (2048-bit key, unprotected) header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=NoJf4wtu
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=yinhe.ht; s=default;
-	t=1793084059; h=From:To:Subject:Date:Message-ID:MIME-Version;
-	bh=YrOHwr2cBOrKGm18bmWaUo32ETpL71CCu8ZjYKcsUSw=;
-	b=Wk5P6q9eUxyIVuAI8yo2sGK/lTGTo9l4726PmFzJS7QtquNw/58guZNZ35B9x1fJfi8aU3Z8vDows9+2kxYpnjzpVG6qQS6bcANBF9MlwD+fZwkg/qhnl3PKFIKiJbXyxtNpiFKB1F8Zt56DhPDvvm+g8Cuee4x7MW/1BQx4hcLrG5H0AMrfCqLQnm00G6Icy3BSsNefm+XKgaxbesfd7IKz4VYQ+rDImEi+EQjU8AsIFkB/66dDa5IG+wwYVx/oXDXTi/yUnisBsbmc0xAFvZAq47NsOieXqLohhpInkIFPU/VJx0S8/uKnnLyugCqlHsmTjtbpwZYz0qZh+DcmsA==
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07478032|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0924047-0.00429912-0.903296;FP=13982794750684426156|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam011083099174;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DS;RN=11;RT=11;SR=0;TI=SMTPD_---.jqWjvoC_1793084058;
-Received: from galx..(mailfrom:chunyuzhiqiang@yinhe.ht fp:SMTPD_---.jqWjvoC_1793084058 cluster:ay29)
-          by smtp.aliyun-inc.com;
-          Tue, 27 Oct 2026 14:54:19 +0800
-From: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-To: netdev-bot+sinfo@kernel.org
-Cc: netdev@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	mkl@pengutronix.de,
-	mailhol@kernel.org,
-	kernel@pengutronix.de,
-	haibo.chen@oss.nxp.com,
-	shawnguo@kernel.org,
-	imx@lists.linux.dev,
-	stable@vger.kernel.org,
-	ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-Subject: [PATCH v8 1/2] can: dev: can_fill_info(): don't wake up controller if interface is down
-Date: Tue, 27 Oct 2026 14:50:11 +0800
-Message-ID: <20261027065012.191348-1-chunyuzhiqiang@yinhe.ht>
-X-Mailer: git-send-email 2.47.3
+	t=1793084122; h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type;
+	bh=TUYyE2x5X4GA3HF7Xndot+b/wLGj5J9nNHL/77ySVmw=;
+	b=NoJf4wtu+a/dIi4mSesuDxxpIiW7aJeqq9ElQnX1LDckL74Ajq71kh8ciDKs6yrfTa4dWzbndRvWnt4X+5c//p7RasN4B3QEder/LIXAXXROjBJOQ3iABUVHBJuj4/HFuIwpd8cthh02Q3Y7zLcQkjhITm8jPAFCV9LtETU4t8183lJ1VD/U9LPado7f/UEJrO1DG8hvmzJ3ekSKVk3cBRGz8tJUby3sCo5K3yUodluMhv7swNX0wAG626Th+pyT+N0O8a0F3gESl3gKuft1owL1/xmEucU4b+knxnV5JWnyzMynuX6uWHYsB/0xik62C/zoBJ1nbNX3qo/IV9jpQg==
+X-Alimail-AntiSpam:AC=CONTINUE;BC=0.4037504|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_news_journal|0.45685-0.00107847-0.542072;FP=5220689412969219928|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033025068124;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DW;RN=10;RT=10;SR=0;TI=W4_0.2.3_21251927_1793084116573_o7001c83m;
+Received: from WS-web (chunyuzhiqiang@yinhe.ht[W4_0.2.3_21251927_1793084116573_o7001c83m] cluster:ay29) at Tue, 27 Oct 2026 14:55:16 +0800
+Date: Tue, 27 Oct 2026 14:55:16 +0800
+From: "=?UTF-8?B?5rez5LqO5pm65by6?=" <chunyuzhiqiang@yinhe.ht>
+To: "Vincent Mailhol" <mailhol@kernel.org>,
+  "netdev-bot+sinfo" <netdev-bot+sinfo@kernel.org>
+Cc: "netdev" <netdev@vger.kernel.org>,
+  "linux-can" <linux-can@vger.kernel.org>,
+  "mkl" <mkl@pengutronix.de>,
+  "kernel" <kernel@pengutronix.de>,
+  "haibo.chen" <haibo.chen@oss.nxp.com>,
+  "shawnguo" <shawnguo@kernel.org>,
+  "imx" <imx@lists.linux.dev>,
+  "stable" <stable@vger.kernel.org>
+Reply-To: "=?UTF-8?B?5rez5LqO5pm65by6?=" <chunyuzhiqiang@yinhe.ht>
+Message-ID: <c1461eae-f544-435b-a046-81abb5f3af8c.chunyuzhiqiang@yinhe.ht>
+Subject: =?UTF-8?B?UkXvvJpbUEFUQ0ggdjddIGNhbjogZGV2OiBjYW5fZmlsbF9pbmZvKCk6IGRvbid0IHdha2Ug?=
+  =?UTF-8?B?dXAgY29udHJvbGxlciBpZiBpbnRlcmZhY2UgaXMgZG93bg==?=
+X-Mailer: [Alimail-Mailagent revision 74][W4_0.2.3][null][Chrome]
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -67,80 +67,19 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+x-aliyun-im-through: {"version":"v1.0"}
+References: <20261021145115.153107-1-chunyuzhiqiang@yinhe.ht>,<b0d3e7bf-ddd3-4eaa-8ebc-fbe5e7d8443f@kernel.org>
+x-aliyun-mail-creator: W4_0.2.3_null_QuNTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXT1c2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEwOS4wLjU0MTQuMTIwIFNhZmFyaS81MzcuMzYgZGluZ3RhbGstd2luLzEuMC4wIG53KDAuMTQuNykgRGluZ1RhbGsoOC4xLjAtUmVsZWFzZS42MDIxMTAxKSBNb2pvLzEuMC4wIE5hdGl2ZSBBcHBUeXBlKHJlbGVhc2UpIENoYW5uZWwvMjAyMTAwIChMaW51eDYuMTIuMTAwK2RlYjEzLWFtZDY0OC4xLjAtUmVsZWFzZS42MDIxMTAxKQ==uM
+In-Reply-To: <b0d3e7bf-ddd3-4eaa-8ebc-fbe5e7d8443f@kernel.org>
+x-aliyun-mailtrack: {"foreign-track":"0"}
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-If the interface is down, the CAN controller might be powered down and
-its clocks gated. Don't call do_get_berr_counter() to read the bus error
-counters if the interface is down, and adjust can_get_size() to match.
-
-This removes one trigger for a synchronous external abort seen on
-i.MX8QXP when "ip link show" is run on a flexcan interface that was
-never brought up. The underlying cause is platform-specific: on i.MX8QXP
-the CAN clocks are gated through the SCU LPCG and the subsystem shares
-the IMX_SC_R_CAN_0 power domain, and there is a window after
-pm_runtime_resume_and_get() returns where the clock has not reached the
-module yet. This patch avoids the netlink query path while the interface
-is down, but does not root-cause the LPCG window itself.
-
-As a result, IFLA_CAN_BERR_COUNTER is no longer reported for down
-interfaces. Userspace must treat the attribute as optional.
-
-The issue was triggered on an i.MX8QXP board by running "ip link show"
-without ever bringing the interface up:
-
-    Internal error: synchronous external abort: 0000000096000210
-
-    pc : flexcan_read_le+0x0/0x18
-    lr : flexcan_get_berr_counter+0x4c/0x8c
-    Call trace:
-     flexcan_read_le+0x0/0x18
-     flexcan_get_berr_counter+0x4c/0x8c
-     can_fill_info+0x1f8/0x434
-     rtnl_fill_ifinfo+0x8fc/0xbb4
-     rtnl_dump_ifinfo+0x364/0x448
-
-This is the same class of problem fixed for m_can in
-commit 91a55c72a821 ("can: m_can: m_can_get_berr_counter(): don't
-wake up controller if interface is down").
-
-Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
-Cc: stable@vger.kernel.org
-Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
----
-v8:
- - Split the TDCV gating into a separate net-next-only patch.
- - Drop the "generic logic problem that exists on all platforms"
-   wording. This patch removes one trigger, it is not a root-cause fix
-   for the i.MX8QXP LPCG clock window.
- - The Fixes: tag points to ec56acfef2af1 because this patch supersedes
-   the down-interface readback behavior it introduced, not because that
-   commit was buggy.
----
- drivers/net/can/dev/netlink.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 766d455950f5..b958c04d53db 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -812,7 +812,7 @@ static size_t can_get_size(const struct net_device *dev)
- 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_STATE */
- 	size += nla_total_size(sizeof(struct can_ctrlmode));	/* IFLA_CAN_CTRLMODE */
- 	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_RESTART_MS */
--	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
-+	if (priv->do_get_berr_counter && netif_running(dev))	/* IFLA_CAN_BERR_COUNTER */
- 		size += nla_total_size(sizeof(struct can_berr_counter));
- 	if (priv->termination_const) {
- 		size += nla_total_size(sizeof(priv->termination));		/* IFLA_CAN_TERMINATION */
-@@ -1006,7 +1006,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
- 	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
- 	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
- 
--	    (priv->do_get_berr_counter &&
-+	    (priv->do_get_berr_counter && netif_running(dev) &&
- 	     !priv->do_get_berr_counter(dev, &bec) &&
- 	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
- 
--- 
-2.47.3
-
+SGkgVmluY2VudCwKCj4gUHV0IHRoaXMgb24gYSBzaW5nbGUgbGluZToKPgo+ICBpZiAocHJpdi0+
+ZG9fZ2V0X2JlcnJfY291bnRlciAmJiBuZXRpZl9ydW5uaW5nKGRldikpIC8qIElGTEFfQ0FOX0JF
+UlJfQ09VTlRFUiAqLwo+Cj4gKGl0IHNsaWdodGx5IGV4Y2VlZHMgdGhlIDgwIGNvbHVtbiBsaW1p
+dCwgYnV0IHNvIGRvZXMgdGhlIHN1cnJvdW5kaW5nCj4gY29kZSkuCj4KPiBTYW1lLCB0aGlzIGZp
+dCBpbiBvbmUgbGluZToKPgo+ICAgfSBlbHNlIGlmIChkYnRfcGFyYW1zLT5kb19nZXRfYXV0b190
+ZGN2ICYmIG5ldGlmX3J1bm5pbmcoZGV2KSkgewoKQWdyZWVkLCBib3RoIHdpbGwgYmUgb24gYSBz
+aW5nbGUgbGluZSBpbiB2OCBhcyB5b3Ugc3VnZ2VzdGVkLgoKVGhhbmtzLApDaHVuWXVaaGlRaWFu
+Zw==
