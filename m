@@ -1,64 +1,102 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=115.124.28.50
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793071049;
-	b=X8m5bRHBelGN41dRo5iDHN6J6E8xYMqbzp11QcjqhoqPvwttYjCd5etbGSCiKpRs4Ngz
-	 +cMpC/Iwztowp2mo1UxyS5ZSLzBcVG765ik4AZBD8vauFBL70xsgCvyOK2clHSr6Ck1cL
-	 kxZjiyMhSBAbxgJNqi2V6r8e5Wm8q7yrPSIN22tMkGaORFP4wrOowRVsbJ5uu39vsdZ++
-	 lbKXavxGiPeNm5wLnfIi5ZcIgefnU5klq/w59tOjddQA0goeCIIxc0oD63i12lU0/voQj
-	 14XVu5Nj9Qdz4gdPpl/IoOqWUaJNMXJFAdj3H2OQerwBkv40FaPRYnjv6uFKo0DMNwA==
+	t=1793071879;
+	b=yMDW3JCfoyCjtgh3CrgJkFelEHd8KJNRwD9JD1H4f5UI0ZEgDRTXnaVbmo6r11Fy1C8B
+	 9VuQp8A0WJOUdr4AUj98PVq/nCHUUD1VaXIJxE/kwb3l1FtZ1+q6uKnTt6hrsphCthhVM
+	 nbhJPNKCxnTJpQtAlCgbD5Nt4vzo7o9Ps1ZBjDRABEoTA9CyUsrLmGftI+5ePwo16iUBX
+	 HaiE299neZZ+KhHg141JfoLqAxuY4kEXyRy3fxyzFJXTqb5jF8IVfL7yrUfHcvZIq1iHP
+	 Zks4f7Ff1bAomjwelgk0WV9zHKJhvPOe88OypZT8H3uHeZrJIWuLjGJo86FK4g6xytA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793071049;
-	h=DMARC-Filter:DKIM-Signature:X-Alimail-AntiSpam:Received:Date:From:To:
-	 Cc:Reply-To:Message-ID:Subject:X-Mailer:MIME-Version:
-	 x-aliyun-im-through:References:x-aliyun-mail-creator:In-Reply-To:
-	 x-aliyun-mailtrack:Content-Type:Content-Transfer-Encoding;
-	bh=DT+LdrP+RywA87lduYJL55VRhqHYCJo5STEb97Zd6BM=;
-	b=IU3VDDs1DZbTtAceGn3/+GgZUF9R5bGcdJJdekC+UBhC4kWklGTwzUFCM7pSNmcCg5eF
-	 SlJd7DfNbA/sCgus7GM4ulYqNM77i56VOX1vsAutyu1zaHGpzSLk2gMTlNHMlUshB3inz
-	 14Qvgndobh96bO4t7WhtwBOJ7/AUsUIFL5mZ3RDClHvxQ34990gPzhZiVeSQi4jikC2Ay
-	 xulTOHGD5pnD+vGT2NAprFv0camklDgNtERjnDEP/zRxvDkHWmw4ryagxxPPYFMv67bV3
-	 R7SxLr47LNWQtRkPA6iqHmQ7+nE3EsIGwjztIyF70PN5TQAFNHVvDFp9m3vhmt0On3w==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793071879;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	bh=FumZNvLAP3ED/34qodGOcbiLmIISEGhi+wd5f3+khLk=;
+	b=leRPDL6gusXBLHtBaTLVp6cRA2x1J3YcJOnd0LfQhxew9WGU+Hv3ftYXPP4bOxU9pMpc
+	 ozvWBSjqKYQZGBUih2KdGsz5CuZ3XugjjysG4oHkZi9YY2WPxssLifynajsyhGCvl3GSF
+	 qlI+uVD4LvNcsGbosbp/8aeKd28+haa1YQ4GtYDTyS44vey040oGDQNa1A7wWD72elO4s
+	 xsIlFqREVR9ub8kv85u0s2TAe6gmI6J2Rt86k3BuPRQ3HiAWAVbpMxDRDfl/GuzIfuQsd
+	 OhUjIGYTRghAnoFsP3LeHPmUgwyo4YKe6wMuz4ykd5e7NCqTMUKmvdj/Jiqw4cjvEsw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=yinhe.ht;
-	spf=pass smtp.mailfrom=yinhe.ht;
-	dkim=pass header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=BkkWjLT7;
-	arc=none smtp.remote-ip=115.124.28.50
-Received: from out28-50.mail.aliyun.com (out28-50.mail.aliyun.com [115.124.28.50])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=f4meJjGM;
+	arc=none smtp.remote-ip=209.85.221.51
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDAEF606A31A;
-	Tue, 27 Oct 2026 03:17:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BDAEF606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yinhe.ht
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yinhe.ht
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77543606A31A
+	for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 03:31:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 77543606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=yinhe.ht header.i=@yinhe.ht header.a=rsa-sha256 header.s=default header.b=BkkWjLT7
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=yinhe.ht; s=default;
-	t=1793071039; h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type;
-	bh=DT+LdrP+RywA87lduYJL55VRhqHYCJo5STEb97Zd6BM=;
-	b=BkkWjLT7jfFGlvQvO5yPo3eLUWtExAm+omadMkrs97QWNPYiR0/XKdEuuYOo/Gozt8LjqQ+b+scADiH8rAWduHLOl8Sf3vYja84THcsrNvJC0PHENxdIEfw3afMoPt/2KbtJmovbGGzWXyMsBWOAkz6vBe0aoPDlT+XA7v5/Kk9x2FqLTz25R+PKqmtcBUuNx9+Hq1unipjtLNCy9TKXfrfVEHCLn+QRTE2Sz4ain1OxQ8MZBhEio2RSaNZ7SZQQn2Xdx9Bi6B8A6gcrccpI9nc+sfPCJoUTMB4W5CUJzamlbGVkKz/94TuHKjU7k5YqTOmjEzMEw2SBXHqi6pmy7w==
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.1140783|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_regular_dialog|0.00518095-0.000169033-0.99465;FP=16154833637356434733|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033037028158;MF=chunyuzhiqiang@yinhe.ht;NM=1;PH=DW;RN=11;RT=11;SR=0;TI=W4_0.2.3_21448169_1793071038289_o7001c17h;
-Received: from WS-web (chunyuzhiqiang@yinhe.ht[W4_0.2.3_21448169_1793071038289_o7001c17h] cluster:ay29) at Tue, 27 Oct 2026 11:17:18 +0800
-Date: Tue, 27 Oct 2026 11:17:18 +0800
-From: "=?UTF-8?B?5rez5LqO5pm65by6?=" <chunyuzhiqiang@yinhe.ht>
-To: "netdev-bot+sashiko" <netdev-bot+sashiko@kernel.org>
-Cc: "netdev-bot+sinfo" <netdev-bot+sinfo@kernel.org>,
-  "netdev" <netdev@vger.kernel.org>,
-  "linux-can" <linux-can@vger.kernel.org>,
-  "mkl" <mkl@pengutronix.de>,
-  "kernel" <kernel@pengutronix.de>,
-  "haibo.chen" <haibo.chen@oss.nxp.com>,
-  "shawnguo" <shawnguo@kernel.org>,
-  "imx" <imx@lists.linux.dev>,
-  "stable" <stable@vger.kernel.org>,
-  "kuba" <kuba@kernel.org>
-Reply-To: "=?UTF-8?B?5rez5LqO5pm65by6?=" <chunyuzhiqiang@yinhe.ht>
-Message-ID: <9538d32d-88c2-4919-84eb-66daf77b3ad2.chunyuzhiqiang@yinhe.ht>
-Subject: =?UTF-8?B?5Zue5aSN77yaW1BBVENIIHY3XSBjYW46IGRldjogY2FuX2ZpbGxfaW5mbygpOiBkb24ndCB3?=
-  =?UTF-8?B?YWtlIHVwIGNvbnRyb2xsZXIgaWYgaW50ZXJmYWNlIGlzIGRvd24=?=
-X-Mailer: [Alimail-Mailagent revision 74][W4_0.2.3][null][Chrome]
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=f4meJjGM
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-48df0fa43c5so353511f8f.0
+        for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 20:31:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1793071878; x=1793676678; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=FumZNvLAP3ED/34qodGOcbiLmIISEGhi+wd5f3+khLk=;
+        b=f4meJjGM1sNti28R+ChWYEByNP8Avx7P91CW7Tu61rkSyrhC/zF4ct509PawNUmfGT
+         x3Eug8V/hhBmBTeWrSu4fIyJ9biTRHlLncm+JY0UAHhwLkqBR8p1C1hNj5FcKifSkm4V
+         OEHVioSNYyz2rPjwTXnEgToDcCMI4EOlqcoeDRbHYRrV/k+4o08yEaVIJ41rTaZO30da
+         7DkOhIHDJwV1qOdZ5L4RfnyCdfmItVmdJ4QLNrzQ61D4l1BvWgEHNnpeXRGHGfL2RqIl
+         djYf0e+vGndi4N3zqm5+iSRxm2H1bwZagm1EO9Zc2WjWm20ht9rneQI4G7D3JY4WEQBF
+         2lCw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793071878; x=1793676678;
+        h=content-transfer-encoding:content-type:mime-version:references
+         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=FumZNvLAP3ED/34qodGOcbiLmIISEGhi+wd5f3+khLk=;
+        b=rdSrjwJcdxqygM88zNTYdsrZT3LXVyv0u30xKWlK5Jinfd7EzQvlwlTmagk2ZmL20+
+         4rLLVVMoLKbjfxbDtMtqC8Lj36y6ozY2a/MP4SGeiR3BtW2ZkWZc+9Mi4rAJ0wm1jT1K
+         9h0FGWrgV3S8Cl3hXqohBhYc0xt+S5drdQWQGUm8KorxvVgpDc0/amzQ9uTr6LTSoy/u
+         6/3Ac+iS60UPUTluOM7mVjGgjL63RUUts7Zf+0wMyJTCgodKQt/44rwd0qyNoE2eCi2b
+         65G6N/EPuqAYlrfoAY+hhney/bvL1VcXkMaMBNnsj18809XLgegXeVH4tByC8DhuU5o5
+         vJGQ==
+X-Forwarded-Encrypted: i=1; AKwUvBylyjgvz4Z7QfRvFcE2OAOU7eJVX8D9MU9GGg48TNRmkIgmA4Nne0eDmmvwUuI5qMmQyYBLi58W/hQ=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJYnrJ+MkOcwwFQOOBJYUpqjxs/q1tjgEGtbBySDluR9yeoY3oI
+	GkFrXjVsZvatPzlP0OccoZXHtVDeeuUFePZDEX7ZsPI/mYry928wolrjhfCfWx06Bx0=
+X-Gm-Gg: AYBFou3hq5Hu7UIbdY47VI30W2bC/IeZbfcg9YgMafdGauL85rmzkh2KkDn/MLsYyla
+	+OSqCLiRnZzLHy19Z45s9GbVQ1hfJj7AdlLiuzpWe0rh72azfd2dnoKMVtNMBhFj1x7iVv68K9Z
+	YuOCCKo+9ZdHXrufUFuSfD7A0kAWJ0xEJzkgkA7YzsbLUCb5MiVOLFly75uilcjqAvFYTee0CtO
+	ulQWq07p1rWStKE2QkajkHrg/zjLUrdYzqs90kOv7TMOBSbw5DlYYvO6yKgdD6Rr8Yw6IC+WeaE
+	sYaV6/+dmHY7YoTAaxRItj/ag9qhUhmzQMgobgHrVWpni9YhWIXW8xbE14oIkKrnNQ+qLM5QLmP
+	tOm8gRz8W+UiiQmh/ngTY/0kYPiXhrMulkwigRJ/xz1K8XESs+Cc3ObWH5q4uDrkMQTAA9KicT6
+	l1EtglXTmJEPfngrmaN7WKHTCjwDZNHf+K9tiK+uTGszXA1cHOnDJbqsLw/4wNCVKBaKcVoKIfb
+	EXefvavx8C2tC10Rb9NibmMyxLatzg6HfxrUEa62He/mgUvSusVqObPxvoW2QJAh4mghooJ1Urv
+	6gfOQy/wDTb3///6ZeKJjnIMK8pjUgAAizaXuHwRSWxTBYiRAhk45cvHwBaI/ZlL9l/IVL6uw2P
+	1plRVLhjfSwJ63MVRwsgGoFGQ2Tkx1dKFa6QgQJVfG9rsCH5aLUFX+cP/h4KHvUp3EkLJnekV9B
+	HbWRdEOZIfmxGVyrt7NS1kTcux
+X-Received: by 2002:adf:fe48:0:b0:48e:1aa5:fd77 with SMTP id ffacd0b85a97d-48e55a15f74mr2006076f8f.15.1793071877451;
+        Mon, 26 Oct 2026 20:31:17 -0700 (PDT)
+Received: from MacBook-Pro-von-Karl.localdomain (dynamic-2a02-3100-b2ac-9b01-6900-1f92-d182-4435.310.pool.telefonica.de. [2a02:3100:b2ac:9b01:6900:1f92:d182:4435])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ecd8c05sm25685718f8f.49.2026.10.26.20.31.15
+        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
+        Mon, 26 Oct 2026 20:31:16 -0700 (PDT)
+From: Karl Mehltretter <kmehltretter@gmail.com>
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Cc: Karl Mehltretter <kmehltretter@gmail.com>,
+	Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	kernel@pengutronix.de,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3.2] can: j1939: fix j1939_ecu refcount leak
+Date: Tue, 27 Oct 2026 04:31:04 +0100
+Message-Id: <20261027033104.76618-1-kmehltretter@gmail.com>
+X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+In-Reply-To: <3958917c-1484-41e8-8d62-99575edbf980@I-love.SAKURA.ne.jp>
+References: <7df4f6c6-b53f-42d6-9725-e60b763d01f6@I-love.SAKURA.ne.jp> <3958917c-1484-41e8-8d62-99575edbf980@I-love.SAKURA.ne.jp>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -68,41 +106,40 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-x-aliyun-im-through: {"version":"v1.0"}
-References: <20261021145115.153107-1-chunyuzhiqiang@yinhe.ht>,<179272890958.3130.8901186354506678802@kernel.org>
-x-aliyun-mail-creator: W4_0.2.3_null_QuNTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgNi4xOyBXT1c2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEwOS4wLjU0MTQuMTIwIFNhZmFyaS81MzcuMzYgZGluZ3RhbGstd2luLzEuMC4wIG53KDAuMTQuNykgRGluZ1RhbGsoOC4xLjAtUmVsZWFzZS42MDIxMTAxKSBNb2pvLzEuMC4wIE5hdGl2ZSBBcHBUeXBlKHJlbGVhc2UpIENoYW5uZWwvMjAyMTAwIChMaW51eDYuMTIuMTAwK2RlYjEzLWFtZDY0OC4xLjAtUmVsZWFzZS42MDIxMTAxKQ==uM
-In-Reply-To: <179272890958.3130.8901186354506678802@kernel.org>
-x-aliyun-mailtrack: {"foreign-track":"0"}
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-SGksCgo+IFtTZXZlcml0eTogTWVkaXVtXQo+IElzICJhIGdlbmVyaWMgbG9naWMgcHJvYmxlbSB0
-aGF0IGV4aXN0cyBvbiBhbGwgcGxhdGZvcm1zIiBhbiBhY2N1cmF0ZQo+IGRlc2NyaXB0aW9uIG9m
-IHdoYXQgaXMgZ29pbmcgb24gaGVyZT8KCk5vLCB0aGF0IHBocmFzZSBpcyBpbmFjY3VyYXRlIGFu
-ZCBJJ2xsIGRyb3AgaXQgaW4gdjguIFRoZSBmbGV4Y2FuCmJlcnItY291bnRlciBwYXRoIGFscmVh
-ZHkgdGFrZXMgYSBydW50aW1lIFBNIHJlZmVyZW5jZTsgdGhlIFNFQSBvbgppLk1YOFFYUCBpcyBj
-YXVzZWQgYnkgdGhlIExQQ0cgY2xvY2sgd2luZG93IGFmdGVyCnBtX3J1bnRpbWVfcmVzdW1lX2Fu
-ZF9nZXQoKSByZXR1cm5zLCBub3QgYnkgYSBtaXNzaW5nIHdha2V1cC4gVGhpcyBwYXRjaApyZW1v
-dmVzIG9uZSB0cmlnZ2VyIChuZXRsaW5rIHF1ZXJ5IHdoaWxlIGRvd24pLCBpdCBpcyBub3QgYSBy
-b290LWNhdXNlCmZpeCBmb3IgdGhlIExQQ0cgd2luZG93LgoKdjggd2lsbCBkZXNjcmliZSBpdCBh
-cyBhIGRlZmVuc2l2ZSBmaXggdGhhdCBhdm9pZHMgY2FsbGluZyBkcml2ZXIKY2FsbGJhY2tzIHdo
-aWxlIHRoZSBpbnRlcmZhY2UgaXMgZG93biwgYW5kIHBvaW50IHRvIHRoZSBMUENHIGNsb2NrCndp
-bmRvdyBhcyB0aGUgcGxhdGZvcm0tc3BlY2lmaWMgcm9vdCBjYXVzZS4gVGhlIEZpeGVzOiB0YWcg
-c3RheXMKYmVjYXVzZSB0aGlzIHN1cGVyc2VkZXMgdGhlIGRvd24taW50ZXJmYWNlIHJlYWRiYWNr
-IGJlaGF2aW9yIGludHJvZHVjZWQKYnkgZWM1NmFjZmVmMmFmMSwgYnV0IHRoZSBjaGFuZ2Vsb2cg
-d2lsbCBtYWtlIGNsZWFyIHRoYXQgdGhlIGkuTVg4UVhQClNFQSBpcyBub3QgZnVsbHkgcm9vdC1j
-YXVzZWQgYnkgdGhpcyBwYXRjaC4KCj4gW1NldmVyaXR5OiBMb3ddCj4gVGhlIEZpeGVzOiBhbmQg
-Q2M6IHN0YWJsZSB0YWdzIG1hcmsgdGhpcyBmb3IgYmFja3BvcnRpbmcgdG8gc3RhYmxlLgo+IEhv
-d2V2ZXIsIHRoZSBwYXRjaCBpcyBiYXNlZCBvbiBuZXQtbmV4dCBhbmQgZGVwZW5kcyBvbiB0aGUg
-Q0FOIFhMCj4gbmV0bGluayBzdXBwb3J0IGZyb20gZTYzMjgxNjE0NzQ3Lgo+IC4uLgo+IFdvdWxk
-IGl0IGhlbHAgc3RhYmxlIHJldmlld2VycyBpZiB0aGUgVERDViBnYXRpbmcgd2VyZSBhIHNlcGFy
-YXRlCj4gcGF0Y2g/CgpBZ3JlZWQuIHY4IHNwbGl0cyB0aGlzIGludG8gdHdvIHBhdGNoZXM6Cgox
-LiBiZXJyLWNvdW50ZXIgZ2F0aW5nLCBoYXJkd2FyZS10ZXN0ZWQgb24gaS5NWDhRWFAsIENjOiBz
-dGFibGUsCiAgIG5vIGRlcGVuZGVuY3kgb24gQ0FOIFhMOwoyLiBURENWIGdhdGluZywgbmV0LW5l
-eHQgb25seSwgZGVwZW5kcyBvbiB0aGUgQ0FOIFhMIG5ldGxpbmsgc3VwcG9ydCwKICAgYmFzZWQg
-b24gY29kZSBpbnNwZWN0aW9uLgoKVGhlIHN0YWJsZS10YWdnZWQgcGF0Y2ggd2lsbCBvbmx5IGNv
-bnRhaW4gdGhlIGJlcnItY291bnRlciBjaGFuZ2UuCgo+IFtTZXZlcml0eTogTG93XQo+IFRoaXMg
-aXNuJ3QgYSBidWcgaW50cm9kdWNlZCBieSB0aGlzIHBhdGNoLCBidXQgc2hvdWxkIHRoaXMgYmUK
-PiBubGFfdG90YWxfc2l6ZShzaXplb2YocHJpdi0+Yml0cmF0ZV9tYXgpKT8KClRoaXMgaXMgcHJl
-LWV4aXN0aW5nIGFuZCBub3QgY2hhbmdlZCBieSB0aGlzIHNlcmllcy4gSSdsbCBsZWF2ZSBpdCBv
-dXQKb2YgdGhpcyBzZXJpZXMgdG8ga2VlcCB0aGUgc2NvcGUgZm9jdXNlZC4KCnB3LWJvdDogY3I=
+> 	list_for_each_entry(ecu, &priv->ecus, list) {
+> -		if (ecu->name == name)
+> +		if (ecu->name == name && j1939_ecu_valid(ecu))
+> 			return ecu;
+
+This also hides a live, named ECU from j1939_local_ecu_put() during
+unregister. The netdev core sets reg_state to NETREG_UNREGISTERING before
+issuing NETDEV_UNREGISTER, so j1939_ecu_valid() is false when a bound
+socket reaches this cleanup path:
+
+    j1939_netdev_notifier()
+      j1939_sk_netdev_event_unregister()
+        j1939_local_ecu_put()
+          j1939_ecu_find_by_name_locked()
+
+
+The lookup then returns NULL. j1939_local_ecu_put() warns and returns
+without dropping the socket's ECU reference. That keeps the ECU's netdev
+and j1939_priv references alive, preventing netdev_wait_allrefs_any()
+from completing.
+
+This is based on source review with AI assistance. I have not reproduced
+the unregister hang at runtime.
+
+Could teardown use a lookup that permits NETREG_UNREGISTERING and a dead
+rx_kref, while retaining the nonzero ecu->kref check? The registration
+and receive-lifetime restrictions are needed when acquiring new users,
+but cleanup must still find the ECU whose reference it owns.
+
+The ecu->kref check remains necessary because zero-reference entries stay on
+the list until the RCU callback removes them.
+
+Thanks,
+Karl
