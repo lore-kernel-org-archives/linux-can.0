@@ -1,98 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793092823;
-	b=rQck7BtZycOLGPajmtioUA1fhsoKlI5YEHYpQRXctUxx3snIsljC6Eg44shhTqKk1wys
-	 wMAsgQX38L3xeGGphzo2gIVcu7tGXJU83eITz6DermumbRtiemL4EpZaSsn6PJHjzjOun
-	 lqzOAuAbx/S1IEcau4K2JbrBS4vvaOUCTcjIB0QM7cR204dVhcgQk/mquzx1Z4lBNinfo
-	 P7xyFTMnAxLauXljmdmXmP9IL/X9JMWe2bCYEZxSNbueNMYLlIojFj4eYg+2VgM0k4MK2
-	 st94mIPIy0+hT+bDEaCfK6Bsysy48k5/sZEvbgT29WUAr7TTQTR3gxL7dWfM6N7VD3g==
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793093022;
+	b=OhGvIYM4rXs8Eep3dMWMS4N0drKn6NcUkBepZKzMMqrdLtBgHuW9DZHmNk3PR8gvslkj
+	 6APU62AcSj/pWWuJeP0Fc0FWDLvL/oxe9lEVyNKAQbFjaPwD8TIcrT/+TViY/SSLGMRQi
+	 lBnkY+zkm4VdEprktr40gM2VvxJGi/ykVLOQVtXLomV2WBNLzwmVkmObv1wbYWi9lPKgP
+	 5136eAO3dQCJaiq5dUYYiLWyvcmvms9HUBHIx1v1X889VPsbvDXi7CGft57x9aL+VXgVe
+	 N4cNRpFpjZFcIK6a/LIBkYP0230vPkEOJux7jw4/C9Dip5N+/RL1M+3CnOV3xpIJ2cQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793092823;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793093022;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
 	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=jcyAMqkFqLBwkbzNR5Ttpcd+d4aaRMoP1bBfqTr9PKU=;
-	b=nFm3WnRs3rPDu3vOM8DKMFfV62I3LELn7XR5iVkgByiQgzNP9qM7NW3HEK+Y66hnDWwU
-	 B55UxWvgSNhCqhpqDQ4zO4SH6rXP6yVJAO0T2a6vkZ3N4qvGX2o2PhGg4UlPD3juR9FCd
-	 PcsCaToTX0k7+fJ/k+2z+pan/H6muR5QO9VAQErH60iitpczC8Ch99ov9+Uhv0MKGuy0w
-	 t5NedM91f1Lb7LCKldHD256skc4vBXJ9MA8zQurRY58fgX82BLff+bGSkpmyUP2KmsjeP
-	 Ecqj6IWc4/OX/zSMo8Xvu+h692cwazS9aYPd/6ni0wZfY0OdpNqOtiWDEr4ie7OXIdQ==
+	bh=mesQ+EqHTxYwpWS4gAUO/p+jlZlUmaqFtGfsy8swM0U=;
+	b=2mbWUS1LVqfFgWs4N3yE5xpKasqRqWk0MLrVMSDvNlz8RfzNYnRiLgHUEFuW+OhoEQKO
+	 lF3XYFRceHtBZgGm16e4TAiucI5yIfedNgarU8DD/mZHObqJcPht/06vDFFUnlIV7VmkQ
+	 GJJsG/461nODtTdoxZTCSnyASOKc3lz/CqziMcxrKccro/UdCjHj04u0F69Qk4cQ1jjQl
+	 eNzgVSiIu3nxoluqgTvSvQYjHlZF2fmoJXiEk0iR+9ulz848E483lxMW22CUqHs4/thk0
+	 oB/+HPKs1jve409nr25ZxK2yx61BcRVqVRHU6aYKhoYNRsJ7GuVs7glR7EJtVuwu0Pg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XKECpg9H;
-	arc=fail smtp.remote-ip=185.203.200.13
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=d626wbft;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4A56606A31B;
-	Tue, 27 Oct 2026 09:20:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D4A56606A31B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73E6F606A31E;
+	Tue, 27 Oct 2026 09:23:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 73E6F606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XKECpg9H
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=d626wbft
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 2052D201F0D;
-	Tue, 27 Oct 2026 10:20:20 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C612B202859;
+	Tue, 27 Oct 2026 10:23:34 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793092820;
+	s=20260414; t=1793093014;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jcyAMqkFqLBwkbzNR5Ttpcd+d4aaRMoP1bBfqTr9PKU=;
-	b=XKECpg9HnAuZvs+ymq+dvC55yRs4Fs+J0Elc0egv3nPMRX5TOfZOxWfZbsUj/30mCHVx/L
-	Pny3mmtTRb0jjO4dk84h6Vp8qyIUUwuV56uNA8u2xTsTvgFTLRf5JNCuKkWvp2wV4o5ZNH
-	oKcnTwZBCIRhnJ/MQ8ns1hYRWH6lmeJCwAQGxctiIV5AiJ8s15iLkYmIt+7LV0AQkhtRHz
-	FBQDSewZZwxRUMSQG1gfg/Tsq6ABpsMWLMET4Ni07/tTvsiIn1S4Owz40PcpaPun7veooA
-	pRlGIKSwB0XZ7rnUtD3f+TssB3Tpi7UJtpjItfDnc/YG26QksNNwWInY6WbZtg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793092820; a=rsa-sha256;
+	bh=mesQ+EqHTxYwpWS4gAUO/p+jlZlUmaqFtGfsy8swM0U=;
+	b=d626wbftWZhcD/qFf936zIcfrwA3MOyyAF2UkE3qU5hiHYDAXaY7Whx2lT2hejbFn59cVn
+	UZWnvvHCcH2F72sZ4sNovT9IJfX4TYHdZs1upPaSqg0bI16OnnmNiIf1Ds3GO6rvqdaa1c
+	cMLOjFsLjB3m/QdBUAKJonFeAHWWTpZEouySic4Dt7Q03rWV5igPgoZ2xgr0c7ERqjc+VT
+	CEC57JoIrRMrmmrmVRgUtPKyrWPcHfgohzyVWrT/rslhSHQTp4kmWo3ZkbwsS/IEnfeEwT
+	IdoVJPWIOG4s/olNE6iDqp+7rMDF3QUMsLn2TY2Umrs6cMA7Gp8MRHvlWImBAQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793093014; a=rsa-sha256;
 	cv=none;
-	b=YaFumjsRyq4JeydNdHAt75MyTSKYyvFkqkyfqM9LaTNNkN/x+iyHOP+4bjyJlaPruI6oUg
-	LEUwRQvV/as6PMe5P3XgU3Xk0s1N1P3w/vpt7RIMjrPanOLWmqani2SxBc//kDPs6VBhx2
-	OoGhS7GejenIGQRismbCPtwhGzNdjwGk+i50hPs9ph1ofygtIijfxOmqHrAN8zEb3YlXQN
-	boN60VxQxd/gFI2duLnJ6PG/HEF72A5sKxkukKSNKqAhXIexB5nr/HUiSI8GbzH0GeBkU+
-	6MeYhSfxFdrp8S7CzG3v3xTGBvXQGJJfXReFdz/gK6TyYgg3gCrGWqtJR+Ns/w==
+	b=enUmOBGZ6oKloB0pbVD4HPfBY7jW7QGA02xuDxuGV9fMlOsdsZTtihHoYaW7znA/0zXjGR
+	GN92J7LAEWVgKopOduaZFX8+mvVvcp/UcZuxr+9sczCr9ZEFq49aWveUW0Ugd09V9F9tnW
+	OtjDo23VzT3VdxUU2zjyDwVld06XsbjfRTz77Xs+VvyKjhM1hOiulubsrO0IEyZcmKHpPZ
+	PbL0h5cMjqiSfTclMe85bDRpKGCJIqaovNBHM+gRSeKaxG8obN2hmiJliGl9at9oELV3yO
+	A6Xt6h8DHMjv+LP4mcyG3FpcJ0QnTMlcS0SqbtMJgDIn0Zl9VuEja63umLIYGg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793092820;
+	s=20260414; t=1793093014;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jcyAMqkFqLBwkbzNR5Ttpcd+d4aaRMoP1bBfqTr9PKU=;
-	b=JIqe6q8ps0Y8t8CLbcrRrnYEIgD70LwEjfRWsdQvcsxM4rri2OzSlwJUVYWHp2hEwzNIH/
-	tbsGkno3Y8zj8c57XlhBb1ok+dlTf0ILG2XsOAbcvxtID0w01tlo2glCcA8PxEQ5JnVpoQ
-	WH0BJislOPFS8QGlNoxiC/71sltqlG8CyDO8KuW5aeEM9SnSuHZNzeP8jKKC68XxihBgzK
-	6gO8/87upkK55/s+TWL/EZhTHPxa0+ePwOAQQVGPWWr1NMnL09zksObShTa+XnJJ1wjSJA
-	hfT7rx+WnPIJ7lu4NwHMRLawgCB1EfcwGQjryiCyHbH4kZIKL9YR34VE+596mg==
+	bh=mesQ+EqHTxYwpWS4gAUO/p+jlZlUmaqFtGfsy8swM0U=;
+	b=WJvWjPK/0vxtOOGaX8R9HqBwe+9MqSGC9ez1xAqWFd2PQX3DQH1z6VT2EhbIa76oYA5tde
+	ZUe4ZKh10IybFTwa5BSukXg8HEH/2TDdcQ7P4npjuckfrshLQkuOwac7YUi9YClpiZJttF
+	IqKoT9EzXHpeSCqO0KrOkrN8udy57P0mhzLzYuEvjqBfPU+384Nl/xv33I1kHYZ1H4PTxc
+	SNy7D4ZxtfssyBcO0dHo6OEHzGQS/vtuGrPkPnPJCShQS5vKnRvD+ZJz8QeVP5MilB0dMG
+	UmpaHURbhOSeKj7NMM+GptY1PV4AEy+FjYm/3dDyLx16z+nUooY74cS4Bejudw==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xLdLw-001PMY-07;
-	Tue, 27 Oct 2026 10:20:20 +0100
+	id 1xLdP4-001PMj-2C;
+	Tue, 27 Oct 2026 10:23:34 +0100
 Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C91725D7AB3;
-	Tue, 27 Oct 2026 09:20:19 +0000 (UTC)
-Date: Tue, 27 Oct 2026 10:20:19 +0100
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5EA765D7ABE;
+	Tue, 27 Oct 2026 09:23:34 +0000 (UTC)
+Date: Tue, 27 Oct 2026 10:23:34 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-Cc: netdev-bot+sinfo@kernel.org, netdev@vger.kernel.org, 
-	linux-can@vger.kernel.org, mailhol@kernel.org, kernel@pengutronix.de, 
-	haibo.chen@oss.nxp.com, shawnguo@kernel.org, imx@lists.linux.dev, stable@vger.kernel.org
-Subject: Re: [PATCH v8 2/2] can: dev: can_tdc_fill_info(): don't read
- automatic TDCV if interface is down
-Message-ID: <20261027-capable-active-leech-1aae56-mkl@pengutronix.de>
-References: <20261027065012.191348-1-chunyuzhiqiang@yinhe.ht>
- <20261027065012.191348-2-chunyuzhiqiang@yinhe.ht>
+To: syzbot ci <syzbot+ci0e4b58e5e6ed7fb1@syzkaller.appspotmail.com>
+Cc: eric@evenchick.com, kernel@pengutronix.de, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, mailhol@kernel.org, max@schneidersoft.net, pfink@christ-es.de, 
+	stable@vger.kernel.org, wg@grandegger.com, syzbot@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot ci] Re: gs_usb: fixes
+Message-ID: <20261027-cherubic-monumental-aardwolf-d2cf5f-mkl@pengutronix.de>
+References: <20261026-gs_usb-fixes-v3-0-3a68f1f62813@pengutronix.de>
+ <6ae06214.6200f071.51519.0f44.GAE@google.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -103,61 +103,41 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="3hoorgl3hwcfdx7m"
+	protocol="application/pgp-signature"; boundary="ctj6jyf2ogvq5zp5"
 Content-Disposition: inline
-In-Reply-To: <20261027065012.191348-2-chunyuzhiqiang@yinhe.ht>
+In-Reply-To: <6ae06214.6200f071.51519.0f44.GAE@google.com>
 
 
---3hoorgl3hwcfdx7m
+--ctj6jyf2ogvq5zp5
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v8 2/2] can: dev: can_tdc_fill_info(): don't read
- automatic TDCV if interface is down
+Subject: Re: [syzbot ci] Re: gs_usb: fixes
 MIME-Version: 1.0
 
-On 27.10.2026 14:50:12, ChunYuZhiQiang wrote:
-> The automatic TDCV readback calls into the driver via do_get_auto_tdcv().
-> Some drivers, such as xcan_get_auto_tdcv(), read controller registers
-> without taking a runtime PM reference, so calling this while the
-> interface is down can touch registers whose clocks are gated.
+On 27.10.2026 01:34:28, syzbot ci wrote:
+> syzbot ci has tested the following series
 >
-> Gate do_get_auto_tdcv() on netif_running() in can_tdc_fill_info() and
-> adjust can_tdc_get_size() and can_data_bittiming_get_size() so that only
-> the automatic TDCV size is skipped when the interface is down. The other
-> TDC parameters are still reported, as they are meaningful while the
-> interface is down.
+> [v3] gs_usb: fixes
+> https://lore.kernel.org/all/20261026-gs_usb-fixes-v3-0-3a68f1f62813@pengu=
+tronix.de
+> * [PATCH v3 1/4] can: gs_usb: gs_can_start_xmit(): don't leak uninitializ=
+ed memory over USB
+> * [PATCH v3 2/4] can: gs_usb: gs_usb_probe(): init netdev completely befo=
+re register_candev()
+> * [PATCH v3 3/4] can: gs_usb: gs_usb_receive_bulk_callback(): check for o=
+verflow flag if SKB allocation fails
+> * [PATCH v3 4/4] can: gs_usb: gs_usb_receive_bulk_callback(): add missing=
+ call to can_rx_offload_irq_finish
 >
-> This is a defensive hardening based on code inspection; the automatic
-> TDCV path has not been triggered on hardware.
+> and found the following issue:
+> general protection fault in can_rx_offload_del
 >
-> Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-> ---
-> v8:
->  - Split out of the berr-counter patch so that the stable backport only
->    carries the hardware-tested change.
-> ---
->  drivers/net/can/dev/netlink.c | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index b958c04d53db..613beee9e936 100644
-> --- a/drivers/net/can/dev/netlink.c
-> +++ b/drivers/net/can/dev/netlink.c
-> @@ -720,8 +720,9 @@ static int can_changelink(struct net_device *dev, str=
-uct nlattr *tb[],
->  	return 0;
->  }
->
-> -static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
-> -			       u32 tdc_flags)
-> +static size_t can_tdc_get_size(const struct net_device *dev,
-> +				 struct data_bittiming_params *dbt_params,
-> +			     u32 tdc_flags)
+> Full report is available here:
+> https://ci.syzbot.org/series/0c1fc4c5-6a50-43da-a45c-fbc3a8685c3d
 
-fixed indention while applying
+Good bot! Will be fixed in v4.
 
-regards,
 Marc
 
 --=20
@@ -166,15 +146,15 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---3hoorgl3hwcfdx7m
+--ctj6jyf2ogvq5zp5
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCauBs0QAKCRDMOmT6rpmt
-0oVeAQDPEldnMllUjP5SviKmoKnl3wLQpl6Na0CmXlnuUCcdVQD+IERK8W02hMHr
-yGq+TzIrMiw2A/UuXMYwz7euvw+nyAM=
-=KAH8
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCauBtkwAKCRDMOmT6rpmt
+0uh2APwLlnsSC4qra+ba87tRha8A5y05ekmf+mItqK6HNwuEAAEAvIM+bsw+Pm4t
+wQTD90lK73QFYkES1jxcfiVexmr9TwE=
+=4cPB
 -----END PGP SIGNATURE-----
 
---3hoorgl3hwcfdx7m--
+--ctj6jyf2ogvq5zp5--
