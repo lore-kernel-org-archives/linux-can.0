@@ -1,102 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793071879;
-	b=yMDW3JCfoyCjtgh3CrgJkFelEHd8KJNRwD9JD1H4f5UI0ZEgDRTXnaVbmo6r11Fy1C8B
-	 9VuQp8A0WJOUdr4AUj98PVq/nCHUUD1VaXIJxE/kwb3l1FtZ1+q6uKnTt6hrsphCthhVM
-	 nbhJPNKCxnTJpQtAlCgbD5Nt4vzo7o9Ps1ZBjDRABEoTA9CyUsrLmGftI+5ePwo16iUBX
-	 HaiE299neZZ+KhHg141JfoLqAxuY4kEXyRy3fxyzFJXTqb5jF8IVfL7yrUfHcvZIq1iHP
-	 Zks4f7Ff1bAomjwelgk0WV9zHKJhvPOe88OypZT8H3uHeZrJIWuLjGJo86FK4g6xytA==
+	t=1793081989;
+	b=th+n2al1BKUgjx2YJwxBbh5/PsXcXGqr2WG+qyyXmxBn9fP/gzvf2XP8OOD+N4q6bINv
+	 /KWrBv95FQ+fHwED835Y4p+kkpsqf+zE/aZHkefTVX2Z00KVdlABlEHdJ45+Zvp1lHRNb
+	 aIzyIoKPsD96gXlhFI+EHuNm4yAk9MFCk26owwS+N8YvAAjYVo7QLP4GPnqz5dYZhR6d+
+	 RW08OGshmbHDMZ+6ukDfpZOwzKHRHxhTNsmgW4Y33+sbW5fmG0XGgg/b2JVDMGFXb8Bkp
+	 BIZeUd2DEOfj7U5FMWDuwZ8quH9WXvmlNvJONIOkJVbzUYwW2J7E36XftzBaaJlAa4g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793071879;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Transfer-Encoding;
-	bh=FumZNvLAP3ED/34qodGOcbiLmIISEGhi+wd5f3+khLk=;
-	b=leRPDL6gusXBLHtBaTLVp6cRA2x1J3YcJOnd0LfQhxew9WGU+Hv3ftYXPP4bOxU9pMpc
-	 ozvWBSjqKYQZGBUih2KdGsz5CuZ3XugjjysG4oHkZi9YY2WPxssLifynajsyhGCvl3GSF
-	 qlI+uVD4LvNcsGbosbp/8aeKd28+haa1YQ4GtYDTyS44vey040oGDQNa1A7wWD72elO4s
-	 xsIlFqREVR9ub8kv85u0s2TAe6gmI6J2Rt86k3BuPRQ3HiAWAVbpMxDRDfl/GuzIfuQsd
-	 OhUjIGYTRghAnoFsP3LeHPmUgwyo4YKe6wMuz4ykd5e7NCqTMUKmvdj/Jiqw4cjvEsw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793081989;
+	h=Received:DKIM-Signature:Message-ID:Date:MIME-Version:User-Agent:
+	 Subject:To:Cc:References:From:Content-Language:Autocrypt:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=vAk7JnVPBwae5fUKaIkq/jC2gmYuvdXbn/hohKLDfO8=;
+	b=Hbn0xdM3UMpOWmmPs+lyo2KGqajys+sYCGubYLWprgRVNEJvfUFJyshfnMMwVeHjP2AV
+	 e2aRrdeU6QZ4HcVyq9j49X5+i29+Ij3C2XkfCuqC6MQyFBGq5fZ0rDmvB7fu6ocm23EM8
+	 1wbl8fb7Xg2DJagY92WY3SD2tBI9aj8vxr+GLJ7J1sLrevcOrO2OoKk+PW14Ww60kAfme
+	 ztG0xfnl5X+XEtNCzzAfM0OX1nef31v9JN0N9yCIIW86pMwnYfkUgxNQFG+GBE5DHBheb
+	 nCZlX4U0doIsyLN8eIz+7cwqkER5vOMFZmKwtXY3OBwPoQpyvalc1N639+UNv9n7Uqw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=f4meJjGM;
-	arc=none smtp.remote-ip=209.85.221.51
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=c+8c7NW2;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77543606A31A
-	for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 03:31:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 77543606A31A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB0B606A31B;
+	Tue, 27 Oct 2026 06:19:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20251104 header.b=f4meJjGM
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-48df0fa43c5so353511f8f.0
-        for <linux-can@vger.kernel.org>; Mon, 26 Oct 2026 20:31:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1793071878; x=1793676678; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=FumZNvLAP3ED/34qodGOcbiLmIISEGhi+wd5f3+khLk=;
-        b=f4meJjGM1sNti28R+ChWYEByNP8Avx7P91CW7Tu61rkSyrhC/zF4ct509PawNUmfGT
-         x3Eug8V/hhBmBTeWrSu4fIyJ9biTRHlLncm+JY0UAHhwLkqBR8p1C1hNj5FcKifSkm4V
-         OEHVioSNYyz2rPjwTXnEgToDcCMI4EOlqcoeDRbHYRrV/k+4o08yEaVIJ41rTaZO30da
-         7DkOhIHDJwV1qOdZ5L4RfnyCdfmItVmdJ4QLNrzQ61D4l1BvWgEHNnpeXRGHGfL2RqIl
-         djYf0e+vGndi4N3zqm5+iSRxm2H1bwZagm1EO9Zc2WjWm20ht9rneQI4G7D3JY4WEQBF
-         2lCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793071878; x=1793676678;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=FumZNvLAP3ED/34qodGOcbiLmIISEGhi+wd5f3+khLk=;
-        b=rdSrjwJcdxqygM88zNTYdsrZT3LXVyv0u30xKWlK5Jinfd7EzQvlwlTmagk2ZmL20+
-         4rLLVVMoLKbjfxbDtMtqC8Lj36y6ozY2a/MP4SGeiR3BtW2ZkWZc+9Mi4rAJ0wm1jT1K
-         9h0FGWrgV3S8Cl3hXqohBhYc0xt+S5drdQWQGUm8KorxvVgpDc0/amzQ9uTr6LTSoy/u
-         6/3Ac+iS60UPUTluOM7mVjGgjL63RUUts7Zf+0wMyJTCgodKQt/44rwd0qyNoE2eCi2b
-         65G6N/EPuqAYlrfoAY+hhney/bvL1VcXkMaMBNnsj18809XLgegXeVH4tByC8DhuU5o5
-         vJGQ==
-X-Forwarded-Encrypted: i=1; AKwUvBylyjgvz4Z7QfRvFcE2OAOU7eJVX8D9MU9GGg48TNRmkIgmA4Nne0eDmmvwUuI5qMmQyYBLi58W/hQ=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJYnrJ+MkOcwwFQOOBJYUpqjxs/q1tjgEGtbBySDluR9yeoY3oI
-	GkFrXjVsZvatPzlP0OccoZXHtVDeeuUFePZDEX7ZsPI/mYry928wolrjhfCfWx06Bx0=
-X-Gm-Gg: AYBFou3hq5Hu7UIbdY47VI30W2bC/IeZbfcg9YgMafdGauL85rmzkh2KkDn/MLsYyla
-	+OSqCLiRnZzLHy19Z45s9GbVQ1hfJj7AdlLiuzpWe0rh72azfd2dnoKMVtNMBhFj1x7iVv68K9Z
-	YuOCCKo+9ZdHXrufUFuSfD7A0kAWJ0xEJzkgkA7YzsbLUCb5MiVOLFly75uilcjqAvFYTee0CtO
-	ulQWq07p1rWStKE2QkajkHrg/zjLUrdYzqs90kOv7TMOBSbw5DlYYvO6yKgdD6Rr8Yw6IC+WeaE
-	sYaV6/+dmHY7YoTAaxRItj/ag9qhUhmzQMgobgHrVWpni9YhWIXW8xbE14oIkKrnNQ+qLM5QLmP
-	tOm8gRz8W+UiiQmh/ngTY/0kYPiXhrMulkwigRJ/xz1K8XESs+Cc3ObWH5q4uDrkMQTAA9KicT6
-	l1EtglXTmJEPfngrmaN7WKHTCjwDZNHf+K9tiK+uTGszXA1cHOnDJbqsLw/4wNCVKBaKcVoKIfb
-	EXefvavx8C2tC10Rb9NibmMyxLatzg6HfxrUEa62He/mgUvSusVqObPxvoW2QJAh4mghooJ1Urv
-	6gfOQy/wDTb3///6ZeKJjnIMK8pjUgAAizaXuHwRSWxTBYiRAhk45cvHwBaI/ZlL9l/IVL6uw2P
-	1plRVLhjfSwJ63MVRwsgGoFGQ2Tkx1dKFa6QgQJVfG9rsCH5aLUFX+cP/h4KHvUp3EkLJnekV9B
-	HbWRdEOZIfmxGVyrt7NS1kTcux
-X-Received: by 2002:adf:fe48:0:b0:48e:1aa5:fd77 with SMTP id ffacd0b85a97d-48e55a15f74mr2006076f8f.15.1793071877451;
-        Mon, 26 Oct 2026 20:31:17 -0700 (PDT)
-Received: from MacBook-Pro-von-Karl.localdomain (dynamic-2a02-3100-b2ac-9b01-6900-1f92-d182-4435.310.pool.telefonica.de. [2a02:3100:b2ac:9b01:6900:1f92:d182:4435])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-48e3ecd8c05sm25685718f8f.49.2026.10.26.20.31.15
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Mon, 26 Oct 2026 20:31:16 -0700 (PDT)
-From: Karl Mehltretter <kmehltretter@gmail.com>
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Cc: Karl Mehltretter <kmehltretter@gmail.com>,
-	Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3.2] can: j1939: fix j1939_ecu refcount leak
-Date: Tue, 27 Oct 2026 04:31:04 +0100
-Message-Id: <20261027033104.76618-1-kmehltretter@gmail.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
-In-Reply-To: <3958917c-1484-41e8-8d62-99575edbf980@I-love.SAKURA.ne.jp>
-References: <7df4f6c6-b53f-42d6-9725-e60b763d01f6@I-love.SAKURA.ne.jp> <3958917c-1484-41e8-8d62-99575edbf980@I-love.SAKURA.ne.jp>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=c+8c7NW2
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 36E541F01829;
+	Tue, 27 Oct 2026 06:19:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793081989;
+	bh=vAk7JnVPBwae5fUKaIkq/jC2gmYuvdXbn/hohKLDfO8=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=c+8c7NW2UQkkf0nlM50QGAhXIwtSLrMG2fPqnmFzPjpm0yEfzzgEDwtn7juwOAopx
+	 HHiYXjH1NJWIGzGy3iR4dd7+yfKWBhWUleLLWe6zbpgnhwRFWQex/HfyJ8XrfsYAvH
+	 EX0UkHnbAZ5E8JL2wwvFoHI6GSqsgfKIlp+t+dPk5IZh86nHWvtcQKaIG4A2hPDYYj
+	 hs2e/W8q/I98MILGos/U/kVrzJBuJVHIzCtjb25WUU//gllGG0yBgbUu4yFME1Si+O
+	 V3ok1tX80nUeGIMQAFgbRBOqr7y2wnHpWxWutFoS4IF7dXfmbqcw1Cswulf//TuPTy
+	 AUB2FfmrHB4Zg==
+Message-ID: <b0d3e7bf-ddd3-4eaa-8ebc-fbe5e7d8443f@kernel.org>
+Date: Tue, 27 Oct 2026 07:19:45 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -106,40 +51,191 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v7] can: dev: can_fill_info(): don't wake up controller if
+ interface is down
+To: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>, netdev-bot+sinfo@kernel.org
+Cc: netdev@vger.kernel.org, linux-can@vger.kernel.org, mkl@pengutronix.de,
+ kernel@pengutronix.de, haibo.chen@oss.nxp.com, shawnguo@kernel.org,
+ imx@lists.linux.dev, stable@vger.kernel.org
+References: <20261021145115.153107-1-chunyuzhiqiang@yinhe.ht>
+From: Vincent Mailhol <mailhol@kernel.org>
+Content-Language: en-US
+Autocrypt: addr=mailhol@kernel.org; keydata=
+ xjMEZluomRYJKwYBBAHaRw8BAQdAf+/PnQvy9LCWNSJLbhc+AOUsR2cNVonvxhDk/KcW7FvN
+ JFZpbmNlbnQgTWFpbGhvbCA8bWFpbGhvbEBrZXJuZWwub3JnPsKZBBMWCgBBAhsDBQsJCAcC
+ AiICBhUKCQgLAgQWAgMBAh4HAheAFiEE7Y9wBXTmfyDldOjiq1/riG27mcIFAmrTM8wFCR1O
+ HxcACgkQq1/riG27mcJ2KAEAhG19xBSkjiA9dtatvq2WJnGaes4SUmY+LSn7dh1Lf7YBAIwB
+ lsMMmigMTk3Qgwymg1nT+Z8z1Owc/TGtRlo4ZcwMzjgEZx4y8xIKKwYBBAGXVQEFAQEHQJrb
+ YZzu0JG5w8gxE6EtQe6LmxKMqP6EyR33sA+BR9pLAwEIB8J+BBgWCgAmAhsMFiEE7Y9wBXTm
+ fyDldOjiq1/riG27mcIFAmrTNKcFCRUFdT0ACgkQq1/riG27mcLEVwD/VmnQtTf6yhowaIFj
+ AjUtwiyQz9ja4NRu9GOvz/pb2L8A/3QcADR0dcxADGsmOiBpN2M9KI7nqdNIq3VPM/3/5fcB
+In-Reply-To: <20261021145115.153107-1-chunyuzhiqiang@yinhe.ht>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-> 	list_for_each_entry(ecu, &priv->ecus, list) {
-> -		if (ecu->name == name)
-> +		if (ecu->name == name && j1939_ecu_valid(ecu))
-> 			return ecu;
+Hi Chun,
 
-This also hides a live, named ECU from j1939_local_ecu_put() during
-unregister. The netdev core sets reg_state to NETREG_UNREGISTERING before
-issuing NETDEV_UNREGISTER, so j1939_ecu_valid() is false when a bound
-socket reaches this cleanup path:
+Because it seems you are preparing a v8, here are a few final nitpicks
+on the line wrap.
 
-    j1939_netdev_notifier()
-      j1939_sk_netdev_event_unregister()
-        j1939_local_ecu_put()
-          j1939_ecu_find_by_name_locked()
+On 21/10/2026 at 16:51, ChunYuZhiQiang wrote:
+> If the interface is down, the CAN controller might be powered down, the
+> clock disabled, and/or its external reset asserted.
+> 
+> Don't call do_get_berr_counter() or do_get_auto_tdcv() to read the CAN
+> controller if the interface is down. This fixes a generic logic problem
+> that exists on all platforms.
+> 
+> As a result, IFLA_CAN_BERR_COUNTER is no longer reported for down
+> interfaces, and the automatic TDCV readback is skipped for both CAN FD
+> and CAN XL. The other TDC parameters are still reported, as they are
+> meaningful while the interface is down. Userspace must treat these
+> attributes as optional.
+> 
+> The berr-counter issue was triggered on an i.MX8QXP board by running
+> "ip link show" without ever bringing the interface up. On i.MX8QXP the
+> CAN clocks are gated through the SCU LPCG and the subsystem shares the
+> IMX_SC_R_CAN_0 power domain; there is a window where
+> pm_runtime_resume_and_get() has returned but the clock has not reached
+> the module yet, and the immediate ECR read raises a synchronous
+> external abort. This is the same class of problem fixed for m_can in
+> commit 91a55c72a821 ("can: m_can: m_can_get_berr_counter(): don't wake
+> up controller if interface is down").
+> 
+> The TDC auto readback path was found by code inspection; it is gated as
+> a precaution because xcan_get_auto_tdcv() reads XCAN_SR without taking a
+> runtime PM reference.
+> 
+> Note: do_get_state() is left unguarded. Drivers that implement it by
+> reading live status registers may need a similar fix. This is tracked
+> separately and is not changed by this patch.
+> 
+> Fixes: ec56acfef2af1 ("can: flexcan: flexcan_get_berr_counter(): switch on clocks before accessing ecr register")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+> ---
+> v7:
+>  - Rebase onto current net-next/main, including e63281614747
+>    ("can: netlink: add initial CAN XL support").
+>  - Gate do_get_auto_tdcv() on netif_running() for both IFLA_CAN_TDC and
+>    IFLA_CAN_XL_TDC. The other TDC parameters are still reported for down
+>    interfaces.
+>  - Pass dev to can_tdc_get_size() and can_data_bittiming_get_size()
+>    instead of a bool, as suggested by Vincent Mailhol.
+>  - Adjust the TDC size calculation for both FD and XL paths.
+>  - Keep the berr-counter gating unchanged.
+>  - The Fixes: tag points to ec56acfef2af1 because this patch supersedes
+>    the down-interface readback behavior it introduced, not because that
+>    commit was buggy.
+>  - TDC auto readback gating is based on code inspection; only the
+>    berr-counter path was tested on i.MX8QXP hardware.
+> ---
+>  drivers/net/can/dev/netlink.c | 26 ++++++++++++++++----------
+>  1 file changed, 16 insertions(+), 10 deletions(-)
+> 
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index 766d455950f5..ac30d2849543 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
+> @@ -720,7 +720,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>  	return 0;
+>  }
+>  
+> -static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+> +static size_t can_tdc_get_size(const struct net_device *dev,
+> +			       struct data_bittiming_params *dbt_params,
+>  			       u32 tdc_flags)
+>  {
+>  	bool tdc_manual = tdc_flags & CAN_CTRLMODE_TDC_MANUAL_MASK;
+> @@ -742,7 +743,8 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+>  	}
+>  
+>  	if (tdc_flags) {
+> -		if (tdc_manual || dbt_params->do_get_auto_tdcv)
+> +		if (tdc_manual ||
+> +		    (dbt_params->do_get_auto_tdcv && netif_running(dev)))
+>  			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
+>  		size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO */
+>  		if (dbt_params->tdc_const->tdcf_max)
+> @@ -752,8 +754,10 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+>  	return size;
+>  }
+>  
+> -static size_t can_data_bittiming_get_size(struct data_bittiming_params *dbt_params,
+> -					  u32 tdc_flags)
+> +static size_t
+> +can_data_bittiming_get_size(const struct net_device *dev,
+> +			    struct data_bittiming_params *dbt_params,
+> +			    u32 tdc_flags)
+>  {
+>  	size_t size = 0;
+>  
+> @@ -764,7 +768,7 @@ static size_t can_data_bittiming_get_size(struct data_bittiming_params *dbt_para
+>  	if (dbt_params->data_bitrate_const)		/* IFLA_CAN_{,XL}_DATA_BITRATE_CONST */
+>  		size += nla_total_size(sizeof(*dbt_params->data_bitrate_const) *
+>  				       dbt_params->data_bitrate_const_cnt);
+> -	size += can_tdc_get_size(dbt_params, tdc_flags);/* IFLA_CAN_{,XL}_TDC */
+> +	size += can_tdc_get_size(dev, dbt_params, tdc_flags);/* IFLA_CAN_{,XL}_TDC */
+>  
+>  	return size;
+>  }
+> @@ -812,7 +816,8 @@ static size_t can_get_size(const struct net_device *dev)
+>  	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_STATE */
+>  	size += nla_total_size(sizeof(struct can_ctrlmode));	/* IFLA_CAN_CTRLMODE */
+>  	size += nla_total_size(sizeof(u32));			/* IFLA_CAN_RESTART_MS */
+> -	if (priv->do_get_berr_counter)				/* IFLA_CAN_BERR_COUNTER */
+> +	if (priv->do_get_berr_counter &&
+> +	    netif_running(dev))				/* IFLA_CAN_BERR_COUNTER */
+
+Put this on a single line:
+
+	if (priv->do_get_berr_counter && netif_running(dev))	/* IFLA_CAN_BERR_COUNTER */
+
+(it slightly exceeds the 80 column limit, but so does the surrounding
+code).
+
+>  		size += nla_total_size(sizeof(struct can_berr_counter));
+>  	if (priv->termination_const) {
+>  		size += nla_total_size(sizeof(priv->termination));		/* IFLA_CAN_TERMINATION */
+> @@ -825,10 +830,10 @@ static size_t can_get_size(const struct net_device *dev)
+>  	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
+>  	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
+>  
+> -	size += can_data_bittiming_get_size(&priv->fd,
+> +	size += can_data_bittiming_get_size(dev, &priv->fd,
+>  					    priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
+>  
+> -	size += can_data_bittiming_get_size(&priv->xl,
+> +	size += can_data_bittiming_get_size(dev, &priv->xl,
+>  					    priv->ctrlmode & CAN_CTRLMODE_XL_TDC_MASK);
+>  	size += can_pwm_get_size(priv->xl.pwm_const,		/* IFLA_CAN_XL_PWM */
+>  				 priv->ctrlmode & CAN_CTRLMODE_XL_TMS);
+> @@ -910,7 +915,8 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev,
+>  		if (tdc_manual) {
+>  			tdcv = tdc->tdcv;
+>  			err = 0;
+> -		} else if (dbt_params->do_get_auto_tdcv) {
+> +		} else if (dbt_params->do_get_auto_tdcv &&
+> +			   netif_running(dev)) {
+
+Same, this fit in one line:
+
+		} else if (dbt_params->do_get_auto_tdcv && netif_running(dev)) {
+
+>  			err = dbt_params->do_get_auto_tdcv(dev, &tdcv);
+>  		}
+>  		if (!err && nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdcv))
+> @@ -1006,7 +1012,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+>  	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
+>  	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
+>  
+> -	    (priv->do_get_berr_counter &&
+> +	    (priv->do_get_berr_counter && netif_running(dev) &&
+>  	     !priv->do_get_berr_counter(dev, &bec) &&
+>  	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
+>  
 
 
-The lookup then returns NULL. j1939_local_ecu_put() warns and returns
-without dropping the socket's ECU reference. That keeps the ECU's netdev
-and j1939_priv references alive, preventing netdev_wait_allrefs_any()
-from completing.
-
-This is based on source review with AI assistance. I have not reproduced
-the unregister hang at runtime.
-
-Could teardown use a lookup that permits NETREG_UNREGISTERING and a dead
-rx_kref, while retaining the nonzero ecu->kref check? The registration
-and receive-lifetime restrictions are needed when acquiring new users,
-but cleanup must still find the ECU whose reference it owns.
-
-The ecu->kref check remains necessary because zero-reference entries stay on
-the list until the RCU callback removes them.
-
-Thanks,
-Karl
+Yours sincerely,
+Vincent Mailhol
