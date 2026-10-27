@@ -1,100 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793110505;
-	b=vtyqoCxPA3i4xdtLx0kzH4ohGQp8yftUeb1dBIHiGWfygXSS8fHLX62rDp0M60NdyNgX
-	 6yugFCPLzZ4c9mBWkJlkm+X1GTE3ZMYL/2BxZREhHlEu6yIQ7Hyqc+0Ou0FQ4Zr/4i+3N
-	 e41TmM4fv0OzE9FPTDCgHlsW5LqPaet5JsygPvuEeB4KPxke/CVGRYCNK57QpOjoFxbPt
-	 twL0y4xHZAWXh/U962aQlUcTKd+hy695mPFU2llkUydv6gte8MXFFKaMPFGWzo1wIszkm
-	 DqaYL2NyuezSDieCFfKvHigHVu0TvzSSmCUh/lDqfeEfoUPDRy5gPu0YcCWyju3bAaA==
+	t=1793111483;
+	b=Wux79se1Ik8ENN7JygI23FSmBr1F6lpX0995rN4qbNUJEOpW2YFa0ofWjFx1C96hbSJp
+	 gp/P2dxLQQKDgKzqoXpaUae9Y2IO1l0u+m7tNLsQ9kQfF+vVs+AHOpDouWDWLG6BWJxwL
+	 UHl7iLoegdlpvRL8IbRjeVp2Mpa8XK8ReWd6LRI2YYVenc3RZTDdVG6E7qc7tf5Ldkf8c
+	 wns8++2sMv6wrPuMdmIcFXMMNRrDk+a+ukQryeACemliWwtAq/R90tWw2r11nx/lYGp8W
+	 7K/36HAYg158mbWuGTVytFaOSMlFi7ooYWay8ZER3c02hALPWlQuz5c+jrai9hyzN2w==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793110505;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:X-Gm-Features:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=AZGHU/6bpP0vuZyDpKTJ9Lt9KjTQ5UVsrPd845cBFGE=;
-	b=szTMZmjLDFcy1T+YOOsrKk/mKFNaMJaxDHeYkD2lwOt6/n9Hc6ER/tyTxhWvO6QG4YAf
-	 UW+5HSQwWnktHPdX0xa9bj/5FQjtVjw1Y1IK7Tvk8ndi/g5P+f6S/5blUWpG2bETwV3MP
-	 qaqcBK/wotlCYUgOxVjPQMC//LqOOlrXzRf9JXpQNUN4aGasilGN5nFd0Z5aHbDdriRZS
-	 gI6tt3/7/VfGI15FB75+TaZgJb9OsXLd0vWxjvtcGEDM4Ho2McgF0lf4pqqnYVfdw6Xwa
-	 acS311gcDIQx5rsOpNCrBUflotFUBnV6TD7qEo5Wqa4QAsFHj5HDxvgTWcxxfFqes3Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793111483;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key;
+	bh=a4uovLu4bI1pth5LwHEkChdUa3E5NCNFSt8/9jIMjS8=;
+	b=h1YDeqyecpXmiFDpHMLyFWtMMpQ0P4cE2pd8cCkGyKN0sgB69htF4ucxDTzxUZU3q0AR
+	 vAnr/Vn82BLXHaNooDKEqm+rBGVggym0flAkwm3goVjAyIpeduR8ONaQDkpSi2aYvQiPB
+	 8t+iUbX/cQF8s/gQ0eN3YCbVnb6/BPpjDyJEQARicuE60JzU7G+uOOrtrJvNqrAz2SLnN
+	 I+gLdylBVvufFH4hwjsppUbHr5rGCD3zWBya4bavJrfYxOwUYXZnopcgjqgMUfoAoUwjw
+	 ytGWGTNXd2afRiLAju23gfWKi9+5OXkFpluzwbPdWjeldnZH8VWb3LkbshUxvBApvgw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nebusec.ai;
-	spf=pass smtp.mailfrom=nebusec.ai;
-	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=ufSHUJE5;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.175
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=hKMunA2U;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=34dxXF2L;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86E59606A31D
-	for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 14:15:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 86E59606A31D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6377606A31A
+	for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 14:31:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B6377606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=ufSHUJE5
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-3ab01c46697so35850761fa.1
-        for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 07:15:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1793110503; cv=none;
-        d=google.com; s=arc-20260327;
-        b=YW7oYt3+bBZyGUeD/Xg7SKAJKH6islJoDXbRoNYvWZgz47Lo7t7FNnozAoQkBAYnb8
-         Cv9L+gNejowvm2BnnBZciR5phAn0U2FEd1LynxWn90XhYwp9QY1jeSs3Weg4FVWcQRVt
-         LJEudmDZpNUn7ZPGeWppldMCCFroo/IKEoV+g93XokZpHGYHEGvID0FlsCFe+Q0k+l55
-         /ial3NIh2n1sakCs4qNaMg5UlMB6SFTziRV8Hnkp7sxBYqI9Du7gA/gQyA88MN47VnEq
-         T44lslEVHWdLyUq0ks8VdqKKyFb4kXsd2rUIerB5S9wcDUUOQgcOlM56IAnQXo+iJLXz
-         qdnw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=AZGHU/6bpP0vuZyDpKTJ9Lt9KjTQ5UVsrPd845cBFGE=;
-        fh=UDmiFjDUsl58/oI1pbxKLXmAuoEiB7qNSJQzd9c7Gr0=;
-        b=rTPMcH1xhN7bELaUG0kVCvxc+L4ZF5SAfaYz+SXanF+VMEyLNUa28N+8sJJPoRQA0d
-         BXSPnNjwKKo9W6lr5AdBTiMT3xBjVol5rj85U2tqNIUnF8wEPOqiLjj294zLIyRC1SxM
-         bAZL5fo0IVyDY3zBG1X5FCCc2ipgYEMHS+GYtGy23Djv0W4n4rc7mtbJaR5y9tba+AAv
-         xz4ugX8b7UCKN785vUapgm+6/xoabaUyWx03mpgxBIwI1EJg+cFl+89mQGJ8IBYdjims
-         hkFCjes0lmBdtuIAE0Rt/cKoJzs+vPN78dtp5aasbwwoRfaf6NZr3ZaTaNblfgwNd21l
-         y9Cw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nebusec.ai; s=google; t=1793110503; x=1793715303; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=AZGHU/6bpP0vuZyDpKTJ9Lt9KjTQ5UVsrPd845cBFGE=;
-        b=ufSHUJE5OsCNqkdwCxEfo4MeoQMDsEaJNY2cJaFnuTNX/zYQ83WZKR/DYjmpNisUvG
-         BNnM1dNMtrP41EvG02JGpv4ubqAePEHkTB+ABc87m5etZArji74UYs8r7uIaqNMykjTH
-         31ch2ovp8EZSnDROEmnzk7JwqXznliv41tq0NumehuXQfTPcSuznDqzh1pbL4FJpKaNW
-         gK01ZA5KVGTjYv1uhGmPtpv8TzNVltYEBSm5AT7wlzZetcbW84RUbOH2nyqs4VunETDL
-         a9T+O+3wLnQgKXLqIEN92yduzSVlNpEdK3Ut6zMgnwuBT4zZa6CJRWS7rBR6Tp/qiUgQ
-         lbng==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793110503; x=1793715303;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=AZGHU/6bpP0vuZyDpKTJ9Lt9KjTQ5UVsrPd845cBFGE=;
-        b=zKDLiHAnhcWIGphqX+hdC3jvslZJJXYfphzumWAVKQhiVw3gyAte5d6oKZZHG6pjp0
-         Wj4HIlVt/GWFmhe38DpcPaFXXB+nPONpkKoiPVAFHiyZ4kiv56iZoQ9cqe1wiWHFo9uS
-         sHFsxY7iZfp6zHqWWyRO7Z2t1Jfs5xBAE2breKvQXLafveoq+JGITo4mcacFbgJAZXxu
-         sEaL9UbMH79h5f9su3vdIBWgp0y6z1tK2ESb56lFZDnRfmkdRdac1z6tjiRAXZ1B3IhL
-         d5oExCsTTdMPIeRwOx7pGwb6/yA6MtRqMjRbcF5nZeCQ8kZ0b/939Fv3K5uiYPMTcoPR
-         fXXw==
-X-Gm-Message-State: AFq9FYI95edqwZtbQwtTiSatmB9wsH+aUlFDat3C9hl0X+mpASiS869c
-	qZ+/uvdrsifI6UMX8Eq2GY12wB7ezvPS3F5E7xQ444qVjVCkX9YCoVpNTM/s3RZREDprC4n2tAV
-	BM3Dms+AQY5QOfAcrvFHs9mq/taoFpbGLzDcKSDnu5HkL95sfx9gYSFYECv5emg==
-X-Gm-Gg: AYBFou0ukzfJaCdA+ZlCLLSW0TBwu7MkFUrJ0HOh08AZuEAbIHggPE26y3ofUrOnt9m
-	pqQruzWldnJNiGpifzAtXLb3ExeITf1Kpxz8HCgG6xJ8Qm4ep1zsQ2afNeUgGSf57Qse83PEKLY
-	HKzzC9LhvUpCUK4x1rrYg2feugLxZ38zIwx1kz94A3nr+QGz224AZzr+F0DqwIL+eRSTVlGRPSv
-	GeOyy9dWr7rpeuvUjkizhsTVurASAmAvMjMgfbM4xqJ1wej+Xi/a8XkDGIpknTExcTlk5n05U05
-	sC1GA9/P5USWlZCo3diwVSVr0q7+u9svQF4VWezqW9G6JNK/oIS7hV8KBm11SOnBZeIu6a7BIb9
-	fjm6WXgsbFV79HmFQUGZowrSjhDA8TinDtD/2bKYKrDYLtxdl6ATr3ZvBW2ZV+97Z0a2FPduJBc
-	Mrd9YVenxtx6x4
-X-Received: by 2002:a05:651c:b25:b0:3a9:c1de:852a with SMTP id
- 38308e7fff4ca-3ac6fafe0a7mr25748871fa.3.1793110502525; Tue, 27 Oct 2026
- 07:15:02 -0700 (PDT)
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=hKMunA2U;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=34dxXF2L
+ARC-Seal: i=1; a=rsa-sha256; t=1793111473; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=YxCPTF9bboGsX2rs6xWFtAmFtt6ZwT/8FsxbwGjPkp3W8cJrZS3VwDRckPjC8mq3tv
+    ESf6X19HUPmnNfEqT2wFcyJiOhSl9JTU6+1CHk1COXROm+/DmaqhHMz1c+3tSs5DYrE0
+    1crEhdnaY0nsCx4l00jWe+pZiIfZwpMoXXkNsUKsoGs+Ey/yVI1lgNRV2GZHESbfwL+5
+    t9T3YX08UmOmkJTs22iga8dC1Dw7E5s8kQgbghPZndwzqdUzo4BDHacJ/FNoulWJIneX
+    EnGLlmHxST4qQGfWlijmTenJgUtim74qKw2BfLIa5FG6u3aXMbAIHzSyqBjULWB4EPUe
+    vjAg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793111473;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=a4uovLu4bI1pth5LwHEkChdUa3E5NCNFSt8/9jIMjS8=;
+    b=DT9JQTo+D1BXhWQdd+ZOGHLbdopVXOvFnWJg3uuQf8jjq/bYOIiD2Pv800vGoQGA9Y
+    JmZoKFF/A7+0txJ0Bf0weI9vTHHewOXydtFJJLtd2sjuM1flmgE2SGxwTnAZ3kNdK0zL
+    T4amYe8O/B8YKSfJTue9/scdjaFOp8YDHOcu1XwucXk1P5DAtV+/SAvErCVH3f3jzZEA
+    7aECzAYNTY3CT2SuNNvbmCSHGYO+GL5rQ1FsFwaqDGbLJrc+USuKNTX7Txpyu+8zhZs8
+    +Yrpw9lW/JUk88vDg07KbShqfl4kVvTnF/7rhhYxmk234RjOS6zqGdLdpEBZDxB8X23l
+    IsSw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793111473;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=a4uovLu4bI1pth5LwHEkChdUa3E5NCNFSt8/9jIMjS8=;
+    b=hKMunA2Upa6hyWLOhPDabw5nnRwsqVylkenFd6uyTdUKUAlw1qoE5eRrIRYqXtetEQ
+    3d8At7kOCgVSu3jfqTt0dB7L4+w11slE7vaSxOIsf9g7ky/wWvV75QHOJ09JhexbHRu6
+    st0BEaLB1YmhGxznEAfP+O/nedLGBkm/ms66R0IrFGjI1sj6EgvxhtU0qzgigiW8ClMb
+    RxDKqGJ8T6lYDsD0MxyupBTsT4UCCHykxKUxdvrmhY9HaNRgvd9vvQK0ZOXRdqifsj7V
+    L2WJB0iYC9JFGeQ7MX4bWISrkOVk2Hql+lbgyp06CPYCKDpTC+xer0cILRn23mrkERlj
+    LiQg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793111473;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=a4uovLu4bI1pth5LwHEkChdUa3E5NCNFSt8/9jIMjS8=;
+    b=34dxXF2Lui9aKXpP0Dnhf9PY/8T8h3xsmhoyhy3l8gvqliYZwT87oK8+FHtemQCv6N
+    +m2FdQA6i2fLjgBk28Cw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [127.0.1.1]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a29REVDAL2
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 27 Oct 2026 15:31:13 +0100 (CET)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Tue, 27 Oct 2026 15:31:05 +0100
+Subject: [PATCH v12 1/7] can: replace ARPHRD_CAN type checks with
+ can_get_ml_priv()
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -104,268 +97,329 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <cover.1793012287.git.zihanx@nebusec.ai> <c07c904f7c5d36e2ddd2ecaa2e76c4b210b0647e.1793012287.git.zihanx@nebusec.ai>
- <sashiko-outbox-186622@kernel.org>
-In-Reply-To: <sashiko-outbox-186622@kernel.org>
-From: zihan xi <zihanx@nebusec.ai>
-Date: Tue, 27 Oct 2026 22:14:49 +0800
-X-Gm-Features: AclHuK8P_9OMXyNTOJ-KaZNHVXeDDVcjNmemnXcTLb8nRzI6OSqDc8HWCTIKBH4
-Message-ID: <CAANe3eRL=QL9tmzEjcOwhsct_kaoSCC=4-wcZsy8xbPxzTo6KQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] can: j1939: fix session reference leak on TX timer restart
-To: sashiko-reviews@lists.linux.dev
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Oliver Hartkopp <socketcan@hartkopp.net>, Vincent Mailhol <mailhol@kernel.org>, 
-	Oleksij Rempel <o.rempel@pengutronix.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261027-can-rx-lock-v12-1-eb5afc2d8b9b@hartkopp.net>
+References: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
+In-Reply-To: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793111472; l=10836;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=pg7jMaAiN7wvsnyz+Iu4XGGiGj1SgfJHQ9o80N8OjXE=;
+ b=JlCy/KWQiYSR8mithNuIXn7RFsLU4dnH/icbBrQwQy7lgKWtdXSvjFQeUUCRyAT07YOF6OWI5
+ q8xxT5Qsg7fDRsEKfaKGK8D3fevTKJ9ATWNeoBKWlE7w6OWeZKuuAs6
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-On Tue, Oct 27, 2026 at 9:28=E2=80=AFPM <sashiko-bot@kernel.org> wrote:
->
-> Thank you for your contribution! Sashiko AI review found 3 potential issu=
-e(s) to consider:
-> - [High] can: j1939: rxtimer race and leak in j1939_cancel_active_session=
-()
-> - [High] can: j1939: lock inversion calling hrtimer_cancel() under txtime=
-r_lock
-> - [Low] can: j1939: missing lock annotations in j1939_session_list_lock()
-> --
->
-> commit f04ccae0c143b4770bcd167c770232649c770e32
-> Author: Zihan Xi <zihanx@nebusec.ai>
->
-> can: j1939: fix session reference leak on TX timer restart
->
-> This commit fixes a session reference leak when rearming an active TX hrt=
-imer
-> by serializing TX timer starts and cancellations under a per-session spin=
-lock
-> and reusing the existing timer reference. It also defers scheduling a new=
-ly
-> activated session until after dropping sk_session_queue_lock.
->
-> Link: https://bugtracker.nebusec.ai/f/11143
-> Link: https://lore.kernel.org/all/cover.1792979091.git.zihanx@nebusec.ai/
->
-> > diff --git a/net/can/j1939/Makefile b/net/can/j1939/Makefile
-> > index 19181bdae1736..113595c257309 100644
-> > --- a/net/can/j1939/Makefile
-> > +++ b/net/can/j1939/Makefile
-> > @@ -1,5 +1,7 @@
-> >  # SPDX-License-Identifier: GPL-2.0
-> >
-> > +CONTEXT_ANALYSIS :=3D y
->
-> [Severity: Low]
-> Enabling CONTEXT_ANALYSIS :=3D y in net/can/j1939/Makefile opts all files=
- in
-> this directory into Clang's thread-safety analysis when
-> CONFIG_WARN_CONTEXT_ANALYSIS=3Dy is enabled.
->
-> In net/can/j1939/transport.c, j1939_session_list_lock() and
-> j1939_session_list_unlock() wrap spin_lock_bh() and spin_unlock_bh() with=
-out
-> context lock annotations:
->
-> static inline void j1939_session_list_lock(struct j1939_priv *priv)
-> {
->         spin_lock_bh(&priv->active_session_list_lock);
-> }
->
-> static inline void j1939_session_list_unlock(struct j1939_priv *priv)
-> {
->         spin_unlock_bh(&priv->active_session_list_lock);
-> }
->
-> Because spin_lock_bh() and spin_unlock_bh() carry __acquires() and
-> __releases() annotations, won't Clang emit -Wthread-safety-analysis warni=
-ngs
-> (failing the build under CONFIG_WERROR=3Dy) unless j1939_session_list_loc=
-k()
-> and j1939_session_list_unlock() are annotated with
-> __acquires(&priv->active_session_list_lock) and
-> __releases(&priv->active_session_list_lock)?
+Commit 4e096a18867a ("net: introduce CAN specific pointer in the struct
+net_device") introduced an explicit way to assign the midlayer private
+pointer (dev->ml_priv) to named users like ML_PRIV_CAN. A valid pointer
+returned by can_get_ml_priv() therefore identifies a real CAN device.
 
-Thanks for pointing this out. I=E2=80=99ll add the acquire/release annotati=
-ons
-to the session-list lock wrappers and validate the J1939 context-analysis
-build with clang-23.
->
-> [ ... ]
->
-> > diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> > index 8fcfd13e5e6f8..4a2e986023d89 100644
-> > --- a/net/can/j1939/transport.c
-> > +++ b/net/can/j1939/transport.c
-> > @@ -9,6 +9,7 @@
-> >  //                         Oleksij Rempel <kernel@pengutronix.de>
-> >
-> >  #include <linux/can/skb.h>
-> > +#include <linux/cleanup.h>
-> >  #include <net/can.h>
-> >
-> >  #include "j1939-priv.h"
-> > @@ -303,7 +304,13 @@ void j1939_session_put(struct j1939_session *sessi=
-on)
-> >
-> >  static void j1939_session_txtimer_cancel(struct j1939_session *session=
-)
-> >  {
-> > -     if (hrtimer_cancel(&session->txtimer))
-> > +     int ret;
-> > +
-> > +     spin_lock_bh(&session->txtimer_lock);
-> > +     ret =3D hrtimer_cancel(&session->txtimer);
-> > +     spin_unlock_bh(&session->txtimer_lock);
-> > +
-> > +     if (ret)
-> >               j1939_session_put(session);
-> >  }
->
-> [Severity: High]
-> Can calling hrtimer_cancel() while holding session->txtimer_lock here (an=
-d in
-> j1939_tp_schedule_txtimer()) cause a lock ordering inversion with the hrt=
-imer
-> softirq expiry lock?
->
-> Because session->txtimer and session->rxtimer use HRTIMER_MODE_REL_SOFT,
-> hrtimer_cancel() -> hrtimer_cancel_wait_running() acquires
-> cpu_base->softirq_expiry_lock when waiting for a running callback,
-> establishing the lock order:
->
->   session->txtimer_lock -> cpu_base->softirq_expiry_lock
->
-> In the reverse direction, when j1939_tp_txtimer() or j1939_tp_rxtimer() r=
-uns
-> in softirq context under hrtimer_run_softirq() (which holds
-> cpu_base->softirq_expiry_lock), it can call:
->
->   j1939_sk_queue_activate_next()
->     -> j1939_tp_schedule_txtimer(next, txtimer_delay)
->       -> spin_lock_bh(&next->txtimer_lock)
->
-> This establishes the reverse lock order:
->
->   cpu_base->softirq_expiry_lock -> session->txtimer_lock
->
-> Since all session->txtimer_lock instances share the same lockdep class, w=
-on't
-> this trigger a lockdep circular locking dependency splat and risk deadloc=
-king
-> on CONFIG_PREEMPT_RT when a softirq timer callback tries to acquire
-> next->txtimer_lock while another thread holds next->txtimer_lock waiting =
-in
-> hrtimer_cancel()?
+The referenced commit only converted the j1939 and proc code to this
+check, while the other parts of the CAN subsystem still rely on
+dev->type == ARPHRD_CAN.
 
-This is valid. I=E2=80=99ll redesign the timer synchronization and referenc=
-e
-handoff so that no path waits for a callback while holding txtimer_lock.
+The TUNSETLINK ioctl allows a down TUN/TAP device to set its hardware
+type to ARPHRD_CAN while dev->ml_priv remains NULL. Such a repurposed
+netdevice passes the ARPHRD_CAN checks.
 
->
-> [ ... ]
->
-> > @@ -2234,24 +2273,37 @@ void j1939_simple_recv(struct j1939_priv *priv,=
- struct sk_buff *skb)
-> >
-> >  int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *=
-sk)
-> >  {
-> > -     struct j1939_session *session, *saved;
-> > +     struct j1939_session *session, *iter;
-> >
-> >       netdev_dbg(priv->ndev, "%s, sk: %p\n", __func__, sk);
-> > -     j1939_session_list_lock(priv);
-> > -     list_for_each_entry_safe(session, saved,
-> > -                              &priv->active_session_list,
-> > -                              active_session_list_entry) {
-> > -             if (!sk || sk =3D=3D session->sk) {
-> > -                     if (hrtimer_try_to_cancel(&session->txtimer) =3D=
-=3D 1)
-> > -                             j1939_session_put(session);
-> > +     for (;;) {
-> > +             session =3D NULL;
-> > +             j1939_session_list_lock(priv);
-> > +             list_for_each_entry(iter, &priv->active_session_list,
-> > +                                 active_session_list_entry) {
-> > +                     if (sk && sk !=3D iter->sk)
-> > +                             continue;
-> > +
-> > +                     /* Keep the session alive while cancellation wait=
-s for the
-> > +                      * TX timer callback outside active_session_list_=
-lock.
-> > +                      */
-> > +                     session =3D iter;
-> > +                     j1939_session_get(session);
-> > +                     WRITE_ONCE(session->txtimer_shutdown, true);
-> >                       if (hrtimer_try_to_cancel(&session->rxtimer) =3D=
-=3D 1)
-> >                               j1939_session_put(session);
-> > -
-> >                       session->err =3D ESHUTDOWN;
-> >                       j1939_session_deactivate_locked(session);
-> > +                     break;
-> >               }
-> > +             j1939_session_list_unlock(priv);
-> > +
-> > +             if (!session)
-> > +                     break;
-> > +
-> > +             j1939_session_txtimer_cancel(session);
-> > +             j1939_session_put(session);
-> >       }
-> > -     j1939_session_list_unlock(priv);
-> >       return NOTIFY_DONE;
-> >  }
->
-> [Severity: High]
-> In j1939_cancel_active_session(), can session->rxtimer remain armed after
-> j1939_session_txtimer_cancel() finishes, delaying or leaking the session,
-> socket, and net_device references and clobbering session->err?
->
-> While holding priv->active_session_list_lock, j1939_cancel_active_session=
-()
-> calls hrtimer_try_to_cancel(&session->rxtimer), sets session->err =3D ESH=
-UTDOWN,
-> and deactivates the session before dropping the lock and calling
-> j1939_session_txtimer_cancel(session).
->
-> If j1939_tp_txtimer() is concurrently running on another CPU (or starts b=
-efore
-> j1939_session_txtimer_cancel() cancels it, or rearms itself because the
-> txtimer_shutdown check in j1939_tp_txtimer() is not serialized by
-> session->txtimer_lock), it executes j1939_simple_txnext(),
-> j1939_xtp_txnext_transmiter(), or j1939_xtp_txnext_receiver(). Those path=
-s
-> call j1939_tp_set_rxtimeout(), which takes a new reference via
-> j1939_session_get(session) and starts session->rxtimer after
-> hrtimer_try_to_cancel(&session->rxtimer) has already run. For example,
-> j1939_simple_txnext() arms session->rxtimer for J1939_SIMPLE_ECHO_TIMEOUT=
-_MS
-> (10s) before calling j1939_send_one(), and on -ENETDOWN, j1939_tp_txtimer=
-()
-> leaves rxtimer armed expecting j1939_cancel_active_session() to clean it =
-up.
->
-> In addition, if j1939_tp_rxtimer() is currently running and has re-armed
-> session->rxtimer, hrtimer_try_to_cancel(&session->rxtimer) returns -1 and=
- does
-> not cancel the newly queued timer or drop its session reference.
->
-> Because j1939_session_deactivate_locked() has already removed the session=
- from
-> priv->active_session_list, subsequent iterations of the loop will not see=
- it
-> again. Should session->rxtimer be synchronously cancelled via
-> j1939_session_rxtimer_cancel(session) after j1939_session_txtimer_cancel(=
-),
-> similar to j1939_session_timers_cancel()?
+Commit 8aa59e355949 ("can: af_can: fix NULL pointer dereference in
+can_rx_register()") already made can_rx_register() reject such devices.
+But can_rx_unregister() still only checks dev->type and dereferences
+the NULL ml_priv when it walks the receive lists of the device.
 
-This is valid. The TX callback can rearm the RX timer after the current
-try-to-cancel, and an in-flight RX callback can overwrite the shutdown
-error. I=E2=80=99ll synchronize RX timer cancellation after draining the TX
-callback and ensure the shutdown error is preserved.
->
-> --
-> Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/cover.1793012287.=
-git.zihanx@nebusec.ai?part=3D1
+CAN_ISOTP reaches this path: isotp_bind() ignores the return values of
+can_rx_register() and binds the socket anyway. When the socket is
+released or the device is unregistered, isotp_release() and
+isotp_notify() remove the filters that have never been registered and
+trigger the NULL pointer dereference in can_rx_unregister(). This only
+requires owning a TUN/TAP device or CAP_NET_ADMIN in an unprivileged
+user namespace.
+
+Convert the remaining ARPHRD_CAN checks in af_can, bcm, gw, isotp and
+raw to can_get_ml_priv().
+
+Fixes: 4e096a18867a ("net: introduce CAN specific pointer in the struct net_device")
+Cc: stable@vger.kernel.org
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+ net/can/af_can.c | 15 ++++++---------
+ net/can/bcm.c    |  7 ++++---
+ net/can/gw.c     |  7 ++++---
+ net/can/isotp.c  |  5 +++--
+ net/can/raw.c    |  4 ++--
+ 5 files changed, 19 insertions(+), 19 deletions(-)
+
+diff --git a/net/can/af_can.c b/net/can/af_can.c
+index 34fe3b28d576..dc27ace43719 100644
+--- a/net/can/af_can.c
++++ b/net/can/af_can.c
+@@ -224,11 +224,11 @@ int can_send(struct sk_buff *skb, int loop)
+ 	if (unlikely(skb->len > READ_ONCE(skb->dev->mtu))) {
+ 		err = -EMSGSIZE;
+ 		goto inval_skb;
+ 	}
+ 
+-	if (unlikely(skb->dev->type != ARPHRD_CAN)) {
++	if (unlikely(!can_get_ml_priv(skb->dev))) {
+ 		err = -EPERM;
+ 		goto inval_skb;
+ 	}
+ 
+ 	if (unlikely(!(skb->dev->flags & IFF_UP))) {
+@@ -450,11 +450,11 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
+ 	struct can_dev_rcv_lists *dev_rcv_lists;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 
+ 	/* insert new receiver  (dev,canid,mask) -> (func,data) */
+ 
+-	if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
++	if (dev && !can_get_ml_priv(dev))
+ 		return -ENODEV;
+ 
+ 	if (dev && !net_eq(net, dev_net(dev)))
+ 		return -ENODEV;
+ 
+@@ -517,11 +517,11 @@ void can_rx_unregister(struct net *net, struct net_device *dev, canid_t can_id,
+ 	struct receiver *rcv = NULL;
+ 	struct hlist_head *rcv_list;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 	struct can_dev_rcv_lists *dev_rcv_lists;
+ 
+-	if (dev && dev->type != ARPHRD_CAN)
++	if (dev && !can_get_ml_priv(dev))
+ 		return;
+ 
+ 	if (dev && !net_eq(net, dev_net(dev)))
+ 		return;
+ 
+@@ -682,12 +682,11 @@ static void can_receive(struct sk_buff *skb, struct net_device *dev)
+ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		   struct packet_type *pt, struct net_device *orig_dev)
+ {
+ 	struct can_skb_ext *csx = can_skb_ext_find(skb);
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
+-		     !csx || !can_is_can_skb(skb))) {
++	if (unlikely(!can_get_ml_priv(dev) || !csx || !can_is_can_skb(skb))) {
+ 		pr_warn_once("PF_CAN: dropped non conform CAN skbuff: dev type %d, len %d\n",
+ 			     dev->type, skb->len);
+ 
+ 		kfree_skb_reason(skb, SKB_DROP_REASON_CAN_RX_INVALID_FRAME);
+ 		return NET_RX_DROP;
+@@ -708,12 +707,11 @@ static int can_rcv(struct sk_buff *skb, struct net_device *dev,
+ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		     struct packet_type *pt, struct net_device *orig_dev)
+ {
+ 	struct can_skb_ext *csx = can_skb_ext_find(skb);
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
+-		     !csx || !can_is_canfd_skb(skb))) {
++	if (unlikely(!can_get_ml_priv(dev) || !csx || !can_is_canfd_skb(skb))) {
+ 		pr_warn_once("PF_CAN: dropped non conform CAN FD skbuff: dev type %d, len %d\n",
+ 			     dev->type, skb->len);
+ 
+ 		kfree_skb_reason(skb, SKB_DROP_REASON_CANFD_RX_INVALID_FRAME);
+ 		return NET_RX_DROP;
+@@ -734,12 +732,11 @@ static int canfd_rcv(struct sk_buff *skb, struct net_device *dev,
+ static int canxl_rcv(struct sk_buff *skb, struct net_device *dev,
+ 		     struct packet_type *pt, struct net_device *orig_dev)
+ {
+ 	struct can_skb_ext *csx = can_skb_ext_find(skb);
+ 
+-	if (unlikely(dev->type != ARPHRD_CAN || !can_get_ml_priv(dev) ||
+-		     !csx || !can_is_canxl_skb(skb))) {
++	if (unlikely(!can_get_ml_priv(dev) || !csx || !can_is_canxl_skb(skb))) {
+ 		pr_warn_once("PF_CAN: dropped non conform CAN XL skbuff: dev type %d, len %d\n",
+ 			     dev->type, skb->len);
+ 
+ 		kfree_skb_reason(skb, SKB_DROP_REASON_CANXL_RX_INVALID_FRAME);
+ 		return NET_RX_DROP;
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 3d637a1e0ac1..60406439a13f 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -52,10 +52,11 @@
+ #include <linux/netdevice.h>
+ #include <linux/socket.h>
+ #include <linux/if_arp.h>
+ #include <linux/skbuff.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/bcm.h>
+ #include <linux/slab.h>
+ #include <linux/workqueue.h>
+@@ -1717,11 +1718,11 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 			if (!dev) {
+ 				ret = -ENODEV;
+ 				goto out_release;
+ 			}
+ 
+-			if (dev->type != ARPHRD_CAN) {
++			if (!can_get_ml_priv(dev)) {
+ 				dev_put(dev);
+ 				ret = -ENODEV;
+ 				goto out_release;
+ 			}
+ 
+@@ -1865,11 +1866,11 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ static int bcm_notifier(struct notifier_block *nb, unsigned long msg,
+ 			void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
+ 		return NOTIFY_DONE;
+ 	if (unlikely(bcm_busy_notifier)) /* Check for reentrant bug. */
+ 		return NOTIFY_DONE;
+@@ -2022,11 +2023,11 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 		dev = dev_get_by_index(net, addr->can_ifindex);
+ 		if (!dev) {
+ 			ret = -ENODEV;
+ 			goto fail;
+ 		}
+-		if (dev->type != ARPHRD_CAN) {
++		if (!can_get_ml_priv(dev)) {
+ 			dev_put(dev);
+ 			ret = -ENODEV;
+ 			goto fail;
+ 		}
+ 
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 5793cb2420ed..54bb5bd3242a 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -50,10 +50,11 @@
+ #include <linux/net.h>
+ #include <linux/netdevice.h>
+ #include <linux/if_arp.h>
+ #include <linux/skbuff.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/gw.h>
+ #include <net/can.h>
+ #include <net/rtnetlink.h>
+@@ -610,11 +611,11 @@ static int cgw_notifier(struct notifier_block *nb,
+ 			unsigned long msg, void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct net *net = dev_net(dev);
+ 
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 
+ 	if (msg == NETDEV_UNREGISTER) {
+ 		struct cgw_job *gwj = NULL;
+ 		struct hlist_node *nx;
+@@ -1161,19 +1162,19 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
+ 	gwj->src.dev = __dev_get_by_index(net, gwj->ccgw.src_idx);
+ 
+ 	if (!gwj->src.dev)
+ 		goto out;
+ 
+-	if (gwj->src.dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(gwj->src.dev))
+ 		goto out;
+ 
+ 	gwj->dst.dev = __dev_get_by_index(net, gwj->ccgw.dst_idx);
+ 
+ 	if (!gwj->dst.dev)
+ 		goto out;
+ 
+-	if (gwj->dst.dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(gwj->dst.dev))
+ 		goto out;
+ 
+ 	/* is sending the skb back to the incoming interface intended? */
+ 	if (gwj->src.dev == gwj->dst.dev &&
+ 	    !(gwj->flags & CGW_FLAGS_CAN_IIF_TX_OK)) {
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index f5dc9d04bd68..6c28802c0605 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -63,10 +63,11 @@
+ #include <linux/netdevice.h>
+ #include <linux/socket.h>
+ #include <linux/if_arp.h>
+ #include <linux/skbuff.h>
+ #include <linux/can.h>
++#include <linux/can/can-ml.h>
+ #include <linux/can/core.h>
+ #include <linux/can/skb.h>
+ #include <linux/can/isotp.h>
+ #include <linux/slab.h>
+ #include <net/can.h>
+@@ -1608,11 +1609,11 @@ static int isotp_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int l
+ 	dev = dev_get_by_index(net, addr->can_ifindex);
+ 	if (!dev) {
+ 		err = -ENODEV;
+ 		goto out;
+ 	}
+-	if (dev->type != ARPHRD_CAN) {
++	if (!can_get_ml_priv(dev)) {
+ 		err = -ENODEV;
+ 		goto out_put_dev;
+ 	}
+ 	if (READ_ONCE(dev->mtu) < so->ll.mtu) {
+ 		err = -EINVAL;
+@@ -1895,11 +1896,11 @@ static void isotp_notify(struct isotp_sock *so, unsigned long msg,
+ static int isotp_notifier(struct notifier_block *nb, unsigned long msg,
+ 			  void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
+ 		return NOTIFY_DONE;
+ 	if (unlikely(isotp_busy_notifier)) /* Check for reentrant bug. */
+ 		return NOTIFY_DONE;
+diff --git a/net/can/raw.c b/net/can/raw.c
+index 0acd4f6c6dd6..e1d741a25be3 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -346,11 +346,11 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
+ static int raw_notifier(struct notifier_block *nb, unsigned long msg,
+ 			void *ptr)
+ {
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 
+-	if (dev->type != ARPHRD_CAN)
++	if (!can_get_ml_priv(dev))
+ 		return NOTIFY_DONE;
+ 	if (msg != NETDEV_UNREGISTER && msg != NETDEV_DOWN)
+ 		return NOTIFY_DONE;
+ 	if (unlikely(raw_busy_notifier)) /* Check for reentrant bug. */
+ 		return NOTIFY_DONE;
+@@ -489,11 +489,11 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+ 		dev = dev_get_by_index(sock_net(sk), addr->can_ifindex);
+ 		if (!dev) {
+ 			err = -ENODEV;
+ 			goto out;
+ 		}
+-		if (dev->type != ARPHRD_CAN) {
++		if (!can_get_ml_priv(dev)) {
+ 			err = -ENODEV;
+ 			goto out_put_dev;
+ 		}
+ 
+ 		if (!(dev->flags & IFF_UP))
+
+-- 
+2.53.0
+
