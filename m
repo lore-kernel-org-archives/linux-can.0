@@ -1,60 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793217745;
-	b=WjPxGcaiPWWLtRQAJYEtm0UOh4bJee697v+YIOkyFtr61iz69cdfCl8i/GtAxXyBp90V
-	 Et8Xeg5X0tP6EDc0nECWs2tcuaFYpvTKDLbN5wRG19riy/bHUU55ICi20+/2mn5/CBTK+
-	 bnMwE0sfmR9FFeoK90MaFBk94CxWXWjLIEvL5JxQXtjRFoY4dv7nI9ZWdpC53GNnX6yK6
-	 87HqAHIg3oe5PU/c58z+yGOkKVBBuYcvYA3qmAn6OIB/IGeeDHVQCXdLYdSkV6GrWrhpt
-	 5uC2Jgz7FDhqYoaG/sUjvwbdnI4XB0MrbUw2qZDa5x0kmleK9WX4vRvRjV4XVqxULzw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793217745;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=eMGL/SfdPd4JTRR79GZx0ANHe3xXx+490kcRSCW/wB0=;
-	b=CvoyNUc32YkChVBGqtSLDuz/DS+fPYk3FdWjUi0T/Tf2byPq4JC7CJdUBv0rQAEDMnHr
-	 stCDuhLd2YHBOWk6tL5i+p4a/+hTOV6dvw0BYJP+ciZCU9Ri0uODhbNBG6sb84IiZbj4p
-	 PTM1rEcFe336BxgWO+5b1aYmgcn7gA7DVglWB3Av7lsKp/leQAinoTguciGeXjAoULaWB
-	 m/8u25eYqYSQAFkMUKwp2Vps9yJYBfYUMnAOG3tTsiRPWYK8VObtbzA6nuxKacxLc7/lq
-	 2NfhuiIp0xIpgEsT5RxLLf8Ew3L8aETOhO90pv5kwdnj3DadShf5B1HrsXXGWcqVIsw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oA079Fvs;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793220697;
+	b=3tzl07CFlrXrZpwdbNwx0L1F3ChaWaxQlNnOICbOG2Qv+a4q271BMM1mJrxPQLkr+TMn
+	 BGnjqVXZk//e2rneUWf8vGSAl6i3ac/n8ZeLSN1YUjtFnIZE7MUUjNVbm2sjZp9NFen4p
+	 AVwtIIzb+A8Nb8r9ijpDfPr+OMeued6uIU3Q73jKAa01y4ttiDVbS0l98M3Th/lHbalfb
+	 15kjLR5tPKyRMbGLNNph2Q1E6tEMxxUUZ48uf9KC5wWcwFY5RcBQPNbT4l9n4b/O+cA0E
+	 6Z/rOzbGLc/GefFfgDL2+4T493/eg4x58xI9EZBzveIGl3evkW3tcsM15cmVzjwAsKA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793220697;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=JQwb9ctZnkH9xouQ9GoF7QHdoIRdNtwo37B2zpMKa7U=;
+	b=e6+oFtxIRLKMwQXqR6Adh4qYnYyhmAZvs5EWQiIQMY9LZYvZ/vdkph1CiJYtJaYBXiA2
+	 CtP4f6PUusq/UqdqSIH7gZTwwUoqTQ9pGkO5IuyVVhQYK5vfyCEtssptXuBytq+HqNmJ6
+	 2/5f2K6wvwIECzwuKosWhzyENt2lTECy2kmioCEZGTMFWRqcxt2VHCXAkDN6+ZJTv7wZW
+	 ln6mV+Wa7fB3Mc7yZpPSkjULZSh4jgMilGudGRu98lYAqq5wKmtY0jFx0I29XEz4rAgiX
+	 6J0qNQjHqP6M9uYN6dmoKKqpakaAG5gtJN0hTVXJcxlj1xLfpnm4UnbhaQu9W8oZIaQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=AnfGSoBg;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDE4606A31A;
-	Wed, 28 Oct 2026 20:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD94C606A31A
+	for <linux-can@vger.kernel.org>; Wed, 28 Oct 2026 20:51:35 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CD94C606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oA079Fvs
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2812A1F01825;
-	Wed, 28 Oct 2026 20:02:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793217744;
-	bh=eMGL/SfdPd4JTRR79GZx0ANHe3xXx+490kcRSCW/wB0=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=oA079FvsZbwlsepEf+HHdspm11+1XJ8lfzgtz7lxfozsRQxpLIHBTboTQqPUrLGu2
-	 6ZF049Zhac13ByiMtXbzjwHnhQEOEA1yTXQYe352FhTpeOgkF7yBjDlCo3aBaEgVQc
-	 /PkAppdQd24ZfISs/BTQ2iY8vRciGvvWCzKTKwnByj8wDvEiV/XW0sqK1nQzfQ5yoO
-	 JryWv9gRGXMR95gIKLwj2rH2BycnDa15GDQRR1fNjDcDLHkblPLDS72OHmSqDxq2kb
-	 +5tR1GwnsHjYfv4A+TDA0o4/4682txschBMFIhTJgCw9tvK3jUXJAgLpDDgU7rUVqa
-	 8KSgwJHU3OwlQ==
-Subject: Re: [PATCH v8 2/2] can: dev: can_tdc_fill_info(): don't read
- automatic TDCV if interface is down
-From: netdev-bot+sashiko@kernel.org
-To: chunyuzhiqiang@yinhe.ht
-Cc: netdev-bot+sinfo@kernel.org, netdev@vger.kernel.org,
- linux-can@vger.kernel.org, mkl@pengutronix.de, mailhol@kernel.org,
- kernel@pengutronix.de, haibo.chen@oss.nxp.com, shawnguo@kernel.org,
- imx@lists.linux.dev, stable@vger.kernel.org, kuba@kernel.org
-Date: Wed, 28 Oct 2026 20:02:23 +0000
-Message-ID: <179321774368.3130.12586646136802755223@kernel.org>
-In-Reply-To: <20261027065012.191348-2-chunyuzhiqiang@yinhe.ht>
-References: <20261027065012.191348-2-chunyuzhiqiang@yinhe.ht>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=AnfGSoBg
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id A99AB201FF2;
+	Wed, 28 Oct 2026 21:51:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793220689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JQwb9ctZnkH9xouQ9GoF7QHdoIRdNtwo37B2zpMKa7U=;
+	b=AnfGSoBg59H/JtjrhHEHuxgfSeYsE8EAsEsGt4VBPGZQfAmXwr9R7DbyTFe1/Pplk1KnO9
+	IFyaZASuK8vxEiLeluYkwabMtuAwi0aUW3tSQWuEikpnCcjvT1GWkG2FYznQEYr1akwtpd
+	KGffpfUkfU8RdY5A1bfoIeoYIXe0KFtvWgnW0F/jMUk7JoQjYcBVTG/Lfp3aXQkM62wTVc
+	uF4RE0qzmhIkuWUVWVUo7eZOagBeZhp58fp90NoDU3U6YZ2PfUrz8/8OO92Hb/LWJjGHPD
+	gX/KqSCDuwS3ndgNJSCb1jKP8woin5V6UnaNT/OWt7gzIqVAEYkCHLbfcu5R6g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1793220689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JQwb9ctZnkH9xouQ9GoF7QHdoIRdNtwo37B2zpMKa7U=;
+	b=T0bvIo+LtIC5qIUdbin2KVg+h+zo2RGsZjGq9CkWfRNJPzHiZMd9R54QhSp0SXKzMFRnT6
+	YJiD4gESyExLdA3mm7CxoUiV+he5D4knCv0/IN2nnWUQB5wITGmQqz7uKdsvialpLekGe8
+	8cylb/ZqzSATEUQ7DIOGXIncXfCd3KLgsOV6PwQ+3wh2+RpJuqvI6YIepwJsazxzXJ2DGG
+	0iS8ZWF3YJN2g9jH30t12oJw+bAPlej3B7QIN1MGkvDUgoS5q8u6bixlSfWVptcHHhYiYD
+	PChVHrAcWafPuibII6UH2jnq8TOTWJpSFD+3a70lWvS8LhtFgOBhvgl4K6uhQw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793220689; a=rsa-sha256;
+	cv=none;
+	b=f5rnmvtoWuotgLaMKVV8lhH1DhaUlXMhwjWjo4UCOUS1JFTDBB3ogenshPBd2xhzxfwm2q
+	Jgp1GDiTzse1FrXRrA0aFv9W03EkyDjTG9KRLn4FguHbuRB/ww7vSDXvaS+yqMRypJsltb
+	q4D+usM7O4aU885BSmOsCxCQaTc4ZJEPMPgBtVsUgQe8RRz3ZYti7Zd3yj37wtruCwukxI
+	V1lkO2UBfJJ07E2P6PL8YWe/fpB1MXa2mPlxunn5jvqBfTuwmkQ+hf6aCgX8/0VB7snR/6
+	ARDO9jw57dnRQc8h6k1NwZ4ilEpy/+YEBDiMbQ4/8T81D2pw3HPf6mANutrt7w==
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xMAcL-001crY-1q;
+	Wed, 28 Oct 2026 21:51:29 +0100
+Received: from pengutronix.de (unknown [213.208.157.249])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id DB2755D93F9;
+	Wed, 28 Oct 2026 20:51:26 +0000 (UTC)
+Date: Wed, 28 Oct 2026 21:51:24 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Norbert Szetei <norbert@doyensec.com>, Runyu Xiao <runyu.xiao@seu.edu.cn>, 
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
+ lock
+Message-ID: <20261028-miniature-smiling-leech-6d02ea-mkl@pengutronix.de>
+References: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
+ <1e9a2768-e30e-4f2d-bc71-57550d210c0a@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,188 +102,73 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="k2lbbuf7gcdgkud3"
+Content-Disposition: inline
+In-Reply-To: <1e9a2768-e30e-4f2d-bc71-57550d210c0a@hartkopp.net>
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 2 · Low: 1
+--k2lbbuf7gcdgkud3
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
+ lock
+MIME-Version: 1.0
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+On 28.10.2026 17:36:26, Oliver Hartkopp wrote:
+> https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261027-can-rx-lock-=
+v12-0-eb5afc2d8b9b%40hartkopp.net
 
-- [Medium] The commit message calls this change "defensive hardening
-  based on code inspection" and has no Fixes: tag.
-- [Medium] netif_running() is used as a stand-in for "the controller is
-  clocked", but in xilinx_can it can be true while the clocks are gated.
-- [Low] The modified can_tdc_get_size() prototype in
-  drivers/net/can/dev/netlink.c (lines 723-725) has continuation lines…
+Seems clashiko doesn't post to the mailing list any more? Did the bot
+reply only to you?
 
---
+> The remaining Sashiko findings on v12 are either issues that are fixed by
+> later patches of this series (as Sashiko notes itself o_O) or pre-existing
+> issues that are not related to this series:
+>
+> - CAN_BCM and CAN_J1939 also copy user space data under lock_sock(),
+>   while their netdev notifiers take lock_sock() under RTNL. This is not
+>   a new problem introduced by this series. I will look into this later.
+>   It does not affect this patch set.
+>
+> - The user_reset in net/can/proc.c is denoted as not network namespace
+>   aware. This is on my list for a separate can-next patch too.
+>
+> The only new finding is that isotp_bind() keeps so->rxid/so->txid after
+> a failed bind(), which is visible via getsockname(). This is intended:
+> As so->ifindex is reset to 0, there is no interface and therefore no
+> valid address. The remaining CAN IDs only show that a bind() has been
+> attempted and failed. No need to reset these values.
 
-can: dev: can_tdc_fill_info(): don't read automatic TDCV if interface is down
+IMHO a failing syscall should not leave any half set option. You're
+rolling back so->ifindex, why not roll back rxid and txid, too?
 
-This commit makes can_tdc_fill_info() call do_get_auto_tdcv() only when
-netif_running() is true. Drivers such as xilinx_can then no longer read
-controller registers while the interface is down. can_tdc_get_size() and
-can_data_bittiming_get_size() now take the net_device, so IFLA_CAN_TDCV
-space is reserved only under the same condition.
+> Sashikos suggestion to
+> assign so->rxid/so->txid only on the success path would cause a new race =
+at
+> start-up when a FirstFrame is received during the bind() process - which =
+is
+> currently solved and working.
 
-> This is a defensive hardening based on code inspection; the automatic
-> TDCV path has not been triggered on hardware.
+regards,
+Marc
 
-[Severity: Medium]
-Is "defensive hardening" an accurate description here? The path this patch
-closes looks reachable by an unprivileged user on current mainline and
-stable kernels.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-xcan_probe() ends with pm_runtime_put(). The controller then stays
-runtime-suspended, with bus_clk and can_clk disabled, until xcan_open()
-takes a reference. xcan_get_auto_tdcv() reads a register without taking a
-runtime PM reference:
+--k2lbbuf7gcdgkud3
+Content-Type: application/pgp-signature; name="signature.asc"
 
-drivers/net/can/xilinx_can.c:xcan_get_auto_tdcv() {
-    ...
-	*tdcv = FIELD_GET(XCAN_SR_TDCV_MASK, priv->read_reg(priv, XCAN_SR_OFFSET));
-    ...
-}
+-----BEGIN PGP SIGNATURE-----
 
-xcan_get_berr_counter(), by comparison, wraps its reads in
-pm_runtime_get_sync()/pm_runtime_put().
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCauJgRAAKCRDMOmT6rpmt
+0u3zAQCqXKEQIv6Y5G4DO+LsitdnA2f5wJ85Xb5eJP9MnPEWcwD/S0T0W/dbUayF
+0Mia6krii7M9xVkgcB53d3GJT1RTRAE=
+=rruh
+-----END PGP SIGNATURE-----
 
-TDC_AUTO also gets turned on while the interface is down.
-can_dbt_changelink() accepts data bittiming only when the device is not
-IFF_UP. It calls can_calc_tdco(), which sets TDC_AUTO whenever the data BRP
-is 1 or 2. Take the usual setup sequence:
-
-  ip link set canX type can bitrate ... dbitrate ... fd on
-  ip -d link show canX
-
-Before this patch, that sequence reaches the following path with the
-clocks gated:
-
-  rtnl_getlink()->can_fill_info()->can_tdc_fill_info()->xcan_get_auto_tdcv()
-
-The callback was added in commit 1010a8fa96086d ("can: xilinx_can: add
-Transmitter Delay Compensation (TDC) feature support"). Should this patch
-carry a Fixes: tag for that commit, plus Cc: stable?
-
-The companion patch "can: dev: can_fill_info(): don't wake up controller if
-interface is down" fixes the same kind of access, and it has both tags.
-
-The changelog note says:
-
-> Split out of the berr-counter patch so that the stable backport only
-> carries the hardware-tested change.
-
-Without a Fixes: tag, the stable tooling cannot tell that kernels
-containing 1010a8fa96086d also need this change.
-
-> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index b958c04d53db6..613beee9e9362 100644
-> --- a/drivers/net/can/dev/netlink.c
-> +++ b/drivers/net/can/dev/netlink.c
-> @@ -720,8 +720,9 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
->  	return 0;
->  }
->  
-> -static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
-> -			       u32 tdc_flags)
-> +static size_t can_tdc_get_size(const struct net_device *dev,
-> +				 struct data_bittiming_params *dbt_params,
-> +			     u32 tdc_flags)
-
-[Severity: Low]
-This isn't a bug, but the continuation lines no longer line up with the
-open parenthesis. The dbt_params line is two columns to the right of it,
-and the tdc_flags line is two columns to the left. checkpatch --strict will
-report "Alignment should match open parenthesis".
-
-can_data_bittiming_get_size(), later in the same patch, is aligned
-correctly.
-
->  {
->  	bool tdc_manual = tdc_flags & CAN_CTRLMODE_TDC_MANUAL_MASK;
->  	size_t size;
-> @@ -742,7 +743,8 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
->  	}
->  
->  	if (tdc_flags) {
-> -		if (tdc_manual || dbt_params->do_get_auto_tdcv)
-> +		if (tdc_manual ||
-> +		    (dbt_params->do_get_auto_tdcv && netif_running(dev)))
->  			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
->  		size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO */
->  		if (dbt_params->tdc_const->tdcf_max)
-
-[ ... ]
-
-> @@ -910,7 +913,7 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev,
->  		if (tdc_manual) {
->  			tdcv = tdc->tdcv;
->  			err = 0;
-> -		} else if (dbt_params->do_get_auto_tdcv) {
-> +		} else if (dbt_params->do_get_auto_tdcv && netif_running(dev)) {
->  			err = dbt_params->do_get_auto_tdcv(dev, &tdcv);
->  		}
-
-[Severity: Medium]
-Can netif_running() be true while the xilinx_can clocks are still gated?
-If so, xcan_get_auto_tdcv() can still read XCAN_SR_OFFSET from unclocked
-hardware.
-
-xcan_suspend() stops and detaches a running interface, then calls
-pm_runtime_force_suspend(). That runs xcan_runtime_suspend(), which
-disables bus_clk and can_clk. __LINK_STATE_START stays set:
-
-drivers/net/can/xilinx_can.c:xcan_suspend() {
-    ...
-	if (netif_running(ndev)) {
-		netif_stop_queue(ndev);
-		netif_device_detach(ndev);
-		xcan_chip_stop(ndev);
-	}
-
-	return pm_runtime_force_suspend(dev);
-}
-
-If pm_runtime_force_resume() fails during resume, xcan_resume() returns
-early. This can happen, for example, when clk_prepare_enable() fails in
-xcan_runtime_resume():
-
-drivers/net/can/xilinx_can.c:xcan_resume() {
-    ...
-	ret = pm_runtime_force_resume(dev);
-	if (ret) {
-		dev_err(dev, "pm_runtime_force_resume failed on resume\n");
-		return ret;
-	}
-    ...
-}
-
-At that point the clocks are off, the netdev is still IFF_UP and detached,
-and netif_running() still returns true. An unprivileged
-"ip -d link show canX" then passes the new check in can_tdc_fill_info()
-and reads XCAN_SR_OFFSET in xcan_get_auto_tdcv().
-
-rcar_canfd looks similar. rcar_canfd_suspend() calls
-rcar_canfd_global_deinit(), which disables clkp and asserts reset. If
-rcar_canfd_global_init() then fails in rcar_canfd_resume(),
-rcar_canfd_get_auto_tdcv() reads cfdsts from a block that is unclocked or
-held in reset.
-
-Would it be more robust to take a runtime PM reference in
-xcan_get_auto_tdcv(), as xcan_get_berr_counter() does?
-
-Another option is to gate on netif_running(dev) && netif_device_present(dev).
-Both drivers call netif_device_attach() only after the hardware is back up.
-
-With either approach, can_tdc_get_size() needs the same condition so the
-size estimate stays consistent with can_tdc_fill_info().
-
->  		if (!err && nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdcv))
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261027065012.191348-1-chunyuzhiqiang%40yinhe.ht
+--k2lbbuf7gcdgkud3--
