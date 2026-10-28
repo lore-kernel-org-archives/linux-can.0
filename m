@@ -1,91 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.162
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.53
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793203521;
-	b=YACX/Y+HcIEM4PZggrGbS1wElzIr0UMId0uoguReUCTsE6DT46hpvSpN0gYRQ61LftOH
-	 X/zaMzVk792LLKHzupoX0y0gZQB4cRDM0c4Z79HQ8tHn4Jdg+UML/mSCWh44EawWpxvRO
-	 zDF22TwH2EnFbI7xN74HM8U13v8OMs9aYQq9acavS/XJoWsrQFmsYFJhvUazLag+VbWvM
-	 2fZd7EtXB4aSbmbHqfZlDvu1Bsr15tEGtHMKus5Cm6kF/FjENBJDRVi0zdTHOaXo3TBgq
-	 e7qh/TZ2VWPzde5I6lP3EisyTlEGdNT1e5mNP+13huGSZrPpLOY/BiFf8iJU3MXvIFw==
+	t=1793205420;
+	b=n+xiLitoPrqabujKwiAcjUv2aA46eQmjkax9eONvF6Y8vnZjoOPvExMwgDvItmCQoMTq
+	 F49PpoFgqVYdUnzv7voWNVUspp3u7QQIge6rpqASAj9cZhPLuS7On81Pun9LDoWw1zGxo
+	 cOMFwxrwFtgUArmXzmK4whk18Q7kr9froWCNlmBLbIdMrrfF1zF3yUwE3EJQMj9qTzZgO
+	 m5Hb4CtKq3EraD9nYrDMBHPm+D5Y//dMxah2yMhFiwcCsCRD6/tBasXkT1L9VhfF1wWWG
+	 KI6o95JE1BrLB0red2OTTM8bMoMlS+8xQ762YbqGUVhTrNNecbZ+kN1lo9D+4Jlrjqg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793203521;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793205420;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
 	 References:Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=FScGhlJt6uQ2VPd53bUzBjx3gbtLd241kfdHaLh9Jm4=;
-	b=l1SgxqdseOvfnUdJDHmVsz+Xdbu+q9r14NHTkC7sBVbi7Q0/DAj/2+fNgIUWI9a4sA6r
-	 mEqEgdEnzt14ChTUC9wKtUzUezCTWTEFmlsE4ffivfpHQG3prdH3OVLOfeOH4W3sS1WMo
-	 YRR06RKMdkVuLz//F8cE/qtWON3YWEbkZHHHBVunEYzfiHn2FvEfcH3Z1xWz3dwbN3yh1
-	 TYtI3FMxhsSwH5bRUc+kbzJuQjK7foC1K6JNdAZFFQ8vNyG0GRHFjV8FSd9lx7Pp2neGl
-	 SH2Jmb4kpkcJRWLjXMLj01iW1NtrnZFvnpNVCLkNFrWU2SWkidqPJc+Ayuazppjqgxw==
+	bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
+	b=zH1jMDjwff0cueG8GSl3U8pCWrE9+KNoKwfZW+TKQ+JQN5B6ER/AFKW+nRl+xbPXs2B6
+	 uGTujSH8GAFY1yCtgLjBzKjaEzC52pzq5EBO+FAbEFAiWOD4reIWgtuCSQF+Mqv6A7dTm
+	 TCF6iGhTJ7Ix1fBk+lyRso4UiFprVSq6ddowddMJhlwy4Jw0J+OKzcQG9MsKj50LME/pi
+	 BtI2lwi2BLZhi46Im5LK0x/DrIa/zrWeNksEvk2efU76ZMGRsq766+2dAzzAgZ0eQygNU
+	 aehoLWipL+0L+vuy6WHin9RcLeVQzRK6aoXPrcpBThxq9kyoBaq0LwkNj9j7nfq5rIQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Tm+fFdnS;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=8m+yfQDy;
-	arc=fail smtp.remote-ip=81.169.146.162
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.162])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oAnuAjBq;
+	dkim=temperror header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="S7fk/erv";
+	arc=fail smtp.remote-ip=85.215.255.53
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC0C1606A32A
-	for <linux-can@vger.kernel.org>; Wed, 28 Oct 2026 16:05:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AC0C1606A32A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F7E606A329
+	for <linux-can@vger.kernel.org>; Wed, 28 Oct 2026 16:36:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11F7E606A329
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Tm+fFdnS;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=8m+yfQDy
-ARC-Seal: i=1; a=rsa-sha256; t=1793203501; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oAnuAjBq;
+	dkim=temperror header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=S7fk/erv
+ARC-Seal: i=1; a=rsa-sha256; t=1793205387; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=A019RxLuNCF5taLLdTOkZquGWv1jxYrZ6CO1F4zIh40fUFoJiw3s8PSEKpSezgl435
-    8UBrl12DwqCO/RWaQw8UEeAnJ7HWo2JdPPn0B2O9+g34jFZeS2vZUxg2cpFQnhwvRE6R
-    VOdYldVtHSZoyQB/hxxFuK0Ri9HFCfDWsXWhomLiMvNmQsmBC1zHUneXm82ut7pNdgiD
-    FqTOpleka+sDOpW42G6ssQXPLau0JwWbf4xMGzdW8zV9JoI8xM4uvzWdZ/s9b6wVqMNM
-    lbypYSDnA5qYzw2f83SLP2jmegv8/LlkwwCKy5un9rCaoTHLQ2+JMLUDBUF9y7OzqHhx
-    2Vgg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793203501;
+    b=ViAGUWKg1Z1iUJQ2AbZS9JIsx5dGhFA+BcGaGP2fe0qpMhw8sBl7k0sdJjyZs4P3PE
+    TI8zsm6sN1rm5mbn6syPSO96wIoOEQ/XkCxSpBxIrahSuufruNPpkE2R90OVPAz0C10P
+    FUCG98XGoDmpx5iEQAoa8c4H+APiPATZybzfH3vFm8oYLvtHkZwy9RgWHxYVCDLwv8z1
+    EhCawyb8qX/7WEbLs+6LZgZLG5+bmDBeLrkfinPcAYCqYoaq3mq7fwzV8ERtj0S6nbXX
+    HUv5wTl9aN4Y6XQOzM0h2YDX/t3yh+9CFXnYxP1GSPyvX69W/3uTQCvRJBpjzf4gyT6n
+    qZ3w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793205387;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=FScGhlJt6uQ2VPd53bUzBjx3gbtLd241kfdHaLh9Jm4=;
-    b=jmqAk24557497P3+z+AUGTCNhg8HzlZ/ySxi8lGtsGN9bgv4eNjA4AwfEQVRjnibXp
-    i4sSRJCqBOk9GPVRSqY8r1hI+W+a36d3vCnuN7RDJQdkl0bDlom9blFBu+IxbOBcJbDy
-    sH729IUAfOlVf733PtjDk2apsBdmSp3vgiYLHwjuVq8/ySzNruNj0AX5Ssutiz4yeMUI
-    b8XKVl0KiCMC7WtZtRiyvDUA/5lH69Vy18RwLow+3mZRCm6muxXh6dmc097+urolG2Lf
-    DYff2bJvCZkLJC0vVsnveCNJmPbDJ+Pzufp3emrtUtHA5ptHtXeD7dMjgL6u998Fdw3J
-    EgAA==
+    bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
+    b=UYkAdHf9tq4sfZH3zwD+xaUFpTXf4r/N3st8pOwlX8vE/LPqVa9yKh/2vLe42Z2sJi
+    Jf/v5Cc96N3bHtiRFcAXRiapuKCgW60oR9rXvBa2AgWCZeFtgQG2wcEqCWzbCg6/ZTnq
+    lTF4VvStZo2jPef/OmXkiTvrJhCRR8uAlj07UsBwqei+VCNb9cWNfUipmkFRFnWV5Tze
+    pxjFxm86A2r3ewjcBdj08aHmTwVuCSYBS+ZUHSOs+4H5/2uyMT5di0By+2Nie5CQy2mn
+    bL6IRIWV9pyGk5F7qhM4cxecM2TCzSKoLa6gRDUU1rF3JDoax0oeyf9yOGZb0WXsmySs
+    oMMQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793203501;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793205387;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=FScGhlJt6uQ2VPd53bUzBjx3gbtLd241kfdHaLh9Jm4=;
-    b=Tm+fFdnSW31AqTBy7rVoMTj1uTvHlwLD1z7x/7GbdeN10KOYCB7zHqM+2hQuzBiu1v
-    WGbBFIEL+o3LXu3fj9wMPzaxpqOtq0KSQp6JzA52E4RsAu+s2NiMOaldoLAWC8D5cux+
-    Z78agLE4Qva6/Sd+PK+HvrH6gKUeTPjgSDBuinrZ+x8P+YRLoTzwzvNUGzkG6htuVjSE
-    B+KWH51Yjz2CwMMh5R9/PzFBHf8mfOdnpRV3BbgyH8KkcciJJtFk08ktrBbXXU4zz2K9
-    imy0dmzbF+y5CRJutYAbH9gkaey2fUKVkZmBm+geoumvMZKefN+Mnup9Zm01KmOs2xSO
-    Yivw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793203501;
+    bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
+    b=oAnuAjBqy8bBsPJijGItp0UCe2efA9ZW9p1lFXG1+NTIy9FiSU5gVCSUi1lqcj23Z7
+    bSUqksw4DDZnRPxku1WgyEOG5TWPA2nY5DubEf1kL/tFwI4RdtLX7wJl3j4qsQasXT0c
+    MT1Ne1Bol7dfJ0+lV/Ki4q/6NZc1QejUunCMKVaPboTy+1uY/7tJY5/Mt8flS3cT8879
+    DKlnz5qKrRS750G+CMVtwp9AnbLuBvjvsm6DbYIuW3HAOxH8l7oN7N7nJ3kz9jlLuoxj
+    ZVnbD4eJqN0HV5fnijMug2SJKBnF+nAfOmH+M2CTmTe2teI+tKOkb4SW7RfHOhIzORhh
+    JTlQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793205386;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=FScGhlJt6uQ2VPd53bUzBjx3gbtLd241kfdHaLh9Jm4=;
-    b=8m+yfQDyAO+xngivozwDBE4ZfwCBPbNdat6lqDmv9glucfFjnfXpKVfGNfzdDBflL0
-    nFbe3MS9f3bvFZcUTqCw==
+    bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
+    b=S7fk/erv3C+ZPWjoxoK+R4FXh5gHJUYiVjUjqgDbtV6ctfIwiNm7/ZAlg9AuilO7Dp
+    GAtde1i78iLe35HneECA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::989]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29SG51Kbb
+    with ESMTPSA id Kfdf2a29SGaQKts
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Wed, 28 Oct 2026 17:05:01 +0100 (CET)
-Message-ID: <d88470c9-84a4-4fa4-a5e8-2d45be25815f@hartkopp.net>
-Date: Wed, 28 Oct 2026 17:04:28 +0100
+    Wed, 28 Oct 2026 17:36:26 +0100 (CET)
+Message-ID: <1e9a2768-e30e-4f2d-bc71-57550d210c0a@hartkopp.net>
+Date: Wed, 28 Oct 2026 17:36:26 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,482 +96,234 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net v2 1/1] can: bcm: limit RX operation resource usage
- per socket
-To: zihan xi <zihanx@nebusec.ai>
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de,
- urs.thuermann@volkswagen.de, davem@davemloft.net, vega@nebusec.ai
-References: <cover.1793089479.git.zihanx@nebusec.ai>
- <cover.1793109154.git.zihanx@nebusec.ai>
- <50f8970ce7800947332f6203626abbe1933997eb.1793109154.git.zihanx@nebusec.ai>
- <08409264-c2b3-489a-b645-5849d7352990@hartkopp.net>
- <CAANe3eR5DoPe5SBeheHHVM099zS5S_dU0ndOHNxtA86tpLxXkQ@mail.gmail.com>
+Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
+ lock
+To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
+ Norbert Szetei <norbert@doyensec.com>, Runyu Xiao <runyu.xiao@seu.edu.cn>,
+ Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+References: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <CAANe3eR5DoPe5SBeheHHVM099zS5S_dU0ndOHNxtA86tpLxXkQ@mail.gmail.com>
+In-Reply-To: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+Hi Marc,
 
+from my side v12 is ready to be applied.
 
-On 28.10.26 16:36, zihan xi wrote:
-> On Wed, Oct 28, 2026 at 11:04 PM Oliver Hartkopp <socketcan@hartkopp.net> wrote:
->>
->> Just in the case it was not clear to you here:
->>
->> https://lore.kernel.org/linux-can/350df96b-5f69-490e-b39e-ed6e9bca4754@hartkopp.net/
->>
->> Your patch does not solve the problem and will not be merged.
->>
->> Please stop sending updates.
->>
->> FYI it will go into this direction below, when the current patches are
->> upstream. I already have a prepared patch for this issue.
->>
->> Best regards,
->> Oliver
->>
->> (..)
->>
->> Enable memcg accounting instead, as it has been done for other
->> allocations that can be triggered by unprivileged users:
->> - use GFP_KERNEL_ACCOUNT for the bcm_op structures and their frames and
->>     last_frames arrays in bcm_tx_setup() and bcm_rx_setup()
->> - create the rcv_cache with SLAB_ACCOUNT, which covers the CAN receivers
->>     of all CAN protocols
->>
->> (..)
->>
->> --- a/net/can/af_can.c
->> +++ b/net/can/af_can.c
->> @@ -919,7 +919,7 @@ static __init int can_init(void)
->>          rcv_cache = kmem_cache_create("can_receiver", sizeof(struct receiver),
->> -                                     0, 0, NULL);
->> +                                     0, SLAB_ACCOUNT, NULL);
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
->> @@ -1155,7 +1155,7 @@ static int bcm_tx_setup(...)
->> -               op = kzalloc(OPSIZ, GFP_KERNEL);
->> +               op = kzalloc(OPSIZ, GFP_KERNEL_ACCOUNT);
->> @@ -1172,7 +1172,7 @@ static int bcm_tx_setup(...)
->>                          op->frames = kmalloc_array(msg_head->nframes,
->>                                                     op->cfsiz,
->> -                                                  GFP_KERNEL);
->> +                                                  GFP_KERNEL_ACCOUNT);
->> @@ -1403,7 +1403,7 @@ static int bcm_rx_setup(...)
->> -               op = kzalloc(OPSIZ, GFP_KERNEL);
->> +               op = kzalloc(OPSIZ, GFP_KERNEL_ACCOUNT);
->> @@ -1418,7 +1418,7 @@ static int bcm_rx_setup(...)
->>                          op->frames = kmalloc_array(msg_head->nframes,
->>                                                     op->cfsiz,
->> -                                                  GFP_KERNEL);
->> +                                                  GFP_KERNEL_ACCOUNT);
->> @@ -1427,7 +1427,7 @@ static int bcm_rx_setup(...)
->>                          op->last_frames = kcalloc(msg_head->nframes,
->>                                                    op->cfsiz,
->> -                                                 GFP_KERNEL);
->> +                                                 GFP_KERNEL_ACCOUNT);
->>
->> (..)
->>
->> On 28.10.26 14:43, Zihan Xi wrote:
->>> BCM sockets can create an unbounded number of RX operations. Each
->>> operation allocates memory outside of the socket buffer accounting,
->>> so a single unprivileged socket can exhaust kernel memory.
->>>
->>> Bound the number and aggregate allocation size of RX operations per
->>> socket. Keep the charge until the operation and its frame arrays are
->>> freed. Also keep a receiver count charged until the CAN core releases
->>> the receiver after its RCU grace period, so repeated setup/delete
->>> requests cannot bypass the limits while callbacks are pending.
->>>
->>> Return -ENOBUFS when a socket reaches either limit. Existing operations
->>> can still be updated without additional charges.
->>>
->>> Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
->>> Cc: stable@vger.kernel.org
->>> Reported-by: Vega <vega@nebusec.ai>
->>> Link: https://bugtracker.nebusec.ai/f/11134
->>> Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
->>> ---
->>>    include/linux/can/core.h |   7 +++
->>>    net/can/af_can.c         |  34 ++++++++++-
->>>    net/can/af_can.h         |   1 +
->>>    net/can/bcm.c            | 127 +++++++++++++++++++++++++++++++++------
->>>    4 files changed, 147 insertions(+), 22 deletions(-)
->>>
->>> diff --git a/include/linux/can/core.h b/include/linux/can/core.h
->>> index 2de74c2b78b6..89b9d0a2dcc1 100644
->>> --- a/include/linux/can/core.h
->>> +++ b/include/linux/can/core.h
->>> @@ -53,6 +53,13 @@ int can_rx_register(struct net *net, struct net_device *dev,
->>>                    void (*func)(struct sk_buff *, void *),
->>>                    void *data, char *ident, struct sock *sk);
->>>
->>> +/* release runs from an RCU callback and must not sleep. */
->>> +int can_rx_register_with_release(struct net *net, struct net_device *dev,
->>> +                              canid_t can_id, canid_t mask,
->>> +                              void (*func)(struct sk_buff *, void *),
->>> +                              void *data, char *ident, struct sock *sk,
->>> +                              void (*release)(struct sock *sk));
->>> +
->>>    extern void can_rx_unregister(struct net *net, struct net_device *dev,
->>>                              canid_t can_id, canid_t mask,
->>>                              void (*func)(struct sk_buff *, void *),
->>> diff --git a/net/can/af_can.c b/net/can/af_can.c
->>> index 34fe3b28d576..a3f0ed35fbb5 100644
->>> --- a/net/can/af_can.c
->>> +++ b/net/can/af_can.c
->>> @@ -441,15 +441,20 @@ static struct hlist_head *can_rcv_list_find(canid_t *can_id, canid_t *mask,
->>>     *  -ENOMEM on missing cache mem to create subscription entry
->>>     *  -ENODEV unknown device
->>>     */
->>> -int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
->>> -                 canid_t mask, void (*func)(struct sk_buff *, void *),
->>> -                 void *data, char *ident, struct sock *sk)
->>> +static int can_rx_register_internal(struct net *net, struct net_device *dev,
->>> +                                 canid_t can_id, canid_t mask,
->>> +                                 void (*func)(struct sk_buff *, void *),
->>> +                                 void *data, char *ident, struct sock *sk,
->>> +                                 void (*release)(struct sock *sk))
->>>    {
->>>        struct receiver *rcv;
->>>        struct hlist_head *rcv_list;
->>>        struct can_dev_rcv_lists *dev_rcv_lists;
->>>        struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
->>>
->>> +     if (release && !sk)
->>> +             return -EINVAL;
->>> +
->>>        /* insert new receiver  (dev,canid,mask) -> (func,data) */
->>>
->>>        if (dev && (dev->type != ARPHRD_CAN || !can_get_ml_priv(dev)))
->>> @@ -474,6 +479,7 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
->>>        rcv->data = data;
->>>        rcv->ident = ident;
->>>        rcv->sk = sk;
->>> +     rcv->release = release;
->>>
->>>        hlist_add_head_rcu(&rcv->list, rcv_list);
->>>        dev_rcv_lists->entries++;
->>> @@ -485,15 +491,37 @@ int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
->>>
->>>        return 0;
->>>    }
->>> +
->>> +int can_rx_register(struct net *net, struct net_device *dev, canid_t can_id,
->>> +                 canid_t mask, void (*func)(struct sk_buff *, void *),
->>> +                 void *data, char *ident, struct sock *sk)
->>> +{
->>> +     return can_rx_register_internal(net, dev, can_id, mask, func, data,
->>> +                                     ident, sk, NULL);
->>> +}
->>>    EXPORT_SYMBOL(can_rx_register);
->>>
->>> +int can_rx_register_with_release(struct net *net, struct net_device *dev,
->>> +                              canid_t can_id, canid_t mask,
->>> +                              void (*func)(struct sk_buff *, void *),
->>> +                              void *data, char *ident, struct sock *sk,
->>> +                              void (*release)(struct sock *sk))
->>> +{
->>> +     return can_rx_register_internal(net, dev, can_id, mask, func, data,
->>> +                                     ident, sk, release);
->>> +}
->>> +EXPORT_SYMBOL(can_rx_register_with_release);
->>> +
->>>    /* can_rx_delete_receiver - rcu callback for single receiver entry removal */
->>>    static void can_rx_delete_receiver(struct rcu_head *rp)
->>>    {
->>>        struct receiver *rcv = container_of(rp, struct receiver, rcu);
->>>        struct sock *sk = rcv->sk;
->>> +     void (*release)(struct sock *sk) = rcv->release;
->>>
->>>        kmem_cache_free(rcv_cache, rcv);
->>> +     if (release)
->>> +             release(sk);
->>>        if (sk)
->>>                sock_put(sk);
->>>    }
->>> diff --git a/net/can/af_can.h b/net/can/af_can.h
->>> index 87887014f562..2fa4cf8c1314 100644
->>> --- a/net/can/af_can.h
->>> +++ b/net/can/af_can.h
->>> @@ -57,6 +57,7 @@ struct receiver {
->>>        void *data;
->>>        char *ident;
->>>        struct sock *sk;
->>> +     void (*release)(struct sock *sk);
->>>        struct rcu_head rcu;
->>>    };
->>>
->>> diff --git a/net/can/bcm.c b/net/can/bcm.c
->>> index 3d637a1e0ac1..477bdc1e8745 100644
->>> --- a/net/can/bcm.c
->>> +++ b/net/can/bcm.c
->>> @@ -58,6 +58,7 @@
->>>    #include <linux/can/skb.h>
->>>    #include <linux/can/bcm.h>
->>>    #include <linux/slab.h>
->>> +#include <linux/overflow.h>
->>>    #include <linux/workqueue.h>
->>>    #include <linux/spinlock.h>
->>>    #include <net/can.h>
->>> @@ -127,6 +128,7 @@ struct bcm_op {
->>>        void *last_frames;
->>>        struct canfd_frame sframe;
->>>        struct canfd_frame last_sframe;
->>> +     size_t rx_mem;
->>>        struct sock *sk;
->>>        struct net_device *rx_reg_dev;
->>>        netdevice_tracker rx_reg_dev_tracker;
->>> @@ -141,6 +143,9 @@ struct bcm_sock {
->>>        struct list_head notifier;
->>>        struct list_head rx_ops;
->>>        struct list_head tx_ops;
->>> +     unsigned int rx_op_count;
->>> +     size_t rx_mem_used;
->>> +     atomic_t rx_receiver_count;
->>>        unsigned long dropped_usr_msgs;
->>>        struct proc_dir_entry *bcm_proc_read;
->>>        char procname [32]; /* inode number in decimal with \0 */
->>> @@ -190,6 +195,10 @@ static bool bcm_is_invalid_tv(struct bcm_msg_head *msg_head)
->>>    #define OPSIZ sizeof(struct bcm_op)
->>>    #define MHSIZ sizeof(struct bcm_msg_head)
->>>
->>> +/* Bound the resources consumed by RX operations on one BCM socket. */
->>> +#define BCM_MAX_RX_OPS 1024
->>> +#define BCM_MAX_RX_MEM (16 * 1024 * 1024)
->>> +
->>>    /*
->>>     * procfs functions
->>>     */
->>> @@ -922,9 +931,64 @@ static struct bcm_op *bcm_find_op(struct list_head *ops,
->>>        return NULL;
->>>    }
->>>
->>> +/* Called with the socket lock held. */
->>> +static bool bcm_rx_op_charge(struct bcm_sock *bo, size_t rx_mem)
->>> +{
->>> +     if (bo->rx_op_count >= BCM_MAX_RX_OPS ||
->>> +         rx_mem > BCM_MAX_RX_MEM - bo->rx_mem_used)
->>> +             return false;
->>> +
->>> +     bo->rx_op_count++;
->>> +     bo->rx_mem_used += rx_mem;
->>> +     return true;
->>> +}
->>> +
->>> +/* Called with the socket lock held. */
->>> +static void bcm_rx_op_uncharge(struct bcm_sock *bo, size_t rx_mem)
->>> +{
->>> +     if (!rx_mem)
->>> +             return;
->>> +
->>> +     if (WARN_ON_ONCE(!bo->rx_op_count || bo->rx_mem_used < rx_mem))
->>> +             return;
->>> +
->>> +     bo->rx_op_count--;
->>> +     bo->rx_mem_used -= rx_mem;
->>> +}
->>> +
->>> +static void bcm_rx_receiver_release(struct sock *sk)
->>> +{
->>> +     struct bcm_sock *bo = bcm_sk(sk);
->>> +
->>> +     WARN_ON_ONCE(atomic_dec_return(&bo->rx_receiver_count) < 0);
->>> +}
->>> +
->>> +/* Called with the socket lock held. */
->>> +static int bcm_rx_register(struct bcm_op *op, struct net_device *dev)
->>> +{
->>> +     struct bcm_sock *bo = bcm_sk(op->sk);
->>> +     int err;
->>> +
->>> +     if (atomic_inc_return(&bo->rx_receiver_count) > BCM_MAX_RX_OPS) {
->>> +             atomic_dec(&bo->rx_receiver_count);
->>> +             return -ENOBUFS;
->>> +     }
->>> +
->>> +     err = can_rx_register_with_release(sock_net(op->sk), dev, op->can_id,
->>> +                                        REGMASK(op->can_id), bcm_rx_handler,
->>> +                                        op, "bcm", op->sk,
->>> +                                        bcm_rx_receiver_release);
->>> +     if (err)
->>> +             atomic_dec(&bo->rx_receiver_count);
->>> +
->>> +     return err;
->>> +}
->>> +
->>>    static void bcm_free_op_work(struct work_struct *work)
->>>    {
->>>        struct bcm_op *op = container_of(work, struct bcm_op, work);
->>> +     struct sock *sk = op->sk;
->>> +     size_t rx_mem = op->rx_mem;
->>>
->>>        hrtimer_cancel(&op->timer);
->>>        hrtimer_cancel(&op->thrtimer);
->>> @@ -935,13 +999,20 @@ static void bcm_free_op_work(struct work_struct *work)
->>>        if ((op->last_frames) && (op->last_frames != &op->last_sframe))
->>>                kfree(op->last_frames);
->>>
->>> -     /* the last possible access to op->timer/op->thrtimer has now
->>> -      * happened above via hrtimer_cancel() - op->sk is no longer
->>> -      * needed by any pending timer callback, so drop our reference
->>> +     kfree(op);
->>> +     /*
->>> +      * Keep the RX budget charged until the operation and its frame arrays
->>> +      * have actually been freed. op->sk holds a reference while this work is
->>> +      * pending, so the socket remains valid while updating its accounting.
->>>         */
->>> -     sock_put(op->sk);
->>> +     if (rx_mem) {
->>> +             lock_sock(sk);
->>> +             bcm_rx_op_uncharge(bcm_sk(sk), rx_mem);
->>> +             release_sock(sk);
->>> +     }
->>>
->>> -     kfree(op);
->>> +     /* Drop the reference held for the operation and any pending timer. */
->>> +     sock_put(sk);
->>>    }
->>>
->>>    static void bcm_free_op_rcu(struct rcu_head *rcu_head)
->>> @@ -1316,6 +1387,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>    {
->>>        struct bcm_sock *bo = bcm_sk(sk);
->>>        struct bcm_op *op;
->>> +     size_t rx_mem, frames_size, arrays_size;
->>>        int do_rx_register;
->>>        int new_op = 0;
->>>        int err = 0;
->>> @@ -1414,10 +1486,31 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>                do_rx_register = (ifindex && !op->rx_reg_dev) ? 1 : 0;
->>>
->>>        } else {
->>> +             /*
->>> +              * Charge the operation and its frame arrays before allocating
->>> +              * them or registering a CAN receiver. nframes is already bounded
->>> +              * above, but keep the size arithmetic explicitly overflow-safe.
->>> +              */
->>> +             rx_mem = sizeof(*op);
->>> +             if (msg_head->nframes > 1) {
->>> +                     if (check_mul_overflow((size_t)msg_head->nframes,
->>> +                                            (size_t)CFSIZ(msg_head->flags),
->>> +                                            &frames_size) ||
->>> +                         check_mul_overflow(frames_size, (size_t)2,
->>> +                                            &arrays_size) ||
->>> +                         check_add_overflow(rx_mem, arrays_size, &rx_mem))
->>> +                             return -EOVERFLOW;
->>> +             }
->>> +
->>> +             if (!bcm_rx_op_charge(bo, rx_mem))
->>> +                     return -ENOBUFS;
->>> +
->>>                /* insert new BCM operation for the given can_id */
->>>                op = kzalloc(OPSIZ, GFP_KERNEL);
->>> -             if (!op)
->>> +             if (!op) {
->>> +                     bcm_rx_op_uncharge(bo, rx_mem);
->>>                        return -ENOMEM;
->>> +             }
->>>
->>>                spin_lock_init(&op->bcm_tx_lock);
->>>                spin_lock_init(&op->bcm_rx_update_lock);
->>> @@ -1425,6 +1518,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>                op->nframes = msg_head->nframes;
->>>                op->cfsiz = CFSIZ(msg_head->flags);
->>>                op->flags = msg_head->flags;
->>> +             op->rx_mem = rx_mem;
->>>
->>>                if (msg_head->nframes > 1) {
->>>                        /* create array for CAN frames and copy the data */
->>> @@ -1432,8 +1526,8 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>                                                   op->cfsiz,
->>>                                                   GFP_KERNEL);
->>>                        if (!op->frames) {
->>> -                             kfree(op);
->>> -                             return -ENOMEM;
->>> +                             err = -ENOMEM;
->>> +                             goto free_op;
->>>                        }
->>>
->>>                        /* create and init array for received CAN frames */
->>> @@ -1441,9 +1535,8 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>                                                  op->cfsiz,
->>>                                                  GFP_KERNEL);
->>>                        if (!op->last_frames) {
->>> -                             kfree(op->frames);
->>> -                             kfree(op);
->>> -                             return -ENOMEM;
->>> +                             err = -ENOMEM;
->>> +                             goto free_op;
->>>                        }
->>>
->>>                } else {
->>> @@ -1532,11 +1625,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>
->>>                        dev = dev_get_by_index(sock_net(sk), ifindex);
->>>                        if (dev) {
->>> -                             err = can_rx_register(sock_net(sk), dev,
->>> -                                                   op->can_id,
->>> -                                                   REGMASK(op->can_id),
->>> -                                                   bcm_rx_handler, op,
->>> -                                                   "bcm", sk);
->>> +                             err = bcm_rx_register(op, dev);
->>>
->>>                                /* keep a tracked reference so that a later
->>>                                 * unregister can safely reach the device even
->>> @@ -1558,9 +1647,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>                        }
->>>
->>>                } else {
->>> -                     err = can_rx_register(sock_net(sk), NULL, op->can_id,
->>> -                                           REGMASK(op->can_id),
->>> -                                           bcm_rx_handler, op, "bcm", sk);
->>> +                     err = bcm_rx_register(op, NULL);
->>>                }
->>>
->>>                if (err) {
->>> @@ -1593,6 +1680,7 @@ static int bcm_rx_setup(struct bcm_msg_head *msg_head, struct msghdr *msg,
->>>        if (op->last_frames != &op->last_sframe)
->>>                kfree(op->last_frames);
->>>        kfree(op);
->>> +     bcm_rx_op_uncharge(bo, rx_mem);
->>>        return err;
->>>    }
->>>
->>> @@ -1896,6 +1984,7 @@ static int bcm_init(struct sock *sk)
->>>        bo->ifindex          = 0;
->>>        bo->dropped_usr_msgs = 0;
->>>        bo->bcm_proc_read    = NULL;
->>> +     atomic_set(&bo->rx_receiver_count, 0);
->>>
->>>        INIT_LIST_HEAD(&bo->tx_ops);
->>>        INIT_LIST_HEAD(&bo->rx_ops);
->>
-> 
-> Hi Oliver,
-> 
-> Thank you for taking the time to explain your concerns and review my
-> report and reproducer. I apologize for missing your earlier message.
-> 
-> I understand your decision and will respect your request not to send
-> further updates.
-> 
-> Thank you again for your time and guidance.
+Sashiko says:
 
-Thanks Zihan!
+https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261027-can-rx-lock-v12-0-eb5afc2d8b9b%40hartkopp.net
 
-I really appreciate that you looked into this topic and provided a 
-reproducer and some solution for it - which definitely caused some 
-effort for you.
+The remaining Sashiko findings on v12 are either issues that are fixed 
+by later patches of this series (as Sashiko notes itself o_O) or 
+pre-existing issues that are not related to this series:
 
-Enabling memcg accounting for CAN allocations follows the approach for
-other objects that can be created by unprivileged users and is the way 
-how it should be solved. memcg does not introduce any new CAN specific 
-limit and does not make assumptions about the number of sockets, filters 
-or BCM operations an application needs.
+- CAN_BCM and CAN_J1939 also copy user space data under lock_sock(),
+   while their netdev notifiers take lock_sock() under RTNL. This is not
+   a new problem introduced by this series. I will look into this later.
+   It does not affect this patch set.
+
+- The user_reset in net/can/proc.c is denoted as not network namespace
+   aware. This is on my list for a separate can-next patch too.
+
+The only new finding is that isotp_bind() keeps so->rxid/so->txid after
+a failed bind(), which is visible via getsockname(). This is intended:
+As so->ifindex is reset to 0, there is no interface and therefore no
+valid address. The remaining CAN IDs only show that a bind() has been
+attempted and failed. No need to reset these values. Sashikos suggestion 
+to assign so->rxid/so->txid only on the success path would cause a new 
+race at start-up when a FirstFrame is received during the bind() process 
+- which is currently solved and working.
 
 Best regards,
 Oliver
+
+On 27.10.26 15:31, Oliver Hartkopp wrote:
+> This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
+> triggered when a CAN device is moved to another network namespace while
+> a socket bound to this device is released [1].
+> 
+> Patch 2 makes isotp_bind() check the return values of can_rx_register(),
+> so that bind() does not succeed with missing receivers.
+> 
+> Patch 4 copies the CAN_RAW and CAN_ISOTP specific socket options from
+> and to user space outside of lock_sock(), so that a stalled copy can not
+> block raw_notify() waiting for lock_sock() under RTNL.
+> 
+> Patches 5 and 6 fix the reset and the calculation of the CAN statistics.
+> 
+> Patch 7 removes the pointers from the CAN specific proc output. As it
+> changes the proc output ABI it is not intended for stable and has been
+> moved to the end of the series, so that patches 1-6 can be backported
+> without it.
+> 
+> The code of patches 1 and 5-7 is unchanged since v4, apart from the
+> rebase of patch 7 in v12. Only the commit message of patch 1 has been
+> updated after the Sashiko review of v4 to describe the actual NULL
+> pointer dereference in can_rx_unregister() and the CAN_ISOTP path that
+> reaches it.
+> 
+> The series is based on net/main.
+> 
+> The idea behind patch 3:
+> 
+> The receive lists of a CAN device are located in the device's
+> can_ml_priv and travel with the device when it is moved to another
+> network namespace. But they are protected by the per-netns
+> rcvlists_lock, so the lock that protects a device's lists depends on
+> the namespace the caller passes to can_rx_register() and
+> can_rx_unregister(). can_rx_unregister() silently returns when this
+> namespace does not match dev_net(dev) anymore.
+> 
+> isotp_release() and bcm_release() leave the netdev notifier list before
+> they can serialize against the notifier. When the device changes its
+> namespace in this window, their filters are not removed and the
+> remaining receivers point to the freed socket or bcm op.
+> 
+> Taking RTNL in these release paths is no option, as CAN_RAW already
+> holds RTNL while adding and removing up to CAN_RAW_FILTER_MAX filters
+> per socket, which unprivileged users can trigger repeatedly.
+> 
+> Instead, patch 3 protects the receive lists where they are located: A
+> spinlock in struct can_dev_rcv_lists protects the lists of a CAN device
+> (initialized in can_set_ml_priv()) or the 'any' CAN device lists of a
+> namespace (initialized in can_pernet_init()). can_rx_unregister() then
+> finds the subscription independently of the current namespace of the
+> device, which is kept accessible by the tracked device references the
+> protocols already hold. The per-netns rcvlists_lock only protects the
+> receive list statistics, for which CAN_RAW, CAN_BCM and CAN_ISOTP pass
+> the namespace that has been used for can_rx_register().
+> 
+> As a consequence, CAN_RAW and CAN_ISOTP do not need RTNL in bind(),
+> setsockopt() and release() anymore. bind() is serialized against
+> NETDEV_UNREGISTER by publishing the device inside the RCU section of
+> its lookup, as unlist_netdevice() and synchronize_net() precede
+> NETDEV_UNREGISTER both on unregistration and on a namespace change.
+> The notifiers recheck the binding under lock_sock(). As RTNL does not
+> keep NETDEV_DOWN out of bind() anymore, bind() checks IFF_UP after
+> publishing the bound device, with an smp_mb() pair against the
+> notifiers, so a down transition during bind() is still reported with
+> ENETDOWN.
+> 
+> ---
+> Changes in v12:
+> - reordered the patches: the former patches 4-7 are now patches 1-4 and
+>    the former patches 1-3 are now patches 5-7, so that "can: proc: remove
+>    pointers from CAN specific proc output" (ABI change, not for stable)
+>    is the last patch
+> - patch 2: check IFF_UP after the successful registrations, so that a
+>    bind() that fails on a down device does not report ENETDOWN (review of
+>    v11)
+> - patch 4: Fixes: tags point to the commits that put the user space
+>    copies under lock_sock() (review of v11)
+> - patch 5: note on the x86_64 test results and the architectures
+>    affected by the memset() (review of v11)
+> - patch 6: added Cc: stable, as patch 5 is Cc: stable (review of v11)
+> - Link to v11: https://patch.msgid.link/20261026-can-rx-lock-v11-0-3b9a2b829dab@hartkopp.net
+> 
+> The patch numbers in the following changelogs refer to the patch order
+> up to v11.
+> 
+> Changes in v11:
+> - rebased to net/main without "can: raw: remove redundant NULL check
+>    before netdev_hold()" [2]
+> - patch 6: keep the NULL check of ro->dev before netdev_hold() in
+>    raw_bind() as found in net/main
+> - Link to v10: https://patch.msgid.link/20261026-can-rx-lock-v10-0-281c4b556a1a@hartkopp.net
+> 
+> Changes in v10:
+> - patch 5: register the echo receiver first and the RX receiver as the
+>    last step, set so->ifindex before the registrations (Sashiko review)
+> - patch 6: rebased on patch 5
+> 
+> Changes in v9:
+> - rebased to net-next/main on top of "can: raw: remove redundant NULL
+>    check before netdev_hold()" [2] (no code changes)
+> 
+> Changes in v8:
+> - new patch 5: check the return values of can_rx_register() in
+>    isotp_bind() (Sashiko review)
+> - patch 6 rebased on patch 5: isotp_bind() resets the published so->dev
+>    again when the registration of a receiver fails and checks IFF_UP at
+>    the end of a successful bind(), as raw_bind() does
+> - patch 6: isotp_notify() reports NETDEV_DOWN only for a bound socket, so
+>    a failing isotp_bind() can not get a needless ENETDOWN
+> - patch 6: isotp_sendmsg() and isotp_recvmsg() read so->bound with
+>    READ_ONCE()
+> - patch 6: moved copying the user space data outside of lock_sock() in
+>    raw_setsockopt() to patch 7 to keep patch 6 focused on the locking
+>    changes and to ease review
+> - new patch 7: copy the CAN_RAW and CAN_ISOTP socket options outside of
+>    lock_sock() (Sashiko review)
+> 
+> Changes in v7 (details in patch 6):
+> - report ENETDOWN in bind() and ENODEV for NETDEV_UNREGISTER under
+>    lock_sock(), so ENODEV can not be overwritten by ENETDOWN (Sashiko
+>    review)
+> 
+> Changes in v6:
+> - isotp_bind() checks the device before publishing so->dev, so a
+>    failing bind() can not get a needless ENETDOWN (Sashiko review)
+> 
+> Changes in v5:
+> - report ENETDOWN for a down transition during bind() again (Sashiko
+>    review)
+> - comment and kernel-doc updates (Sashiko review)
+> - patch 4: commit message describes the actual crash path (Sashiko
+>    review)
+> 
+> [1] https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+> [2] https://lore.kernel.org/all/20260831052031.902699-1-ekffu200098@gmail.com/
+> 
+> Previous versions:
+> v11: https://lore.kernel.org/linux-can/20261026-can-rx-lock-v11-0-3b9a2b829dab@hartkopp.net/
+> v10: https://lore.kernel.org/linux-can/20261026-can-rx-lock-v10-0-281c4b556a1a@hartkopp.net/
+> v9: https://lore.kernel.org/linux-can/20261025-can-rx-lock-v9-0-7ef2a2b5c2b4@hartkopp.net/
+> 
+> Previous versions of patch 3 (patch 6 up to v11):
+> v8: https://lore.kernel.org/linux-can/20261023121801.3052075-7-socketcan@hartkopp.net/
+> v7: https://lore.kernel.org/linux-can/20261022114202.180023-6-socketcan@hartkopp.net/
+> v6: https://lore.kernel.org/linux-can/20261021231130.2085690-12-mkl@pengutronix.de/
+> v5: https://lore.kernel.org/linux-can/20261020203257.230955-6-socketcan@hartkopp.net/
+> v4: https://lore.kernel.org/linux-can/20261019152741.54854-6-socketcan@hartkopp.net/
+> v3: https://lore.kernel.org/linux-can/20261019074244.50391-5-socketcan@hartkopp.net/
+> v2: https://lore.kernel.org/linux-can/20261018180739.689750-1-socketcan@hartkopp.net/
+> v1: https://lore.kernel.org/linux-can/20261017201935.399233-1-socketcan@hartkopp.net/
+> 
+> ---
+> Oliver Hartkopp (6):
+>        can: replace ARPHRD_CAN type checks with can_get_ml_priv()
+>        can: isotp: check the return values of can_rx_register() in isotp_bind()
+>        can: protect the receive lists with a per-device lock
+>        can: raw, isotp: copy socket options outside of lock_sock()
+>        can: proc: skip stats calculation after reset in can_stat_update()
+>        can: proc: remove pointers from CAN specific proc output
+> 
+> Runyu Xiao (1):
+>        can: proc: reset pkg_stats atomics individually
+> 
+>   Documentation/networking/can.rst |  16 ++-
+>   include/linux/can/can-ml.h       |   3 +
+>   include/linux/can/core.h         |   2 +-
+>   include/net/netns/can.h          |   2 +-
+>   net/can/af_can.c                 |  60 +++++----
+>   net/can/af_can.h                 |   2 +-
+>   net/can/bcm.c                    |  64 ++++-----
+>   net/can/gw.c                     |   9 +-
+>   net/can/isotp.c                  | 222 ++++++++++++++++++-------------
+>   net/can/j1939/main.c             |   2 +-
+>   net/can/proc.c                   |  95 +++++++------
+>   net/can/raw.c                    | 278 +++++++++++++++++++++++----------------
+>   12 files changed, 435 insertions(+), 320 deletions(-)
+> ---
+> base-commit: 6430fb7f1cc4e329e386521b7b208df443de92f2
+> change-id: 20261025-can-rx-lock-cecab2ad832f
+> 
+> Best regards,
+> --
+> Oliver Hartkopp <socketcan@hartkopp.net>
+> 
 
