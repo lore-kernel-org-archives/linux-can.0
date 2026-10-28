@@ -1,47 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793144029;
-	b=sdTPHxr/PRObo0deHFXxTUl5wUZa98VKRGpIZQD22Gzcp8/mIvlsDvh1HTsitfA6Uzl/
-	 QukElfeJVA4lqo8hPby9GzJW4W5ylor9Mxp/eXRUlEAex7Kwia34ek7HLSpPN5J3bOPzl
-	 ktrBYWQfZuPkHiaRRJENhDpcl6jZ6AneQll0GrEBKWpeAv5hQx4/uuIaAki0keGlhtkQa
-	 BT7TCugsDCw80TXB5nQCU9chUUB7cpaIPe8Z+GHxNNCn2T0ladTPEDprAc8cVzYLy3Qnh
-	 rZ4zdyg9R8dX840whei39zuZoyN+EKLFgk4jMcy8BHDLF/Abc0UIv7UhLF9zguRaBWw==
+	t=1793170772;
+	b=P5emj71gI+6R3IJxH4vbaKj4oLT1C/ERpGzs0oZdMcPLJ1XMqalqh8lzlyYgEodXbWst
+	 xPFWv3xopFcePbuTGrlDy6Mvbij787NHT/ONa69X8g/w5XZkE/mu4TPgoXwZyRSko/O0R
+	 kEO9kkA4f7lbiY8bssEgaiebH/1fw1mnGtAdhKpnBfS+plUiJSFUrgyhtMITBrb1Oxyn+
+	 54Boj5NYe+ujFVkXpADKg3uzMvLQ0zPpYqyKCoh5BVAgavDkDdMzJBptciZiG2en5ovjd
+	 +p/RoS3y4KSsgQ2XOoriSNM9Ytt9VS3wGtvqxgPnM34XGFJ9emBNk6spXkO6iT2N1dA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793144029;
-	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:From:To:References:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Anti-Virus-Server:
-	 X-Virus-Status;
-	bh=BsyAyFYj8egP+FwvhAurh8aH/KVjA4hGAJGYO8v1qXk=;
-	b=R9Na2qHm71pzkpNl08jteBhBL8viAm7ok1nXWp/jDiUGw+tmYmr/miblVAY1PS1poyhH
-	 HMhtDMZeBLwgLSi5j/J+KnwRRvvGkWefNS2krCbSOQswxIEtzv+qAEv5KvSO1Bx5w8a3A
-	 IsrGiD7J4wXU03Cspa1Sl4dvhFGd+wzNxDst1XJ7dSNypCNEuEksBTo//pGVVJS2UxvFw
-	 ucVNSkFitxoEtVs/dQDPK+5kY06rANRFX8Z+SQtIEstFgKTcQGB9+dor/yl7yIU9pzncM
-	 mtLDwfXGTAOZJPBJgjWXhzwswm0+VgGi0xSQBgVakNF2/lXP7ZMAeQHygED9UO1GvxA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793170772;
+	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=GVHE714RG7i9OtS3pCmu1vAiNQBVPuk8379998KPX34=;
+	b=qSpQjfEfoHi+jvXbgs4GlC1CIDvv2VpeZcRcAh1jZ2+6sI0Glv8wbZZNMjI9DFPEnqZJ
+	 fK+EDK2i30NmEu5PrwK8nK0zUT/beImq/JMuk+NxRR1d9LEOYSPhzOeWVGpOGytRCs24p
+	 HyvtC1qwALVtkpz1jZ+a1wocdI4CH7RgxxY6+HRkODLqcRMQOIS5pyqFCKAjRhggKPy6p
+	 MnqJZkzEosALqoms5E7kK/0P/IlsPniDlG+uI5Xpi8i/7CuWvvv08DJcBRTePxC5L4dzL
+	 wIG2/Fzn1iX9UUH6bG45q3YbNDxlBOCI6HT0B72D4TqJNQ0UPObnA52ajkAUBMqpD6A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=I-love.SAKURA.ne.jp;
-	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
-	arc=none smtp.remote-ip=202.181.97.72
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Sp+93WvI;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9EDA606A31D
-	for <linux-can@vger.kernel.org>; Tue, 27 Oct 2026 23:33:47 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9EDA606A31D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 69RNXOnU098941;
-	Wed, 28 Oct 2026 08:33:24 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 69RNXN5N098938
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 28 Oct 2026 08:33:23 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <7d194c9a-c89d-4e2d-8eba-b2bf5d4ebde7@I-love.SAKURA.ne.jp>
-Date: Wed, 28 Oct 2026 08:33:23 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8E7606A31A;
+	Wed, 28 Oct 2026 06:59:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Sp+93WvI
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F24D1F01825;
+	Wed, 28 Oct 2026 06:59:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793170772;
+	bh=GVHE714RG7i9OtS3pCmu1vAiNQBVPuk8379998KPX34=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To;
+	b=Sp+93WvII8ZYXlCPlpMElqzLpKTJTarLzctoQWFyTwA7qi799Vp8Tf7L+ArRC38zk
+	 RKQdsbWBVcU8n3/LbKDraRTkNUKR0cLYrYsVVl1FCC7UgdsbOiBl+1UIBSp8tV6BHr
+	 XCS4b5c2FWUJ5qCnTuA0wNxjAgMaZaDUUH5GuwOzg+sD0EmyDWKFWyzBMp3y0pNT70
+	 bPslosLMNB/CpWw/wpZAoRtgqG3BSY9iSW9EMWnUfWcSAdZb9+NdKk61oO5og1YVmB
+	 IQZLH5rd2Cu7o3PgXznKQDSSjD4Q+/RbZ+yaujdcBwTu5C/ZtShCEo4l6x/BEE8LmJ
+	 D/uf5ZtkfTcpg==
+Date: Wed, 28 Oct 2026 12:29:27 +0530
+From: Vinod Koul <vkoul@kernel.org>
+To: Marek Vasut <marex@nabladev.com>
+Cc: linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+	Aswath Govindraju <a-govindraju@ti.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/3] dt-bindings: phy: ti,tcan104x-can: Document
+ Microchip ATA6563
+Message-ID: <auGdT2kdxwfbB_ol@parshuram>
+References: <20260930214729.809649-1-marex@nabladev.com>
+ <d8c3ca76-3d93-4abc-8a78-d23e0f018975@nabladev.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -51,40 +66,57 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] can: j1939: fix j1939_ecu refcount leak
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-References: <4b2c8d95-d17e-4f36-a340-abf84693d24a@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <4b2c8d95-d17e-4f36-a340-abf84693d24a@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Anti-Virus-Server: fsav413.rs.sakura.ne.jp
-X-Virus-Status: clean
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d8c3ca76-3d93-4abc-8a78-d23e0f018975@nabladev.com>
 
-Sashiko mentioned that there is a garbage comment in the v4 patch.
-Please fold below diff if applying the v4 patch.
+On 27-10-26, 18:18, Marek Vasut wrote:
+> On 9/30/26 11:46 PM, Marek Vasut wrote:
+> > Microchip ATA6563 is High-Speed CAN Transceiver with Standby Mode.
+> > It is pin-compatible with TI TCAN1042 and has a compatible programming
+> > model, therefore use ti,tcan1042 as fallback compatible.
+> > 
+> > Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+> > Signed-off-by: Marek Vasut <marex@nabladev.com>
+> > ---
+> > Cc: Aswath Govindraju <a-govindraju@ti.com>
+> > Cc: Conor Dooley <conor+dt@kernel.org>
+> > Cc: Fabio Estevam <festevam@gmail.com>
+> > Cc: Frank Li <Frank.Li@nxp.com>
+> > Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>
+> > Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+> > Cc: Rob Herring <robh@kernel.org>
+> > Cc: devicetree@vger.kernel.org
+> > Cc: imx@lists.linux.dev
+> > Cc: linux-arm-kernel@lists.infradead.org
+> > Cc: linux-can@vger.kernel.org
+> > Cc: linux-kernel@vger.kernel.org
+> > ---
+> > V2: No change
+> > V3: No change
+> > V4: No change
+> > V5: Add RB from Krzysztof
+> > V6: No change
+> > ---
+> >   Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml | 1 +
+> >   1 file changed, 1 insertion(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> > index 0cf5fa21106b6..e97b1bc0a2e45 100644
+> > --- a/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> > +++ b/Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
+> > @@ -18,6 +18,7 @@ properties:
+> >         - items:
+> >             - enum:
+> >                 - microchip,ata6561
+> > +              - microchip,ata6563
+> >                 - ti,tcan1051
+> >             - const: ti,tcan1042
+> >         - items:
+> 
+> +CC Vinod, is this patch OK with you ?
 
- net/can/j1939/bus.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Looks good to me, I will pick this after rc1 (monday)
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index 63210da8b7a8..e97ea2a51f65 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -134,8 +134,7 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
- 	write_lock_bh(&priv->lock);
- 	/* Cancel all pending address claim timers before unmapping.
- 	 * This prevents an orphaned late-firing timer from re-mapping
--	 * an ECU after the spaces are cleared. Since j1939_ecu_put()
--	 * might make , we need to skip invalid ECUs.
-+	 * an ECU after the spaces are cleared.
- 	 */
- 	list_for_each_entry(ecu, &priv->ecus, list) {
- 		/* It is OK to call j1939_ecu_timer_stopped() even if there is
 -- 
-2.55.0
+~Vinod
