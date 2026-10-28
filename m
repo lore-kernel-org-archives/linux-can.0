@@ -1,91 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.53
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1793205420;
-	b=n+xiLitoPrqabujKwiAcjUv2aA46eQmjkax9eONvF6Y8vnZjoOPvExMwgDvItmCQoMTq
-	 F49PpoFgqVYdUnzv7voWNVUspp3u7QQIge6rpqASAj9cZhPLuS7On81Pun9LDoWw1zGxo
-	 cOMFwxrwFtgUArmXzmK4whk18Q7kr9froWCNlmBLbIdMrrfF1zF3yUwE3EJQMj9qTzZgO
-	 m5Hb4CtKq3EraD9nYrDMBHPm+D5Y//dMxah2yMhFiwcCsCRD6/tBasXkT1L9VhfF1wWWG
-	 KI6o95JE1BrLB0red2OTTM8bMoMlS+8xQ762YbqGUVhTrNNecbZ+kN1lo9D+4Jlrjqg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793205420;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
-	b=zH1jMDjwff0cueG8GSl3U8pCWrE9+KNoKwfZW+TKQ+JQN5B6ER/AFKW+nRl+xbPXs2B6
-	 uGTujSH8GAFY1yCtgLjBzKjaEzC52pzq5EBO+FAbEFAiWOD4reIWgtuCSQF+Mqv6A7dTm
-	 TCF6iGhTJ7Ix1fBk+lyRso4UiFprVSq6ddowddMJhlwy4Jw0J+OKzcQG9MsKj50LME/pi
-	 BtI2lwi2BLZhi46Im5LK0x/DrIa/zrWeNksEvk2efU76ZMGRsq766+2dAzzAgZ0eQygNU
-	 aehoLWipL+0L+vuy6WHin9RcLeVQzRK6aoXPrcpBThxq9kyoBaq0LwkNj9j7nfq5rIQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oAnuAjBq;
-	dkim=temperror header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="S7fk/erv";
-	arc=fail smtp.remote-ip=85.215.255.53
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793217745;
+	b=WjPxGcaiPWWLtRQAJYEtm0UOh4bJee697v+YIOkyFtr61iz69cdfCl8i/GtAxXyBp90V
+	 Et8Xeg5X0tP6EDc0nECWs2tcuaFYpvTKDLbN5wRG19riy/bHUU55ICi20+/2mn5/CBTK+
+	 bnMwE0sfmR9FFeoK90MaFBk94CxWXWjLIEvL5JxQXtjRFoY4dv7nI9ZWdpC53GNnX6yK6
+	 87HqAHIg3oe5PU/c58z+yGOkKVBBuYcvYA3qmAn6OIB/IGeeDHVQCXdLYdSkV6GrWrhpt
+	 5uC2Jgz7FDhqYoaG/sUjvwbdnI4XB0MrbUw2qZDa5x0kmleK9WX4vRvRjV4XVqxULzw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793217745;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=eMGL/SfdPd4JTRR79GZx0ANHe3xXx+490kcRSCW/wB0=;
+	b=CvoyNUc32YkChVBGqtSLDuz/DS+fPYk3FdWjUi0T/Tf2byPq4JC7CJdUBv0rQAEDMnHr
+	 stCDuhLd2YHBOWk6tL5i+p4a/+hTOV6dvw0BYJP+ciZCU9Ri0uODhbNBG6sb84IiZbj4p
+	 PTM1rEcFe336BxgWO+5b1aYmgcn7gA7DVglWB3Av7lsKp/leQAinoTguciGeXjAoULaWB
+	 m/8u25eYqYSQAFkMUKwp2Vps9yJYBfYUMnAOG3tTsiRPWYK8VObtbzA6nuxKacxLc7/lq
+	 2NfhuiIp0xIpgEsT5RxLLf8Ew3L8aETOhO90pv5kwdnj3DadShf5B1HrsXXGWcqVIsw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oA079Fvs;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11F7E606A329
-	for <linux-can@vger.kernel.org>; Wed, 28 Oct 2026 16:36:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11F7E606A329
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FDE4606A31A;
+	Wed, 28 Oct 2026 20:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oAnuAjBq;
-	dkim=temperror header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=S7fk/erv
-ARC-Seal: i=1; a=rsa-sha256; t=1793205387; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ViAGUWKg1Z1iUJQ2AbZS9JIsx5dGhFA+BcGaGP2fe0qpMhw8sBl7k0sdJjyZs4P3PE
-    TI8zsm6sN1rm5mbn6syPSO96wIoOEQ/XkCxSpBxIrahSuufruNPpkE2R90OVPAz0C10P
-    FUCG98XGoDmpx5iEQAoa8c4H+APiPATZybzfH3vFm8oYLvtHkZwy9RgWHxYVCDLwv8z1
-    EhCawyb8qX/7WEbLs+6LZgZLG5+bmDBeLrkfinPcAYCqYoaq3mq7fwzV8ERtj0S6nbXX
-    HUv5wTl9aN4Y6XQOzM0h2YDX/t3yh+9CFXnYxP1GSPyvX69W/3uTQCvRJBpjzf4gyT6n
-    qZ3w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793205387;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
-    b=UYkAdHf9tq4sfZH3zwD+xaUFpTXf4r/N3st8pOwlX8vE/LPqVa9yKh/2vLe42Z2sJi
-    Jf/v5Cc96N3bHtiRFcAXRiapuKCgW60oR9rXvBa2AgWCZeFtgQG2wcEqCWzbCg6/ZTnq
-    lTF4VvStZo2jPef/OmXkiTvrJhCRR8uAlj07UsBwqei+VCNb9cWNfUipmkFRFnWV5Tze
-    pxjFxm86A2r3ewjcBdj08aHmTwVuCSYBS+ZUHSOs+4H5/2uyMT5di0By+2Nie5CQy2mn
-    bL6IRIWV9pyGk5F7qhM4cxecM2TCzSKoLa6gRDUU1rF3JDoax0oeyf9yOGZb0WXsmySs
-    oMMQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793205387;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
-    b=oAnuAjBqy8bBsPJijGItp0UCe2efA9ZW9p1lFXG1+NTIy9FiSU5gVCSUi1lqcj23Z7
-    bSUqksw4DDZnRPxku1WgyEOG5TWPA2nY5DubEf1kL/tFwI4RdtLX7wJl3j4qsQasXT0c
-    MT1Ne1Bol7dfJ0+lV/Ki4q/6NZc1QejUunCMKVaPboTy+1uY/7tJY5/Mt8flS3cT8879
-    DKlnz5qKrRS750G+CMVtwp9AnbLuBvjvsm6DbYIuW3HAOxH8l7oN7N7nJ3kz9jlLuoxj
-    ZVnbD4eJqN0HV5fnijMug2SJKBnF+nAfOmH+M2CTmTe2teI+tKOkb4SW7RfHOhIzORhh
-    JTlQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793205386;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=937bjWjJRaoOT5/F/pB1gaFoqLsckZ2CkctKTIk8kR4=;
-    b=S7fk/erv3C+ZPWjoxoK+R4FXh5gHJUYiVjUjqgDbtV6ctfIwiNm7/ZAlg9AuilO7Dp
-    GAtde1i78iLe35HneECA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a29SGaQKts
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 28 Oct 2026 17:36:26 +0100 (CET)
-Message-ID: <1e9a2768-e30e-4f2d-bc71-57550d210c0a@hartkopp.net>
-Date: Wed, 28 Oct 2026 17:36:26 +0100
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=oA079Fvs
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2812A1F01825;
+	Wed, 28 Oct 2026 20:02:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793217744;
+	bh=eMGL/SfdPd4JTRR79GZx0ANHe3xXx+490kcRSCW/wB0=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=oA079FvsZbwlsepEf+HHdspm11+1XJ8lfzgtz7lxfozsRQxpLIHBTboTQqPUrLGu2
+	 6ZF049Zhac13ByiMtXbzjwHnhQEOEA1yTXQYe352FhTpeOgkF7yBjDlCo3aBaEgVQc
+	 /PkAppdQd24ZfISs/BTQ2iY8vRciGvvWCzKTKwnByj8wDvEiV/XW0sqK1nQzfQ5yoO
+	 JryWv9gRGXMR95gIKLwj2rH2BycnDa15GDQRR1fNjDcDLHkblPLDS72OHmSqDxq2kb
+	 +5tR1GwnsHjYfv4A+TDA0o4/4682txschBMFIhTJgCw9tvK3jUXJAgLpDDgU7rUVqa
+	 8KSgwJHU3OwlQ==
+Subject: Re: [PATCH v8 2/2] can: dev: can_tdc_fill_info(): don't read
+ automatic TDCV if interface is down
+From: netdev-bot+sashiko@kernel.org
+To: chunyuzhiqiang@yinhe.ht
+Cc: netdev-bot+sinfo@kernel.org, netdev@vger.kernel.org,
+ linux-can@vger.kernel.org, mkl@pengutronix.de, mailhol@kernel.org,
+ kernel@pengutronix.de, haibo.chen@oss.nxp.com, shawnguo@kernel.org,
+ imx@lists.linux.dev, stable@vger.kernel.org, kuba@kernel.org
+Date: Wed, 28 Oct 2026 20:02:23 +0000
+Message-ID: <179321774368.3130.12586646136802755223@kernel.org>
+In-Reply-To: <20261027065012.191348-2-chunyuzhiqiang@yinhe.ht>
+References: <20261027065012.191348-2-chunyuzhiqiang@yinhe.ht>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,235 +64,188 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
- lock
-To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>,
- Norbert Szetei <norbert@doyensec.com>, Runyu Xiao <runyu.xiao@seu.edu.cn>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-References: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hi Marc,
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
 
-from my side v12 is ready to be applied.
+Critical: 0 · High: 0 · Medium: 2 · Low: 1
 
-Sashiko says:
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261027-can-rx-lock-v12-0-eb5afc2d8b9b%40hartkopp.net
+- [Medium] The commit message calls this change "defensive hardening
+  based on code inspection" and has no Fixes: tag.
+- [Medium] netif_running() is used as a stand-in for "the controller is
+  clocked", but in xilinx_can it can be true while the clocks are gated.
+- [Low] The modified can_tdc_get_size() prototype in
+  drivers/net/can/dev/netlink.c (lines 723-725) has continuation lines…
 
-The remaining Sashiko findings on v12 are either issues that are fixed 
-by later patches of this series (as Sashiko notes itself o_O) or 
-pre-existing issues that are not related to this series:
+--
 
-- CAN_BCM and CAN_J1939 also copy user space data under lock_sock(),
-   while their netdev notifiers take lock_sock() under RTNL. This is not
-   a new problem introduced by this series. I will look into this later.
-   It does not affect this patch set.
+can: dev: can_tdc_fill_info(): don't read automatic TDCV if interface is down
 
-- The user_reset in net/can/proc.c is denoted as not network namespace
-   aware. This is on my list for a separate can-next patch too.
+This commit makes can_tdc_fill_info() call do_get_auto_tdcv() only when
+netif_running() is true. Drivers such as xilinx_can then no longer read
+controller registers while the interface is down. can_tdc_get_size() and
+can_data_bittiming_get_size() now take the net_device, so IFLA_CAN_TDCV
+space is reserved only under the same condition.
 
-The only new finding is that isotp_bind() keeps so->rxid/so->txid after
-a failed bind(), which is visible via getsockname(). This is intended:
-As so->ifindex is reset to 0, there is no interface and therefore no
-valid address. The remaining CAN IDs only show that a bind() has been
-attempted and failed. No need to reset these values. Sashikos suggestion 
-to assign so->rxid/so->txid only on the success path would cause a new 
-race at start-up when a FirstFrame is received during the bind() process 
-- which is currently solved and working.
+> This is a defensive hardening based on code inspection; the automatic
+> TDCV path has not been triggered on hardware.
 
-Best regards,
-Oliver
+[Severity: Medium]
+Is "defensive hardening" an accurate description here? The path this patch
+closes looks reachable by an unprivileged user on current mainline and
+stable kernels.
 
-On 27.10.26 15:31, Oliver Hartkopp wrote:
-> This series fixes a use-after-free in CAN_ISOTP and CAN_BCM that can be
-> triggered when a CAN device is moved to another network namespace while
-> a socket bound to this device is released [1].
-> 
-> Patch 2 makes isotp_bind() check the return values of can_rx_register(),
-> so that bind() does not succeed with missing receivers.
-> 
-> Patch 4 copies the CAN_RAW and CAN_ISOTP specific socket options from
-> and to user space outside of lock_sock(), so that a stalled copy can not
-> block raw_notify() waiting for lock_sock() under RTNL.
-> 
-> Patches 5 and 6 fix the reset and the calculation of the CAN statistics.
-> 
-> Patch 7 removes the pointers from the CAN specific proc output. As it
-> changes the proc output ABI it is not intended for stable and has been
-> moved to the end of the series, so that patches 1-6 can be backported
-> without it.
-> 
-> The code of patches 1 and 5-7 is unchanged since v4, apart from the
-> rebase of patch 7 in v12. Only the commit message of patch 1 has been
-> updated after the Sashiko review of v4 to describe the actual NULL
-> pointer dereference in can_rx_unregister() and the CAN_ISOTP path that
-> reaches it.
-> 
-> The series is based on net/main.
-> 
-> The idea behind patch 3:
-> 
-> The receive lists of a CAN device are located in the device's
-> can_ml_priv and travel with the device when it is moved to another
-> network namespace. But they are protected by the per-netns
-> rcvlists_lock, so the lock that protects a device's lists depends on
-> the namespace the caller passes to can_rx_register() and
-> can_rx_unregister(). can_rx_unregister() silently returns when this
-> namespace does not match dev_net(dev) anymore.
-> 
-> isotp_release() and bcm_release() leave the netdev notifier list before
-> they can serialize against the notifier. When the device changes its
-> namespace in this window, their filters are not removed and the
-> remaining receivers point to the freed socket or bcm op.
-> 
-> Taking RTNL in these release paths is no option, as CAN_RAW already
-> holds RTNL while adding and removing up to CAN_RAW_FILTER_MAX filters
-> per socket, which unprivileged users can trigger repeatedly.
-> 
-> Instead, patch 3 protects the receive lists where they are located: A
-> spinlock in struct can_dev_rcv_lists protects the lists of a CAN device
-> (initialized in can_set_ml_priv()) or the 'any' CAN device lists of a
-> namespace (initialized in can_pernet_init()). can_rx_unregister() then
-> finds the subscription independently of the current namespace of the
-> device, which is kept accessible by the tracked device references the
-> protocols already hold. The per-netns rcvlists_lock only protects the
-> receive list statistics, for which CAN_RAW, CAN_BCM and CAN_ISOTP pass
-> the namespace that has been used for can_rx_register().
-> 
-> As a consequence, CAN_RAW and CAN_ISOTP do not need RTNL in bind(),
-> setsockopt() and release() anymore. bind() is serialized against
-> NETDEV_UNREGISTER by publishing the device inside the RCU section of
-> its lookup, as unlist_netdevice() and synchronize_net() precede
-> NETDEV_UNREGISTER both on unregistration and on a namespace change.
-> The notifiers recheck the binding under lock_sock(). As RTNL does not
-> keep NETDEV_DOWN out of bind() anymore, bind() checks IFF_UP after
-> publishing the bound device, with an smp_mb() pair against the
-> notifiers, so a down transition during bind() is still reported with
-> ENETDOWN.
-> 
-> ---
-> Changes in v12:
-> - reordered the patches: the former patches 4-7 are now patches 1-4 and
->    the former patches 1-3 are now patches 5-7, so that "can: proc: remove
->    pointers from CAN specific proc output" (ABI change, not for stable)
->    is the last patch
-> - patch 2: check IFF_UP after the successful registrations, so that a
->    bind() that fails on a down device does not report ENETDOWN (review of
->    v11)
-> - patch 4: Fixes: tags point to the commits that put the user space
->    copies under lock_sock() (review of v11)
-> - patch 5: note on the x86_64 test results and the architectures
->    affected by the memset() (review of v11)
-> - patch 6: added Cc: stable, as patch 5 is Cc: stable (review of v11)
-> - Link to v11: https://patch.msgid.link/20261026-can-rx-lock-v11-0-3b9a2b829dab@hartkopp.net
-> 
-> The patch numbers in the following changelogs refer to the patch order
-> up to v11.
-> 
-> Changes in v11:
-> - rebased to net/main without "can: raw: remove redundant NULL check
->    before netdev_hold()" [2]
-> - patch 6: keep the NULL check of ro->dev before netdev_hold() in
->    raw_bind() as found in net/main
-> - Link to v10: https://patch.msgid.link/20261026-can-rx-lock-v10-0-281c4b556a1a@hartkopp.net
-> 
-> Changes in v10:
-> - patch 5: register the echo receiver first and the RX receiver as the
->    last step, set so->ifindex before the registrations (Sashiko review)
-> - patch 6: rebased on patch 5
-> 
-> Changes in v9:
-> - rebased to net-next/main on top of "can: raw: remove redundant NULL
->    check before netdev_hold()" [2] (no code changes)
-> 
-> Changes in v8:
-> - new patch 5: check the return values of can_rx_register() in
->    isotp_bind() (Sashiko review)
-> - patch 6 rebased on patch 5: isotp_bind() resets the published so->dev
->    again when the registration of a receiver fails and checks IFF_UP at
->    the end of a successful bind(), as raw_bind() does
-> - patch 6: isotp_notify() reports NETDEV_DOWN only for a bound socket, so
->    a failing isotp_bind() can not get a needless ENETDOWN
-> - patch 6: isotp_sendmsg() and isotp_recvmsg() read so->bound with
->    READ_ONCE()
-> - patch 6: moved copying the user space data outside of lock_sock() in
->    raw_setsockopt() to patch 7 to keep patch 6 focused on the locking
->    changes and to ease review
-> - new patch 7: copy the CAN_RAW and CAN_ISOTP socket options outside of
->    lock_sock() (Sashiko review)
-> 
-> Changes in v7 (details in patch 6):
-> - report ENETDOWN in bind() and ENODEV for NETDEV_UNREGISTER under
->    lock_sock(), so ENODEV can not be overwritten by ENETDOWN (Sashiko
->    review)
-> 
-> Changes in v6:
-> - isotp_bind() checks the device before publishing so->dev, so a
->    failing bind() can not get a needless ENETDOWN (Sashiko review)
-> 
-> Changes in v5:
-> - report ENETDOWN for a down transition during bind() again (Sashiko
->    review)
-> - comment and kernel-doc updates (Sashiko review)
-> - patch 4: commit message describes the actual crash path (Sashiko
->    review)
-> 
-> [1] https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
-> [2] https://lore.kernel.org/all/20260831052031.902699-1-ekffu200098@gmail.com/
-> 
-> Previous versions:
-> v11: https://lore.kernel.org/linux-can/20261026-can-rx-lock-v11-0-3b9a2b829dab@hartkopp.net/
-> v10: https://lore.kernel.org/linux-can/20261026-can-rx-lock-v10-0-281c4b556a1a@hartkopp.net/
-> v9: https://lore.kernel.org/linux-can/20261025-can-rx-lock-v9-0-7ef2a2b5c2b4@hartkopp.net/
-> 
-> Previous versions of patch 3 (patch 6 up to v11):
-> v8: https://lore.kernel.org/linux-can/20261023121801.3052075-7-socketcan@hartkopp.net/
-> v7: https://lore.kernel.org/linux-can/20261022114202.180023-6-socketcan@hartkopp.net/
-> v6: https://lore.kernel.org/linux-can/20261021231130.2085690-12-mkl@pengutronix.de/
-> v5: https://lore.kernel.org/linux-can/20261020203257.230955-6-socketcan@hartkopp.net/
-> v4: https://lore.kernel.org/linux-can/20261019152741.54854-6-socketcan@hartkopp.net/
-> v3: https://lore.kernel.org/linux-can/20261019074244.50391-5-socketcan@hartkopp.net/
-> v2: https://lore.kernel.org/linux-can/20261018180739.689750-1-socketcan@hartkopp.net/
-> v1: https://lore.kernel.org/linux-can/20261017201935.399233-1-socketcan@hartkopp.net/
-> 
-> ---
-> Oliver Hartkopp (6):
->        can: replace ARPHRD_CAN type checks with can_get_ml_priv()
->        can: isotp: check the return values of can_rx_register() in isotp_bind()
->        can: protect the receive lists with a per-device lock
->        can: raw, isotp: copy socket options outside of lock_sock()
->        can: proc: skip stats calculation after reset in can_stat_update()
->        can: proc: remove pointers from CAN specific proc output
-> 
-> Runyu Xiao (1):
->        can: proc: reset pkg_stats atomics individually
-> 
->   Documentation/networking/can.rst |  16 ++-
->   include/linux/can/can-ml.h       |   3 +
->   include/linux/can/core.h         |   2 +-
->   include/net/netns/can.h          |   2 +-
->   net/can/af_can.c                 |  60 +++++----
->   net/can/af_can.h                 |   2 +-
->   net/can/bcm.c                    |  64 ++++-----
->   net/can/gw.c                     |   9 +-
->   net/can/isotp.c                  | 222 ++++++++++++++++++-------------
->   net/can/j1939/main.c             |   2 +-
->   net/can/proc.c                   |  95 +++++++------
->   net/can/raw.c                    | 278 +++++++++++++++++++++++----------------
->   12 files changed, 435 insertions(+), 320 deletions(-)
-> ---
-> base-commit: 6430fb7f1cc4e329e386521b7b208df443de92f2
-> change-id: 20261025-can-rx-lock-cecab2ad832f
-> 
-> Best regards,
-> --
-> Oliver Hartkopp <socketcan@hartkopp.net>
-> 
+xcan_probe() ends with pm_runtime_put(). The controller then stays
+runtime-suspended, with bus_clk and can_clk disabled, until xcan_open()
+takes a reference. xcan_get_auto_tdcv() reads a register without taking a
+runtime PM reference:
 
+drivers/net/can/xilinx_can.c:xcan_get_auto_tdcv() {
+    ...
+	*tdcv = FIELD_GET(XCAN_SR_TDCV_MASK, priv->read_reg(priv, XCAN_SR_OFFSET));
+    ...
+}
+
+xcan_get_berr_counter(), by comparison, wraps its reads in
+pm_runtime_get_sync()/pm_runtime_put().
+
+TDC_AUTO also gets turned on while the interface is down.
+can_dbt_changelink() accepts data bittiming only when the device is not
+IFF_UP. It calls can_calc_tdco(), which sets TDC_AUTO whenever the data BRP
+is 1 or 2. Take the usual setup sequence:
+
+  ip link set canX type can bitrate ... dbitrate ... fd on
+  ip -d link show canX
+
+Before this patch, that sequence reaches the following path with the
+clocks gated:
+
+  rtnl_getlink()->can_fill_info()->can_tdc_fill_info()->xcan_get_auto_tdcv()
+
+The callback was added in commit 1010a8fa96086d ("can: xilinx_can: add
+Transmitter Delay Compensation (TDC) feature support"). Should this patch
+carry a Fixes: tag for that commit, plus Cc: stable?
+
+The companion patch "can: dev: can_fill_info(): don't wake up controller if
+interface is down" fixes the same kind of access, and it has both tags.
+
+The changelog note says:
+
+> Split out of the berr-counter patch so that the stable backport only
+> carries the hardware-tested change.
+
+Without a Fixes: tag, the stable tooling cannot tell that kernels
+containing 1010a8fa96086d also need this change.
+
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index b958c04d53db6..613beee9e9362 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
+> @@ -720,8 +720,9 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
+>  	return 0;
+>  }
+>  
+> -static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+> -			       u32 tdc_flags)
+> +static size_t can_tdc_get_size(const struct net_device *dev,
+> +				 struct data_bittiming_params *dbt_params,
+> +			     u32 tdc_flags)
+
+[Severity: Low]
+This isn't a bug, but the continuation lines no longer line up with the
+open parenthesis. The dbt_params line is two columns to the right of it,
+and the tdc_flags line is two columns to the left. checkpatch --strict will
+report "Alignment should match open parenthesis".
+
+can_data_bittiming_get_size(), later in the same patch, is aligned
+correctly.
+
+>  {
+>  	bool tdc_manual = tdc_flags & CAN_CTRLMODE_TDC_MANUAL_MASK;
+>  	size_t size;
+> @@ -742,7 +743,8 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
+>  	}
+>  
+>  	if (tdc_flags) {
+> -		if (tdc_manual || dbt_params->do_get_auto_tdcv)
+> +		if (tdc_manual ||
+> +		    (dbt_params->do_get_auto_tdcv && netif_running(dev)))
+>  			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
+>  		size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO */
+>  		if (dbt_params->tdc_const->tdcf_max)
+
+[ ... ]
+
+> @@ -910,7 +913,7 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev,
+>  		if (tdc_manual) {
+>  			tdcv = tdc->tdcv;
+>  			err = 0;
+> -		} else if (dbt_params->do_get_auto_tdcv) {
+> +		} else if (dbt_params->do_get_auto_tdcv && netif_running(dev)) {
+>  			err = dbt_params->do_get_auto_tdcv(dev, &tdcv);
+>  		}
+
+[Severity: Medium]
+Can netif_running() be true while the xilinx_can clocks are still gated?
+If so, xcan_get_auto_tdcv() can still read XCAN_SR_OFFSET from unclocked
+hardware.
+
+xcan_suspend() stops and detaches a running interface, then calls
+pm_runtime_force_suspend(). That runs xcan_runtime_suspend(), which
+disables bus_clk and can_clk. __LINK_STATE_START stays set:
+
+drivers/net/can/xilinx_can.c:xcan_suspend() {
+    ...
+	if (netif_running(ndev)) {
+		netif_stop_queue(ndev);
+		netif_device_detach(ndev);
+		xcan_chip_stop(ndev);
+	}
+
+	return pm_runtime_force_suspend(dev);
+}
+
+If pm_runtime_force_resume() fails during resume, xcan_resume() returns
+early. This can happen, for example, when clk_prepare_enable() fails in
+xcan_runtime_resume():
+
+drivers/net/can/xilinx_can.c:xcan_resume() {
+    ...
+	ret = pm_runtime_force_resume(dev);
+	if (ret) {
+		dev_err(dev, "pm_runtime_force_resume failed on resume\n");
+		return ret;
+	}
+    ...
+}
+
+At that point the clocks are off, the netdev is still IFF_UP and detached,
+and netif_running() still returns true. An unprivileged
+"ip -d link show canX" then passes the new check in can_tdc_fill_info()
+and reads XCAN_SR_OFFSET in xcan_get_auto_tdcv().
+
+rcar_canfd looks similar. rcar_canfd_suspend() calls
+rcar_canfd_global_deinit(), which disables clkp and asserts reset. If
+rcar_canfd_global_init() then fails in rcar_canfd_resume(),
+rcar_canfd_get_auto_tdcv() reads cfdsts from a block that is unclocked or
+held in reset.
+
+Would it be more robust to take a runtime PM reference in
+xcan_get_auto_tdcv(), as xcan_get_berr_counter() does?
+
+Another option is to gate on netif_running(dev) && netif_device_present(dev).
+Both drivers call netif_device_attach() only after the hardware is back up.
+
+With either approach, can_tdc_get_size() needs the same condition so the
+size estimate stays consistent with can_tdc_fill_info().
+
+>  		if (!err && nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdcv))
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261027065012.191348-1-chunyuzhiqiang%40yinhe.ht
