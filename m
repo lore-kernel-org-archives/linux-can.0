@@ -1,31 +1,31 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793279492;
-	b=IiM8DVdinm2OT/FPFwVRvR29PzDSDwtlVXhvMNH3oHeJszN8hjFjB4p79PsQGRYjwrUT
-	 IP191fzMtR8NtDY8Rab7kDM4XOYq9xmzQJdf11RE7Qevx/q0w6zuWyyWtJnC7Ma8NXo4f
-	 1+ADHinz4nWmAjqL88qrdRftSx54z/kv+uKSwFGAuGBK39C6R/jwt11VsJR43V7CiZXr4
-	 pFq3vTN3UYgFPz2JXhHGOQPxo6x1jnz69esdsYEIj9LnZ3SzyPRBtvIO6Iu1HiHCZBHVH
-	 xQ0GRtgbmNZsGqIFFmx+CbbPbA1h5OKBG9ihppiYWTPZlwBwWB/oFxMKdLfrvfssCHA==
+	t=1793279488;
+	b=AcGDA4rrWifFmuYnfEqXsZs7yLMhLnQx8Ot5RYfiXAl69kL4j6VX1QGyjP1F0qPgcYFg
+	 lzRS/QbijrMa/8cg8o9zo/x2ACxarQ+LcxvHv59qbtzColrg2tvhOQFNQciVPcprxSek7
+	 6W0jzBKEY31h4Y+aBtiYAaAjQ+zcOg8xVYEyRQUmwXLgV1Qs7kE3vP+T6C8deqIO1aOsF
+	 LRgB5MXYgQ29ocd4LMinwfneznZLPsUApfKJ84pGhqmwXjJXYD+ePgewXzEvoyZFAOptY
+	 t7YOxocQ8XKXkv+vOUBXle5WKd22S1HVspHlwSvsdMFIX1PL++Xv4Uicv7DkWv6uCfQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793279492;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793279488;
 	h=Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding;
-	bh=TacSadf5vVdafv1GWEGVsOyle84bCFtG5lLBQAWeJf0=;
-	b=x0dw+2JgOYy1O76WjhYQ22Fy5E40O6w13GNsCBsUWl9CRLPHBII3h4fV/tlLzYTQH+x3
-	 KKf3cpPeFqKRunj39+Kz9kajg7AgWsie89IdqMB5WdTR/MbE10BGSBcj4ttS3y/WzS9bx
-	 ZJwmBimeY1mS9GeiHJ7DdO7dY/2bDvsgNrJSF1wjSZJDDTz/YoP85CJ7EoybSmjWHQZlA
-	 hTnhYQ/QEuMH11rbgfwpMZr5W83r5ApYrA6DD74l0Oc+N84d/cUJhGFcxGFNPqGirEdJv
-	 v0n0EoTCtRY4VbpZDiS57lIj2OUek5YeUIUZl+vcxsCdOJISGVVbmUpe6uxIHgVPwfg==
+	bh=NkyoRqoBmfBgCM55UmNfodUHU+sKzojvgE1fX4kVPRw=;
+	b=oND5mysebfusWbOUaI6GPyHJvgmTp2uwylC55RVcTp7IfQzCjWOfBlm2LxtI1paSR5vr
+	 /kvcVHB7hmqX0wilQqmTEN7YX42C9UDqZkQWyYIy2Vl2Mo82HmeIqXnPh32DsAtVaxBkc
+	 qxpYAKgkYrZJc2tE8PHhdCA0WJS35Qfcp6USmypalFbye4iZxWleUIFiGAPZYoTIoDTDw
+	 whF/PYXjz+Y0Tj8xu3mtTrBUInVrnYrGI7r2Hmw7wAdfr8FzbC6g27Ys9eklOONY7vhl7
+	 yBHv7zAy5KfUNG848JFiLxIAWi3mbDw45NYr0esK3OfDAVrU3/jXnI3B0z4NIdyM6Fw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF33606A321;
-	Thu, 29 Oct 2026 13:11:32 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EAD51F031E2;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29EE3606A31A;
 	Thu, 29 Oct 2026 13:11:28 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5A60A1F031E7;
+	Thu, 29 Oct 2026 13:11:24 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -47,9 +47,9 @@ Cc: linux-can@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 3/9] can: rcar_canfd: Make clkp local
-Date: Thu, 29 Oct 2026 14:11:04 +0100
-Message-ID: <415c8b26718e2e5d53f74e65daedf9986c76dcfe.1793278754.git.geert+renesas@glider.be>
+Subject: [PATCH 2/9] can: rcar_canfd: Add Runtime PM support
+Date: Thu, 29 Oct 2026 14:11:03 +0100
+Message-ID: <011735aa3a7568229db473a7ff92681176338db0.1793278754.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1793278754.git.geert+renesas@glider.be>
 References: <cover.1793278754.git.geert+renesas@glider.be>
@@ -64,47 +64,81 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The peripheral clock is only used in rcar_canfd_probe(), so convert clkp
-to a local variable.
+On R-Car X5H, the CAN-FD module is part of a power domain.  This means
+Runtime PM must be used to make sure the domain is powered when needed.
+The CAN-FD module is part of a Clock Domain on all supported SoCs.
+Hence remove explicit management of the functional clock, as this is
+handled automatically by Runtime PM.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
- drivers/net/can/rcar/rcar_canfd.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/net/can/rcar/rcar_canfd.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
-index 74d9ffd2790587b9..9dbe44710dcced80 100644
+index 4d805df5ff9e8933..74d9ffd2790587b9 100644
 --- a/drivers/net/can/rcar/rcar_canfd.c
 +++ b/drivers/net/can/rcar/rcar_canfd.c
-@@ -467,7 +467,6 @@ struct rcar_canfd_global {
- 	void __iomem *base;		/* Register base address */
- 	struct rcar_canfd_f_c __iomem *fcbase;
- 	struct platform_device *pdev;	/* Respective platform device */
--	struct clk *clkp;		/* Peripheral clock */
- 	struct clk *can_clk;		/* fCAN clock */
- 	struct clk *clk_ram;		/* Clock RAM */
- 	unsigned long channels_mask;	/* Enabled channels mask */
-@@ -2111,6 +2110,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 	bool fdmode = true;			/* CAN FD only mode - default */
- 	char name[9] = "channelX";
- 	u32 ch, fcan_freq;
-+	struct clk *clkp;
- 	int i;
+@@ -37,6 +37,7 @@
+ #include <linux/of.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ #include <linux/types.h>
  
- 	info = of_device_get_match_data(dev);
-@@ -2181,9 +2181,9 @@ static int rcar_canfd_probe(struct platform_device *pdev)
- 				     "failed to get rstc_n\n");
+@@ -2004,9 +2005,9 @@ static int rcar_canfd_global_init(struct rcar_canfd_global *gpriv)
+ 	int err;
  
- 	/* Peripheral clock */
--	gpriv->clkp = devm_clk_get(dev, "fck");
--	if (IS_ERR(gpriv->clkp))
--		return dev_err_probe(dev, PTR_ERR(gpriv->clkp),
-+	clkp = devm_clk_get(dev, "fck");
-+	if (IS_ERR(clkp))
-+		return dev_err_probe(dev, PTR_ERR(clkp),
- 				     "cannot get peripheral clock\n");
+ 	/* Enable peripheral clock for register access */
+-	err = clk_prepare_enable(gpriv->clkp);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err) {
+-		dev_err(dev, "failed to enable peripheral clock: %pe\n",
++		dev_err(dev, "pm_runtime_resume_and_get() failed: %pe\n",
+ 			ERR_PTR(err));
+ 		return err;
+ 	}
+@@ -2016,7 +2017,7 @@ static int rcar_canfd_global_init(struct rcar_canfd_global *gpriv)
+ 	if (err) {
+ 		dev_err(dev,
+ 			"failed to enable RAM clock, error %d\n", err);
+-		goto fail_clk;
++		goto fail_rpm;
+ 	}
  
- 	/* fCAN clock: Pick External clock. If not available fallback to
+ 	err = reset_control_reset(gpriv->rstc1);
+@@ -2074,8 +2075,8 @@ static int rcar_canfd_global_init(struct rcar_canfd_global *gpriv)
+ 	reset_control_assert(gpriv->rstc1);
+ fail_ram_clk:
+ 	clk_disable_unprepare(gpriv->clk_ram);
+-fail_clk:
+-	clk_disable_unprepare(gpriv->clkp);
++fail_rpm:
++	pm_runtime_put(dev);
+ 	return err;
+ }
+ 
+@@ -2093,7 +2094,7 @@ static void rcar_canfd_global_deinit(struct rcar_canfd_global *gpriv, bool full)
+ 	reset_control_assert(gpriv->rstc2);
+ 	reset_control_assert(gpriv->rstc1);
+ 	clk_disable_unprepare(gpriv->clk_ram);
+-	clk_disable_unprepare(gpriv->clkp);
++	pm_runtime_put(&gpriv->pdev->dev);
+ }
+ 
+ static int rcar_canfd_probe(struct platform_device *pdev)
+@@ -2254,6 +2255,10 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	err = devm_pm_runtime_enable(dev);
++	if (err)
++		goto fail_dev;
++
+ 	err = rcar_canfd_global_init(gpriv);
+ 	if (err)
+ 		goto fail_mode;
 -- 
 2.43.0
 
