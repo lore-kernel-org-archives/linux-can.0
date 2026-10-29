@@ -1,31 +1,31 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793279508;
-	b=49F2majlQ/RRX/MUkcpswtanjjVlfgVc3GZGy+E0aytpJ4438DjZ4hBeNIuVOTqiXgWt
-	 eOB+Wb8cdh3qDZa0GXCWmssTCGICsIGO8m0xI+doEnXUCeYY+JQf3CMY3XKwuaL2TgI8v
-	 3QQEXwUQxmgexkq/eoa87edIE6EkXJKO0YAaEgj4oLep2Xi982OWleCDEHnvTBOIz+aS0
-	 jeMR2jpAjIhZTprgHqB6/lcp4pE+L7P1+LQ5PqYMRvr0VxT45VLObIHj7HCaDFXjL0jdV
-	 bDd3F3m0xadFOx5/GX/7vis+5GDm/JUu1GnrZCjdg3Fc/87ZJoinFcgCU2GLgSJrYCQ==
+	t=1793279516;
+	b=yEpdWhDN8s5ojOAN/VZ2jDaRkfWDtbvgX2avVEsYk+5fT7sh9Bo+HAdNWuD3tdkfvPrP
+	 an6jqzg1E53chhkCVeyKUY09GPMnLnpnOVsHIFTlV74p7FujdpJw9k9EXE2SntsoZFNsw
+	 FaZcWncKzgjn4JHe8Q3CWYLwsUgupsDsUM7JEFw7RFF6bfe/eLDgEcknd0XFD09W0+W8L
+	 NoW2HH6WhMpbXaAp15XkN3TWcTSD4NOjvxzoGVksFV7Vc5LIXfkcfeHH2B0dQH8rQTMLc
+	 NBFPvKTwZY6tJBddbMREURZsm183yyIZcbanv7euelAu78wBnsCqHl4xC95xhLZ75XQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793279508;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793279516;
 	h=Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding;
-	bh=Edmcko11Xp6DEFFN8DrNllqPF61F7sdGOgmwg2xTmCQ=;
-	b=dIgcqD39+VImuyjvwTNch/C1mQIAd58r9R8v4J9pS+UW8HCMMeUV+VkU7V+EBpFlFpdQ
-	 zEVJe6wkJUep2Cu1K8YlosyqGmsGjE30aoxGBIyy/3Ss2ktbChn7m647KYVRbpBpqaF27
-	 GAYyLDjssnpHs++BPkFIMyjvJbbOYP363yXDOMkRz6sLkAlOdN4RDJJpFRj3Aj6/Ke6S4
-	 XkptT0zxiVANT+m8Dq7Xa+XT3HaKROR1Q7ol47CDBAsYdhbTq2nFIEY+f7kc2tD2+p2O5
-	 ozalYEYHpKNEHRMP517Up0L4J8BGbsDtZzIXESDMHqPk+X3mAEFmFFYUJPJLKH0CddQ==
+	bh=5pCrvx2wO9rxz/SVIPupq/LgqP91MpNSt9foXvKiLGM=;
+	b=XlRVy5Z9Ax+CD9bcpYp0wVkk1CSdIJnIOA3Li0kHvXvXGcKv79RV6Ze6hSLz32DmLmPF
+	 kQN2N6nY139xc/X8nSZxhai6Ol8np3hYO/Pm85FKupoK2kbBWJ1j/xiP/AStMwNY71WX4
+	 d9F5/ZffaS1gkR88IvsPAmSc78zbD5LE1loZ4HJQB6Q1Z2l5HnP6nhwcc3Mu6tRXH0eCD
+	 EQv/hryGQ74rIMcKN2E0TTxS/T06lp18+2GkWXzftBFy0q4HEG2eXlwQbPT8Wlko/6/O/
+	 gS6MLnneeZutem8HeC7/J/JXcOBvhnD1VATmCzY9Jc4h1YFnRJReFD/t6gXm2PmVcxA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8921B606A31C;
-	Thu, 29 Oct 2026 13:11:48 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C14331F031E9;
-	Thu, 29 Oct 2026 13:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D41606A31D;
+	Thu, 29 Oct 2026 13:11:56 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD1531F031E1;
+	Thu, 29 Oct 2026 13:11:52 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -47,9 +47,9 @@ Cc: linux-can@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH/DNI 7/9] clk: renesas: r8a78000: Add CAN-FD clocks
-Date: Thu, 29 Oct 2026 14:11:08 +0100
-Message-ID: <5e76e7bc1d45939387746d84e4d8628f4fbd4f9b.1793278754.git.geert+renesas@glider.be>
+Subject: [PATCH/DNI 9/9] arm64: dts: renesas: ironhide: Enable CAN-FD
+Date: Thu, 29 Oct 2026 14:11:10 +0100
+Message-ID: <66a35ed04f5d3f14a4bc60b4646917e1dc25b2f6.1793278754.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1793278754.git.geert+renesas@glider.be>
 References: <cover.1793278754.git.geert+renesas@glider.be>
@@ -64,62 +64,156 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add support for the clocks used by the Controller Area Network Flexible
-Data Rate (CAN-FD) modules on R-Car X5H.
-This includes SCMI remapping table entries and a fixed-clock fallback.
+CAN-FD channels 1 to 6 and 12 to 15 are wired to CAN connectors CN7B to
+CN12, CN18, CN19, and CN55 to CN58.
+
+Channel 0 on CAN connector CN7A is not added, as its transceiver is
+controlled by the System Control Processor (SCP).
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-This depends on "[PATCH/DNI 09/11] clk: renesas: r8a78000: Add PWM
-clocks"
-https://lore.kernel.org/4fc4232a28fe500b270d2cc26412a1909c12f5aa.1793026273.git.geert+renesas@glider.be
+This depends on out-of-tree pin control support.
 ---
- drivers/clk/renesas/r8a78000-cpg.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ .../boot/dts/renesas/r8a78000-ironhide.dts    | 117 +++++++++++++++++-
+ 1 file changed, 116 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/clk/renesas/r8a78000-cpg.c b/drivers/clk/renesas/r8a78000-cpg.c
-index 9b1ff5a8ff1bdc31..4e986b6cb79e4631 100644
---- a/drivers/clk/renesas/r8a78000-cpg.c
-+++ b/drivers/clk/renesas/r8a78000-cpg.c
-@@ -40,6 +40,7 @@ enum fixed_clk {
- 	FIXED_CLK_66M,
- 	FIXED_CLK_100M,
- 	FIXED_CLK_133M,
-+	FIXED_CLK_150M,
- 	FIXED_CLK_266M,
+diff --git a/arch/arm64/boot/dts/renesas/r8a78000-ironhide.dts b/arch/arm64/boot/dts/renesas/r8a78000-ironhide.dts
+index c2d814da9fd97802..63dd4fa2d737a729 100644
+--- a/arch/arm64/boot/dts/renesas/r8a78000-ironhide.dts
++++ b/arch/arm64/boot/dts/renesas/r8a78000-ironhide.dts
+@@ -171,6 +171,66 @@ ecc@1ecccc0000 {
+ 	};
  };
  
-@@ -49,6 +50,7 @@ static const unsigned long fixed_clk_rates[] = {
- 	[FIXED_CLK_66M] = 66666000,
- 	[FIXED_CLK_100M] = 100000000,
- 	[FIXED_CLK_133M] = 133330000,
-+	[FIXED_CLK_150M] = 150000000,
- 	[FIXED_CLK_266M] = 266660000,
++&can_clk {
++	clock-frequency = <40000000>;
++};
++
++&canfd0 {
++	pinctrl-0 = <&canfd1_pins>,  <&canfd2_pins>, <&canfd3_pins>,
++		    <&canfd4_pins>, <&canfd5_pins>, <&canfd6_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++
++	channel1 {
++		status = "okay";
++	};
++
++	channel2 {
++		status = "okay";
++	};
++
++	channel3 {
++		status = "okay";
++	};
++
++	channel4 {
++		status = "okay";
++	};
++
++	channel5 {
++		status = "okay";
++	};
++
++	channel6 {
++		status = "okay";
++	};
++};
++
++&canfd1 {
++	pinctrl-0 = <&canfd12_pins>, <&canfd13_pins>,  <&canfd14_pins>,
++		    <&canfd15_pins>;
++	pinctrl-names = "default";
++
++	status = "okay";
++
++	channel4 {
++		status = "okay";
++	};
++
++	channel5 {
++		status = "okay";
++	};
++
++	channel6 {
++		status = "okay";
++	};
++
++	channel7 {
++		status = "okay";
++	};
++};
++
+ &extal_clk {
+ 	clock-frequency = <16666600>;
+ };
+@@ -214,9 +274,64 @@ &msiof6 {
  };
  
-@@ -297,6 +299,7 @@ static const struct clk_map_in r8a78000_cpg_default[] = {
- 	{ R8A78000_CPG_SGASYNCD4_PERW_BUS,	FIXED_CLK(266M) },
- 	{ R8A78000_CPG_SGASYNCD8_PERW_BUS,	FIXED_CLK(133M) },
- 	{ R8A78000_CPG_SGASYNCD16_PERW_BUS,	FIXED_CLK(66M) },
-+	{ R8A78000_CPG_SCPBUSD4_SCP_MAIN,	FIXED_CLK(150M) },
- 	{ R8A78000_CPG_SCPBUSD16_SCP_MAIN,	FIXED_CLK(37M5) },
- 	{ R8A78000_CPG_S0D24_PERE_MAIN,		FIXED_CLK(33M) },
- 	{ R8A78000_CPG_SGD32_PERW_BUS,		FIXED_CLK(33M) },
-@@ -312,12 +315,14 @@ static const struct clk_map_in r8a78000_cpg_fw[] = {
- 	{ R8A78000_CPG_SGASYNCD16_PERW_BUS,	1663 },
- 	{ R8A78000_CPG_MSO_SCP_MAIN,		1459 },
- 	{ R8A78000_CPG_MSOCK_PERW_BUS,		1667 },
-+	{ R8A78000_CPG_SCPBUSD4_SCP_MAIN,	1451 },
- 	{ R8A78000_CPG_SCPBUSD16_SCP_MAIN,	1454 },
- 	{ R8A78000_CPG_S0D24_PERE_MAIN,		1690 },
- 	{ R8A78000_CPG_SGD32_PERW_BUS,		1660 },
- 	{ R8A78000_CPG_S0D24_HSCN_OTHER,	1499 },
- 	{ R8A78000_CPG_SGASYNCD16_PERW_MAIN,	1651 },
- 	{ R8A78000_CPG_S0ASYNCD8_PERW_MAIN,	1653 },
-+	{ R8A78000_CPG_CANFD_SCP_MAIN,		1456 },
- 	{ -1 }
- };
+ &pfc {
+-	pinctrl-0 = <&scif_clk_pins>;
++	pinctrl-0 = <&can_clk_pins>, <&scif_clk_pins>;
+ 	pinctrl-names = "default";
  
++	can_clk_pins: can-clk {
++		groups = "can_clk";
++		function = "can_clk";
++	};
++
++	canfd1_pins: canfd1 {
++		groups = "canfd1_data";
++		function = "canfd1";
++	};
++
++	canfd2_pins: canfd2 {
++		groups = "canfd2_data";
++		function = "canfd2";
++	};
++
++	canfd3_pins: canfd3 {
++		groups = "canfd3_data";
++		function = "canfd3";
++	};
++
++	canfd4_pins: canfd4 {
++		groups = "canfd4_data";
++		function = "canfd4";
++	};
++
++	canfd5_pins: canfd5 {
++		groups = "canfd5_data";
++		function = "canfd5";
++	};
++
++	canfd6_pins: canfd6 {
++		groups = "canfd6_data";
++		function = "canfd6";
++	};
++
++	canfd12_pins: canfd12 {
++		groups = "canfd12_data_b";
++		function = "canfd12";
++	};
++
++	canfd13_pins: canfd13 {
++		groups = "canfd13_data_b";
++		function = "canfd13";
++	};
++
++	canfd14_pins: canfd14 {
++		groups = "canfd14_data_b";
++		function = "canfd14";
++	};
++
++	canfd15_pins: canfd15 {
++		groups = "canfd15_data_b";
++		function = "canfd15";
++	};
++
+ 	hscif0_pins: hscif0 {
+ 		groups = "hscif0_data", "hscif0_ctrl";
+ 		function = "hscif0";
 -- 
 2.43.0
 
