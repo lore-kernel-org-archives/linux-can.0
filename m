@@ -1,107 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793263502;
-	b=44I+EDdSa2wzWlQ7XkH25xzQ9lCOFlKyfAGoWKaYgZPU+SxI4oNe/cev3ukz+/CvaDmO
-	 FTNBwWyUSJuYPEQyPHkakHLHzaeh/8sandGeSqenKJUzFngyDYmKWonyXSqUIxciFrSqS
-	 hhwvVcIxSGKwFbFeu/nZWzta9SufdqD8F9AcEUEF6Fb6P/AVQqVrfF4U4VHop4ZVMoL+A
-	 MZvkAZDFNSCrlyGkEjxrytwet0EDLnCRRJL+iNEz8Fc3Q0gzUU2GW68rzkhNfB1SWaRy4
-	 2AGF9bc1M/VO8eEcNu2CM7OeqeXC2Jou0sUpWbdffuB+5y5TLPxe/oZFTVMZOM+SqmQ==
+	t=1793265329;
+	b=aGra9D7wBLGOQYBT3GSJQ4ZDPzY70Zd9YBF1m1eciamWUBm5crQGiH40jV7pcQmxtqSK
+	 QdOGqQBCjKmgR221Ull+LV7mQua7pyWGJj34jUV6Laxscs4Ztopcn3pFfIQO5MgymVZH0
+	 X53GTaa6UKF+3Qw7jrpOKwlkCG6chRw36ixKZK766vp9ay9B0sDSMgEDYIc2wBhQ3/ky2
+	 jm8mxVyj58T6uHx6WxGacLGuJnAdb+JwzEfPGzFO8GKj7qQFa0CotrJIK6Y90dfnQBsY3
+	 VLKgNcWIkGtKHsZ/EP+SfaQtdszhWLMJW5UG3svpyasHNxRwHLhu+mv3y0AwB3dLk3Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793263502;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=SoQZ6Rn/231FVhlbAImWqe7u6be9TgKTmZprNFAFk2s=;
-	b=fF/rDrzSm460h+iM88d9iiZUTx32vqSfSFTUTeaxD0/8xqlk5a5wWWA0/KP38perJxxJ
-	 qxnC8Pl96O/ZfSjljFghYcO2WY+VcQWov1092mU2MEdFMXTw3fCHgaV6pnI4p0owcZRAQ
-	 HdVxAPxtu7HpFsoUdWTwNEjxHg8deTTYK2JpAWux7Fn1Rb7jDuRsQgLFPJMM7Ziis3zCk
-	 BtjS9pynIPfWBKqimKb9cEoBzwyD7kUFg/5CimHwe4LmPKq6weU3oL279oLoW6OSxJzzy
-	 FIUNX8IT1nZJVRO+/AgVtPjRWWT/ROoufl6p4J0gIA4Gk/lLoH6HqZi193ut80Zs9EA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793265329;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=P0SIf3Z0ah/xydyjtibm/RKq2We8Qb/ubi/Yy0fMOVU=;
+	b=W/JFzsSpiY3SnEnA2mRKcHspOsSI4nx6HjufqZi/5FAwQFNb5rpNySRNl0PdZSyxRFj8
+	 b/hU8uqQCD4JaAHEbk1QWUU9LfxwKL6bHq75EpTbYFfKHmSDyZY589zGnA1887iD7vhrN
+	 1Ww/8igfl6RzxF4ui6jNQHayqtRsLEa29VfwhiZ+7cdM45VJj7SM/HvNdA748Anplr8MU
+	 dBOw0s6MnRRzvxfRorytKVjkmbhCzd972fhwYDEWHd/FKBe3Qmt1mFuJlpl8dB+RaDurl
+	 fXXjZUxqKpHiwfbjoittSdxM0Tw4f78EtyI4Wwz/qdheynH+zoRALphy32PY0+gqa3w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nebusec.ai;
-	spf=pass smtp.mailfrom=nebusec.ai;
-	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=aKHj8Hwg;
-	arc=none smtp.remote-ip=209.85.210.176
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YDiV9cm+;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB95606A31C
-	for <linux-can@vger.kernel.org>; Thu, 29 Oct 2026 08:45:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0FB95606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13E7606A321
+	for <linux-can@vger.kernel.org>; Thu, 29 Oct 2026 09:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=aKHj8Hwg
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-8a06c60065fso1476190b3a.1
-        for <linux-can@vger.kernel.org>; Thu, 29 Oct 2026 01:45:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nebusec.ai; s=google; t=1793263501; x=1793868301; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=SoQZ6Rn/231FVhlbAImWqe7u6be9TgKTmZprNFAFk2s=;
-        b=aKHj8HwgeD2vMHjhtIBSVildfiiSxm8wGS0nus+eDfGMXk+01eabGFy8E5SlvvtLPr
-         OA8/DaMj4T7kHODYZcIWx42KWo6AI7swv3Qih74SvZCYBTWyZ32bp6k23185fEuGiZpI
-         jb3CdAk26dnclVO9ZcW9bbQfxxOUT7/zbVW8Lt5+4hXTW0Sp4VAHyeomCtI6hGaKL7sD
-         5uF7NcYY+uEunF2PqhW1Oz+j2zcBm9Sz6BzKVTdHFhvkCAD/7L4Hlyv+R4Swf7+C9GOl
-         QtsEUnXZkVAuPFYusAXEmjFJMgngcxR2R3IlWSacptHu9dXIG6EjifnI95do4w/oxNUN
-         pNbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793263501; x=1793868301;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=SoQZ6Rn/231FVhlbAImWqe7u6be9TgKTmZprNFAFk2s=;
-        b=BdNWQQaFwzkGMROTMYOeh8XOGYXaD7jrLUHfvgFv224txo2AE+mJ78spZuyDdVewrB
-         rGv1TU3YFwgcGi2EoyZVn4ywa3OoYL+8MHxszSSQHQG+odnNlJFUPdSrCxMt7SpfE7tz
-         s+q86nOoko4rwhkxrMCF/r/BdNFm8G45Qz/s98vOrnRdrlxv4MDXsDb3DKc7P48QF7ev
-         Ju27HC0AVHc5Rcs9P89kzTdN5pL30rSIYbVb92QWOassE7wGZdb+OgJ8wp77D5gnAvaL
-         WEM6zr39H+abWVGxPNqd3hKWRdOF597DZbwPEBOF5F/Pg58rFYjhJ7z+BMIpC7PZJiCK
-         NWrQ==
-X-Gm-Message-State: AFq9FYKwfLV3Ab99yyUXgziDVXplu2R5Q1knPlyhtAsb8c5xzV8MIqFU
-	F3UqYhLoiybAuzY63VvO3aTwEOaXsyLpWFFv22527mUPkKFoUMXOLhgCs7CT+9shkQ/oB9WaTcj
-	craTY/vZg
-X-Gm-Gg: AYBFou3dF+PYXHtfJGnMLLc2bhhYQBcaB/0K9Cg3TfUo0OQQUqLJWqIbd/E6PJ/LxT4
-	6SHljLQqT2yEOxIok1/vJU3gIVjlMO8uAGZnBX+DzPkA0iKxfBgnQM35j95HgIZFfjv039k6/4M
-	XBupSf9oVuFD2VQPRIPLu7T+ZI9T+/18YggvHEAylK5uN4Vs0QyIsFYINEA3Q2fcrFFYfu957zD
-	RsZad10D55zXlX9Xkv9C+OVzhj0pYme0DG1iXcakIlbjOvXV4Yjhhmfi8AG9w4Opg9HnRatV9fe
-	pbXLocDGYOTSYHVK78za2ifvPVFhPmkpSoJTlmhm4LSiAGbWB6pxmYsHg0h7vUsoG3FgVTOFGH7
-	e3SzZHnPAbEEcJZO7hYxMSZoqA82d9NFMmKNs+h+Ppd6AUgCSBTXFHrmXe84a1E3Ijw8+Njbcwz
-	PqVaDOm+kyP3uq3oxrGvQn5PkgYfI9X676JGwm71Z39WnCaJQjzTs4T770WP/i1qC+DUoSoBlXO
-	v+SfgY+mNuukmOA8ZlxrEwHdn9BNtgPkBYBqqoAwnmYwrjzAfvDTv7vDei/BXupJtoQT5M1AllL
-	pipBmBtYdrX04o+QQolLMZyNVTEcx6R5apS33fY97P8kBuiDsY2Dx5Kac7tE
-X-Received: by 2002:a05:6a20:5482:b0:3e4:bc73:8d60 with SMTP id adf61e73a8af0-3e9023f494cmr3826874637.55.1793263501341;
-        Thu, 29 Oct 2026 01:45:01 -0700 (PDT)
-Received: from 24c857d0c3be.. ([122.51.212.64])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-cdad33b99b2sm3083915a12.26.2026.10.29.01.44.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Oct 2026 01:45:00 -0700 (PDT)
-From: Zihan Xi <zihanx@nebusec.ai>
-To: linux-can@vger.kernel.org,
-	llvm@lists.linux.dev
-Cc: robin@protonic.nl,
-	o.rempel@pengutronix.de,
-	kernel@pengutronix.de,
-	socketcan@hartkopp.net,
-	mkl@pengutronix.de,
-	ecathinds@gmail.com,
-	dev.kurt@vandijck-laurijssen.be,
-	maxime.jayat@mobile-devices.fr,
-	bst@pengutronix.de,
-	nathan@kernel.org,
-	ndesaulniers@google.com,
-	morbo@google.com,
-	justinstitt@google.com,
-	vega@nebusec.ai,
-	zihanx@nebusec.ai
-Subject: [PATCH net v3 3/3] can: j1939: enable context analysis
-Date: Thu, 29 Oct 2026 08:43:26 +0000
-Message-ID: <0d7b3745c8d8f3d7bf4b91ca3690f5ff1ab52f59.1793259424.git.zihanx@nebusec.ai>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1793259424.git.zihanx@nebusec.ai>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YDiV9cm+
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DEFFB1F01825;
+	Thu, 29 Oct 2026 09:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793265328;
+	bh=P0SIf3Z0ah/xydyjtibm/RKq2We8Qb/ubi/Yy0fMOVU=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=YDiV9cm+mMPd7hDf6I17q2WGqco5yw6PZZeKzl2tTkjokUwoBp0oKjuimgkBW3L//
+	 aCgL/3O10dYPwz5PcPy7nFSkF4HK4hrIWaporlIneni2RSQ9P2AoCkiQgQbSqZ92Yg
+	 YzE/GKJdNEbEh3pTqJI53/ZhVvYbL7wcs6sPkwbLSh9wY1N5XNbMLKKCUrJ2m00xNk
+	 E1GB/Xfw9lePpE8O7DTjoPE+Xkr/xiBKmOqzDEYEVwosS58hAnX52SgCCsjA+cNZNN
+	 fffxEsC0VYPRQZvp2jzEX7Ri9+CLZm4Vrw9W8mh5R1FhWWl5bBVK68kf7q11g4gusP
+	 JxOkktCqmauQQ==
+Message-ID: <sashiko-outbox-189012@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net v3 2/3] can: j1939: stop TX sends after session
+ shutdown
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Zihan Xi" <zihanx@nebusec.ai>, linux-can@vger.kernel.org
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <a683b6afb2c21e0d05be0ebe18c4f60b98152d25.1793259424.git.zihanx@nebusec.ai>
 References: <cover.1793259424.git.zihanx@nebusec.ai>
+ <a683b6afb2c21e0d05be0ebe18c4f60b98152d25.1793259424.git.zihanx@nebusec.ai>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Thu, 29 Oct 2026 09:15:27 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -110,120 +61,317 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Enable Clang context analysis for transport.o and annotate the TX timer,
-TX-send shutdown flag, and session-list lock wrappers.
+Thank you for your contribution! Sashiko AI review found 5 potential issue(=
+s) to consider:
+- [High] can: j1939: timer callbacks still cancel session after tx_send_shu=
+tdown
+- [High] can: j1939: unconditional error notifications outside session stat=
+e guards
+- [High] can: j1939: session leak on sk_session_queue when simple TX races =
+rxtimer
+- [Medium] can: j1939: TX sends not shut down before draining timers on com=
+pletion
+- [Medium] can: j1939: spurious netdev_alert() in j1939_session_tx_dat() on=
+ -ESHUTDOWN
+--
 
-Keep the analysis opt-in and its annotations separate from the J1939
-timer and send synchronization fixes.
+commit 2c11cd00299ff52c942a6b68d469115b501da6d9
+Author: Zihan Xi <zihanx@nebusec.ai>
 
-Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
----
- net/can/j1939/Makefile     |  2 ++
- net/can/j1939/j1939-priv.h | 18 +++++++++---------
- net/can/j1939/transport.c  |  5 +++++
- 3 files changed, 16 insertions(+), 9 deletions(-)
+can: j1939: stop TX sends after session shutdown
 
-diff --git a/net/can/j1939/Makefile b/net/can/j1939/Makefile
-index 19181bdae173..67462b271252 100644
---- a/net/can/j1939/Makefile
-+++ b/net/can/j1939/Makefile
-@@ -1,5 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- 
-+CONTEXT_ANALYSIS_transport.o := y
-+
- obj-$(CONFIG_CAN_J1939) += can-j1939.o
- 
- can-j1939-objs := \
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index 6bf55b7dfffc..d664f32bbb8f 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -240,7 +240,7 @@ struct j1939_session {
- 	struct sock *sk;
- 	/* Serializes session TX sends against transition to DONE. */
- 	spinlock_t tx_send_lock;
--	bool tx_send_shutdown;
-+	bool tx_send_shutdown __guarded_by(&tx_send_lock);
- 
- 	/* ifindex, src, dst, pgn define the session block
- 	 * the are _never_ modified after insertion in the list
-@@ -293,22 +293,22 @@ struct j1939_session {
- 		/* dpo - ETP.CM_DPO, Data Packet Offset */
- 		unsigned int dpo;
- 	} pkt;
--	/* Protects TX timer rearming and cancellation. */
--	spinlock_t txtimer_lock;
- 	/*
- 	 * qref pins the queued timer; cbref pins a running callback. A
- 	 * concurrent rearm can leave both references outstanding.
- 	 */
--	struct hrtimer txtimer;
--	bool txtimer_qref;
--	bool txtimer_cbref;
--	bool txtimer_cb_running;
--	bool txtimer_shutdown;
-+	/* Protects TX timer rearming and cancellation. */
-+	spinlock_t txtimer_lock;
-+	struct hrtimer txtimer __guarded_by(&txtimer_lock);
-+	bool txtimer_qref __guarded_by(&txtimer_lock);
-+	bool txtimer_cbref __guarded_by(&txtimer_lock);
-+	bool txtimer_cb_running __guarded_by(&txtimer_lock);
-+	bool txtimer_shutdown __guarded_by(&txtimer_lock);
-+	/* RX timer state and refs below use active_session_list_lock. */
- 	struct hrtimer rxtimer;
- 	bool rxtimer_qref;
- 	bool rxtimer_cbref;
- 	bool rxtimer_cb_running;
--	/* RX timer state and refs below use active_session_list_lock. */
- 	/* Temporary drains defer rearming; the last drain installs the pending timeout. */
- 	unsigned int rxtimer_cancelers;
- 	bool rxtimer_pending;
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 570e2b8d0826..7fcf66e93afd 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -236,11 +236,13 @@ static int j1939_xtp_abort_to_errno(struct j1939_priv *priv,
- }
- 
- static inline void j1939_session_list_lock(struct j1939_priv *priv)
-+	__acquires(&priv->active_session_list_lock)
- {
- 	spin_lock_bh(&priv->active_session_list_lock);
- }
- 
- static inline void j1939_session_list_unlock(struct j1939_priv *priv)
-+	__releases(&priv->active_session_list_lock)
- {
- 	spin_unlock_bh(&priv->active_session_list_lock);
- }
-@@ -331,6 +333,7 @@ static void j1939_session_txtimer_cancel(struct j1939_session *session)
- 	session->txtimer_shutdown = true;
- 	timer = &session->txtimer;
- 	/* Keep this alias across unlock; blocking cancel must run outside the lock. */
-+	context_unsafe_alias(timer);
- 	ret = hrtimer_try_to_cancel(timer);
- 	if (ret == 1) {
- 		WARN_ON_ONCE(!session->txtimer_qref);
-@@ -869,6 +872,7 @@ static void j1939_tp_schedule_txtimer_locked(struct j1939_session *session,
- 	if (session->txtimer_shutdown)
- 		return;
- 
-+	/* Replace the queued pin; a running callback retains its separate pin. */
- 	ret = hrtimer_try_to_cancel(&session->txtimer);
- 	if (ret == 1) {
- 		/* Reuse the pin owned by the removed queued timer. */
-@@ -1447,6 +1451,7 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 	int ret = 0;
- 
- 	spin_lock_bh(&session->txtimer_lock);
-+	/* A concurrent rearm may already have recorded the callback pin. */
- 	if (!session->txtimer_cbref) {
- 		WARN_ON_ONCE(session->txtimer_cb_running);
- 		WARN_ON_ONCE(!session->txtimer_qref);
--- 
-2.43.0
+This commit introduces a per-session tx_send_lock and tx_send_shutdown gate=
+ to
+serialize session data and control frame transmissions against session
+deactivation and incoming XTP ABORT handling. It also suppresses sending an
+outbound XTP ABORT frame when tx_send_shutdown has been set.
 
+Link: https://bugtracker.nebusec.ai/f/11143
+Link: https://lore.kernel.org/all/cover.1793012287.git.zihanx@nebusec.ai/
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 0dd08d1b8f755..570e2b8d08263 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+
+[ ... ]
+
+> @@ -1363,12 +1398,14 @@ static void __j1939_session_cancel(struct j1939_s=
+ession *session,
+>  	struct j1939_priv *priv =3D session->priv;
+> =20
+>  	WARN_ON_ONCE(!err);
+> +	lockdep_assert_held(&session->tx_send_lock);
+>  	lockdep_assert_held(&session->priv->active_session_list_lock);
+> =20
+>  	session->err =3D j1939_xtp_abort_to_errno(priv, err);
+>  	session->state =3D J1939_SESSION_WAITING_ABORT;
+>  	/* do not send aborts on incoming broadcasts */
+> -	if (!j1939_cb_is_broadcast(&session->skcb)) {
+> +	if (!session->tx_send_shutdown &&
+> +	    !j1939_cb_is_broadcast(&session->skcb)) {
+>  		j1939_xtp_tx_abort(priv, &session->skcb,
+>  				   !session->transmission,
+>  				   err, session->skcb.addr.pgn);
+> @@ -1381,6 +1418,7 @@ static void __j1939_session_cancel(struct j1939_ses=
+sion *session,
+>  static void j1939_session_cancel(struct j1939_session *session,
+>  				 enum j1939_xtp_abort err)
+>  {
+> +	spin_lock_bh(&session->tx_send_lock);
+>  	j1939_session_list_lock(session->priv);
+> =20
+>  	if (session->state >=3D J1939_SESSION_ACTIVE &&
+> @@ -1391,6 +1429,7 @@ static void j1939_session_cancel(struct j1939_sessi=
+on *session,
+>  	}
+> =20
+>  	j1939_session_list_unlock(session->priv);
+> +	spin_unlock_bh(&session->tx_send_lock);
+> =20
+>  	if (!session->sk)
+>  		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+
+[Severity: High]
+When j1939_xtp_rx_abort_one() processes an incoming XTP ABORT frame, it cal=
+ls
+j1939_session_tx_send_shutdown(session) and then drains both timers via
+j1939_session_timers_cancel(session) while session->state is still
+J1939_SESSION_ACTIVE:
+
+net/can/j1939/transport.c:j1939_xtp_rx_abort_one() {
+	...
+	j1939_session_tx_send_shutdown(session);
+	j1939_session_timers_cancel(session);
+	j1939_session_list_lock(priv);
+	if (session->state >=3D J1939_SESSION_ACTIVE &&
+	    session->state < J1939_SESSION_ACTIVE_MAX)
+		session->err =3D j1939_xtp_abort_to_errno(priv, abort);
+	j1939_session_list_unlock(priv);
+	if (session->sk)
+		j1939_sk_send_loop_abort(session->sk, session->err);
+	else
+		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+	j1939_session_deactivate_activate_next(session);
+}
+
+While j1939_session_timers_cancel() is waiting for txtimer in
+j1939_session_txtimer_cancel() (before j1939_session_rxtimer_cancel_sync()
+increments session->rxtimer_cancelers), a concurrent j1939_tp_txtimer()
+callback that fails prior to j1939_session_tx_send() (for instance with
+-EOVERFLOW in j1939_session_tx_dat(), -ENOENT in j1939_session_tx_cts() or
+j1939_session_tx_eoma(), or -ENOMEM in j1939_tp_tx_dat_new()) can call
+j1939_session_cancel(), or a concurrent j1939_tp_rxtimer() callback can ent=
+er
+its non-simple timeout branch.
+
+Because !session->tx_send_shutdown is only checked around j1939_xtp_tx_abor=
+t()
+inside __j1939_session_cancel() rather than gating the cancellation block in
+j1939_session_cancel() and j1939_tp_rxtimer(), won't the timer callback sti=
+ll:
+
+1. rearm session->rxtimer for J1939_XTP_ABORT_TIMEOUT_MS via
+   j1939_tp_set_rxtimeout_locked() (or record session->rxtimer_pending =3D =
+true
+   if rxtimer_cancelers is non-zero),
+2. overwrite session->err with the local timer error and transition
+   session->state to J1939_SESSION_WAITING_ABORT, and
+3. immediately call j1939_sk_send_loop_abort(session->sk, session->err),
+   waking session->sk with the wrong sk_err before j1939_xtp_rx_abort_one()
+   sets session->err from the received ABORT frame and notifies the socket a
+   second time?
+
+Should j1939_session_cancel() and the timeout branch in j1939_tp_rxtimer()
+check !session->tx_send_shutdown before rearming rxtimer and calling
+__j1939_session_cancel()?
+
+[ ... ]
+
+> @@ -1460,6 +1498,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct=
+ hrtimer *hrtimer)
+>  		 * propagation of the error to user space.
+>  		 */
+>  		break;
+> +	case -ESHUTDOWN:
+> +		/* A terminal path won before this packet could be sent. */
+> +		break;
+>  	case -EOVERFLOW:
+>  		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
+>  		break;
+
+[Severity: Medium]
+Here j1939_tp_txtimer() treats -ESHUTDOWN as an expected race with session
+shutdown, but in j1939_tp_txtimer() -> j1939_xtp_txnext_transmiter() ->
+j1939_session_tx_dat(), a -ESHUTDOWN return from j1939_tp_tx_dat() still hi=
+ts
+the error log check:
+
+net/can/j1939/transport.c:j1939_session_tx_dat() {
+	...
+		ret =3D j1939_tp_tx_dat(session, dat, len + 1);
+		if (ret < 0) {
+			/* ENOBUFS =3D=3D CAN interface TX queue is full */
+			if (ret !=3D -ENOBUFS)
+				netdev_alert(priv->ndev,
+					     "%s: 0x%p: queue data error: %i\n",
+					     __func__, session, ret);
+			break;
+		}
+}
+
+Will a session shutdown racing with j1939_session_tx_dat() emit a spurious
+netdev_alert() with -ESHUTDOWN (and still call j1939_tp_set_rxtimeout() if
+pkt_done > 0 from earlier packets in the loop)?
+
+> @@ -1558,6 +1599,7 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct=
+ hrtimer *hrtimer)
+>  		/* The message is probably stuck in the CAN controller and can
+>  		 * be send as soon as CAN bus is in working state again.
+>  		 */
+> +		spin_lock_bh(&session->tx_send_lock);
+>  		j1939_session_list_lock(priv);
+>  		if (session->state >=3D J1939_SESSION_ACTIVE &&
+>  		    session->state < J1939_SESSION_ACTIVE_MAX) {
+>  			session->err =3D -ETIME;
+>  			j1939_session_deactivate_locked(session);
+>  		}
+>  		j1939_session_list_unlock(priv);
+> +		spin_unlock_bh(&session->tx_send_lock);
+>  		j1939_session_txtimer_cancel_async(session);
+>  		j1939_session_rxtimer_cancel(session);
+
+[Severity: High]
+Can this J1939_SIMPLE timeout path in j1939_tp_rxtimer() leak the session on
+jsk->sk_session_queue and hang socket close when it races with
+j1939_simple_txnext()?
+
+In j1939_tp_txtimer() -> j1939_simple_txnext(), rxtimer is armed before
+j1939_session_tx_send() is called, and j1939_sk_queue_activate_next(session)
+is only called if j1939_session_tx_send() succeeds:
+
+net/can/j1939/transport.c:j1939_simple_txnext() {
+	...
+	j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
+
+	ret =3D j1939_session_tx_send(session, skb);
+	if (ret)
+		goto out_free;
+
+	j1939_sk_errqueue(session, J1939_ERRQUEUE_TX_SCHED);
+	j1939_sk_queue_activate_next(session);
+}
+
+If j1939_tp_rxtimer() fires before j1939_session_tx_send() succeeds (either
+between j1939_tp_set_rxtimeout() and j1939_session_tx_send(), or while txti=
+mer
+is retrying after j1939_session_tx_send() returned -ENOBUFS),
+j1939_tp_rxtimer() transitions session->state to J1939_SESSION_DONE via
+j1939_session_deactivate_locked() and cancels both timers without calling
+j1939_sk_queue_activate_next(session).
+
+When j1939_simple_txnext() then calls j1939_session_tx_send(), it sees
+state !=3D J1939_SESSION_ACTIVE and returns -ESHUTDOWN, jumping to out_free
+without calling j1939_sk_queue_activate_next(session), and j1939_tp_txtimer=
+()
+breaks out of its switch on -ESHUTDOWN.
+
+Doesn't that leave session permanently queued on jsk->sk_session_queue with
+its queue kref and jsk->skb_pending count held, stalling subsequent queued
+sessions and causing j1939_sk_release() to block indefinitely waiting on
+!j1939_sock_pending_get(&jsk->sk)?
+
+>  	} else {
+> +		spin_lock_bh(&session->tx_send_lock);
+>  		j1939_session_list_lock(session->priv);
+>  		if (!session->rxtimer_cancelers &&
+>  		    session->state >=3D J1939_SESSION_ACTIVE &&
+>  		    session->state < J1939_SESSION_ACTIVE_MAX) {
+>  			netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
+>  				     __func__, session);
+>  			j1939_tp_set_rxtimeout_locked(session,
+>  						      J1939_XTP_ABORT_TIMEOUT_MS);
+>  			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
+>  		}
+>  		j1939_session_list_unlock(session->priv);
+> +		spin_unlock_bh(&session->tx_send_lock);
+> =20
+>  		if (!session->sk)
+>  			j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+
+[Severity: High]
+In this branch of j1939_tp_rxtimer(), as well as in j1939_session_cancel() =
+and
+j1939_xtp_rx_abort_one(), the socket error notification outside the lock ru=
+ns
+unconditionally even when the state check (or !session->rxtimer_cancelers)
+evaluates to false.
+
+For example, when an RX session (!session->sk) completes in
+j1939_xtp_rx_dat_one() (when final is true) and calls
+j1939_session_timers_cancel() -> j1939_session_rxtimer_cancel_sync(),
+session->rxtimer_cancelers is incremented while waiting for a running
+j1939_tp_rxtimer() callback to finish. In j1939_tp_rxtimer(), the condition
+!session->rxtimer_cancelers is false, so __j1939_session_cancel() is skipped
+and session->err remains 0, but j1939_tp_rxtimer() still calls
+j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT) after dropping the lock=
+s.
+
+Similarly, if j1939_session_cancel() or j1939_xtp_rx_abort_one() finds that
+another path already transitioned session->state out of the active range, it
+still invokes j1939_sk_errqueue() or j1939_sk_send_loop_abort().
+
+Should these error notifications be gated on whether the caller actually won
+the state transition?
+
+> @@ -1671,6 +1716,8 @@ static void j1939_xtp_rx_abort_one(struct j1939_pri=
+v *priv, struct sk_buff *skb,
+>  		    session, j1939_xtp_ctl_to_pgn(skb->data), abort,
+>  		    j1939_xtp_abort_to_str(abort));
+> =20
+> +	/* Stop TX callbacks before waiting for the timer callbacks to drain. */
+> +	j1939_session_tx_send_shutdown(session);
+>  	j1939_session_timers_cancel(session);
+>  	j1939_session_list_lock(priv);
+>  	if (session->state >=3D J1939_SESSION_ACTIVE &&
+
+[Severity: Medium]
+Here j1939_xtp_rx_abort_one() calls j1939_session_tx_send_shutdown(session)
+before j1939_session_timers_cancel(session), because session->state is still
+J1939_SESSION_ACTIVE while the timers are being drained.
+
+However, the other paths that call j1939_session_timers_cancel(session) bef=
+ore
+deactivating or canceling the session do not call
+j1939_session_tx_send_shutdown(session) first:
+
+- j1939_xtp_rx_eoma_one() sets session->pkt.tx_acked =3D session->pkt.total,
+  calls j1939_session_timers_cancel(session), and only then calls
+  j1939_session_completed(session) -> j1939_session_deactivate().
+- j1939_xtp_rx_dat_one() (both the final completion branch and
+  out_session_cancel) calls j1939_session_timers_cancel(session) before
+  j1939_session_completed(session) or j1939_session_cancel(session, abort).
+- j1939_simple_recv() calls j1939_session_timers_cancel(session) before
+  j1939_session_deactivate(session).
+- j1939_xtp_rx_cts_one() (at out_session_cancel) and
+  j1939_xtp_rx_rts_session_active() call j1939_session_timers_cancel(sessio=
+n)
+  before j1939_session_cancel().
+
+While j1939_session_timers_cancel() is waiting for an in-flight
+j1939_tp_txtimer() callback in those paths, both session->tx_send_shutdown =
+is
+false and session->state is J1939_SESSION_ACTIVE, so j1939_session_tx_send()
+still allows packets through (and in j1939_xtp_rx_eoma_one(), a concurrent
+j1939_tp_rxtimer() firing before rxtimer_cancelers is incremented can still
+send an XTP ABORT frame on a completed session).
+
+Should j1939_session_timers_cancel() itself call
+j1939_session_tx_send_shutdown(session) (or should those callers shut down =
+TX
+sends before draining the timers)?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/cover.1793259424.gi=
+t.zihanx@nebusec.ai?part=3D2
