@@ -1,31 +1,31 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793279500;
-	b=cIZIjzSkxRownu6jg+kwDyYa+WpV2PG44h6kNLKFRjdUrlZY38QKwiDWJ01FHskSgslR
-	 6NS759J2JSO/SwhirswevJfUhyT/SyrU87AvNW2zqPJHDu7m1KEk8h8m3gLTaCfSC0EFG
-	 IWeKZRdVWLmnG1yQmtbpzzeQfglUqkn9wpBO/qlq1odHNM+a5dnJtPhjqDGY4HEMf3gqO
-	 FokXqpbwShXHvjBC/bJ8R1TSs5hNPbG+KMPebO5FjBzoiMKAL+91J46qeRkKvpsDMECDd
-	 JWVM+KIMNa2huAdqL/FgG+vj6I2gBP7544p9QgMcw1IdTMBTU0g5Y69Ts2tqFCOH3dQ==
+	t=1793279496;
+	b=yCDYo8PMmM/plaD1tFhBaD2rFepYyLhsHT8+657ay4bwx9N1lFr4gz+G2zoyUclvq/R9
+	 A78ABWmtNBsxQY1T8/ogZ9KcYr4xsvsmRSJpuV9j93gBvRRuT338Hd/GLUxbr6NdIB9tH
+	 1GRwgjuIvJL1msCeQQP0RTTfmtF9eoB0t2MM5nxqPiJEV0TvP+UKlCMq8gfR3ftrmDDP0
+	 175yhEocFkw86IC0R2X8DHFsfYQ+N72NL4UeGdW9wsngB+gk7j+AAplOaGUmiDQ5T+iIm
+	 rXzNEXG2uyxK5jXAEZlWpJnnYb3IHI7TY2sFY40kCi2q75vfF81SHBDqMIFxo4/aHfw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793279500;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793279496;
 	h=Received:From:To:Cc:Subject:Date:Message-ID:X-Mailer:In-Reply-To:
 	 References:MIME-Version:Content-Transfer-Encoding;
-	bh=G+5BF49ou0ARRWxKFvfp1ZFgtF67xapc/rlFrqYl8VA=;
-	b=bmpHM/TQ4hzgIfc06hV11NbDgdbiOZaDO/kjvH0As8fHjq2u+vkh8xUMD3TTNDF3vbJY
-	 EbIm8XP4jQtrLpflNLueoEBh6P3wBNN8GIyIhqz9AND5eWerCARN+3gkBhlKRbxiCTnhI
-	 e7eAP0wzi2DG44u/rFmFhqrR022HwswnZ8ZcBnKNVgcmiHXr3UfRY/wrrY/MhL3rfmAlf
-	 VKtN4S6g/lpXOdRbFR1OwpwbVkLbdp6pw79naFB+it4+XuVC3IYMmWy6RrcRbtHdzx0om
-	 KHslx48ny9BhpcXn4W8SO+f6vOBT/7w68z90dMbQz5VPYEl/GAhR668NzLtAoZZGbzA==
+	bh=UUqeGT/89ZU6Y+fkarnYEZGHmF+apa7zJQAL+t56Yiw=;
+	b=XFWdw8BRM8SOc73EtG+cUWWmKKkxsauM7vieClQSSNocBZXYJh/kQ8CqY0M8IzaOwl0s
+	 CCx8QrdweiCvwMHumbQC5B6oM273O/nbnbqlLRx2ckEmmU2rRNf4FCZq8c3QHFNtsrZ8D
+	 xC14Cw08VA1FXN8CknjZUUa92Phz59RrDxFXnNbO2R2joYd3XzdiDiC/sKYW1rHRAk0Xu
+	 XkVifh8/73bl+F+p4QDhQizWm4VXWEavZueT7d9GgI5g1nMDOp0hVmhYMxpfhSkWHU8Qn
+	 p2llIzf4TRtCNbd6+/4uPCTKqikZ3rg1DYvo+VmDZ47Z1EtO1RLQFRenumh4qc8U2ew==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EB1A606A323;
-	Thu, 29 Oct 2026 13:11:40 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A3C631F031E0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F60E606A31D;
 	Thu, 29 Oct 2026 13:11:36 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 886D91F031E3;
+	Thu, 29 Oct 2026 13:11:32 +0000 (UTC)
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 To: Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
@@ -47,9 +47,9 @@ Cc: linux-can@vger.kernel.org,
 	linux-clk@vger.kernel.org,
 	linux-pm@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 5/9] dt-bindings: clock: renesas,r8a78000-cpg: Add CAN-FD clock
-Date: Thu, 29 Oct 2026 14:11:06 +0100
-Message-ID: <843d6df21b3ed139ec71a702e57fd5b516c139a1.1793278754.git.geert+renesas@glider.be>
+Subject: [PATCH 4/9] can: rcar_canfd: Add support for R-Car Gen5
+Date: Thu, 29 Oct 2026 14:11:05 +0100
+Message-ID: <2f986484ade3f3ab7785a088b476b4bc6f53c157.1793278754.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1793278754.git.geert+renesas@glider.be>
 References: <cover.1793278754.git.geert+renesas@glider.be>
@@ -64,29 +64,50 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a definition for the CANFD_SCP_MAIN clock, as used by the Controller
-Area Network Flexible Data Rate (CAN-FD) modules on R-Car X5H.
+The CAN-FD block on R-Car Gen5 is similar to the variant on R-Car Gen4,
+but uses split global and per-channel interrupts, like on RZ/G2L.
 
 Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
 ---
-This depends on "[PATCH 07/11] dt-bindings: clock: renesas,r8a78000-cpg:
-Add PWM clocks"
-https://lore.kernel.org/e723696e02cfb34fb808e2ae3ccb6faf68528c00.1793026273.git.geert+renesas@glider.be
----
- include/dt-bindings/clock/renesas,r8a78000-cpg.h | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/rcar/rcar_canfd.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-diff --git a/include/dt-bindings/clock/renesas,r8a78000-cpg.h b/include/dt-bindings/clock/renesas,r8a78000-cpg.h
-index 8c30476d41448cf5..9d7f3afcb2c52ec4 100644
---- a/include/dt-bindings/clock/renesas,r8a78000-cpg.h
-+++ b/include/dt-bindings/clock/renesas,r8a78000-cpg.h
-@@ -31,5 +31,6 @@
- #define R8A78000_CPG_SGASYNCD8_PERW_MAIN	21
- #define R8A78000_CPG_SGASYNCD16_PERW_MAIN	22
- #define R8A78000_CPG_S0ASYNCD8_PERW_MAIN	23
-+#define R8A78000_CPG_CANFD_SCP_MAIN		24
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 9dbe44710dcced80..702a3aa1949ab9da 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -636,6 +636,23 @@ static const struct rcar_canfd_hw_info rcar_gen4_hw_info = {
+ 	.external_clk = 1,
+ };
  
- #endif /* __DT_BINDINGS_CLOCK_RENESAS_R8A78000_CPG_H__ */
++static const struct rcar_canfd_hw_info rcar_gen5_hw_info = {
++	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
++	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
++	.tdc_const = &rcar_canfd_gen4_tdc_const,
++	.regs = &rcar_gen4_regs,
++	.sh = &rcar_gen4_shift_data,
++	.rnc_field_width = 16,
++	.max_aflpn = 127,
++	.max_cftml = 31,
++	.max_channels = 8,
++	.postdiv = 2,
++	.multi_channel_irqs = 1,
++	.ch_interface_mode = 1,
++	.shared_can_regs = 1,
++	.external_clk = 1,
++};
++
+ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
+ 	.nom_bittiming = &rcar_canfd_gen3_nom_bittiming_const,
+ 	.data_bittiming = &rcar_canfd_gen3_data_bittiming_const,
+@@ -2370,6 +2387,7 @@ static const __maybe_unused struct of_device_id rcar_canfd_of_table[] = {
+ 	{ .compatible = "renesas,r9a09g077-canfd", .data = &r9a09g077_hw_info },
+ 	{ .compatible = "renesas,rcar-gen3-canfd", .data = &rcar_gen3_hw_info },
+ 	{ .compatible = "renesas,rcar-gen4-canfd", .data = &rcar_gen4_hw_info },
++	{ .compatible = "renesas,rcar-gen5-canfd", .data = &rcar_gen5_hw_info },
+ 	{ .compatible = "renesas,rzg2l-canfd", .data = &rzg2l_hw_info },
+ 	{ }
+ };
 -- 
 2.43.0
 
