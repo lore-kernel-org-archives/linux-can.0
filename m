@@ -1,52 +1,52 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793356078;
-	b=XJxxDoOgfJgD1yV5EroVvXY3OtQ/PBKLEYWeqgkwNS/p+zdclABBXnTOSWGgTyp9yxpA
-	 TmVXzisE8Z1rvzMlUOyOGHa2aHvU926RhRCrr+GaBS9L7YIupJjoTb5EPWLHW15iRdz58
-	 ksA9Y2+b8VzJHoEJStxGQYJv8DpYF9sdBsSqBLQ1VXSDcR3Bntj3hypkITbwDIFubMsAR
-	 5rEiqaToUmkO6AcnID15eue4i8z3+le3m3riqs0EgyAOJaQjNLIHVx8Cb1BrFA4BwnJgA
-	 GCxZbHsx6kOPXfL/jEZhbqmX2x+YQhrm/9cfY8pYDZuey7aoLSayA1vKrxH3+MoDBSA==
+	t=1793356088;
+	b=CrCqDQWLlAL5WVgH4cnWaqJJBXIb0+ZZooLvRaBnpHKjQ33vnl+VuhSEP0ooWlNIexcE
+	 CrVuSkiY85XSXU+0Lt4TDpqhpLA4aJqV6ICYYTXDzMyX9VPpTe4aRU237RuO76wC7Teg8
+	 D4UJlZfkCIlBU+NZnarYGbCtFWbgaoi8QRWuxh8UG87BjR8MJ1wg5XowkSsrjG7WRz+V1
+	 tsPjrM7SznxMsZlUC2yioqSR8L/j7WuSuso2OBC+RP8VEcgh6bqOKfEhEbSNh4SAk/mC8
+	 5b65srGeGGIatFeoTMkfG8B3SDv0D7cY2ps3ddRUzNXYH79fiFTvpfr5jc5XnhtYIeA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793356078;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793356088;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
 	 Message-ID:X-Mailer:In-Reply-To:References:Content-Type:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=GUpb6zALxOrE0SMxkk9VxYOTfoPMEK2Cy5Obr/HVslc=;
-	b=Uc4CE3vB7cQbWhNfSMhGIS7vbsBfNswgwN3+K0i7TFnkOrtYBGoYVdjDSBbNjbVWgXR4
-	 h5yfnNK03xu9dE6ajFeWfUFGNyy9Ie8Bp2TCuSbFBrD/pmK8co/Kn9EYexxXM4jXHt+Zs
-	 WoPzrdS0H52LyaJcD++C4pols18YknLUFs79K/N/ICPM6putqI4SkYqusKEhli0+exViP
-	 YODvoNKZuigjrxD8KUvqVoibiQykv7ozk23YRAwussH+uzD01YuGb1AsFsswVxEbHOaJa
-	 9DoTgG219XhnKYHJ2Lxh04+g9ify37FYms7CQJU/wUN2/ZHQdsUwxrXSIZsp6OzphQw==
+	bh=NnAtcy2DdStviAIIu67Lv5yT5v++fcCVEEkxY/cv+jw=;
+	b=0qRNHoM13HZxDNC2jJ0QjERp0nwXlKOv+vEZzLgwMnwU3q2PV4OfYJ1cfGmn93UOr7n6
+	 96xIM5fpSmRqYceYC4xb4Gvkn7ocZIkOXnJjIXIeWnrNz+BOkQZYsJWa/uDqwHsNWEJnr
+	 cMp3o/A2ok7NEgkDDCWWYxXOu1jGvAs1EqlGaCo4HjAHbhqgBswTLW4gPswLAFPDNE2WU
+	 mOgIK/Z+n0/7cbiJtkT6tFReE+xd5Iu+vvtAur++qpOsbPg2zSHUz7Js+LuuFlHSDCW4Y
+	 /c9Zf9Kv1lJf8rAMoHqrGX7IKWS/U5EPBr+z9K1fbk+u/97mtJO4LVv3RJTGAuE8UIA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=free.fr;
 	spf=pass smtp.mailfrom=free.fr;
-	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=Rhsxrw7A;
+	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=kHpw6gx6;
 	arc=none smtp.remote-ip=212.27.42.4
 Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A173E606A332;
-	Fri, 30 Oct 2026 10:27:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A173E606A332
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65AEF606A33D;
+	Fri, 30 Oct 2026 10:28:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 65AEF606A33D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=Rhsxrw7A
+	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=kHpw6gx6
 Received: from stf-laptop.peak-system.com (unknown [IPv6:2a02:8424:8fef:6e01:2a4e:9a3e:485b:cbb0])
 	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp4-g21.free.fr (Postfix) with ESMTPSA id 85AC119F58A;
-	Fri, 30 Oct 2026 11:27:45 +0100 (CET)
+	by smtp4-g21.free.fr (Postfix) with ESMTPSA id 3A2A519F574;
+	Fri, 30 Oct 2026 11:27:56 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1793356076;
-	bh=LOQ9Ep05ySdArizRJJp7qd48ta63Np0n1XVIrCQp7qg=;
+	s=smtp-20201208; t=1793356086;
+	bh=HLQvl6Lqe0D0D0QVBPQB2h1Sv8s0n6l64rahB/uZ1qM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Rhsxrw7AYzs7fBiDbxP4KtyPg/YXr2vTVzvMjzYyhjc18xAgxiD2Dl+4KeyzxaRDw
-	 AxYmQi9lnlgt4VlEN4W0CirCeP2l7BhuyMXF3xM68EyUVnKvWEBIFOdlmXjBo/QUEQ
-	 O7XbfILJ9d8BnvzxY2EXWy9pbOPopzXtq1VvDzeV8sjd9hAaafCka+gkGGP5LrF/vT
-	 1lbFxuNX3YzgYwIL9Y6a2vXfX4VFmk6Fwp4IcBRsrFAbrLJINx/1it2aC0b2BZ3vV+
-	 axFiTFtPEqxZvj+8lzZkezmpuFv6W2iznjHCvxFr1NskmAMngD1c41yC0q9iECkA+g
-	 3rgNZFJ7DORxA==
+	b=kHpw6gx6Xu4WCnTFDG9isBZzvFUO67x6PtwSzq0ySvFn97VtfO25kyPWWpif4dmyp
+	 CwRDA0ZZHUpZEd7Ep7IrJWeX/juzHFDTrRK5w535dYq7SWu2jQYK8knojIb50mnAe6
+	 SZxgDS1AOKPwOLh2L9oniAgeOmXyRajXcmwJX2bRX/xPoIGCeI24HBrtRY1dIPwI31
+	 hzku0rlOlHePSL6SgdDyHz3iA1/W+clnXdlGhxKRuWQVWFPmndcJLvCQJVX4xnXJGh
+	 d4qU7PvgYzi/jFneR3sp3PtbB6g9V48Bjp/tFAXLWp2N38COGq+r+NCjhGsyjUmsSF
+	 fSe0kz6Qd+Jmg==
 From: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@free.fr>
 To: netdev-bot+sashiko@kernel.org
 Cc: mkl@pengutronix.de,
@@ -58,12 +58,12 @@ Cc: mkl@pengutronix.de,
 	linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org,
 	kuba@kernel.org
-Subject: Re: [PATCH v6 09/13] can: peak_usb: register the netdevs only once all channels are set up
-Date: Fri, 30 Oct 2026 11:27:02 +0100
-Message-ID: <20261030102705.30262-4-stephane.grosjean@free.fr>
+Subject: Re: [PATCH v6 11/13] can: peak_usb: don't read past the message in PCAN-USB Pro decoders
+Date: Fri, 30 Oct 2026 11:27:03 +0100
+Message-ID: <20261030102705.30262-5-stephane.grosjean@free.fr>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <179281433446.3130.6290059781976829176@kernel.org>
-References: <20261022-canfd_check_channel_idx-v6-0-197704231551@peak-system.fr> <20261022-canfd_check_channel_idx-v6-9-197704231551@peak-system.fr> <179281433446.3130.6290059781976829176@kernel.org>
+In-Reply-To: <179281433565.3130.14307625292135673040@kernel.org>
+References: <20261022-canfd_check_channel_idx-v6-0-197704231551@peak-system.fr> <20261022-canfd_check_channel_idx-v6-11-197704231551@peak-system.fr> <179281433565.3130.14307625292135673040@kernel.org>
 Content-Type: text/plain; charset="utf-8"
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
@@ -79,77 +79,22 @@ Content-Transfer-Encoding: 8bit
 On 24/10/2026 05:58, netdev-bot+sashiko@kernel.org wrote:
 [...]
 > [Severity: Low]
-> Should the helpers on this same path be converted as well?
-> pcan_usb_wait_rsp() and pcan_usb_send_cmd() still log with
-> netdev_err(dev->netdev, ...):
+> With the current callers, is the last sentence accurate? The code change
+> looks correct. It is less clear that the old walk could ever leave the
+> command buffer allocation.
 [...]
-> These messages
-> therefore print with an "(unnamed net_device) (uninitialized)" prefix.
-[...]
-> The new lbl_disconnect path in peak_usb_probe() has a similar issue.
-> peak_usb_disconnect() copies netdev->name and logs "%s removed" for
-> channels that were created but never registered, so it prints a literal
-> "can%d removed".
+> Could the commit message describe this case instead, so that the stated
+> impact matches what the old pcan_usb_pro_wait_rsp() code could actually
+> do?
 
-Right. The "can%d removed" message is a regression of this patch: v7
-only reports the registered netdevs as removed.
+Right, the walk can't leave the command buffer with the current
+callers. v7 reads:
 
-The netdev_err() of the command helpers only print on error, and only
-the prefix is wrong. Converting all of them in this patch would make a
-Fixes: patch grow for a cosmetic issue, so I'll do it in a separate
-patch for linux-can-next.
-
-[...]
-> [Severity: High]
-> This isn't a bug introduced by this patch, but can the PCAN-USB restart
-> timer fire after free_candev() in this loop?
-[...]
-> When the timer expires, pcan_usb_restart()->peak_usb_restart_complete()
-> writes dev->can.state and calls netif_wake_queue() on the freed netdev.
-
-Right, thanks. This is a real bug, present since the PCAN-USB support was
-added. Tristan Madani has posted a fix for it, independently [1], so I
-won't fix it in this series, and both apply in any order.
-
-The Sashiko review of his patch [2] found that its other part, the init
-failure path, isn't closed by shutting the timer down in
-pcan_usb_init(): the unanchored restart URB may still be in flight. That
-path is closed by this patch, since no netdev can be opened, nor
-restarted, before all the channels are set up.
-
-[...]
-> [Severity: Medium]
-> This is a pre-existing issue, but take a multi-channel adapter (PCAN-USB
-> Pro, or a two-channel PCAN-USB FD). Channel 0 is registered and opened by
-> userspace, and then register_candev() fails for channel 1. What state is
-> the hardware left in?
->
-> The commit message says:
->
->   Since no netdev can be opened during probe anymore, there is no RX to
->   stop when probing a channel fails.
->
-> That doesn't quite hold inside this loop.
-[...]
-> Does this leave the still-attached adapter bus-on on the opened channel?
-> Calibration messages would stay enabled, and the firmware would still
-> believe a driver is loaded.
->
-> The same ordering existed before this patch.
-
-Right, the sentence was too broad. v7 says instead:
-
-  Since no netdev is registered while the channels are being created,
-  there is no RX to stop anymore when creating a channel fails. If
-  registering a netdev fails, peak_usb_disconnect() still stops RX on
-  the channels already registered, which may have been opened in the
-  meantime.
-
-For the bus-on state, this is the same pre-existing issue as the one
-reported on patch 6: I'll deal with it in a separate series.
-
-[1] https://lore.kernel.org/r/20261025210256.629830-1-tristan@talencesecurity.com
-[2] https://lore.kernel.org/r/179304858361.3134.1029344134259623994@kernel.org
+  - pcan_usb_pro_wait_rsp() doesn't check the records against the
+    received length at all. A truncated response is then accepted, and
+    pcan_usb_pro_get_can_channel_id() returns stale bytes of its own
+    request as the channel id. With the current callers, the walk only
+    stays within the command buffer because its unused tail is zeroed.
 
 Thanks!
 
