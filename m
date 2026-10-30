@@ -1,66 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.27.42.4
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793356095;
-	b=E4iXvDT5h01HQ1iixQaJjnCunrOTXIQzvErlPhJ9DSoIpSQm7JyF5tVJx5US4F+2GTdu
-	 1qADUtvl1Jq71rtEr+gledhtgAXn5VemGwpYnxD/0s0rBi73Yp88Xnu/9u0NJeRPYaTX7
-	 ZdsuWrtaA8A9vMP9jKsiV/xumnmMndJLOg4xGKCiKEipcB2zbZwgDRTFQqdkt7W7BmWIn
-	 pJee0BNkQl9VILXT57GEolp9pK3I3b1flnS//guW10jdYuMty7q9uveF+u9J1WAkMKwOU
-	 bmfcrzUi5zXzV9564R5c6IaUD3YhWQHXaTqJoJJKjvd6kzcOEkrjn89Uke2I1yXtzbw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793356095;
-	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:Content-Type:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=qyJeCY+1SCigp3wsQXw3Clfptu3D9KJx2aBdbZMV1xE=;
-	b=Ej0iPV1vy+W5345Gu1vlsCKpI/H+6pQo+LC6s1QT21vKuU2QP2zg9vuGHy+LHsnBszzC
-	 vR3inBqfio86fEZ2pWxTHL7Gynsfp5d+VsEWYfM2e7Hlb4XiB/sK7Ff2PCP6M9JA49FrX
-	 wXankEMTICia4a7UIlIFVMwhlqSNjZLHnlDKJnZWqpmoIGSAzusITF3/mLDn4wqqU9lQD
-	 EtdVo3xgc2lRMGrvxytdlnCeGNCKBXo5qvy2rTeZyEdhCnnulRVILb4w9v9V/JiX6CrAT
-	 xqjfuJYMM75GdTTokHvukRDiV34iKyd+/peKkECg0iqI/77dqoqpJLKDS4r0nNLvxbg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=free.fr;
-	spf=pass smtp.mailfrom=free.fr;
-	dkim=pass header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=BD70mgLj;
-	arc=none smtp.remote-ip=212.27.42.4
-Received: from smtp4-g21.free.fr (smtp4-g21.free.fr [212.27.42.4])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793357106;
+	b=EfleHosDTX553ExTj8dT6pkcrQyF4S75hAjU/wT8XAjORRILsMEc1EoSKk2c3Oof9bBR
+	 KIPo1aHqIUDGzERQwAv4n2kLKq4YDhTDrHZwQBXH75lmgUPbBYvU4QpS3RRcOMc59cEm1
+	 AYOUTghIk8BpIHnIrqdFjppl5DlHoPFRduhwc3gbnotKbIR7+oSmH6NbOFvQJKOEoCf8D
+	 D/gKXKEn4HLH5Z1mC98jXgWetZRBnchwHTblZv5x8B3maBxxrFSxEu0bZOYY0D13FAKIB
+	 i1pC9GVtxSaQrdOvIb0cRob3mEAawyxxo3fcOof+YPSVQsqd9m6SXqaU9jnJ9CHhXMA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793357106;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
+	 X-Endpoint-Received:X-Original-From:Reply-To;
+	bh=PchrU+Va3DZaNKNckQ858GV5JoQCVK375UKKXHl3JXA=;
+	b=QfR63dAS50Wd6nGl5AP2HBCrJcRmWus8ZXKjXzdfhta1A3QukGCBAXYf2SGPktWva/74
+	 HkNeLzVmJYyPknIDjH/7ZOiun44Um9amRIpJSknT95fNj06hmFzaQW0u1WI5753ckn003
+	 fvlUpHp8dt5V+N5ZLCH4y+dlgmtKYA7MkGx9+xi4SfEHE3BcsBaf9PUz6a67a/sIhLsoF
+	 1Nd/Cv70FGOopDHUD0urzA2w8cTalPjHqi4LE9SNZAOjeXVIMIAuCdN25M5I/l1qnymWM
+	 XK0Ors9HQsW1hKSX1LD0wV2QCX4XbwxyDRs6QrdoYlye2r5+4nOq3yo1iEFWV4nI/NQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WJ9SFY4W;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10B2606A31E;
+	Fri, 30 Oct 2026 10:45:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WJ9SFY4W
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1793357105;
+	b=Mmlw9XBcFRcc9kI6D8QglMCuiljStLBRIlMk7CNqCgONMGOygANpSK9d9jexQxKR8cN2
+	 MpdR2papkJMPbPnAQtXcBcgYJ/4CRwBUR7Wrn3XTMW/ObOrstW6G2v267R0QnyN7xpaTG
+	 EPdXYv9CwmIO8g9/Mlgl4gZoXDRln+8neEecLOK2M9NeKZmcEIQpI5pJEjZxYUhLGY0/3
+	 IH9vgHUlxHkTZ+bcYTFLlAkKMhh/rst+EtFxCRiFbGEVIHiAky5t5jWIOsX/7HjhH9d1c
+	 uldyXmkBeIu5rMlYH86EwrN1fOZmV+Ec5AmfPsxYGOIrlmMcC7uxsflWcjZKg9QGoFA==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1793357105;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=PchrU+Va3DZaNKNckQ858GV5JoQCVK375UKKXHl3JXA=;
+	b=cLaztePD2B9I3hRDdrKYe8tHq0P8Vwt0DLo0iubyivaPghjSX3Ut1Qfm1DkM7TSU5m9i
+	 YPasFiJ7lhoniGEqA97f/n5gCt36DDy+ZomTaLS5UHS5e0OaZSIl/KBoJGsmsFZeuERG1
+	 oAa46n5o91A0OzTXTyTt5nkPJ8V8AWQ9w+duo5zHnpCx+xIQkAvJPux8tFNDcn36t6AKl
+	 WB+sGzXKS3QaeuymWGv6MPkO4NHOb77eVepAk94L23uF847Ql4F76TkaWjd8gCu4zMhrR
+	 OSMBtgLiUbUQd0ty9IsUN12aBX+5KzqPSWx209HoCDFmk7+3tZvyq7UWu0gSJDLk9WQ==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B6F60A3811;
-	Fri, 30 Oct 2026 10:28:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E5B6F60A3811
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=free.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=free.fr
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=free.fr header.i=@free.fr header.a=rsa-sha256 header.s=smtp-20201208 header.b=BD70mgLj
-Received: from stf-laptop.peak-system.com (unknown [IPv6:2a02:8424:8fef:6e01:2a4e:9a3e:485b:cbb0])
-	(Authenticated sender: stephane.grosjean@free.fr)
-	by smtp4-g21.free.fr (Postfix) with ESMTPSA id 0C19619F5A5;
-	Fri, 30 Oct 2026 11:28:07 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=free.fr;
-	s=smtp-20201208; t=1793356093;
-	bh=6fAfA2nJ2WjTHNs3g8XX1i9e9d0cKdgzO0QCkae6n6M=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=BD70mgLjj3ibezMaNF6AeqKjtW1YmhYD1a17JjEl/tysm4Q2t6pfvYpfHbWAVJvQ2
-	 8c6R+aa4wESUDXNfNulcsqjMeCp3tq2X3f+pJ721/35hzGsAOayq/ov2+OWxCRwO4x
-	 nsXP6C+z/9pi2e5zpNje8STuJP1wA3c5ZIkGGyg+8GlKS6MP/p4HB4cEpLGqpWenrG
-	 inJq3uCl4m+LpANOP5E1BDJqlo2wAJJpcH5ynTDg234dRO2vA86ektk1gYJy8PgiQM
-	 wUC0blfL54Ag2YNR9AEQUycM9Qr61mkOFRsS9xb1lih91+t0pmNX8US/yaw8x6W3Ng
-	 bntTMaN42ftmw==
-From: =?UTF-8?q?St=C3=A9phane=20Grosjean?= <stephane.grosjean@free.fr>
-To: Tristan Madani <tristmd@gmail.com>
-Cc: linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v2 net] can: peak_usb: fix use-after-free on PCAN-USB disconnect and init failure
-Date: Fri, 30 Oct 2026 11:27:04 +0100
-Message-ID: <20261030102705.30262-6-stephane.grosjean@free.fr>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261025210256.629830-1-tristan@talencesecurity.com>
-References: <20261023195400.3531721-1-tristan@talencesecurity.com> <20261025210256.629830-1-tristan@talencesecurity.com>
-Content-Type: text/plain; charset="utf-8"
+	by smtp.kernel.org (Postfix) with ESMTPS id EB8A41F00A02;
+	Fri, 30 Oct 2026 10:45:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793357105;
+	bh=PchrU+Va3DZaNKNckQ858GV5JoQCVK375UKKXHl3JXA=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=WJ9SFY4Ws0cNbct84zCWUvnvYWUO5V0V5troANnmnxc8JoNUkdhrMnb1mmMj3I6l7
+	 yNeCa4QBiew/zmLQBkHSJFJj/iKDH0+QbN9fQnbQ0tTvQR0jX8COGegyIonFRLAZff
+	 3enbF0fsQrG3wrNwtDqMnLCM1VVh/nZqGu70yJxvIcTaU78I9K0fzi1IMh8Sjo9/gp
+	 Usl/hfK+hthZaiTG44oj1Od3rAmBjreYIS31XAjI+pIQsgKOZNHfZyG/ciZZxoB/eE
+	 HXDAuvNB2igRZ3wlPlErxu3ny2G24JstTX84SzL5W7Wuk4FhXhh/sfkKLsdclyE/ny
+	 sY3Vc4SAfNEJA==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 594A143721;
+	Fri, 30 Oct 2026 10:45:04 +0000 (UTC)
+From: =?utf-8?q?St=C3=A9phane_Grosjean_via_B4_Relay?= <devnull+s.grosjean.peak-system.fr@kernel.org>
+Date: Fri, 30 Oct 2026 11:44:50 +0100
+Subject: [PATCH v7 01/13] can: peak_usb: fix missing CAN_ERR_FLAG when
+ reporting error counters
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -70,85 +83,64 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+Message-Id: <20261030-canfd_check_channel_idx-v7-1-fc4a3faf3acf@peak-system.fr>
+References: <20261030-canfd_check_channel_idx-v7-0-fc4a3faf3acf@peak-system.fr>
+In-Reply-To: <20261030-canfd_check_channel_idx-v7-0-fc4a3faf3acf@peak-system.fr>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
+ Wolfgang Grandegger <wg@grandegger.com>, 
+ =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
+ Dan Carpenter <error27@gmail.com>, Lukas Magel <lukas.magel@posteo.net>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Tristan Madani <tristmd@gmail.com>, 
+ =?utf-8?q?Stefan_G=C3=BCnther?= <stefangun@pm.me>, stable@vger.kernel.org
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793357103; l=1235;
+ i=s.grosjean@peak-system.fr; s=20261020; h=from:subject:message-id;
+ bh=yJYGMmDCA5H1YtV9p82vQMvFYiAXoP2GMFxyPs3vVf0=;
+ b=MzAmo/yDJoTojbULI/Ih0m3T5EoAiZl4qpYhBRskLJ4xnpRpnysSl5pzPkBDjkD6FyHMmzIY9
+ fWVOPkMeJYsA0xC0YCDgaOXqEn4WUTLpsPP5SKHHjSQHCLlsNyh7Cgc
+X-Developer-Key: i=s.grosjean@peak-system.fr; a=ed25519;
+ pk=bP7QV2zvvAKAfConZlUOGKGEcXL64SNUpVUm++Ai+/c=
+X-Endpoint-Received: by B4 Relay for s.grosjean@peak-system.fr/20261020
+ with auth_id=1250
+X-Original-From: =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
+Reply-To: s.grosjean@peak-system.fr
 
-Hi Tristan,
+From: Stefan Günther <stefangun@pm.me>
 
-On 25/10/2026 22:02, Tristan Madani wrote:
-> The PCAN-USB adapter uses a restart_timer for bus error recovery
-> but does not define a dev_free callback.  When the device is
-> unplugged, peak_usb_disconnect() frees the candev without cancelling
-> the timer.  If a bus error armed the timer and USB disconnect races
-> with the timer callback, the timer fires on freed memory.
+When the device reports error counters, the driver incorrectly uses an
+assignment (=) instead of a bitwise OR (|=) for CAN_ERR_CNT. This wipes
+out the CAN_ERR_FLAG and CAN_ERR_CRTL flags, causing the error frame to
+be sent to userspace as a regular CAN frame with ID 0x200.
 
-Thanks for the fix, the disconnect part looks right to me.
+Fix this by using a bitwise OR to preserve the flags.
 
-A small precision, since you'll respin (see below): the timer is not
-armed by a bus error itself, but by the completion handler of the
-asynchronous restart URB, pcan_usb_restart_pending(), i.e. after a
-restart from bus-off (restart-ms, or "ip link set canX type can
-restart"). This handler ignores urb->status, so it also arms the timer
-when the URB is killed on unplug, and the timer may still be pending
-(PCAN_USB_STARTUP_TIMEOUT, 10 ms) when free_candev() runs.
+Signed-off-by: Stefan Günther <stefangun@pm.me>
+Cc: stable@vger.kernel.org
+Fixes: 3e5c291c7942 ("can: add CAN_ERR_CNT flag to notify availability of error counter")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-FYI, Sashiko reported the same issue independently on my peak_usb
-series [1]. I won't fix it there, and will point to your patch instead.
-Both apply in any order, without conflict.
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 8fd058c32856..785224e00c4e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -526,7 +526,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 			/* Supply TX/RX error counters in case of
+ 			 * controller error.
+ 			 */
+-			cf->can_id = CAN_ERR_CNT;
++			cf->can_id |= CAN_ERR_CNT;
+ 			cf->data[6] = mc->pdev->bec.txerr;
+ 			cf->data[7] = mc->pdev->bec.rxerr;
+ 		}
 
-> The same timer is initialized in pcan_usb_init() via timer_setup(),
-> but on error (e.g. failed USB command to read the serial number) the
-> function returns without cancelling it.  Because dev_init failure in
-> peak_usb_create_dev() jumps to lbl_unregister_candev and skips the
-> adap_dev_free label, the dev_free callback is never invoked either.
+-- 
+2.53.0
 
-I agree with the Sashiko review of this patch [2]: the
-timer_shutdown_sync() added in pcan_usb_init() doesn't close this
-path. The netdev is registered before dev_init() runs, so it can be
-opened and restarted while pcan_usb_init() waits for the serial
-number. The restart URB submitted by pcan_usb_restart_async() is not
-anchored, so it may still be in flight when the probe fails, and when
-it completes, pcan_usb_restart_pending() re-arms the timer of the
-freed struct pcan_usb. On the disconnect path, there is no such issue,
-since usb_unbind_interface() flushes the endpoints before calling
-->disconnect().
 
-The init failure path is fixed by patch 9 of my series [3], which does
-what Sashiko suggests: the netdevs are registered only once all the
-channels of the interface are set up, so no channel can be opened, and
-therefore restarted, while pcan_usb_init() is running. v7 of the
-series is coming soon.
-
-So I'd suggest a v3 restricted to the disconnect path: drop the
-timer_shutdown_sync() below, and the init failure part of the subject
-and commit message.
-
-[...]
-> +static void pcan_usb_free(struct peak_usb_device *dev)
-> +{
-> +	struct pcan_usb *pdev =
-> +		container_of(dev, struct pcan_usb, dev);
-
-Nit: this fits on one line, as in pcan_usb_init().
-
-[...]
-> @@ -901,6 +909,7 @@ static int pcan_usb_init(struct peak_usb_device *dev)
->  		dev_err(dev->netdev->dev.parent,
->  			"unable to read %s serial number (err %d)\n",
->  			pcan_usb.name, err);
-> +		timer_shutdown_sync(&pdev->restart_timer);
->  		return err;
->  	}
-
-This is the line I'd drop: it's harmless, but it doesn't fix the init
-failure path, and the timer can't be armed there once [3] is applied.
-
-With the patch restricted to the disconnect path, feel free to add:
-
-Reviewed-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
-
-[1] https://lore.kernel.org/r/179281433446.3130.6290059781976829176@kernel.org
-[2] https://lore.kernel.org/r/179304858361.3134.1029344134259623994@kernel.org
-[3] https://lore.kernel.org/r/20261022-canfd_check_channel_idx-v6-9-197704231551@peak-system.fr
-
-Thanks,
-Stéphane
