@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793499332;
-	b=TjDMN7dPEgU6rFF7YsbkLOMJNvUYEBapyHRlO6PaNJze5kFu8cSD0J0OBYRU95kR3sfi
-	 VCUOAO3aT5aCdbY7bm3CKWtTXWVSzluDUZ9yiFKI48I1y5xtO2AA2oM59SZV9XDmFrErl
-	 ayZndQHgDirqxBfABiUT2+ADQ1W1kPU/GtBPzhl73fwK8KdOBylIlW+jBKBBfr/I1oMOe
-	 aWeN8vrlxYLlgasn4kHxYwbeQpIoTjoM8wtkdi10MHw8rXXHYmtrIN6zwAhcZDI0ROttE
-	 enGQXX44hunJFLY62UH8mUPULUeOpFyOCRPf/w3o/8NDKj1xTEUM9+pcZ3QCYdIRndA==
+	t=1793499329;
+	b=j7vm/d3Q4HDh32NOxWiudOMW3Xxr27+vbDQTOJAtP+d4H1VXRY5s8mujz0+5xjbBZ9Zb
+	 CgtFPrWVhRiXeiQnyjZ+VwAOuQ1653NywFj/meGpozOOn1mVVjFOqlp/UcJkB6prIUJtb
+	 c6TGfOW1IITh1QnpfzahEUhT8O+n4pG2wF7kH6AIhZrlsgfWXvFHiZcZIh4n3WxPnyWH/
+	 MHZGkB9ctqENtTgeCovCd7i2OyRAO6AljA7Nrv7kcZsYll1DRvVGdXfjMvrTA4ePS13d7
+	 0mKSBfyvsxU1TtnOZ5U1XkwQv2GqezcyoTRH6WBobQaE7Sj0/HU7Gd+bgQYTMUDNi9g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793499332;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793499329;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=pGb/TcMAboBwB3Sj+01ezuTRZ9UzgOLsqeFKfsEFeQw=;
-	b=JQ8VwGYVYm9S/BO0YCXCu9Tt2OfzaxymR8GVR++hOTw+0EEsoLFGVpi0Z9TCVL8uCeHL
-	 xZ5KV/euh8/mfrrXbSWYAdhNqBixibBz9bsm3V++X6f3lfEqXVWAwB3XuS4SDQZjL7bJL
-	 rAezmb/24HLo9qGdHAEjoGT+SrxsoTb4myBEblAP+65fQJKsQyD5ULFW1yUsl5M/+ar96
-	 LY0ti7WUy/ypKlVjJWuo4eHoRE7hA7KtlkIGuWIC6T7vZh1FyBBsapCnkmP6tl/I1yqt0
-	 oU02kkQj1y5c6KNnhHJ/lAD5mY/2D/64K2TWexHVWA/xyS70/EUQpcvGUVTi1ZWvrkQ==
+	bh=buYvH/z8eKO5TNOcNGaLJ1kkawjS8FgN7VfGltfk1mM=;
+	b=lMpd7CAuOPCamnO+Q9ENdZ7cTN1gsKM3sedtC4NHkyGZ2w3oAMcLYp4x5YpM+wcDNySS
+	 9QYZQcLoNvVhcVnse0FZC693ivhIz5nBRhSkSXvib997X29EKCRVJcgH3B3c/rHhZtwcd
+	 g/lF8uy6pC/Xo6DQwz6AwpQVQLAz4VfrhECxKNi7lMc8o7Usv8jxIdb/7GlLQJldqbBKE
+	 UFW0meGuAI5n1FZzsdpEaF5P5T/5uwKW3fDFw0mGOLdhRYbb/J8EI9fGmpFkehw2S3Xay
+	 l36kPg9/AMxhKqNFmDGnzsPZpZPKYiXOLSTiaHhUliRwiQQi6UZVu2cOuXuapv/Kwhw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MI74K84u;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jzGmvvBE;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25CB0606A335;
-	Sun,  1 Nov 2026 02:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36610606A326;
+	Sun,  1 Nov 2026 02:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MI74K84u
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F92B1F00919;
-	Sun,  1 Nov 2026 02:15:31 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jzGmvvBE
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 421911F000C1;
+	Sun,  1 Nov 2026 02:15:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793499332;
-	bh=pGb/TcMAboBwB3Sj+01ezuTRZ9UzgOLsqeFKfsEFeQw=;
+	s=k20260515; t=1793499328;
+	bh=buYvH/z8eKO5TNOcNGaLJ1kkawjS8FgN7VfGltfk1mM=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=MI74K84uSPMHvsO4upj+Fi9xBK4legbXc3FAye3IF4i/18hwubqU+nLDBmwulvz9g
-	 NpKn0y7XjOLbyUUJnCZdxqSRa+0AofeYHgeMsaFDo5pHL3/50SKta0rOwOb4NG4e47
-	 duSUS3CZGnWuaqjiiEUH9Dus5vE3dKhwvTnVMU+TkztUvYTcfPZ5T1DstaOql5Gew9
-	 Br+gvYa+oCj8JHfQxmgvUf3Y7mgoQMYbG4Vpau0XUJLONIyv0NKO640b98I/Qj3EmD
-	 DvipekOijX8j1aO53I7wMDporAcomuWvoFRxqW6bX89ikyKWuUaiQuq/4sjv41F3Hx
-	 DGULoR1SixRbQ==
-Subject: Re: [PATCH v7 13/13] can: peak_usb: don't return an uninitialized
- PCAN-USB CAN channel ID
+	b=jzGmvvBEqvAr3ktsvE5B4keqHzN7TyH0rc9AzT7s+hP5v12tjxiYwoOjg0UtsrWxs
+	 zSRGZBX47Bk3UuRqFalsW+sv24iFJrxRNg7VPYUOKU4pqf1IT0mGVU694e7FyICtj/
+	 FLlkQTh5wFi6Q5gnYrfcKzHl0eHcZYVm2E6xTnqM7aGBGcISJgijKtxcP3YQrYNIqh
+	 QNM2gcrOeaZ+ETTF6jhvGNK9MzEx2nKSViDawbLfbzHIqyPESFjDly8fho1M4t5LbK
+	 2UI3JuS0WtV1kvm2LsgN0P6MJEWznv/QRcupsMQfLfVCuBbO8S6NxJZ5Zpt6/0w0iv
+	 F3BodGemS0eow==
+Subject:
+ Re: [PATCH v7 06/13] can: peak_usb: harden channel handling in PCAN-USB FD
 From: netdev-bot+sashiko@kernel.org
 To: s.grosjean@peak-system.fr
 Cc: mkl@pengutronix.de, mailhol@kernel.org, wg@grandegger.com,
  error27@gmail.com, lukas.magel@posteo.net, linux-can@vger.kernel.org,
  linux-kernel@vger.kernel.org, tristmd@gmail.com, kuba@kernel.org
-Date: Sun, 01 Nov 2026 02:15:31 +0000
-Message-ID: <179349933109.3127.16204326690893554658@kernel.org>
+Date: Sun, 01 Nov 2026 02:15:27 +0000
+Message-ID: <179349932777.3127.4920937034375531815@kernel.org>
 In-Reply-To:
- <20261030-canfd_check_channel_idx-v7-13-fc4a3faf3acf@peak-system.fr>
+ <20261030-canfd_check_channel_idx-v7-6-fc4a3faf3acf@peak-system.fr>
 References:
- <20261030-canfd_check_channel_idx-v7-13-fc4a3faf3acf@peak-system.fr>
+ <20261030-canfd_check_channel_idx-v7-6-fc4a3faf3acf@peak-system.fr>
 X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -69,7 +69,7 @@ MIME-Version: 1.0
 Thank you for your contribution! Sashiko AI review found 1 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 (1) · Low: 0 (1)
+Critical: 0 · High: 0 (3) · Medium: 1 · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -77,134 +77,196 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] The same ETHTOOL_GEEPROM disconnect-window leak is still open
-  for PCAN-USB Pro, through the same shared handler.
+- [Medium] On the adap_dev_free path, the new peak_usb_stop_rx(dev) call
+  clears PCAN_USB_STATE_CONNECTED before unregister_candev() runs…
 
 Pre-existing issues:
-- [Medium] Baseline decision: false (kept only because
-  requires_validation=true).
-- [Low] Baseline decision: false (kept only because
-  requires_validation=true).
+- [High] Asynchronous restart URBs can outlive the peak_usb_device they
+  point to on the probe-error teardown path.
+- [High] On the adap_dev_free error path of peak_usb_create_dev(),
+  dev_free() (pcan_usb_fd_free()) frees the shared usb_if and…
+- [High] peak_usb_create_dev() calls register_candev()
+  (pcan_usb_core.c:1009) before dev_init() (1022).
 
 --
 
-can: peak_usb: don't return an uninitialized PCAN-USB CAN channel ID
+can: peak_usb: harden channel handling in PCAN-USB FD
 
-This patch zero-initializes args[] in pcan_usb_get_can_channel_id().
-After disconnect has cleared PCAN_USB_STATE_CONNECTED, pcan_usb_wait_rsp()
-returns success without filling args[]. Without the initializer, an
-ETHTOOL_GEEPROM request in that window copies an uninitialized stack byte
-to userspace.
+The PCAN-USB FD decoders now check record channel numbers against the
+adapter's controller count. They also reject records whose usb_if->dev[]
+slot is empty, and pcan_usb_fd_free() clears a channel's slot.
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> index 626593251e5d7..4f255f2a33feb 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
-> @@ -386,7 +386,7 @@ static int pcan_usb_get_serial(struct peak_usb_device *dev, u32 *serial_number)
->   */
->  static int pcan_usb_get_can_channel_id(struct peak_usb_device *dev, u32 *can_ch_id)
->  {
-> -	u8 args[PCAN_USB_CMD_ARGS_LEN];
-> +	u8 args[PCAN_USB_CMD_ARGS_LEN] = {};
+The patch also adds peak_usb_stop_rx(), which clears CONNECTED under RTNL
+and poisons the RX anchors. It is called on the probe error path and in
+peak_usb_disconnect() before channels are freed.
 
-[Severity: Medium]
-Is the same ETHTOOL_GEEPROM disconnect window still open for the PCAN-USB
-Pro? It goes through the same peak_usb_get_eeprom() handler.
+> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_core.c b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> index a1b17e1e6fea6..f5c39b43b0fa1 100644
+> --- a/drivers/net/can/usb/peak_usb/pcan_usb_core.c
+> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_core.c
 
-In pcan_usb_pro.c, pcan_usb_pro_get_can_channel_id() builds the GETDEVID
-record with only one variadic argument:
+[ ... ]
 
-	pcan_msg_add_rec(&um, PCAN_USBPRO_GETDEVID, dev->ctrl_idx);
-
-pcan_msg_add_rec() handles GETDEVID in the same case as SETBTR and
-SETDEVID. That case reads a second u32 argument, which this caller never
-passes:
-
-	case PCAN_USBPRO_SETBTR:
-	case PCAN_USBPRO_GETDEVID:
-	case PCAN_USBPRO_SETDEVID:
-		*pc++ = va_arg(ap, int);
-		pc += 2;
-		*(__le32 *)pc = cpu_to_le32(va_arg(ap, u32));
-
-That va_arg() is undefined behavior. In practice, whatever leftover
-register or stack value it picks up ends up in the dev_num field of the
-record in dev->cmd_buf.
-
-The window opens after peak_usb_stop_rx() clears PCAN_USB_STATE_CONNECTED
-and drops rtnl, and closes when unregister_candev() runs. Inside it,
-pcan_usb_pro_send_cmd() and pcan_usb_pro_wait_rsp() both return 0 without
-doing any USB I/O. Then this returns those leftover bytes as the channel
-ID:
-
-	pdn = (struct pcan_usb_pro_devid *)pc;
-	*can_ch_id = le32_to_cpu(pdn->dev_num);
-
-peak_usb_get_eeprom() then copies them to userspace. It also caches them
-in dev->can_channel_id, which backs the can_channel_id sysfs attribute.
-
-While the device is connected, the same 4 bytes are also sent to the
-device with every GETDEVID request.
-
-Would passing an explicit 0 as the second argument to pcan_msg_add_rec()
-in pcan_usb_pro_get_can_channel_id() fix the Pro adapter? That could go
-in a separate follow-up patch.
-
+> @@ -574,6 +575,9 @@ static int peak_usb_ndo_open(struct net_device *netdev)
+>  	struct peak_usb_device *dev = netdev_priv(netdev);
 >  	int err;
 >  
->  	err = pcan_usb_wait_rsp(dev, PCAN_USB_CMD_DEVID, PCAN_USB_GET, args);
+> +	if (!test_bit(PCAN_USB_STATE_CONNECTED, &dev->state))
+> +		return -ENODEV;
+> +
 
-[Severity: Low]
-This isn't a bug introduced by this patch, but pcan_usb_wait_rsp() ignores
-actual_length from the CMDIN usb_bulk_msg(). It also doesn't check that
-cmd_buf[PCAN_USB_CMD_FUNC] and cmd_buf[PCAN_USB_CMD_NUM] match the
-request:
+[Severity: High]
+This is a pre-existing issue, but does this CONNECTED test close the
+window where the netdev is visible before its private data is set up?
 
-	err = usb_bulk_msg(dev->udev,
-		usb_rcvbulkpipe(dev->udev, PCAN_USB_EP_CMDIN),
-		dev->cmd_buf, PCAN_USB_CMD_LEN, &actual_length,
-		PCAN_USB_COMMAND_TIMEOUT);
-	if (err)
-		...
-	else if (p)
-		memcpy(p, dev->cmd_buf + PCAN_USB_CMD_ARGS,
-			PCAN_USB_CMD_ARGS_LEN);
+peak_usb_create_dev() sets CONNECTED and calls register_candev(). Only
+after that does it call dev_init():
 
-Suppose the device sends a short reply, or a late reply to an earlier
-command that timed out. Could stale bytes from dev->cmd_buf then
-overwrite the new zero initializer in args[]?
+	set_bit(PCAN_USB_STATE_CONNECTED, &dev->state);
+	...
+	err = register_candev(netdev);
+	...
+	if (dev->adapter->dev_init) {
+		err = dev->adapter->dev_init(dev);
 
-pcan_usb_send_cmd(..., NULL) only rewrites cmd_buf[0] and cmd_buf[1]. So
-pcan_usb_get_can_channel_id() could report a byte left over from an
-earlier outgoing command as the channel ID, for example btr1 from
-pcan_usb_set_bittiming().
+Until pcan_usb_fd_init() runs, pdev->usb_if and pdev->cmd_buffer_addr are
+still NULL. Can userspace configure or open the netdev in that window?
+That would make pcan_usb_fd_start() dereference pdev->usb_if, or make the
+bittiming command builders use the NULL cmd_buffer_addr.
+
+The later commit "can: peak_usb: register the netdevs only once all
+channels are set up" appears to fix this. It moves register_candev() into
+peak_usb_probe(), after all channels are initialized.
+
+>  	/* common open */
+>  	err = open_candev(netdev);
+>  	if (err)
+
+[ ... ]
+
+> @@ -1014,6 +1041,13 @@ static int peak_usb_create_dev(const struct peak_usb_adapter *peak_usb_adapter,
+>  	return 0;
+>  
+>  adap_dev_free:
+> +	/* the whole interface is released when probing a channel fails:
+> +	 * stop RX on this channel, which may already be open, and on the
+> +	 * channels already created, since their RX URBs may carry records
+> +	 * for this one.
+> +	 */
+> +	peak_usb_stop_rx(dev);
 
 [Severity: Medium]
-This is a pre-existing issue, but two setters in this file have the same
-uninitialized args[] problem on the transmit side.
-pcan_usb_set_can_channel_id() only sets args[0]:
+Does clearing CONNECTED here suppress the shutdown commands that ndo_stop
+sends for a channel that is already open?
 
-	u8 args[PCAN_USB_CMD_ARGS_LEN];
+On this path the netdev is still registered and may be up. The later
+unregister_candev() runs peak_usb_ndo_stop(), which calls dev_stop() and
+dev_set_bus(dev, 0). With CONNECTED now clear, pcan_usb_fd_send_cmd()
+returns early:
+
+	/* usb device unregistered? */
+	if (!test_bit(PCAN_USB_STATE_CONNECTED, &dev->state))
+		return 0;
+
+Before this patch, CONNECTED was still set when ndo_stop ran here. Could
+a probe failure now leave the controller bus-on, with calibration records
+still streaming, while the device stays attached?
+
+The later commit "can: peak_usb: register the netdevs only once all
+channels are set up" removes peak_usb_stop_rx() from adap_dev_free, and
+no netdev is registered on this path there.
+
+peak_usb_disconnect() still clears CONNECTED before it unregisters an open
+channel, but the old loop already did that before unregister_candev().
+
+> +
+>  	if (dev->adapter->dev_free)
+>  		dev->adapter->dev_free(dev);
+>  
+
+[Severity: High]
+This isn't a bug introduced by this patch, but is it safe to call
+dev_free() before unregister_candev() on this error path?
+
+If the failing channel has no siblings, pcan_usb_fd_free() frees the
+shared objects:
+
+	kfree(pdev->cmd_buffer_addr);
 	...
-	args[0] = can_ch_id;
-	return pcan_usb_send_cmd(dev, PCAN_USB_CMD_DEVID, PCAN_USB_SET, args);
+	kfree(pdev->usb_if);
 
-pcan_usb_set_bittiming() only sets args[0] and args[1].
+The code then falls through to lbl_unregister_candev and calls
+unregister_candev() on a netdev that is registered and possibly open.
+Wouldn't peak_usb_ndo_stop() -> pcan_usb_fd_stop() then access the freed
+usb_if?
 
-pcan_usb_send_cmd() copies all PCAN_USB_CMD_ARGS_LEN bytes into
-dev->cmd_buf and sends the whole command over the bulk OUT endpoint:
+	pdev->usb_if->dev_opened_count--;
 
-	if (p)
-		memcpy(dev->cmd_buf + PCAN_USB_CMD_ARGS,
-			p, PCAN_USB_CMD_ARGS_LEN);
+pcan_usb_fd_set_bus() would also build its command in the freed
+cmd_buffer_addr.
 
-Does this send 12 or 13 bytes of uninitialized kernel stack to the USB
-device on every channel ID write and every bitrate change?
+The later commit "can: peak_usb: register the netdevs only once all
+channels are set up" also fixes this, because no netdev is registered
+by the time adap_dev_free is reached.
 
-The other setters in pcan_usb.c, such as pcan_usb_set_sja1000(),
-pcan_usb_set_bus() and pcan_usb_set_led(), zero-initialize their args[].
+[ ... ]
 
-Could these two args[] arrays get the same {} initializer?
+> @@ -1038,13 +1072,14 @@ static void peak_usb_disconnect(struct usb_interface *intf)
+>  	struct peak_usb_device *dev;
+>  	struct peak_usb_device *dev_prev_siblings;
+>  
+> -	/* unregister as many netdev devices as siblings */
+> +	/* stop RX on all channels before unregistering and freeing them */
+> +	peak_usb_stop_rx(usb_get_intfdata(intf));
+
+[Severity: High]
+This is a pre-existing issue, but can an asynchronous restart URB outlive
+the peak_usb_device it points to on the probe error path?
+
+peak_usb_set_mode(CAN_MODE_START) -> peak_usb_restart() ->
+dev_restart_async() submits a URB with dev as its context, without
+anchoring it. In pcan_usb_fd_restart_async():
+
+	usb_fill_bulk_urb(urb, dev->udev,
+			  usb_sndbulkpipe(dev->udev, fw_info->cmd_out_ep),
+			  buf, pc - buf,
+			  pcan_usb_pro_restart_complete, dev);
+
+	/* and submit it. */
+	return usb_submit_urb(urb, GFP_ATOMIC);
+
+pcan_usb_pro_restart_async() does the same. pcan_usb.c passes pdev as the
+context instead.
+
+When peak_usb_probe() calls peak_usb_disconnect() after a probe failure,
+the USB core has not disabled the interface. The commit message says so
+too.
+
+On that path, peak_usb_stop_rx() only poisons rx_submitted. Then
+unregister_candev() -> peak_usb_ndo_stop() runs. There, close_candev()
+only cancels restart_work, and peak_usb_unlink_all_urbs() only kills the
+rx_submitted and tx_submitted anchors. Finally free_candev() frees the
+netdev.
+
+A restart URB can still be pending on the command endpoint, for example
+if the device keeps NAKing it. Wouldn't its completion, when it finally
+runs, do this on the freed netdev?
+
+pcan_usb_pro_restart_complete()
+    peak_usb_restart_complete(urb->context)
+        dev->can.state = CAN_STATE_ERROR_ACTIVE;
+        netif_wake_queue(dev->netdev);
+
+The later commit "can: peak_usb: register the netdevs only once all
+channels are set up" narrows the trigger. A later sibling's
+register_candev() has to fail after channel 0 was registered, opened,
+went bus-off and had a restart submitted. No patch in the series tracks
+or kills restart URBs.
+
+> +
+>  	for (dev = usb_get_intfdata(intf); dev; dev = dev_prev_siblings) {
+
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261030-canfd_check_channel_idx-v7-0-fc4a3faf3acf%40peak-system.fr
