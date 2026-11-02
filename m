@@ -1,97 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793634829;
-	b=c2yPwUqltLpoHw2h7zAlqVn1gHsVEImhzNoJITlf3KU+8L/frubSYCN7CU1Gc3Ud3kXM
-	 I+xc0DdaPDVrfEd/awd8PLfZbKbuK0l6V+PppB+80xetNkLYL533AO5WDv0zTwQllj2Ly
-	 bDb8MufxRuzj36uFsJMHsSqRI7jR/PTQeR+5uAfIaMN/CCfxWPpsLKij8MN9iZeSTlESY
-	 xKL85C7ZxBg5uaP9aB18Xa8sAufPksWsKR7CHcVKrgxW1Mnxj50Uo2Oe/t8KsBsXP4N9c
-	 2RNbnPeHdfwxwyynk3ZdWBVwcGqDCoyTpCN2spFcOIa0TX/ZSFWQuFWoxPLZ4tsf8+g==
+	t=1793635309;
+	b=V5Y0u71IWDyE0sJ4mzAjJrk/KQZ2Fyw5tVf0l6Jdgje0S6g4dLRiCZ8S27LMn/zGeIOA
+	 lS9bWwsusnrOCdMlWZflDa2TFpl60T5np7zf0D0iF1IZ3qq5lj+w1yJxzXtnj0kHcn2ol
+	 FMPypAzbYjsbfZ08ZwqZCYhxiAHs2Lf+I+wiNL2856y4uhbuHm5EK/1ZiVUpQI1M0ZuKj
+	 fuMsbcrLPlGi8yZdHR476o9OTHkagpgjbHwdChLMYuvve6ul6ddhz7etvpTiBmluxAgWl
+	 mstLtoC0WwS5TvMqGTvZ8JeEN8EAO3v+ZrHfvfDdiWLaCwHVI88aE1JV7h0AOZbcIQg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793634829;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:X-Google-Original-From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=YUOMvaywSnfPxZ52C8XL24limR9Py8D4CfmjHsLDiqQ=;
-	b=lpByKaUKLsyV4kWqilxSB5GZuOK1BfZBZv+CRfVk53UWknKAqFCF6g3+3tUiOZ9qIlXy
-	 D8S78rXoJx6sHu6EoclfUw5vqk61po3mPqoxgXfZ2llovOrsnmwagQ9z0CRXJihcXywb+
-	 +01hL5f1cq0PRJSzVB88go2ncu6dXefb+vwkFiiovI/MbDM6dsO+dVhoDj8ACtQP8i6r8
-	 ewY609/z6M9uKJm3rQn7mpLmvD7+Bu/JRWBH2ztGtH3mUkOxxxlfvbUO9GPnGVFoaFAp0
-	 p1EMvHdDWIO+1OWHEVNZc9unjPAGu69JilxIsJjOJ1arHymZZBhUMdqE0JcoBOhBy6Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793635309;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=ESWkqGTIhab5jC/IQdFT3w7WCcFwwHCysvVp7HIJ1As=;
+	b=Vrpj3MSqUQiSmGzLZeQxOgEoe7yFhwUhbgHJM9h1qbJG6V2GFsAZwx4y1yPX4f168oEU
+	 abXMTUv4Jag7x1Bc6X06NXIBpRpVtT+Y+jT1jJ3TQtIUO6H4H5mzXX/hvLruhbNefJ5Y+
+	 Tw8KwuGI4LRRNg2+zW9CcEdqEUf93IqVIQjoArn6X5XvDdl24E3K0+GtBjlQ18hvT3wnv
+	 1oYphTUCan1jNrSpPdW61VGq/y5NR2V82zSY1kJd43BZ/ojc6ZrLs5zkwz/m4xE5KaHFl
+	 PbmdJl/caDfYjAbP/WtGTecILXXQ38LCGqGI5bqAwFOP20ow7fliIfsYxDleyMvztWw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TMMEAWi8;
-	arc=none smtp.remote-ip=209.85.128.51
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Yj6ubjIc;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF7960B426A
-	for <linux-can@vger.kernel.org>; Mon,  2 Nov 2026 15:53:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5AF7960B426A
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5C44606A5A7
+	for <linux-can@vger.kernel.org>; Mon,  2 Nov 2026 16:01:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TMMEAWi8
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4a208d93758so34087755e9.3
-        for <linux-can@vger.kernel.org>; Mon, 02 Nov 2026 07:53:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1793634828; x=1794239628; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=YUOMvaywSnfPxZ52C8XL24limR9Py8D4CfmjHsLDiqQ=;
-        b=TMMEAWi8OpwvmknuaspJNf3sj1bU7MxlY242AWQesYlBZ/usL9Bywm5GHfkWtMROp5
-         ipLMX38R/AKcGuj0K2WC4C16+/gQ1c+Z+MfJMmMoDP6lwF83DKvqMZj8oGVukOHXAb9T
-         LkKj8P89txbMlyStiITy99kS2mDCIPnMsQpmvVmMbRMrObp5iYbiqXiSk4ynU9cnbQ7W
-         mliwaabz80QqnFNlleAzFQiU5h0QgFTVucVWFHh7DMhecGwrj37bSeXcV+S8oJ9Y8h2E
-         lLdrW/bvnvS6QskO7aL1mGOC31H3S+szj6rcqAnu/SR4MdWddbADxqgne0SGVmpKV+sw
-         vfPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793634828; x=1794239628;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=YUOMvaywSnfPxZ52C8XL24limR9Py8D4CfmjHsLDiqQ=;
-        b=vVi1XNdb6dA5ifZ6wvqDj4EFUggTVQu9Of4hMXk7D4bvk97sHbOXS47pp+HzC0UQTc
-         lGumos0154KwYHYezlPWIaQhL0AESKt1np69SVo2LD4dmQcGITOJsebcGigkfzBmgKZJ
-         i10G6hZ0RXHr4p1NXfXGzvtO/YL0+TVlVdpSRXninGrJGPgPDXFDFHSCTGTRUl8lHFtF
-         UnWcDTb2rt8MPmXknuPNmhBar0mWa3b/XqKYI2inKPf23j9/OQZZzqFOmSrH1FcvDKoJ
-         SUKO75k7YmTgcnI4oAB9QCVVOG1zQureF6IEPjzKvCRvPsNiimE7VWldYdsZLS4WIzC2
-         YuJQ==
-X-Forwarded-Encrypted: i=1; AKwUvBwvAqYj7OpeR0WkW5Homwc3tol/CeAdphOhqFn4HvhgzHA7U9yNWSNPDNss7BJXSgPMz4FAGjLMu1E=@vger.kernel.org
-X-Gm-Message-State: AFq9FYJ5NJ0fmHOcgByHK+wa7mG3qjVBDtwm8aKuvm51kiQwACpw9DsQ
-	iBrT8qlBt/GN6tHBcuQxHE+WogqaKbsZybSJ4uOflg4rjmtOT3uPgocDVDN4
-X-Gm-Gg: AYBFou0PRTDCVsrAEcTv5+3kvd6PB9n8VFJF+ONTh/w92n1lByqVM1Le+E5gBeUVN8D
-	2g4Fc78T/9+2Hm619K/6jJRv6QFgowoNu0qv3jjM4shwpG54u/84EaMVy3YNR27FkgFsCBm1xJK
-	rop5XWg8zD4FXwQ5XT+gzxtEbGnC+lFE3HYIwzjxCrAjfVlctHF7yKX0kyGTX7jpwlynyqFmzew
-	bxCcf3TFv9XKXBLxKXSVqB7iKamOhUkgQdSWVGxLEpJakROtBzOs+VeQjgZP/YlJkuML0XadKWF
-	eIBDZNabEAdc5e/2FCJoLLCZpJms0GFPJYwaQ0fuwNL/3p1U/H8MH87VAi1N5Hhe8PFaVmVUyKG
-	9alGwFnA/aGmMore8CwPDverGT7wX6sVZlFtDmvajG7rPiK1/SlRA8nc8rDx+wf3RpAiWyKHPks
-	zJGcNwhX3ltvi1AU0dmr9LKD2yCzTY/KjNhBUOGYoD2OvHHqRLto+9D/H9gd2R3PsNShGc/zqxj
-	4i6RROUTwECNWAqg+BnsT6OKZYTnKPtPOLA9lDXOqbKIxZf391IqP73n5HU7CpyCJAQUDVtKNOJ
-	ENDHMJLs2mc=
-X-Received: by 2002:a05:600c:19d2:b0:4a6:4d6b:a840 with SMTP id 5b1f17b1804b1-4ac1932a12fmr235060725e9.31.1793634827520;
-        Mon, 02 Nov 2026 07:53:47 -0800 (PST)
-Received: from debian.. ([2001:41d0:303:db6b::])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4abf5b286a0sm234689275e9.4.2026.11.02.07.53.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 02 Nov 2026 07:53:46 -0800 (PST)
-From: Tristan Madani <tristmd@gmail.com>
-X-Google-Original-From: Tristan Madani <tristan@talencesecurity.com>
-To: robin@protonic.nl,
-	o.rempel@pengutronix.de,
-	socketcan@hartkopp.net,
-	mkl@pengutronix.de
-Cc: kernel@pengutronix.de,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Tristan Madani <tristan@talencesecurity.com>
-Subject: [PATCH net] can: j1939: fix skb refcount underflow in session teardown paths
-Date: Mon,  2 Nov 2026 15:53:45 +0000
-Message-ID: <20261102155345.1267524-1-tristan@talencesecurity.com>
-X-Mailer: git-send-email 2.47.3
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Yj6ubjIc
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00F001F00A16;
+	Mon,  2 Nov 2026 16:01:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793635308;
+	bh=ESWkqGTIhab5jC/IQdFT3w7WCcFwwHCysvVp7HIJ1As=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Yj6ubjIcax/xahmOg/qOc+FZ641WzV4jIWw/Wmg1bH+oPJZaGKghvucnlaDs7dQ8G
+	 PLFQWh890ISphOx+aTsfNOv7BJQ4JkgCrmbhdYBkQ+dx4qQdD8R3gHSO9uQ8h533w9
+	 TQAWuBXZb3/OXjtRrEZpT/+sfgVdVJZfQnMIGM9TJ2+fFl+DbBft26GRKNUOe8BLdR
+	 kIyyGcnzKN4R7Lf5f2vAUA82TWsgiRgEqA8HYLwpIsLP7xK/0RlMlWwCCwLM4m4BQ8
+	 iAG5oEucugYLftTXAY0R7e77N1/2HxW35WID4g9L+Sf0/BZnRgAhi+b7TQj8Uh2T33
+	 2/PNbimUIx9mg==
+Message-ID: <sashiko-outbox-193720@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net] can: j1939: fix skb refcount underflow in session
+ teardown paths
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Tristan Madani" <tristmd@gmail.com>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261102155345.1267524-1-tristan@talencesecurity.com>
+References: <20261102155345.1267524-1-tristan@talencesecurity.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 02 Nov 2026 16:01:47 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -100,55 +61,113 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-j1939_session_destroy() and j1939_session_skb_drop_old() both call
-skb_unref() followed by kfree_skb() on session-queued skbs. Since
-kfree_skb() already handles the refcount decrement internally via
-skb_unref(), the preceding explicit skb_unref() causes a double
-decrement, triggering a refcount underflow warning on every session
-teardown.
+Thank you for your contribution! Sashiko AI review found 1 potential issue(=
+s) to consider:
+- [High] can: j1939: skb and sock leak in j1939_session_destroy() and j1939=
+_session_skb_drop_old()
+--
 
-The extra skb_get() reference taken in j1939_session_skb_queue() needs
-exactly one corresponding release. kfree_skb() provides that single
-release by decrementing the refcount and freeing the skb when it reaches
-zero. Remove the redundant skb_unref() calls in both teardown paths.
+commit 48d3734ee23304ec7eb1426db9d761018f0ff9d3
+Author: Tristan Madani <tristmd@gmail.com>
 
-Fixes: 8c21c54a53ab ("can: j1939: j1939_session_destroy(): fix memory leak of skbs")
-Fixes: 2030043e616c ("can: j1939: fix Use-after-Free, hold skb ref while in use")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tristan Madani <tristan@talencesecurity.com>
----
- net/can/j1939/transport.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+can: j1939: fix skb refcount underflow in session teardown paths
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f8..3173936bd6f6e 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -277,11 +277,8 @@ static void j1939_session_destroy(struct j1939_session *session)
- 	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
- 	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
- 
--	while ((skb = skb_dequeue(&session->skb_queue)) != NULL) {
--		/* drop ref taken in j1939_session_skb_queue() */
--		skb_unref(skb);
-+	while ((skb = skb_dequeue(&session->skb_queue)) != NULL)
- 		kfree_skb(skb);
--	}
- 	__j1939_session_drop(session);
- 	netdev_put(session->priv->ndev, &session->priv_dev_tracker);
- 	j1939_priv_put(session->priv);
-@@ -342,8 +339,6 @@ static void j1939_session_skb_drop_old(struct j1939_session *session)
- 
- 	if ((do_skcb->offset + do_skb->len) < offset_start) {
- 		__skb_unlink(do_skb, &session->skb_queue);
--		/* drop ref taken in j1939_session_skb_queue() */
--		skb_unref(do_skb);
- 		spin_unlock_irqrestore(&session->skb_queue.lock, flags);
- 
- 		kfree_skb(do_skb);
--- 
-2.47.3
+This commit removes the explicit skb_unref() calls before kfree_skb() in
+j1939_session_destroy() and j1939_session_skb_drop_old() to avoid a
+refcount underflow.
 
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..3173936bd6f6e 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -277,11 +277,8 @@ static void j1939_session_destroy(struct j1939_sessi=
+on *session)
+>  	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
+>  	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
+> =20
+> -	while ((skb =3D skb_dequeue(&session->skb_queue)) !=3D NULL) {
+> -		/* drop ref taken in j1939_session_skb_queue() */
+> -		skb_unref(skb);
+> +	while ((skb =3D skb_dequeue(&session->skb_queue)) !=3D NULL)
+>  		kfree_skb(skb);
+> -	}
+>  	__j1939_session_drop(session);
+>  	netdev_put(session->priv->ndev, &session->priv_dev_tracker);
+>  	j1939_priv_put(session->priv);
+> @@ -342,8 +339,6 @@ static void j1939_session_skb_drop_old(struct j1939_s=
+ession *session)
+> =20
+>  	if ((do_skcb->offset + do_skb->len) < offset_start) {
+>  		__skb_unlink(do_skb, &session->skb_queue);
+> -		/* drop ref taken in j1939_session_skb_queue() */
+> -		skb_unref(do_skb);
+>  		spin_unlock_irqrestore(&session->skb_queue.lock, flags);
+> =20
+>  		kfree_skb(do_skb);
+
+[Severity: High]
+Does removing skb_unref() in j1939_session_destroy() and
+j1939_session_skb_drop_old() leak every session-queued sk_buff and its
+associated socket reference?
+
+Every sk_buff queued into session->skb_queue starts with skb->users set to 1
+from allocation (via alloc_skb() in j1939_session_fresh_new() for RX
+sessions, or j1939_sk_alloc_skb() in j1939_sk_send_loop() for TX sessions).
+
+When the initial skb is queued in j1939_session_new(), it takes a second
+reference while callers do not drop the initial allocation reference on
+success:
+
+net/can/j1939/transport.c:j1939_session_new() {
+	...
+	skb_queue_head_init(&session->skb_queue);
+	skb_queue_tail(&session->skb_queue, skb_get(skb));
+	...
+}
+
+net/can/j1939/transport.c:j1939_session_fresh_new() {
+	...
+	skb =3D alloc_skb(size + sizeof(struct can_skb_priv), GFP_ATOMIC);
+	...
+	session =3D j1939_session_new(priv, skb, size);
+	if (!session) {
+		kfree_skb(skb);
+		return NULL;
+	}
+
+	/* alloc data area */
+	skb_put_zero(skb, size);
+	/* skb is recounted in j1939_session_new() */
+	return session;
+}
+
+Similarly, in net/can/j1939/socket.c, j1939_sk_send_loop() allocates each TX
+segment skb with skb->users =3D=3D 1 and passes it to j1939_tp_send() ->
+j1939_session_new() or to j1939_session_skb_queue(), which also increments
+skb->users to 2 without the caller dropping the initial reference:
+
+net/can/j1939/transport.c:j1939_session_skb_queue() {
+	...
+	skb_get(skb);
+	skb_queue_tail(&session->skb_queue, skb);
+	...
+}
+
+Because transient users of the queued skbs (such as j1939_session_tx_dat(),
+j1939_simple_txnext(), j1939_session_completed(), and
+j1939_xtp_rx_dat_one()) acquire their own reference via
+j1939_session_skb_get_by_offset() or j1939_session_skb_get() and balance it
+with consume_skb() or kfree_skb(), every skb resting in session->skb_queue
+has a refcount of 2.
+
+Without the skb_unref() calls in j1939_session_destroy() and
+j1939_session_skb_drop_old() (or alternatively removing the extra skb_get()
+in j1939_session_new() and j1939_session_skb_queue()), won't kfree_skb()
+only decrement skb->users from 2 to 1, leaking the sk_buff and preventing
+sock_wfree() from ever releasing sk->sk_wmem_alloc and the struct sock
+reference on TX sessions?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261102155345.1267=
+524-1-tristan@talencesecurity.com?part=3D1
