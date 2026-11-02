@@ -1,46 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793619220;
-	b=PrbxIZRZTM7G+kVAj7zQbDLdAfK5OskZbg80Vy+eMy7omRCWqpvilzXegIN0v+fRPc0h
-	 wnlG50WN4P0ybitJDG79hGDXkJirGcTaX/D0LuTpvfA4bfTH3W0FZOOfvNBkUh6SvymGu
-	 y7ochDOKOfiPYGRWVl6ldXz4rJXA0dzQWVjUD58QMiBliaRrbJ4Kz615JHyFAd2FE9Lpm
-	 dAilC96nyYF2zwNA7pj58l3vM27vPHTsgf8pztwiqwqZwNeepan4QC4ju/fMAKtPmz9iz
-	 7encb/QwAt1NIe2VX1yatvZVHAsxYhMj5jeIGos+51N1jugVqjNduTI5jSaEPAu/T7Q==
+	t=1793634829;
+	b=c2yPwUqltLpoHw2h7zAlqVn1gHsVEImhzNoJITlf3KU+8L/frubSYCN7CU1Gc3Ud3kXM
+	 I+xc0DdaPDVrfEd/awd8PLfZbKbuK0l6V+PppB+80xetNkLYL533AO5WDv0zTwQllj2Ly
+	 bDb8MufxRuzj36uFsJMHsSqRI7jR/PTQeR+5uAfIaMN/CCfxWPpsLKij8MN9iZeSTlESY
+	 xKL85C7ZxBg5uaP9aB18Xa8sAufPksWsKR7CHcVKrgxW1Mnxj50Uo2Oe/t8KsBsXP4N9c
+	 2RNbnPeHdfwxwyynk3ZdWBVwcGqDCoyTpCN2spFcOIa0TX/ZSFWQuFWoxPLZ4tsf8+g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793619220;
-	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Content-Language:To:From:Subject:Content-Type:
-	 Content-Transfer-Encoding:X-Anti-Virus-Server:X-Virus-Status;
-	bh=MBVZKcktkuzCX6oBhhf+RAoUvUaSUHFA5Ca/6N69yTE=;
-	b=0YopTq5VOdvx9zgx3/RgKZ5Dt6WG4gDmKuzatWecGOkWUAH4txAdVRJ1ZUV446hU2ty/
-	 zKDTT2PKEOEswY0SrVelNHOHxji6lq3cbhVDXGYllsaJRrJMSmSssn4t0AgeTXfGOTvjV
-	 G4GaJKxzHoU+8Hj0mQPBEDlByhGWDiTC5Hi/I3P9IvnGUJf3ll7qm7KWD03KqenPo1OWK
-	 ZLQPQcWTAPOAieWJSgcDjRu56kaBh0dY7gTwhlLh3FLMBp6PddHkvXOwp93rUTIMpsWXf
-	 G+Z4pryALr6lgtgaeC6sduvTB52txtAxOJgBKKqdPvfiXZewEGpVd42vcW11Cu2Tu/g==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793634829;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:X-Google-Original-From:To:Cc:Subject:Date:Message-ID:X-Mailer:
+	 MIME-Version:Content-Transfer-Encoding;
+	bh=YUOMvaywSnfPxZ52C8XL24limR9Py8D4CfmjHsLDiqQ=;
+	b=lpByKaUKLsyV4kWqilxSB5GZuOK1BfZBZv+CRfVk53UWknKAqFCF6g3+3tUiOZ9qIlXy
+	 D8S78rXoJx6sHu6EoclfUw5vqk61po3mPqoxgXfZ2llovOrsnmwagQ9z0CRXJihcXywb+
+	 +01hL5f1cq0PRJSzVB88go2ncu6dXefb+vwkFiiovI/MbDM6dsO+dVhoDj8ACtQP8i6r8
+	 ewY609/z6M9uKJm3rQn7mpLmvD7+Bu/JRWBH2ztGtH3mUkOxxxlfvbUO9GPnGVFoaFAp0
+	 p1EMvHdDWIO+1OWHEVNZc9unjPAGu69JilxIsJjOJ1arHymZZBhUMdqE0JcoBOhBy6Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=I-love.SAKURA.ne.jp;
-	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
-	arc=none smtp.remote-ip=202.181.97.72
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TMMEAWi8;
+	arc=none smtp.remote-ip=209.85.128.51
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6550A606A326
-	for <linux-can@vger.kernel.org>; Mon,  2 Nov 2026 11:33:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6550A606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6A2BXatY062282
-	for <linux-can@vger.kernel.org>; Mon, 2 Nov 2026 20:33:36 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6A2BXaaT062279
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO)
-	for <linux-can@vger.kernel.org>; Mon, 2 Nov 2026 20:33:36 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <5455488f-7a99-4aa9-9d8c-b23660c63ea2@I-love.SAKURA.ne.jp>
-Date: Mon, 2 Nov 2026 20:33:35 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF7960B426A
+	for <linux-can@vger.kernel.org>; Mon,  2 Nov 2026 15:53:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5AF7960B426A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=TMMEAWi8
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4a208d93758so34087755e9.3
+        for <linux-can@vger.kernel.org>; Mon, 02 Nov 2026 07:53:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1793634828; x=1794239628; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=YUOMvaywSnfPxZ52C8XL24limR9Py8D4CfmjHsLDiqQ=;
+        b=TMMEAWi8OpwvmknuaspJNf3sj1bU7MxlY242AWQesYlBZ/usL9Bywm5GHfkWtMROp5
+         ipLMX38R/AKcGuj0K2WC4C16+/gQ1c+Z+MfJMmMoDP6lwF83DKvqMZj8oGVukOHXAb9T
+         LkKj8P89txbMlyStiITy99kS2mDCIPnMsQpmvVmMbRMrObp5iYbiqXiSk4ynU9cnbQ7W
+         mliwaabz80QqnFNlleAzFQiU5h0QgFTVucVWFHh7DMhecGwrj37bSeXcV+S8oJ9Y8h2E
+         lLdrW/bvnvS6QskO7aL1mGOC31H3S+szj6rcqAnu/SR4MdWddbADxqgne0SGVmpKV+sw
+         vfPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793634828; x=1794239628;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=YUOMvaywSnfPxZ52C8XL24limR9Py8D4CfmjHsLDiqQ=;
+        b=vVi1XNdb6dA5ifZ6wvqDj4EFUggTVQu9Of4hMXk7D4bvk97sHbOXS47pp+HzC0UQTc
+         lGumos0154KwYHYezlPWIaQhL0AESKt1np69SVo2LD4dmQcGITOJsebcGigkfzBmgKZJ
+         i10G6hZ0RXHr4p1NXfXGzvtO/YL0+TVlVdpSRXninGrJGPgPDXFDFHSCTGTRUl8lHFtF
+         UnWcDTb2rt8MPmXknuPNmhBar0mWa3b/XqKYI2inKPf23j9/OQZZzqFOmSrH1FcvDKoJ
+         SUKO75k7YmTgcnI4oAB9QCVVOG1zQureF6IEPjzKvCRvPsNiimE7VWldYdsZLS4WIzC2
+         YuJQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwvAqYj7OpeR0WkW5Homwc3tol/CeAdphOhqFn4HvhgzHA7U9yNWSNPDNss7BJXSgPMz4FAGjLMu1E=@vger.kernel.org
+X-Gm-Message-State: AFq9FYJ5NJ0fmHOcgByHK+wa7mG3qjVBDtwm8aKuvm51kiQwACpw9DsQ
+	iBrT8qlBt/GN6tHBcuQxHE+WogqaKbsZybSJ4uOflg4rjmtOT3uPgocDVDN4
+X-Gm-Gg: AYBFou0PRTDCVsrAEcTv5+3kvd6PB9n8VFJF+ONTh/w92n1lByqVM1Le+E5gBeUVN8D
+	2g4Fc78T/9+2Hm619K/6jJRv6QFgowoNu0qv3jjM4shwpG54u/84EaMVy3YNR27FkgFsCBm1xJK
+	rop5XWg8zD4FXwQ5XT+gzxtEbGnC+lFE3HYIwzjxCrAjfVlctHF7yKX0kyGTX7jpwlynyqFmzew
+	bxCcf3TFv9XKXBLxKXSVqB7iKamOhUkgQdSWVGxLEpJakROtBzOs+VeQjgZP/YlJkuML0XadKWF
+	eIBDZNabEAdc5e/2FCJoLLCZpJms0GFPJYwaQ0fuwNL/3p1U/H8MH87VAi1N5Hhe8PFaVmVUyKG
+	9alGwFnA/aGmMore8CwPDverGT7wX6sVZlFtDmvajG7rPiK1/SlRA8nc8rDx+wf3RpAiWyKHPks
+	zJGcNwhX3ltvi1AU0dmr9LKD2yCzTY/KjNhBUOGYoD2OvHHqRLto+9D/H9gd2R3PsNShGc/zqxj
+	4i6RROUTwECNWAqg+BnsT6OKZYTnKPtPOLA9lDXOqbKIxZf391IqP73n5HU7CpyCJAQUDVtKNOJ
+	ENDHMJLs2mc=
+X-Received: by 2002:a05:600c:19d2:b0:4a6:4d6b:a840 with SMTP id 5b1f17b1804b1-4ac1932a12fmr235060725e9.31.1793634827520;
+        Mon, 02 Nov 2026 07:53:47 -0800 (PST)
+Received: from debian.. ([2001:41d0:303:db6b::])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4abf5b286a0sm234689275e9.4.2026.11.02.07.53.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2026 07:53:46 -0800 (PST)
+From: Tristan Madani <tristmd@gmail.com>
+X-Google-Original-From: Tristan Madani <tristan@talencesecurity.com>
+To: robin@protonic.nl,
+	o.rempel@pengutronix.de,
+	socketcan@hartkopp.net,
+	mkl@pengutronix.de
+Cc: kernel@pengutronix.de,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Tristan Madani <tristan@talencesecurity.com>
+Subject: [PATCH net] can: j1939: fix skb refcount underflow in session teardown paths
+Date: Mon,  2 Nov 2026 15:53:45 +0000
+Message-ID: <20261102155345.1267524-1-tristan@talencesecurity.com>
+X-Mailer: git-send-email 2.47.3
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -50,72 +101,54 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-can@vger.kernel.org
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH] can: j1939: mark j1939_ecu_find_by_addr_locked() as static
- function
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Anti-Virus-Server: fsav413.rs.sakura.ne.jp
-X-Virus-Status: clean
+Content-Transfer-Encoding: 8bit
 
-Called from only net/can/j1939/bus.c file.
+j1939_session_destroy() and j1939_session_skb_drop_old() both call
+skb_unref() followed by kfree_skb() on session-queued skbs. Since
+kfree_skb() already handles the refcount decrement internally via
+skb_unref(), the preceding explicit skb_unref() causes a double
+decrement, triggering a refcount underflow warning on every session
+teardown.
 
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+The extra skb_get() reference taken in j1939_session_skb_queue() needs
+exactly one corresponding release. kfree_skb() provides that single
+release by decrementing the refcount and freeing the skb when it reaches
+zero. Remove the redundant skb_unref() calls in both teardown paths.
+
+Fixes: 8c21c54a53ab ("can: j1939: j1939_session_destroy(): fix memory leak of skbs")
+Fixes: 2030043e616c ("can: j1939: fix Use-after-Free, hold skb ref while in use")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tristan Madani <tristan@talencesecurity.com>
 ---
- net/can/j1939/bus.c        | 16 ++++++++--------
- net/can/j1939/j1939-priv.h |  2 --
- 2 files changed, 8 insertions(+), 10 deletions(-)
+ net/can/j1939/transport.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index ed60258619e6..346c27321b8e 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -57,6 +57,14 @@ static __must_check bool j1939_ecu_valid(struct j1939_ecu *ecu)
- 	return kref_read(&ecu->kref);
- }
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8fcfd13e5e6f8..3173936bd6f6e 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -277,11 +277,8 @@ static void j1939_session_destroy(struct j1939_session *session)
+ 	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
+ 	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
  
-+static struct j1939_ecu *j1939_ecu_find_by_addr_locked(struct j1939_priv *priv,
-+						       u8 addr)
-+{
-+	lockdep_assert_held(&priv->lock);
-+
-+	return priv->ents[addr].ecu;
-+}
-+
- static bool j1939_ecu_is_mapped_locked(struct j1939_ecu *ecu)
- {
- 	struct j1939_priv *priv = ecu->priv;
-@@ -195,14 +203,6 @@ struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name)
- 	return ecu;
- }
+-	while ((skb = skb_dequeue(&session->skb_queue)) != NULL) {
+-		/* drop ref taken in j1939_session_skb_queue() */
+-		skb_unref(skb);
++	while ((skb = skb_dequeue(&session->skb_queue)) != NULL)
+ 		kfree_skb(skb);
+-	}
+ 	__j1939_session_drop(session);
+ 	netdev_put(session->priv->ndev, &session->priv_dev_tracker);
+ 	j1939_priv_put(session->priv);
+@@ -342,8 +339,6 @@ static void j1939_session_skb_drop_old(struct j1939_session *session)
  
--struct j1939_ecu *j1939_ecu_find_by_addr_locked(struct j1939_priv *priv,
--						u8 addr)
--{
--	lockdep_assert_held(&priv->lock);
--
--	return priv->ents[addr].ecu;
--}
--
- struct j1939_ecu *j1939_ecu_get_by_addr_locked(struct j1939_priv *priv, u8 addr)
- {
- 	struct j1939_ecu *ecu;
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index ee85b36e122d..2090d909685c 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -129,8 +129,6 @@ void j1939_ecu_unmap_locked(struct j1939_ecu *ecu);
- void j1939_ecu_unmap(struct j1939_ecu *ecu);
+ 	if ((do_skcb->offset + do_skb->len) < offset_start) {
+ 		__skb_unlink(do_skb, &session->skb_queue);
+-		/* drop ref taken in j1939_session_skb_queue() */
+-		skb_unref(do_skb);
+ 		spin_unlock_irqrestore(&session->skb_queue.lock, flags);
  
- u8 j1939_name_to_addr(struct j1939_priv *priv, name_t name);
--struct j1939_ecu *j1939_ecu_find_by_addr_locked(struct j1939_priv *priv,
--						u8 addr);
- struct j1939_ecu *j1939_ecu_get_by_addr(struct j1939_priv *priv, u8 addr);
- struct j1939_ecu *j1939_ecu_get_by_addr_locked(struct j1939_priv *priv,
- 					       u8 addr);
+ 		kfree_skb(do_skb);
 -- 
-2.56.0
+2.47.3
 
