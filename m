@@ -1,54 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793701583;
-	b=xRkgqeGE+mIPBqcXC79etvHVVAy6JQp6s5RFwRpQnp9HOm81DKAgxy0/HfbmBgF/+X0Y
-	 PBXuN3CrA3dZe4X5q154vHs92NJGGZt4eK/RzLPZzYSHQ/CWZbRYASvD/wRcIaNe5oZDV
-	 Kwonw6TYkHfZe8XPiIpUmehIKMMA9UGqMjcptsg7pIXSeaLP2pUiDQnt992nit1JWuQ+q
-	 xHyGOH0q0JWFBH/Jc2KwCm6ssJZwbHOs9XS53QMzDEMzzFabswxsYK0Mo3Vfpy8JvglgE
-	 kJTEsF8/2vyJbZ/igQ2qoMpEqZ1IL12qIJXm0aTXHO+oULb0PtSAtPP8c26wuugm1ow==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793701583;
-	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=hPelRDqUwp7KW12HTuin5RprdXgKQmkVT6tqrMUtOCQ=;
-	b=FIfTvkNHWx7L7cla1w6A41LKBpIs+NzKDImXtrDovUffuKhQyy9t3+hNDtLGsbscX4fw
-	 oCRqb1QRfMriU2XIaf8Oi+IC05n++L2Lb4yMjDooDwuSA7XUZQCX1Z1FKn5RusP0dbI3m
-	 GPwStE4pY2a/VHxxuEG+6pumrgd2wcTS344BWN++eahJGMOLvPqpPbSKxyg/l2wl5nuVf
-	 WDM91Xhf39J6uM2rDDCOzTVfCAiHCxOnvAdUcrVeNgFhJO66U9rbrOLtLC50cK9jBe0fG
-	 uPYo6GE5Anub70gUaj/TcGXS/oMZYpx/JnY1oD4w2fB7csJDwDSMYI2zQXMJWO8sv1w==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mpW2RbXp;
-	arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793709027;
+	b=WFP6SDdg5RvQW3f/54IxwLJvMZaxapTl7FK61dvGvHP8NztotJ6TZyheuk7cAPqKhRll
+	 qVp7U6KNHGFmLuReoVeuUwjXjqVr0vmM8MMYXZfhpE+Ri1j57UIr4vpe2X31Y1+au9XKe
+	 MoTrxiAyWHpjH+2O8jK+jvym03jaK4PAhUttdsZrXgjoKuks6sYjRZASXaCAFNy4KZRp7
+	 jbQ7oFVBhtqboG0S7C+PlLhmvkcxrPqsEEBpUbYyyY4BndgU40A4FAH5giX9ssQ84mWcY
+	 +rFYtiYeIizlPo7nXuiYWSKREniMQ1mSDp61B72LHzt7W0xXOgcnT3TGc7iP9Gzd6Xw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793709027;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
+	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
+	 X-Endpoint-Received:X-Original-From:Reply-To;
+	bh=JghuYMkJ+RKrCa+a4BdjNWaUX25zwciItep+KwOBI7Q=;
+	b=tRg5Vb+KT9J9QqO3wfQMthMKA7fHpbCtmjDzYmRo0rLv/CyZ96o5r12zf8BdxYtehdYy
+	 OOoSs/9k+do0lLTy3Nkv8rfTIAoc1oEec843LZOq1jcm+RfNYzKCsg43oHe4mMK6dx6Qr
+	 jAiIC4k16BCm41uX8vW/yrXcNVPyXszbkZMk4fDQvml4Uoc4N9OrB6KQIHA/fLLJyDEeY
+	 cVjxlDcQcHRz/5mB7vq+nMuWWLjHmsuCP8XOwPGwvvez0oVwpMzl9zKl2KG/vT9xd2e+j
+	 mDvZQEMFoWktQxE047AY2TzmXXsgd1+zOg22xm7FN49ewY8Qc2utfGeL5v+fqwimeZg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MTppc4Jy;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B91A6085081;
-	Tue,  3 Nov 2026 10:26:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7282F606A332;
+	Tue,  3 Nov 2026 12:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=mpW2RbXp
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41C3B1F000C1;
-	Tue,  3 Nov 2026 10:26:22 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MTppc4Jy
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1793709027;
+	b=raw00CZ5ChFTJIn2GyIyJb7qUfnHqTj2GrZyestO31FnTvHoLRwpCCqU7P7qqZQwRNXD
+	 p3jtQ8FMxZj+b3YL9s+51yP5GpJiLczQ9d0jbtRjNQG0I71BpnLHTtjeI95fIZg8mZQb6
+	 nS+ce+PD4d859KO0Yhi1GeorqhoRgD1n9LltV81hBZTOqA4Q3JaG5VQtziDTkXw/uJRbP
+	 bMy+OkMDtk8tm4hT2a3hK3D/6V9ugh5ugPMFkvq/JC533o+zuvpoURXPzDxTjGJNaux4Q
+	 p4DSBe3i2BC5MFeglYKSLaI1jibgu9aLs/T9Zt7Gkdd30tFtILJu+sBx1DPQMnSK+CA==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1793709027;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=JghuYMkJ+RKrCa+a4BdjNWaUX25zwciItep+KwOBI7Q=;
+	b=M6vmY6wTGG38tlWB78r548O4Xg0wx6hyMbXSPuLF26b+DFw/BWdHVnWFzeLhNqRgNLHl
+	 oRNL+zOe0ZpaScAbUQ1XTJGiZapQ/eeLz7tRNSxj5PGaA6T9hxQfxBbfuS+cHI3fzJZ7R
+	 ibcut4aGG9/heTmsP3sfAgLuhi0tIKwAbqdtICHBCDe4UXJUZV8uNSvahnTm9Gk5tl9dr
+	 6w14yHAWx3hphR+lfy2kQinRkWM/ZkrcThAChrkkLtqOhLWutFT3F4oZXPM1oY4/6A1Ue
+	 EQ7w8aE4apdlNqMvViUm30mvhvQUcrduIaFGvomOc4zAk/4LgVX6ywebh8CltZUz2cw==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id C152C1F0093A;
+	Tue,  3 Nov 2026 12:30:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793701583;
-	bh=hPelRDqUwp7KW12HTuin5RprdXgKQmkVT6tqrMUtOCQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=mpW2RbXpTauD/p5AFD+KrapAfxCBIXPHR4DSCt/bR9ViaLUyQoHkZoe8IXf3yY/Z/
-	 4j0187qoKzSBfHPC6rlahSbbFFFgw9Iwbk9inUyiHosvEcXM4LCwszYM/FwrGcOWhO
-	 n9O0QDcfv9kMw0jrcI7HBM7tEspOehTakMbUdE51LzI3KCH+4hQmtewP6zrE4oOAK0
-	 T7ExtJjn2pvmeCprKrujBhkSe9wwiAKKOQRhkF55oCzCH1uPGzgEiwWeWNYyBwH//I
-	 OGIleM3ZZ3CxCAtrLNG+GkQjevH5HVqTm4Hy/wLVyzZXt8z5nUz7JhMYycAOBvbZxu
-	 Rq9zY/QPQJqpQ==
-Date: Tue, 3 Nov 2026 11:26:20 +0100
-From: Krzysztof Kozlowski <krzk@kernel.org>
-To: Wentao Liang <vulab@iscas.ac.cn>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Siddharth Vadapalli <s-vadapalli@ti.com>, stable@vger.kernel.org, 
-	Jakub Kicinski <kuba@kernel.org>, Vincent Mailhol <mailhol@kernel.org>
-Subject: Re: [PATCH] can: flexcan: fix device node reference leak in stop
- mode setup
-Message-ID: <20261103-fanatic-thistle-spaniel-aa4ede@quoll>
-References: <20261103100526.1309829-1-vulab@iscas.ac.cn>
+	s=k20260515; t=1793709026;
+	bh=JghuYMkJ+RKrCa+a4BdjNWaUX25zwciItep+KwOBI7Q=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=MTppc4JyIk4NJsaztNMdqU0fbBGgmHss835KyCCtWY2uy0T+oo1ymDq0qWC4BfwAv
+	 UNLD3XLP2puBMs5Eqa3APvuxVVD+GD992647epq2H5Y421fh8HbQ92UhyIryqWOJ6K
+	 XXBGv7KK+hUB/Zvy6i32mu5wiBolaY2KuQMyXTqJXeezB7zBuNzenwV9GcGS5TdskU
+	 a5z9oeAgoe8kK/kL4bGxNpicw3rjTik0bsgbarFp2Nyxdh5+HiVEVfkuAAbyusKmY0
+	 RGFpbPNcjRZdQvNiuUDN6QGIWznnZmzt3n9XrASwnqUrcu76Mo3+gBnyHXc8skyjKu
+	 5NeNTF8rRnxvg==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 2A3384690D;
+	Tue,  3 Nov 2026 12:30:25 +0000 (UTC)
+From: =?utf-8?q?St=C3=A9phane_Grosjean_via_B4_Relay?= <devnull+s.grosjean.peak-system.fr@kernel.org>
+Date: Tue, 03 Nov 2026 13:30:17 +0100
+Subject: [PATCH v8 01/14] can: peak_usb: fix missing CAN_ERR_FLAG when
+ reporting error counters
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -58,68 +83,65 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20261103100526.1309829-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20261103-canfd_check_channel_idx-v8-1-4e8b2c0a8806@peak-system.fr>
+References: <20261103-canfd_check_channel_idx-v8-0-4e8b2c0a8806@peak-system.fr>
+In-Reply-To: <20261103-canfd_check_channel_idx-v8-0-4e8b2c0a8806@peak-system.fr>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
+ Wolfgang Grandegger <wg@grandegger.com>, 
+ =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
+ Dan Carpenter <error27@gmail.com>, Lukas Magel <lukas.magel@posteo.net>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Tristan Madani <tristmd@gmail.com>, 
+ =?utf-8?q?Stefan_G=C3=BCnther?= <stefangun@pm.me>, stable@vger.kernel.org
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793709023; l=1298;
+ i=s.grosjean@peak-system.fr; s=20261020; h=from:subject:message-id;
+ bh=j5PVoCog9b3ym+t4Mbx6Cbdrz8WWMcNp50N4an/gOT4=;
+ b=ACY31B2JFuc1V3zAsNS/1b2DNbGH8upxbAww0YdISmAAwnC/Ym1muUtP4HlYBTuPfRV8pAzIs
+ tHSqFqa1QNrADOylz4yMSDuB7oY1jFwvf9UYaCV+Dgwl0dLJbAFuewj
+X-Developer-Key: i=s.grosjean@peak-system.fr; a=ed25519;
+ pk=bP7QV2zvvAKAfConZlUOGKGEcXL64SNUpVUm++Ai+/c=
+X-Endpoint-Received: by B4 Relay for s.grosjean@peak-system.fr/20261020
+ with auth_id=1250
+X-Original-From: =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
+Reply-To: s.grosjean@peak-system.fr
 
+From: Stefan Günther <stefangun@pm.me>
 
-On Tue, 03 Nov 2026 10:05:26 +0000, Wentao Liang wrote:
-> of_find_node_by_phandle() returns a device node with an incremented
-> reference count. flexcan_setup_stop_mode_gpr() drops it only when
-> syscon_node_to_regmap() fails, so a successful probe of a controller
-> using the GPR stop mode leaks one reference on the GPR node.
-> 
-> Release the reference on the success path as well.
-> 
-> Fixes: de3578c198c6 ("can: flexcan: add self wakeup support")
-> Cc: stable@vger.kernel.org
-> Assisted-by: DeepSeek-V4.1-Flash and OpenAI Codex
-> Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
-> ---
->  drivers/net/can/flexcan/flexcan-core.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
+When the device reports error counters, the driver incorrectly uses an
+assignment (=) instead of a bitwise OR (|=) for CAN_ERR_CNT. This wipes
+out the CAN_ERR_FLAG and CAN_ERR_CRTL flags, causing the error frame to
+be sent to userspace as a regular CAN frame with ID 0x200.
 
+Fix this by using a bitwise OR to preserve the flags.
 
+Signed-off-by: Stefan Günther <stefangun@pm.me>
+Cc: stable@vger.kernel.org
+Fixes: 3e5c291c7942 ("can: add CAN_ERR_CNT flag to notify availability of error counter")
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Multiple things here:
-1. Your team ignored completely previous feedback. Multiple times.
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 8fd058c32856..785224e00c4e 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -526,7 +526,7 @@ static int pcan_usb_decode_error(struct pcan_usb_msg_context *mc, u8 n,
+ 			/* Supply TX/RX error counters in case of
+ 			 * controller error.
+ 			 */
+-			cf->can_id = CAN_ERR_CNT;
++			cf->can_id |= CAN_ERR_CNT;
+ 			cf->data[6] = mc->pdev->bec.txerr;
+ 			cf->data[7] = mc->pdev->bec.rxerr;
+ 		}
 
-2. You use multiple identities with this email address, thus I doubt that we
-   speak with an actual person.
-
-3. Your bot does not even bother running checkpatch, right?
-
-4. Nothing of this was reproduced nor tested.
-
-5. Finally, the same feedback:
-You sent multiple independent patches, to multiple independent
-subsystems. The amount of these patches clearly suggest this was
-AI generated and most likely not tested.
-
-More importantly, you sent all this work without properly organizing
-relevant patches into patchsets. This makes reviewing difficult
-and might cause multiple reviewers to address the same issue.
-Replying to the entire set is impossible and requires handling each
-patch independently, instead of applying or discarding the set.
-Maintainers also won't see the bigger picture of your work. Quite
-worrying.
-
-This is on the verge of hostile patch: bomb us with so many
-contributions, we won't be able to handle them in efficient manner,
-like responding ONCE to ask you to slow down.  Considering all this
-is untested and LLM generated, I have even more doubts whether this
-should be considered for review.
-
-Please read kernel documentation BEFORE posting more work. It will
-explain you how to identify subsystems, how to organize your work per
-subsystem (so a patchset grouping multiple patches with a short cover
-letter), how to document the issue discovery method and what was
-or was not tested.
-
-Best regards,
-Krzysztof
-
-
+-- 
+2.53.0
 
 
