@@ -1,53 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793701580;
-	b=h6rGylK0HgKfhD164EOUrwyw3j0lpWBWMiOUq3zyVoVQpLvlK0zzkgziK0my3UhI9C3S
-	 SdKoiHW9Y6QjF887NmP8NvpB6zTkClHtyG4XTgsJNSFGtB82Ev1rCEBEN/yAqsEI6LCPh
-	 8j4I4So0+p2NFFJX0tqTw0BgZkZEBQmXSSwxEEciiEp5ptstBHy3FWTLNK8I4mONTAcEK
-	 E6uB1m6KhHerL3Z539phf6pV0xj4fsvAHKyftaBkR59Ap5LeptODRRs+UTweuFyEfRZOk
-	 H+icWUwhUIW1Gvr9Q0UYEBn6FlKWF+l3DyfNuza/Kae7vvvm6pJqBvsExBiO0dWOXig==
+	t=1793701589;
+	b=F6grtBg6p7/Nsgg0ih6+/hb5sepG61oP14Q04Y7KUH0j/71B+7lrUyfvHubK7Z/qe0BY
+	 YMu74YGkHpiy3IitJkMHSy29dsfm190rtn23c+ensWXplzDyO0zd3iLc/s3BWRkQegV5/
+	 wLubGPQhQZjlVKhMGRwjZZZwqtiyaTAmpcq30P1TKYJSh9dCojaf/4lUHGXaGiM6IESKr
+	 noLer+OqfRbeTR91eBr1ZgiMA5m0CFkpzjAr/djtsZ3Sxj94bpxFqze0JsLHGH3rV9WUU
+	 /Jg3XsA3Oh6mQPiTqJnwKv7gkyQNJ1zyeNfBeHS13ZvWa5cPRGFJLPd7PP8P5Y6nmyg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793701580;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793701589;
 	h=Received:DKIM-Signature:Date:From:To:Cc:Subject:Message-ID:
 	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
-	bh=qt/XERH9JA6N26gnj2KjkQP/rhmppH53Kiuwbw79Xu8=;
-	b=1JWGM2fJWXubYM3BsIjX71x5NM4Sbj6YWmjNRKpcakS74kr4IiabmjXdTC3tlRxcJngZ
-	 nAmeeKR8HQ192AjXjREQ/toi5pLRF2x/2vFYIXv5ixLMXMyiFxQDqBMzaJqssmI7V8EFs
-	 q4f/m+mTTdXsB7lg2zvfr0Fw8W7aerzNjb2WvznGv8ozUOTyIkO/u7YNb3TVVHy8TVmWA
-	 ZyM5OPnJBg2KU0aOr2bLf6X5xZiL/W1e7w2JKfKPdv8lHrNg7qveOBQEQ3eRlXsoXV/IG
-	 6MuDiKrxOA8saZBV5MgP8g8vzJC2BQyLM6IypdXw0o5Ur5E2EHfS4UlQahD+NLpC6Ng==
+	bh=rIlYC4RGaBYFb8msoJbR+EejQjSODQYfHSJuVWGfL3U=;
+	b=nnSQsirMUt3OGQj4CuH9GU9kbx3q8MdvqE6Nt7iBy5m+LTWmEWjSa0EZNNnufEYNcSd0
+	 SI4H4kQklM5fObU8nRqWQvB0g8+DtMXr4yFN12uz3ERnFZFHGzT2E9LDXF/r7Av2EbsfI
+	 BkdgBYCAgRz/yrUglN+JIELjJef6uehDI6dYVqu0hI506wgki9yb4Tbh88DG12Q7ZcS+0
+	 qEhdupykjTA2hhKBluOLcHQSnBfT45cyz7aNsrrvbisXpsOcg2XLj2yrjfkWnYQ0RM90m
+	 yI2uUwtsqBSQhmZCrbK+UGiXhJy2mpYC9vZlEJ5/RNxzCdPOE3T4K49iyDSMTygzR2Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NQ3J97Ml;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZlJLy8eM;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AB816083618;
-	Tue,  3 Nov 2026 10:26:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B861606BA78;
+	Tue,  3 Nov 2026 10:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NQ3J97Ml
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 265711F000C1;
-	Tue,  3 Nov 2026 10:26:18 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZlJLy8eM
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C2FC1F00919;
+	Tue,  3 Nov 2026 10:26:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793701579;
-	bh=qt/XERH9JA6N26gnj2KjkQP/rhmppH53Kiuwbw79Xu8=;
+	s=k20260515; t=1793701589;
+	bh=rIlYC4RGaBYFb8msoJbR+EejQjSODQYfHSJuVWGfL3U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To;
-	b=NQ3J97MlzbGvbPfqP+8jmcqpXwFhQwFkdoBsXHSVlYt4kgfqM1t9TPAYyAgjsHuEz
-	 xPaoAhx8x+Q+NIgUVeOo5FKZwtT950eA2hNgOzsHNWkfWEImJZAWEZNdozzsNjqNcu
-	 Z/1D1JdCvRJUIYSOvtNL7gUlofzKee/IrCIgAXDV0iZqZaVS+DqfY7XXW3VmQrrWui
-	 n7nmOltb0QuCZPq7VcJiZRB9+inv+mW7MvE7tJECWLPlg92yZ9VBp+TIRltfSsT6Cb
-	 VuKob6Bo8aPZnFPntFJ0A+3EdWo4WMrT5Nh/hEIqSmV7SR3PEnp7qiSBHpFo4IpmOk
-	 DKQK4/n1AIZLQ==
-Date: Tue, 3 Nov 2026 11:26:17 +0100
+	b=ZlJLy8eM6LcgBzKjbZG6s94R+zcLzCqKvHAN+PzsR+gn5D69ZF1XwfBbzG9kmOHly
+	 rkx6cHR0QurRoj5qxtYCZDjTPCVdFiKLa01IqHlDkYLlr0U6emnYFh1GkgOwkl29Vf
+	 YYcYd9z0J20m/jOXF0V9o1yjzCvDA0fSiC7iGZ/He6apFFFoRwKWRlbyCgBq0abnTp
+	 f6y+/FVq6ZnicYtpiyoYDHka1LPwP7926QpyWYlq3w3LKz22OexFpMCWiSEjxxe4w5
+	 vIP5CzZfUWwj2Bc8IevU2OltJSpdiTFr9MuhLrcjcioMzEtUmPafbDpcUmwutDArHk
+	 GYSgoUkqgNTnA==
+Date: Tue, 3 Nov 2026 11:26:26 +0100
 From: Krzysztof Kozlowski <krzk@kernel.org>
 To: Wentao Liang <vulab@iscas.ac.cn>
-Cc: stable@vger.kernel.org, linux-can@vger.kernel.org, 
-	Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, 
-	linux-kernel@vger.kernel.org, =?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.fr>
-Subject: Re: [PATCH] can: sja1000: fix netdev leak for non-contiguous channels
-Message-ID: <20261103-enlightened-righteous-leech-e92bb9@quoll>
-References: <20261103100528.1309863-1-vulab@iscas.ac.cn>
+Cc: Samuel Holland <samuel@sholland.org>, stable@vger.kernel.org, 
+	Chen-Yu Tsai <wens@kernel.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+	linux-arm-kernel@lists.infradead.org, Vincent Mailhol <mailhol@kernel.org>, 
+	Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH] can: sun4i_can: Use devm_clk_get() for the CAN clock
+Message-ID: <20261103-competent-tactful-condor-50b96c@quoll>
+References: <20261103100520.1309743-1-vulab@iscas.ac.cn>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -59,28 +61,24 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20261103100528.1309863-1-vulab@iscas.ac.cn>
+In-Reply-To: <20261103100520.1309743-1-vulab@iscas.ac.cn>
 
 
-On Tue, 03 Nov 2026 10:05:28 +0000, Wentao Liang wrote:
-> pcan_add_channels() stores a registered net_device at card->channel[i],
-> where i is the hardware channel index, but only increments
-> card->chan_count by one. When a lower channel is absent or fails to
-> register and a higher one succeeds, chan_count no longer covers the
-> used slot. pcan_free_channels() then iterates only up to chan_count and
-> leaks the net_device of the higher channel; the LED timer and the
-> interrupt handler also skip it.
+On Tue, 03 Nov 2026 10:05:20 +0000, Wentao Liang wrote:
+> sun4ican_probe() obtains the CAN clock with of_clk_get(), but neither
+> the probe error paths nor sun4ican_remove() ever call clk_put(), so the
+> clock reference is leaked both when probing fails and when the driver is
+> unbound.
 > 
-> Record the highest used channel index plus one in chan_count so that
-> every iterator covers all channel slots.
+> Use devm_clk_get() so that the reference is released with the device.
 > 
-> Fixes: 2b61972b7421 ("can: sja1000: add support for PEAK-System PCMCIA card")
+> Fixes: 0738eff14d81 ("can: Allwinner A10/A20 CAN Controller support - Kernel module")
 > Cc: stable@vger.kernel.org
 > Assisted-by: DeepSeek-V4.1-Flash and OpenAI Codex
 > Signed-off-by: Wentao Liang <vulab@iscas.ac.cn>
 > ---
->  drivers/net/can/sja1000/peak_pcmcia.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  drivers/net/can/sun4i_can.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
 > 
 
 
