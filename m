@@ -1,57 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793685250;
-	b=WlP1OEgwyX+b5ErWAS3krcxGCttqZkdwXQ04pdrj2VPa2Kl6g1RW6s59T7ZqdrmixhDB
-	 attKE0l8mAbpZrKTsZxPR7nfuE3oDMBMzKT4n846L1zLf2BGZVlIXMOKKN/LtuZTeB7B2
-	 UGQAvoZdB/XtrvG4JCpw/NG8DU4brTiDGGJmOaZcytPX3mnU/aPCftkZoFlAgJO2Rq7uf
-	 vf4CSQwFt0PEc5Q2aYTD8Ex4mESQGUwQH/67NX3e9by4mz2sNm0t3jzxJpbEDPZlVx0C8
-	 DOB2XuUr/0GmWXvCvWIXxAcudTQJ0UkxlptRHpcQ2fakexfrvhnBXXlwq+ORYsXDZ4Q==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793685250;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=2ChYdBMPDWCKTiaRT4HcEq79TK5vVb+kLsZlIznS30g=;
-	b=Sj0P6Tjg551vLnbBhNubfKHNKTr4ZpoDr5NwsUsJU+67xIcry69FaKn50GfEt06V9/S+
-	 g9nBiaNs1VgDfPR9txgsNsnj6NSIR+W/DX0kfftuZBkzPXdHKwH2yMZfz4RPRnJoQlQqE
-	 IH7tFYVOiMM1fqznDBp2uzg2muNk0YodEUGEz9qoYyyUUI6b8hf3J6pjHd8Z1194/lJRu
-	 fpkcyLbstFqZvgXz3RqvVm3uCBuE7KPoyKRStDc+NR3SlVUOfefK6+GyFJHyUfcke8dTm
-	 CaXg/Q6VlE2zzl39Ep/SLa3xMv8K7lZ1qD7dh9XUkTgy1mVmbLjdlWVQmzoidYPfkPA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kkA2XNBR;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.217
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793691802;
+	b=j0V4dAz+ILcsoHuuPdox4HtishGaWtiMMSL07iz71mmAAvSIaMzWubrJH4T6cMkrBe6M
+	 Z54svrCdrXEaw73iHgWnHl0VVar4Ml1UD0DlxelwFZ98+u7tYzlrTf+uZKpIWfs0ebrjS
+	 U5+2Vw+KMlfA2LOD8RMr/nGc/5C8JvL/kSkvFqsJtl3tEI4F9xAjCDfLBftAipS69Q3Y0
+	 R/s81VafPFZQdVyMlx5lzOhv108BOSkQgQXJg6Ulb47Jvh+GMAUgv9ZocjFaBRQAxINPR
+	 yEXZEMwl4Km+L7GC3wKIAsL8KAmH3Hwx3WUBYo8sgQDdmu2T2DA3w7F0mlPhUMON+Iw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793691802;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=+MFcSou9h2h6vyodN+ZaY2OcvSQR6D/pUbmTJ70oqD8=;
+	b=AyRq8o0M+QfxlzcQDPqGNhzrUXbfJE6ssjG3neMZ6ofO4ECfgXG0Y8msZcmCqOmCUnH7
+	 f+dUglIbAjWWx0fK+9xHjKPRux9U7bb45O+qdDcOgBL/FhoI5dNVg2/upq0N3L5DZ32xu
+	 ZW0U9O3XRZV90Vp6uzBchf13TuWLj79sxZ0zVUmi5muMkwhwtWLr8v8oV0mYpJP4urWXS
+	 J1mRPUIsZCgL57XaJSiin9SHsKCv6FsHfi8p8/Dhn/BM8N0Bswm+2yD8TcYigj3X1VfZD
+	 VNGz6VVZWH1IGrFCIOe0aM14vT94tGcSHQhj6LNoOkEcB26uLuhnnPC+FepIIUDTW1A==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=temperror header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=aUQppODZ;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9qwrC6xB;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.217
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43119606A32C
-	for <linux-can@vger.kernel.org>; Tue,  3 Nov 2026 05:54:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6C4606A329
+	for <linux-can@vger.kernel.org>; Tue,  3 Nov 2026 07:43:21 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF6C4606A329
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kkA2XNBR
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C05641F000C1;
-	Tue,  3 Nov 2026 05:54:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793685250;
-	bh=2ChYdBMPDWCKTiaRT4HcEq79TK5vVb+kLsZlIznS30g=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=kkA2XNBRI3yNBHfgqEiIDB1Pix7Qs2rmVNkpnNmbCUg+/LCFBV0OoXc4vOJTJeA/M
-	 +S/dUAlCrp5s4zMN1T4OB5ZW07zDDMBZsYGLB8m50KQ+kkrZqLnpwyB/u8TUZO6KgC
-	 frGzfnAHnV7Acl5jcSyiLJW80ABI3BWMZaOuFwTXuJDxOYmRaqtXQ8D8TGAiD4SnyU
-	 ecG8YH2Gk5YWXrmJKyplCUfLpRPQvWwCOltyEoBhsMoeiFL56jpL1qJV8JLFNuTooY
-	 /FxUmVH0ofevyveqlM6TWui6ZlQ6cj4Ihu8TmxfW7cR+0lnU3OIxQjZXhhW754iqxS
-	 Zuz0uLdSjRq2w==
-Message-ID: <sashiko-outbox-194600@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net v5 2/3] can: j1939: cancel TX timer after RX timeout
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Zihan Xi" <zihanx@nebusec.ai>, linux-can@vger.kernel.org
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <02b6632da2b01b51edbe4c7b794ca3c473bfd559.1793681851.git.zihanx@nebusec.ai>
-References: <cover.1793681851.git.zihanx@nebusec.ai>
- <02b6632da2b01b51edbe4c7b794ca3c473bfd559.1793681851.git.zihanx@nebusec.ai>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 03 Nov 2026 05:54:09 +0000
+	dkim=temperror header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=aUQppODZ;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=9qwrC6xB
+ARC-Seal: i=1; a=rsa-sha256; t=1793691794; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=AvctdzOSRnNE/02gikamcUynOkfGPWtBMtduD57yyEkJyiZu+6Q9Wa5ba0GU6RNtUB
+    Io/AkuiWgyYuf2rmqXUkDpnjzfOpBdtkxEp+hsCXe7aX0KAOsMOuIQ7bKDbvWuUrYCN8
+    tf6NosgKY1xaljACv9R2Lv2ohUSUZgLa/K5OCRcALvUZ5rut4cxfYt5ocCvukW5wPVQ/
+    KkBxcdXjr19EdK+OskJnGK+chMb998fsfeQ4MO/hkq9sXpulcC+sXRwhceKv9y3xiGBT
+    Rogn7lAwCVdf7bwcfx5opsbn/SGsNeJnNIVlnufDVS3mWf+94i52K5JHSR0EH4gzkE43
+    fd0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1793691794;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=+MFcSou9h2h6vyodN+ZaY2OcvSQR6D/pUbmTJ70oqD8=;
+    b=cCJtwUAV9BMBGHhkWkBVKNmXqL9HEi0oW/Ma6KCBxv/Q3VJst2GdyfaO/a2hnNgAlw
+    6ZtVfVv4Iq90lchxcr97rgjG0csUG+ySNarjZ2Hbr46Ucg0vB5MBgix4BqlnsyWmgkim
+    Qkl9pXC0wUiSea90O7GKsOhhh5P5cMriu+/xPIDYadp0vl9aXIRZJGNLLRwA3Fszq+NM
+    U4gax1XkQiGcIdEgrEoBCdyUdHqV+EVGq08DGAdCiWDWNTIAv7fs+pXty4qcEKJnoNK7
+    TKozt9TtWPMUPBHM/j1VECjwxvLPl0tjxUvNBqrpbwFUPVjAhMp54x3E8yeiEoUWvHqq
+    svog==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1793691794;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=+MFcSou9h2h6vyodN+ZaY2OcvSQR6D/pUbmTJ70oqD8=;
+    b=aUQppODZAbBOcoceQysdCwvt319CaGfxqKLz1yLhgbDPibpT/zW/HjEkRE7jZuxYMp
+    yjmvjx88nEODLCvOLv0IBbv6BN3arJrkjHpmV69fBOpEbAfl8nu74XOSiNvpAwTlATNl
+    +jdaFImsYoQJpEqP04f0yD6RAi24xIMoTK3Nvq5dQrwoEMBv3uLKc1aGG2ZekHoMWUKu
+    PnRw38hS64s4b8VoLFJNa/djf0bH3/E4lfvG2jSaVrLp6mBb8I4cs4xvWy1sD1JYDHYB
+    DxMGBNY76TyPs2WxF1zL+YvRN5BuU/nl4YDsUuDY/m476e8TAP/3l8cXjFwc1tRe5+V5
+    efqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1793691794;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=+MFcSou9h2h6vyodN+ZaY2OcvSQR6D/pUbmTJ70oqD8=;
+    b=9qwrC6xBGN+wUEUbE2ximHqw/0XCbmdSFHF+46t6nOMADWyDaXERmU6Jzz8iWg2AEE
+    H3RUqKKEbsF/TACbDeCA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a2A37hDnR0
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 3 Nov 2026 08:43:13 +0100 (CET)
+Message-ID: <d28e6983-e1be-42fa-943f-6de6f7429b54@hartkopp.net>
+Date: Tue, 3 Nov 2026 08:43:08 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -60,132 +94,51 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
+ lock
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+References: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
+ <1e9a2768-e30e-4f2d-bc71-57550d210c0a@hartkopp.net>
+ <20261028-miniature-smiling-leech-6d02ea-mkl@pengutronix.de>
+ <ae276e09-2a2c-4887-836d-0ab0b7561f26@hartkopp.net>
+ <20261028-positive-cornflower-partridge-3f822d-mkl@pengutronix.de>
+ <d87ad286-dcf7-47b6-9612-e8c2c547805d@hartkopp.net>
+ <20261102-cuscus-of-exotic-atheism-400de6-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20261102-cuscus-of-exotic-atheism-400de6-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential issue(=
-s) to consider:
-- [Critical] can: j1939: race in j1939_session_txtimer_cancel_async_locked(=
-) drops kref
---
 
-commit 6ad432b9ff1c3b364014147532b4d663b71e57c7
-Author: Zihan Xi <zihanx@nebusec.ai>
 
-can: j1939: cancel TX timer after RX timeout
+On 02.11.26 11:09, Marc Kleine-Budde wrote:
+> On 02.11.2026 10:16:00, Oliver Hartkopp wrote:
+>> On 28.10.26 22:31, Marc Kleine-Budde wrote:
+>>> On 28.10.2026 21:55:02, Oliver Hartkopp wrote:
+>>
+>>>> To me it is not relevant. If you would prefer the cosmetical roll back I can
+>>>> send a new series.
+>>>>
+>>>> Do you?
+>>>
+>>> no - it's only low, so fine with me.
+>>>
+>>
+>> If we would like to meet this Thursdays netdev PR and want to answer the
+>> sashiko feedback before, when do you plan to send a net PR including the
+>> other patches then?
+> 
+> Hopefully I'll find time in my vacation (which is this week) to do so :)
 
-This commit cancels a J1939 session's TX timer asynchronously via
-j1939_session_txtimer_cancel_async() when an RX timeout moves an active
-session to J1939_SESSION_WAITING_ABORT in j1939_tp_rxtimer().
+I feel you as I'm quasi on vacation for two years now :-D
 
-Link: https://bugtracker.nebusec.ai/f/11143
+It would be good to get the PR out so that we can at least catch the 
+-rc2 train on Thursday as we did not get any fixes in for a month now.
 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 4958f7c47ca44..c85d7bb3c12d4 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1387,6 +1387,7 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct=
- hrtimer *hrtimer)
->  						     struct j1939_session,
->  						     rxtimer);
->  	struct j1939_priv *priv =3D session->priv;
-> +	bool cancelled =3D false;
-> =20
->  	if (session->state =3D=3D J1939_SESSION_WAITING_ABORT) {
->  		netdev_alert(priv->ndev, "%s: 0x%p: abort rx timeout. Force session de=
-activation\n",
-> @@ -1414,8 +1415,11 @@ static enum hrtimer_restart j1939_tp_rxtimer(struc=
-t hrtimer *hrtimer)
->  				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
->  				      HRTIMER_MODE_REL_SOFT);
->  			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-> +			cancelled =3D true;
->  		}
->  		j1939_session_list_unlock(session->priv);
-> +		if (cancelled)
-> +			j1939_session_txtimer_cancel_async(session);
+Best regards,
+Oliver
 
-[Severity: Critical]
-Can calling j1939_session_txtimer_cancel_async() here race with a concurrent
-j1939_session_txtimer_cancel() and re-arm session->txtimer without holding a
-session kref, leading to a use-after-free of struct j1939_session?
-
-Specifically, j1939_session_txtimer_cancel_async() calls
-j1939_session_txtimer_cancel_async_locked():
-
-net/can/j1939/transport.c:j1939_session_txtimer_cancel_async_locked() {
-	lockdep_assert_held(&session->txtimer_lock);
-	session->txtimer_shutdown =3D true;
-	ret =3D hrtimer_try_to_cancel(&session->txtimer);
-	/* Let a queued successor finish promptly after callback exit. */
-	if (ret < 0 && session->txtimer_ref &&
-	    hrtimer_is_queued(&session->txtimer))
-		hrtimer_start(&session->txtimer, 0, HRTIMER_MODE_REL_SOFT);
-	...
-}
-
-While j1939_session_txtimer_cancel() waits for a running callback outside
-session->txtimer_lock:
-
-net/can/j1939/transport.c:j1939_session_txtimer_cancel() {
-	...
-	/* Never wait for a softirq callback while holding txtimer_lock. */
-	if (ret < 0) {
-		ret =3D hrtimer_cancel(&session->txtimer);
-		if (ret =3D=3D 1) {
-			spin_lock_bh(&session->txtimer_lock);
-			if (!WARN_ON_ONCE(!session->txtimer_ref)) {
-				session->txtimer_ref =3D false;
-				put_ref =3D true;
-			}
-			spin_unlock_bh(&session->txtimer_lock);
-		}
-	}
-	...
-}
-
-Consider the following sequence across three CPUs when an RX timeout occurs
-while j1939_tp_txtimer() is completing and a synchronous cancellation (for
-example via j1939_xtp_rx_abort_one() on the abort frame sent by
-__j1939_session_cancel(), or via an incoming CTS/RTS frame) runs
-concurrently:
-
-1. On CPU 0, j1939_tp_txtimer() is running, has queued a successor via
-   j1939_tp_schedule_txtimer() (so session->txtimer is queued and
-   session->txtimer_ref is true), releases session->txtimer_lock, and is
-   about to finish __run_hrtimer().
-
-2. On CPU 1, j1939_session_txtimer_cancel() increments
-   session->txtimer_cancelers, sees hrtimer_try_to_cancel() return -1 becau=
-se
-   CPU 0 has not cleared base->running yet, drops session->txtimer_lock, and
-   calls hrtimer_cancel(&session->txtimer).
-
-3. On CPU 2, j1939_tp_rxtimer() calls j1939_session_txtimer_cancel_async(),
-   which acquires session->txtimer_lock and enters
-   j1939_session_txtimer_cancel_async_locked(). It also sees
-   hrtimer_try_to_cancel() return -1 while CPU 0 is still in __run_hrtimer(=
-),
-   and evaluates ret < 0 && session->txtimer_ref &&
-   hrtimer_is_queued(&session->txtimer) as true without checking
-   session->txtimer_cancelers.
-
-4. CPU 0 finishes __run_hrtimer() and clears base->running. On CPU 1,
-   hrtimer_cancel(&session->txtimer) immediately succeeds in cancelling the
-   queued timer and returns 1.
-
-5. CPU 2 calls hrtimer_start(&session->txtimer, 0, HRTIMER_MODE_REL_SOFT),
-   re-enqueuing session->txtimer, and releases session->txtimer_lock.
-
-6. CPU 1 acquires session->txtimer_lock, sees ret =3D=3D 1 and
-   session->txtimer_ref =3D=3D true, sets session->txtimer_ref =3D false, a=
-nd drops
-   the timer's session reference via j1939_session_put(session).
-
-At that point, session->txtimer is queued in the hrtimer subsystem with
-session->txtimer_ref =3D=3D false and no kref pinning the session. Should
-j1939_session_txtimer_cancel_async_locked() avoid calling hrtimer_start()
-when session->txtimer_cancelers is non-zero (or otherwise synchronize with
-concurrent cancelers)?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/cover.1793681851.gi=
-t.zihanx@nebusec.ai?part=3D2
