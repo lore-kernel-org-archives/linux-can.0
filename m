@@ -1,79 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1793709031;
-	b=Q8BSFP7mMh3eEa47pm1590OTP9UqBdqPHtgvfPrQKmhe+ktVUMl/4/TRPs9IyAjxg8aa
-	 vFl6ByoAD4ho/jEtRRftGHmRdP9fBqMmF/NvTE78amXILP+zFkMFE7YeW0xjZfFE3Vtrp
-	 aj5trLrPIozg9GfwO0VmNDrH25J1AInqybyO4lYfQ1dv8cV2XaurOr83rNlm6Awjq77IH
-	 2FEgPesHtr4cmSskU4XX2y2QJMf7CCjJOpyLdlZyPa+4F2FBPCF7f8vt6dhv9T0R56OUO
-	 ALK5D8fzzD5mxRSthl7dDuG9gwUlf8BxpW1EQSsE8bVYZmmRSVVwmp3yvEH4mxHqdsg==
+	b=22kz9fLCPIan+m4PMYACDnHpOG8PtOqVRduKMWuna/apw3VDQPqSI2wbM35TYgqz4P51
+	 s59ixXanbNDyypS6gNjyy6p+2CchS1cm5WbdjmfoPZ7EX90N+hMjuvM410DYkYEMOCvix
+	 Jnq89BrAI0U7S6+ZPT6VakKDJwrGRS/Itx673IMoD5D+j9o2u8BGqEFffwr4XFnz3AHrm
+	 OAFDZCLoYcJ4KYCNzEM2G19YD7sgNlyXaXU7/bZ3sjHLKbIr/pcJpNKvYMfJA6FfX0wP8
+	 qgHLZHcq985aCngEIbvQ/OM9jjLO7RM3cq4tXgc8nfhQTwz8YLnQDsTzwtJ27pRpb0Q==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793709031;
 	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=5S25kYhorfTO1S1eETiOfOeSqk0ceKXUPyw0jEoPbCI=;
-	b=CwURyuRH83DJU3RfWXWYQ0fm4H54EPtDxRL5qJfXi27PORXuG18fWU8evhyS9qf5EggN
-	 weTVfluBGd/1TXQbh+Ur3F+FSt8xNQ25h4qYFCUF+9CfiwjmkFN+wXDaTo2UKlPH1elOn
-	 NJDGEkWDSWBt3jYVfv4dmd005ltjmUwepVCw6N5XUtHfcF8M4grgnG30N0Lkrkaj3R6I5
-	 IF7/hGwlPubaBhIarD6aDcTFKzyO4qk9gFvZbk6Kc2lEwW/rFmvBknQWmPCs7aVAbjGKf
-	 cnD9NT/Smp+5H9zXNax4AdQOqr93+3tMRpZx0Pgg2fpFWz5o5M7tlx6sHjujUGfSc1A==
+	bh=7EDKTQcdONweGkDaui7sLyJkc3j3Yt6nWRNy16odzCk=;
+	b=2yro6n3AxqUw4f+JWgHj6lIRSTaRvvMutEtIaAT7adqirsy1kM8SCExuNP4zFgDap+bH
+	 fSud8MDSR1lr/IJ6oVPlSQndLvF+xwUQybnSTxjqbeTY/Tji0tGkxUP+sFQ0PtUiZgZoA
+	 c7wk29AE7bdEvQEfJNwfG0KxqqJ+eJPqcJpeH/o9IT5A3Drj3KawIxdzPW05Y5i/f1t4N
+	 isiMNm6La2WT8h+KuBnXgeDsQwJM74ktXZODpC9KAt4gh8aQgMg/EUpkzw783McRIjQag
+	 hZSXUCox0w4OeSL3mHjeLGBRxI51IFjmL1t7bh15grdYSCZ36c5WvMAY+OQMn1xllOQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z2uweuIH;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kWoZ6PrE;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1248606D83F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0E43606D804;
 	Tue,  3 Nov 2026 12:30:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z2uweuIH
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kWoZ6PrE
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
 	t=1793709030;
-	b=sqhNEqoXtSnKX921NQ28os9tJEf1btcz2YXoc/iV/8AFH3jPbkS1xH1hEu8tuWGYUiCc
-	 JSi3ujF39Eso3rjAhx5elf+WJAxDo5FtU8h3ht1Wu62PIddfylHumcYxxKhAdpHv6aZm0
-	 xHUBA/MeizH1jGPLynh1YV1VukyFRGlH/UbzF8swM8y4N1RG4ns8JZKK9/psHexEIJbT+
-	 Kez03PwF/sitgHN+vboLRiA3qgHyui0VHyq51RBN8ShUMABYEaiF31qjvpo/xm/O+ZEme
-	 Fj3R0gjOQ5zRfw1VxO3XDT80CNwzzAFQ7hCPNdsM0HdXLYru+N9UoYipWhzXjH7rG9Q==
+	b=VGReP7NXtDTtwJWky6acJ9/4coLPlCwnCBG3jbDahCm+ZeI76gd9FFPaYhSajDuSl652
+	 97vUJjtzzzwdx0/Kzgm0QbdqMQCIQ/kqi8rbEBxLlZyRrejQFdDlrqBSORNg8nySysxdA
+	 OeNQUmmNJ4mFBTI0RUu1zd9reT6QnAuK8PTPRz3789SMurIdp6sWwB56yINKhCmv3GwYF
+	 J3av0xKtluRCF33JZHst1IHTEaMg/sY7iBISErAbgfZJS1M72fQUvtY1OSFdUsGyPD8CY
+	 D5NpA+642RnrFFx+u5ETMZ/wfFhbaUHvUKEDejb0Seh+r1R1qlhUaWYD3K3UrWwmUHg==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
 	c=relaxed/relaxed; t=1793709030;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=5S25kYhorfTO1S1eETiOfOeSqk0ceKXUPyw0jEoPbCI=;
-	b=Gxf2SV+vY2pUGbFx++VVYoyFN0mF9/3vKbBorfcY9Ngnw47XsPCoKVToCgo4I0Wy+R3F
-	 RergtcEqYpNEfkQ1VleYTV0f6oo6alctEfau3FSps8Muyg5rGHmNzN/cDp0Z6OSuFAL1H
-	 bnBCeJTuBFsSjKJPK2qqSKpKkiKLz4Kstps2G4ZuHjCdDcxRgHlYQxzKNqzPjn+P9vEKR
-	 o98C0AoYAXupKF64QhKqglr9C9QlIte2qh3Bwx9lo1SFGP8llcD8ExVRaz7ca1Z2XHbcM
-	 +3naS7ilMv/s5q/zzRs7O3Wto48tlvCTWIy+/W4X8ao27E6Go4X8Z37K6OZCYpM4dUQ==
+	bh=7EDKTQcdONweGkDaui7sLyJkc3j3Yt6nWRNy16odzCk=;
+	b=01ew2kTW+sP4XaXrUgmNIORulOY1+d3IWqOaAZXmXvf+cJjSNIgUq+E7YhSwoyjfxhkq
+	 8Rgu3XgeD/4KWb8o7rZHv3g0mA56EDwrNZz0KU54wG7z+BxO3R2+oHnch7WINqTXhgbHm
+	 l5pbIzopXvdJZgsPqC1kqnQw7+4DRrelu26iFqt1uv48bIXnn8kr/POcY5h9nH866p7FT
+	 rxPMG1Sdjpe3oCV0UJ37v1dAm4yVRGIL+hu6NEPHZAofvfa4EBFpLrpnaFPnxOL84Qwo2
+	 zuyX+bnNOgQDpU+FmEnV6zmZDVrdE8dhEMO6rDYrxBd7Iz5VF1zS+l3k4ol6u+FaZEw==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 6F6751F00A1A;
+	by smtp.kernel.org (Postfix) with ESMTPS id A864D1F000C1;
 	Tue,  3 Nov 2026 12:30:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1793709030;
-	bh=5S25kYhorfTO1S1eETiOfOeSqk0ceKXUPyw0jEoPbCI=;
+	bh=7EDKTQcdONweGkDaui7sLyJkc3j3Yt6nWRNy16odzCk=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=Z2uweuIHlhwIcfL9njkyzIMCRnRiUuoKA7N9+8WJV6ARhSfg9c15JDNDuILi+NTDo
-	 oPsUGJKjl19ALUdsi/N4OZAWRdDssoi0wwl/2Wj1vVe7jfVdK/8ZjAihBFTOUytmih
-	 hXe27DJ5R5ukQ+UDEo8Uv7MmOxWs6NR+206QZXCteKaBIRTNkCCqxdIqh4QfbnKahP
-	 Ea6BAFdpCgQdkMKu8QIW1Pwra7OAuGx0fwXfI8zAOthTrx4a9u2vW0fhC5pAYVZUyv
-	 4WAY2omtDkjtseKQb8F73iYJAhbtIcFiGvlo4IxjfxzspimcGy6RNQ69APtFD3AW8g
-	 +JpK3E+TJ7vwg==
+	b=kWoZ6PrEZrQtl3O3dO3o14C0mWu8N9nrS1jL+rRMYPTpId8OWSqqLZu3G+zA7AEsx
+	 mUEMt4fmwf1eqElO+k15Sxbm4AsWBdLO8y6Vbyj0ReHEpbZGZPf0UYC9YPG4+xVxO+
+	 GSoKrqo5TDOES7aRCr6kuRJsaD3vpxf/dkvVypitvsbWseQ51Qrm0oZfEpT1LxssQw
+	 zpjnpMMDh4MaNgUKokIsecQMrHNVt6RDp3y2spbxGCJVsvHydWO465KmiK6qPcJ540
+	 PXaag1KJF5EZJ/nE6grxRgl1ZcHerMVHstI+ujEqLf2OHdXnNuXRt93RWJTEIG2osA
+	 zYe+lh1s18Q8Q==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 9AF9C46944;
+	by lkml.kernel.org (Postfix) with ESMTP id C69B846950;
 	Tue,  3 Nov 2026 12:30:25 +0000 (UTC)
 From: =?utf-8?q?St=C3=A9phane_Grosjean_via_B4_Relay?= <devnull+s.grosjean.peak-system.fr@kernel.org>
-Date: Tue, 03 Nov 2026 13:30:25 +0100
-Subject: [PATCH v8 09/14] can: peak_usb: don't read past the message in
- PCAN-USB Pro decoders
+Date: Tue, 03 Nov 2026 13:30:28 +0100
+Subject: [PATCH v8 12/14] can: peak_usb: pass the dev_num argument of
+ PCAN-USB Pro GETDEVID
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -84,7 +84,7 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261103-canfd_check_channel_idx-v8-9-4e8b2c0a8806@peak-system.fr>
+Message-Id: <20261103-canfd_check_channel_idx-v8-12-4e8b2c0a8806@peak-system.fr>
 References: <20261103-canfd_check_channel_idx-v8-0-4e8b2c0a8806@peak-system.fr>
 In-Reply-To: <20261103-canfd_check_channel_idx-v8-0-4e8b2c0a8806@peak-system.fr>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -93,13 +93,13 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
  =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
  Dan Carpenter <error27@gmail.com>, Lukas Magel <lukas.magel@posteo.net>
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Tristan Madani <tristmd@gmail.com>
+ Tristan Madani <tristmd@gmail.com>, stable@vger.kernel.org
 X-Mailer: b4 0.14.3
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1793709024; l=3340;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793709024; l=2068;
  i=s.grosjean@peak-system.fr; s=20261020; h=from:subject:message-id;
- bh=h4jVtQ++YLpdaDDefew6U35BUUpoAZ8/yqvbCDBX9dA=;
- b=AxqEku8UFmw5LaP8ZCeST2y+Ts/X24M6YPYFVLU879AAdzifN0kIELT8UcymoQGw59mDZAnuK
- G++yD0ywq1pDzzkluBg7SEYd0PMHWWZ3k9v0rLxRJpypVUrCyUCBDwO
+ bh=tg+9JBfly0WW6BZBreiuqI5/gaJiy/qaGWKpT4l/6/0=;
+ b=Hdej+jVl3N0KAZ3gTV0AnBPXC0qFqNz0TAMjStt05xcW4nMxhTbYNdQah87mWrx6Q1wxj47Fg
+ y4SbWW80aY8BE1NuyzI/RJwMvce8QRWwYlUQHdLrO/Nl+sVGl0fJXMS
 X-Developer-Key: i=s.grosjean@peak-system.fr; a=ed25519;
  pk=bP7QV2zvvAKAfConZlUOGKGEcXL64SNUpVUm++Ai+/c=
 X-Endpoint-Received: by B4 Relay for s.grosjean@peak-system.fr/20261020
@@ -110,87 +110,50 @@ Content-Transfer-Encoding: 8bit
 
 From: Stéphane Grosjean <s.grosjean@peak-system.fr>
 
-The messages received from a PCAN-USB Pro device start with a record
-count, followed by records whose size depends on their type, given by
-their first byte. Both pcan_usb_pro_decode_buf() and
-pcan_usb_pro_wait_rsp() trust this count:
+pcan_usb_pro_get_can_channel_id() builds its GETDEVID record with
+pcan_msg_add_rec(), passing only the channel index. However,
+pcan_msg_add_rec() handles GETDEVID together with SETBTR and SETDEVID,
+and also reads a second argument with va_arg(), to fill the dev_num
+field of the record. Reading this missing argument is undefined
+behavior: in practice, whatever value is left in the corresponding
+register or stack slot is written to the request in dev->cmd_buf.
 
-- pcan_usb_pro_decode_buf() reads the type of the next record before
-  checking that this record starts inside the URB. When the device
-  claims more records than the URB holds, it reads the byte following
-  the URB data, which is beyond the 1024-byte RX buffer when the URB
-  fills it;
-- pcan_usb_pro_wait_rsp() doesn't check the records against the
-  received length at all. A truncated response is then accepted, and
-  pcan_usb_pro_get_can_channel_id() returns stale bytes of its own
-  request as the channel id. With the current callers, the walk only
-  stays within the command buffer because its unused tail is zeroed.
+This value is sent to the device with each GETDEVID request. Moreover,
+peak_usb_disconnect() clears PCAN_USB_STATE_CONNECTED before it
+unregisters the netdevs, and once it is cleared,
+pcan_usb_pro_send_cmd() and pcan_usb_pro_wait_rsp() return success
+without any USB transfer. pcan_usb_pro_get_can_channel_id() then
+returns the dev_num field of the request as the CAN channel ID, so an
+ETHTOOL_GEEPROM request handled in this window makes
+peak_usb_get_eeprom() copy that value to userspace, and cache it in
+dev->can_channel_id.
 
-Stop decoding a message at its end in both functions, and in
-pcan_usb_pro_wait_rsp() also reject a record that doesn't fit in the
-message.
+Pass 0 as dev_num, so that the request is fully defined, and a null ID
+is returned in that case.
 
 Found by Sashiko AI review.
 
 Fixes: d8a199355f8f ("can: usb: PEAK-System Technik PCAN-USB Pro specific part")
+Cc: stable@vger.kernel.org
 Assisted-by: LLM
 Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
 ---
- drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 18 +++++++++++++++---
- 1 file changed, 15 insertions(+), 3 deletions(-)
+ drivers/net/can/usb/peak_usb/pcan_usb_pro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-index 38307d452a5a..88d21806207b 100644
+index 840658723648..0d014f4c08a7 100644
 --- a/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
 +++ b/drivers/net/can/usb/peak_usb/pcan_usb_pro.c
-@@ -244,9 +244,9 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
- 	for (i = 0; !err && i < PCAN_USBPRO_RSP_SUBMIT_MAX; i++) {
- 		struct pcan_usb_pro_msg rsp;
- 		union pcan_usb_pro_rec *pr;
-+		u8 *pc, *rsp_end;
- 		u32 r, rec_cnt;
- 		u16 rec_len;
--		u8 *pc;
+@@ -435,7 +435,7 @@ static int pcan_usb_pro_get_can_channel_id(struct peak_usb_device *dev,
+ 	u8 *pc;
  
- 		err = usb_bulk_msg(dev->udev,
- 			usb_rcvbulkpipe(dev->udev, PCAN_USBPRO_EP_CMDIN),
-@@ -271,13 +271,18 @@ static int pcan_usb_pro_wait_rsp(struct peak_usb_device *dev,
- 		pc = pcan_msg_init(&rsp, pum->u.rec_buffer,
- 			actual_length);
+ 	pc = pcan_msg_init_empty(&um, dev->cmd_buf, PCAN_USB_MAX_CMD_LEN);
+-	pcan_msg_add_rec(&um, PCAN_USBPRO_GETDEVID, dev->ctrl_idx);
++	pcan_msg_add_rec(&um, PCAN_USBPRO_GETDEVID, dev->ctrl_idx, 0);
  
-+		rsp_end = pum->u.rec_buffer + actual_length;
- 		rec_cnt = le32_to_cpu(*rsp.u.rec_cnt);
- 
- 		/* loop on records stored into message */
- 		for (r = 0; r < rec_cnt; r++) {
-+			/* rec_cnt comes from the device: stay in the message */
-+			if (pc >= rsp_end)
-+				break;
-+
- 			pr = (union pcan_usb_pro_rec *)pc;
- 			rec_len = pcan_usb_pro_sizeof_rec[pr->data_type];
--			if (!rec_len) {
-+			if (!rec_len || pc + rec_len > rsp_end) {
- 				netdev_err(dev->netdev,
- 					   "got unprocessed record in msg\n");
- 				pcan_dump_mem("rcvd rsp msg", pum->u.rec_buffer,
-@@ -745,8 +750,15 @@ static int pcan_usb_pro_decode_buf(struct peak_usb_device *dev, struct urb *urb)
- 	rec_cnt = le16_to_cpu(*usb_msg.u.rec_cnt_rd);
- 	for (; rec_cnt > 0; rec_cnt--) {
- 		union pcan_usb_pro_rec *pr = (union pcan_usb_pro_rec *)rec_ptr;
--		u16 sizeof_rec = pcan_usb_pro_sizeof_rec[pr->data_type];
-+		u16 sizeof_rec;
-+
-+		/* rec_cnt comes from the device: don't read past the message */
-+		if (rec_ptr >= msg_end) {
-+			err = -EBADMSG;
-+			break;
-+		}
- 
-+		sizeof_rec = pcan_usb_pro_sizeof_rec[pr->data_type];
- 		if (!sizeof_rec) {
- 			netdev_err(netdev,
- 				   "got unsupported rec in usb msg:\n");
+ 	err =  pcan_usb_pro_send_cmd(dev, &um);
+ 	if (err)
 
 -- 
 2.53.0
