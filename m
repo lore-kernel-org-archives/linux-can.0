@@ -1,105 +1,102 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793738619;
-	b=yt7Flmn1/XZch3tEpTBsZZqzo1+tVGT7PdHj/g50pv+3Byz9vlDmYevkjGMVNp+QnbzO
-	 Wz3YhNi6cQJRDADn6Aud05Nz2cb1M66itjVDTJ8m90TTAa+vn4mqaxmBkhKwyps9AkvLn
-	 qscewj/4GMoAhGjZi8OBlGNVQh1Rsmarh71AYJNqpg4EYzJFAr7QMYMIzFPp2eZPlGH8S
-	 5XW9iw2vZqEE+eadokMkvuwDQrOKaimsSkq3bIAAV7O4cJtM46y2gCsnmXUQUULsfO2K1
-	 TnwDfmqG/X6zm5a883YvG9l/qV68YGuSklL0+xZR10JZx8P4z37fUwLKnE8F5p0y61A==
+	t=1793738902;
+	b=nYdtrO3AWTRuwt5ug1qqVE/dAO+bJaiRjGmCww9oeBjOa+BnS5FbBF7OYRBXEFbfX0WX
+	 V0xRGRko42kLWOiPojpis+RoKtBIssMV5s3zqT3hKmfwHpQdptitg5n1XhmsTxp4Bxnmv
+	 N0jy5auCNNWCzRkiSiRgDBckqwjhT+Y7hE5hFZV8SRmR8AQZZWPeiiGAtQ9I6iViMRAYG
+	 0EA2f3RyCw4h7p/3wC4s/3xeKCgDnVXtvOv9JLqr2pqq6MHBhFEyyjIvpTEY1uS4w9tYe
+	 9to1o+uQIDJeGkbiEd1we+sziXzj6toGifpkNTt7nl/2FicNFPjTzrzAhJHyfQu7YOQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793738619;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=ZGWbMqtxzyzutGZIAT+lDAmzMT4Jq1S3yMZtZEBClnw=;
-	b=YHaJDeoia7+WEKvVYVvPwJ9zrhoVqfR2y1wDvsCxD3IEtSkHpWl8Au8/fkusSVIxmj7B
-	 Y9FBN8X8IOjruYkxWxS7fgThHuKCi3cXvdHc7bMGjZHIl/qGCk61npOZkGYS9W/fyTQrv
-	 eX17P+a9/TR0m4hXfxfn3gMGOdkvJ7X6/QugGChlrCdeSyay5v5OHGMiwHrP1B5vvteQL
-	 irt/Mx5bX88sTYZtRigO4b4NQ/cGmR48UB9ZlL0vF33Z6CUs1OR+tBpKLQth1qmWzov+0
-	 HrUcYW7YpprEx2iWFD/brUu8P34TcbXfXqxeprTLAR+mmfhVgByjo0EbT/oT6D0fgbA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793738902;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=diX24vdF8dcfN1Xj1w4MKeDwqMW85T+/jeOu05kxMJI=;
+	b=yJDA8/BpxPWBBdUpAALTdtABlCkhJJblYcfXSsyoT4z2vFOCgWsEPZfXa8IkDrvYzjFW
+	 qKD0TEhI5UGuuj8BRwZUF0BbZ1hpsCCrlP6PXIfpJ6lyE+DJj7PhqxVD1kaFxqlEmrOHz
+	 HwIQsI4rKRL6T3149GmA1e8CwdGKIb6kV7twpVOGIOHNkfwHqLaC7LXklMp6C7aBh/gYA
+	 2OdhpRkAG88Z2B0nOxNOJ/4VNDauSyGyBC6U8wMwiuoiq/Rmj6D45mL4RR/0D9TFnZBbo
+	 ib7EU6eNWk2oSuCYf7qlhBoPBp9G4BIs38o1m7LkL6ItqMoXUY3yJ9UMJLSIIhYJcTQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Rtb3qiV+;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=YZTbzDtj;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBA8606D80B;
-	Tue,  3 Nov 2026 20:43:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6DBA8606D80B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C706606A31B
+	for <linux-can@vger.kernel.org>; Tue,  3 Nov 2026 20:48:20 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1C706606A31B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Rtb3qiV+
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=YZTbzDtj
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C20AB20177D;
-	Tue, 03 Nov 2026 21:43:27 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id CBC562010E2;
+	Tue, 03 Nov 2026 21:48:14 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793738607;
+	s=20260414; t=1793738894;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZGWbMqtxzyzutGZIAT+lDAmzMT4Jq1S3yMZtZEBClnw=;
-	b=Rtb3qiV+s1FjvOwcBeqznPYBIwvnHlsMQPPyJtjv37LKoM3Grdq/gCDnU8vF8usvJYkjRq
-	ANlYBDOdas3yj0JSJblp2VbH7ZiqkWYU+aQlFA+/Ot4B/TsBD1zz5hPkiftb/+Lg5eYlA8
-	N378JwpJru1geBqqIZufBvnJ4u9zII/bOyu9X2AvWfq3R6vh5E7nxGvho85uy6GMvnQY7P
-	uEBUgQBkXGq2/Oov6NILH6rKre/auBIo5MlJL9IHcbHzTaAxelZ87MUwfvcZ4eCTYpJgTZ
-	LEBA5Rfazm8ErzR9R7BHa4php37Y8qwKmW/d8X8oco2K+eVDKFQtaROuifrSVQ==
+	bh=diX24vdF8dcfN1Xj1w4MKeDwqMW85T+/jeOu05kxMJI=;
+	b=YZTbzDtjos8Jjbsqz0qRjDOYhcmvezKHj8/j3PiHufM3FbyojC/mav8z1KZCF6qRNX2cEw
+	b9ntW8m9TX1NKJlU4I1Pve90LorW3NIwCKJB2VzBMUWMR3oVF1Iuf3+2qFzsgIQ2cvNyhe
+	qKWHa34Izba+Aj0dobIMsqSGCcmUdHU1mzpLM6estxT4vKICpOLLIRE41CrhJugMmE/zsn
+	zJ23RopfRPeHjtdd3+c8t/R3iSpKyAoKHfWH6dk+pDf8B8bC0j9zXvH/4b+HdfkI8Nli0B
+	vijhKMhbFFdb6SjnjrIxRvXl+lUL/v3sKUifJ3ugmIcpdj/oPV/8lJfFdiJpig==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793738607;
+	s=20260414; t=1793738894;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZGWbMqtxzyzutGZIAT+lDAmzMT4Jq1S3yMZtZEBClnw=;
-	b=FIcrWzK1gKH539oC3GC7MUwjNB03NquIlrzZ+3Ch9DJbs+hcjDJsF5x9jYyaF7Gb7nX9uC
-	3Uh+ffJ0FvKPEEjdH8QMOXqsG5bv1eCpFRj+oBL4+1/2Wkc2mTsd2rjUIpeJENYUpfjf54
-	pix++f3qalKxfLlFzCLGAWQ4b36RA1FxOoygnE5q8+lu6t2T+XPLdetgtK7Jtx7SFCrKoj
-	pJxyQLD5OOrnshNEX6fek4/5/DP0WVgwQIKU9Of/yEhuqaCSFwzgxep8h5GYPLxxzq0tm4
-	V76aTs9ekDEZNgJnkKDjCtxu6WZxKdzdR/aq9uHmnWmGLyPN6RP83rTz5QuSJw==
+	bh=diX24vdF8dcfN1Xj1w4MKeDwqMW85T+/jeOu05kxMJI=;
+	b=LNJ+XIVFEDP0ISLII6HKG2qnZpV0+rWYEecydZH6/h7YJCbLEkEepDwXWvGk6rBpF8Hwt+
+	BWXPHJEylDEwDPe5+FEhKW4iuD5cM17aKMUBXz+JXQVGd6teHzpLsGw5jgd1KL20XQP1Ki
+	mkSowMS6NIQguvLVQ8QB3Rl3D+hZZE/95kY2vN7/QUHJJc+Ih4tgWpKANRFscmyWI72tCg
+	e1oTyHAe6Wu0ZEqxpOOZRtYszIO0BF5iU28nO75B1+JuyrkIP6JUpFUqMxNpPR0QhbjeJQ
+	9JyA8bOT/qdl9nxbY03ltzq23oPnwws8FNo5jae60uKU5RGtgAM0FlaiZswj6w==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793738607; a=rsa-sha256;
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793738894; a=rsa-sha256;
 	cv=none;
-	b=Tc1R50XvRiN0INBOe07E7Pv6J/cPVdlBs09fboGuIhfAqKE6drzjI+CstK4FT8nI+2s3wd
-	Ojv6/Z+sXUXn3kYFzyg/Xr6aNzs86u7t9l1c6lHJeSjXR8AxjhLgh407VzpBRLJbjeJjQd
-	qHs1X/PXAoJTmTcMa+YZSlD/wo0GeqOjdIi53O09saItEajgYekoULOpb3nJtI/l6zJeTu
-	yS43tyc32HmzWmYo5Z0bbVmdU+OV5z3A5tLa5s1W9gwwNNHBhymwQ2yAZJndi5FNvmar2g
-	1u91smctYmq6yWm2eGgRqpZvgUR2YXSNuiP84eOHoaYmfAKE9f38NVPlKx4r/A==
+	b=AnB8cxnY3MOHALGJWtIT7Fi4JJ/pUUveJ4FfNrIO4li3eojiYGdE6rut5N50JQpnAUNhrA
+	/HVwO201IERed9S/JI3F9IvcBKj/A9i/G7nEt98BjNBngtPBOXBt8/YCCrWqcx2qVFyGpF
+	YpZ5sO0ZOMCL6KPfzcD/RCNvXD7b8odQfVnHOVYnGCiZkTs1PrRFK6fOIs0HgG2pYyaIP4
+	GBOMmysYhlhuHLXI+b/jkphT/Bu4Y5oB3RLBnxx9mxElkef4Qxg/hPNwezHozda+NmFeAp
+	ec4aszT/5olan6CMRlEB82oOv8qbAc+/ln9lzuLrWDziVPBKW0HW3ya0j/6a1Q==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xOLLr-002V97-13;
-	Tue, 03 Nov 2026 21:43:27 +0100
-Received: from blackshift.org (unknown [IPv6:2a00:20:73c1:227f:2cd5:5d72:938f:f03c])
+	id 1xOLQU-002V9I-2G;
+	Tue, 03 Nov 2026 21:48:14 +0100
+Received: from pengutronix.de (unknown [IPv6:2a00:20:73c1:227f:2cd5:5d72:938f:f03c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 1A72E5DDEDE;
-	Tue, 03 Nov 2026 20:43:26 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id A56345DDF47;
+	Tue, 03 Nov 2026 20:48:13 +0000 (UTC)
+Date: Tue, 3 Nov 2026 21:48:11 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Liu Changjie <liucj1228@outlook.com>,
-	=?UTF-8?q?St=C3=A9phane=20Grosjean?= <s.grosjean@peak-system.fr>,
-	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 15/15] can: peak_usb: pcan_usb_fd_decode_buf(): accept short uCAN end-of-list records
-Date: Tue,  3 Nov 2026 21:30:36 +0100
-Message-ID: <20261103204305.3211144-16-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261103204305.3211144-1-mkl@pengutronix.de>
-References: <20261103204305.3211144-1-mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org
+Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
+ lock
+Message-ID: <20261103-misty-quantum-lionfish-d6d102-mkl@pengutronix.de>
+References: <20261027-can-rx-lock-v12-0-eb5afc2d8b9b@hartkopp.net>
+ <1e9a2768-e30e-4f2d-bc71-57550d210c0a@hartkopp.net>
+ <20261028-miniature-smiling-leech-6d02ea-mkl@pengutronix.de>
+ <ae276e09-2a2c-4887-836d-0ab0b7561f26@hartkopp.net>
+ <20261028-positive-cornflower-partridge-3f822d-mkl@pengutronix.de>
+ <d87ad286-dcf7-47b6-9612-e8c2c547805d@hartkopp.net>
+ <20261102-cuscus-of-exotic-atheism-400de6-mkl@pengutronix.de>
+ <d28e6983-e1be-42fa-943f-6de6f7429b54@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -109,89 +106,58 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gvtwmonsw2ivxlfb"
+Content-Disposition: inline
+In-Reply-To: <d28e6983-e1be-42fa-943f-6de6f7429b54@hartkopp.net>
 
-From: Liu Changjie <liucj1228@outlook.com>
 
-A PCAN-USB FD v2 running firmware 3.2.0 sends a 16-byte status record
-followed by a four-byte zero-size end marker.
+--gvtwmonsw2ivxlfb
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v12 0/7] can: protect the receive lists with a per-device
+ lock
+MIME-Version: 1.0
 
-Since commit 93fcab2c6968 ("can: peak_usb: validate uCAN receive record
-lengths") these transfers cause repeated receive-buffer dumps while the
-interface is up.
+On 03.11.2026 08:43:08, Oliver Hartkopp wrote:
+> > > If we would like to meet this Thursdays netdev PR and want to answer =
+the
+> > > sashiko feedback before, when do you plan to send a net PR including =
+the
+> > > other patches then?
+> >
+> > Hopefully I'll find time in my vacation (which is this week) to do so :)
+>
+> I feel you as I'm quasi on vacation for two years now :-D
 
-This has been observed on Linux 7.2.11-arch1-1 with matching kernel
-headers:
-- Classic CAN, 500 kbit/s: 25 decoder errors in 5 s before the fix; none in
-  15 s after.
-- CAN FD, 500 kbit/s nominal and 2 Mbit/s data: 26 decoder errors in 5 s
-  before the fix; none in 60 s after.
-- Three additional down/up cycles: no decoder errors.
+Good point, but my vacation won't last that long.
 
-pcan_usb_fd_decode_buf() requires a complete 12-byte struct pucan_msg
-before checking the size field, so it rejects the end marker with -EBADMSG.
+> It would be good to get the PR out so that we can at least catch the -rc2
+> train on Thursday as we did not get any fixes in for a month now.
 
-Check that the size field is present before testing for an end marker.
-Require the full header for nonzero-size records and keep the remaining
-record and payload length checks.
+Let's see what clashiko says:
 
-This patch was created with LLM assistance.
+https://lore.kernel.org/all/20261103204305.3211144-1-mkl@pengutronix.de/
 
-Fixes: 93fcab2c6968 ("can: peak_usb: validate uCAN receive record lengths")
-Signed-off-by: Liu Changjie <liucj1228@outlook.com>
-Reviewed-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
-Link: https://patch.msgid.link/CH5PR19MB997156AB3BE253C3BE445223B0AC992@CH5PR19MB997156.namprd19.prod.outlook.com
-Cc: stable@vger.kernel.org
-[mkl: copy additional info to commit message]
-[mkl: convert Assisted-by: tag to prose]
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
-Built and tested the original and patched peak_usb modules on Arch
-Linux 7.2.11-arch1-1 with matching kernel headers.
+regards,
+Marc
 
-  - Classic CAN, 500 kbit/s: 25 decoder errors in 5 s before the fix;
-    none in 15 s after.
-  - CAN FD, 500 kbit/s nominal and 2 Mbit/s data: 26 decoder errors
-    in 5 s before the fix; none in 60 s after.
-  - Three additional down/up cycles: no decoder errors.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-USB captures during the patched tests contained 406 packets with
-short end markers. Neither receive-buffer dump recurred.
+--gvtwmonsw2ivxlfb
+Content-Type: application/pgp-signature; name="signature.asc"
 
-The CAN bus was disconnected; external TX/RX was not tested.
-One startup "can_change_state: oops, state did not change" message and
-an RX dropped count reaching 2 were observed during the patched tests.
-Their causes remain undetermined.
----
- drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-index 0d46f4ce5dca..39f0740421c3 100644
---- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-+++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-@@ -755,7 +755,7 @@ static int pcan_usb_fd_decode_buf(struct peak_usb_device *dev, struct urb *urb)
- 		u16 rx_msg_type, rx_msg_size;
- 		size_t rx_msg_min_size;
- 
--		if (msg_end - msg_ptr < sizeof(*rx_msg)) {
-+		if (msg_end - msg_ptr < sizeof(rx_msg->size)) {
- 			err = -EBADMSG;
- 			break;
- 		}
-@@ -766,6 +766,11 @@ static int pcan_usb_fd_decode_buf(struct peak_usb_device *dev, struct urb *urb)
- 			break;
- 		}
- 
-+		if (msg_end - msg_ptr < sizeof(*rx_msg)) {
-+			err = -EBADMSG;
-+			break;
-+		}
-+
- 		rx_msg_size = le16_to_cpu(rx_msg->size);
- 		rx_msg_type = le16_to_cpu(rx_msg->type);
- 
--- 
-2.53.0
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCaupIiAAKCRDMOmT6rpmt
+0ptyAPwL9rolYh0B0QQJ7PbW2BSrkyTqPuR3qVUUr/ktwP6DnAEA8JWKSmguUpmT
+zsOjYCLr6X9Dq4b0Uq6ZxTPEXj4PnQg=
+=Jymy
+-----END PGP SIGNATURE-----
 
+--gvtwmonsw2ivxlfb--
