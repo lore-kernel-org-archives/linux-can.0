@@ -1,101 +1,102 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793738612;
-	b=1gUNO0haMHGy403PO2XgZ8X7iaDJ+clzDcmHNDh0z7A+oW0eWh5xsQa1VJz1nTVCW032
-	 4953LUrwt3pbieGWcZHU+qTrgnh9Ie01WHNVpH9q1Qe8vEnUEclvslRnOOOAFZFzIUoDe
-	 l4yA+1obpT2hyBzMjDHWkjus5UMko93Pua2pGU9K+F1Cn1P5FMnniT1ktIfWlLfPmnSZl
-	 K0yziYkWmagVtCDqfkjVU5cvtf+7SQGN6TzN6gyDc1KFOL4MBJp3nHVz2j0euYg/9Unj1
-	 ag2w0wMFaWggH5bjD24rmT7DNxEuZACghh0jnVBOUyhoGeJZkc4kOfjuwuRmI5FzzgA==
+	t=1793738618;
+	b=he1eFAcYf8eyHDJ1ncscX6qmWDudnu9SS7ioMoyPnXfdOTD2vRjNpkmDFGTjUZuR1H5Q
+	 d197qyDBCwQ8hM5c2n0fY2Vrv14nsx/s7vZ8Ps1fjEdjalEpS/Mbb7luEA+8jTLisYelY
+	 Y9jdb+zdrIoz92bhPvs4qvJnq/ZfhE6oblcBzW4dYjznw05aIsvkcciY7dQvE2NYwiJsK
+	 HAXrJutDZRm2UiBGMpSWEJWXjgTrjp0kE12lUvyq2ggWs2hcr/bkXGGLb2VnKTZWSqYon
+	 fDprjchhWL3xdJpvfc8ujp7Rtu1hSBI3RqR60pcUr3ROsVR5un70n1N7H62Q4NhbguQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793738612;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793738618;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=89MNX7pzGmipW+4xzUj6u1IbnH36Pt0TeMxWCwBAvIw=;
-	b=33ZoLfsGeXP3vTxVhR8k3/gB3Soh71yjAvdBpxEbOyxRlgqtqMpF/mjd/6CltcoYVe5l
-	 SmiS52MBc6xHCSmJgqCNqxNwpj5hdQw4E892LLgnFgD822xxfpN3eZ47vawO2Y/Y8+ovF
-	 22fANpcZq5J2R3kznkSpUdT8+Swfm4LbLbymSG+YjB909N9xQQVgsI7eqpIT+/H8TtoPV
-	 JuJqH9zoTBOa7LRXlts3Gn0vpoDX1MECHi50SCEXiHW1EzmGhfJgU5Y8IZM1BbGYT9mXN
-	 6xgwNywJIvAIygwAXNkWRIB6fhz/QdGqto1q1e/u/m2bIEhtN1sgAkOGZ28jZD/b3Eg==
+	bh=4DKOHHau+kSa3qW/MTES/4J6ggjobYI7BskwRx+K5Hk=;
+	b=B08bGz1AMcqAMCXUxVDDjC2dPAOLJ1u9p4/3HIUwPOVvjXRpTXlLqKDn9xczerIKmZT6
+	 B1qFyUk5N6qBVrtZIR0hFq9i8N0Kn1MvrJ9RQE70gO/+BxxMttB9sfTfe0ieix9oOlma6
+	 uPvehQgfvm2azFOUwBGy/X7KY7TB4mOzCnh/dAw6qWIvkLVuYqqw15gOv8+UFW/iZiWUq
+	 5a0x68df5WAWHSRmQQhMYuCl6+DDmIrv3URkoO/uYrDSIcvcnY7gXHUlxIDFTPoOp3Q1f
+	 iIBnEu+TwOXfo8ztk1Dww3U4F9Bez5VPug4/1/Gz067gLHo2Yv5K7JniotHMIQB2n/g==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=BaZ5NLHV;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=YauPxBiE;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D68B6606D80E;
-	Tue,  3 Nov 2026 20:43:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D68B6606D80E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AC7606D803;
+	Tue,  3 Nov 2026 20:43:27 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 61AC7606D803
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=BaZ5NLHV
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=YauPxBiE
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4FF9A202BA5;
-	Tue, 03 Nov 2026 21:43:26 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C1334202831;
+	Tue, 03 Nov 2026 21:43:21 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793738606;
+	s=20260414; t=1793738601;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=89MNX7pzGmipW+4xzUj6u1IbnH36Pt0TeMxWCwBAvIw=;
-	b=BaZ5NLHV/nzrBkJaTszmPi227Bn7M6Rp702U1DXxnsmAid+PoCOAFTJwgTPRQNm0qNTZ3D
-	mHTpUIWlFPXOwPgUXp4MgDab6JiaYOjBvXRIlyTyKtdIbB7lovL6sof4d2ayFlNZagM4ev
-	rujqKNtzAewsFwiwgRf05/w5KdPtpEd6p9jh0b6mGQScQDKkJhrFtsd8NqtMpjWojZpd04
-	QSVxDX2a3vJmIh+ZNtS65+JBiAH8LV9FCoSQ7yhSemPZgv/KbW/ffFHOYS1A9RCX6cVuEx
-	6o23BYyALQgeaZfUKuzHWC5QHnsoYunBUne6qp7kybP+4t1PcyQa0O+IY6mxRA==
+	bh=4DKOHHau+kSa3qW/MTES/4J6ggjobYI7BskwRx+K5Hk=;
+	b=YauPxBiEJ0UjAwnRdG6ZxI7D6VVcWC+HtpV9Lg/TXnSUO1DeipfueQ8aMriOxJrR0vhDsd
+	qUnlR9CmShFXADgLp7/mSEMCqvbOyFYlNyp9rmvVYI/MzKs6V6hCMXmMN3VahmkUyRMAcF
+	8JDAWIPN0+dmP60pKIyDjJYRb9bPtvqWXo3OBolywOxDOoAkudvsWFcV74GxnhSzkOOI4C
+	gh908jeUHqJXUHeablDNhzeWlzfDs/k4/o9Gm0+QyFh8uBLzP5x/QHYg4reMURwo4O0QlP
+	cb9Ku7DiFsN8HKohpNtgxF+/EqzuOAYnsZ8TUiVopVsLYaR9oI4RW66Mdi8RTw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793738606;
+	s=20260414; t=1793738601;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=89MNX7pzGmipW+4xzUj6u1IbnH36Pt0TeMxWCwBAvIw=;
-	b=c9zmO5r013UpNEudxMfKuHnev4FSaMf9Uw3lvqdT1fzG3U7+G+VBPbCmiSTzj1WV9PDVgR
-	wq7U37jTYyFae24zZS59lyZZ0o5S8VBOFqN6bGpZwrUUQoETee4Ej5yfj9c6SS/qZokZFG
-	YKE2uxD0P19dQnrYw1CxuHRI+XG0K1WZcPFZsh0Gx+7WW9i0CGdbua4dS+rd9+vs+twF2/
-	fUYB2BdAn/CLPIqGl5esbfkCPG8tFM87YaIBY7YrCA11lUaxqLeILdWLeTCKwJqUzWmKXD
-	1dPkhhRnx5wMIpeU9MblOqB7AFoCILgAFNg132Mj7HgPt3D3Ww0FVXzBdWT95w==
+	bh=4DKOHHau+kSa3qW/MTES/4J6ggjobYI7BskwRx+K5Hk=;
+	b=XU5PrtJoNgLNGz7cl+c8yodCcjK0g9dYUw17aHIS50yEhWxl0rAOkX5110qahpNpqHl0NB
+	Mkaxk+u12yt6eY0EzOgLFqjh6eVcHgA7g/kkHqLwLLNgalPKZBFwVE0XQ6Xl0AiLKFzRaa
+	9vRgxhslHR5ZggJiegCdfdTS459N+FEMmxJaZGjqsYxehC9pTdHmpeMNUnDYoJGOykh/BG
+	AlLwfFofcEMs0PSTKs3WRvgLS3wHD2r/cKmcZV5O/dt8U3TmcJPdu2RtcJE0I3s8RwwEgD
+	CH1x2aShDaV6gbgZZwslTChUZhDL3In/fr1yhaf5pFbPXmbyO7QFaMmYU/RHuQ==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793738606; a=rsa-sha256;
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793738601; a=rsa-sha256;
 	cv=none;
-	b=aFt38XBVN4CdSREZ0oJnHiB9a3v7nniDcBCO2zTfMGDpsmNy6x2v4LpIOMBdp/Nl4v2BSn
-	oTcJ2x0oWs5mujOpn3A/bCMvpJqmuoSe6nOVldHfpWiAGEQWufcxFfKlTC2wkAKljs9O6X
-	oApGbTU0H0z0eZmqs3taZFBRlzpxOFVH0cuDSk4JAQ6EKw2qLJGnJRR19h38xPZCslJhkN
-	CnCYsXk/hvsJEnfYm9ju7b6YD1yhz8cK25aPIWvhowMHfmCM6wLs/BBaJtaXhQY2wCPpbO
-	Db1Gt2xBhAMJ/AIM0ZQNXEzcZiS7pLy1wXIWSNucy4F2NmyOCnN1UbIuGqPynw==
+	b=Ngm3SQgECfVkbEvnvOPmSMguPNy4YuZESF4nW2o7aZ4cHxWApBeAVN/mmNpkYLcd0RQ5xP
+	M0wyDw3ZNiI19LAUthOoj1VQDovf02fuw4WqDVhS3SIkh8BiSAvToJPGi+mVq5rqtbAtl+
+	GYlkCxpLrrEHfN8ZhGzSBnggkiwjPFin+J3XvICAvnrr2/ccqd1K46ev37Wy1oYIV9/HOE
+	34vAHP/p5FGwWL3a+pFynGmGlwzqADpmdoxVHT+pUhr7PLJBRR5crlm3dU3Caa+3oyiTeU
+	QgpaYOvyfWaGfIjzo4QAMOhGR5ylXH7bl6DlUPKjTyYQHl1C7x91gR2NApWPCg==
 Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xOLLq-002V93-0e;
-	Tue, 03 Nov 2026 21:43:26 +0100
+	id 1xOLLl-002V8n-29;
+	Tue, 03 Nov 2026 21:43:21 +0100
 Received: from blackshift.org (unknown [IPv6:2a00:20:73c1:227f:2cd5:5d72:938f:f03c])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id F37DA5DDED9;
-	Tue, 03 Nov 2026 20:43:24 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5FEEA5DDEC9;
+	Tue, 03 Nov 2026 20:43:20 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>,
-	Vincent Mailhol <mailhol@kernel.org>,
+	Runyu Xiao <runyu.xiao@seu.edu.cn>,
+	stable@vger.kernel.org,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 14/15] can: dev: can_tdc_fill_info(): don't read automatic TDCV if interface is down
-Date: Tue,  3 Nov 2026 21:30:35 +0100
-Message-ID: <20261103204305.3211144-15-mkl@pengutronix.de>
+Subject: [PATCH net 10/15] can: proc: reset pkg_stats atomics individually
+Date: Tue,  3 Nov 2026 21:30:31 +0100
+Message-ID: <20261103204305.3211144-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261103204305.3211144-1-mkl@pengutronix.de>
 References: <20261103204305.3211144-1-mkl@pengutronix.de>
@@ -110,97 +111,133 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
+From: Runyu Xiao <runyu.xiao@seu.edu.cn>
 
-The automatic TDCV readback calls into the driver via do_get_auto_tdcv().
-Some drivers, such as xcan_get_auto_tdcv(), read controller registers
-without taking a runtime PM reference, so calling this while the
-interface is down can touch registers whose clocks are gated.
+Commit 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+converted several members of struct can_pkg_stats to atomic_long_t and
+updated the hot TX/RX and procfs read paths to use atomic_long_*()
+helpers. However, can_init_stats() still clears the whole struct with
+memset().
 
-Gate do_get_auto_tdcv() on netif_running() in can_tdc_fill_info() and
-adjust can_tdc_get_size() and can_data_bittiming_get_size() so that only
-the automatic TDCV size is skipped when the interface is down. The other
-TDC parameters are still reported, as they are meaningful while the
-interface is down.
+can_init_stats() is reached from can_stat_update() in timer context and
+also from the procfs reset path. Those paths can run while the TX/RX hot
+paths are concurrently updating rx_frames, tx_frames, matches and their
+*_delta counters. Hitting the whole-struct memset() in that window
+performs plain writes to fields that otherwise follow an atomic_long_t
+access contract, which can lose or mix live statistics updates.
 
-This is a defensive hardening based on code inspection; the automatic
-TDCV path has not been triggered on hardware.
+This issue was found by source-level API-misuse analysis looking for
+whole-object resets left behind after atomic_long_t conversions, then
+manually audited on Linux v6.18.21.
 
-Signed-off-by: ChunYuZhiQiang <chunyuzhiqiang@yinhe.ht>
-Reviewed-by: Vincent Mailhol <mailhol@kernel.org>
-Fixes: e8060f08cd69 ("can: netlink: add can_priv::do_get_auto_tdcv() to retrieve tdcv from device")
-Link: https://patch.msgid.link/20261027065012.191348-2-chunyuzhiqiang@yinhe.ht
-[mkl: fix open parenthesis alignment]
+Replace the whole-struct memset() with a helper that resets the
+atomic_long_t counters via atomic_long_set() and clears the derived
+scalar statistics explicitly. This preserves the existing reset
+semantics for scalar fields while restoring atomic access discipline for
+the live counters.
+
+Build-tested by compiling net/can/proc.o on x86_64 netdev/main.
+Runtime-tested with a QEMU + vcan setup on Linux v6.18.21 by driving
+concurrent traffic and reset_stats reads, which reproduced inconsistent
+exported statistics before the fix.
+
+[Hartkopp] can_stat_update() also read the *_delta counters at the
+beginning and cleared them with atomic_long_set() at the end. Increments
+from the hot path in between were lost for both the current and the next
+interval. Use atomic_long_xchg() to fetch and clear the *_delta counters
+in one atomic step instead.
+
+On x86_64 atomic_long_set() is a plain store like memset(), so the
+memset() is an actual problem only on architectures with lock-based
+atomics (e.g. parisc). The inconsistencies seen on x86_64 come from the
+*_delta handling and from the stale snapshots, which are fixed in "can:
+proc: skip stats calculation after reset in can_stat_update()". As
+before, the counters are reset one at a time and the derived scalar
+statistics use plain stores.
+
+Fixes: 80b5f90158d1 ("can: statistics: use atomic access in hot path")
+Cc: stable@vger.kernel.org
+Signed-off-by: Runyu Xiao <runyu.xiao@seu.edu.cn>
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20261027-can-rx-lock-v12-5-eb5afc2d8b9b@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/dev/netlink.c | 17 ++++++++++-------
- 1 file changed, 10 insertions(+), 7 deletions(-)
+ net/can/proc.c | 39 +++++++++++++++++++++++++++++----------
+ 1 file changed, 29 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index b958c04d53db..081dfddda000 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -720,7 +720,8 @@ static int can_changelink(struct net_device *dev, struct nlattr *tb[],
- 	return 0;
- }
+diff --git a/net/can/proc.c b/net/can/proc.c
+index de4d05ae3459..70104f13077e 100644
+--- a/net/can/proc.c
++++ b/net/can/proc.c
+@@ -76,16 +76,39 @@ static const char rx_list_name[][8] = {
+  * af_can statistics stuff
+  */
  
--static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
-+static size_t can_tdc_get_size(const struct net_device *dev,
-+			       struct data_bittiming_params *dbt_params,
- 			       u32 tdc_flags)
++static void can_reset_pkg_stats(struct can_pkg_stats *pkg_stats)
++{
++	atomic_long_set(&pkg_stats->rx_frames, 0);
++	atomic_long_set(&pkg_stats->tx_frames, 0);
++	atomic_long_set(&pkg_stats->matches, 0);
++
++	pkg_stats->total_rx_rate = 0;
++	pkg_stats->total_tx_rate = 0;
++	pkg_stats->total_rx_match_ratio = 0;
++
++	pkg_stats->current_rx_rate = 0;
++	pkg_stats->current_tx_rate = 0;
++	pkg_stats->current_rx_match_ratio = 0;
++
++	pkg_stats->max_rx_rate = 0;
++	pkg_stats->max_tx_rate = 0;
++	pkg_stats->max_rx_match_ratio = 0;
++
++	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
++	atomic_long_set(&pkg_stats->matches_delta, 0);
++}
++
+ static void can_init_stats(struct net *net)
  {
- 	bool tdc_manual = tdc_flags & CAN_CTRLMODE_TDC_MANUAL_MASK;
-@@ -742,7 +743,8 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
- 	}
+ 	struct can_pkg_stats *pkg_stats = net->can.pkg_stats;
+ 	struct can_rcv_lists_stats *rcv_lists_stats = net->can.rcv_lists_stats;
+ 	/*
+-	 * This memset function is called from a timer context (when
++	 * This stats reset is called from a timer context (when
+ 	 * can_stattimer is active which is the default) OR in a process
+ 	 * context (reading the proc_fs when can_stattimer is disabled).
+ 	 */
+-	memset(pkg_stats, 0, sizeof(struct can_pkg_stats));
++	can_reset_pkg_stats(pkg_stats);
+ 	pkg_stats->jiffies_init = jiffies;
  
- 	if (tdc_flags) {
--		if (tdc_manual || dbt_params->do_get_auto_tdcv)
-+		if (tdc_manual ||
-+		    (dbt_params->do_get_auto_tdcv && netif_running(dev)))
- 			size += nla_total_size(sizeof(u32));	/* IFLA_CAN_TDCV */
- 		size += nla_total_size(sizeof(u32));		/* IFLA_CAN_TDCO */
- 		if (dbt_params->tdc_const->tdcf_max)
-@@ -752,7 +754,8 @@ static size_t can_tdc_get_size(struct data_bittiming_params *dbt_params,
- 	return size;
+ 	rcv_lists_stats->stats_reset++;
+@@ -121,9 +144,10 @@ void can_stat_update(struct timer_list *t)
+ 	long rx_frames = atomic_long_read(&pkg_stats->rx_frames);
+ 	long tx_frames = atomic_long_read(&pkg_stats->tx_frames);
+ 	long matches = atomic_long_read(&pkg_stats->matches);
+-	long rx_frames_delta = atomic_long_read(&pkg_stats->rx_frames_delta);
+-	long tx_frames_delta = atomic_long_read(&pkg_stats->tx_frames_delta);
+-	long matches_delta = atomic_long_read(&pkg_stats->matches_delta);
++	/* fetch and clear values for 'current rate' calculation */
++	long rx_frames_delta = atomic_long_xchg(&pkg_stats->rx_frames_delta, 0);
++	long tx_frames_delta = atomic_long_xchg(&pkg_stats->tx_frames_delta, 0);
++	long matches_delta = atomic_long_xchg(&pkg_stats->matches_delta, 0);
+ 
+ 	/* restart counting in timer context on user request */
+ 	if (user_reset)
+@@ -172,11 +196,6 @@ void can_stat_update(struct timer_list *t)
+ 	if (pkg_stats->max_rx_match_ratio < pkg_stats->current_rx_match_ratio)
+ 		pkg_stats->max_rx_match_ratio = pkg_stats->current_rx_match_ratio;
+ 
+-	/* clear values for 'current rate' calculation */
+-	atomic_long_set(&pkg_stats->tx_frames_delta, 0);
+-	atomic_long_set(&pkg_stats->rx_frames_delta, 0);
+-	atomic_long_set(&pkg_stats->matches_delta, 0);
+-
+ 	/* restart timer (one second) */
+ 	mod_timer(&net->can.stattimer, round_jiffies(jiffies + HZ));
  }
- 
--static size_t can_data_bittiming_get_size(struct data_bittiming_params *dbt_params,
-+static size_t can_data_bittiming_get_size(const struct net_device *dev,
-+					  struct data_bittiming_params *dbt_params,
- 					  u32 tdc_flags)
- {
- 	size_t size = 0;
-@@ -764,7 +767,7 @@ static size_t can_data_bittiming_get_size(struct data_bittiming_params *dbt_para
- 	if (dbt_params->data_bitrate_const)		/* IFLA_CAN_{,XL}_DATA_BITRATE_CONST */
- 		size += nla_total_size(sizeof(*dbt_params->data_bitrate_const) *
- 				       dbt_params->data_bitrate_const_cnt);
--	size += can_tdc_get_size(dbt_params, tdc_flags);/* IFLA_CAN_{,XL}_TDC */
-+	size += can_tdc_get_size(dev, dbt_params, tdc_flags);/* IFLA_CAN_{,XL}_TDC */
- 
- 	return size;
- }
-@@ -825,10 +828,10 @@ static size_t can_get_size(const struct net_device *dev)
- 	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
- 	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
- 
--	size += can_data_bittiming_get_size(&priv->fd,
-+	size += can_data_bittiming_get_size(dev, &priv->fd,
- 					    priv->ctrlmode & CAN_CTRLMODE_FD_TDC_MASK);
- 
--	size += can_data_bittiming_get_size(&priv->xl,
-+	size += can_data_bittiming_get_size(dev, &priv->xl,
- 					    priv->ctrlmode & CAN_CTRLMODE_XL_TDC_MASK);
- 	size += can_pwm_get_size(priv->xl.pwm_const,		/* IFLA_CAN_XL_PWM */
- 				 priv->ctrlmode & CAN_CTRLMODE_XL_TMS);
-@@ -910,7 +913,7 @@ static int can_tdc_fill_info(struct sk_buff *skb, const struct net_device *dev,
- 		if (tdc_manual) {
- 			tdcv = tdc->tdcv;
- 			err = 0;
--		} else if (dbt_params->do_get_auto_tdcv) {
-+		} else if (dbt_params->do_get_auto_tdcv && netif_running(dev)) {
- 			err = dbt_params->do_get_auto_tdcv(dev, &tdcv);
- 		}
- 		if (!err && nla_put_u32(skb, IFLA_CAN_TDC_TDCV, tdcv))
 -- 
 2.53.0
 
