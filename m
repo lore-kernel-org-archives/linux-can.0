@@ -1,102 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.52
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793804573;
-	b=G1oMk7eublDxOM35lIHCfPOAvWMEwGu2dBPEFuyZx2qa3/0qYKPoRmkoPr4SugemBZ+o
-	 aJbPl2kmrmDMvtZbAybmvEg+NQ26wlL79t7xjzoWKYK+v9nJOmMPLiTnaWdjYd9mikOKm
-	 jZ1oKdfQZQczIvLJtkn5aU7qLo2Z1e0yryPrEuZNetEyL9GVEeeO6kjweZvcHwOCBy3/7
-	 lybwnmWT87TdPKkFZDkexrx62L567ICe5kaItvBEFlaSQFpm9/WSPSfNRXlpWzp0wfu0V
-	 ISZne8cU6kb/MIVdaHKGeF5PV0KdZp5SA1f0NObp8sm1+oq5gUPkfe0CK+NAIcwlS2g==
+	t=1793805283;
+	b=yg3S9Ufxkd30V1QX0b91/ELYHVnaVRuuoZMIexD3k9kfZOs/DeoYlvaiiEAEl8sg2gF0
+	 fRvGA5CODNBJdQddIrFtP3fBenXYtUF9Poju8JM2PRairEeftPlw1Sdec/KXy0gK/dJOQ
+	 klg/eyXUukIz4Q1YWA4qAfHiDWoUczNUOPpLvV8hCl84sgD54ps6pLRVpt8jW27PDNCTv
+	 3VSWhAvFMTEr15O+1Xfm1Oc7+IENj3V9qluHnF+HOceLaLFhrQQFuDqdVL32jj/rYWb/H
+	 pPHeQ3cdaI0TW6PuLtbN3pMwYUnbI48ryZQ41cNQ8kLsjzwWsKCeX3Fi3pZ6r6kXHSw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793804573;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=XBNaiNARz+6dX9GWg1anAs7H0Aa3jParRtwxYAyNgSI=;
-	b=IUMQ03l4qfzO/7MdLpecLHAVHDMJ5F+qTUlrQfPzub2jVwONF2POFvsmJWPtD8XI2QvO
-	 dfafmNwT6n51/dUnVV6cQ6x3dXGDgNywpmHgrQ+Y0+bah2Gsma/9iuWjc/sWJKqKsjLyS
-	 wehotexRrLNgO0lWl2YBFXUCKkD1vTCWrHu2DKkXeZQgmdz5a5xe6gdIczb/GaOq90T2i
-	 ZGRPQ+B2MbrWzFtofkRSm9t8gX6ltWZX4h9i+EEdc0R50ZbLW2TEwzJQUxA34+loENRlK
-	 SwT95964Z0n0UdrwAa5LRudyeEVFFvsyDI5pqtimzrsllBkoVU8FQuAkYnkDJZsDnvQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793805283;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=q/AhVrsBACrn7/3+hWma2gFf0oo34JnCkFYw7U7jf6U=;
+	b=Pb57ncaoIxpSwNg9gVM3eov5HkocXIxzCxaLk2VNljWYBnnCgd5ORWclUiBec6LwzIyQ
+	 hh6yS2sYTdx8MgEAc7smWwqphajUScOTplm6GdTCBraQPf8cVh59nLwMWMyE0QwmFDtHz
+	 lMnUHx3Uj2yf4sLnDUGXsMYQoTne+18vMngIWeQvQjDdR7KIhuTDfvDKLaeKDAnMaz2qf
+	 VWnAMIFCrtY+XYy011Or8f6X5kAEODlHPRhgpxsFFoljr9X5kVrP+HLLe0rwQEXzhoUJ/
+	 Tcmcpkh8JBkoPM5RXGM958GfUYHrB2GXVc3ts3n1eaIrf88T1beAsUOtt1xgwKde6Sg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nebusec.ai;
-	spf=pass smtp.mailfrom=nebusec.ai;
-	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=CXxiqhEJ;
-	arc=none smtp.remote-ip=209.85.216.52
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Fa7sEJ/o";
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50E1E606A326
-	for <linux-can@vger.kernel.org>; Wed,  4 Nov 2026 15:02:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 50E1E606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 056DF606A328
+	for <linux-can@vger.kernel.org>; Wed,  4 Nov 2026 15:14:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=CXxiqhEJ
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-3acb11973c3so702622a91.3
-        for <linux-can@vger.kernel.org>; Wed, 04 Nov 2026 07:02:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nebusec.ai; s=google; t=1793804572; x=1794409372; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=XBNaiNARz+6dX9GWg1anAs7H0Aa3jParRtwxYAyNgSI=;
-        b=CXxiqhEJ/PuI76tnIvWa3T6JLj+z1n6Q/jf5uGc8QNZd1K8cDfCQeKdOZEmzl9+Zh/
-         LBmoQWSiUNfgCl5ZyxjooSnoAroV67gfPV35UdStx06Qb+F6EDWPdIVquLIzx6WQlDCT
-         RN+iAPpdO4VjGSkp8fGqZpc0K29JixX2bfar9JEXGxtwzsPJoFC/np7Nx2x4ir9yc+kP
-         pO4bMxc9czT1kR4A3fn+FmZOWUNS9AFbP3se8mEHyOpj8AsAOkgZ1Gy4WnpY2ja73f8g
-         Kn2qbWne4zHRt4bWY0FUamboN4Qe6o5ipC2wic7+XDuUefS1MRq1XtWxaz3be2J9eEMS
-         ojrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793804572; x=1794409372;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=XBNaiNARz+6dX9GWg1anAs7H0Aa3jParRtwxYAyNgSI=;
-        b=c+2U+DzZ/LBHsNFg7i1919lEDD3n+Qmo+95a4Ns7QAigef07+yVjwZPou7PRkRMxX9
-         QSSLVd+x3a+QBXPQwEaaUMfQ7UnK4vW3a4c9CKzCU3mMLKfOif24+i/qJEG6S7Jazaxo
-         FjpDN0fENgbimIxBc01j7TrP1Px1ZmNIvQdbC34eO4i+/PCjfUVcpgnKq/a+dFEjn6ld
-         B2BqJ0FhMSlOCQqQs93D0zWQcM/YOSIM5y17BsfaqROGZdYdeGghqYswT3JpucMdebL9
-         uXXaKskwLcbd9fiBHJM6l4/J1sFufVt5aBHpgPu67jAl/XDzStPDPz1qpQe+y/iWwZOi
-         ILpw==
-X-Gm-Message-State: APuU4Z8wX+RAK+h8/lkZR+Lr24q7n9Tk+z+9sOkm5Vlr27xAdGZtSLPu
-	WsQfLiUr+8tiNpjFgFyXbSi8OS9HtGibOGB61mXvBlVZRgFc2ENFNJbShZvyDx4aHpT5XsBTwrB
-	fRiWfnS69
-X-Gm-Gg: AYBFou3h2cxzGtEvjWSGRbOGHFV3xSPxZjyHGP3glact5emc00iuuzOLssAFnkDlapq
-	2iwjs0SVzkg4UH4tLJIR/5lQX5WkVdxZ2Ecu6qhQW5sSFwn8ZDdwQExDu/z5XpSmwjEWEQezDev
-	VpLofIBFP79TPn7Uf/XUyWpJobe5PbOuUQ1ok8fJ7FGPjSUFPzww7z/vnvYI6e3sJHhKOcKnowD
-	soGleKrUZaUEyUl4guDinExIyPExmDl1QWhNmtTmYi9CsjEZ8+onCrZ6aY7Qb3CrPQF276Ft5LA
-	65+JnBdfXUQuM0t78d5wDf4xbtaekFpIUN5ZjW6kgccs1ivdZkBi0ugqq3uf7kHzfsKOPutxjiE
-	voPhyxS3D7KGu/5eMXo7Un8YBzt1tuTFH4BBaTdwjaTfMe4Nai/1KMcgpjgab3g6OecNzHvS3Rt
-	iwjxg6zdgBzNFeVpgCCd/ngA3VN4xumn/J9HMYE4LNGdTf4Ibg16n9IFcUS+3MMeZizxDz/UYwF
-	HBIQ9/v12UwBBt+H8iaaOnGSg/DdfFltqsUg3DrM3rI8HfdLheFXjnEPJ6ND6yZk0eO7DlM4jMh
-	VUoqK5vnfGd4naITvsFXGC2tlxkammwPTxln/SwPFovzRjkzAdutD39wmcwf
-X-Received: by 2002:a17:90b:4cd2:b0:3a7:3474:b1ee with SMTP id 98e67ed59e1d1-3ae897f8a0dmr14734239a91.60.1793804571231;
-        Wed, 04 Nov 2026 07:02:51 -0800 (PST)
-Received: from 24c857d0c3be.. ([122.51.212.64])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b094d572e7sm2278456a91.1.2026.11.04.07.02.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2026 07:02:50 -0800 (PST)
-From: Zihan Xi <zihanx@nebusec.ai>
-To: linux-can@vger.kernel.org
-Cc: robin@protonic.nl,
-	o.rempel@pengutronix.de,
-	kernel@pengutronix.de,
-	socketcan@hartkopp.net,
-	mkl@pengutronix.de,
-	lkp@intel.com,
-	bst@pengutronix.de,
-	dev.kurt@vandijck-laurijssen.be,
-	maxime.jayat@mobile-devices.fr,
-	vega@nebusec.ai,
-	zihanx@nebusec.ai
-Subject: [PATCH net v6 2/2] can: j1939: serialize TX with session shutdown
-Date: Wed,  4 Nov 2026 15:02:27 +0000
-Message-ID: <f9f8aa1cd4eb28c018aa35ec85a1032003d4421a.1793788955.git.zihanx@nebusec.ai>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <cover.1793788955.git.zihanx@nebusec.ai>
-References: <cover.1793788955.git.zihanx@nebusec.ai>
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Fa7sEJ/o
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 662821F000C1;
+	Wed,  4 Nov 2026 15:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1793805282;
+	bh=q/AhVrsBACrn7/3+hWma2gFf0oo34JnCkFYw7U7jf6U=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Fa7sEJ/orRYnlVihtHBPxTHoTpLhPh6TDKt73eBXHX3dpDgzfYk1GmEwKZyzeD3oI
+	 ScqMO8ViQsANb1bz8Ga7z3riyWrpW1Rd9Khn2pOBZr+IjPBZoY0cGuq4h3H2/Dr/l9
+	 fzX4eZzW+N/YWCFt2pkv4xmgrFpeD99Y+XLKgMdxOvGpOjojnpTCSKVjNUCKUwwk0S
+	 rInivZoCsvtxCNRjO4P/iS8eMtyvQcU/kqZKQcxPzOlJ4aea6euZIKMCuExVJmYhAN
+	 MY0rqL6z/zCUPM8Qf3Bf2bbkjSVlEESHYrL1ls0tFhgMoq7DQkoBilbS7zgW8tSZTX
+	 Oztfv+waIZ5vw==
+Message-ID: <sashiko-outbox-197493@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v6] can: j1939: fix j1939_ecu refcount leak and related
+ race conditions
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Tetsuo Handa" <penguin-kernel@I-love.SAKURA.ne.jp>, linux-can@vger.kernel.org
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <c9de355a-d66e-4f28-9636-a6fef8fe8b84@I-love.SAKURA.ne.jp>
+References: <c9de355a-d66e-4f28-9636-a6fef8fe8b84@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 04 Nov 2026 15:14:41 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -105,277 +60,230 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Prevent a timer callback from sending session frames after a concurrent
-terminal state transition. Serialize the send with the state change and
-reject frames once shutdown has been published.
+Thank you for your contribution! Sashiko AI review found 2 potential issue(=
+s) to consider:
+- [Critical] can: j1939: double j1939_ecu_put() when j1939_ecu_timer_cancel=
+() cancels tasklet
+- [High] can: j1939: deadlock between priv->lock and softirq_expiry_lock on=
+ PREEMPT_RT
+--
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: stable@vger.kernel.org
-Reported-by: Vega <vega@nebusec.ai>
-Link: https://bugtracker.nebusec.ai/f/11143
-Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
----
- net/can/j1939/j1939-priv.h |   3 ++
- net/can/j1939/transport.c  | 106 +++++++++++++++++++++++++++++--------
- 2 files changed, 88 insertions(+), 21 deletions(-)
+commit d7414e2af41caab32fbea0f148b824054b2357bd
+Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index 123622c82a98..1d8cbe692fcd 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -292,6 +292,9 @@ struct j1939_session {
- 	} pkt;
- 	struct hrtimer txtimer, rxtimer;
- 	unsigned int txtimer_cancelers; /* block starts while a cancel waits */
-+	/* Serialize session frame transmission against terminal state changes. */
-+	spinlock_t tx_send_lock;
-+	bool tx_send_shutdown;
- 	spinlock_t txtimer_lock; /* Protects TX timer lifetime state. */
- 	/* One reference pins the complete queued/running timer lifetime. */
- 	bool txtimer_shutdown;
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index fbeb858956e0..390923a05046 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -446,10 +446,18 @@ static void j1939_session_rxtimer_cancel_async(struct j1939_session *session)
- 		j1939_session_put(session);
- }
- 
-+static void j1939_session_tx_send_shutdown(struct j1939_session *session)
-+{
-+	spin_lock_bh(&session->tx_send_lock);
-+	session->tx_send_shutdown = true;
-+	spin_unlock_bh(&session->tx_send_lock);
-+}
-+
- static void
- j1939_session_timers_shutdown_locked(struct j1939_session *session)
- {
- 	lockdep_assert_held(&session->priv->active_session_list_lock);
-+	j1939_session_tx_send_shutdown(session);
- 	spin_lock(&session->rxtimer_lock);
- 	session->rxtimer_shutdown = true;
- 	spin_unlock(&session->rxtimer_lock);
-@@ -797,6 +805,25 @@ sk_buff *j1939_tp_tx_dat_new(struct j1939_priv *priv,
- 	return skb;
- }
- 
-+static int j1939_session_tx_send(struct j1939_session *session,
-+				 struct sk_buff *skb)
-+{
-+	int ret;
-+
-+	/* Pair the state check and send with terminal state transitions. */
-+	spin_lock_bh(&session->tx_send_lock);
-+	if (session->tx_send_shutdown ||
-+	    READ_ONCE(session->state) != J1939_SESSION_ACTIVE) {
-+		spin_unlock_bh(&session->tx_send_lock);
-+		kfree_skb(skb);
-+		return -ESHUTDOWN;
-+	}
-+	ret = j1939_send_one(session->priv, skb);
-+	spin_unlock_bh(&session->tx_send_lock);
-+
-+	return ret;
-+}
-+
- /* TP transmit packet functions */
- static int j1939_tp_tx_dat(struct j1939_session *session,
- 			   const u8 *dat, int len)
-@@ -813,12 +840,13 @@ static int j1939_tp_tx_dat(struct j1939_session *session,
- 	if (j1939_tp_padding && len < 8)
- 		memset(skb_put(skb, 8 - len), 0xff, 8 - len);
- 
--	return j1939_send_one(priv, skb);
-+	return j1939_session_tx_send(session, skb);
- }
- 
- static int j1939_xtp_do_tx_ctl(struct j1939_priv *priv,
- 			       const struct j1939_sk_buff_cb *re_skcb,
--			       bool swap_src_dst, pgn_t pgn, const u8 *dat)
-+			       bool swap_src_dst, pgn_t pgn, const u8 *dat,
-+			       struct j1939_session *session)
- {
- 	struct sk_buff *skb;
- 	u8 *skdat;
-@@ -836,6 +864,8 @@ static int j1939_xtp_do_tx_ctl(struct j1939_priv *priv,
- 	skdat[6] = (pgn >> 8);
- 	skdat[7] = (pgn >> 16);
- 
-+	if (session)
-+		return j1939_session_tx_send(session, skb);
- 	return j1939_send_one(priv, skb);
- }
- 
-@@ -846,7 +876,7 @@ static inline int j1939_tp_tx_ctl(struct j1939_session *session,
- 
- 	return j1939_xtp_do_tx_ctl(priv, &session->skcb,
- 				   swap_src_dst,
--				   session->skcb.addr.pgn, dat);
-+				   session->skcb.addr.pgn, dat, session);
- }
- 
- static int j1939_xtp_tx_abort(struct j1939_priv *priv,
-@@ -863,7 +893,8 @@ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
- 	memset(dat, 0xff, sizeof(dat));
- 	dat[0] = J1939_TP_CMD_ABORT;
- 	dat[1] = err;
--	return j1939_xtp_do_tx_ctl(priv, re_skcb, swap_src_dst, pgn, dat);
-+	return j1939_xtp_do_tx_ctl(priv, re_skcb, swap_src_dst, pgn, dat,
-+				   NULL);
- }
- 
- void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec)
-@@ -898,7 +929,14 @@ static bool
- __j1939_tp_set_rxtimeout(struct j1939_session *session, int msec,
- 			 bool abort_timeout)
- {
-+	bool shutdown;
-+
- 	lockdep_assert_held(&session->priv->active_session_list_lock);
-+	spin_lock(&session->tx_send_lock);
-+	shutdown = session->tx_send_shutdown;
-+	spin_unlock(&session->tx_send_lock);
-+	if (shutdown)
-+		return false;
- 
- 	spin_lock(&session->rxtimer_lock);
- 	if (session->rxtimer_shutdown || session->rxtimer_cancelers ||
-@@ -1058,7 +1096,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
- 		ret = j1939_tp_tx_dat(session, dat, len + 1);
- 		if (ret < 0) {
- 			/* ENOBUFS == CAN interface TX queue is full */
--			if (ret != -ENOBUFS)
-+			if (ret != -ENOBUFS && ret != -ESHUTDOWN)
- 				netdev_alert(priv->ndev,
- 					     "%s: 0x%p: queue data error: %i\n",
- 					     __func__, session, ret);
-@@ -1283,7 +1321,7 @@ static int j1939_simple_txnext(struct j1939_session *session)
- 
- 	can_skb_set_owner(skb, se_skb->sk);
- 
--	ret = j1939_send_one(session->priv, skb);
-+	ret = j1939_session_tx_send(session, skb);
- 	if (ret)
- 		goto out_free;
- 
-@@ -1318,7 +1356,9 @@ static bool j1939_session_deactivate_locked(struct j1939_session *session)
- 		active = true;
- 
- 		list_del_init(&session->active_session_list_entry);
--		session->state = J1939_SESSION_DONE;
-+		spin_lock(&session->tx_send_lock);
-+		WRITE_ONCE(session->state, J1939_SESSION_DONE);
-+		spin_unlock(&session->tx_send_lock);
- 		j1939_session_put(session);
- 	}
- 
-@@ -1350,10 +1390,13 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
- 
- static bool j1939_session_fail(struct j1939_session *session, int err)
- {
--	bool deactivate = false;
-+	bool deactivate = false, tx_send_shutdown;
- 
- 	j1939_session_list_lock(session->priv);
--	if (session->state == J1939_SESSION_ACTIVE) {
-+	spin_lock(&session->tx_send_lock);
-+	tx_send_shutdown = session->tx_send_shutdown;
-+	spin_unlock(&session->tx_send_lock);
-+	if (!tx_send_shutdown && session->state == J1939_SESSION_ACTIVE) {
- 		session->err = err;
- 		deactivate = j1939_session_deactivate_locked(session);
- 	}
-@@ -1376,14 +1419,22 @@ static bool __j1939_session_cancel(struct j1939_session *session,
- 	WARN_ON_ONCE(!err);
- 	lockdep_assert_held(&session->priv->active_session_list_lock);
- 
-+	spin_lock(&session->tx_send_lock);
-+	if (session->tx_send_shutdown) {
-+		spin_unlock(&session->tx_send_lock);
-+		return false;
-+	}
-+
- 	session->err = j1939_xtp_abort_to_errno(priv, err);
--	session->state = J1939_SESSION_WAITING_ABORT;
-+	WRITE_ONCE(session->state, J1939_SESSION_WAITING_ABORT);
- 	/* do not send aborts on incoming broadcasts */
- 	if (!j1939_cb_is_broadcast(&session->skcb)) {
- 		j1939_xtp_tx_abort(priv, &session->skcb,
- 				   !session->transmission,
- 				   err, session->skcb.addr.pgn);
- 	}
-+	spin_unlock(&session->tx_send_lock);
-+
- 	if (session->sk)
- 		j1939_sk_send_loop_abort(session->sk, session->err);
- 
-@@ -1399,16 +1450,23 @@ static bool j1939_session_cancel(struct j1939_session *session,
- 
- 	if (session->state >= J1939_SESSION_ACTIVE &&
- 	    session->state < J1939_SESSION_WAITING_ABORT) {
--		cancelled = __j1939_session_cancel(session, err);
--		if (cancelled) {
--			spin_lock(&session->txtimer_lock);
--			session->txtimer_shutdown = true;
--			spin_unlock(&session->txtimer_lock);
--			if (!__j1939_tp_set_rxtimeout(session,
--						      J1939_XTP_ABORT_TIMEOUT_MS,
--						      true))
--				deactivate =
--					j1939_session_deactivate_locked(session);
-+		bool tx_send_shutdown;
-+
-+		spin_lock(&session->tx_send_lock);
-+		tx_send_shutdown = session->tx_send_shutdown;
-+		spin_unlock(&session->tx_send_lock);
-+		if (!tx_send_shutdown) {
-+			cancelled = __j1939_session_cancel(session, err);
-+			if (cancelled) {
-+				spin_lock(&session->txtimer_lock);
-+				session->txtimer_shutdown = true;
-+				spin_unlock(&session->txtimer_lock);
-+				if (!__j1939_tp_set_rxtimeout(session,
-+							      J1939_XTP_ABORT_TIMEOUT_MS,
-+							      true))
-+					deactivate =
-+						j1939_session_deactivate_locked(session);
-+			}
- 		}
- 	}
- 
-@@ -1476,6 +1534,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 		 * propagation of the error to user space.
- 		 */
- 		break;
-+	case -ESHUTDOWN:
-+		/* A terminal state transition won before the frame was sent. */
-+		break;
- 	case -EOVERFLOW:
- 		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
- 		break;
-@@ -1878,6 +1939,7 @@ static struct j1939_session *j1939_session_new(struct j1939_priv *priv,
- 	memcpy(&session->skcb, skcb, sizeof(session->skcb));
- 
- 	spin_lock_init(&session->txtimer_lock);
-+	spin_lock_init(&session->tx_send_lock);
- 	spin_lock_init(&session->rxtimer_lock);
- 	hrtimer_setup(&session->txtimer, j1939_tp_txtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
- 	hrtimer_setup(&session->rxtimer, j1939_tp_rxtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
-@@ -1947,7 +2009,9 @@ int j1939_session_activate(struct j1939_session *session)
- 		list_add_tail(&session->active_session_list_entry,
- 			      &priv->active_session_list);
- 		j1939_session_get(session);
--		session->state = J1939_SESSION_ACTIVE;
-+		spin_lock(&session->tx_send_lock);
-+		WRITE_ONCE(session->state, J1939_SESSION_ACTIVE);
-+		spin_unlock(&session->tx_send_lock);
- 
- 		netdev_dbg(session->priv->ndev, "%s: 0x%p\n",
- 			   __func__, session);
--- 
-2.43.0
+can: j1939: fix j1939_ecu refcount leak and related race conditions
 
+This commit fixes a struct j1939_ecu reference count leak and related race
+conditions by deferring ECU release to a workqueue, handing off address cla=
+im
+timer completion to a tasklet, and validating netdev registration and RX
+reference counts before acquiring ECU references.
+
+Link: https://lkml.kernel.org/r/179202402875.794844.18141702206663586949.b4=
+-review@b4
+
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..632e9aed6cf52 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+
+[ ... ]
+
+> @@ -99,8 +138,17 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
+>  void j1939_ecu_unmap_all(struct j1939_priv *priv)
+>  {
+>  	int i;
+> +	struct j1939_ecu *ecu;
+> =20
+>  	write_lock_bh(&priv->lock);
+> +	/* Although j1939_ecu_get() from j1939_ecu_map_locked() from
+> +	 * j1939_ecu_tasklet_handler() will fail if netdev is no longer
+> +	 * registered or __j1939_rx_release() was called, cancel the 250ms
+> +	 * timer in order to speed up teardown operation.
+> +	 */
+> +	list_for_each_entry(ecu, &priv->ecus, list)
+> +		j1939_ecu_timer_cancel(ecu);
+> +	/* Unmap any remaining mapped ECUs */
+>  	for (i =3D 0; i < ARRAY_SIZE(priv->ents); i++)
+>  		if (priv->ents[i].ecu)
+>  			j1939_ecu_unmap_locked(priv->ents[i].ecu);
+> @@ -109,10 +157,11 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
+> =20
+>  void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  {
+> -	/* The ECU is held here and released in the
+> +	/* The corresponding j1939_ecu_put() is in
+>  	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
+>  	 */
+> -	j1939_ecu_get(ecu);
+> +	if (!j1939_ecu_get(ecu))
+> +		return;
+> =20
+>  	/* Schedule timer in 250 msec to commit address change. */
+>  	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
+> @@ -121,29 +170,99 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+> =20
+>  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+>  {
+> +	/* Drop the ref from j1939_ecu_timer_start() if j1939_ecu_timer_handler=
+() was not called.
+> +	 * Don't drop the ref from j1939_ecu_timer_start() if j1939_ecu_timer_h=
+andler() was already
+> +	 * called.
+> +	 */
+>  	if (hrtimer_cancel(&ecu->ac_timer))
+>  		j1939_ecu_put(ecu);
+
+[Severity: High]
+As reported by Sashiko on v5 [1], can calling hrtimer_cancel(&ecu->ac_timer)
+in j1939_ecu_timer_cancel() while holding write_lock_bh(&priv->lock) in
+j1939_ecu_unmap_all() and j1939_ac_process() still cause an AB-BA deadlock =
+on
+PREEMPT_RT kernels?
+
+Because ecu->ac_timer is set up with HRTIMER_MODE_REL_SOFT, if ecu->ac_timer
+is currently running its callback when hrtimer_cancel() is called,
+hrtimer_try_to_cancel() returns -1 and hrtimer_cancel_wait_running() acquir=
+es
+spin_lock_bh(&base->cpu_base->softirq_expiry_lock) while priv->lock is held:
+
+  j1939_ecu_unmap_all() / j1939_ac_process()
+    write_lock_bh(&priv->lock)
+    j1939_ecu_timer_cancel()
+      hrtimer_cancel(&ecu->ac_timer)
+        hrtimer_cancel_wait_running()
+          spin_lock_bh(&base->cpu_base->softirq_expiry_lock)
+
+However, softirq_expiry_lock is a per-CPU lock held by hrtimer_run_softirq()
+across all HRTIMER_MODE_REL_SOFT timer callbacks on that CPU. In
+net/can/j1939/transport.c, session->txtimer (j1939_tp_txtimer) and
+session->rxtimer (j1939_tp_rxtimer) also use HRTIMER_MODE_REL_SOFT and acqu=
+ire
+priv->lock under softirq_expiry_lock:
+
+  hrtimer_run_softirq()
+    spin_lock_bh(&cpu_base->softirq_expiry_lock)
+    __hrtimer_run_queues()
+      j1939_tp_txtimer() / j1939_tp_rxtimer()
+        j1939_send_one()
+          j1939_ac_fixup()
+            j1939_ecu_get_by_name() -> read_lock_bh(&priv->lock)
+            j1939_ecu_unmap() -> write_lock_bh(&ecu->priv->lock)
+
+If one CPU holds write_lock_bh(&priv->lock) and waits in
+hrtimer_cancel_wait_running() for ecu->ac_timer on another CPU, and that
+other CPU finishes j1939_ecu_timer_handler() and advances in
+__hrtimer_run_queues() to an expired session->txtimer or session->rxtimer,
+won't the two CPUs deadlock on softirq_expiry_lock and priv->lock?
+
+> +	/* Drop the ref from j1939_ecu_timer_handler() if test_and_set_bit() in
+> +	 * j1939_ecu_timer_handler() succeeded and j1939_ecu_tasklet_handler() =
+is not yet called.
+> +	 * Don't drop the ref from j1939_ecu_timer_handler() if test_and_set_bi=
+t() in
+> +	 * j1939_ecu_timer_handler() failed or j1939_ecu_tasklet_handler() was =
+already called.
+> +	 */
+> +	if (test_and_clear_bit(0, &ecu->flags))
+> +		j1939_ecu_put(ecu);
+>  }
+> =20
+>  static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrti=
+mer)
+>  {
+>  	struct j1939_ecu *ecu =3D
+>  		container_of(hrtimer, struct j1939_ecu, ac_timer);
+> +
+> +	/* The corresponding j1939_ecu_put() is in
+> +	 * j1939_ecu_tasklet_handler() or j1939_ecu_timer_cancel().
+> +	 */
+> +	if (!j1939_ecu_get(ecu))
+> +		goto out;
+
+[ ... ]
+
+> +	if (likely(!test_and_set_bit(0, &ecu->flags))) {
+> +		tasklet_schedule(&ecu->ac_tasklet);
+> +	} else {
+> +		netdev_warn(ecu->priv->ndev,
+> +			    "Skipped mapping ECU, addr: 0x%02x, name: 0x%016llx.\n",
+> +			    ecu->addr, ecu->name);
+> +		j1939_ecu_put(ecu);
+> +	}
+> +out:
+> +	/* Drop the ref from j1939_ecu_timer_start(). */
+> +	j1939_ecu_put(ecu);
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+> +static void j1939_ecu_tasklet_handler(struct tasklet_struct *tasklet)
+> +{
+> +	struct j1939_ecu *ecu =3D container_of(tasklet, struct j1939_ecu, ac_ta=
+sklet);
+>  	struct j1939_priv *priv =3D ecu->priv;
+> =20
+>  	write_lock_bh(&priv->lock);
+> +	/* Check if j1939_ecu_timer_cancel() was called. */
+> +	if (!test_and_clear_bit(0, &ecu->flags))
+> +		goto out;
+>  	/* TODO: can we test if ecu->addr is unicast before starting
+>  	 * the timer?
+>  	 */
+>  	j1939_ecu_map_locked(ecu);
+> -
+> -	/* The corresponding j1939_ecu_get() is in
+> -	 * j1939_ecu_timer_start().
+> -	 */
+> -	j1939_ecu_put(ecu);
+> + out:
+>  	write_unlock_bh(&priv->lock);
+> -
+> -	return HRTIMER_NORESTART;
+> +	/* Drop the ref from j1939_ecu_timer_handler(). */
+> +	j1939_ecu_put(ecu);
+>  }
+
+[Severity: Critical]
+As reported by Sashiko on v5 [2], doesn't this drop the reference from
+j1939_ecu_timer_handler() twice when j1939_ecu_timer_cancel() races with the
+scheduled tasklet?
+
+When ecu->ac_timer fires, j1939_ecu_timer_handler() takes one new reference=
+ on
+ecu for the tasklet handoff, sets bit 0 of ecu->flags, schedules
+ecu->ac_tasklet, and drops the initial timer reference from
+j1939_ecu_timer_start().
+
+If j1939_ecu_timer_cancel(ecu) is then called under write_lock_bh(&priv->lo=
+ck)
+(from j1939_ac_process() or j1939_ecu_unmap_all()) before
+j1939_ecu_tasklet_handler() acquires write_lock_bh(&priv->lock):
+
+  j1939_ecu_timer_cancel()
+    if (test_and_clear_bit(0, &ecu->flags))
+      j1939_ecu_put(ecu);
+
+j1939_ecu_timer_cancel() clears bit 0 and drops the tasklet's reference, wh=
+ile
+ecu->ac_tasklet remains scheduled.
+
+When j1939_ecu_tasklet_handler() subsequently runs, test_and_clear_bit(0,
+&ecu->flags) returns false and jumps to out, which unlocks priv->lock and
+still calls j1939_ecu_put(ecu) a second time for the same reference. Won't
+this underflow ecu->kref and prematurely free struct j1939_ecu?
+
+Furthermore, if j1939_ac_process() calls j1939_ecu_timer_cancel(ecu) follow=
+ed
+by j1939_ecu_timer_start(ecu), clearing bit 0 in j1939_ecu_timer_cancel()
+while ecu->ac_tasklet is still queued allows a subsequent
+j1939_ecu_timer_handler() to see bit 0 clear if the tasklet was delayed.
+
+[1] https://lore.kernel.org/r/d0590019-f0c9-4288-9653-a7b6056012af@I-love.S=
+AKURA.ne.jp
+[2] https://lore.kernel.org/r/d0590019-f0c9-4288-9653-a7b6056012af@I-love.S=
+AKURA.ne.jp
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/c9de355a-d66e-4f28-=
+9636-a6fef8fe8b84@I-love.SAKURA.ne.jp?part=3D1
