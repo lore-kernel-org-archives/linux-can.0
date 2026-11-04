@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793817507;
-	b=mOhwDusP0PdTaVm2MDmNT8YgLCK0CHudlq3Ye9bp6Gob5ysld87ksjKhN+9cfv0z2xnW
-	 ww7xImETSLAB/MoWfXZzpEy9bfltLBQ4DSbxeu7EkIArXQulF26WJZiEYj4oHb8Gh5TqZ
-	 f5Sr8RnU8UC74s78lKwZB/vD9ovD17Cov1uHJCIEqUt/kY3ekVAjPyp/eB+caqTYomoUA
-	 wqo+aCXYnxOW6+NgRQBpnIx3htm9Nr16rADWR2h3gpg0rIIyH4f7UHcw72BIEJcRNo+Qi
-	 QPV8DYTduOFS+qR7Yq1j/7yBeb5kFd+eyy/NG/GQ2D9J7X7JKyJScSlpn657SokYr3A==
+	t=1793825209;
+	b=GFch7KFT2s4Alq7SdjilwNolOqqNgcinuE8yIld30r57LPjXNMeO/XZmjPXymH+wfLM8
+	 bxL8+ugoJETzBXUC2N5JVvfj8mc/Y0DkjjcdCMWqBODHvf1tYqMxaKwwSsjX77m67uLl0
+	 65scCREC4dDzFyBEkQxdd0mbZZpreT7/Vj/nFNcqXRwnZpHC2CZ8clpa6g0Mw4eCq7SKK
+	 JzNl0gyThQg05dJoXbOUk424cT7d+KwMaEYPO/OAWa9GXRc+QBaN5uih3ZI7dMRG6S7+a
+	 Zw7qh3Zbk0gbU1sFePE6EwqHoADiT2iDhC3qsugyIVZdf9xtkFQTo63JcRPTLZuIEJg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793817507;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793825209;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=qDsdcscEu1Nx/3x/zX/tYc9+NNNng7Rf5Fj/zHQmXi4=;
-	b=Ba2egaAupjk3vpZLKql1uPzKugXzJz+6zWcbId/kgLDyq+HPz8S6LovcbV9aolQeEq6g
-	 SscSJpj+2lpjKlxAL1aOPlzl+LVxup75b8QoJPy6xKEFwRjxbzcx8qzv5XlIZ2zt/X2tk
-	 H93Ab6RNGgYylnus3ynC8XvnTIFoF5K+Lno9/4ln5TVy6HT7LFmAaZULtuvjtI2bvruv/
-	 RiyhYwDUYEokje6Ev2KoWWY5HkZlcqc95McoJEaxMR9CP5b6kDNdQurWvs3u4/cEoH6oE
-	 MRkFbJab49zJs8hcDYF8AB6gLqYjDWpPYxMDtNSCS6eCbLMsT+XFsImgfO7Rpohyp9A==
+	bh=B1nvCpFBme1gc7cdOXH1bt139yT1X2vla9BBU4EKQc4=;
+	b=VpMCSCwge/JnqfrEfAQFsGpCXBJEXQur65+yGYSomnXycEUxYE7EP40kQcb+a48cdWLs
+	 FPNQ0nMmH6/TIu6+haxGPk4+7pBg8scrofGIRt2Uj+zcv5bkz+o9OpUVJhlPdk3R/uNKn
+	 r6ZHDEsyV+ieo/RcbPBgc5Me9yzSeGvneBi6oudyITdjvAZRVD8YqU4+Kq4mpJqDWDT5/
+	 R2b2G/jSRaLMoLp6K70pTGRAk+m8AEpRyHlYfz1pYCNvrgMVLUuWXHK/jAy353u8f/chO
+	 tbEH/AfUetwNXMs2+OQCy0GB4lWn7K6v242A+XQ1HyM6XdysyEtzUKcWURBDwl4mnGQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SMK8Kmf9;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jsdNsf+S;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBD97606EE98
-	for <linux-can@vger.kernel.org>; Wed,  4 Nov 2026 18:38:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 514B4606C58F;
+	Wed,  4 Nov 2026 20:46:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SMK8Kmf9
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACAAC1F00A20;
-	Wed,  4 Nov 2026 18:38:25 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jsdNsf+S
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81BF21F0093A;
+	Wed,  4 Nov 2026 20:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793817506;
-	bh=qDsdcscEu1Nx/3x/zX/tYc9+NNNng7Rf5Fj/zHQmXi4=;
+	s=k20260515; t=1793825209;
+	bh=B1nvCpFBme1gc7cdOXH1bt139yT1X2vla9BBU4EKQc4=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=SMK8Kmf9yU8/OL1VFq0lT7Ihufw+KUvs/cObABNFDM37RqrzRKzAQwaZ1IctlOUsI
-	 xaD1qjCPo0VIojkIlEOr7sCyDxoglIdbYoL/TaH4AGFCpe1J9jvmejw+zwYsGG0IS2
-	 7DOC7KNpvGsOC44lW9Oxh0ZQBM1xsO7ElEw3KXTOvoB46gwR46d5b41Cw9zkjOuO+R
-	 Beo0CZczy1SKqG6wlQnmHED4NcGeB24Oacte6k8bhXY8D7XWOZIjH5xMICwlqBG2A/
-	 zk7vq0hxoyz7HjAoA4mOYaXXKsSrSvyDFs9ZwhxGyOHKiQ26Joq/KigzPKbrtJFE2v
-	 uK3KY/Th7LyDQ==
+	b=jsdNsf+S5gRZ1RcdON0ngtJaCF8WiIzvTm0I6Mua+cOrfbkUMt96kAZ4gog/S2Ww1
+	 l+1YYUDZ/FEZjQeYSA4tkx8lFWmONSlr8HKjUkyXoC91d1Cf5MQaKF1kfrk4ZvtSyr
+	 8Gn5nIGmVKFbDCpYh+PO84KkiJ3PPkhXLS8rP35Crw9XqTrxzt9Nt2UzxwQ39RoQDz
+	 zHdVJkxQvqcbb5gm+uMToiv8R8enFC8vqvFICu/poFhTH4aHXysS4qIKMRtJDvrkTr
+	 Q1Le94IUMTvzvTmptk+QzwBOsNFd4K7xJxxg+gn39TiEIId23XzC0LNzrjPSPrL0O7
+	 hR+WfRXk1NRbg==
 Subject:
- Re: [PATCH net v5 3/3] can: j1939: serialize session TX with state changes
+ Re: [PATCH net 08/15] can: protect the receive lists with a per-device lock
 From: netdev-bot+sashiko@kernel.org
-To: zihanx@nebusec.ai
-Cc: linux-can@vger.kernel.org, robin@protonic.nl, o.rempel@pengutronix.de,
- kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de,
- ecathinds@gmail.com, bst@pengutronix.de, lkp@intel.com,
- maxime.jayat@mobile-devices.fr, vega@nebusec.ai, kuba@kernel.org
-Date: Wed, 04 Nov 2026 18:38:25 +0000
-Message-ID: <179381750524.488853.11293066468805707518@kernel.org>
-In-Reply-To: <c7ce2c35e7d6a5097363b9b0ec69dabdc17a5326.1793681851.git.zihanx@nebusec.ai>
-References: <c7ce2c35e7d6a5097363b9b0ec69dabdc17a5326.1793681851.git.zihanx@nebusec.ai>
-X-sashiko-severity: High
+To: mkl@pengutronix.de
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+ linux-can@vger.kernel.org, kernel@pengutronix.de, liucj1228@outlook.com,
+ s.grosjean@peak-system.fr, stable@vger.kernel.org
+Date: Wed, 04 Nov 2026 20:46:47 +0000
+Message-ID: <179382520797.488856.11630508832915860623@kernel.org>
+In-Reply-To: <20261103204305.3211144-9-mkl@pengutronix.de>
+References: <20261103204305.3211144-9-mkl@pengutronix.de>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -65,344 +64,224 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 6 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 1 · Medium: 3 · Low: 2
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+- [Low] Since RTNL is no longer held across raw_bind() and isotp_bind(),
+  a NETDEV_DOWN followed by NETDEV_UP inside the bind() window is never…
 
-- [High] j1939_tp_set_rxtimeout() does j1939_session_rxtimer_cancel()
-  (hrtimer_cancel plus a put if the timer was armed), then…
-- [Medium] The patch introduces -ESHUTDOWN from j1939_session_tx_send()
-  to mean 'a terminal state transition won before the frame was sent',…
-- [Medium] j1939_session_cancel() now publishes WAITING_ABORT (via
-  WRITE_ONCE in __j1939_session_cancel() under…
-- [Medium] j1939_tp_rxtimer() can cancel a session a second time after
-  j1939_session_cancel() has already moved it to WAITING_ABORT.
-- [Low] This patch changes when user space gets RX_ABORT error-queue
-  notifications, and the commit message does not say so.
-- [Low] The comment in j1939_xtp_rx_rts_session_active() explains the
-  forced receiver deactivation this way: 'If we rely on the timer…
+Pre-existing issues:
+- [High] This patch did not introduce this problem, but CAN_BCM still
+  lets an unprivileged task stall a user-memory copy while holding…
 
 --
 
-can: j1939: serialize session TX with state changes
+can: protect the receive lists with a per-device lock
 
-This patch adds a per-session tx_send_lock and a tx_send_shutdown flag.
-Session frame sends now check the session state at the send point and
-are serialized against terminal state changes. It also arms the RX abort
-timeout in j1939_session_cancel() outside the active-session-list lock,
-removes the j1939_session_timers_cancel() calls before
-j1939_session_cancel() on the RX error paths, and advances the socket
-queue when a simple session times out.
+This adds a spinlock to struct can_dev_rcv_lists, so can_rx_unregister()
+finds a subscription even after the device has moved to another network
+namespace. The per-netns rcvlists_lock now only protects the statistics.
+CAN_RAW and CAN_ISOTP bind()/release()/setsockopt() stop taking RTNL and
+rely on lock_sock(), RCU publication of the bound device and a barrier
+pair for NETDEV_DOWN.
 
-Link: https://bugtracker.nebusec.ai/f/11143
+Link: https://lore.kernel.org/linux-can/CEA6A38A-2646-4ADA-95B4-CBAE2F301A8E@doyensec.com/
+Link: https://patch.msgid.link/20261027-can-rx-lock-v12-3-eb5afc2d8b9b@hartkopp.net
 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index c85d7bb3c12d4..7d6ed7fb8c56b 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 60406439a13f7..9288b96724da2 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
 
 [ ... ]
 
-> @@ -1261,19 +1302,36 @@ static void j1939_session_cancel(struct j1939_session *session,
+> @@ -1936,6 +1925,7 @@ static int bcm_release(struct socket *sock)
+>  	list_del(&bo->notifier);
+>  	spin_unlock(&bcm_notifier_lock);
 >  
->  	if (session->state >= J1939_SESSION_ACTIVE &&
->  	    session->state < J1939_SESSION_WAITING_ABORT) {
-> -		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
-> -		__j1939_session_cancel(session, err);
-> -		spin_lock(&session->txtimer_lock);
-> -		session->txtimer_shutdown = true;
-> -		spin_unlock(&session->txtimer_lock);
-> -		cancelled = true;
-> +		bool tx_send_shutdown;
-> +
-> +		spin_lock(&session->tx_send_lock);
-> +		tx_send_shutdown = session->tx_send_shutdown;
-> +		spin_unlock(&session->tx_send_lock);
-> +		if (!tx_send_shutdown) {
-> +			cancelled = __j1939_session_cancel(session, err);
-
-[ ... ]
-
->  	j1939_session_list_unlock(session->priv);
-> -	if (cancelled)
-> +	if (cancelled) {
-> +		bool keep_rxtimer;
-> +
-> +		/* Do not wait for the RX timer while holding the session-list lock. */
-> +		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
-
-[Severity: Medium]
-Can an old protocol rxtimer fire between the state change and this
-re-arm?
-
-By this point __j1939_session_cancel() has already written
-WAITING_ABORT under the list lock. The lock is then dropped before
-j1939_tp_set_rxtimeout() cancels the old rxtimer.
-
-Suppose an earlier rxtimer expires in that window, for example the 750
-or 1250 ms timeout armed by j1939_xtp_rx_dat_one() or
-j1939_xtp_rx_cts_one(). j1939_tp_rxtimer() checks the state without the
-lock and takes this branch:
-
-	if (session->state == J1939_SESSION_WAITING_ABORT) {
-		netdev_alert(priv->ndev, "%s: 0x%p: abort rx timeout. Force session deactivation\n",
-			     __func__, session);
-
-		j1939_session_deactivate_activate_next(session);
-
-Would that deactivate the session right away? The abort wait would be
-skipped, and the next session queued on the socket would start while
-the peer may still be sending for the aborted one.
-
-The keep_rxtimer recheck keeps the references balanced, but the grace
-period is still lost. Before this patch, the RX error paths drained the
-rxtimer with j1939_session_timers_cancel(), and the abort timer was
-armed under the lock before the state changed.
-
-> +		j1939_session_list_lock(session->priv);
-> +		keep_rxtimer = session->state == J1939_SESSION_WAITING_ABORT;
-> +		j1939_session_list_unlock(session->priv);
-> +		if (!keep_rxtimer)
-> +			j1939_session_rxtimer_cancel(session);
->  		j1939_session_txtimer_cancel_async(session);
+> +	/* bcm_notify() can not access this socket anymore */
+>  	lock_sock(sk);
+>  
+>  #if IS_ENABLED(CONFIG_PROC_FS)
 
 [Severity: High]
-Can two concurrent j1939_tp_set_rxtimeout() calls leak a session
-reference here?
+This is a pre-existing issue, not one introduced by this patch. The
+commit message is about unprivileged users holding up RTNL, though, so
+is CAN_BCM still open to the same kind of problem?
 
-j1939_tp_set_rxtimeout() is not atomic:
+bcm_sendmsg() takes lock_sock(sk). While it holds the lock,
+bcm_tx_setup(), bcm_rx_setup() and bcm_tx_send() copy frame data from
+user memory with memcpy_from_msg():
 
-static inline void j1939_tp_set_rxtimeout(struct j1939_session *session,
-					  int msec)
-{
-	j1939_session_rxtimer_cancel(session);
-	j1939_session_get(session);
-	hrtimer_start(&session->rxtimer, ms_to_ktime(msec),
-		      HRTIMER_MODE_REL_SOFT);
-}
-
-The RX error paths no longer call j1939_session_timers_cancel(). So
-j1939_session_cancel() now calls this helper with no lock held, and
-before j1939_session_txtimer_cancel_async(), which does not wait for a
-running txtimer callback.
-
-A txtimer callback whose frame went out just before
-__j1939_session_cancel() took tx_send_lock can be in
-j1939_session_tx_cts() or j1939_session_tx_eoma(), or at the end of
-j1939_session_tx_dat(), at the same time:
-
-CPU1 (j1939_xtp_rx_cts_one())          CPU2 (txtimer callback)
-j1939_session_cancel()                 j1939_session_tx_dat()
-  j1939_tp_set_rxtimeout()               j1939_tp_set_rxtimeout(session, 250)
-    hrtimer_cancel()                       hrtimer_cancel()
-    j1939_session_get()                    j1939_session_get()
-    hrtimer_start()                        hrtimer_start()
-
-Both sides take a reference, but only one timer is armed, so
-j1939_tp_rxtimer() drops only one of them. The keep_rxtimer recheck
-cancels at most one arm.
-
-Would this pin the session forever, along with its skb_queue, the
-j1939_priv reference and the netdev_hold() tracker from
-j1939_session_new()? If so, unregister_netdevice() would wait for the
-CAN interface indefinitely.
-
-The non-atomic pattern in j1939_tp_set_rxtimeout() predates this patch.
-This particular pair, though, was closed by the synchronous drain in
-j1939_session_timers_cancel().
-
-> +	}
->  
-> -	if (!session->sk)
-> +	if (cancelled && !session->sk)
->  		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-
-[Severity: Low]
-This changes when RX_ABORT is queued to user space, and the commit
-message doesn't mention it.
-
-Before the patch, j1939_session_cancel() and the else branch of
-j1939_tp_rxtimer() queued J1939_ERRQUEUE_RX_ABORT whenever
-!session->sk. Now it is queued only when this particular call made the
-ACTIVE to WAITING_ABORT transition.
-
-Some cases no longer produce the extra notification:
-
-- the second j1939_session_cancel(..., J1939_XTP_ABORT_BUSY) in
-  j1939_xtp_rx_rts_session_active() on the receiver side
-- a stale rxtimer firing on a DONE session
-- a cancel that loses to a terminal path that already called
-  j1939_session_timers_cancel()
-
-j1939_session_destroy() still sends one RX_ABORT when session->err is
-set.
-
-This looks like an intentional de-duplication. Since the patch is tagged
-for stable, could the commit message list this user-visible change along
-with the other side changes it describes?
-
->  }
->  
-> @@ -1329,6 +1387,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
->  		 * propagation of the error to user space.
->  		 */
->  		break;
-> +	case -ESHUTDOWN:
-> +		/* A terminal state transition won before the frame was sent. */
-> +		break;
-
-[Severity: Medium]
-Does j1939_session_tx_dat() need the same handling for -ESHUTDOWN?
-
-j1939_tp_txtimer() treats it as benign here, but the send loop in
-j1939_session_tx_dat() still prints an alert for it:
-
-net/can/j1939/transport.c:j1939_session_tx_dat() {
+net/can/bcm.c:bcm_tx_setup() {
     ...
-		ret = j1939_tp_tx_dat(session, dat, len + 1);
-		if (ret < 0) {
-			/* ENOBUFS == CAN interface TX queue is full */
-			if (ret != -ENOBUFS)
-				netdev_alert(priv->ndev,
-					     "%s: 0x%p: queue data error: %i\n",
-					     __func__, session, ret);
-			break;
-		}
-    ...
-	if (pkt_done)
-		j1939_tp_set_rxtimeout(session, 250);
+			err = memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
     ...
 }
 
-Suppose an RX error path such as j1939_xtp_rx_cts_one() cancels the
-session while a block is being sent. The next j1939_tp_tx_dat() returns
--ESHUTDOWN, and "queue data error: -108" is printed for the race this
-patch is meant to handle quietly.
+bcm_notify() runs from the netdev notifier with RTNL held. On
+NETDEV_UNREGISTER it takes lock_sock() on every BCM socket in the
+device's namespace, whether or not the socket is bound to that device:
 
-If some frames went out before the gate closed, pkt_done is non-zero, so
-j1939_tp_set_rxtimeout(session, 250) then runs on a WAITING_ABORT
-session.
+net/can/bcm.c:bcm_notify() {
+    ...
+	case NETDEV_UNREGISTER:
+		lock_sock(sk);
+    ...
+}
 
-Could that replace the 500 ms J1939_XTP_ABORT_TIMEOUT_MS timer armed by
-j1939_session_cancel() with a 250 ms one? j1939_tp_rxtimer() would then
-force-deactivate the session early.
+Suppose the sendmsg iovec points at a FUSE-backed mapping whose daemon
+never answers. The copy then stalls with the socket lock held.
 
-Before this patch, the RX error paths drained the txtimer with
-j1939_session_timers_cancel() before cancelling. That way this callback
-could not touch the rxtimer after the abort timer was armed.
+A CAN device unregister in that netns then blocks bcm_notify() in
+lock_sock() with RTNL held. For example, the user can delete a vcan in
+their own unprivileged user+net namespace. After that, every RTNL user
+on the host hangs.
 
->  	case -EOVERFLOW:
->  		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
->  		break;
-> @@ -1403,7 +1464,7 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
->  		 * be send as soon as CAN bus is in working state again.
->  		 */
->  		session->err = -ETIME;
-> -		j1939_session_deactivate(session);
-> +		j1939_session_deactivate_activate_next(session);
->  	} else {
->  		j1939_session_list_lock(session->priv);
->  		if (session->state >= J1939_SESSION_ACTIVE &&
-> @@ -1414,14 +1475,15 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
->  			hrtimer_start(&session->rxtimer,
->  				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
->  				      HRTIMER_MODE_REL_SOFT);
-> -			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-> -			cancelled = true;
-> +			cancelled =
-> +				__j1939_session_cancel(session,
-> +						       J1939_XTP_ABORT_TIMEOUT);
+The CAN_RAW version of this is fixed later in this series by "can: raw,
+isotp: copy socket options outside of lock_sock()". That covers
+memdup_sockptr()/copy_from_sockptr() in raw_setsockopt_locked() and
+copy_to_iter() in raw_getsockopt() under lock_sock(). Before this
+patch, raw_setsockopt() even held RTNL directly across the copy.
 
-[Severity: Medium]
-Can this cancel a session a second time after j1939_session_cancel()
-has already moved it to WAITING_ABORT?
+CAN_ISOTP is not affected. The BCM paths look the same at the end of
+the series.
 
-The WAITING_ABORT check at the top of j1939_tp_rxtimer() runs without
-the lock. The range check here still accepts WAITING_ABORT, because it
-is below J1939_SESSION_ACTIVE_MAX:
-
-CPU1 (e.g. j1939_xtp_rx_cts_one())      CPU2
-j1939_session_cancel()                   j1939_tp_rxtimer()
-  j1939_session_list_lock()                sees state ACTIVE
-  __j1939_session_cancel()                 j1939_session_list_lock() spins
-    state = WAITING_ABORT
-    j1939_xtp_tx_abort()
-  j1939_session_list_unlock()
-                                           state < J1939_SESSION_ACTIVE_MAX
-                                           __j1939_session_cancel(TIMEOUT)
-
-__j1939_session_cancel() only bails out when tx_send_shutdown is set:
-
-	spin_lock(&session->tx_send_lock);
-	if (session->tx_send_shutdown) {
-		spin_unlock(&session->tx_send_lock);
-		return false;
-	}
-
-j1939_session_cancel() never sets that flag, so the second call would
-run in full. It would:
-
-- overwrite session->err, for example EILSEQ with EHOSTUNREACH
-- send a second raw ABORT frame with a different reason code
-- call j1939_sk_send_loop_abort() again
-- queue another J1939_ERRQUEUE_RX_ABORT for sessions without a socket
-
-Before this patch, the RX error paths drained the rxtimer with
-j1939_session_timers_cancel() first, which closed this interleaving.
-The commit message says:
-
-    Ignore callback cancellation if a terminal path already shut down
-    sends, including its raw ABORT response.
-
-Should that also cover a session that is already in WAITING_ABORT?
-
->  		}
->  		j1939_session_list_unlock(session->priv);
->  		if (cancelled)
->  			j1939_session_txtimer_cancel_async(session);
+Could the BCM frame data also be copied before lock_sock()?
 
 [ ... ]
 
-> @@ -1852,7 +1916,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
->  			return -EBUSY;
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index e1d741a25be3f..d6517f71cadeb 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+
+[ ... ]
+
+> @@ -305,16 +309,31 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
+>  		       struct net_device *dev)
+>  {
+>  	struct sock *sk = &ro->sk;
+> +	struct net_device *bind_dev;
 >  
->  		/* RTS on active session */
-> -		j1939_session_timers_cancel(session);
->  		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+>  	if (!net_eq(dev_net(dev), sock_net(sk)))
+>  		return;
+>  
+> -	if (ro->dev != dev)
+> +	if (msg == NETDEV_DOWN)
+> +		smp_mb(); /* IFF_UP is cleared before, pairs with raw_bind() */
+> +
+> +	/* Lockless fast path, ro->bind_dev covers a concurrent bind().
+> +	 * Read it before ro->dev, pairs with smp_store_release() in
+> +	 * raw_bind(). A stale ro->bind_dev only costs a lock_sock().
+> +	 */
+> +	bind_dev = smp_load_acquire(&ro->bind_dev);
+> +	if (READ_ONCE(ro->dev) != dev &&
+> +	    (msg != NETDEV_UNREGISTER || bind_dev != dev))
+>  		return;
+
+[ ... ]
+
+> @@ -479,14 +500,25 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+
+[ ... ]
+
+> +		rcu_read_lock();
+> +		dev = dev_get_by_index_rcu(sock_net(sk), addr->can_ifindex);
+> +		if (dev) {
+> +			dev_hold(dev);
+> +			/* pairs with smp_load_acquire() in raw_notify() */
+> +			smp_store_release(&ro->bind_dev, dev);
+> +		}
+> +		rcu_read_unlock();
+
+[ ... ]
+
+> @@ -496,9 +528,6 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+>  			goto out_put_dev;
+>  		}
+>  
+> -		if (!(dev->flags & IFF_UP))
+> -			notify_enetdown = 1;
+> -
+>  		ifindex = dev->ifindex;
+>  
+>  		/* filters set by default/setsockopt */
+
+[ ... ]
+
+> @@ -528,24 +557,32 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
+>  		ro->ifindex = ifindex;
+>  		ro->bound = 1;
+>  		/* bind() ok -> hold a reference for new ro->dev */
+> -		ro->dev = dev;
+> +		WRITE_ONCE(ro->dev, dev);
+>  		if (ro->dev)
+>  			netdev_hold(ro->dev, &ro->dev_tracker, GFP_KERNEL);
+> +
+> +		if (dev) {
+> +			/* Either raw_notify() sees ro->dev on NETDEV_DOWN or
+> +			 * we see the cleared IFF_UP, pairs with raw_notify()
+> +			 */
+> +			smp_mb();
+> +			if (!(READ_ONCE(dev->flags) & IFF_UP))
+> +				notify_enetdown = 1;
+> +		}
 >  	}
->  
-> @@ -1862,7 +1925,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
->  			     __func__, session, skcb->addr.sa, skcb->addr.da,
->  			     session->last_cmd);
->  
-> -		j1939_session_timers_cancel(session);
->  		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
->  		if (session->transmission) {
->  			j1939_session_deactivate_activate_next(session);
 
 [Severity: Low]
-This isn't a bug, but the comment just below this in
-j1939_xtp_rx_rts_session_active() now looks stale:
+The commit message says:
 
-			/* Force deactivation for the receiver.
-			 * If we rely on the timer starting in j1939_session_cancel,
-			 * a second RTS call here will cancel that timer and fail
-			 * to restart it because the state is already WAITING_ABORT.
-			 */
+  "As RTNL does not keep NETDEV_DOWN out of bind() anymore, bind() checks
+  IFF_UP after publishing the bound device, with a barrier pair against
+  raw_notify() and isotp_notify(), so a down transition during bind() is
+  still reported with ENETDOWN."
 
-It was the j1939_session_timers_cancel() call removed here that
-cancelled the timer. With that call gone, j1939_session_cancel() on a
-WAITING_ABORT session leaves the rxtimer alone, so a second RTS no
-longer cancels the abort timer.
+Does this still hold when a full down/up cycle happens inside bind()?
 
-Should the comment be updated to match the new behaviour?
+raw_bind() registers the filters with raw_enable_allfilters() before it
+publishes ro->dev. raw_rcv() can already queue frames for the socket at
+that point. raw_enable_filters() can do up to CAN_RAW_FILTER_MAX
+GFP_KERNEL allocations with cond_resched(), so this window can be long.
+
+In raw_notify(), the bind_dev hint only covers NETDEV_UNREGISTER. A
+NETDEV_DOWN in this window returns early:
+
+raw_bind()                            RTNL holder
+  smp_store_release(&ro->bind_dev)
+  raw_enable_allfilters()
+    /* frames get queued */
+                                      dev_close()
+                                        clears IFF_UP
+                                        raw_notify(NETDEV_DOWN)
+                                          ro->dev != dev -> return
+                                      dev_open()
+                                        sets IFF_UP
+  WRITE_ONCE(ro->dev, dev)
+  smp_mb()
+  IFF_UP is set -> no ENETDOWN
+
+isotp_bind() has the same window. so->dev is published early, but
+isotp_notify() drops NETDEV_DOWN while so->bound is still 0:
+
+net/can/isotp.c:isotp_notify() {
+    ...
+	case NETDEV_DOWN:
+		if (!READ_ONCE(so->bound))
+			break;
+    ...
+}
+
+isotp_bind() only sets so->bound after both can_rx_register() calls,
+and samples IFF_UP after that.
+
+Before this patch, holding RTNL across bind() ruled out this
+interleaving. Is it acceptable to miss ENETDOWN in this case? If so,
+should the commit message only promise this for a down state that is
+still in effect when bind() samples IFF_UP?
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/cover.1793681851.git.zihanx%40nebusec.ai
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261103204305.3211144-2-mkl%40pengutronix.de
