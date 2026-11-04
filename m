@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793825210;
-	b=aTszMjearo/TqxscM611lCIjkrYGZmLX3+7MB8E1mXscssizem7iIBIC2ZB6SNGKo8Mr
-	 DqCSfVJnL80ji1aIn1YQhOBqCDo9I4UbOmbUWt2cnIlq++DEYynY7LrtS+kXNLN+zbrB0
-	 i/gg7NuR9SYGx3ah1VpyotRccyuvB6JYbsttZB0ZhFdJnW6kvfN2DXtnVnZ/UUmKqGTzs
-	 Rh8lSqrzS5kU3wy6ulmazOPSo7zs1TbJWa8FmWHUCP6CyAZfgDPMPSLpYEc4KjbGHA6iZ
-	 dgEozOFdbUMDgatu1mkw8k8qpp7lpT/qRqiIIj5eVO0kFMrLv53y+hqpNVl1iDBKvvA==
+	t=1793825211;
+	b=AXo4qF4C3qMArjtP51EIlj9ft6G4TPxUQ5LgefmR7G06ijeRq6Nz7/eMnXg1e2r0LyF5
+	 +SAPfJ6/knVzqsvL46pmg09pwIZbRi9KyEjtQVueGPkoctGCz3dOgg/fKXChUJo92qgUF
+	 F9bv+EVmq9LG4mH8S9iLSvM9z3ys/4QhBEInPxHkO+mv/czzMGP5eWOVSHZW3zr91ZuAt
+	 8LRjEnqvZ4Y66QKWzLznpO+wv87qvaCT++RC9DMO8vExbRKpgL6+jv7cWjWsLunt6Cljq
+	 GYwF+Pz3Zcy04DCPSyyE6KNFaZO2pe1M2i6H3P2EI1ymr5W50dugDu48f57/ustJS6A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793825210;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793825211;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=6kDklRHxeJbP19X2gPkeCnRUqEiSyCdqaMmB98XvLnw=;
-	b=LBRWCtpGvVGREAFrrHPIcTOtIuiLICeCO6U0pOigw4ZrhKhyfwJYrWxrJVaaHGFrHKdF
-	 84lh+w1dsWTFooRQ6uWpdPBcs4bclRC1lEd9zsJVYTW47dYoPqUjJaQpX+sIkdSZQz29/
-	 NzeKpPTnChLeUDWRmWgm4tVirg+vLDYuleIrH7bIES4T3Jv19/n3OeJF6QnVDHd+AYibg
-	 4lKkGE4Kv3IexoGORYuJ57qwSg4wey84c6NsSDyH1e/gHbre/IZX/IFxK5r+5DQ4EKzHk
-	 YzL8+3LsIqVAVb9lgkG8Zh2OfU8j0vi4QC/bfQpcK3RyecrKOmiLmWGdMnF2w6FW9Sg==
+	bh=jprIiT+sh8cBrL1Brn07csemCaTfTZPjoSZJmioozBs=;
+	b=EVK4ix1Em8HEKjqknkHYVo1+Aikxf9eAhxbrwu/IwVCWWtwSjlym0ATLKUPQDqeQfQiB
+	 tkc2KmgINy3acZsHPJj3DjYMKfm0wIYlCMczSi/j5FcrDxoOCZPv84AoW0+3TxhBq8T2w
+	 6zpN0G+ft2LxIrG4ayhRPlwF+f/0tVRfT4uL398vNjPJHqO9QC1p3flEa1nOa4iENB4CS
+	 P32qk4muV7RlJtKIuCDC7CTAzspMmHd2uUEv879LvFztrZ1uwNd0ORH+9PFh3MnczE/+B
+	 J6depNUXMntFb+3f5FQ7MlogEe1C/iswCqZI3KfXhHQVOi048WrCO9LkmXsmDct6HIg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=C8AGlTNP;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XvnzcN5C;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 839BE6083633;
-	Wed,  4 Nov 2026 20:46:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE2D60960A0;
+	Wed,  4 Nov 2026 20:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=C8AGlTNP
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD4F91F00A02;
-	Wed,  4 Nov 2026 20:46:49 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XvnzcN5C
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BF6181F0093A;
+	Wed,  4 Nov 2026 20:46:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793825210;
-	bh=6kDklRHxeJbP19X2gPkeCnRUqEiSyCdqaMmB98XvLnw=;
+	s=k20260515; t=1793825211;
+	bh=jprIiT+sh8cBrL1Brn07csemCaTfTZPjoSZJmioozBs=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=C8AGlTNPofwk9WqlC3PZ6Qy5pgZqKZ+yY+QgOm+d9053PINrbfWJ2uQaVQiYmNWIi
-	 h7+2tvXujDavHFg8gsI6w0cmaFK8/j1PQmafzx8D9T9ybMqkjapapGrYeb2P8RjRZf
-	 hDtcCZZjna03JgxPn7QPQ14ioplEz1fYh0m1OVqboYIYWE8jtz5L6BEbp7c100QK16
-	 /RymX0IErQxOgaw6WpAX6aLoGp8cfRaietv0DwpANxG/PrtJH8kufXDQSYtRFzY9xj
-	 PUmGUp4+uDwYBrnUqaKGEK5QBkJfp6LAYWptEHiKFWEwzS8TS/cIthxvbObtfq9C3q
-	 db1iJ4DFZObgQ==
-Subject: Re: [PATCH net 09/15] can: raw, isotp: copy socket options outside of
- lock_sock()
+	b=XvnzcN5CCGPTHmjiB3RlahfgbEFOq4h0RYu0tDxW6w8oEL6QqzkSycdDrVzHlDf+E
+	 EMtfSgigTLu5B8xu+DpMmLf8xVaUSs/ruD6sxtlqsUxSWsasMnnxrDocJvPBvDMhCB
+	 1pSxSFEBZ7Q5F+JE6SZMwThZKsxEfcuvP42Sh/uHo7wGchA+AJOlzqQA6uwhUpyN9t
+	 I1QfnuwaQ3midx8tbKfxDvL3qrare8/KEACTY4thspJ6EAGmxolx5aNdzE7YhdV20P
+	 BvAOJ6/fxGqfBInNxAbwtSdEli6zb2RYjyI0OBo0viZAnF0UJ9pRhVQTop/3Yx8KHq
+	 JvAMXBn55SmuQ==
+Subject: Re: [PATCH net 13/15] can: dev: can_fill_info(): don't wake up
+ controller if interface is down
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de, liucj1228@outlook.com,
  s.grosjean@peak-system.fr, stable@vger.kernel.org
-Date: Wed, 04 Nov 2026 20:46:49 +0000
-Message-ID: <179382520924.488856.15425235949830518760@kernel.org>
-In-Reply-To: <20261103204305.3211144-10-mkl@pengutronix.de>
-References: <20261103204305.3211144-10-mkl@pengutronix.de>
-X-sashiko-severity: High
+Date: Wed, 04 Nov 2026 20:46:50 +0000
+Message-ID: <179382521036.488856.13184139645230625670@kernel.org>
+In-Reply-To: <20261103204305.3211144-14-mkl@pengutronix.de>
+References: <20261103204305.3211144-14-mkl@pengutronix.de>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -67,7 +67,7 @@ MIME-Version: 1.0
 Thank you for your contribution! Sashiko AI review found 1 potential
 issue(s) to consider.
 
-Critical: 0 · High: 1 (1) · Medium: 0 · Low: 0
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -75,178 +75,104 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] The patch does not remove the RTNL stall it describes.
-
-Pre-existing issues:
-- [High] This problem wasn't introduced by this patch, but CAN_BCM has
-  the same RTNL-stall problem through a sibling notifier, and the series…
+- [Medium] The commit message describes this as removing one trigger of a
+  flexcan abort on i.MX8QXP.
 
 --
 
-can: raw, isotp: copy socket options outside of lock_sock()
+can: dev: can_fill_info(): don't wake up controller if interface is down
 
-This commit moves the user space copies for the CAN_RAW and CAN_ISOTP
-socket options, including the CAN_RAW_FILTER filters, so they happen
-before lock_sock(). raw_getsockopt() now duplicates the filters under
-the socket lock and copies them to user space after release_sock(). The
-goal is to stop a stalled user copy from holding lock_sock() and blocking
-raw_notify()/isotp_notify() under RTNL.
+This patch changes can_fill_info() and can_get_size() to skip
+IFLA_CAN_BERR_COUNTER when the interface is not running. As a result,
+do_get_berr_counter() is never called on a down interface. The goal is
+to avoid a synchronous external abort in flexcan_get_berr_counter() on
+i.MX8QXP when "ip link show" runs on an interface that was never brought
+up.
 
-Link: https://patch.msgid.link/20261027-can-rx-lock-v12-4-eb5afc2d8b9b@hartkopp.net
+Link: https://patch.msgid.link/20261027065012.191348-1-chunyuzhiqiang@yinhe.ht
 
-> diff --git a/net/can/raw.c b/net/can/raw.c
-> index d6517f71cadeb..0926d5686e419 100644
-> --- a/net/can/raw.c
-> +++ b/net/can/raw.c
-
-[ ... ]
-
-> @@ -795,17 +730,84 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
->  			  sockptr_t optval, unsigned int optlen)
->  {
->  	struct sock *sk = sock->sk;
-> +	struct can_filter *filter = NULL;  /* dyn. alloc'ed filters */
-> +	struct can_filter sfilter;         /* single filter */
-> +	union {
-> +		can_err_mask_t err_mask;
-> +		int flag;
-> +		struct can_raw_vcid_options vcid_opts;
-> +	} val;
-> +	unsigned int size = 0;
-> +	int count = 0;
->  	int err;
->  
->  	if (level != SOL_CAN_RAW)
->  		return -EINVAL;
->  
-> +	/* Copy the option values from user space before lock_sock(), so a
-> +	 * stalled copy can not block raw_notify() waiting for lock_sock()
-> +	 * under RTNL.
-> +	 */
-
-[Severity: High]
-The comment says a stalled copy can not block raw_notify() waiting for
-lock_sock() under RTNL. Is that true for the socket as a whole?
-
-The same bound CAN_RAW socket can still hold the socket lock during a
-user copy through the SOL_SOCKET path. sk_setsockopt() takes the lock
-before it handles SO_ATTACH_FILTER:
-
-net/core/sock.c:sk_setsockopt() {
-    ...
-	sockopt_lock_sock(sk);
-    ...
-			ret = sk_attach_filter(&fprog, sk);
-    ...
-}
-
-and sk_attach_filter()->__get_filter() then copies the program from
-user space:
-
-	if (copy_from_user(prog->insns, fprog->filter, fsize)) {
-
-SO_ATTACH_REUSEPORT_CBPF goes down the same path. On the getsockopt
-side, sk_get_filter() calls copy_to_sockptr() under sockopt_lock_sock().
-That is the SOL_SOCKET equivalent of the CAN_RAW_FILTER copy this patch
-moves after release_sock().
-
-Suppose fprog.filter points into a FUSE or userfaultfd backed mapping
-that never resolves. On NETDEV_UNREGISTER or a netns change of the
-bound device, raw_notify() then waits under RTNL:
-
-net/can/raw.c:raw_notify() {
-    ...
-	case NETDEV_UNREGISTER:
-		lock_sock(sk);
-    ...
-}
-
-As far as I can tell, net/can/ has no capability checks. That would
-make this reachable by any local user who can create and bind a CAN_RAW
-socket.
-
-The commit message says "The generic SOL_SOCKET options in
-sk_setsockopt() are not affected by this patch". It does not say that
-the RTNL stall is still reachable on the same socket. No later patch in
-the series changes net/core/sock.c or net/core/filter.c.
-
-Would it be better to stop raw_notify() and isotp_notify() from blocking
-on lock_sock() under RTNL? The other option would be to also move the
-generic filter copies out of the socket lock.
-
-> +	switch (optname) {
-> +	case CAN_RAW_FILTER:
+> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+> index 766d455950f55..b958c04d53db6 100644
+> --- a/drivers/net/can/dev/netlink.c
+> +++ b/drivers/net/can/dev/netlink.c
 
 [ ... ]
 
-> +	if (size) {
-> +		if (optlen != size)
-> +			return -EINVAL;
-> +
-> +		if (copy_from_sockptr(&val, optval, size))
-> +			return -EFAULT;
-> +	}
-> +
->  	lock_sock(sk);
+> @@ -1006,7 +1006,7 @@ static int can_fill_info(struct sk_buff *skb, const struct net_device *dev)
+>  	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
+>  	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
 >  
-> -	err = raw_setsockopt_locked(sock, optname, optval, optlen);
-> +	err = raw_setsockopt_locked(sock, optname, &val, filter, count);
->  
->  	release_sock(sk);
+> -	    (priv->do_get_berr_counter &&
+> +	    (priv->do_get_berr_counter && netif_running(dev) &&
+>  	     !priv->do_get_berr_counter(dev, &bec) &&
+>  	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
 
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch, but
-CAN_BCM seems to have the same RTNL stall through its notifier. This
-series does not address or mention it.
+[Severity: Medium]
+Is this meant to change the output for every CAN driver, and not only
+flexcan?
 
-bcm_sendmsg() takes the socket lock and then dispatches to
-bcm_tx_setup(), bcm_rx_setup() and bcm_tx_send(). These copy the CAN
-frames from the user iovec while the lock is held:
+can_fill_info() is the only core caller of priv->do_get_berr_counter.
+With this check, no driver that sets the callback will report
+IFLA_CAN_BERR_COUNTER on a down interface. can_get_size() gets the same
+change.
 
-net/can/bcm.c:bcm_sendmsg() {
+Several drivers turn on their hardware inside the callback so that this
+query works while the interface is down:
+
+drivers/net/can/sun4i_can.c:sun4ican_get_berr_counter() {
     ...
-	lock_sock(sk);
+	err = clk_prepare_enable(priv->clk);
     ...
 }
 
-net/can/bcm.c:bcm_tx_setup() {
+drivers/net/can/c_can/c_can_main.c:c_can_get_berr_counter() {
     ...
-			err = memcpy_from_msg((u8 *)cf, msg, op->cfsiz);
-    ...
-}
-
-bcm_notify() takes the lock for every bcm socket in the netns under
-RTNL. It does this before checking whether the socket is bound to the
-vanishing device:
-
-net/can/bcm.c:bcm_notify() {
-    ...
-	if (!net_eq(dev_net(dev), sock_net(sk)))
-		return;
-
-	switch (msg) {
-
-	case NETDEV_UNREGISTER:
-		lock_sock(sk);
+	c_can_pm_runtime_get_sync(priv);
+	err = __c_can_get_berr_counter(dev, bec);
+	c_can_pm_runtime_put_sync(priv);
     ...
 }
 
-Say a BCM socket sends TX_SETUP, RX_SETUP or TX_SEND with the frame
-data in a FUSE or userfaultfd backed mapping that stalls. Can any CAN
-device unregistration in that netns then block RTNL indefinitely?
+Other drivers do the same thing:
 
-No later patch in the series changes these paths. The only bcm.c
-changes are proc and can_rx_register naming.
+  bxcan_get_berr_counter() calls clk_prepare_enable()
+  xcan_get_berr_counter() and ctucan_get_berr_counter() call
+  pm_runtime_get_sync()
+  rcar_can_get_berr_counter(), rkcanfd_get_berr_counter() and
+  flexcan_get_berr_counter() call pm_runtime_resume_and_get()
 
->  
-> +	/* on error free the filters allocated for CAN_RAW_FILTER above */
-> +	if (err && count > 1)
-> +		kfree(filter);
-> +
->  	return err;
->  }
+The commit in the Fixes: tag, ec56acfef2af1, states this intent
+directly: "flexcan_get_berr_counter() may be called from userspace even
+if the interface is down ... This patch switches on the clocks".
 
-[ ... ]
+After this change, the wake-up code in those drivers only runs when the
+device is already active, so it no longer does anything useful. Should
+that code be removed? Or would it be better to put the check in the
+flexcan driver instead?
+
+The commit message cites m_can as the precedent. Commit 91a55c72a821
+fixed m_can inside the driver:
+
+drivers/net/can/m_can/m_can.c:m_can_get_berr_counter() {
+    ...
+	/* Avoid waking up the controller if the interface is down */
+	if (!(dev->flags & IFF_UP))
+		return 0;
+    ...
+}
+
+That version still sends the attribute, with zeroed counters. With this
+patch, m_can sends no attribute at all for a down interface. Is that
+change intended?
+
+Because of the flexcan Fixes: tag and Cc: stable, this would be
+backported to every stable tree since v3.16. After that, "ip -details
+link show" would stop printing berr-counter for down interfaces on all
+drivers, including ones where the query always worked.
+
+The commit message does say that the attribute is no longer reported.
+Could it also say that this applies to all CAN drivers, and that it
+replaces the per-driver support for down interfaces?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261103204305.3211144-2-mkl%40pengutronix.de
