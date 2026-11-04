@@ -1,65 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.51
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793779586;
-	b=b21afCjVJ5icTl4HH839Zn829VBBfLq3R/rarD+B/eIPZpYbINkL/61R+zUN6aVAlWWT
-	 mZ6fI5sxBoU3HCvetST+ndWONHjdlKWs3Z5aAz5oD0drLmvl5fQADpGN6tkCgTCkbTGEE
-	 DtcqEmFqKQ4jCGIktf+9ikFYHDeqDASNeQPoMY8Lj4JJnPTOW2VI6undCFjkE/rsP8V3r
-	 3fWlEnQAymzcUO7juukls5NaVzs1IV2RywHB9mQJoglFCIGGuES6fmkGyTTyffxZd1rru
-	 DiIWOcyQLoPq5VZU1eEY08quAyZcdpB3fir9kZrTrKm+5TNcM+0yC3ag4Vau6GJSAAA==
+	t=1793790733;
+	b=BswGjiNlaYMTggvHnGaEQmR6BxaJiuyhuansj0TNGV6ECPg0X3+r+MnaRXP6YxVZRxm0
+	 TAOfHMyUiKhOQXTAG97FHXefbhrWI34SSi1GHwjoiyNMBEf7q/bWORFBkN93u+XOqaUFF
+	 EavYw8ChVHbYdnlULiMxozLW/HmwhcvtxBIYmh0eYS9EGnruIUCCbesWuQDs7Cn9syavT
+	 emDPazg46iYTEAvosi1SVW4BDvnQdefFrNQPKtrk8IzklcXvsvi+Es6L8r9EQKWVgmjYZ
+	 TsUPxOdSWr2iX5MY7gdICgI7fRiN0a7BFtq8s8fsXJxVhguQzh2/AoQ03Tkhyae+5AQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793779586;
-	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
-	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
-	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
-	 In-Reply-To:X-QQ-mid;
-	bh=WgxEiGMcAXeHim/OCpv0zMeF0d48h/zJZ1XH8xX5r4w=;
-	b=Me36th6wDnMff2cChRGNZ6o8hqPsMOzxs69AArbz3D/4SCqCBfvSRtYoL6axGzgA4Ow0
-	 hS84JTgZ/A8b4B4yZHrzH7f/SRvauphdKl6TU4OtnMULPdrXuVr6ekFxkK4wN0GEYYdsy
-	 5gn/om97pnPgXgB06jkWb6Hu4zw8kvEFrULb5+gZKmEI+LZnrXQvSgo/kx+tWBeUmTjeI
-	 CwPI/xSq4+aJhVqAwM5GQhwejWFuSWJT9QcMS6gFjchRZQcCusGDw4Hir5y3dL7UprY+7
-	 uWdaa+NwIOXQ1cqW5Eh0mpSapMXPoWmqNSOzGNdLWoMJLdEmxMg8Mnr71ub3SNHx+dQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1793790733;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:X-Mailer:
+	 References:In-Reply-To;
+	bh=JXUkcfVdYHLS91Uwpurj9n2UACTGti9F49kfa1ZCWrU=;
+	b=oIEZwrYYRSLVpksTjozl5gJHeqmkeZ9328PVu53ZGoFGn/P3jmqhmKj6j+7D77p95ayz
+	 /I0Oh5zXtAwCH649vv5VKZxe33Qr3DeqGcZb1e8VO0iRW5QRS9e+z2GsGhFieIL9JWdzH
+	 yPExFUmIKwomdt7CXKeufgspp/7NMOR+LE7jvnDLxMdktbzfYiHAm1l+034ZiKdGqTvrX
+	 iZyUlqwQ6fOUXuH12BvljGrrwHvH8246dRlak6W12aoA4ql89clhmSd/EcMOf3Ep6DaFj
+	 QDopcyr8S4euYySDbvcSxxoYvaCoYwJdjkT342/sZZENWhvuXFSf8HTX9C8o2EoUdCw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=qq.com;
-	spf=pass smtp.mailfrom=qq.com;
-	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fOEj9ig5;
-	arc=none smtp.remote-ip=162.62.57.252
-Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=none header.from=baylibre.com;
+	spf=pass smtp.mailfrom=baylibre.com;
+	dkim=pass header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=JWOpqRwe;
+	arc=none smtp.remote-ip=209.85.128.51
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D364606A331;
-	Wed,  4 Nov 2026 08:06:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7D364606A331
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DB31606A328
+	for <linux-can@vger.kernel.org>; Wed,  4 Nov 2026 11:12:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5DB31606A328
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fOEj9ig5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1793779579; bh=WgxEiGMcAXeHim/OCpv0zMeF0d48h/zJZ1XH8xX5r4w=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=fOEj9ig5JXN09CLHqNfTNgbw330Bh/WIacL9+P9J5rKELZqrG/iX3nWAuCG41tSLn
-	 3v2RfVVwIiWX9HMUBlu8oX6dbosXWswYQ2tpi76OJJHbKygZRed3lrS1MI5Ic3xMoR
-	 7P5ESqp3MzxmK8aiNu8ZZuBBgwpvf5duWSzGefiE=
-X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
-X-QQ-XMAILINFO: Nze9Gsl2QAyr5RxeywbNGg6T5cysE3+3MmOq0TdLhgaEbwUJeN9vA51HWHzzUm
-	 8+OJbKEXn/feXKvOo/2TOKWuMMaZCIRy0UWsahrowRynnMa1jlpI0vfs9ZOmuX96Xaup7yVWAnGAv
-	 r6wM66C+1UYEho16kdBhDsLpHI+JddESc7SYXXmZFx+74oaXiw1W84KD1+73Doq2momM1ZyOLpLVm
-	 fV1uRXtsx6533qpYQG0c/4T9nSYawztosAet8uI+nIP0baYUxMTrZM6eK6ENU6GbdUALaUjqa0nRi
-	 JnOK5vl0RU0PdywsI/aetYv7E9OSBwmGX/iD5HmmDmiizWHdl/1TqbAd/oR/algyGG2OKdfBXDKKs
-	 HYqgTOgGjUruMQ4c8dzbqe2eny2nQmPRQJzS/PZl+J8H0qcVkrNQTuWxK9xo6H+CFbLfKBVfUZYbr
-	 YFzatZMYpuAeERkWN/EVm/6nx6H3BGOnp6RfaVyYhAG3R6IXVMAT0xrRZqUkHNvRb4f1imVoF9rs1
-	 AgJ4Nim5PyXcsyshlnwttdra7XpG5Ls3uNC36X5MeDQ1quwW6q3FR7XldERP8bD0LnpebQ6n0k6ut
-	 ckQyxhQSLVEBGkgDVS03MOpisqtOZEZUdkSTHf8r8nTSBNlw3vLQbj7qrPJUQH3T8fvb7f6ApkmI3
-	 oKSY3zzZhEtVBvUu+4Z8tkOqR6AxKoiFdFU5fJKc6g3r9j8J9HxW4uw65lrmt1oX2qWz9vD1R4MQi
-	 oGDAWCUPBoJDgw0g9uG7UTzINOwf29Qfz4hq2mV93CqttBx9jgEFeEU6VLR2o4ZoXtFvdhutAE9aM
-	 6x7HpA6IltYkk0VpbHrv7WyxWvTIyjGN1CVBT1rfTLKTEZQdeSZWj+r2UrpU9TxRd7GvadgTmsEpb
-	 gZhqcpqIdrU4vRN1thMDTweEEW5ZOrTmuoFywATQS6FxrleaLOG/Wpq6Ff2xANFsj9ceWelW2BxeQ
-	 rtkA9lMeex1XHsrHi3eRcpdnX2oz4zD+rIDRa/nMGR4jboJp0+BFH+GoAmUjwEwcQlLuusR5xtYtb
-	 JRCvoxORlO2iH+BN6Q7T2DXhPGw==
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
-Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?ZWR1bWF6ZXQ=?=" <edumazet@kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>, "=?utf-8?B?cGFiZW5p?=" <pabeni@redhat.com>, "=?utf-8?B?aG9ybXM=?=" <horms@kernel.org>, "=?utf-8?B?Y29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?c2toYW4=?=" <skhan@linuxfoundation.org>, "=?utf-8?B?cmR1bmxhcA==?=" <rdunlap@infradead.org>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, 
-	"=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re: [PATCH net v6 3/6] can: rockchip_canfd: cancel bus-off restart before closing the device
+	dkim=pass (2048-bit key, unprotected) header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=JWOpqRwe
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4a2069b9710so4632555e9.2
+        for <linux-can@vger.kernel.org>; Wed, 04 Nov 2026 03:12:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre.com; s=google; t=1793790731; x=1794395531; darn=vger.kernel.org;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:from:to:cc:subject:date:message-id
+         :reply-to:content-type;
+        bh=JXUkcfVdYHLS91Uwpurj9n2UACTGti9F49kfa1ZCWrU=;
+        b=JWOpqRwecaopor8yH0ZefUJnXs5kKZeycMNKPt5Ui5Eg2fVW6tAtCKrb5rRUcgrXBD
+         8uJIxtHhhpRbn50+INj6AHW75qtRtdXLPaT91ZgN6nZTNl8+IWWmDlnQSSP3sMOhzksT
+         3Ryi9R/M0KH93x8QtwCpuCp4Lq1tthpgfNafQ+MYg28KRs28IVviCFXz3CKAKu26bkVB
+         +kLa1w3eHYUfumKIySZo0FJYRP5AGAB+7m86Iu4bor0bZVu8oDC3YGMf8PpeN8GnUAQ6
+         mdftDgku7QnpdqbjF1R0cJ79LW7Jm6U2A1vZ4PfZdFgBZHpZVe8b3YFwnVyiyqewsN3M
+         IgBA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1793790731; x=1794395531;
+        h=in-reply-to:references:to:from:subject:cc:message-id:date
+         :content-type:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to:content-type;
+        bh=JXUkcfVdYHLS91Uwpurj9n2UACTGti9F49kfa1ZCWrU=;
+        b=xqsTR1aPnZxZJ4nBbfcqQE4Nitm5Ujk647ICLiGK0QYqVquqzqKhgFZOx1YgBh2Ov4
+         IHiLRhoggU0h/S4N/EHQOG1vC2ZAUQY3Llwjm0sOTNZjBZ/iA/kYRb7gBCld9eszNJeX
+         FBw+wICsEz2u54JG2kMvV18LRyrBNoOA1c7M6Pckk+80zj0yUF+2ibCZXiR+b2gnJDYf
+         8m4wBnpzLjmJ0nKmzoLAmSd8HukO/Zij7dwR7YMoDX/grkNg9iTA68q7KF/JoTTvJYTt
+         w8oPZ+26TlZBrkqr9aW0uowQZUNKs8MsYHtCbV63DL5v1v8GXBLmias7FrFWx6cSaGYG
+         1kXQ==
+X-Forwarded-Encrypted: i=1; AKwUvBwamV2Cr/j78+PzR2ioPPEYGlAdQfCxWU8GSbnvScG9w0yNvUOl55gEZud0VXu7/tUfJ9saxnzlmNM=@vger.kernel.org
+X-Gm-Message-State: APuU4Z+VNemlPO7FlfpvZE5xWdc05kxUWoJWX698pddnk47m5Af4NiNv
+	8mcUkkPlPjTec422f5yxYQnjPqDKKYhUjrwrTBdlXXm7Fc/zrhciMMXzy3TLmfetzsk=
+X-Gm-Gg: AYBFou2u6imXK6SQa9FRac2a+WlZn9slNJ7kgD8xo3DaLL4hZspe9QZGZs22fsvx4jK
+	PZdva/pjtBiakmw3kisNqmVfypDQcF+KzoxRDD6iL1VKCzvb6ufQn7nnxV5BndXa280IVrepgEf
+	l5QQVtOrrcpmVPoOrUTcPZRL02lD8otqBAE+UoQU4Y0XzyL1LuIGeycfJ7P8bUxI08gXO+SacrZ
+	IaylRhMksfc5StyfkBYfrRGobiUvjHOBidK2vp7DEioh19jg8/lu4gREA1ly6FKv2JYaSoR9oXS
+	Gg6Xa0o9GowDGz/KsSpCJQKLBjgLKvsOEg7Ayk9FWAO5TUn6lPZBbnm6bIyTQ7MLIYQoz3+nNWh
+	WfiQY72xEaccF1juomoFuW00VdnbfpFVt2+ais2potvaaHfSI69FhC7vmjMJpqS+g3zCZpRc6Qi
+	7Vnx45x4QB7QT10iJIRa5BrG0QZI6u5dBYLZwssirf2AB8ECjVgTRZtshEPybtUrKUVsO0zIML3
+	qq+fmepZGY796GqhTGhBAUXrG6H8/tR2rzDr69cXAjowGDT5ChZtit40zfnyB9xsCiiXJsM8YJL
+	Q8cs5bdJyDINSir/8FcTHFYN
+X-Received: by 2002:a05:600c:4f55:b0:4a3:d327:6ed with SMTP id 5b1f17b1804b1-4ac182dcba3mr394806835e9.17.1793790730347;
+        Wed, 04 Nov 2026 03:12:10 -0800 (PST)
+Received: from localhost ([2001:4090:a244:81d0:bc85:7836:468a:a1a8])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b2ab010a66sm180489085e9.13.2026.11.04.03.12.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Nov 2026 03:12:09 -0800 (PST)
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -69,43 +87,86 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Wed, 4 Nov 2026 16:06:17 +0800
-X-Priority: 3
-Message-ID: <tencent_2E7A44783FBE26011A7319CF849111D78007@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261017-rockchip-canfd-restart-close-v6-3-ed605feb4b6e@qq.com>
-	<179237864073.3135.8117104622491949177@kernel.org>
-In-Reply-To: <179237864073.3135.8117104622491949177@kernel.org>
-X-QQ-mid: xmsezb41-0t1793779577t7nbgj69z
+Content-Type: multipart/signed;
+ boundary=1a89969498c359d1a140827ed6acbf92f89987135f1280b4d5669bb50fa6;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Date: Wed, 04 Nov 2026 12:12:04 +0100
+Message-Id: <DMMDQQGAJSRP.2RFOOW1YOKT8F@baylibre.com>
+Cc: "Kendall Willis" <k-willis@ti.com>, <linux-can@vger.kernel.org>,
+ <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 2/2] can: tcan4x5x: Add suspend error handling
+From: "Markus Schneider-Pargmann" <msp@baylibre.com>
+To: =?utf-8?q?Martin_Hundeb=C3=B8ll?= <martin@geanix.com>, "Markus
+ Schneider-Pargmann" <msp@baylibre.com>, "Marc Kleine-Budde"
+ <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Sean
+ Nyekjaer" <sean@geanix.com>
+X-Mailer: aerc 0.21.0-146-gb5c16ebe1835
+References: <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-0-7efa2b172cce@baylibre.com> <20261016-v7-3-topic-mcan-suspend-fix-fix-v2-2-7efa2b172cce@baylibre.com> <9aba5682e371f5969d3ddca1c6a763485bc25285.camel@geanix.com>
+In-Reply-To: <9aba5682e371f5969d3ddca1c6a763485bc25285.camel@geanix.com>
 
-SGksCgo+IElzIHJrY2FuZmRfc3RhcnRfeG1pdCgpIHNlcmlhbGl6ZWQgYWdhaW5zdCB0aGlz
-IHJlaW5pdGlhbGl6YXRpb24gYXQgYWxsPwo+IFdvdWxkIHRoaXMgbGVhdmUgSU5UX01BU0sg
-dW5tYXNrZWQgYW5kIHRoZSBUWCBxdWV1ZSBhd2FrZSBvbiBhCj4gY29udHJvbGxlciB0aGF0
-IGlzIGluIHJlc2V0IHdpdGggdGhlIENBTiBzdGF0ZSBhdCBDQU5fU1RBVEVfQlVTX09GRj8K
-CkJvdGggd2luZG93cyBwcmVkYXRlIHRoaXMgcGF0Y2guIEl0cyBhZGRlZCB3YWl0cyBjYW4g
-ZXh0ZW5kIHRoZSBUWCByYWNlCmFmdGVyIHRoZSBjb3JlIHJlc3RvcmVzIGNhcnJpZXIuIFBh
-dGNoIDUgb2YgdjYgY2xvc2VzIGJvdGggd2luZG93cy4KSSB3aWxsIGZpeCB0aGlzIGlzc3Vl
-IGluIHY3IGJ5IGludHJvZHVjaW5nIHJlc3RhcnQgc3luY2hyb25pemF0aW9uIGFuZApUWCBw
-cm90ZWN0aW9uIHRvZ2V0aGVyLgoKSW4gdGhlIGNvbXBsZXRlIHY2IHNlcmllcywgYm90aCBy
-ZXN0YXJ0IGFuZCBvcGVuIHVzZQpya2NhbmZkX2NoaXBfc3RhcnRfZmluaXNoKCkuIEl0IGhv
-bGRzIHR4X2xvY2sgd2hpbGUgY2xlYXJpbmcgdGhlIElSUSBnYXRlLAp1bm1hc2tpbmcgaW50
-ZXJydXB0cyBhbmQgd2FraW5nIHRoZSBxdWV1ZS4gQSBuZXcgYnVzLW9mZiBtdXN0IGFjcXVp
-cmUgdGhlCnNhbWUgbG9jayBpbiBya2NhbmZkX3R4X2Rpc2FibGUoKSBiZWZvcmUgcHVibGlz
-aGluZyBCVVNfT0ZGIGFuZCBzdG9wcGluZwp0aGUgY29udHJvbGxlciwgc28gaXQgdGFrZXMg
-cHJlY2VkZW5jZSBvdmVyIHN0YXJ0dXAuIFRoZSBmbGFnIGlzIG5vdCB0aGUKb25seSBzeW5j
-aHJvbml6YXRpb24gaGVyZTsgYW4gYWRkaXRpb25hbCBsb2NrIGFyb3VuZCB0aGUgd2hvbGUg
-aGFuZGxlcgppcyBub3QgbmVlZGVkIGZvciB0aGUgcmVwb3J0ZWQgaW50ZXJsZWF2aW5nLgoK
-PiBDYW4gdGhlIGhhbmRsZXIgc2VlIGEgbmV3IGN5Y2xlX2xhc3QgdG9nZXRoZXIgd2l0aCBh
-biBvbGQgbnNlYz8KClllcywgYmVmb3JlIHBhdGNoIDYgb2YgdjYuIFRoYXQgcHJlLWV4aXN0
-aW5nIHJhY2UgaXMgZml4ZWQgYnkgdGFraW5nCnRpbWVzdGFtcF9sb2NrIGZvciBjb252ZXJz
-aW9uIGFzIHdlbGwgYXMgdGltZWNvdW50ZXIgdXBkYXRlcy4gSSB3aWxsCnJldGFpbiB0aGF0
-IGZpeCBpbiB2Ny4gVGhlIHdvcmtlciByZWFybWluZyBpc3N1ZSBpcyBhbHJlYWR5IGZpeGVk
-IGJ5IHRoZQpsb2NrZWQgYWN0aXZlIGNoZWNrIGluIHBhdGNoIDQgb2YgdjYgYW5kIHdpbGwg
-YWxzbyByZW1haW4gZml4ZWQuCgpCZXN0IHJlZ2FyZHMsCkN1bmhhbyBMdQoKcHctYm90OiBj
-cgo=
+--1a89969498c359d1a140827ed6acbf92f89987135f1280b4d5669bb50fa6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
+Hi Martin,
+
+On Fri Oct 16, 2026 at 12:04 PM CEST, Martin Hundeb=C3=B8ll wrote:
+> Hi Markus,
+>
+> On Fri, 2026-10-16 at 11:57 +0200, Markus Schneider-Pargmann wrote:
+>> diff --git a/drivers/net/can/m_can/tcan4x5x-core.c
+>> b/drivers/net/can/m_can/tcan4x5x-core.c
+>> index a5b8829aa519..b69312413d62 100644
+>> --- a/drivers/net/can/m_can/tcan4x5x-core.c
+>> +++ b/drivers/net/can/m_can/tcan4x5x-core.c
+>> @@ -575,11 +575,20 @@ static int __maybe_unused
+>> tcan4x5x_suspend(struct device *dev)
+>> =C2=A0{
+>> =C2=A0	struct m_can_classdev *cdev =3D dev_get_drvdata(dev);
+>> =C2=A0	struct spi_device *spi =3D to_spi_device(dev);
+>> +	int ret;
+>>=20
+>> =C2=A0	if (cdev->pm_wake_source)
+>> =C2=A0		enable_irq_wake(spi->irq);
+>>=20
+>> -	return m_can_class_suspend(dev);
+>> +	ret =3D m_can_class_suspend(dev);
+>> +	if (ret)
+>> +		goto err_disable_irq;
+>> +	return 0;
+>> +
+>> +err_disable_irq:
+>> +	if (cdev->pm_wake_source)
+>> +		disable_irq_wake(spi->irq);
+>> +	return ret;
+>
+> Wouldn't this be better written in the shorter form:
+>
+> 	ret =3D m_can_class_suspend(dev);
+> 	if (ret && dev->pm_wake_source)
+> 		disable_irq_wake(spi->irq);
+>
+> 	return ret;
+>
+> ?
+
+Thanks for your review. I personally prefer the variant with a goto. It
+is not as compact but it is extendable if this function needs another
+instruction with error handling at some point.
+
+Best
+Markus
+
+--1a89969498c359d1a140827ed6acbf92f89987135f1280b4d5669bb50fa6
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iKMEABYKAEsWIQSJYVVm/x+5xmOiprOFwVZpkBVKUwUCausTBBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIRHG1zcEBiYXlsaWJyZS5jb20ACgkQhcFWaZAVSlP6
+PQD+LtlVjH3/wReXE9RPzwo6wtqTfo+QNCgoDCb1Raz8jGcBAPtyCB2nUPxKiL0p
+tOVeJ7sfKgFNAASX6epFGzYIeAkP
+=tpW6
+-----END PGP SIGNATURE-----
+
+--1a89969498c359d1a140827ed6acbf92f89987135f1280b4d5669bb50fa6--
