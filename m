@@ -1,98 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793833735;
-	b=Wi5U70rZjLmSpJayDjv+sFPBcB2LixMCWyEXnYb5X8NhHzkxtOKOZNNm7JSSdutWv+Ok
-	 G2cjdc1bBGI6Q9lau1V4gwFaltIB3e8eUU1h/UdiJBd1Fwg9NoxWh5w720m3wBtRC8t5N
-	 jjtaQv2FdIMshsmiP40/U+JvgE45FDEBfVQMGyBION2iSj7nLTtGfZ+QdzXD8ABhPTwNg
-	 MA4EuWRMw62SpxFh9/sGv8Di69i6tCe6vdflFXOOHSbhotveIWBzeb1n97eQceLqRXN5L
-	 C1pmy2RUZL1KAcZaX3v312ig9HEl3KvM0u5A+UFP58Gs+iqpv0jyvlirIwphRfNwucA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793833735;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=JjRi3UE9S6Wxo4DzCxCHKDuddEzfqvWFCBEHiXVXA90=;
-	b=JZcuKTsM64GsaXF0LnwYmQpEoMIQ6WUoSpQllVclebzKWTmA/3TxiWZaexe5zcd5P6sQ
-	 wPOvKx8eoEIJO2Wnehuh5dVWpMROUD8rWQSEM+RItWCOmICjAWK6b9HlC39JyiNceTh+B
-	 25vVtsgdZ4rcTviG/QS8sVCbhHSGCB+8yrX76ALTbZE6QRYxwKhd+V1Mf8WPPCH4zWWyV
-	 1KJL/kl2JU3jotop3tMmpNnwQaGrjZMgCOnj7t+LjVt6hFppYce77+TEMYh6JXA23WPWw
-	 yqczpRyCc8qPthLyENmN2YbiMwDAWd6eMLdydaxiOegFUemnHrh5OE+23h80f4hTABQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XAcyuura;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=113.46.200.217
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793861980;
+	b=fgiK1ff7QmrXY9b4nYugpa2CgRGQ0X+ncFbOc27e5mw6PgWCopEoLb1oByLgkMU9OmBF
+	 Nwcmd0CZ7ZcIMcwVKRk2bsvkYvgkX5GzwO4eXIlbzwUZpDiAymRGCL1PfXw1IYZo4/bXT
+	 c3AXzmBzaU1JhNAuTBHiZzeCIJ4eMSPh33siPlzL31/4TWDRGrynd7AxlJLhi3+nTo2Tq
+	 aoIt9EJ7xEBOCrlRTaAL6pZ8+l11tuKTjSSdvNt5I2wgBUNGBuUWeHXRTyVBv1VVkgfGH
+	 V+gZrkilH3wDl0h5sFLfVHFsusA3A2P6NO7F1nEQ3A5+SSMCammQdfix+YLb0Hu4pcg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793861980;
+	h=DMARC-Filter:dkim-signature:Received:Received:Received:From:To:CC:
+	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding:Content-Type:X-Originating-IP:
+	 X-ClientProxiedBy;
+	bh=4YRZtBy/ufsiguFB9l3I5NzFI40FHV2N7HDeJmgHUcI=;
+	b=Dvn1S2XjLTlER2vu+nu15Zoa0P3+qKnRH08lSj9ImMuWpeYIYQGFq08kFG5PGhrT5it9
+	 ZwXOcd72GHBwfIZU2dTnr5UtNTRbPmGdRNJwVcJWbdYl1wvACCQNc3bDQadZIxafcUqOf
+	 XkhZ40Rj1/piu9ByvA7Z8iUJ3+qi7JyBCh7JUCweY1d1PKMbojGS7K5RyKd+vbXajwRGE
+	 JnfFNZ83fRcmBa/Jl9OrCcV5V2+ohvtkA4RxgexngAxfj9zNuqwtxANddzTtvJ20KuRG8
+	 8rxVojJfWC+njMnFQdRwVk79rAHQ8SEFW5rwoS4lDVTxpva+Fy1YBbDsqgB349/kOvQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=huawei.com;
+	spf=pass smtp.mailfrom=huawei.com;
+	dkim=pass header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=NpKam+Zp;
+	arc=none smtp.remote-ip=113.46.200.217
+Received: from canpmsgout02.his.huawei.com (canpmsgout02.his.huawei.com [113.46.200.217])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0265606A329;
-	Wed,  4 Nov 2026 23:08:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F0265606A329
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34ED9606A33D;
+	Thu,  5 Nov 2026 06:59:38 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 34ED9606A33D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XAcyuura
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 68C0F200938;
-	Thu, 05 Nov 2026 00:08:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793833726;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JjRi3UE9S6Wxo4DzCxCHKDuddEzfqvWFCBEHiXVXA90=;
-	b=XAcyuura7K5TPgxeD6rEBet5+K4MLvwXfKnXbR9BBKjkm8gfiNpw1mUaj2IMCE02ESbuNg
-	nNH63N9BnS/p1FuPRBav1YkaHoNAZzek1v1k2QlOT99A6dJVHwAkRYu8Nf1PjBJKNzr1QT
-	0+BZ9VkfOmQZy1coBryUH9aKx2YBasXtnmhfzk3ximjon2LiNMOLZR9vmQ7Z05FdNYB8ax
-	jO0D2H7QDEK9z3oiJbuaDCp6QYYsWRCeUZ1ZUnqLrC0oNdgCGZwo4QFCVJs5tuGk8QUA8B
-	rc9q4l6eCmVV78IQR4hJO5DSSPRiYhOWuKM0AcQ3MHICMr32OI7+D8mnIg4Fig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793833726;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JjRi3UE9S6Wxo4DzCxCHKDuddEzfqvWFCBEHiXVXA90=;
-	b=BWrpQz6aVp5Ufpsq0iUwgz+kzGskbej1WVecc77kE0pHQeCmQwR0IfIqDgM4vmW+KY75W2
-	sXJWti6D2S2bMJNq/TggwsKgxfmB510VRVNwwjQ39AEbjzUghvU7N4joxWObWo5WOInoBm
-	0aS4zCcxtspxW0c9gQAxo4pb5T0Dq2PvanaAum3UMDZC2zyMEOmx/iF2BjqlXx1Dgp2Egc
-	0PUSxHS2AlGYcG5QBICveMg1ZulGNLfWl7to/BDqa+ScNXSS4xekDQ6RtigfrClkTB6BVl
-	0qkfvLhw6aVuUcgdmQ5kGXisWuwExoJG5IHtsVFozsKG1hXOyQcbGxpjvhSn0Q==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793833726; a=rsa-sha256;
-	cv=none;
-	b=b/mZ09N5/Szmxwqm9Tf6534++1q7FZsGbFHIwSjZVNOlsZM0nUw9pr4Z+45g24HcwUhTaa
-	kBxFXhewrxrTNdpX+2jOw3P3gKadkO/kWhYQdEHZFtu1gb1/rw8+0yf4lDKu+LRVT9xBLn
-	n7vZHK5zFLMeL8J2VsunB0gqS5eaD0p1Wy1v9ZrvTAG4wSxXe3LHTVvR3Jyk7vEae4N987
-	BTv5di8ujwhzv9J+rECB5w4dQmjK12JUKWqjbyzR+9wls9e+e97bjQhBSE7VS7amLMr26W
-	yH4OSXpqp17sVlKveoqpDAIBH3N51ahxfXVJONWj61b2A8bR7MvIG9PJfcDf0w==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xOk62-002feM-12;
-	Thu, 05 Nov 2026 00:08:46 +0100
-Received: from pengutronix.de (ip-109-42-119-212.web.vodafone.de [109.42.119.212])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 69E515DF2B5;
-	Wed, 04 Nov 2026 23:08:44 +0000 (UTC)
-Date: Thu, 5 Nov 2026 00:08:42 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev-bot+sashiko@kernel.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
-	linux-can@vger.kernel.org, kernel@pengutronix.de, liucj1228@outlook.com, 
-	s.grosjean@peak-system.fr, stable@vger.kernel.org
-Subject: Re: [PATCH net 13/15] can: dev: can_fill_info(): don't wake up
- controller if interface is down
-Message-ID: <20261104-prudent-mottled-gharial-1bfbfa-mkl@pengutronix.de>
-References: <20261103204305.3211144-14-mkl@pengutronix.de>
- <179382521036.488856.13184139645230625670@kernel.org>
+	dkim=pass (1024-bit key, unprotected) header.d=huawei.com header.i=@huawei.com header.a=rsa-sha256 header.s=dkim header.b=NpKam+Zp
+dkim-signature: v=1; a=rsa-sha256; d=huawei.com; s=dkim;
+	c=relaxed/relaxed; q=dns/txt;
+	h=From;
+	bh=4YRZtBy/ufsiguFB9l3I5NzFI40FHV2N7HDeJmgHUcI=;
+	b=NpKam+ZpaO5jIgt9EYzx3Tj4OgHjXqsjBgC4YAYB8LY3gC1GzVa9OrhsSoK+xqfJMwiPI6o7P
+	TaaYQvEGzv9s/sgnhuhsn8gMMXs/5f5YROfVgEcYCxtJpAt+kzGR8wtd5EQufL+gPFiZGoh+Mpq
+	ZtJPXOTIrPIe6cnGoAcx2ZI=
+Received: from mail.maildlp.com (unknown [172.19.163.0])
+	by canpmsgout02.his.huawei.com (SkyGuard) with ESMTPS id 4jKtT648vrzcZyv;
+	Thu,  5 Nov 2026 14:59:06 +0800 (CST)
+Received: from kwepemk300018.china.huawei.com (unknown [7.202.194.246])
+	by mail.maildlp.com (Postfix) with ESMTPS id 020EA40561;
+	Thu,  5 Nov 2026 14:59:35 +0800 (CST)
+Received: from huawei.com (10.25.63.231) by kwepemk300018.china.huawei.com
+ (7.202.194.246) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.45; Thu, 5 Nov
+ 2026 14:59:34 +0800
+From: Sun Yiqi <sunyiqi2@huawei.com>
+To: <robin@protonic.nl>, <o.rempel@pengutronix.de>
+CC: <kernel@pengutronix.de>, <socketcan@hartkopp.net>, <mkl@pengutronix.de>,
+	<linux-can@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<netdev@vger.kernel.org>, <stable@vger.kernel.org>, <luoxiaoxing@huawei.com>,
+	Sun Yiqi <sunyiqi2@huawei.com>
+Subject: [PATCH net] can: j1939: transport: validate the DPO packet offset
+Date: Thu, 5 Nov 2026 14:59:31 +0800
+Message-ID: <20261105065931.1302-1-sunyiqi2@huawei.com>
+X-Mailer: git-send-email 2.51.0.windows.1
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -102,166 +70,58 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="nr5f2jf7be65j4od"
-Content-Disposition: inline
-In-Reply-To: <179382521036.488856.13184139645230625670@kernel.org>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: kwepems500002.china.huawei.com (7.221.188.17) To
+ kwepemk300018.china.huawei.com (7.202.194.246)
 
+j1939_xtp_rx_dpo_one() stores the packet offset from a received ETP DPO
+command without checking it against the session's total packet count.
+An offset greater than or equal to that count makes
+j1939_session_skb_get() return NULL. A subsequent EOMA can then cause
+j1939_session_completed() to pass the NULL skb to j1939_sk_recv(),
+resulting in a NULL pointer dereference.
 
---nr5f2jf7be65j4od
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net 13/15] can: dev: can_fill_info(): don't wake up
- controller if interface is down
-MIME-Version: 1.0
+Reject an out-of-range offset before storing it and abort the session
+with J1939_XTP_ABORT_BAD_EDPO_OFFSET. Keeping the previous valid offset
+also prevents this lookup failure if an EOMA arrives while the session
+is waiting for the abort to complete.
 
-On 04.11.2026 20:46:50, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential
-> issue(s) to consider.
->
-> Critical: 0 =C2=B7 High: 0 =C2=B7 Medium: 1 =C2=B7 Low: 0
->
-> If you believe none of the issues are legitimate, please reply to each
-> issue of Medium severity or higher and explain why the AI is wrong.
-> If any of them are legitimate and you plan to respin, please let patchwork
-> know by including "pw-bot: cr" as a separate line at the end of your reply
-> (one such reply per series is enough).
->
-> - [Medium] The commit message describes this as removing one trigger of a
->   flexcan abort on i.MX8QXP.
->
-> --
->
-> can: dev: can_fill_info(): don't wake up controller if interface is down
->
-> This patch changes can_fill_info() and can_get_size() to skip
-> IFLA_CAN_BERR_COUNTER when the interface is not running. As a result,
-> do_get_berr_counter() is never called on a down interface. The goal is
-> to avoid a synchronous external abort in flexcan_get_berr_counter() on
-> i.MX8QXP when "ip link show" runs on an interface that was never brought
-> up.
->
-> Link: https://patch.msgid.link/20261027065012.191348-1-chunyuzhiqiang@yin=
-he.ht
->
-> > diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlin=
-k.c
-> > index 766d455950f55..b958c04d53db6 100644
-> > --- a/drivers/net/can/dev/netlink.c
-> > +++ b/drivers/net/can/dev/netlink.c
->
-> [ ... ]
->
-> > @@ -1006,7 +1006,7 @@ static int can_fill_info(struct sk_buff *skb, con=
-st struct net_device *dev)
-> >  	    nla_put(skb, IFLA_CAN_CTRLMODE, sizeof(cm), &cm) ||
-> >  	    nla_put_u32(skb, IFLA_CAN_RESTART_MS, priv->restart_ms) ||
-> >
-> > -	    (priv->do_get_berr_counter &&
-> > +	    (priv->do_get_berr_counter && netif_running(dev) &&
-> >  	     !priv->do_get_berr_counter(dev, &bec) &&
-> >  	     nla_put(skb, IFLA_CAN_BERR_COUNTER, sizeof(bec), &bec)) ||
->
-> [Severity: Medium]
-> Is this meant to change the output for every CAN driver, and not only
-> flexcan?
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sun Yiqi <sunyiqi2@huawei.com>
+---
+ net/can/j1939/transport.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-This is change is intended. Reading the CAN error counters of a down
-interface makes no sense, as they must be read from hardware. The CAN
-error counters are set to 0 by the hardware (as required by the CAN
-specification) when the interface is (re)started.
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8fcfd13e5e6f..bda50432a72e 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1823,14 +1823,22 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
+ 				 struct sk_buff *skb)
+ {
+ 	const u8 *dat = skb->data;
++	unsigned int packet;
+ 
+ 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+ 		return;
+ 
+ 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+ 
++	packet = j1939_etp_ctl_to_packet(skb->data);
++	if (packet >= session->pkt.total) {
++		j1939_session_timers_cancel(session);
++		j1939_session_cancel(session, J1939_XTP_ABORT_BAD_EDPO_OFFSET);
++		return;
++	}
++
+ 	/* transmitted without problems */
+-	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
++	session->pkt.dpo = packet;
+ 	session->last_cmd = dat[0];
+ 	j1939_tp_set_rxtimeout(session, 750);
+ 
+-- 
+2.51.0.windows.1
 
-> can_fill_info() is the only core caller of priv->do_get_berr_counter.
-> With this check, no driver that sets the callback will report
-> IFLA_CAN_BERR_COUNTER on a down interface. can_get_size() gets the same
-> change.
->
-> Several drivers turn on their hardware inside the callback so that this
-> query works while the interface is down:
-
-Yes - this can be removed in later patches.
-
-> drivers/net/can/sun4i_can.c:sun4ican_get_berr_counter() {
->     ...
-> 	err =3D clk_prepare_enable(priv->clk);
->     ...
-> }
->
-> drivers/net/can/c_can/c_can_main.c:c_can_get_berr_counter() {
->     ...
-> 	c_can_pm_runtime_get_sync(priv);
-> 	err =3D __c_can_get_berr_counter(dev, bec);
-> 	c_can_pm_runtime_put_sync(priv);
->     ...
-> }
->
-> Other drivers do the same thing:
->
->   bxcan_get_berr_counter() calls clk_prepare_enable()
->   xcan_get_berr_counter() and ctucan_get_berr_counter() call
->   pm_runtime_get_sync()
->   rcar_can_get_berr_counter(), rkcanfd_get_berr_counter() and
->   flexcan_get_berr_counter() call pm_runtime_resume_and_get()
->
-> The commit in the Fixes: tag, ec56acfef2af1, states this intent
-> directly: "flexcan_get_berr_counter() may be called from userspace even
-> if the interface is down ... This patch switches on the clocks".
->
-> After this change, the wake-up code in those drivers only runs when the
-> device is already active, so it no longer does anything useful. Should
-> that code be removed?
-
-ACK
-
-> Or would it be better to put the check in the
-> flexcan driver instead?
-
-no - we want to fix this conceptually on the CAN netlink level.
-
-> The commit message cites m_can as the precedent. Commit 91a55c72a821
-> fixed m_can inside the driver:
->
-> drivers/net/can/m_can/m_can.c:m_can_get_berr_counter() {
->     ...
-> 	/* Avoid waking up the controller if the interface is down */
-> 	if (!(dev->flags & IFF_UP))
-> 		return 0;
->     ...
-> }
->
-> That version still sends the attribute, with zeroed counters. With this
-> patch, m_can sends no attribute at all for a down interface. Is that
-> change intended?
->
-> Because of the flexcan Fixes: tag and Cc: stable, this would be
-> backported to every stable tree since v3.16. After that, "ip -details
-> link show" would stop printing berr-counter for down interfaces on all
-> drivers, including ones where the query always worked.
->
-> The commit message does say that the attribute is no longer reported.
-> Could it also say that this applies to all CAN drivers, and that it
-> replaces the per-driver support for down interfaces?
-
-If we need to re-spin this series/PR we'll update the commit message.
-
-Marc
-
---
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---nr5f2jf7be65j4od
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCauu68wAKCRDMOmT6rpmt
-0qMNAQC5tLQIgbg3/0lUh7Z6J0PIk7ccz+sVNzmSIilimtF/AgD/UN1geg2HHdMr
-fKe19j11SLTVXUOM+wVDT1ivWsMf/gk=
-=xc4X
------END PGP SIGNATURE-----
-
---nr5f2jf7be65j4od--
