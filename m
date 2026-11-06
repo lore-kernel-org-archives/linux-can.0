@@ -1,22 +1,23 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793979818;
-	b=1oDZSG12Sz1oAs6rJHR6rz5tGanuk907hH7Pe5mNKQIN7GvDfw2avnRklOY6DQn7i8hp
-	 5LSsr8eAgMR11gHqe8lRe9/i0JdJDgfq1bmyOhJd1Jm4coGuubTRVM1YGGC8UO//wh1ue
-	 2YxhgxJ8Jc2hAEn8ZJCz/BsjG8Ana5v8Zk4NBk1CXchzaDwkUX0CKwnTyO7xzOwx616OY
-	 ALKqNbG/G7wkRWu1qClJ/kCWJx+rEQg/FyeaIbKvp1RHQ9zKfInBKW3ERobMDMaTafayG
-	 w2QR/UWqvrHVJ+gokOxnFt6DXeP0MWTdTxVhDKXPv9Bj+A8uCz+x/lbB3d5xBZhnBRw==
+	t=1793979823;
+	b=ZBn/4+7FC9L4VKkafh+U2DnNh0Ysfk952AI6Af+BKD/kMh2DfRkgrl2Oj9NOSMFuL26U
+	 JEJqHdlq8fkM0aPzYIBU9r0U6jyvfYxWNa5/e2MnOeVVkOwtTcXv438Rs9NR64TbpjVX4
+	 8DA5JXEzGcTDdXkDzElEpltibnTxi54ZL/JbdcVgTnU7z9g/DMknYvrQS2r2WqJDBHyf7
+	 0O3HyEuQ1hK/g6oebt6SG3doDOwUmaMNmk+KmXceCMKAHEjH23f/jv3XT9oEjjs0yJEVS
+	 thaNRKA2RMZnMfoJ7VLAwBQHEQH1OjOGq3RXN/vJWiJ7tUj/t2dUaxUDGCIm8ODF2QQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793979818;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793979823;
 	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Content-Language:To:From:Subject:Content-Type:
-	 Content-Transfer-Encoding:X-Anti-Virus-Server:X-Virus-Status;
-	bh=vhL0DYXutcacGbraNIdaZR56/tlPhBVFRt54D6tRdKw=;
-	b=r8FMT/xKcQu6DoNYgJgfAJ25aPoSJ29hoIJqNCl6FrSS5tvFolFoy3+H0syFnUydTG9m
-	 mI+mXZOQB+lg5wUVc8/RW0VbcgxSBlUJgvqLDkaY2a2Upx+Af8dQxUs6vqVdTjjtbvwDp
-	 tJ1W9q4OofS//008U2icktVCwdUy8D+QV7y1r8vx3vtFeiE7VIkdccBe/3UCr38C4If2S
-	 eNRHyOT1BT9IJiCLeakeAxtWKtQ0GUoRfiqTcq4aWYo5lFQzww7RTQsthIJITU4q6xRsu
-	 3kt32VTWDSalJoo4PBM2T/rogT29o+LuDj8Y3Q2tCkZhZU0f9URDICpxwlGN6XliN9A==
+	 User-Agent:Subject:From:To:References:Content-Language:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-Virus-Status:
+	 X-Anti-Virus-Server;
+	bh=hAogDM2/gSqzdf53UqhQOlmdspGSpAif4YyUslDQ5CQ=;
+	b=03w5Jiy0TqdHPQqK9FwM21yRZx883T+m7Hqf0Yz7b/FZkH+Gc5Z3QTNyNpt6apruyhl2
+	 MJE9N64gH4G+OfUdJl+L+mL422Ea19HX5CNi19Q8xfkm/Mm2Rd1iCuyAMdlWfGQOLhfS/
+	 xsIvNq52hoq+Np6N/W+XvsUXts2A//fY9bxLvB5vSsl5AwQUtFX42Dy+rhkqf6ube8Oix
+	 sBEQIX09tEJhFolRi4eN1DRDcEmjZ9ZHZC2jQ0wsAzaNs3RYIBhISCuQMuyVvbkcUm9wr
+	 N0U+TrryzU8M1MmZInV/hwe+4v0mp4+h0j7jk6bypy/7X+pDCdR/ypQPqsnDosybgRQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=I-love.SAKURA.ne.jp;
 	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
@@ -24,23 +25,23 @@ ARC-Authentication-Results: i=1; smtp.subspace.kernel.org;
 Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA430606A329
-	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 15:43:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AA430606A329
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BA4606A326
+	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 15:43:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 09BA4606A326
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
 Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6A6Fh49g011161;
-	Sat, 7 Nov 2026 00:43:04 +0900 (JST)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6A6FhOoo011236;
+	Sat, 7 Nov 2026 00:43:25 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
 Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
 	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6A6Fh4Op011157
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6A6FhOUV011233
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 7 Nov 2026 00:43:04 +0900 (JST)
+	Sat, 7 Nov 2026 00:43:24 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <396b5de7-3fe0-474f-9194-b4816fde7182@I-love.SAKURA.ne.jp>
-Date: Sat, 7 Nov 2026 00:43:00 +0900
+Message-ID: <489aa8c0-c9c8-4aeb-9479-f7cb4c6a03df@I-love.SAKURA.ne.jp>
+Date: Sat, 7 Nov 2026 00:43:21 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -51,247 +52,174 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
+Subject: [PATCH v9 2/2] can: j1939: fix "struct j1939_ecu" refcount leak
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
         Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
         Oliver Hartkopp <socketcan@hartkopp.net>
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-Subject: [PATCH v9 1/2] can: j1939: fix possibility of list corruption in
- __j1939_ecu_release()
+References: <396b5de7-3fe0-474f-9194-b4816fde7182@I-love.SAKURA.ne.jp>
+Content-Language: en-US
+In-Reply-To: <396b5de7-3fe0-474f-9194-b4816fde7182@I-love.SAKURA.ne.jp>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Anti-Virus-Server: fsav413.rs.sakura.ne.jp
 X-Virus-Status: clean
+X-Anti-Virus-Server: fsav411.rs.sakura.ne.jp
 
-Since not all callers are calling j1939_ecu_put() with priv->lock held
-for write, list corruption might happen if the last user called
-j1939_ecu_put() without priv->lock held for write.
+syzbot is reporting "struct j1939_ecu" refcount leak, for
 
-Fix this problem by deferring release steps to WQ context where we can
-unconditionally hold priv->lock for write.
+  j1939_ecu_get(ecu);
+  priv->ents[ecu->addr] = ecu;
 
-By deferring to WQ context, readers might find ECUs which have already
-reached __j1939_ecu_release(). Therefore, allow using an ECU only when
-__j1939_ecu_release() is not yet called (indicated by ecu->kref > 0).
+in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
+even after
 
+  priv->ents[ecu->addr] = NULL;
+  j1939_ecu_put(ecu);
+
+in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
+__j1939_rx_release() from j1939_netdev_stop() has completed.
+
+Fix this problem by canceling ecu->ac_timer from j1939_ecu_unmap_all(),
+preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start() /
+making j1939_ecu_map_locked() no-op / failing j1939_local_ecu_get()
+when a netdev which is associated with j1939_priv is no longer registered
+(indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
+__j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
+
+Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
-This patch allows us to use tasklet_kill() in __j1939_ecu_release_work()
-when addressing "can: j1939: ABBA deadlock in j1939_ecu_timer_cancel()
-under priv->lock" problem.
+To save cost of AI reviews and to quickly close frequently reproducing bug,
+patch for "can: j1939: ABBA deadlock in j1939_ecu_timer_cancel() under
+priv->lock" problem is deferred.
 
- net/can/j1939/bus.c        | 64 +++++++++++++++++++++++++++-----------
- net/can/j1939/j1939-priv.h |  4 +++
- net/can/j1939/main.c       | 13 ++++++++
- 3 files changed, 63 insertions(+), 18 deletions(-)
+ net/can/j1939/bus.c | 65 ++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 62 insertions(+), 3 deletions(-)
 
 diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index cdc3c0a71937..3422e3133800 100644
+index 3422e3133800..4844b92aa028 100644
 --- a/net/can/j1939/bus.c
 +++ b/net/can/j1939/bus.c
-@@ -14,25 +14,50 @@
- 
- #include "j1939-priv.h"
- 
--static void __j1939_ecu_release(struct kref *kref)
-+struct workqueue_struct *j1939_ecu_wq;
-+
-+static void __j1939_ecu_release_work(struct work_struct *work)
- {
--	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
-+	struct j1939_ecu *ecu = container_of(work, struct j1939_ecu, release_work);
- 	struct j1939_priv *priv = ecu->priv;
- 
-+	write_lock_bh(&priv->lock);
+@@ -24,6 +24,11 @@ static void __j1939_ecu_release_work(struct work_struct *work)
+ 	write_lock_bh(&priv->lock);
  	list_del(&ecu->list);
-+	write_unlock_bh(&priv->lock);
+ 	write_unlock_bh(&priv->lock);
++	/* There can't be any ref on this ECU because __j1939_ecu_release()
++	 * was already called. But we need to make sure that
++	 * j1939_ecu_timer_handler() is no longer running before kfree().
++	 */
++	WARN_ON(hrtimer_cancel(&ecu->ac_timer));
  	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
  	kfree(ecu);
  	j1939_priv_put(priv);
+@@ -54,6 +59,17 @@ static __must_check bool j1939_ecu_get(struct j1939_ecu *ecu)
+ 	return kref_get_unless_zero(&ecu->kref);
  }
  
-+static void __j1939_ecu_release(struct kref *kref)
++static bool j1939_ecu_verify_get(struct j1939_ecu *ecu)
 +{
-+	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
++	struct j1939_priv *priv = ecu->priv;
 +
-+	/* Since not all callers are calling j1939_ecu_put() with priv->lock
-+	 * held for write, defer actual release to WQ context. By deferring to
-+	 * WQ context, priv->ecus readers might find ECUs with ecu->kref == 0.
-+	 * Therefore, priv->ecus readers must validate with j1939_ecu_valid() or
-+	 * j1939_ecu_get().
++	/* Don't get an ECU ref if netdev is no longer registered or
++	 * __j1939_rx_release() was called or __j1939_ecu_release() was called.
 +	 */
-+	INIT_WORK(&ecu->release_work, __j1939_ecu_release_work);
-+	queue_work(j1939_ecu_wq, &ecu->release_work);
++	return READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED &&
++		kref_read(&priv->rx_kref) && j1939_ecu_get(ecu);
 +}
 +
- void j1939_ecu_put(struct j1939_ecu *ecu)
+ static __must_check bool j1939_ecu_valid(struct j1939_ecu *ecu)
  {
- 	kref_put(&ecu->kref, __j1939_ecu_release);
- }
- 
--static void j1939_ecu_get(struct j1939_ecu *ecu)
-+static __must_check bool j1939_ecu_get(struct j1939_ecu *ecu)
- {
--	kref_get(&ecu->kref);
-+	/* Don't get an ECU ref if __j1939_ecu_release() was called. */
-+	return kref_get_unless_zero(&ecu->kref);
-+}
-+
-+static __must_check bool j1939_ecu_valid(struct j1939_ecu *ecu)
-+{
-+	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
-+	return kref_read(&ecu->kref);
- }
- 
- static bool j1939_ecu_is_mapped_locked(struct j1939_ecu *ecu)
-@@ -56,15 +81,17 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
+ 	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
+@@ -81,7 +97,7 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
  	if (!j1939_address_is_unicast(ecu->addr))
  		return;
  
-+	if (!j1939_ecu_get(ecu))
-+		return;
-+
- 	ent = &priv->ents[ecu->addr];
- 
- 	if (ent->ecu) {
- 		netdev_warn(priv->ndev, "Trying to map already mapped ECU, addr: 0x%02x, name: 0x%016llx. Skip it.\n",
- 			    ecu->addr, ecu->name);
-+		j1939_ecu_put(ecu);
+-	if (!j1939_ecu_get(ecu))
++	if (!j1939_ecu_verify_get(ecu))
  		return;
- 	}
--
--	j1939_ecu_get(ecu);
- 	ent->ecu = ecu;
- 	ent->nusers += ecu->nusers;
- }
-@@ -109,10 +136,11 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
  
+ 	ent = &priv->ents[ecu->addr];
+@@ -126,8 +142,39 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
+ void j1939_ecu_unmap_all(struct j1939_priv *priv)
+ {
+ 	int i;
++	struct j1939_ecu *ecu;
+ 
++restart:
+ 	write_lock_bh(&priv->lock);
++	/* Need to shutdown timers now, for module unloading might start
++	 * relatively shortly after returning from j1939_ecu_unmap_all() from
++	 * __j1939_rx_release() from j1939_netdev_stop() from j1939_sk_release().
++	 */
++	list_for_each_entry(ecu, &priv->ecus, list) {
++		if (!j1939_ecu_valid(ecu))
++			continue;
++		switch (hrtimer_try_to_cancel(&ecu->ac_timer)) {
++		case 0:	/* Not active or already finished. */
++			continue;
++		case 1:	/* Successfully canceled. */
++			/* Drop the ref from j1939_ecu_timer_start(). */
++			j1939_ecu_put(ecu);
++			continue;
++		default: /* Currently executing. */
++			/* Get a ref, in order to call hrtimer_calcel() without priv->lock. */
++			if (!j1939_ecu_get(ecu))
++				continue;
++			break;
++		}
++		write_unlock_bh(&priv->lock);
++		if (hrtimer_cancel(&ecu->ac_timer))
++			/* Drop the ref from j1939_ecu_timer_start(). */
++			j1939_ecu_put(ecu);
++		/* Drop the ref from default: above. */
++		j1939_ecu_put(ecu);
++		goto restart;
++	}
++	/* Unmap any remaining mapped ECUs */
+ 	for (i = 0; i < ARRAY_SIZE(priv->ents); i++)
+ 		if (priv->ents[i].ecu)
+ 			j1939_ecu_unmap_locked(priv->ents[i].ecu);
+@@ -137,9 +184,9 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
  void j1939_ecu_timer_start(struct j1939_ecu *ecu)
  {
--	/* The ECU is held here and released in the
-+	/* The corresponding j1939_ecu_put() is in
- 	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
+ 	/* The corresponding j1939_ecu_put() is in
+-	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
++	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel() or j1939_ecu_unmap_all().
  	 */
--	j1939_ecu_get(ecu);
-+	if (!j1939_ecu_get(ecu))
-+		return;
+-	if (!j1939_ecu_get(ecu))
++	if (!j1939_ecu_verify_get(ecu))
+ 		return;
  
  	/* Schedule timer in 250 msec to commit address change. */
- 	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
-@@ -122,6 +150,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+@@ -149,6 +196,9 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+ 
  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
  {
- 	if (hrtimer_cancel(&ecu->ac_timer))
-+		/* Drop the ref from j1939_ecu_timer_start(). */
- 		j1939_ecu_put(ecu);
- }
- 
-@@ -137,9 +166,7 @@ static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
- 	 */
- 	j1939_ecu_map_locked(ecu);
- 
--	/* The corresponding j1939_ecu_get() is in
--	 * j1939_ecu_timer_start().
--	 */
-+	/* Drop the ref from j1939_ecu_timer_start(). */
- 	j1939_ecu_put(ecu);
- 	write_unlock_bh(&priv->lock);
- 
-@@ -189,8 +216,8 @@ struct j1939_ecu *j1939_ecu_get_by_addr_locked(struct j1939_priv *priv, u8 addr)
- 		return NULL;
- 
- 	ecu = j1939_ecu_find_by_addr_locked(priv, addr);
--	if (ecu)
--		j1939_ecu_get(ecu);
-+	if (ecu && !j1939_ecu_get(ecu))
-+		ecu = NULL;
- 
- 	return ecu;
- }
-@@ -215,7 +242,7 @@ static struct j1939_ecu *j1939_ecu_find_by_name_locked(struct j1939_priv *priv,
- 	lockdep_assert_held(&priv->lock);
- 
- 	list_for_each_entry(ecu, &priv->ecus, list) {
--		if (ecu->name == name)
-+		if (ecu->name == name && j1939_ecu_valid(ecu))
- 			return ecu;
- 	}
- 
-@@ -232,11 +259,12 @@ struct j1939_ecu *j1939_ecu_get_by_name_locked(struct j1939_priv *priv,
- 	if (!name)
- 		return NULL;
- 
--	ecu = j1939_ecu_find_by_name_locked(priv, name);
--	if (ecu)
--		j1939_ecu_get(ecu);
-+	list_for_each_entry(ecu, &priv->ecus, list) {
-+		if (ecu->name == name && j1939_ecu_get(ecu))
-+			return ecu;
-+	}
- 
--	return ecu;
-+	return NULL;
- }
- 
- struct j1939_ecu *j1939_ecu_get_by_name(struct j1939_priv *priv, name_t name)
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index cf26352d1d8c..623aeb2e54e1 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -42,6 +42,8 @@ struct j1939_ecu {
- 
- 	/* count users, to help transport protocol decide for interaction */
- 	int nusers;
-+
-+	struct work_struct release_work;
- };
- 
- struct j1939_priv {
-@@ -345,4 +347,6 @@ void j1939_session_timers_cancel(struct j1939_session *session);
- /* CAN protocol */
- extern const struct can_proto j1939_can_proto;
- 
-+extern struct workqueue_struct *j1939_ecu_wq;
-+
- #endif /* _J1939_PRIV_H_ */
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 5e5e6c228f22..22c272f8dfde 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -401,6 +401,12 @@ static __init int j1939_module_init(void)
- 
- 	pr_info("can: SAE J1939\n");
- 
-+	j1939_ecu_wq = alloc_workqueue("j1939_ecu", WQ_HIGHPRI | WQ_PERCPU, 0);
-+	if (!j1939_ecu_wq) {
-+		ret = -ENOMEM;
-+		goto fail_wq;
-+	}
-+
- 	ret = register_netdevice_notifier(&j1939_netdev_notifier);
- 	if (ret)
- 		goto fail_notifier;
-@@ -416,6 +422,8 @@ static __init int j1939_module_init(void)
-  fail_sk:
- 	unregister_netdevice_notifier(&j1939_netdev_notifier);
-  fail_notifier:
-+	destroy_workqueue(j1939_ecu_wq);
-+ fail_wq:
- 	return ret;
- }
- 
-@@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
- 	can_proto_unregister(&j1939_can_proto);
- 
- 	unregister_netdevice_notifier(&j1939_netdev_notifier);
-+
-+	/* We need to make sure that __j1939_ecu_release_work() is
-+	 * no longer running before unmapping memory for this module.
++	/* FIXME: Calling hrtimer_cancel() under priv->lock can deadlock between
++	 * priv->lock and cpu_base->softirq_expiry_lock if CONFIG_PREEMPT_RT=y.
 +	 */
-+	destroy_workqueue(j1939_ecu_wq);
- }
+ 	if (hrtimer_cancel(&ecu->ac_timer))
+ 		/* Drop the ref from j1939_ecu_timer_start(). */
+ 		j1939_ecu_put(ecu);
+@@ -310,6 +360,15 @@ int j1939_local_ecu_get(struct j1939_priv *priv, name_t name, u8 sa)
  
- module_init(j1939_module_init);
+ 	write_lock_bh(&priv->lock);
+ 
++	/* Do nothing and fail if netdev is no longer registered or
++	 * __j1939_rx_release() was called.
++	 */
++	if ((READ_ONCE(priv->ndev->reg_state) != NETREG_REGISTERED ||
++	     !kref_read(&priv->rx_kref))) {
++		err = -ENODEV;
++		goto done;
++	}
++
+ 	if (j1939_address_is_unicast(sa))
+ 		priv->ents[sa].nusers++;
+ 
 -- 
 2.56.0
+
