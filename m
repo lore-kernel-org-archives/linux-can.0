@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793938731;
-	b=HE38+7QWcFsZiTWWySn++BeWB4zE9F2Dv23ct1O9xgOv/tTe4JgJ7OscTVYtNWUc+COg
-	 QsIwEFxj/BN6KDs/egEzfzNhI/UPaaAHxAsWKE/eb22kpXrtlV0rNWGk4hnuEXGHHLNBw
-	 3YbFejhg5zKQ++K5RXOYmGp9rcobV3CII1dNBY9cbhEUaxrwzFISNJkaKx01lDEfWnO7i
-	 nXPRyoq7DypHeObrJisjkBnwtD0p8oWWK10Yi+CQtR4bLTw0pjmwVbblt7fVy71yYmcYm
-	 YSIAITjQCZnljikJuhokDBCvq0Hf7oxmx5nmCWaQ4E9FCYg02Ir7JGiJ/1fkhSrXzzA==
+	t=1793938732;
+	b=SqSPLgFFaXzUmoU/WpDwcAowNklMqAbNmy8yS82+tAcI4DvDuRff2jY5SYvV6EIFLIsB
+	 m7AZgwrGNzZyVdP7VLYDmcDbQ4QithzMgNE6UutUV2dRvIoKTvsri49XMidX680GYbLR9
+	 /2xV3ysOnRl3WM8PLPXZ/4EYWW1eYRjaD1SINogOSddfbM2F0AO+uHj0mCTY68hzbhbNr
+	 vaAbgRMp20pG9mpDRhXlw1sJjwKIRl66JD1bfJJ4Xx9FDQ5KYr+mZMRT+8ynSWK+LVuUr
+	 j20J8OsaFjRlkDhfFwcc1gGsoKaPwmzWYjP6AVeq9x5tpnbRClKXk635MM/ax7sRsLg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793938731;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793938732;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=hG0DQlDJ3fqB6/pU1ARHXwcxenrjgm5IkMXxY+iXdSU=;
-	b=wxtKGZfEXR2yR9R42ufSr9HKWfo7F4IaYkyNmW2vhXqeEc5pOB1XtRudvfPJWHRnWzu7
-	 42k2dwOaC115Itv1k67W3Xk4BLWbY9fZDRZ8E+whmnhZkJYcZ/nbjoNFICzMG+N/iM+zH
-	 GGEJC3CY8uHXD+kzPB6sSjveH5QuDstzXn5XOLAVUCpMCSb0RVWeSv4pWZmw6bgksrW0I
-	 pAJH7gzSPql6Eh44LuOnhV2Bhunw0a6NYIBwPf3m++N2FP/kJrkS1Jq6lCOjDOcooY1ZU
-	 MYcULnxT6dtJ+IgURmEvl38UV5fOUKk35HiZ3KpWLkgIjTKmRbz5V4nDHZNu1IdZbEw==
+	bh=K7eIM7ifS5Tzk54oYdIpR4pQDHU9665Colcy1CawcKc=;
+	b=Z4aolzTZt20TCBwuSjoaMtPbaN7nYL2kcqvRHqxnLiTvpy4ZVzGRgVFRUoBNoDNCKVbJ
+	 u01CfRi43KdGnC7LkDy+tZCifdDI3Zkc0jv6wZ5NnGifygVvVeJR+n8XvaE9qmqBh2fVY
+	 GE79LLVFhohn1RCljtS+ddLTA9/HZnESmyxGSK+UVon8buv4IBJY8eeu6TWw+Dau766Sg
+	 RhoXAf6WeVxCm3LuTkm+0eojhTi2auMqNSH3+qKUnoBt1f9JztovuIw+UUlMsIEzBs6/q
+	 g6fOCV/a3n1hc/i4ITtaSWa/U+FGezi7nZSAuN3XRks3JzSmdVynJMrbG1uUfb1VuKQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Erpanaxs;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kHbuTrs4;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B2E606A32E
-	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 04:18:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7085B606A330
+	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 04:18:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Erpanaxs
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DA691F008A3;
-	Fri,  6 Nov 2026 04:18:50 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kHbuTrs4
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 530C21F008A1;
+	Fri,  6 Nov 2026 04:18:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793938730;
-	bh=hG0DQlDJ3fqB6/pU1ARHXwcxenrjgm5IkMXxY+iXdSU=;
+	s=k20260515; t=1793938732;
+	bh=K7eIM7ifS5Tzk54oYdIpR4pQDHU9665Colcy1CawcKc=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Erpanaxsr3in46Nmxh+HAMfHSQceXU2qXxGWKO4ZnuYXj1xw/YSF4OpTmQcPfFYWt
-	 TASi6/MYu9WMkT2Hb/f2nKUlXzAbRU8EBC13dp200bTsg4xwV+HdfSr2vG/5pjZhyC
-	 LlagjHk85+2G0nRiQ+nkPPjqBl7PHV75gwOr1Zl1+SBzG9HU2Ev5yzW8MLYj1E5OmV
-	 GbAXu7kFdxxlR8Dv64aonWsFYk3jV0DmEbqhid6OLQjxwgrIiOt0cTE8xHhWsGqLVw
-	 MI6MT+IRAkYei7lRb55a6A9YMMcEE8gCcPKc9pQ9RoMv5FwiNlXmVTBYl1GJjWQCMP
-	 c/F0Vj7cSY+Lg==
-Subject:
- Re: [PATCH net v6 1/2] can: j1939: account for timer references across rearm
+	b=kHbuTrs4yuIyalGmgmAzy+qcY1PMF4cG+PL2z4fyvG2zSZW5UbjAffCb0a2LayDFG
+	 lgw86DsEIuwIrTHV/sQzJmK8/A2jlPUv8EH3dqch3meBxbMqSANflOgb09J6UhB8AF
+	 x2myHo+ByPDSvxHDOaJz0eKrT/ezBjlyup831uY+bgpui3ez30qeqYR1WAGB8GI1fR
+	 DGYbWtPK9HGh+YvXF5CDcIbzclPrTVnewFZltugTffb8z5+DMufMtG5tsd/2g/xOuT
+	 86SeIDy5EZLNoNq3jcgQF1MEICrr6nxSxlOEXa629diUqt2Dzm9nuFeLkaXQrm4EL7
+	 uAWAN6Ruo3Ctg==
+Subject: Re: [PATCH net v6 2/2] can: j1939: serialize TX with session shutdown
 From: netdev-bot+sashiko@kernel.org
 To: zihanx@nebusec.ai
 Cc: linux-can@vger.kernel.org, robin@protonic.nl, o.rempel@pengutronix.de,
  kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de,
  lkp@intel.com, bst@pengutronix.de, dev.kurt@vandijck-laurijssen.be,
  maxime.jayat@mobile-devices.fr, vega@nebusec.ai, kuba@kernel.org
-Date: Fri, 06 Nov 2026 04:18:49 +0000
-Message-ID: <179393872965.488853.13839884999102482015@kernel.org>
-In-Reply-To: <a05ee3472a73152e352fd7320f51431ae366e773.1793788955.git.zihanx@nebusec.ai>
-References: <a05ee3472a73152e352fd7320f51431ae366e773.1793788955.git.zihanx@nebusec.ai>
-X-sashiko-severity: Medium
+Date: Fri, 06 Nov 2026 04:18:50 +0000
+Message-ID: <179393873091.488853.8495060637149077532@kernel.org>
+In-Reply-To: <f9f8aa1cd4eb28c018aa35ec85a1032003d4421a.1793788955.git.zihanx@nebusec.ai>
+References: <f9f8aa1cd4eb28c018aa35ec85a1032003d4421a.1793788955.git.zihanx@nebusec.ai>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -65,237 +64,118 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 4 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 3
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [Medium] The commit message for "can: j1939: account for timer
-  references across rearm" describes only timer reference accounting.
-- [Low] The commit message names no concrete trigger and no user-visible
-  impact for the refcount bug it fixes.
-- [Low] In j1939_xtp_rx_rts_session_active() the comment on the
-  receiver's forced deactivation is now stale.
-- [Low] Two new comments in j1939_xtp_rx_abort_one() promise a single
-  abort report: "Only the terminal path that wins the state transition…
+- [Low] The commit message covers only part of what the patch changes.
 
 --
 
-can: j1939: account for timer references across rearm
+can: j1939: serialize TX with session shutdown
 
-The patch adds a per-timer lock, a reference flag, a shutdown flag and a
-canceler count, so that txtimer and rxtimer each hold exactly one session
-reference while queued or running. It reworks the cancel, rearm and
-callback completion paths. It also gates the terminal state transitions
-(deactivate, cancel, complete, remote abort) on the session state.
+This patch adds a per-session tx_send_lock and a tx_send_shutdown flag. It
+routes session frame transmission through a new j1939_session_tx_send()
+helper, which drops frames with -ESHUTDOWN once shutdown has been
+published or the state is no longer ACTIVE. The state writes in activate,
+deactivate and cancel now happen under the new lock.
 
 Link: https://bugtracker.nebusec.ai/f/11143
 
-> Track one session reference for each timer lifetime spanning queued and
-> running states. Serialize timer restart, cancellation, and callback
-> completion so rearming an active timer cannot leak or lose its pin.
->
-> Apply the same lifetime accounting to the RX timer and stop terminal
-> paths from leaving queued timers behind.
-
-[Severity: Medium]
-
-The message only describes timer reference accounting. The patch also
-seems to change protocol behaviour and behaviour that userspace can see.
-Should these changes be described here, or split into separate patches?
-
-Compared with the baseline:
-
-j1939_xtp_rx_abort_one(): a remote ABORT used to always overwrite
-session->err with j1939_xtp_abort_to_errno(). It was then reported via
-j1939_sk_send_loop_abort() or J1939_ERRQUEUE_RX_ABORT. If the session is
-already in J1939_SESSION_WAITING_ABORT, it is now only deactivated.
-session->err keeps the local errno and nothing more is reported, which
-changes the sk_err and ee_errno that userspace sees.
-
-j1939_session_completed(): this now returns early unless the state is
-J1939_SESSION_ACTIVE. An EOMA or final broadcast DAT that arrives after a
-local abort no longer delivers se_skb via j1939_sk_recv(). It also no
-longer activates the next session.
-
-j1939_session_cancel(): this now returns bool. It deactivates at once if
-__j1939_tp_set_rxtimeout() cannot arm the abort timeout.
-
-j1939_tp_schedule_txtimer(): this silently does nothing unless the state
-is J1939_SESSION_ACTIVE and no cancel or shutdown is pending. Also,
-j1939_tp_set_rxtimeout() no longer rearms in J1939_SESSION_WAITING_ABORT.
-Later CTS/DAT handling can therefore no longer replace the abort timeout.
-
-j1939_simple_txnext(): the echo timeout is now armed after
-j1939_send_one() instead of before it.
-
-The synchronous j1939_session_timers_cancel() calls before
-j1939_session_cancel() are removed from the CTS, DAT and RTS error paths.
-
-The netdev_alert() calls in j1939_tp_txtimer() and j1939_tp_rxtimer()
-now print only when the caller wins the state transition.
-
-The new comment "Only the terminal path that wins the state transition
-reports abort" suggests the patch also fixes double-deactivation and
-double-report races. The message does not mention these. The follow-up
-commit "can: j1939: serialize TX with session shutdown" does not describe
-these changes either.
-
-Since this is tagged for stable, could the message say which hunks fix
-the refcount problem and which ones change protocol or reporting
-behaviour?
-
 > diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..fbeb858956e03 100644
+> index fbeb858956e03..390923a050469 100644
 > --- a/net/can/j1939/transport.c
 > +++ b/net/can/j1939/transport.c
 
 [ ... ]
 
-> @@ -716,18 +868,68 @@ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
+> @@ -1350,10 +1390,13 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
 >  
->  void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec)
+>  static bool j1939_session_fail(struct j1939_session *session, int err)
 >  {
-> -	j1939_session_get(session);
-> +	j1939_session_list_lock(session->priv);
-> +	if (session->state != J1939_SESSION_ACTIVE) {
-> +		j1939_session_list_unlock(session->priv);
-> +		return;
-> +	}
-> +
-> +	spin_lock(&session->txtimer_lock);
-> +	if (session->txtimer_cancelers || session->txtimer_shutdown) {
-> +		spin_unlock(&session->txtimer_lock);
-> +		j1939_session_list_unlock(session->priv);
-> +		return;
-> +	}
-> +
-> +	/* One pin covers an armed timer and any callback/successor overlap. */
-> +	if (!session->txtimer_ref) {
-> +		j1939_session_get(session);
-> +		session->txtimer_ref = true;
-> +	}
-> +
->  	hrtimer_start(&session->txtimer, ms_to_ktime(msec),
->  		      HRTIMER_MODE_REL_SOFT);
-
-[Severity: Low]
-
-This isn't a bug, but the commit message does not name a concrete
-trigger or a user-visible impact for the refcount bug fixed here.
-
-In the baseline, j1939_tp_schedule_txtimer() always did:
-
-	j1939_session_get(session);
-	hrtimer_start(&session->txtimer, ...);
-
-j1939_xtp_rx_dat_one() calls it without cancelling first:
-
-	} else if (do_cts_eoma) {
-		j1939_tp_set_rxtimeout(session, 1250);
-		if (!session->transmission)
-			j1939_tp_schedule_txtimer(session, 0);
-
-A txtimer may already be queued, for example an -ENOBUFS retry scheduled
-10-25 ms out. In that case hrtimer_start() silently replaces it, and the
-queued timer's session reference leaks.
-
-The leaked session keeps its priv reference and netdev tracker (see
-j1939_session_destroy()). A DAT frame from the bus can therefore leave
-device unregister stuck.
-
-The message only says that rearming "cannot leak or lose its pin". It
-does not say which path leaks a pin and which path loses one (a possible
-use-after-free). The Link: also points to a tracker that is not public.
-
-Could the message describe the triggering path and the impact, so that
-stable backporters can judge it?
-
-[ ... ]
-
-> @@ -1371,13 +1691,32 @@ static void j1939_xtp_rx_abort_one(struct j1939_priv *priv, struct sk_buff *skb,
->  		    session, j1939_xtp_ctl_to_pgn(skb->data), abort,
->  		    j1939_xtp_abort_to_str(abort));
+> -	bool deactivate = false;
+> +	bool deactivate = false, tx_send_shutdown;
 >  
-> +	/* Only the terminal path that wins the state transition reports abort. */
+>  	j1939_session_list_lock(session->priv);
+> -	if (session->state == J1939_SESSION_ACTIVE) {
+> +	spin_lock(&session->tx_send_lock);
+> +	tx_send_shutdown = session->tx_send_shutdown;
+> +	spin_unlock(&session->tx_send_lock);
+> +	if (!tx_send_shutdown && session->state == J1939_SESSION_ACTIVE) {
+>  		session->err = err;
+>  		deactivate = j1939_session_deactivate_locked(session);
+>  	}
 
 [Severity: Low]
 
-Is this comment accurate for RX sessions? It suggests userspace sees a
-single abort report, and so does "A local abort already owns the error
-report" below. However, j1939_session_destroy() queues another report
-when the last reference is dropped:
+This isn't a bug, but the commit message only covers part of this change:
 
-	} else if (session->err) {
-		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-	}
+  Prevent a timer callback from sending session frames after a concurrent
+  terminal state transition. Serialize the send with the state change and
+  reject frames once shutdown has been published.
 
-__j1939_sk_errqueue() does not de-duplicate RX_ABORT. It is gated only
-by SOF_TIMESTAMPING_RX_SOFTWARE. An RX session (session->sk == NULL) that
-is aborted via j1939_xtp_rx_abort_one(), j1939_session_cancel() or
-j1939_tp_rxtimer() therefore still produces a second RX_ABORT errqueue
-entry at destroy time.
+That description matches j1939_session_tx_send(). The patch also adds
+tx_send_shutdown checks to paths that do not send frames:
 
-The duplicate report existed before this patch. Could the comment be
-reworded so it does not promise a single report?
+  - j1939_session_fail() stops recording session->err and stops
+    deactivating once tx_send_shutdown is set.
 
-> +	j1939_session_list_lock(priv);
-> +	spin_lock(&session->rxtimer_lock);
-> +	rxtimer_shutdown = session->rxtimer_shutdown;
-> +	spin_unlock(&session->rxtimer_lock);
-> +	if (!rxtimer_shutdown && session->state == J1939_SESSION_ACTIVE) {
-> +		session->err = j1939_xtp_abort_to_errno(priv, abort);
-> +		deactivate = j1939_session_deactivate_locked(session);
-> +		report = deactivate;
-> +	} else if (!rxtimer_shutdown &&
-> +		   session->state == J1939_SESSION_WAITING_ABORT) {
-> +		/* A local abort already owns the error report. */
-> +		deactivate = j1939_session_deactivate_locked(session);
-> +	}
+  - __j1939_session_cancel() returns early, so no abort frame is sent and
+    j1939_sk_send_loop_abort() is not called. The abort frame is also now
+    sent while tx_send_lock is held.
 
-[ ... ]
+  - j1939_session_cancel() gets an outer copy of the same check.
 
-> @@ -1727,7 +2065,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
->  			     __func__, session, skcb->addr.sa, skcb->addr.da,
->  			     session->last_cmd);
->  
-> -		j1939_session_timers_cancel(session);
->  		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
->  		if (session->transmission) {
->  			j1939_session_deactivate_activate_next(session);
+  - __j1939_tp_set_rxtimeout() gets a new check.
 
-[Severity: Low]
+  - The new -ESHUTDOWN result skips the netdev_alert() in
+    j1939_session_tx_dat() and is silently dropped in j1939_tp_txtimer().
 
-Both j1939_session_timers_cancel() calls are now gone from
-j1939_xtp_rx_rts_session_active(). Is the comment just below still
-accurate?
+Are most of these checks needed? Only j1939_session_timers_shutdown_locked()
+sets tx_send_shutdown. It runs under active_session_list_lock and sets
+rxtimer_shutdown in the same section, and rxtimer_shutdown is never
+cleared:
 
-		} else if (session->state == J1939_SESSION_WAITING_ABORT) {
-			/* Force deactivation for the receiver.
-			 * If we rely on the timer starting in j1939_session_cancel,
-			 * a second RTS call here will cancel that timer and fail
-			 * to restart it because the state is already WAITING_ABORT.
-			 */
-			j1939_session_deactivate_activate_next(session);
+j1939_session_timers_shutdown_locked() {
+	lockdep_assert_held(&session->priv->active_session_list_lock);
+	j1939_session_tx_send_shutdown(session);
+	spin_lock(&session->rxtimer_lock);
+	session->rxtimer_shutdown = true;
+	spin_unlock(&session->rxtimer_lock);
+}
 
-The first j1939_session_cancel() now moves the receiver to
-J1939_SESSION_WAITING_ABORT. It also arms the abort rxtimer through
-__j1939_tp_set_rxtimeout(..., true). The second j1939_session_cancel()
-fails the state < J1939_SESSION_WAITING_ABORT check and does nothing.
+As a result, the new check in __j1939_tp_set_rxtimeout() repeats the
+existing rxtimer_shutdown test.
 
-Nothing in this function cancels the abort timer any more. The timer
-stays queued until j1939_session_deactivate() cancels it asynchronously.
+The check in __j1939_session_cancel() can never fire either, because
+j1939_session_cancel() already tests the same flag under the same list
+lock.
 
-The reason given in the comment no longer applies. Should the comment be
-updated?
+Behaviour only seems to change in j1939_simple_recv(). It publishes the
+shutdown while the state is still ACTIVE, drops the list lock, drains the
+timers, and only deactivates later:
 
-[ ... ]
+	j1939_session_list_lock(priv);
+	session = j1939_session_get_simple(priv, skb);
+	if (session)
+		j1939_session_timers_shutdown_locked(session);
+	j1939_session_list_unlock(priv);
+
+Within that window, a txtimer error such as -ENOMEM from
+j1939_simple_txnext() reaches j1939_session_fail(). It is now ignored,
+where before it set session->err and deactivated the session. That may be
+intended, since the echo has already confirmed the send.
+
+Could the commit message mention this change and explain why it is safe?
+
+The patch is tagged for stable and adds a new lock around j1939_send_one()
+on every session TX path. Could the message also describe the user-visible
+symptom being fixed? For example, stray TP.DT, CTS, EOMA or simple frames
+showing up on the bus after a concurrent terminal transition.
+
+Could the redundant checks also be dropped?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/cover.1793788955.git.zihanx%40nebusec.ai
