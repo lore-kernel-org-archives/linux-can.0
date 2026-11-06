@@ -1,79 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1793957855;
-	b=BFpusBmYoMZyOMpg9Ih6e+Be5ovJMi4uEfKRmtKS6PwiTugpEmSbHuIE22dLL2kbxOpO
-	 0rTmPhkzJ7dxIzu0Bx/fcPKpcgNoYHWeP4DXdOHwFXiWTFPf6YXrEDP8qyox7U8SQbo59
-	 zTvzq6GFnpe5ZGkn1E2RTU327f340FM5W/bUdB9av+VySjXj5yO6yhwe7RuiD97lsI0l+
-	 SEuXEN9JYsWqsD1FBK955eWUoIUIRW5W9mpR3vQaUCgNmaJJXVHRNfBHkZ7361shjfIW5
-	 48u9WGF7lNpPnvupSsBkSJRuRWTaLE0oN/4+D8u26h36D48g85yKFy8ZAFHGz1iSeSg==
+	b=oOmWkXa4+8yFu5kZ4AeoRXEwer02XFp675E+ytYHNXOYYl7gEAZXmkbpIVwumzg0bDo8
+	 N21IbAHQPN5EpbL6AUUtADocGesybqTCTl7t0mEAQlPFBH4GvgFlCzSRn7IPQtn2gZAAr
+	 ZWkDKLDaWvUjT3c02ra3+yWLMWQ+V0eSEddmUcladIe44xbmY/bVN5YozMjsrZcir2bgF
+	 2aTa5oQBVvaxl48UIpG0sfko3yN6LRjA/AlCDv8HRc9nbguyoTV8MMwvNTE/BFOLpMNT8
+	 yZb3R0H22T64b6GQ6wMmqOJH5SJPcMIEoctC1+gBSwKZ89vah/bUDFTZBOMxQpPENUg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1793957855;
 	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=MjAT6tcxdQUYupMnJ6VDsN2Krtta9HnVtSCs1NLKAM4=;
-	b=PdMup7HEE8e17i35OJD7xyP+MmuLSILZBZJqYzPc2ozK/S6epUxAFbgXdPfGEroEgnbu
-	 0m3oC7dX/9hiBgDe+LQnnGk2tzDDIWUfu0+VEtgU/5it7ariECJOoKjyB9UBUPXXItABo
-	 Lm32i/CP1KOdx6e9UCcdZGK+H6bLwq9MDRbXnfl5Uue80NmEp+mIID0ctvXv6ZwGGFe6g
-	 e3QKgzJi1CeZw461z2qBKbbCT6+sFobExUzBcH0a6DrcNbqI24j//dyk/+kPkt+qL+3t8
-	 1tW/scHbdvmwgIPGhoeYBZj1ofubvvpv0VSzmbAJK4tPKLmodteZbrLuqW1CQ5nvuOA==
+	bh=hoOu0Vyn1UsqFVigZaJGQ7Rr3+ALT0LUzsBJsVYCYy4=;
+	b=fMGAikIYEa9rwFzR/mD9zZKyaluPGv8mEIUZfediYiCh5u3QQkXVJ/9nKADBAfU/9SHf
+	 lqsqerY9bVqyyims0dLOElQG0GJzz7EBhfkH4mq8HQnEAk7Eb8C68sAm+jVH3GSpPNGPL
+	 j8vxEII8TB7aev9R++9DgkrMq+5BFK/2bU97/yZ6uS0yC3DklqVkqL75HuMp+sUSFD/qX
+	 TbLWl05JVNeb28Wp/Hco4Psulaf70i5UkVwWQc4HX+9NaZu4L+JXLNJb0diAxYEbgrb1r
+	 VMQkK9d4XZFUkaPqlRMCmbpH8xo3WZ6Hx6fvkYM64xNqY/O1dFH5ok4AoEVfRLN2ohA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Q7UJLD0n;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LLI5u5b2;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21EFC606D80C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EA2B606D811;
 	Fri,  6 Nov 2026 09:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Q7UJLD0n
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LLI5u5b2
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
 	t=1793957855;
-	b=Ad36THbRFS7mkmraIQBfRKKRrZR6qcizMHZzUE4Nlhw5+Sqd4m1WVxZtTH6cB8LogtXC
-	 tDo/4k5fNKm11p2mA925rlREy8246WAIb7yrL0EJvELdL1u7GPbtXF5M5g3unF7soE4t3
-	 nMmjzd1jaLc6Stdx/S1uUot4Zm/zTVWcUHvTCzcvzMucUwW1TKhiklZjOczoBOzHqQTau
-	 GlER2+vVJGiRzQ8warolRhV64t6AwAHcaw8ui/EZog4NXx9xGrZCXjer6PzKk8qz26I8g
-	 cN+JzFzSisjgPOoCHYitgbxRMZxnOQDfwzYUrSz9JDcGGbZcn4wa2a40Y4+gVnNRd9w==
+	b=a3buqsalN6EOrhXY0BwpaIxS05xYyx6XAXnZGdC3u8nq+4asPdBVDA7R9ul182ZPx0tC
+	 W+Ul0r3RmO/rhB9K2fUX5OXQGnqLDXoryAhD/fgcEIyeLD9PqK7brhpUHs6Wsv/wy1+qq
+	 zTP1kTU97by4Ua2V2Rlr6pD1J7ifuO+lsseis4pOrVNEJjImvgVAkMWybnaTb5vTFWkNa
+	 0Y+tK6HSCLAXAaH2jt8iyg+bR0TJDmWvEDK4IBe8wTgyGV9r4yP1ZXx3gziAiF2L9gKDW
+	 8CXo0szbDaAWfQ5kAZipFJRZsJh0Wlpnvg6lWz/UuvxINcskBolclmGA6PvQNEG+yPQ==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
 	c=relaxed/relaxed; t=1793957855;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=MjAT6tcxdQUYupMnJ6VDsN2Krtta9HnVtSCs1NLKAM4=;
-	b=KZZDUgWaTCxRBikdUQQNmLvr7fhSqHN6OQKC1n+j6DCXzWjKwKh8wMGrjUov651onLm3
-	 gmSCPcdKIbWivWTyV6/coF9e7eOBF/iwTsGt15ehDG/Z0n9JZOo/29uiqy30vPK31fCcW
-	 ztX+DrJ17zBzL7R4GEkSROrHQUsNa+pk36YZOfSpf6BZlcUy84yc2GpLIITSn+9ANCTx/
-	 vK+pqHsniZT/0xWxIbJlJyuOwg6ikXQcsx9hacghfl50zY+c7MANHx+bD28nIG6aTVA1W
-	 5Gr/HQfCZmxClsKG05la2hMzEl1gLBI3PXeO8TwVb7h9+Eq38rilylQEoeWyuJWoOzw==
+	bh=hoOu0Vyn1UsqFVigZaJGQ7Rr3+ALT0LUzsBJsVYCYy4=;
+	b=OrfKIL2hQt/A7aNVdhW4Afx00VD3ICepg3WkqFLzVNui3iDZIQuEtgIZ4QLInxlFrB++
+	 SRbOBjmLgp2m70EDWJvk6wgmP5Lzl/gQTNeeBVipr/mWpboz6gw9fIQDlJaN6AVjex0Uo
+	 RgBEZzJM1iMoBmLwZyaEICDB5KCF6PYs+YSQP1BTAIGbiCmamdk9UGLx8Y/pHim1SIuCk
+	 nilqZaNYOptuLjQ42LaRYwOmG1cvWutDoPYHN30gbd1cOXXcuE3CWa3rJkVisYWBZQlMt
+	 MlxXESyawOV+U1m5R1TqIZMU5jYRQkFVLTiZqCBKqN+Q6S+YecMHe7x+z9PE9IJkB/Q==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id EE4EA1F00934;
-	Fri,  6 Nov 2026 09:37:33 +0000 (UTC)
+	by smtp.kernel.org (Postfix) with ESMTPS id 199781F00931;
+	Fri,  6 Nov 2026 09:37:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793957854;
-	bh=MjAT6tcxdQUYupMnJ6VDsN2Krtta9HnVtSCs1NLKAM4=;
+	s=k20260515; t=1793957855;
+	bh=hoOu0Vyn1UsqFVigZaJGQ7Rr3+ALT0LUzsBJsVYCYy4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=Q7UJLD0nuLpE73sXSGLQWSlwSFEn3rIt+DrKv4r8+Bc2fNCrRl+1wFogPogYlTtPS
-	 G97hekswK9d+FM++zlN0HSL3ImYK5lDvHW+FLA8ZZatkALTzaF1yOkqPGOU+OIQQq1
-	 spA6H0S7GS1epJD22If/uoddCe8C4pLYmC/nRJGivgXWSws8K/tTtkBznuz0SJm/lV
-	 R++4DOM2qIiGBGZEzI1PKQzcOf3mT1z/ZpvokGMdklluorEooewGsQTgapa5fCmoM+
-	 ZxG7G6CojabAtPnOAlGL40p8Y3Zs6QiFzV0PNb8f1LNwERrEGkyTAkcb4IAzkJMpgM
-	 d2G/BobWjVmcQ==
+	b=LLI5u5b2i0VG6QNV8sf2QoGuZYm0NSmkjfFA/EL+Njsak5CI0oC0tkfv6FmTJG/sk
+	 S3AyeHXqW6VptkbAOJ9MP82AT5EDBrgpSU/xxPW5bdQW7PGcAlM0zn8Ce2/HvBXMKS
+	 OexEdKnJIlb7HWneSKA1vlbE8RiA+Sh2Cc135ttPk/w0vjKF+ZEzVhsj7dojVgzNMm
+	 uTIFAFeWQT+CsQxaACoyYQwChq9MYPvAgJoGbAiGDB0dZUyUV8E9yTMyf0MhmvOJJD
+	 sXIdLTKobNyLqUyUMVfRqtPerNIlSS+lJIbxvZ/jzOzsLPc3gktlc3JPGzAdw+8pLl
+	 n9hi/cGXCIFIw==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 696F245CAD;
+	by lkml.kernel.org (Postfix) with ESMTP id 89DE245CB5;
 	Fri,  6 Nov 2026 09:37:33 +0000 (UTC)
 From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
-Date: Fri, 06 Nov 2026 17:37:21 +0800
-Subject: [PATCH net v7 2/7] can: dev: add
- close_candev_cancel_restart_sync()
+Date: Fri, 06 Nov 2026 17:37:23 +0800
+Subject: [PATCH net v7 4/7] can: rockchip_canfd: disable RX offload on open
+ failure
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -84,7 +84,7 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261106-rockchip-canfd-restart-close-v7-2-accdb11bc845@qq.com>
+Message-Id: <20261106-rockchip-canfd-restart-close-v7-4-accdb11bc845@qq.com>
 References: <20261106-rockchip-canfd-restart-close-v7-0-accdb11bc845@qq.com>
 In-Reply-To: <20261106-rockchip-canfd-restart-close-v7-0-accdb11bc845@qq.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, 
@@ -99,13 +99,13 @@ To: Marc Kleine-Budde <mkl@pengutronix.de>,
 Cc: Cunhao Lu <1579567540@qq.com>, linux-can@vger.kernel.org, 
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
  linux-rockchip@lists.infradead.org, netdev@vger.kernel.org, 
- linux-doc@vger.kernel.org
+ linux-doc@vger.kernel.org, stable@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1793957851; l=2772;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1793957851; l=1266;
  i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
- bh=46cXQFJirAOhSlbZ8ElaP0fZTVygGkjM0w80cYNhAoQ=;
- b=DnHalpqOJ4fjdDJOTVPErxSULYsdITzqWxiZ9nJLJcozYxvDNT2xgYBBs79aXg/wvEDpva39y
- wrzlIEpUQ+wBF/uejafyC4jB1dVTIUlDWnJ2UUBu/w2uJkvlJnOSBwn
+ bh=cT3cBscQt29TWUgsPQ2sU0B4DpllcnyjvFZowBvWmU4=;
+ b=GJuuhgV+/BkZR5n4Noe2sTohTWEcm2uFLtkkBOFouuWN6wHnFm7EOMs64iDyjlevfWxixb2GD
+ CxpX1YOJ4tkBm1JTc1ZnmqSi1pQYIGwIDtzFdcrGj2ODKxRIEgdWlIz
 X-Developer-Key: i=1579567540@qq.com; a=ed25519;
  pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
 X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
@@ -116,83 +116,39 @@ Content-Transfer-Encoding: 7bit
 
 From: Cunhao Lu <1579567540@qq.com>
 
-Drivers may need to wait for bus-off recovery before tearing down the
-IRQ and hardware resources used by their restart callback. Calling
-close_candev() at that point also flushes echo skbs, which belongs after
-the driver has quiesced the users of those buffers.
+rkcanfd_open() enables RX offload before requesting the IRQ. If
+request_irq() fails, the error path leaves the offload enabled. A later
+open calls napi_enable() on an already enabled NAPI instance.
 
-Add close_candev_cancel_restart_sync() in linux/can/dev.h so drivers can
-cancel the core restart work separately, without accessing can_priv's
-work item directly. The helper only cancels restart work; callers must
-still stop its producers and call close_candev() for the final cleanup.
+Disable RX offload on that error path before stopping the controller and
+releasing the runtime PM reference.
 
-Use the helper in close_candev(), preserving its existing cancellation
-and echo cleanup order.
-
-The following Rockchip fix uses the helper at the start of rkcanfd_stop()
-to wait for recovery before IRQ teardown, leaving echo cleanup to
-close_candev().
-
+Fixes: ff60bfbaf67f ("can: rockchip_canfd: add driver for Rockchip CAN-FD controller")
+Cc: stable@vger.kernel.org
 Signed-off-by: Cunhao Lu <1579567540@qq.com>
 
 ---
-Changes in v6:
-- Describe the helper's use by the following Rockchip fix.
----
- drivers/net/can/dev/dev.c |  4 +---
- include/linux/can/dev.h   | 17 +++++++++++++++++
- 2 files changed, 18 insertions(+), 3 deletions(-)
+Changes in v7:
+- Split the open error cleanup into a separate patch.
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index a893a49a3381..39271a3ef0fa 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -537,9 +537,7 @@ EXPORT_SYMBOL_GPL(of_can_transceiver);
-  */
- void close_candev(struct net_device *dev)
- {
--	struct can_priv *priv = netdev_priv(dev);
--
--	cancel_delayed_work_sync(&priv->restart_work);
-+	close_candev_cancel_restart_sync(dev);
- 	can_flush_echo_skb(dev);
- }
- EXPORT_SYMBOL_GPL(close_candev);
-diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-index 6d0710d6f571..1b08ee263b1f 100644
---- a/include/linux/can/dev.h
-+++ b/include/linux/can/dev.h
-@@ -22,6 +22,7 @@
- #include <linux/can/skb.h>
- #include <linux/ethtool.h>
- #include <linux/netdevice.h>
-+#include <linux/workqueue.h>
+Changes in v3:
+- Disable RX offload when request_irq() fails during open.
+---
+ drivers/net/can/rockchip/rockchip_canfd-core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
+index 59a79fe057e6..d05264605efc 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-core.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+@@ -747,6 +747,7 @@ static int rkcanfd_open(struct net_device *ndev)
+ 	return 0;
  
- /*
-  * CAN mode
-@@ -115,6 +116,22 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
- 
- int open_candev(struct net_device *dev);
- void close_candev(struct net_device *dev);
-+
-+/**
-+ * close_candev_cancel_restart_sync() - cancel bus-off restart synchronously
-+ * @dev: CAN network device
-+ *
-+ * Call before tearing down resources used by the restart callback.
-+ * The driver must quiesce restart work producers before calling
-+ * close_candev() for the final cleanup.
-+ */
-+static inline void close_candev_cancel_restart_sync(struct net_device *dev)
-+{
-+	struct can_priv *priv = netdev_priv(dev);
-+
-+	cancel_delayed_work_sync(&priv->restart_work);
-+}
-+
- void can_set_default_mtu(struct net_device *dev);
- void can_set_cap_info(struct net_device *dev);
- int __must_check can_set_static_ctrlmode(struct net_device *dev,
+ out_rkcanfd_chip_stop:
++	can_rx_offload_disable(&priv->offload);
+ 	rkcanfd_chip_stop_sync(priv, CAN_STATE_STOPPED);
+ 	pm_runtime_put(ndev->dev.parent);
+ out_close_candev:
 
 -- 
 2.34.1
