@@ -1,57 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793937644;
-	b=i55CLh0YHRZdlivFS1oHA1q4VQQDgxkbsiwYNEHiIPow9/yUgKMes2JsaBKZUvlQMGUL
-	 o3+pKHrWJ2eIv9iA6yei6nnw3i5e/7JRztxE+jdw4PHn67y3IQE96czLwvBNUMcdNwl3T
-	 NJHyiUTUKy32Cb5sHzA5Kx08TSifCvYfG9GmwXs/qBJ20LfOm6aimmGC2QjCR+V+L15pd
-	 SDv/jpjC5NkrcpkeJ5Ibg9MOri2YHK1fJZ5ul4ohmFlcH8qAa4HJhqYfJ6PEVGmKU9/3P
-	 bZ/p7kVi8hNQ8un8v3wGAE0dClTOfV1kNr1WLJ73JIKYVbHMuYLKL5EFBO6EJI94Okw==
+	t=1793938731;
+	b=HE38+7QWcFsZiTWWySn++BeWB4zE9F2Dv23ct1O9xgOv/tTe4JgJ7OscTVYtNWUc+COg
+	 QsIwEFxj/BN6KDs/egEzfzNhI/UPaaAHxAsWKE/eb22kpXrtlV0rNWGk4hnuEXGHHLNBw
+	 3YbFejhg5zKQ++K5RXOYmGp9rcobV3CII1dNBY9cbhEUaxrwzFISNJkaKx01lDEfWnO7i
+	 nXPRyoq7DypHeObrJisjkBnwtD0p8oWWK10Yi+CQtR4bLTw0pjmwVbblt7fVy71yYmcYm
+	 YSIAITjQCZnljikJuhokDBCvq0Hf7oxmx5nmCWaQ4E9FCYg02Ir7JGiJ/1fkhSrXzzA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793937644;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793938731;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=KPhYUVEWWmYUi2/I9/9kP0FrKE+M/XNnl1+StCf+7E8=;
-	b=dUTuHydH16SL7dGohKKCRO7wb8pJL5C6hEDa8oYwasua/lVNz3zbuLahaE67Glm6gbbR
-	 Olr1SCe98UYtWd9LeIhkcGCdW63MH4nuwHIogEvYD4G5LYR2/POfC2ZGhlf3tle0PzHZU
-	 6sRXSkb2c1wTb4nNyJnenuBVUgjz0UlU5NCpnFV71YZyG/IVY6XrLwiciAU0kSbi8+RsO
-	 Wu80aJVVQMSC5au+nkBFaqiaKscQrs/bhwF6DwJ7AxtOk2oJJb+UO6zWrark5R3aLcJ8o
-	 Cjj+3OMIO0s4CRHdxxC+12xAc0nlRSttwCX3WzDoF3rA2cbUrAtlqTMgtm5jjgXdjUw==
+	bh=hG0DQlDJ3fqB6/pU1ARHXwcxenrjgm5IkMXxY+iXdSU=;
+	b=wxtKGZfEXR2yR9R42ufSr9HKWfo7F4IaYkyNmW2vhXqeEc5pOB1XtRudvfPJWHRnWzu7
+	 42k2dwOaC115Itv1k67W3Xk4BLWbY9fZDRZ8E+whmnhZkJYcZ/nbjoNFICzMG+N/iM+zH
+	 GGEJC3CY8uHXD+kzPB6sSjveH5QuDstzXn5XOLAVUCpMCSb0RVWeSv4pWZmw6bgksrW0I
+	 pAJH7gzSPql6Eh44LuOnhV2Bhunw0a6NYIBwPf3m++N2FP/kJrkS1Jq6lCOjDOcooY1ZU
+	 MYcULnxT6dtJ+IgURmEvl38UV5fOUKk35HiZ3KpWLkgIjTKmRbz5V4nDHZNu1IdZbEw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZoJbSZwr;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Erpanaxs;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9767A606A31B
-	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 04:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28B2E606A32E
+	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 04:18:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZoJbSZwr
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9BC61F0089F;
-	Fri,  6 Nov 2026 04:00:42 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Erpanaxs
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DA691F008A3;
+	Fri,  6 Nov 2026 04:18:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793937643;
-	bh=KPhYUVEWWmYUi2/I9/9kP0FrKE+M/XNnl1+StCf+7E8=;
+	s=k20260515; t=1793938730;
+	bh=hG0DQlDJ3fqB6/pU1ARHXwcxenrjgm5IkMXxY+iXdSU=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=ZoJbSZwr0SUwKGuT8c5KI9T9LLziYztaXFxNCTGMaABIZkv5HV9XPbKxwPxa+whg0
-	 8wIFAZPAS49+6le1PYJh5EjsbWQkeRW/KBtjFqd3GSSk602lg/NwUq46SZ3+6VatBx
-	 OZHw3ZAhDCnmv5dQmVC6/Y+quu25Bbo6/fvDqtjwLdU1dkMEM7YdSIBs2kAveJAZuj
-	 70UCnJfUP8msmGenD8iyN7qLuffdn+Mbr1lhNL9H+e5jz1V19dJOPlS4Rp7Bj6VI/i
-	 nhvcZE+lWtpjvylh5f3dRXCkXJ/nTjDKGNZg+N2anQ66kixDKYiRwq52TO8ZbGe2/P
-	 wt31SMrSN5H2Q==
-Subject: Re: [PATCH v6] can: j1939: fix j1939_ecu refcount leak and related
- race conditions
+	b=Erpanaxsr3in46Nmxh+HAMfHSQceXU2qXxGWKO4ZnuYXj1xw/YSF4OpTmQcPfFYWt
+	 TASi6/MYu9WMkT2Hb/f2nKUlXzAbRU8EBC13dp200bTsg4xwV+HdfSr2vG/5pjZhyC
+	 LlagjHk85+2G0nRiQ+nkPPjqBl7PHV75gwOr1Zl1+SBzG9HU2Ev5yzW8MLYj1E5OmV
+	 GbAXu7kFdxxlR8Dv64aonWsFYk3jV0DmEbqhid6OLQjxwgrIiOt0cTE8xHhWsGqLVw
+	 MI6MT+IRAkYei7lRb55a6A9YMMcEE8gCcPKc9pQ9RoMv5FwiNlXmVTBYl1GJjWQCMP
+	 c/F0Vj7cSY+Lg==
+Subject:
+ Re: [PATCH net v6 1/2] can: j1939: account for timer references across rearm
 From: netdev-bot+sashiko@kernel.org
-To: penguin-kernel@I-love.SAKURA.ne.jp
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
- robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
- kuba@kernel.org
-Date: Fri, 06 Nov 2026 04:00:42 +0000
-Message-ID: <179393764229.488853.17334137875789332818@kernel.org>
-In-Reply-To: <c9de355a-d66e-4f28-9636-a6fef8fe8b84@I-love.SAKURA.ne.jp>
-References: <c9de355a-d66e-4f28-9636-a6fef8fe8b84@I-love.SAKURA.ne.jp>
-X-sashiko-severity: Critical
+To: zihanx@nebusec.ai
+Cc: linux-can@vger.kernel.org, robin@protonic.nl, o.rempel@pengutronix.de,
+ kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de,
+ lkp@intel.com, bst@pengutronix.de, dev.kurt@vandijck-laurijssen.be,
+ maxime.jayat@mobile-devices.fr, vega@nebusec.ai, kuba@kernel.org
+Date: Fri, 06 Nov 2026 04:18:49 +0000
+Message-ID: <179393872965.488853.13839884999102482015@kernel.org>
+In-Reply-To: <a05ee3472a73152e352fd7320f51431ae366e773.1793788955.git.zihanx@nebusec.ai>
+References: <a05ee3472a73152e352fd7320f51431ae366e773.1793788955.git.zihanx@nebusec.ai>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -64,10 +65,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 7 potential
+Thank you for your contribution! Sashiko AI review found 4 potential
 issue(s) to consider.
 
-Critical: 1 · High: 1 · Medium: 1 · Low: 4
+Critical: 0 · High: 0 · Medium: 1 · Low: 3
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -75,361 +76,226 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Critical] Double put of the ECU reference that
-  j1939_ecu_timer_handler() hands to the tasklet.
-- [High] can: j1939: deadlock between priv->lock and softirq_expiry_lock
-  on PREEMPT_RT
-- [Medium] Teardown ordering gap between the new ac_tasklet and module
-  unload.
-- [Low] The comment in j1939_ecu_timer_handler() says the
-  !test_and_set_bit()/test_and_clear_bit() pairing 'guarantees that the…
-- [Low] __j1939_ecu_release() documents a contract: 'priv->ecus readers
-  must validate with j1939_ecu_valid() or j1939_ecu_get()', because ECUs…
-- [Low] The comment in j1939_ecu_unmap_all() calls the timer cancellation
-  a speed-up only, saying j1939_ecu_get() in the tasklet 'will fail if…
-- [Low] For Step 3, the commit message says the fix works by 'making
-  j1939_ecu_get() fail unless three conditions ... are met'.
+- [Medium] The commit message for "can: j1939: account for timer
+  references across rearm" describes only timer reference accounting.
+- [Low] The commit message names no concrete trigger and no user-visible
+  impact for the refcount bug it fixes.
+- [Low] In j1939_xtp_rx_rts_session_active() the comment on the
+  receiver's forced deactivation is now stale.
+- [Low] Two new comments in j1939_xtp_rx_abort_one() promise a single
+  abort report: "Only the terminal path that wins the state transition…
 
 --
 
-can: j1939: fix j1939_ecu refcount leak and related race conditions
+can: j1939: account for timer references across rearm
 
-The patch defers ECU release to a workqueue, so the list_del() always
-runs under priv->lock. It also moves the address claim commit from the
-hrtimer handler to a tasklet, which avoids an AB-BA deadlock with
-hrtimer_cancel(). Finally, j1939_ecu_get() now fails once the netdev is
-no longer registered or rx_kref has dropped to zero, and pending address
-claim timers are cancelled in j1939_ecu_unmap_all().
+The patch adds a per-timer lock, a reference flag, a shutdown flag and a
+canceler count, so that txtimer and rxtimer each hold exactly one session
+reference while queued or running. It reworks the cancel, rearm and
+callback completion paths. It also gates the terminal state transitions
+(deactivate, cancel, complete, remote abort) on the session state.
 
-Link: https://lkml.kernel.org/r/179202402875.794844.18141702206663586949.b4-review@b4
+Link: https://bugtracker.nebusec.ai/f/11143
 
-> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index cdc3c0a719379..632e9aed6cf52 100644
-> --- a/net/can/j1939/bus.c
-> +++ b/net/can/j1939/bus.c
-
-[ ... ]
-
-> @@ -99,8 +138,17 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
->  void j1939_ecu_unmap_all(struct j1939_priv *priv)
->  {
->  	int i;
-> +	struct j1939_ecu *ecu;
->  
->  	write_lock_bh(&priv->lock);
-> +	/* Although j1939_ecu_get() from j1939_ecu_map_locked() from
-> +	 * j1939_ecu_tasklet_handler() will fail if netdev is no longer
-> +	 * registered or __j1939_rx_release() was called, cancel the 250ms
-> +	 * timer in order to speed up teardown operation.
-> +	 */
-
-[Severity: Low]
-Is this comment accurate for every caller? j1939_netdev_notify() also
-calls j1939_ecu_unmap_all() for NETDEV_DOWN:
-
-	case NETDEV_DOWN:
-		j1939_cancel_active_session(priv, NULL);
-		j1939_sk_netdev_event_netdown(priv);
-		j1939_ecu_unmap_all(priv);
-
-On that path reg_state is still NETREG_REGISTERED and bound sockets
-still hold rx_kref, so j1939_ecu_get() does not fail.
-
-There, the cancel clears bit 0, so the tasklet skips
-j1939_ecu_map_locked(). That looks like the only thing that stops a
-pending address claim from re-mapping the ECU after the interface goes
-down, so it is more than a speed-up.
-
-> +	list_for_each_entry(ecu, &priv->ecus, list)
-> +		j1939_ecu_timer_cancel(ecu);
-
-[Severity: High]
-Does this still deadlock on CONFIG_PREEMPT_RT?
-
-ecu->ac_timer is a HRTIMER_MODE_REL_SOFT timer. On PREEMPT_RT, if
-hrtimer_cancel() finds its callback running, it waits in
-hrtimer_cancel_wait_running(), which takes
-cpu_base->softirq_expiry_lock with spin_lock_bh().
-
-This loop and j1939_ac_process() both reach that wait through
-j1939_ecu_timer_cancel() with write_lock_bh(&priv->lock) held. That
-gives the ordering priv->lock -> softirq_expiry_lock.
-
-hrtimer_run_softirq() holds softirq_expiry_lock across all of the
-soft hrtimer callbacks it expires on that CPU, not just ac_timer.
-
-The transport timers session->txtimer and session->rxtimer are also
-HRTIMER_MODE_REL_SOFT, and they can take priv->lock from inside the
-callback:
-
-j1939_tp_txtimer()
-  j1939_send_one()
-    j1939_ac_fixup()
-      j1939_name_to_addr()        <- read_lock_bh(&priv->lock)
-      j1939_ecu_get_by_name()     <- read_lock_bh(&priv->lock)
-      j1939_ecu_unmap()           <- write_lock_bh(&priv->lock)
-
-That gives the reverse ordering, softirq_expiry_lock -> priv->lock.
-Lockdep should report a circular dependency on RT kernels.
-
-It can also hang at runtime:
-
-- CPU 1 holds priv->lock for write and sees ac_timer running on
-  CPU 0, so hrtimer_try_to_cancel() returns -1.
-- CPU 0 finishes j1939_ecu_timer_handler() before CPU 1 bumps
-  timer_waiters. hrtimer_sync_wait_running() then does not drop
-  softirq_expiry_lock.
-- __hrtimer_run_queues() on CPU 0 moves on to an expired txtimer or
-  rxtimer. That callback blocks on priv->lock while holding
-  softirq_expiry_lock.
-- CPU 1 then blocks on softirq_expiry_lock while holding
-  priv->lock.
-
-Step 2 takes priv->lock out of the ac_timer callback. On RT, though,
-the wait inside hrtimer_cancel() is effectively a wait on every soft
-hrtimer callback running on that CPU. The AB-BA deadlock described in
-the commit message is therefore still reachable there.
-
-Can j1939_ecu_timer_cancel() avoid waiting for the callback while
-priv->lock is held? Two options come to mind:
-
-- move the cancel outside priv->lock, or
-- use hrtimer_try_to_cancel().
-
-Both would need the bit 0 handshake to cope with a handler that is
-still running, so I'm not sure what the cleanest fix is here.
-
-[Severity: Low]
-__j1939_ecu_release() documents that priv->ecus readers must validate
-with j1939_ecu_valid() or j1939_ecu_get(). ECUs with kref == 0 stay on
-the list until __j1939_ecu_release_work() runs.
-
-This new loop does neither check. It calls j1939_ecu_timer_cancel(),
-which can call j1939_ecu_put(), on dead ECUs as well.
-
-If the refcounting is correct, a dead ECU has no armed timer and bit 0
-is clear, so nothing happens. With the double put described below in
-j1939_ecu_timer_cancel(), though, could a dead ECU still have bit 0 set
-and get put again here from a zero refcount?
-
-Should this loop skip ECUs that fail j1939_ecu_valid()?
-
-> +	/* Unmap any remaining mapped ECUs */
-
-[ ... ]
-
-> @@ -121,29 +170,99 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
->  
->  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
->  {
-> +	/* Drop the ref from j1939_ecu_timer_start() if j1939_ecu_timer_handler() was not called.
-> +	 * Don't drop the ref from j1939_ecu_timer_start() if j1939_ecu_timer_handler() was already
-> +	 * called.
-> +	 */
->  	if (hrtimer_cancel(&ecu->ac_timer))
->  		j1939_ecu_put(ecu);
-> +	/* Drop the ref from j1939_ecu_timer_handler() if test_and_set_bit() in
-> +	 * j1939_ecu_timer_handler() succeeded and j1939_ecu_tasklet_handler() is not yet called.
-> +	 * Don't drop the ref from j1939_ecu_timer_handler() if test_and_set_bit() in
-> +	 * j1939_ecu_timer_handler() failed or j1939_ecu_tasklet_handler() was already called.
-> +	 */
-> +	if (test_and_clear_bit(0, &ecu->flags))
-> +		j1939_ecu_put(ecu);
-
-[Severity: Critical]
-Can the ref taken in j1939_ecu_timer_handler() be dropped twice here?
-
-When j1939_ecu_timer_handler() wins test_and_set_bit(), it takes a ref
-with j1939_ecu_get(), schedules ac_tasklet, and leaves that ref for the
-tasklet.
-
-Suppose j1939_ecu_timer_cancel() runs after the handler fired but
-before the tasklet clears bit 0. For example, j1939_ac_process() runs
-under write_lock_bh(&priv->lock) for every received address claim
-frame, while the tasklet is spinning on that lock or still pending:
-
-j1939_ac_process()
-  j1939_ecu_timer_cancel()
-    hrtimer_cancel() returns 0
-    test_and_clear_bit(0, &ecu->flags) returns 1
-    j1939_ecu_put(ecu)              <- first drop of the handler's ref
-
-Nothing kills the scheduled tasklet, so it still runs:
-
-j1939_ecu_tasklet_handler()
-	if (!test_and_clear_bit(0, &ecu->flags))
-		goto out;
-	...
- out:
-	write_unlock_bh(&priv->lock);
-	/* Drop the ref from j1939_ecu_timer_handler(). */
-	j1939_ecu_put(ecu);             <- second drop
-
-The out label comes before the unconditional put, so the same ref is
-dropped a second time.
-
-Doesn't that leave ecu->kref one below the number of real holders?
-
-As an example, take a socket bind ref. An AC frame arrives and its
-timer fires. A second AC frame arrives inside the window, and then a
-later timer firing maps the ECU into priv->ents[]. The kref is now 1,
-but there are two holders.
-
-When the socket closes, release_work kfree()s the ECU while
-priv->ents[addr].ecu still points to it. After that, both
-j1939_ac_recv()->j1939_ecu_get_by_addr()->j1939_ecu_get() and
-j1939_ecu_unmap_all()->j1939_ecu_unmap_locked() would touch freed
-memory.
-
-If there is no extra holder, the early release would instead hit
-WARN_ON(hrtimer_cancel()) in __j1939_ecu_release_work(), or a refcount
-underflow when ac_timer fires on an ECU whose kref is 0.
-
-The new loop in j1939_ecu_unmap_all() calls j1939_ecu_timer_cancel()
-on every ECU. Any ECU with a pending tasklet at NETDEV_DOWN or
-__j1939_rx_release() time would therefore be put twice.
-
-Should the handler's ref be dropped in exactly one place? For example,
-the tasklet could put only when its own test_and_clear_bit() succeeds,
-or j1939_ecu_timer_cancel() could clear the bit without putting.
-
->  }
->  
->  static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
->  {
->  	struct j1939_ecu *ecu =
->  		container_of(hrtimer, struct j1939_ecu, ac_timer);
-> +
-> +	/* The corresponding j1939_ecu_put() is in
-> +	 * j1939_ecu_tasklet_handler() or j1939_ecu_timer_cancel().
-> +	 */
-> +	if (!j1939_ecu_get(ecu))
-> +		goto out;
-> +
-> +	/*
-> +	 * Since we can't commit this address change from this context because we need to hold
-> +	 * priv->lock for write before committing while hrtimer_cancel() (which waits for this
-> +	 * context to complete) is called with priv->lock held for write, schedule
-> +	 * j1939_ecu_tasklet_handler() (which takes priv->lock held for write from a different
-> +	 * context) to commit this address change.
-> +	 *
-> +	 * The !test_and_set_bit() in j1939_ecu_timer_handler() and
-> +	 * the test_and_clear_bit() in j1939_ecu_tasklet_handler() (or
-> +	 * j1939_ecu_timer_cancel()) pair guarantees that
-> +	 * the ref from j1939_ecu_timer_start() is dropped for exactly once.
-
-[Severity: Low]
-This isn't a bug, but does this comment name the right reference? The
-ref from j1939_ecu_timer_start() is dropped unconditionally at the end
-of this function:
-
-out:
-	/* Drop the ref from j1939_ecu_timer_start(). */
-	j1939_ecu_put(ecu);
-
-The bit 0 handshake actually controls the ref taken by this handler's
-own j1939_ecu_get().
-
-The comment above that j1939_ecu_get() also lists only
-j1939_ecu_tasklet_handler() and j1939_ecu_timer_cancel() as the
-matching puts. It leaves out the put in the else branch of this
-function.
-
-[ ... ]
-
-> @@ -152,6 +271,13 @@ struct j1939_ecu *j1939_ecu_create_locked(struct j1939_priv *priv, name_t name)
->  
->  	lockdep_assert_held(&priv->lock);
->  
-> +	/* Don't create a new ECU if netdev is no longer registered or
-> +	 * __j1939_rx_release() was called.
-> +	 */
-> +	if (READ_ONCE(priv->ndev->reg_state) != NETREG_REGISTERED ||
-> +	    !kref_read(&priv->rx_kref))
-> +		return ERR_PTR(-ENODEV);
-
-[Severity: Low]
-The commit message describes the Step 3 fix as:
-
-  Fix this problem by canceling pending address claim timers from
-  j1939_ecu_unmap_all() and making j1939_ecu_get() fail unless three
-  conditions listed below are met.
-
-This hunk adds a second check in j1939_ecu_create_locked() that returns
--ENODEV, and the commit message does not mention it. Could it be
-described there?
-
-This errno reaches bind() through j1939_local_ecu_get():
-
-	ecu = j1939_ecu_get_by_name_locked(priv, name);
-	if (!ecu)
-		ecu = j1939_ecu_create_locked(priv, name);
-	err = PTR_ERR_OR_ZERO(ecu);
-
-j1939_ecu_get_by_name() now also fails for existing ECUs while the
-device is unregistering. In that window, j1939_ac_fixup() returns
--ENODEV for address claim sends:
-
-		ecu = j1939_ecu_get_by_name(priv, skcb->addr.src_name);
-		if (!ecu)
-			return -ENODEV;
-
-So bind() and AC sendmsg() can now fail during teardown, where they
-used to succeed.
-
-> +
->  	ecu = kzalloc_obj(*ecu, gfp_any());
-
-[ ... ]
-
-> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-> index 5e5e6c228f225..22c272f8dfde2 100644
-> --- a/net/can/j1939/main.c
-> +++ b/net/can/j1939/main.c
-
-[ ... ]
-
-> @@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
->  	can_proto_unregister(&j1939_can_proto);
->  
->  	unregister_netdevice_notifier(&j1939_netdev_notifier);
-> +
-> +	/* We need to make sure that __j1939_ecu_release_work() is
-> +	 * no longer running before unmapping memory for this module.
-> +	 */
-> +	destroy_workqueue(j1939_ecu_wq);
->  }
+> Track one session reference for each timer lifetime spanning queued and
+> running states. Serialize timer restart, cancellation, and callback
+> completion so rearming an active timer cannot leak or lose its pin.
+>
+> Apply the same lifetime accounting to the RX timer and stop terminal
+> paths from leaving queued timers behind.
 
 [Severity: Medium]
-Can a pending ecu->ac_tasklet outlive this destroy_workqueue()?
 
-j1939_ecu_unmap_all() cancels the hrtimers. It does not kill or wait
-for an ac_tasklet that j1939_ecu_timer_handler() has already scheduled.
+The message only describes timer reference accounting. The patch also
+seems to change protocol behaviour and behaviour that userspace can see.
+Should these changes be described here, or split into separate patches?
 
-tasklet_kill() is only called from __j1939_ecu_release_work(). That
-only runs after the last ref is dropped, and the pending tasklet itself
-holds a ref.
+Compared with the baseline:
 
-Consider this sequence:
+j1939_xtp_rx_abort_one(): a remote ABORT used to always overwrite
+session->err with j1939_xtp_abort_to_errno(). It was then reported via
+j1939_sk_send_loop_abort() or J1939_ERRQUEUE_RX_ABORT. If the session is
+already in J1939_SESSION_WAITING_ABORT, it is now only deactivated.
+session->err keeps the local errno and nothing more is reported, which
+changes the sk_err and ee_errno that userspace sees.
 
-j1939_netdev_stop()
-  __j1939_rx_release()
-    j1939_ecu_unmap_all()     <- timers cancelled, tasklet still pending
-rmmod
-  j1939_module_exit()
-    destroy_workqueue(j1939_ecu_wq)
-<softirq processing delayed, e.g. ksoftirqd starved>
-j1939_ecu_tasklet_handler()   <- runs from unloaded module text
-  j1939_ecu_put()
-    __j1939_ecu_release()
-      queue_work(j1939_ecu_wq, ...)   <- workqueue already destroyed
+j1939_session_completed(): this now returns early unless the state is
+J1939_SESSION_ACTIVE. An EOMA or final broadcast DAT that arrives after a
+local abort no longer delivers se_skb via j1939_sk_recv(). It also no
+longer activates the next session.
 
-The comment here assumes nothing can queue release_work after
-destroy_workqueue(). Is there something that guarantees these tasklets
-have finished before this point?
+j1939_session_cancel(): this now returns bool. It deactivates at once if
+__j1939_tp_set_rxtimeout() cannot arm the abort timeout.
 
+j1939_tp_schedule_txtimer(): this silently does nothing unless the state
+is J1939_SESSION_ACTIVE and no cancel or shutdown is pending. Also,
+j1939_tp_set_rxtimeout() no longer rearms in J1939_SESSION_WAITING_ABORT.
+Later CTS/DAT handling can therefore no longer replace the abort timeout.
+
+j1939_simple_txnext(): the echo timeout is now armed after
+j1939_send_one() instead of before it.
+
+The synchronous j1939_session_timers_cancel() calls before
+j1939_session_cancel() are removed from the CTS, DAT and RTS error paths.
+
+The netdev_alert() calls in j1939_tp_txtimer() and j1939_tp_rxtimer()
+now print only when the caller wins the state transition.
+
+The new comment "Only the terminal path that wins the state transition
+reports abort" suggests the patch also fixes double-deactivation and
+double-report races. The message does not mention these. The follow-up
+commit "can: j1939: serialize TX with session shutdown" does not describe
+these changes either.
+
+Since this is tagged for stable, could the message say which hunks fix
+the refcount problem and which ones change protocol or reporting
+behaviour?
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..fbeb858956e03 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+
+[ ... ]
+
+> @@ -716,18 +868,68 @@ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
 >  
->  module_init(j1939_module_init);
+>  void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec)
+>  {
+> -	j1939_session_get(session);
+> +	j1939_session_list_lock(session->priv);
+> +	if (session->state != J1939_SESSION_ACTIVE) {
+> +		j1939_session_list_unlock(session->priv);
+> +		return;
+> +	}
+> +
+> +	spin_lock(&session->txtimer_lock);
+> +	if (session->txtimer_cancelers || session->txtimer_shutdown) {
+> +		spin_unlock(&session->txtimer_lock);
+> +		j1939_session_list_unlock(session->priv);
+> +		return;
+> +	}
+> +
+> +	/* One pin covers an armed timer and any callback/successor overlap. */
+> +	if (!session->txtimer_ref) {
+> +		j1939_session_get(session);
+> +		session->txtimer_ref = true;
+> +	}
+> +
+>  	hrtimer_start(&session->txtimer, ms_to_ktime(msec),
+>  		      HRTIMER_MODE_REL_SOFT);
+
+[Severity: Low]
+
+This isn't a bug, but the commit message does not name a concrete
+trigger or a user-visible impact for the refcount bug fixed here.
+
+In the baseline, j1939_tp_schedule_txtimer() always did:
+
+	j1939_session_get(session);
+	hrtimer_start(&session->txtimer, ...);
+
+j1939_xtp_rx_dat_one() calls it without cancelling first:
+
+	} else if (do_cts_eoma) {
+		j1939_tp_set_rxtimeout(session, 1250);
+		if (!session->transmission)
+			j1939_tp_schedule_txtimer(session, 0);
+
+A txtimer may already be queued, for example an -ENOBUFS retry scheduled
+10-25 ms out. In that case hrtimer_start() silently replaces it, and the
+queued timer's session reference leaks.
+
+The leaked session keeps its priv reference and netdev tracker (see
+j1939_session_destroy()). A DAT frame from the bus can therefore leave
+device unregister stuck.
+
+The message only says that rearming "cannot leak or lose its pin". It
+does not say which path leaks a pin and which path loses one (a possible
+use-after-free). The Link: also points to a tracker that is not public.
+
+Could the message describe the triggering path and the impact, so that
+stable backporters can judge it?
+
+[ ... ]
+
+> @@ -1371,13 +1691,32 @@ static void j1939_xtp_rx_abort_one(struct j1939_priv *priv, struct sk_buff *skb,
+>  		    session, j1939_xtp_ctl_to_pgn(skb->data), abort,
+>  		    j1939_xtp_abort_to_str(abort));
+>  
+> +	/* Only the terminal path that wins the state transition reports abort. */
+
+[Severity: Low]
+
+Is this comment accurate for RX sessions? It suggests userspace sees a
+single abort report, and so does "A local abort already owns the error
+report" below. However, j1939_session_destroy() queues another report
+when the last reference is dropped:
+
+	} else if (session->err) {
+		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+	}
+
+__j1939_sk_errqueue() does not de-duplicate RX_ABORT. It is gated only
+by SOF_TIMESTAMPING_RX_SOFTWARE. An RX session (session->sk == NULL) that
+is aborted via j1939_xtp_rx_abort_one(), j1939_session_cancel() or
+j1939_tp_rxtimer() therefore still produces a second RX_ABORT errqueue
+entry at destroy time.
+
+The duplicate report existed before this patch. Could the comment be
+reworded so it does not promise a single report?
+
+> +	j1939_session_list_lock(priv);
+> +	spin_lock(&session->rxtimer_lock);
+> +	rxtimer_shutdown = session->rxtimer_shutdown;
+> +	spin_unlock(&session->rxtimer_lock);
+> +	if (!rxtimer_shutdown && session->state == J1939_SESSION_ACTIVE) {
+> +		session->err = j1939_xtp_abort_to_errno(priv, abort);
+> +		deactivate = j1939_session_deactivate_locked(session);
+> +		report = deactivate;
+> +	} else if (!rxtimer_shutdown &&
+> +		   session->state == J1939_SESSION_WAITING_ABORT) {
+> +		/* A local abort already owns the error report. */
+> +		deactivate = j1939_session_deactivate_locked(session);
+> +	}
+
+[ ... ]
+
+> @@ -1727,7 +2065,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
+>  			     __func__, session, skcb->addr.sa, skcb->addr.da,
+>  			     session->last_cmd);
+>  
+> -		j1939_session_timers_cancel(session);
+>  		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+>  		if (session->transmission) {
+>  			j1939_session_deactivate_activate_next(session);
+
+[Severity: Low]
+
+Both j1939_session_timers_cancel() calls are now gone from
+j1939_xtp_rx_rts_session_active(). Is the comment just below still
+accurate?
+
+		} else if (session->state == J1939_SESSION_WAITING_ABORT) {
+			/* Force deactivation for the receiver.
+			 * If we rely on the timer starting in j1939_session_cancel,
+			 * a second RTS call here will cancel that timer and fail
+			 * to restart it because the state is already WAITING_ABORT.
+			 */
+			j1939_session_deactivate_activate_next(session);
+
+The first j1939_session_cancel() now moves the receiver to
+J1939_SESSION_WAITING_ABORT. It also arms the abort rxtimer through
+__j1939_tp_set_rxtimeout(..., true). The second j1939_session_cancel()
+fails the state < J1939_SESSION_WAITING_ABORT check and does nothing.
+
+Nothing in this function cancels the abort timer any more. The timer
+stays queued until j1939_session_deactivate() cancels it asynchronously.
+
+The reason given in the comment no longer applies. Should the comment be
+updated?
+
+[ ... ]
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/c9de355a-d66e-4f28-9636-a6fef8fe8b84%40I-love.SAKURA.ne.jp
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/cover.1793788955.git.zihanx%40nebusec.ai
