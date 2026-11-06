@@ -1,102 +1,67 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1793961045;
-	b=ufDuCJz7viSC7bjZqgNyjhe1jrmr/sgCmfZ5/8CSytDOV9HpOuYl2gDZ8hzzziukhDrG
-	 wvUrTrAtEYnTFRy0Nu2uVprZnHpf0ta7b74w20ZvYV9Usb7LyALyJ07GljcX7JFNukzig
-	 e4x5GEvNlaV4GZewZQUfptXXZGI4lWp1JOPAqjo1kT6pmmeozVc7V3/YGOM913Rb1kiv4
-	 0okD2r41AhsCQaO7OMuS1f/sPHJ7oTyim0EPWViejvJE6HcvMfA8+CDltAd1zc1diMzyb
-	 B2lCL100B+3ZL9Zjp+jYp++j1WvYHTafya/5m/AMJCbKRvXGqVDZXpWaBSJqTaQPfRg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793961045;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Sent-From:X-URL:X-Accept-Language:
-	 X-Accept-Content-Type;
-	bh=alorjCB2vLHR6tDixDHf4C5Wx5SHAKCg+N4icCofI2g=;
-	b=Tc/3+RP7E0lpWWbb7Eaw7FkJ+Vg6vUuZR5WONJIDRxQVvkHMLZe0GD32Pub0SreMqITX
-	 eon43ZSSRVLFiuoeZ7WR68NC0TTFTGHD4FiR9lxg961nVH1JC64JdX7L6y3qcmQb7bhp8
-	 na6uezrq+StUTeiTWGPMO8PnMWZNAyLgosvQfj12g05L9X3C9RloIQfbcVRlF5e2+kvD2
-	 1V435OZwoyVtcpS2MG0QQCqC0rvRflH3i+jDuYOJxs+cvMaKcguJxZ4sWXto1FK9zmw/t
-	 MgPWAXCf0HnS9C8bhngWYQB7X0f2fw/AP5jAOAn9rh6HDpsClzd8YwWUAxeAV2OYddg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=MTm4++4z;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=185.11.138.130
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1793969442;
+	b=ka3R3c9OeI6EbTSVetNT2tUUma7MTqUS4OhKhwWzRIJPuwWLs0sphYq+2Lp71Y4TYGcy
+	 aTYoG3wcRWjcBWGfzp2vo8m7tBPxbPj8SpJFpiFMT+ZGj5ViDglybXt8IJ4e9ILJxDioJ
+	 UivAbLZm3b2LkfqPi//tVM7j25hjw49LePfc45sTR2Hgaei2yVNqasGcRgql2KjgRFHsS
+	 PUT9kJ0ZleBjCaYyu5Ap9h3biAaEBk2M7d0fqCqhkVbQt5AZk8FUni1blq+vlH7c3Ddt+
+	 SIi0mxJqjvWExUApXB4Y/BrhzcUEtiwrWrb9z5bN8raQ1o8MdgRv46TsfV7sNo2jWHg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793969442;
+	h=DMARC-Filter:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
+	 Content-Type;
+	bh=FBjIBgDWbZCo9SaA6U+cSq8TU+erFs29CF/2hr/QbOQ=;
+	b=rs33cMiQ4p/3lauanmdpOydODjrRuRgHmZwDoeDe4hTrEJYR1GtilB8b70yZ9gtMzjkS
+	 h+fw02flY3XVQIjg4ifO6RpydDT8AjNnXp1Z6fXaTojDpcaSEAHrDBnP0Xmu6pMM/x79u
+	 oeP5nUXw13XL9f3PcKyzy/jv9h7UbQAa0Jb292aEHttURjm/MxX3Khd6QIe7Tlq6ynpLW
+	 coPWkuafxbomvE+eTA4ogrvCGsaDSk+6D9tF6N5I+vF+tOpEpcmVfdgj0yQJKjB27oP9s
+	 45YD63jPs3ncn6UybHHfgUm2LkGGAxp59AHJK8BvFqCsvqT7l6GHAgWUkKuKKnrMBjg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=sntech.de;
+	spf=pass smtp.mailfrom=sntech.de;
+	dkim=pass header.d=sntech.de header.i=@sntech.de header.a=rsa-sha256 header.s=gloria202408 header.b=WHEv8Bmz;
+	arc=none smtp.remote-ip=185.11.138.130
+Received: from gloria.sntech.de (gloria.sntech.de [185.11.138.130])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78715606A32F;
-	Fri,  6 Nov 2026 10:30:43 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 78715606A32F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 078A1606A330;
+	Fri,  6 Nov 2026 12:50:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 078A1606A330
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=sntech.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sntech.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=MTm4++4z
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6BC0F201899;
-	Fri, 06 Nov 2026 11:30:41 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793961041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=alorjCB2vLHR6tDixDHf4C5Wx5SHAKCg+N4icCofI2g=;
-	b=MTm4++4zZE3cF1bOPL3ASaUqGTo6ro/Xt7aV+HqQGT6TDPKKzxILbk8w5srELvLTixOUby
-	UhPQ9j60INfrSW3vWEMME9G1Kv0QV8Qaa2j7VYk/KKcId5SzJa0RO6m4ztdCvFNziUpNT6
-	oaD8H4fEWOgg9QObT5Up0AyTryqAWUVTkVS06rLfOaU4QeylEacQm/HBrOysiovbzhjxhi
-	fhPkwRIGVUKICC1iEPvKdbfD9GYVzpNDRokt4/fQR3YTFHvWRoabchTCXFxXJRyElNjSJx
-	KfMLhXduKjP3U4KTJUsFqJxpd6WvjAC86YeGNrXCzdJarCEEiCACt2AObJ23dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1793961041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=alorjCB2vLHR6tDixDHf4C5Wx5SHAKCg+N4icCofI2g=;
-	b=PosyiYm7UHZONqYtYGXHZm4XWtbr6hTilcrjnEBL8USdD+m5gVkucQFToAOOhoPOwuV+X6
-	iEunG9y3l5L+aOud9I+RKHOjFM1djR+vFlew9lspfc0yjQgaW/WqT75HrJoeVk28u80C8o
-	S04Jdo2wtg7d4g0glc2Ml7ISuNMWGj2b1a07Sn5RNVuie6/IpI5cgRoTw4Hxe4aZmL1ffV
-	YrYojE+u26I9rGuAyBjctSLJoalm3V0u9xqalR2h2a4QypvAqioZ8bZUbnYU/sTAD5sJwH
-	zMb/FLgcx2iAzXMkJoMTQ8nufrN1ttACC3k6jUZDi7RkLKOMF1NsMDloQqjcfw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1793961041; a=rsa-sha256;
-	cv=none;
-	b=gbDjEEhNkPCdFqLdqwmi71d8wOvqb9Ehq1DFF5jYeATA9ZPue/hOPLv5OPOvR2KlmUS1yR
-	rWDdbPpa7NrbfaikMOZBpNJiVS+wKG6trDig7k43wJsJJASUuZfeRZ90JC3UlBUvd5Fk0c
-	ikJvLlQ6HZ73dCh+fgMFyC2A5tYWLieCDBHbKKLPGz11brvPoGloc/ndc4t0vPp8TadL0n
-	rAyPvOGk9KkV0LoHN+xCIBEyhmDrJJrK61tcehksvnq/gkUZItz68pWDQoPdsHPeZmR49F
-	aUWRyrL8ewoOWblQQrrXdXkI9rashonzWQlfH3taSbrSvy33u/lZDtHKBdGZeQ==
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xPHDV-002tDr-1A;
-	Fri, 06 Nov 2026 11:30:41 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xPHDV-00000000JsL-12s1;
-	Fri, 06 Nov 2026 11:30:41 +0100
-Date: Fri, 6 Nov 2026 11:30:41 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Robin van der Gracht <robin@protonic.nl>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Shuah Khan <shuah@kernel.org>
-Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Felix Maurer <fmaurer@redhat.com>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Alexander =?utf-8?B?SMO2bHps?= <alexander.hoelzl@gmx.net>,
-	Quchaosheng <quchaosheng000406@163.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: Re: [PATCH can-next v2 0/9] selftests: can: add J1939 socket and
- transport tests
-Message-ID: <au2sUdymftKrvVEv@pengutronix.de>
-References: <20261104-j1939-selftests-v2-0-cf797c83317b@pengutronix.de>
+	dkim=pass (2048-bit key, unprotected) header.d=sntech.de header.i=@sntech.de header.a=rsa-sha256 header.s=gloria202408 header.b=WHEv8Bmz
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=sntech.de;
+	s=gloria202408; h=Content-Type:Content-Transfer-Encoding:MIME-Version:
+	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Reply-To;
+	bh=FBjIBgDWbZCo9SaA6U+cSq8TU+erFs29CF/2hr/QbOQ=; b=WHEv8BmzZlBskbtiRsC4Yz/6tF
+	lVJsH/z7pFdPbcrteUfO96lrIzu6yFa42ask2ACLtB8O6uGMAjJ5FkSqxMKs8yMyT7o7Hs0ZuH/2N
+	4GkPXRnZ7UYI7WmuDLcVG55y5hJJHUVGaRsnVFAvyX9zV/fjb9Uw1RfdJCS97gPuNrho07j/aW+1F
+	pOJern4i9oeuE7j8otJl9949EwHRfUv+7LRx9Kd4TbmcROCdlLLufc3Qteg0RmyjsU3rG6JeoPs2K
+	k++dAKZdxZIbbcOTn+0G93w14T0clcHEu2gUYgi3SOM1wcSDowGQdPNb/nXXKvmf4sWXrtqwqUcHH
+	TaIrvW+A==;
+From: Heiko =?UTF-8?B?U3TDvGJuZXI=?= <heiko@sntech.de>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>,
+ "David S. Miller" <davem@davemloft.net>,
+ Wolfgang Grandegger <wg@grandegger.com>,
+ Oliver Hartkopp <socketcan@hartkopp.net>, kernel@pengutronix.de,
+ Eric Dumazet <edumazet@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>,
+ Randy Dunlap <rdunlap@infradead.org>, 1579567540@qq.com
+Cc: Cunhao Lu <1579567540@qq.com>, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, netdev@vger.kernel.org,
+ linux-doc@vger.kernel.org, stable@vger.kernel.org
+Subject:
+ Re: [PATCH net v7 0/7] can: fix bus-off restart and device close races
+Date: Fri, 06 Nov 2026 13:50:20 +0100
+Message-ID: <16255046.uLZWGnKmhe@diego>
+In-Reply-To: <20261106-rockchip-canfd-restart-close-v7-0-accdb11bc845@qq.com>
+References: <20261106-rockchip-canfd-restart-close-v7-0-accdb11bc845@qq.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -106,46 +71,42 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20261104-j1939-selftests-v2-0-cf797c83317b@pengutronix.de>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-On Wed, Nov 04, 2026 at 05:17:15PM +0100, Oleksij Rempel wrote:
-> net/can/j1939 has had no in-tree selftests. This series adds a kselftest
-> suite for the J1939 socket layer and the TP/ETP transport, run on vcan with
-> a CAN_RAW socket as an independent on-the-wire peer.
-> 
-> The timer checks are relaxed by default, for slow CI machines;
-> J1939_STRICT_TIMING selects tight bounds. Not covered yet: the ETP abort
-> and timeout paths, and a received Connection Abort on a kernel TX
-> session, which the stack currently ignores.
-> 
-> Known issue: the stack updates a session from the loopback echo of its
-> own CTS, RTS and DT frames, and a CAN_RAW peer can see that echo before
-> the stack does. A peer frame that follows quickly can then cancel the
-> session and fail a multi test. I have not seen this in QEMU runs. The fix
-> belongs in the stack, not in these tests.
-> 
-> I used an LLM coding assistant to write most of the test code and to
-> review it. I have read, edited and run all of it myself, on vcan under
-> QEMU.
-> 
-> v1: https://lore.kernel.org/all/20261014154435.3577983-1-o.rempel@pengutronix.de/
+Hi,
 
-pw-bot: cr
+Am Freitag, 6. November 2026, 10:37:19 Mitteleurop=C3=A4ische Normalzeit sc=
+hrieb Cunhao Lu via B4 Relay:
+> This work started from a real failure on a production robot using a
+> LubanCat-5IO with an RK3588. RX continued, but the TX queue remained
+> stopped and subsequent sends returned ENOBUFS. The interface still
+> reported ERROR-ACTIVE, and the hardware indicated neither a bus-off
+> condition nor a pending TX request.
 
-Changes requested by both sashiko instances
+[...]
 
-Thank you!
+> This series depends on the three patches in "can: skb: make CAN skb
+> freeing safe in any IRQ context" [1] and the three patches in "can:
+> rockchip_canfd: fix TX stalls and races" [2].
+>=20
+> [1] https://lore.kernel.org/linux-can/tencent_CD05F020BAFB2537F5D1F4CBB42=
+5588EA80A@qq.com/
+> [2] https://lore.kernel.org/linux-can/tencent_E25C9BE6689264E4138A464803B=
+810FDFD09@qq.com/
 
-Best Regards,
-Oleksij
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Both these series are from july and seemingly from before you started
+using the b4-relay. So they may or may not have survived the kernel
+releases and their threading is broken both on lore and in any maibox
+they arrived in.
+
+And if there haven't been any responses to them since then, I'd think
+they have been lost or so.
+
+So I'd suggest rolling both your dependencies forward on top of the can
+tree and sending them as a new version, so that reviewers can find them?
+
+
+Heiko
+
+
