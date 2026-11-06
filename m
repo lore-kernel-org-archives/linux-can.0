@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793943323;
-	b=XrdVURo3p/1TiaGIo1P7XGPJtbn3tkVBnTvQrPJvgMchuSPMwwxbRSGreIe90eKs75xq
-	 WJgZoGjflOF7oL7dpGP4yro8hoyQb5EdVX3qTOqTGoERA9RE0HU4b483wYZZ/4YJTbybm
-	 /4mTsGT/w8FQa1t11fqAdo3jEt6vdlWEwHEoKiwonj2xRsFT5EA75gSx0FC3dxW3Weght
-	 EilnasDmeBgh5BuoOEdSumCjNfidyhDnXg3hQF2eC5hVk1L6aDjQ8qaWu6klC+aPFei0B
-	 w+If/9do5+EqTTHEYAGlWYcpfFMGdnoCmpiUU5hCxq8f2pC89TZok2LyX+je8QAEu0A==
+	t=1793943333;
+	b=pOVTIeYRHF5UorIaSHE2trcGaJ/HGBmASBESk3D5NRlRGHMgYqe43C7Zv0bGgmJP2T66
+	 9ejI2xozVbwvKXLZPqyndL17TuLKbCueNMO1KgiRyB6kfxMT3wDXmzdGPtW/9tImdT0n6
+	 7XJ0bTE4JokesM/56bawTAiMPHIkQbag/4BU+atAjEyUC9LviCVzFSHvSgbH+TFGF9iJe
+	 bi/d7OcskoIUJs8gm96lEn4Nnr+SLKOSyHSXDOEbAlZ5iknzN1gjCxpovrVyFmhZLo/+r
+	 1zIXPz5Y6mTPjsZTG7iqt/T6zjpPby+6xrGmRohkX7YurUaxZ12vDP0769EEiMQpLeA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793943323;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793943333;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=P3vxheL6ZI89R8wXXiNHiC3EY/wvfxAe4QhhrVPhFdY=;
-	b=20SpNbtk8yIRveudIcECYMuSXW68h0O++YOgbyB2QfVDv0PcWlBzDAglHgtP+n9zrMLU
-	 24XYcD4HyKx+a93xWovYNzMnDUGClhLLML6mp+v/TGW9Mi5PZEs5ToFIyQ23A1gnuTvMb
-	 YiHf2hOF+LKzKrfMhUZhecIqTvtBf1+Y5dU2Z/5xeqBnCvagCLfw0qpSXrDsWoACRG9uF
-	 E0GN6wYpXX8V16ED2Ebmg+/qgvV4nqRFqxEgSqPegNkEECT6pvXZ+j6xMsiDeCzAZFIQ4
-	 AbUl6jAEVJzBdkZxG+TqurH6CWsz6HXYJ9rP9TRgbJDaNBkxwlblfTuAy6/ifXVHoow==
+	bh=oR45jZ8MrDX685bi4FPGnx1DblWLTg6bSBZ2c8luTN0=;
+	b=R59ZVL03Qhmzt5tTqplqHMJhjJiZEvkzGPC/dzQmmoRyINnI/RtmhWdu9/AdKYuKi3RQ
+	 ur9tMbXcSBFtpM05By4kXlxETkbqWpG25ZelJeUWTOL3g3OvWGgQaRsO56PRBbLjh8XXO
+	 L0ySdS1dTDeU7YUqVuU714ptVmBRwFTIKXHPx0OQ5/JZA5PuVjPsRMYJx1uDo/ork1jWl
+	 1oXlZ0aK/gu/x8pUdmIu9ZJCbTb7+jwth8ddygPoTDolkZLOlG3L/NTVymSRX4LFCiRM4
+	 lYMBmM5X/B4thGnIYD8lB6x1uPCAdNF4covHAgWrw4izxqIMVhR2Vppm2qrvTwYlRkg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QDQxl67k;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Miaq4Rb2;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76489606A32C;
-	Fri,  6 Nov 2026 05:35:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C29F9606D811;
+	Fri,  6 Nov 2026 05:35:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=QDQxl67k
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62DBF1F008A7;
-	Fri,  6 Nov 2026 05:35:22 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Miaq4Rb2
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A43B1F00901;
+	Fri,  6 Nov 2026 05:35:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793943323;
-	bh=P3vxheL6ZI89R8wXXiNHiC3EY/wvfxAe4QhhrVPhFdY=;
+	s=k20260515; t=1793943327;
+	bh=oR45jZ8MrDX685bi4FPGnx1DblWLTg6bSBZ2c8luTN0=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=QDQxl67kdj4Wz0SHkX3hkC+uhkJcyypq4OLH9AI1t/9eRdT6fuG9e6c2mK3xtgJlO
-	 8QeoXaHcq37MA79aR0fPZHzrefW/mrAGJMA5Oag6VVTGyVazINZWt/gfVfgm+t6cXb
-	 oD+HRNQAoprabgRGHDvlconApCG/wKiThB9RHQnDET+RSwz6dTB/R7HQ3KTb2tfNvE
-	 j6dF9et9HRxxgjlW3xiZRSyeazZy70AzYbRfLyhGR5Vv/NX6FvxYyFMMZhxs13iVcP
-	 WJBgy4UcR9QkBs2TfKUuJoLUljSFR+U4QMSWXY138lW1wzaJIeTegzu/TuvK2zzs5n
-	 WOk46HK/qPUow==
-Subject: Re: [PATCH can-next v2 5/9] selftests: can: add J1939 addressing and
- concurrency tests
+	b=Miaq4Rb2mGgS6lT2H44hAOqJDDsmBBA+39ZEtB1AfjnpSRjbXettBV74FvwKtL/Ob
+	 nZkt+hWyyzyWdy8Bu6s26oMAJzkEnQpmUmeyFnFofRpdzzr6qulaUERiC4BjZGjwS4
+	 H1dx0d5iQihaqxuBKDn5dk9JapnqyRd9vy3tF/udsD84IL+02QLy+cU877sd8qFben
+	 cgXN9uUqATj/4D9nRnxZEyyHrRTV9tLpEc/Gs18Nn1awr+21QGcN86nQrOULK88HBy
+	 qrKXDgT6pjgyPI5brUJ3qSNDk542vMg3tq07aFy/gsIHC5ltWHjKnRY3uGFMR4n0t1
+	 T0Z5QnKVykDVg==
+Subject: Re: [PATCH can-next v2 9/9] selftests: can: check SO_J1939_PROMISC
+ receive effect
 From: netdev-bot+sashiko@kernel.org
 To: o.rempel@pengutronix.de
 Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
@@ -50,11 +50,11 @@ Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
  fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net,
  quchaosheng000406@163.com, penguin-kernel@I-love.SAKURA.ne.jp,
  kuba@kernel.org
-Date: Fri, 06 Nov 2026 05:35:21 +0000
-Message-ID: <179394332195.488853.12586024266286059916@kernel.org>
-In-Reply-To: <20261104-j1939-selftests-v2-5-cf797c83317b@pengutronix.de>
-References: <20261104-j1939-selftests-v2-5-cf797c83317b@pengutronix.de>
-X-sashiko-severity: Medium
+Date: Fri, 06 Nov 2026 05:35:26 +0000
+Message-ID: <179394332621.488853.1609910990759756381@kernel.org>
+In-Reply-To: <20261104-j1939-selftests-v2-9-cf797c83317b@pengutronix.de>
+References: <20261104-j1939-selftests-v2-9-cf797c83317b@pengutronix.de>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -67,174 +67,117 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 0 (1) · Medium: 1 · Low: 0
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [Medium] test_j1939_addr.c avoids the kernel's address-claim hold-off
-  race only on the success path.
-
-Pre-existing issues:
-- [High] This problem wasn't introduced by this patch, but it is a kernel
-  bug that the patch works around rather than fixes.
+- [Low] In TEST_F(j1939_opts, promisc_receive)
+  (tools/testing/selftests/net/can/test_j1939_opts.c), the post-promisc…
 
 --
 
-selftests: can: add J1939 addressing and concurrency tests
+selftests: can: check SO_J1939_PROMISC receive effect
 
-This adds test_j1939_addr, a selftest for J1939 name based addressing,
-address claiming with the kernel's 250 ms hold-off, address claim
-conflicts and concurrent TP sessions. The test that loses its address
-keeps a socket open until the winning name is mapped, which avoids a hang
-when the interface is deleted.
+This adds a J1939 selftest that checks SO_J1939_PROMISC changes what the
+RX path delivers. It sends two probe frames, each missing either the bound
+address or the bound PGN, once before and once after enabling the flag.
+Only the frames sent after enabling the flag are expected to arrive.
 
-> diff --git a/tools/testing/selftests/net/can/test_j1939_addr.c b/tools/testing/selftests/net/can/test_j1939_addr.c
-> new file mode 100644
-> index 0000000000000..02f9e504b567f
-> --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_j1939_addr.c
-> @@ -0,0 +1,679 @@
+> diff --git a/tools/testing/selftests/net/can/test_j1939_opts.c b/tools/testing/selftests/net/can/test_j1939_opts.c
+> index 10d0e37984027..bbf2698de7d94 100644
+> --- a/tools/testing/selftests/net/can/test_j1939_opts.c
+> +++ b/tools/testing/selftests/net/can/test_j1939_opts.c
 
 [ ... ]
 
-> +TEST_F(j1939_addr, name_addressing)
-> +{
-
-[ ... ]
-
-> +	ASSERT_TRUE(forge_address_claim_ok(self->raw, self->ifindex, SA_RX,
-> +					   NAME_RX, &t0))
-> +		TH_LOG("failed to inject address claim: %d", errno);
+> +static const struct {
+> +	uint8_t da;
+> +	pgn_t pgn;
+> +} promisc_probes[] = {
+> +	{ SA_RX, PGN_B },	/* the bound address, another PGN */
+> +	{ SA_OTHER, PGN_A },	/* another address, the bound PGN */
+> +};
 > +
-> +	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-> +	ASSERT_GE(self->tx, 0);
-> +	ASSERT_TRUE(j1939_connect_name_ok(self->tx, self->ifindex, NAME_RX,
-> +					  J1939_NO_ADDR, PGN_TEST))
-> +		TH_LOG("connect to peer NAME failed: %d", errno);
-> +
-> +	ASSERT_TRUE(send_after_claim_ok(self->tx, tx_buf, sizeof(tx_buf), NULL,
-> +					&t0, &elapsed_ms))
-> +		TH_LOG("send to peer NAME failed after %ld ms: %s",
-> +		       elapsed_ms, strerror(errno));
-
-[Severity: Medium]
-If one of these fails, does the selftest run hang instead of reporting
-the failure?
-
-forge_address_claim_ok() has just caused the kernel to arm the 250 ms
-ac_timer for NAME_RX. If j1939_open() or j1939_connect_name_ok() fails
-here, the ASSERT_GE()/ASSERT_TRUE() ends the test. Then
-FIXTURE_TEARDOWN(j1939_addr) closes tx, rx and raw right away, so the last
-J1939 socket on the vcan closes while the timer is still pending.
-
-The commit message describes what happens next:
-
-  If the last socket closes while the hold-off timer of a claim is still
-  pending, the kernel keeps a reference to the interface and deleting it
-  hangs.
-
-So the ip link delete in cleanup() in j1939_lib.sh would block forever. A
-regression in connecting by name, which this test is meant to catch,
-would then look like a hang and not like a test failure.
-
-In strict mode, send_after_claim_ok() seems to leave the same window
-open. It gives up once elapsed_ms is past aclaim_max_ms():
-
-	if (*elapsed_ms > max_ms) {
-		if (ret == want_len)
-			errno = ETIMEDOUT;
-		return false;
-	}
-
-With J1939_STRICT_TIMING that limit is 300 ms after t0. The kernel only
-arms its 250 ms timer when it processes the claim, which is after t0, and
-the soft hrtimer can fire later still.
-
-The same thing looks possible in a few other places:
-
-  address_claim_send(): send_data_after_claim_ok() fails in strict mode
-  while the NAME_CLAIM timer is still pending.
-
-  ac_conflict_probe_ok(): the baseline send_data_after_claim_ok() returns
-  false in the same way, and the caller's ASSERT_TRUE() tears down at once.
-
-  ac_conflict_lose(): ASSERT_GE(self->rx, 0) aborts before the wait for
-  NAME_LOWER, or the strict-mode send_after_claim_ok() times out while
-  that timer is still pending.
-
-Could every exit path wait out the hold-off, for example by keeping a
-J1939 socket open until ACLAIM_MAX_MS after the last claim, before the
-sockets are closed?
-
-[ ... ]
-
-> +/* A higher-priority competing claim takes the address away from us. */
-> +TEST_F(j1939_addr, ac_conflict_lose)
+> +/* SO_J1939_PROMISC delivers frames that do not match the bound (addr, pgn). */
+> +TEST_F(j1939_opts, promisc_receive)
 > +{
+> +	uint8_t tx_buf[CAN_MAX_DLEN];
+> +	uint8_t rx_buf[CAN_MAX_DLEN];
+> +	int enable = 1;
+> +	size_t i;
+> +
+> +	fill_pattern(tx_buf, sizeof(tx_buf));
 
 [ ... ]
 
-> +	/*
-> +	 * Keep the sockets open until the kernel maps NAME_LOWER at the end
-> +	 * of its hold-off. If the last socket closes while that timer is
-> +	 * pending, the kernel keeps a reference to the interface and
-> +	 * deleting it hangs.
-> +	 */
-> +	self->rx = j1939_open(self->ifindex, SA_RX, J1939_NO_PGN);
-> +	ASSERT_GE(self->rx, 0);
+> +	for (i = 0; i < ARRAY_SIZE(promisc_probes); i++) {
+> +		ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
+> +					    self->ifindex, J1939_NO_NAME,
+> +					    promisc_probes[i].da,
+> +					    promisc_probes[i].pgn))
+> +			TH_LOG("sendto probe %zu failed: %d", i, errno);
+> +		EXPECT_EQ(recv_timeout(self->rx, rx_buf, sizeof(rx_buf),
+> +				       J1939_NEG_RECV_TIMEOUT_MS), -1)
+> +			TH_LOG("probe %zu was received without promisc", i);
+> +	}
 
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch. The
-hang that this comment works around looks like a netdev reference leak in
-the kernel. Should it be fixed in net/can/j1939 instead of being avoided
-in the test?
+[ ... ]
 
-When the last J1939 socket closes, j1939_netdev_stop() ends up in
-__j1939_rx_release():
+> +	for (i = 0; i < ARRAY_SIZE(promisc_probes); i++) {
+> +		ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
+> +					    self->ifindex, J1939_NO_NAME,
+> +					    promisc_probes[i].da,
+> +					    promisc_probes[i].pgn))
+> +			TH_LOG("sendto probe %zu failed: %d", i, errno);
+> +		EXPECT_TRUE(recv_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
+> +					   J1939_RECV_TIMEOUT_MS))
+> +			TH_LOG("probe %zu not received despite promisc", i);
 
-net/can/j1939/main.c:__j1939_rx_release() {
-	j1939_can_rx_unregister(priv);
-	j1939_ecu_unmap_all(priv);
-	j1939_priv_set(priv->ndev, NULL);
-	mutex_unlock(&j1939_netdev_lock);
+[Severity: Low]
+Can this check confirm that the message it read is really
+promisc_probes[i]?
+
+tx_buf is filled once by fill_pattern(), so all four frames carry the same
+payload. recv_verify_ok() passes src = NULL, and recvfrom_verify_ok() in
+j1939_tests.h only checks the length and the payload:
+
+tools/testing/selftests/net/can/j1939_tests.h:recvfrom_verify_ok() {
+    ...
+	ok = n == want_len && !memcmp(want, rx_buf, len);
+    ...
 }
 
-j1939_ecu_unmap_all() only unmaps. Nothing on this path calls
-j1939_ecu_timer_cancel(), whose only caller is j1939_ac_process().
+This means a stale or duplicated message in the rx queue can pass the
+check for a different probe. For example, on a buggy kernel:
 
-If a timer armed by j1939_ecu_timer_start() fires after this, the handler
-maps the ECU again:
+1. The pre-promisc probe 1 ({SA_OTHER, PGN_A}) gets delivered after the
+   300 ms J1939_NEG_RECV_TIMEOUT_MS window, so the
+   EXPECT_EQ(recv_timeout(...), -1) check still passes.
 
-net/can/j1939/bus.c:j1939_ecu_timer_handler() {
-	write_lock_bh(&priv->lock);
-	...
-	j1939_ecu_map_locked(ecu);
-	...
-	j1939_ecu_put(ecu);
-	write_unlock_bh(&priv->lock);
-}
+2. Post-promisc probe 0 then reads that stale probe 1 message and passes.
 
-j1939_ecu_map_locked() takes a new ECU reference, and the handler drops
-only the reference the timer held. The ECU then stays mapped in a priv
-that is no longer attached to the netdev.
+3. Post-promisc probe 1 reads the real probe 0 and passes, even if
+   promisc never delivered probe 1.
 
-j1939_netdev_notify() looks up priv with j1939_priv_get_by_ndev(), which
-now returns NULL. So NETDEV_DOWN and NETDEV_UNREGISTER never unmap the
-ECU, and __j1939_ecu_release() never runs. That leaks
-ecu->priv_dev_tracker, the priv reference and priv->dev_tracker, and
-unregister_netdevice() waits forever.
+Both the leak before promisc and the missing delivery after promisc would
+go unnoticed. A kernel that delivers duplicates could hide a missing probe
+in the same way.
 
-The claim can come from a remote ECU on the bus as well as from a local
-socket. Creating CAN sockets needs no capability. So it looks like an
-unprivileged user can make the interface undeletable by closing the last
-J1939 socket within 250 ms of a claim.
+Under normal timing this does catch the regression the commit message
+targets (flag stored but ignored), because every post-promisc
+recv_verify_ok() times out.
+
+The v2 notes say the test should "check the address and the PGN filter
+each on its own". The kernel reports the PGN in msg_name, and the two
+probes use different PGNs. Could the post-promisc loop call
+recvfrom_verify_ok() with a struct sockaddr_can and check that
+src.can_addr.j1939.pgn matches promisc_probes[i].pgn? Giving each probe
+its own payload would work too.
+
+> +	}
+> +}
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261104-j1939-selftests-v2-0-cf797c83317b%40pengutronix.de
