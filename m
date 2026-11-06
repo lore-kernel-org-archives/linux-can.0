@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793943321;
-	b=qhp0okjvLbL33Znqd+6l25lWMGtn4BMxcezJVwJAxSjPiEdZLDNmJ4El87MR48tw7nZ9
-	 8dhuQ3FmtNwGd2pQDV0S37YPBzAdiy7UEfy6gl6K1sp2jLd3umAtYEMhxO9qUW8LTxncV
-	 sCJAYmI5mkLWVMxpjJo2SmGj4vKNLyGPvuPwBKixj/jrM6qhDXzzUnp1u8lFp6mSS6j/V
-	 5h9XltXw+x4MUlzk0J7hTRfzgv+jswajFxHMIEKyNuuteDb75ei7HMTFjR3eOtA51rfuP
-	 U39IFAf2Sb9cXQnAfZIOIdCJNmRZUM9TOnP38hy8bckoje9sXaXSHYMaKt+PxAVJ9KQ==
+	t=1793943322;
+	b=np8VL0SgT5E+l+9NzPG93IC82yIIWrR4UUE7W54ANKbA3khfLHPAb+dld2AMvolSW7Gv
+	 AbjsTeGnxGIIt0whsRnU+DKAs8wYaPbitlYkAfKknO74ImsrmRPS14z7oun16Brzflogi
+	 JAQPoTSQt8xlQS82UptN7OVTaM7Z6F/Pslrah3mZLQxJwl+yQiLAHtUPw1dCy1qiDpHIH
+	 9gu8n4Q1FPh+AqCy3sj88EvLSEwyKjXizj0wunFXwhz2XX8PU5GjcJJLDJehjLz+6osIu
+	 L3xj+fZwKQsFRKayVaarofbjFJwxuUjaI8V1w6MXkfeHtatj97TrTb/cvWcibi1NDNg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793943321;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793943322;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=pX+NvG8+Kj0J1k2J8K2rs6MLsIUkVgGLa6ndvTHhW3w=;
-	b=R0R0oEwuel+olwJ5T8nFmVTqOeBDmLxK09fLNckJh8YBv/bxeKc/KV+j+IWGDc2E+gTk
-	 zbEFX0p6ZUotWuSYgfPlNSbGhXUcplxRx55QP2OjvbYRAYG+mOI5oDgZwLMTXRawuz38T
-	 I5UG3JlLbYju3jYcfH74TgNQ5wXMXMObryy/Dc0+G/6ccP6OfUHitUs2ZHH5UemDlvqMJ
-	 Q2RWYpemMnJyXbOVHvnN2eU9HyBDUnRE+kBkpb6A1rIa3L7HYYJN3KaHIuF+IbSlh5X+3
-	 5ipMtGK+2wu/yDyT+vxAr2LtteIxJp80so0g8DVdfq5tO2/yNTqRPwlF65Q94/H+I5Q==
+	bh=OOYVP+JrH/MejRBr0U9Q78+J6izmVGQ8vTbVJwy+l48=;
+	b=Vt86yN67YgwfjtjznafOORIbPoczmliXHnEn/u31EG7NMIO97Qu12mZNF+rPjWhUj62H
+	 Mtg6sGxcFTO+owKu32lcBYCntC4WezWQBtTPup2Ah0oTxEda9JB203XyTRC7CShILhiv0
+	 ljSGRIs0j7WgF82oG0EUonv1QMpPfp0dGYfRO5j2dFtWMi/qadrvJbmXw/JtnwJbBCArw
+	 74I9rH0kabP43HxUSfQ1nrh53pLTssLpZkdAUwfZcvkIB5paXg1pzPJqVF4ZpqT29c2Fa
+	 0yxrW2ALzKyUJE4iTPXlR+POBbD6hqSQnerGE0BWVItq0eB0HtmwADIfGDzrZky/xkA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=olGuOgYN;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TXm23sMh;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93B3606A331;
-	Fri,  6 Nov 2026 05:35:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33F45606A32D;
+	Fri,  6 Nov 2026 05:35:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=olGuOgYN
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B525B1F008A1;
-	Fri,  6 Nov 2026 05:35:19 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=TXm23sMh
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F1361F008A2;
+	Fri,  6 Nov 2026 05:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793943320;
-	bh=pX+NvG8+Kj0J1k2J8K2rs6MLsIUkVgGLa6ndvTHhW3w=;
+	s=k20260515; t=1793943321;
+	bh=OOYVP+JrH/MejRBr0U9Q78+J6izmVGQ8vTbVJwy+l48=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=olGuOgYN4aR9a968WbIjAySkVeCpR8qDz2lKZ5W6UcoG5UUrZ/9fOqlaKfM8st5v9
-	 niO1N/rQHoWuhVStsdQY6IVuiqubwcTSdNVvO5WhQrqYGTeET2LfjNv6bLK+aEvq9d
-	 I4XRv4JkXyRtcWowgyWZB13YAyohHHSpzVLP5vTmCHbnSsb/OKG2L4XBQiqTWIR+ip
-	 hvqkZr8JPRUfanRJZ/nhgEg8Dt3qjrOLbJ2oWNQXun2NE1P7nxWzi7m4g36Gw4x9v7
-	 SL3Pc7ERJyFyMlh2Lou+AO/cZeozGjhP0jy8LIhE1Q+U9uxfH/O8GaB5DiBlb7SwDB
-	 tj8e7pNitDq9w==
-Subject:
- Re: [PATCH can-next v2 3/9] selftests: can: add J1939 base functional tests
+	b=TXm23sMhPxscBoivAtrSVdhSx00uXma35aHFlXf91bv5PyiOUPNv5tuvzqk6YuI5j
+	 vtcVuUpkvL5Yy87pt0ikeQ2EAyYCfaepah0LMHbDlEEOJY2QDNnDx95sAMbTDsRl2A
+	 LXvm3TmBnEVJks18YQM9Lx7/SxCnXiuZYld8RY+tMgUfoACyBoRkPrdtMXS36lZu2r
+	 7/Lzix2aXglvjULH7mk1+bRaz3HqyW9UhbsAPfQ+vXHtzwqAW+SwjtiIub3M2U6swK
+	 MAd8XpoWGwBjlw/J5aLujsdqGkPfWqIp7oB9gsPNvY68h57wXLz/DOMNYoOAAsoKIB
+	 pn0T0WKd0hdcQ==
+Subject: Re: [PATCH can-next v2 4/9] selftests: can: add J1939 socket option
+ and metadata tests
 From: netdev-bot+sashiko@kernel.org
 To: o.rempel@pengutronix.de
 Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
@@ -50,10 +50,10 @@ Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
  fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net,
  quchaosheng000406@163.com, penguin-kernel@I-love.SAKURA.ne.jp,
  kuba@kernel.org
-Date: Fri, 06 Nov 2026 05:35:19 +0000
-Message-ID: <179394331932.488853.13385068395595078685@kernel.org>
-In-Reply-To: <20261104-j1939-selftests-v2-3-cf797c83317b@pengutronix.de>
-References: <20261104-j1939-selftests-v2-3-cf797c83317b@pengutronix.de>
+Date: Fri, 06 Nov 2026 05:35:20 +0000
+Message-ID: <179394332064.488853.14819383071528044530@kernel.org>
+In-Reply-To: <20261104-j1939-selftests-v2-4-cf797c83317b@pengutronix.de>
+References: <20261104-j1939-selftests-v2-4-cf797c83317b@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -73,106 +73,94 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The `bam_broadcast` test in
-  tools/testing/selftests/net/can/test_j1939_base.c sends a TP_SIZE…
+- [Low] The new selftest treats a kernel setsockopt contract violation as
+  expected behaviour, so the test can never catch it.
 
 --
 
-selftests: can: add J1939 base functional tests
+selftests: can: add J1939 socket option and metadata tests
 
-This adds a selftest for the SAE J1939 socket interface. It opens a CAN_J1939
-sender socket and a receiver socket on vcan. It checks payload integrity for
-single frame, TP and ETP sizes, the boundaries between them, and single-frame
-and BAM broadcast.
+This adds a kselftest for J1939 socket options and send metadata. It
+covers the SO_J1939_FILTER whitelist, SO_J1939_SEND_PRIO as seen on the
+wire via a CAN_RAW peer, unconnected sendto(), a wrong-family bind,
+SO_J1939_ERRQUEUE TX completion, and set/getsockopt round-trips of
+several options.
 
-> diff --git a/tools/testing/selftests/net/can/test_j1939_base.c b/tools/testing/selftests/net/can/test_j1939_base.c
-> new file mode 100644
-> index 0000000000000..d01f4c2c186cb
-> --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_j1939_base.c
+> diff --git a/tools/testing/selftests/net/can/j1939_tests.h b/tools/testing/selftests/net/can/j1939_tests.h
+> index 78eb35f5b6b06..639e000ac5e86 100644
+> --- a/tools/testing/selftests/net/can/j1939_tests.h
+> +++ b/tools/testing/selftests/net/can/j1939_tests.h
 
 [ ... ]
 
-> +static bool roundtrip_ok(FIXTURE_DATA(j1939_base) *self, size_t size)
+> @@ -671,6 +673,71 @@ static inline bool recv_cm_cmd_ok(int raw, uint8_t want_pf, uint8_t want_da,
+>  	return frame->data[J1939_CM_CMD_OFF] == want_cmd;
+>  }
+>  
+> +/*
+> + * Enable the error queue of s with SOF_TIMESTAMPING_TX_ACK only: a finished
+> + * send then queues one TX-completion ACK, or an abort entry if the session
+> + * fails (__j1939_sk_errqueue() in net/can/j1939/socket.c). The kernel reads
+> + * these flags when the session ends, so this may come after the send.
+> + */
+> +static inline bool errqueue_enable_ack_ok(int s)
 > +{
-
-[ ... ]
-
-> +	errno = 0;
-> +	ok = send_recv_verify_ok(self->tx, self->rx, tx_buf, size,
-> +				 J1939_RECV_TIMEOUT_MS);
-
-[ ... ]
-
-> +/* BAM (broadcast transport). */
-> +TEST_F(j1939_base, bam_broadcast)
-> +{
-> +	ASSERT_TRUE(pair_up_ok(self, SA_RX, J1939_NO_ADDR, PGN_PDU2, true));
-> +	EXPECT_TRUE(roundtrip_ok(self, TP_SIZE));
+> +	int tstamp_flags = SOF_TIMESTAMPING_TX_ACK;
+> +	int enable = 1;
+> +
+> +	/* setsockopt(SO_J1939_ERRQUEUE) returns the flag value, not 0 */
+> +	if (setsockopt(s, SOL_CAN_J1939, SO_J1939_ERRQUEUE, &enable,
+> +		       sizeof(enable)) < 0)
+> +		return false;
 
 [Severity: Low]
-Is J1939_RECV_TIMEOUT_MS long enough for the whole BAM transfer in
-bam_broadcast?
+Should the test accept this as expected behaviour, or is this a kernel bug
+the test should catch?
 
-roundtrip_ok()->send_recv_verify_ok()->recvfrom_verify_ok() waits with a
-single poll() for the fully reassembled message:
+The comment matches what j1939_sk_setsockopt_flag() in
+net/can/j1939/socket.c does today:
 
-tools/testing/selftests/net/can/j1939_tests.h:recvfrom_verify_ok() {
+net/can/j1939/socket.c:j1939_sk_setsockopt_flag() {
     ...
-	if (poll(&pfd, 1, timeout_ms) > 0)
-		n = recvfrom(s, rx_buf, len + 1, 0, (struct sockaddr *)src,
-			     &src_len);
-    ...
+	lock_sock(&jsk->sk);
+	if (tmp)
+		jsk->state |= flag;
+	else
+		jsk->state &= ~flag;
+	release_sock(&jsk->sk);
+	return tmp;
 }
 
-The kernel paces broadcast transport at a fixed 50 ms. The first delay comes
-after the BAM CM frame:
+It returns the int that userspace passed in, not 0. For SO_J1939_PROMISC
+and SO_J1939_ERRQUEUE that value goes back to userspace unchanged, so a
+successful setsockopt() returns 1 instead of 0. A caller that checks
+if (setsockopt(...)) will treat that success as a failure.
 
-net/can/j1939/transport.c:j1939_session_tx_rts() {
-    ...
-	if (dat[0] == J1939_TP_CMD_BAM) {
-		j1939_tp_schedule_txtimer(session, 50);
-    ...
-}
+A negative optval such as -1 also sets the flag and then returns -1. The
+caller then sees errno EPERM even though the state has changed.
 
-Every broadcast DT frame except the last one adds another 50 ms:
+This kernel behaviour dates back to 2018 (9d71dd0c700999), so this patch
+did not introduce it. However, the check above only tests for < 0, and the
+comment presents the positive return value as normal.
 
-net/can/j1939/transport.c:j1939_session_tx_dat() {
-    ...
-		pdelay = j1939_cb_is_broadcast(&session->skcb) ? 50 :
-			j1939_tp_packet_delay;
-    ...
-}
+sockopt_roundtrip() in test_j1939_opts.c does the same:
 
-TP_SIZE is 128 bytes, which is 19 DT packets. So delivery can't finish in
-less than about 50 + 18 * 50 = 950 ms. send() returns once the session is
-queued, so the poll() starts at about the same time as the session. That
-leaves about 1050 ms of the 2000 ms as headroom for a slow VM.
+	if (setsockopt(s, SOL_CAN_J1939, optname, &val, sizeof(val)) < 0)
+		return -1;
 
-The comment in j1939_tests.h describes the timeout as a wait for one frame:
+As a result, getsockopt_promisc and getsockopt_errqueue cannot detect the
+wrong return value on the set side. The file header still says they cover
+"set/getsockopt round-trips" of these options.
 
-/*
- * How long to wait for an expected frame. Not a protocol timer: a guess with
- * room for a slow VM.
- */
-#define J1939_RECV_TIMEOUT_MS	2000
+The last patch in the series, "selftests: can: check SO_J1939_PROMISC
+receive effect", repeats the pattern in promisc_receive. It uses
+ASSERT_GE(setsockopt(...), 0) with a comment saying SO_J1939_PROMISC
+returns the flag value (1) on success. No patch in the series changes
+net/.
 
-For BAM, though, it limits the whole message, and about half of it goes to
-the protocol's own pacing.
-
-Could this fail spuriously on a loaded KASAN or lockdep QEMU-TCG runner, where
-the soft hrtimers that drive the 19 packets are deferred to ksoftirqd?
-
-The timeout also doesn't grow with the message size. If TP_SIZE were raised
-above about 280 bytes (more than 40 BAM packets), wouldn't bam_broadcast fail
-every time?
-
-The unicast TP and ETP tests aren't affected, since j1939_tp_packet_delay
-defaults to 0. J1939_RECV_TIMEOUT_MS, its comment, and the bam_broadcast size
-are unchanged at the end of the series.
-
-Would it make sense to scale the timeout with the number of BAM packets, or
-to use a separate, longer timeout for broadcast transport?
+Could j1939_sk_setsockopt_flag() return 0 instead, with the tests checking
+for == 0? If not, could the commit message at least say this is a known
+deviation from the setsockopt() contract?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261104-j1939-selftests-v2-0-cf797c83317b%40pengutronix.de
