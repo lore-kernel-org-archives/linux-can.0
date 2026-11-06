@@ -1,56 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793938732;
-	b=SqSPLgFFaXzUmoU/WpDwcAowNklMqAbNmy8yS82+tAcI4DvDuRff2jY5SYvV6EIFLIsB
-	 m7AZgwrGNzZyVdP7VLYDmcDbQ4QithzMgNE6UutUV2dRvIoKTvsri49XMidX680GYbLR9
-	 /2xV3ysOnRl3WM8PLPXZ/4EYWW1eYRjaD1SINogOSddfbM2F0AO+uHj0mCTY68hzbhbNr
-	 vaAbgRMp20pG9mpDRhXlw1sJjwKIRl66JD1bfJJ4Xx9FDQ5KYr+mZMRT+8ynSWK+LVuUr
-	 j20J8OsaFjRlkDhfFwcc1gGsoKaPwmzWYjP6AVeq9x5tpnbRClKXk635MM/ax7sRsLg==
+	t=1793943321;
+	b=qhp0okjvLbL33Znqd+6l25lWMGtn4BMxcezJVwJAxSjPiEdZLDNmJ4El87MR48tw7nZ9
+	 8dhuQ3FmtNwGd2pQDV0S37YPBzAdiy7UEfy6gl6K1sp2jLd3umAtYEMhxO9qUW8LTxncV
+	 sCJAYmI5mkLWVMxpjJo2SmGj4vKNLyGPvuPwBKixj/jrM6qhDXzzUnp1u8lFp6mSS6j/V
+	 5h9XltXw+x4MUlzk0J7hTRfzgv+jswajFxHMIEKyNuuteDb75ei7HMTFjR3eOtA51rfuP
+	 U39IFAf2Sb9cXQnAfZIOIdCJNmRZUM9TOnP38hy8bckoje9sXaXSHYMaKt+PxAVJ9KQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793938732;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793943321;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=K7eIM7ifS5Tzk54oYdIpR4pQDHU9665Colcy1CawcKc=;
-	b=Z4aolzTZt20TCBwuSjoaMtPbaN7nYL2kcqvRHqxnLiTvpy4ZVzGRgVFRUoBNoDNCKVbJ
-	 u01CfRi43KdGnC7LkDy+tZCifdDI3Zkc0jv6wZ5NnGifygVvVeJR+n8XvaE9qmqBh2fVY
-	 GE79LLVFhohn1RCljtS+ddLTA9/HZnESmyxGSK+UVon8buv4IBJY8eeu6TWw+Dau766Sg
-	 RhoXAf6WeVxCm3LuTkm+0eojhTi2auMqNSH3+qKUnoBt1f9JztovuIw+UUlMsIEzBs6/q
-	 g6fOCV/a3n1hc/i4ITtaSWa/U+FGezi7nZSAuN3XRks3JzSmdVynJMrbG1uUfb1VuKQ==
+	bh=pX+NvG8+Kj0J1k2J8K2rs6MLsIUkVgGLa6ndvTHhW3w=;
+	b=R0R0oEwuel+olwJ5T8nFmVTqOeBDmLxK09fLNckJh8YBv/bxeKc/KV+j+IWGDc2E+gTk
+	 zbEFX0p6ZUotWuSYgfPlNSbGhXUcplxRx55QP2OjvbYRAYG+mOI5oDgZwLMTXRawuz38T
+	 I5UG3JlLbYju3jYcfH74TgNQ5wXMXMObryy/Dc0+G/6ccP6OfUHitUs2ZHH5UemDlvqMJ
+	 Q2RWYpemMnJyXbOVHvnN2eU9HyBDUnRE+kBkpb6A1rIa3L7HYYJN3KaHIuF+IbSlh5X+3
+	 5ipMtGK+2wu/yDyT+vxAr2LtteIxJp80so0g8DVdfq5tO2/yNTqRPwlF65Q94/H+I5Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kHbuTrs4;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=olGuOgYN;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7085B606A330
-	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 04:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D93B3606A331;
+	Fri,  6 Nov 2026 05:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kHbuTrs4
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 530C21F008A1;
-	Fri,  6 Nov 2026 04:18:51 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=olGuOgYN
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B525B1F008A1;
+	Fri,  6 Nov 2026 05:35:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1793938732;
-	bh=K7eIM7ifS5Tzk54oYdIpR4pQDHU9665Colcy1CawcKc=;
+	s=k20260515; t=1793943320;
+	bh=pX+NvG8+Kj0J1k2J8K2rs6MLsIUkVgGLa6ndvTHhW3w=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=kHbuTrs4yuIyalGmgmAzy+qcY1PMF4cG+PL2z4fyvG2zSZW5UbjAffCb0a2LayDFG
-	 lgw86DsEIuwIrTHV/sQzJmK8/A2jlPUv8EH3dqch3meBxbMqSANflOgb09J6UhB8AF
-	 x2myHo+ByPDSvxHDOaJz0eKrT/ezBjlyup831uY+bgpui3ez30qeqYR1WAGB8GI1fR
-	 DGYbWtPK9HGh+YvXF5CDcIbzclPrTVnewFZltugTffb8z5+DMufMtG5tsd/2g/xOuT
-	 86SeIDy5EZLNoNq3jcgQF1MEICrr6nxSxlOEXa629diUqt2Dzm9nuFeLkaXQrm4EL7
-	 uAWAN6Ruo3Ctg==
-Subject: Re: [PATCH net v6 2/2] can: j1939: serialize TX with session shutdown
+	b=olGuOgYN4aR9a968WbIjAySkVeCpR8qDz2lKZ5W6UcoG5UUrZ/9fOqlaKfM8st5v9
+	 niO1N/rQHoWuhVStsdQY6IVuiqubwcTSdNVvO5WhQrqYGTeET2LfjNv6bLK+aEvq9d
+	 I4XRv4JkXyRtcWowgyWZB13YAyohHHSpzVLP5vTmCHbnSsb/OKG2L4XBQiqTWIR+ip
+	 hvqkZr8JPRUfanRJZ/nhgEg8Dt3qjrOLbJ2oWNQXun2NE1P7nxWzi7m4g36Gw4x9v7
+	 SL3Pc7ERJyFyMlh2Lou+AO/cZeozGjhP0jy8LIhE1Q+U9uxfH/O8GaB5DiBlb7SwDB
+	 tj8e7pNitDq9w==
+Subject:
+ Re: [PATCH can-next v2 3/9] selftests: can: add J1939 base functional tests
 From: netdev-bot+sashiko@kernel.org
-To: zihanx@nebusec.ai
-Cc: linux-can@vger.kernel.org, robin@protonic.nl, o.rempel@pengutronix.de,
- kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de,
- lkp@intel.com, bst@pengutronix.de, dev.kurt@vandijck-laurijssen.be,
- maxime.jayat@mobile-devices.fr, vega@nebusec.ai, kuba@kernel.org
-Date: Fri, 06 Nov 2026 04:18:50 +0000
-Message-ID: <179393873091.488853.8495060637149077532@kernel.org>
-In-Reply-To: <f9f8aa1cd4eb28c018aa35ec85a1032003d4421a.1793788955.git.zihanx@nebusec.ai>
-References: <f9f8aa1cd4eb28c018aa35ec85a1032003d4421a.1793788955.git.zihanx@nebusec.ai>
+To: o.rempel@pengutronix.de
+Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
+ shuah@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net,
+ quchaosheng000406@163.com, penguin-kernel@I-love.SAKURA.ne.jp,
+ kuba@kernel.org
+Date: Fri, 06 Nov 2026 05:35:19 +0000
+Message-ID: <179394331932.488853.13385068395595078685@kernel.org>
+In-Reply-To: <20261104-j1939-selftests-v2-3-cf797c83317b@pengutronix.de>
+References: <20261104-j1939-selftests-v2-3-cf797c83317b@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,112 +73,106 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The commit message covers only part of what the patch changes.
+- [Low] The `bam_broadcast` test in
+  tools/testing/selftests/net/can/test_j1939_base.c sends a TP_SIZE…
 
 --
 
-can: j1939: serialize TX with session shutdown
+selftests: can: add J1939 base functional tests
 
-This patch adds a per-session tx_send_lock and a tx_send_shutdown flag. It
-routes session frame transmission through a new j1939_session_tx_send()
-helper, which drops frames with -ESHUTDOWN once shutdown has been
-published or the state is no longer ACTIVE. The state writes in activate,
-deactivate and cancel now happen under the new lock.
+This adds a selftest for the SAE J1939 socket interface. It opens a CAN_J1939
+sender socket and a receiver socket on vcan. It checks payload integrity for
+single frame, TP and ETP sizes, the boundaries between them, and single-frame
+and BAM broadcast.
 
-Link: https://bugtracker.nebusec.ai/f/11143
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index fbeb858956e03..390923a050469 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
+> diff --git a/tools/testing/selftests/net/can/test_j1939_base.c b/tools/testing/selftests/net/can/test_j1939_base.c
+> new file mode 100644
+> index 0000000000000..d01f4c2c186cb
+> --- /dev/null
+> +++ b/tools/testing/selftests/net/can/test_j1939_base.c
 
 [ ... ]
 
-> @@ -1350,10 +1390,13 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
->  
->  static bool j1939_session_fail(struct j1939_session *session, int err)
->  {
-> -	bool deactivate = false;
-> +	bool deactivate = false, tx_send_shutdown;
->  
->  	j1939_session_list_lock(session->priv);
-> -	if (session->state == J1939_SESSION_ACTIVE) {
-> +	spin_lock(&session->tx_send_lock);
-> +	tx_send_shutdown = session->tx_send_shutdown;
-> +	spin_unlock(&session->tx_send_lock);
-> +	if (!tx_send_shutdown && session->state == J1939_SESSION_ACTIVE) {
->  		session->err = err;
->  		deactivate = j1939_session_deactivate_locked(session);
->  	}
+> +static bool roundtrip_ok(FIXTURE_DATA(j1939_base) *self, size_t size)
+> +{
+
+[ ... ]
+
+> +	errno = 0;
+> +	ok = send_recv_verify_ok(self->tx, self->rx, tx_buf, size,
+> +				 J1939_RECV_TIMEOUT_MS);
+
+[ ... ]
+
+> +/* BAM (broadcast transport). */
+> +TEST_F(j1939_base, bam_broadcast)
+> +{
+> +	ASSERT_TRUE(pair_up_ok(self, SA_RX, J1939_NO_ADDR, PGN_PDU2, true));
+> +	EXPECT_TRUE(roundtrip_ok(self, TP_SIZE));
 
 [Severity: Low]
+Is J1939_RECV_TIMEOUT_MS long enough for the whole BAM transfer in
+bam_broadcast?
 
-This isn't a bug, but the commit message only covers part of this change:
+roundtrip_ok()->send_recv_verify_ok()->recvfrom_verify_ok() waits with a
+single poll() for the fully reassembled message:
 
-  Prevent a timer callback from sending session frames after a concurrent
-  terminal state transition. Serialize the send with the state change and
-  reject frames once shutdown has been published.
-
-That description matches j1939_session_tx_send(). The patch also adds
-tx_send_shutdown checks to paths that do not send frames:
-
-  - j1939_session_fail() stops recording session->err and stops
-    deactivating once tx_send_shutdown is set.
-
-  - __j1939_session_cancel() returns early, so no abort frame is sent and
-    j1939_sk_send_loop_abort() is not called. The abort frame is also now
-    sent while tx_send_lock is held.
-
-  - j1939_session_cancel() gets an outer copy of the same check.
-
-  - __j1939_tp_set_rxtimeout() gets a new check.
-
-  - The new -ESHUTDOWN result skips the netdev_alert() in
-    j1939_session_tx_dat() and is silently dropped in j1939_tp_txtimer().
-
-Are most of these checks needed? Only j1939_session_timers_shutdown_locked()
-sets tx_send_shutdown. It runs under active_session_list_lock and sets
-rxtimer_shutdown in the same section, and rxtimer_shutdown is never
-cleared:
-
-j1939_session_timers_shutdown_locked() {
-	lockdep_assert_held(&session->priv->active_session_list_lock);
-	j1939_session_tx_send_shutdown(session);
-	spin_lock(&session->rxtimer_lock);
-	session->rxtimer_shutdown = true;
-	spin_unlock(&session->rxtimer_lock);
+tools/testing/selftests/net/can/j1939_tests.h:recvfrom_verify_ok() {
+    ...
+	if (poll(&pfd, 1, timeout_ms) > 0)
+		n = recvfrom(s, rx_buf, len + 1, 0, (struct sockaddr *)src,
+			     &src_len);
+    ...
 }
 
-As a result, the new check in __j1939_tp_set_rxtimeout() repeats the
-existing rxtimer_shutdown test.
+The kernel paces broadcast transport at a fixed 50 ms. The first delay comes
+after the BAM CM frame:
 
-The check in __j1939_session_cancel() can never fire either, because
-j1939_session_cancel() already tests the same flag under the same list
-lock.
+net/can/j1939/transport.c:j1939_session_tx_rts() {
+    ...
+	if (dat[0] == J1939_TP_CMD_BAM) {
+		j1939_tp_schedule_txtimer(session, 50);
+    ...
+}
 
-Behaviour only seems to change in j1939_simple_recv(). It publishes the
-shutdown while the state is still ACTIVE, drops the list lock, drains the
-timers, and only deactivates later:
+Every broadcast DT frame except the last one adds another 50 ms:
 
-	j1939_session_list_lock(priv);
-	session = j1939_session_get_simple(priv, skb);
-	if (session)
-		j1939_session_timers_shutdown_locked(session);
-	j1939_session_list_unlock(priv);
+net/can/j1939/transport.c:j1939_session_tx_dat() {
+    ...
+		pdelay = j1939_cb_is_broadcast(&session->skcb) ? 50 :
+			j1939_tp_packet_delay;
+    ...
+}
 
-Within that window, a txtimer error such as -ENOMEM from
-j1939_simple_txnext() reaches j1939_session_fail(). It is now ignored,
-where before it set session->err and deactivated the session. That may be
-intended, since the echo has already confirmed the send.
+TP_SIZE is 128 bytes, which is 19 DT packets. So delivery can't finish in
+less than about 50 + 18 * 50 = 950 ms. send() returns once the session is
+queued, so the poll() starts at about the same time as the session. That
+leaves about 1050 ms of the 2000 ms as headroom for a slow VM.
 
-Could the commit message mention this change and explain why it is safe?
+The comment in j1939_tests.h describes the timeout as a wait for one frame:
 
-The patch is tagged for stable and adds a new lock around j1939_send_one()
-on every session TX path. Could the message also describe the user-visible
-symptom being fixed? For example, stray TP.DT, CTS, EOMA or simple frames
-showing up on the bus after a concurrent terminal transition.
+/*
+ * How long to wait for an expected frame. Not a protocol timer: a guess with
+ * room for a slow VM.
+ */
+#define J1939_RECV_TIMEOUT_MS	2000
 
-Could the redundant checks also be dropped?
+For BAM, though, it limits the whole message, and about half of it goes to
+the protocol's own pacing.
+
+Could this fail spuriously on a loaded KASAN or lockdep QEMU-TCG runner, where
+the soft hrtimers that drive the 19 packets are deferred to ksoftirqd?
+
+The timeout also doesn't grow with the message size. If TP_SIZE were raised
+above about 280 bytes (more than 40 BAM packets), wouldn't bam_broadcast fail
+every time?
+
+The unicast TP and ETP tests aren't affected, since j1939_tp_packet_delay
+defaults to 0. J1939_RECV_TIMEOUT_MS, its comment, and the bam_broadcast size
+are unchanged at the end of the series.
+
+Would it make sense to scale the timeout with the number of BAM packets, or
+to use a separate, longer timeout for broadcast transport?
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/cover.1793788955.git.zihanx%40nebusec.ai
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261104-j1939-selftests-v2-0-cf797c83317b%40pengutronix.de
