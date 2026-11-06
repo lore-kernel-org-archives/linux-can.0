@@ -1,88 +1,155 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.51
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1793952240;
-	b=zD/v0Cf11VDn/PirHKKtF7yd6lrTK4nyoQv3eL7zgXgLRO7Gr6hbzU9tMerLU28NJVgQ
-	 1MsfFMiKT8ffmlqQsJn+1ApSfuDMeZxlTtUUGhmuw5Hy7WF2G/otVqO9B+omNdmplyTy7
-	 Bdi4LJKgMeoS0fGKaBqPrC+wlQ0cqRgCBwws1gEhMR2/twN6798AMERaAlhdi+uK3nIkf
-	 hCvsYeIfXB6ri5ubsy/NT494xfl/hlFEctGvdHe4IRB0eiX0v55PJVIlfffyMQP5rwO71
-	 CCbpatNFpyOAFiOhuQschu1l9sj1yrZdg7/1Yf3gWRl5ID8TR5PyOALM60LY2N9TCDQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1793952240;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=k3uHALvzjtptIMCjCni4Os1DaEQGVzPkp8ccI+3SeBQ=;
-	b=iCkGM14HOTfPEnriRroJDl3873BggREyk86MdmNKJbbgII0BvpMX/AK6L3m7cEHgLsSD
-	 9+bb5kb1YSeaqCyS1pUwRTTGX6rXm/vxijd+2QvPPAswdyiCo0NxC/CeiLlUE8KKIubVU
-	 fqA/5XpB5mGlXEOdZShB6wwod9wVOesIzT5mWbSVFKyYrsd79ifuLqg1YyLGB5iImCpHl
-	 PgQCPk18SuUI49uKFrJhN4pjgGXyeX9+iBzvOed3InnX1mIA5j5JS6Fw+XXGXKGBko8jx
-	 skQCLrPgql5ALKoWRqRbq6GP+r/VdOyxqXx5zpGaOtYn8jb+bo2X1J9E/6MaP0QRehA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=tuxon.dev;
-	spf=pass smtp.mailfrom=tuxon.dev;
-	dkim=pass header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256 header.s=google header.b=k2vjgbNv;
-	arc=none smtp.remote-ip=209.85.128.51
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.125.26
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1793953054;
+	b=s1E6n4tXVbV2ES3eHaqrmz816HwCJtYSJkCsGCuoQzKqlSFEcS1cKB1Ul/7uPcxADbgL
+	 cb8A1pDF7KmLdVtSctIDYPFYb4t/ZdoC2RGWeucAAJKGKSLfxOmQ1dR9tUVfgLcAnciUG
+	 uQO/dP+j2EHPbp7/uTyqXROTGmHiaVnS+0scO6aWFx5OXh9Z9C4ybxot017FmoLGV6bL9
+	 EulVXalt4P0TQUPmIrDyfxJ/mdbSHA+JHeJvOL35UOQ+Hn6zyOjG82WdtEb+GTYmpV1tz
+	 tKrqaxpNrHqsVpAQNNHQqC03CA2425JyQiMCi3NI9vzQ04RGoQz0zID1ZQykM2S+YzA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1793953054;
+	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:CC:Subject:
+	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
+	 Accept-Language:Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
+	 x-ms-publictraffictype:x-ms-traffictypediagnostic:
+	 x-ms-office365-filtering-correlation-id:x-ld-processed:
+	 x-ms-exchange-senderadcheck:x-ms-exchange-antispam-relay:
+	 x-microsoft-antispam:x-microsoft-antispam-message-info:
+	 x-forefront-antispam-report:
+	 x-ms-exchange-antispam-messagedata-chunkcount:
+	 x-ms-exchange-antispam-messagedata-0:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
+	 X-MS-Exchange-CrossTenant-AuthAs:X-MS-Exchange-CrossTenant-AuthSource:
+	 X-MS-Exchange-CrossTenant-Network-Message-Id:
+	 X-MS-Exchange-CrossTenant-originalarrivaltime:
+	 X-MS-Exchange-CrossTenant-fromentityheader:
+	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+	 X-MS-Exchange-CrossTenant-userprincipalname:
+	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
+	bh=5D8blpd1HRUTeNUkrcvTLG1Mz/LrfbXsp2AqJr+Clp8=;
+	b=N4tAGmUxXRxadCWipCtlHtWVIQZGt8FSZ0crOoa+wi0m9TYOoNQIpdO+y7oUY6xgMgsZ
+	 /aPDRjYITrtVmDOf7kEjiWkoMEt1mAdMjg1WguShQnwnY3/DIraioGid4j9tPwChRGfI+
+	 QfxAIwqYR4neubDjaUE87YJskRTxgwp4XzI9QrHP0ZZpQsTFHbJys1q7pH4wdabkWNXyv
+	 KbycLQ62O+tv3hoA2mTnb4afgetoS2+jzz2GJOmMgkgkSlgAs8+lcHns0jrLPa+CeIs7G
+	 OWUBmqHLoxa0LiqpcQwJ/mxgWYootQs6xLMUGClM4ZvTYCTKjPfzZv717d+gflOBUgg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=bp.renesas.com;
+	spf=pass smtp.mailfrom=bp.renesas.com;
+	dkim=pass header.d=bp.renesas.com header.i=@bp.renesas.com header.a=rsa-sha256 header.s=selector1 header.b=h1z9YxMa;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.125.26
+Received: from TYVP286CU001.outbound.protection.outlook.com (mail-japaneastazon11011026.outbound.protection.outlook.com [52.101.125.26])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83E9B606A328
-	for <linux-can@vger.kernel.org>; Fri,  6 Nov 2026 08:03:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 83E9B606A328
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73C43606A32C;
+	Fri,  6 Nov 2026 08:17:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 73C43606A32C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bp.renesas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bp.renesas.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256 header.s=google header.b=k2vjgbNv
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4ac95761c85so1896265e9.2
-        for <linux-can@vger.kernel.org>; Fri, 06 Nov 2026 00:03:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=tuxon.dev; s=google; t=1793952238; x=1794557038; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=k3uHALvzjtptIMCjCni4Os1DaEQGVzPkp8ccI+3SeBQ=;
-        b=k2vjgbNvN06sZzQr7ly4gExj48be0hhFCTg3HdoFnt22kAKYQVYTrUkmQsvYn9Igty
-         6zO08AkzRzRm+RaLIdOlx1oWUIt1Oa9vm5bNEDijfCN7oxuL9WmLbQ3zW0KPfuRSPBiW
-         8+7y3aBsvtdMOiWSpd5cLYpjZhmD3IJwoUqPeiQMT0+mkz+CDfR0zn/gph0K4DxFWN2c
-         joH+fvYKWIeyqoWyb7ZC+vLwJKNXFaffBrLL9cEkw9W7GtsP2VLrYKwCCv9EzAbyuLf9
-         fbNpEVG/tcWzEdqUCtUE32u6+FzwbgSjRRMxBLQ+aCGWu64H+wXSV47h1wM6MrRENrtn
-         a7qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1793952238; x=1794557038;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=k3uHALvzjtptIMCjCni4Os1DaEQGVzPkp8ccI+3SeBQ=;
-        b=Duv4Qkao62X7eLDaZ105bpAUnrCGAAcv/jdN7X6YgweLlJa6Rimhq6Do60iLGp0MnV
-         uwjVXqRIdctPrKoIALvLHpA8dBspMZfrLjLCi4orCc9Ovb4BczqaQFrLafCl6/Psx9Ih
-         JX/zbxpOHxyA6WUUFQjhyMpIq5XXOZE/fFBMUOanXp0YiYSyhdJ5CvPsMB6IJQDcrGS9
-         qXi492CWp5JLjjRfjxf3eQtsW/43w9PB8eGON/8R7L3Udy8J/27npD1jbQmuoaNJbE06
-         /4svH9BbnQ78aFpjLgK6wIUneSOT0Vxrl2l6tOW/bA6PL4+kxjTGGK5A4Ed08Rn3quJj
-         2GcA==
-X-Forwarded-Encrypted: i=1; AKwUvBxvRafIY8dtAfRw7aRNykMmkJfK6h157ZCbWTjN7ylPitkCc6efLxK18fVIFb92qXfl1e1qChO4nJA=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9EhhDGryw+YvCyuljmtD5l/8JMjvZUk7xK4Ze9GdeULiMs4ZlS
-	BeIuBRUTRseQdCz2Af7nPAeVJART2BhOWVW31qZH9XO1+pNWEoBOVk5M1e1/nd85GDc=
-X-Gm-Gg: AYBFou0Xyogftph/3sgkvzu/hrQDw4LjGl7+7MnoHoLeG2pWMtS4KXZ5RUrKa522+sB
-	ACFZzQIWxFgwxbdqEXvNToQG9xZDXGXdO5VK863GBtO0pI/YPnXBKCrxo7FoxQzjGnSG16pEPra
-	Qm9N9Us9O4jUGBGvPO4Zh1b6vbR44/1V5FWNn5+XaXiUJCA+XDM2eB8gBAOilIkk4ffPbNO/Gtj
-	rDzRGrvSZXJpe7sSx1eZC/DPsb6jNOesqhFkjQoL/e92DgjlFzT7blGcWWQe8hTlkP/aePdFTGJ
-	pCnkg+qs5AQZpa9/0yQxiRY/PPw7z24TOpJqw1CtJ9NrwtGfiy557BuDsJrBGokbBbOOCS6Y2U0
-	FolEvTtWgD3eo0fw02j5dfxqP+Bt/794spUZW5n3aLcofd5e5WOnQJ2ZKIn277PylDXq3N7JQCF
-	/AZKJ2f07U7Bdza8qwOWC6WgtGHD/ZeBWfRBqJYtP16BqYEowRnVCl5+LtU0RfN6jDnYh93egih
-	a1bhvmFqNqUhqj8RHHmkAkaI7Zpsu8P7R9VXpG0lwhNBcfHGcY0sTgcFy6q83ZaDMFX6ja7qOgj
-	tajmtiKgbcrHiCgy/zz7YJRdZvXEZ8ruG9o=
-X-Received: by 2002:a05:600c:8b28:b0:4a1:a2c0:7b73 with SMTP id 5b1f17b1804b1-4b6dfba8628mr21279205e9.30.1793952237431;
-        Fri, 06 Nov 2026 00:03:57 -0800 (PST)
-Received: from [192.168.50.4] ([82.78.167.49])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4b6ed5b8159sm34920515e9.2.2026.11.06.00.03.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 06 Nov 2026 00:03:56 -0800 (PST)
-Message-ID: <096754b1-6362-4f44-992a-989a1ccdec22@tuxon.dev>
-Date: Fri, 6 Nov 2026 10:03:55 +0200
+	dkim=pass (1024-bit key, unprotected) header.d=bp.renesas.com header.i=@bp.renesas.com header.a=rsa-sha256 header.s=selector1 header.b=h1z9YxMa
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=OB+SSv6q2hahMWHNkAqTUadq/Yvwx8jLU+D9GftMFiJyQuE4yqN085dsUKmCf46QIIM9IgK40Nc9Mft/e7xERxiBlo4rQ3xtJSEopQeHAufaWLCHSSEpw8C3lVS38VI9aXkJ16EPe8ZEvOSnTxfgftPRbRNoCRjx5UWQ+vw69USCbDvzjISKsYPHw/YW36c0XjfSzixbp26OeTY4ywEDfMEfjVj573WrWXS6o8Vlvo0G8jw20jsiR5XmIIDWblE/CUG+5KoZW+Ns29g/fW1sfQ9pzldj88jSJs6glKMKoOawNM/m8Et4gu5bVbaHXSYx008IjMdTJtUqm2eEmLNfMA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=5D8blpd1HRUTeNUkrcvTLG1Mz/LrfbXsp2AqJr+Clp8=;
+ b=zR5heVCVoEJcSgeJWrg7bhn8CprD8htjPT1c91+djSJCwz9/KyIRlDvnJPtIwKfcz0+p9jOqkoOAlvf9U7CMDwXiKMSGjqhsvcNfvEU+1oSoqv+mHVGkFHwbvkN4qsW3XwjGZyJ8uPrguXqRUjjd7LrMW01qtGnI+sgC/LcAlqQmDzr3PWbkmXSgXu0E1cNY+hmExxAR8pEhnkN/Tq2SgZMTOUGrTbQ2ZFB9VrJKuX2RmJzkYSPOAfUpWXucgGwBG+VzCLOhLJaXBbsHMkfamhnzbQUKBLarVg8SJf6xuVpsXwLUOck/+o65RS12GGCn25CvBJIvHw9pnKToKP1Z6w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bp.renesas.com; dmarc=pass action=none
+ header.from=bp.renesas.com; dkim=pass header.d=bp.renesas.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bp.renesas.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=5D8blpd1HRUTeNUkrcvTLG1Mz/LrfbXsp2AqJr+Clp8=;
+ b=h1z9YxMaBivPd1vQJpvNtrMGN5WIubONChpkl1LM7dfTfstiy/nY42Iw5Ja5tpHdlPW9i4A9lUDwU0raVATzz/Ypa7VvI9A6tyjond+Fiu43piRU7R+h4M10JuKLZit5k689ff0sukPzoejghF41ajcE8yhypOxK64iqVrQ4plE=
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com (2603:1096:400:3d0::7)
+ by OS3PR01MB9529.jpnprd01.prod.outlook.com (2603:1096:604:1ca::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.592.10; Fri, 6 Nov
+ 2026 08:17:30 +0000
+Received: from TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de]) by TY3PR01MB11346.jpnprd01.prod.outlook.com
+ ([fe80::87d1:4928:d55:97de%6]) with mapi id 15.21.0592.009; Fri, 6 Nov 2026
+ 08:17:30 +0000
+From: Biju Das <biju.das.jz@bp.renesas.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>, Fabrizio Castro
+	<fabrizio.castro.jz@renesas.com>, Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>, "biju.das.au" <biju.das.au@gmail.com>,
+	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, Rob Herring
+	<robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley
+	<conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>, Brian Masney
+	<bmasney+clk@redhat.com>, Jerome Brunet <jbrunet+clk@baylibre.com>, Ulf
+ Hansson <ulfh@kernel.org>, "magnus.damm" <magnus.damm@gmail.com>
+CC: "linux-can@vger.kernel.org" <linux-can@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-renesas-soc@vger.kernel.org"
+	<linux-renesas-soc@vger.kernel.org>, "linux-clk@vger.kernel.org"
+	<linux-clk@vger.kernel.org>, "linux-pm@vger.kernel.org"
+	<linux-pm@vger.kernel.org>
+Subject: RE: [PATCH 3/9] can: rcar_canfd: Make clkp local
+Thread-Topic: [PATCH 3/9] can: rcar_canfd: Make clkp local
+Thread-Index: AQHdZ6ey9BsKmfUrHkS11C+eIKXt7rcgvtnw
+Date: Fri, 6 Nov 2026 08:17:30 +0000
+Message-ID:
+ <TY3PR01MB113465CCAA88F962CA6BA2E7186762@TY3PR01MB11346.jpnprd01.prod.outlook.com>
+References: <cover.1793278754.git.geert+renesas@glider.be>
+ <415c8b26718e2e5d53f74e65daedf9986c76dcfe.1793278754.git.geert+renesas@glider.be>
+In-Reply-To:
+ <415c8b26718e2e5d53f74e65daedf9986c76dcfe.1793278754.git.geert+renesas@glider.be>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bp.renesas.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TY3PR01MB11346:EE_|OS3PR01MB9529:EE_
+x-ms-office365-filtering-correlation-id: 804c14ee-e02a-4353-3564-08df3bde6702
+x-ld-processed: 53d82571-da19-47e4-9cb4-625a166a4a2a,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam:
+ BCL:0;ARA:13230040|1800799024|23010399003|376014|7416014|366016|38070700021|921020|11063799006|4143699003|56012099006|261102123227099003|261021121427099003|261009223027099003|261021123027099003|10067099003|22082099003|18002099003;
+x-microsoft-antispam-message-info:
+ EOCX2jop6Ecis3gWl/BfxmMsPNTK50We3gOiE97UGdqkjZi767ILNWvjVkp+r+QBSaq2+ZihK+LOR8mSBj/EqERvK2SqEGq8zgTo9tkPvLtEoO1x0chlnZ4Hf3lwwSjy7+D+ftQQm4xhUsNAFYLXtfN9F7Q/gYhQTnDqdjp9n+ujM2KuAUk3GJkzd4ivyhDbv1vfQtH0rNxgiMR2sh6lmyYJS4vAFLsss+L3/tzumH/aKRL/epOmzrbwoohXoIWWAnT3tQWZs7dlKJ7F9AUeNqXStBz3E6fM+Ko1Ic+p/KZ9OMb2XRFa9WOKYiQyCUIBynHrOgQvSaqqROLvsu0a01ToOToHLgI3vGczdEQwxnEAibmlKLs16kNNuPnRkKf4V4UBxpA9/YU9hxggdl+iOVzcODp72Yvcs3wNdgEmMtTdUWnqHrN8TVtywu6uoxg3PCaDgWeitWdo2hzRhKtuMb0fF0YncQPWyn9PVag6waQej2uXOw1Z7u67j3HCYXmKvvor3lmLK4RZOsBeNjH6zibMiYnsaaureIqyetdf7iEI5hFCYo7Ot31eEJ08rtCQ6NHaDiSNWQPB3vcJBR84Vwf7IhPQ9ay5YWVLWqBvDLSUM9Uf68p5NYT30T/voHInpZ+bPD8sPRXBjf85ur20F2+v91Xc37Zl8KW77pOQ+Yeg4Eq/l6BTGOrIXKMmjdwFGtIUBCXou9e4k2nfpZwLajlL+PMg7fSRCUYISHJjSGRaDanwkUO02LEYk/c07DdS
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY3PR01MB11346.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(23010399003)(376014)(7416014)(366016)(38070700021)(921020)(11063799006)(4143699003)(56012099006)(261102123227099003)(261021121427099003)(261009223027099003)(261021123027099003)(10067099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?GTykzw9Y6EG5X4/a54rJbhdlKejesYTofAg2kysz9vECDZw0BIfY3D23vBCA?=
+ =?us-ascii?Q?G8mz5BCRvTQtxMN6Sbl238PenpkAtDesVNB1oQsldfwT4OdjLWn2OLdgaSPE?=
+ =?us-ascii?Q?9Zjzf6JpM9RGD5aJlt+S/OgFrDuqQIVdhv3HKKvjy9Lo7Un++IBQCFjyZU78?=
+ =?us-ascii?Q?WC9h7o19Yq0sZ2oRVT0q0/tFlTngShN9qonUWhxOUJyfDfXqhLhHLVa3Inkh?=
+ =?us-ascii?Q?YN+KqCa98fLekULHwqkbzAA57OXaEmWexC9IujvW0goDV0ISenkG7XFJI4YI?=
+ =?us-ascii?Q?pk8QhDkVu6fbhKk582lyF8/I4eNtE9pSe3kCkRazv7+w9KIfNk263baUzTdf?=
+ =?us-ascii?Q?BfPhzesj7UC7bbjD3Jo10J19PgWam7HSKeeiAa43dN+GDYpsULr5Q3p1y3Lc?=
+ =?us-ascii?Q?SRSjkMYnXTsJC+HN3WH9Lywx3bt5yAmD11WVR4Ado/gNIecBqu8VJ0LJvWma?=
+ =?us-ascii?Q?iEbcA9k36Dna6m6Nl6OAtd9QuQCipDZTTr60vZvCZl/wjvgye0PCUfUWIY3m?=
+ =?us-ascii?Q?kXoLkhHTJuXVIr7I2kYT8SU++CY+TV5CADBu9Mu9WgTvwd1QTMu6TIPLja9I?=
+ =?us-ascii?Q?uSCjpuH2OSn4NLInk1qaSxJC3M0FNVXAg8Q34QYNe1QQjkwgJMcSLhV1XWQv?=
+ =?us-ascii?Q?PeUvvKI1Cy1hk/XhM+YnIvoa5kLeJjBJ4X9UZ7dtuIwfeOOKYCtmwkfPQ3wF?=
+ =?us-ascii?Q?Rsbb9Kzhu4yg28eODZdk9qRH6ERNRPxdJHe69r6SWKwEJyqKwayyifY4p4hY?=
+ =?us-ascii?Q?GwXZ9oq3xEKbpdftW+Q2AY5RyOSe9gYY3CuFY5XFEJDECABq95oGKM7LD6Fe?=
+ =?us-ascii?Q?enCZlfRRFJmYQVBkoXAaZCNMatvm2TVaVgCcDvPHTOmSi9P4SD4mUSzOQ7rO?=
+ =?us-ascii?Q?oLmXFxldjHEBU4o4cZR5j1D21YN9X5Cgi+qOka0sa0lpuMIk3HTD2ZUjDK1K?=
+ =?us-ascii?Q?bIq5gkYCXSsE7b0RpPN061ZG50LCfEMjzgdZ1jehrgoiQlN861z1+5LSUohC?=
+ =?us-ascii?Q?kwu7+8fiNwXahbd37hDDHaGjWIlwXq6xu2KJlBZlbHV3qaSY5MhJbTYjW788?=
+ =?us-ascii?Q?ztCbfPzJGoSV+50J4EnOG4feSR2yNAVcOvzLMZt/zTV726XJ6Ce9st4pK3bJ?=
+ =?us-ascii?Q?0bFp0I6+rYr5gyo+OWCvk3wDuV9BIz08hqwAF1kreXZUT/HyNYEp6VZguDn8?=
+ =?us-ascii?Q?NomywusxOguVzVYmJMim/p3yLgIIUEZXI6xUbnhz1YaEr4qwStbjQb/hse32?=
+ =?us-ascii?Q?uKv7OWCqeWtqLs6+RIR5lX8jtolnFNZd0wZoMFd+vBkZXfKtXaFG3bBVjty3?=
+ =?us-ascii?Q?tELeBZ4f1IJalZGvhB44b0ci1+HAdxNfLq12VqO6f4RpviKoPWp7yFHD2bEU?=
+ =?us-ascii?Q?g+jqgWKq2eOIh9EaZntzxsTPkkMJW7CsTaENuQo9fPKV9EwOxJ3dnear04dS?=
+ =?us-ascii?Q?G8J5doJn6er1U6k5RQDRCQNH52tCbVj0lYrIFYcTv2EQur41v4bJkSXTr4xk?=
+ =?us-ascii?Q?7lFpL2iB/uJ85xMoNejN7le4+znhRV7gAMR5OSuQpShtZpCC/DPYQ3uxv66r?=
+ =?us-ascii?Q?PAF0Px0bsu+vhvWPe+PObFfEOpuSPzac63x4DOYjpoWNJsw4JUitC19CvcbN?=
+ =?us-ascii?Q?1N6Wlt/DyMvFAiXx1pVHMUH97q9XwXElFRhjVCeHiPr6p3Cg+JYwRkiXkotZ?=
+ =?us-ascii?Q?wH/UhswDbhYVrypJIXeZEQIHSOzkHIK8dk4YXdr0WiTl7Rtz7R6232GWG46X?=
+ =?us-ascii?Q?1w6sUWLG/w=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -92,67 +159,52 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/7] can: rcar_canfd: Allow the CAN FD clock to be
- sourced from fck
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: mailhol@kernel.org, robh@kernel.org, krzk+dt@kernel.org,
- conor+dt@kernel.org, geert+renesas@glider.be, magnus.damm@gmail.com,
- biju.das.jz@bp.renesas.com, fabrizio.castro.jz@renesas.com,
- linux-can@vger.kernel.org, devicetree@vger.kernel.org,
- linux-renesas-soc@vger.kernel.org, linux-kernel@vger.kernel.org,
- Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
- <20260902141544.565763-4-claudiu.beznea+renesas@tuxon.dev>
- <20261016-durable-meticulous-owl-7a9eed-mkl@pengutronix.de>
- <69826962-0c21-4616-9cd8-6eb0478a422b@tuxon.dev>
- <20261017-weightless-poetic-mayfly-bbdf75-mkl@pengutronix.de>
- <4a9e32a8-8a2e-4b70-8057-2d51e6d38b98@tuxon.dev>
- <69f0c77d-8c23-4949-bbb3-0a07da506b7a@tuxon.dev>
- <20261019-precise-auburn-bison-8b0d0a-mkl@pengutronix.de>
-Content-Language: en-US
-From: claudiu beznea <claudiu.beznea@tuxon.dev>
-In-Reply-To: <20261019-precise-auburn-bison-8b0d0a-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: bp.renesas.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY3PR01MB11346.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 804c14ee-e02a-4353-3564-08df3bde6702
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Nov 2026 08:17:30.6563
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: q8p1SOoNPLk8eOA0Pi7Jj6rQXtAl1coJTScqyUT3FBTrB/+r5AMuCXTz/4Tq5zpz2c2SR1NqhKFamPnvZdoMqoPWplCAbuEr6SgmqSc7QcE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OS3PR01MB9529
 
-Hi, Marc,
+Hi Geert,
 
-On 10/19/26 13:42, Marc Kleine-Budde wrote:
-> On 19.10.2026 13:36:49, claudiu beznea wrote:
->>> Based on the comment on this code "If not available fallback to CANFD clock"
->>> I think the intention with IS_ERR() is to allow probing go forward,
->>> falling back to CANFD clock, in case of any error of devm_clk_get().
->>>
->>> The device trees that I've checked sets the can_clk to a fixed clock
->>> with rate = 0 or have the clock provided directly by the SoC clock
->>> provider. I think the intention with IS_ERR() was not only for -ENOENT
->>> but for any other kind of errors. We can return in case of
->>> -EPROBE_DEFER, to ensure the expected clock is used, when it's available
->>> and sane.
->>>
->>> I'll switch to something like:
->>>
->>>    gpriv->can_clk = devm_clk_get(&pdev->dev, "can_clk");
->>> +if (ERR_PTR(gpriv->can_clk) == -EPROBE_DEFER)
->>> +    return dev_err_ptr(dev, ...);
->>
->> On the other hand, returning -EPROBE_DEFER here means the driver may never
->> probe if the can_clk provider fails to probe, even though the fallback clock
->> is available. That would go against what I understand to be the intent of
->> the IS_ERR() check: letting the probe continue when can_clk can't be
->> obtained.
->>
->> Please let me know how you would like me to proceed.
-> 
-> If the clock continuously fails with the error -EPROBE_DEFER, your
-> .config/DT/system is broken. I don't think it's a good idea to ignore
-> these errors.
-I've addressed the concerns raised in this discussion at [1]. Could you please 
-let me know if there is anything else to address for this series and [1] to go 
-forward?
+Thanks for the patch.
 
-Thank you,
-Claudiu
+> -----Original Message-----
+> From: Geert Uytterhoeven <geert+renesas@glider.be>
+> Sent: 29 October 2026 13:11
+> Subject: [PATCH 3/9] can: rcar_canfd: Make clkp local
+>=20
+> The peripheral clock is only used in rcar_canfd_probe(), so convert clkp =
+to a local variable.
+>=20
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+>  drivers/net/can/rcar/rcar_canfd.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rca=
+r_canfd.c
+> index 74d9ffd2790587b9..9dbe44710dcced80 100644
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> @@ -467,7 +467,6 @@ struct rcar_canfd_global {
+>  	void __iomem *base;		/* Register base address */
+>  	struct rcar_canfd_f_c __iomem *fcbase;
+>  	struct platform_device *pdev;	/* Respective platform device */
+> -	struct clk *clkp;		/* Peripheral clock */
 
-[1] https://lore.kernel.org/all/20261019121356.2421761-1-claudiu.beznea@kernel.org
+Unless I am missing something, I get build error
+
+drivers/net/can/rcar/rcar_canfd.c: In function 'rcar_canfd_probe':
+drivers/net/can/rcar/rcar_canfd.c:2250:55: error: 'struct rcar_canfd_global=
+' has no member named 'clkp'
+ 2250 |                         fcan_freq =3D clk_get_rate(gpriv->clkp);
+
+Cheers,
+Biju
