@@ -1,59 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794025744;
-	b=VB/TDieliJKGIXSsCfei5YGsslb+82tA73geENA9VSqiQdFzMcDKIZCMYjHVzKnEuQ2t
-	 8yPSKpiQhpSWQR362WPZnAo+Zir55NEgPTBczVTcYthYtWv/gbD47y7bpUfLYROqFrUh7
-	 pyumBVPY1x/m4Ed1MM6ZHb6LRc7SImHcP5jOEnVSiyvmVP7Zz5awEWSJu1XyFtniQMr5/
-	 1LPvgYO8n+8pEhx9DrAcEst1f7HeIuLrnJHf5rnDhzD3EKC03XY+ETEieWXak6L76RW3Z
-	 nsd7n9eMxaOFlQ4Rxh7nfAAB+Z89zZ1eP5Sz3u/7OF4uUS7gzddQvm9MwF97x15NQ9w==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794025744;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=Xe/Oe8irhvXytfjKAhokcvwM4zojCbsivzTBjA8hWAE=;
-	b=1t9gMW+WUIKod44hHxi4JtI2kfHw4eHQhFbueSMwHEQpcyToMDZNcgKGDwbwchDQkiWc
-	 VdjPI5rfiJUJPthb4YjpR246iapSbmK79ojfvIWBJGTfk6EuUaV3tABjO6/w1nm6L9W9s
-	 gHK1+HXIHOvJyNCGX/V3k55g16/Up3hH6pTO4Aj9wkXZsZjW30RxyBcB1FWIT9UxsaMYR
-	 mCdnJcA6Xn3G8LpGuG6m+apgskSlnkpbUya+5KvCnMMIKmxZySi393MLItnGY2CMD0gaU
-	 fXJZnH/2ytBAjMX8SehNgb1429tng7yLURvliH7U7kJNT9JLpv7VgSBX3olhY9hXHFw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DBDmfqdd;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794036594;
+	b=B+SDPwN+djtsLusZUuw03GAT1VbAUJ7f3yuMD4Kpa2fpaqsLT9Z8Nrs2f9MgW/+hjj06
+	 qZdIGgIfRN0kKFySrZv33Sw9rWCKQ84kA4oJ99PhQGpH56tfB6JaLCJk9P/78/iyWS5fA
+	 27jGOzhJceMM23OUATb2VFA8+fKlzF3DGe3am/NkMmfz1pAqhVbc3sD9FRIpzNxsN6pBv
+	 AIqx1IZctxxEMtTZv23iug9pi8XS0N9Wtw9KxcO0llTXgB1/Cn3/b88YBtDJBN/CLmelZ
+	 5uhRAMFUp+Hj42tJ6pd1noIlkzMgaOWQTQOTJI9sd9a8huKIxmwQ3bzL6PaauSy60Sw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794036594;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To:X-Sent-From:X-URL:X-Accept-Language:
+	 X-Accept-Content-Type;
+	bh=zhFos9pLRdck+HNko2pfxCI2Qo5ud3StbNFSwWcCUlk=;
+	b=U0IB70KTcnCcJfQ7JxQBpI/TUqENNqmboCxen+jff6HPMEO61GQhrnwQ6l4zvxqzkcCm
+	 6oBc6FVB3nWC8sngqJ0aI8voeWq2YRXQ4E7jpZkmOLrQwj/+6W67hWopBymlrT10WGVja
+	 +FIDyCbmo6xDcV/nuSoVjEXl1emIGwtEOuvipxKBMb/wRDwJq+Zb4FEl0pPHQz7YgMPmu
+	 ARkp1Ebtm5jL6abfV54Tw7+Y56XvgOsdKBOrP30+/pdnEu+de6uS4ZhQNOMOEhAKmMs0I
+	 GZ/VcdjprCTOP31C5L+qWI9zS/yidDYBpHyvN9Tc8FhPw5iThx4spTLDM79l6Ck7YeA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PUKk83Ya;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E817D606A326
-	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 04:29:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8C50606A32E;
+	Sat,  7 Nov 2026 07:29:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B8C50606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DBDmfqdd
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 309D71F008A1;
-	Sat,  7 Nov 2026 04:29:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794025743;
-	bh=Xe/Oe8irhvXytfjKAhokcvwM4zojCbsivzTBjA8hWAE=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=DBDmfqddZY1kcLnkZMbS11TAvgpA9k0XGfUVMUMOVa3QC4m8TpJRdfQG9fco8Zs69
-	 jc7zCG3/vGFjPtmXWetSx0ebVvjcM/vAvAetknN8Fgk/Lg+sKTY5trEsSFTfpXiX1M
-	 v6kEJxonleWoozYnM7dT1hMln7J7iwpmbWXZBWKgNwe1Sm34IMGp0JXX8s4Bs7RbEy
-	 zZ16TCLILh7pCrIEoAURx+KhHGQ1vh/iOiwNjV42/UoOUuwcLAvmWg9OGIWq/BnnGX
-	 0LaRUiral9KcAHeeKOD7VkfbI6Ka8nFGE9iC6OBmHb5ZbTike6yWrLlfI0OdaC5a8D
-	 gpEAzUStjkG0A==
-Subject: Re: [PATCH v8 2/2] can: j1939: fix "struct j1939_ecu" refcount leak
- in j1939_ecu_map_locked()
-From: netdev-bot+sashiko@kernel.org
-To: penguin-kernel@I-love.SAKURA.ne.jp
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
- robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
- kuba@kernel.org
-Date: Sat, 07 Nov 2026 04:29:02 +0000
-Message-ID: <179402574271.488853.5501782548576402373@kernel.org>
-In-Reply-To: <cc9950f0-a9e8-4639-b2b3-28d64f8a906b@I-love.SAKURA.ne.jp>
-References: <cc9950f0-a9e8-4639-b2b3-28d64f8a906b@I-love.SAKURA.ne.jp>
-X-sashiko-severity: Low
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PUKk83Ya
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 615392006B6;
+	Sat, 07 Nov 2026 08:29:49 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794036589;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zhFos9pLRdck+HNko2pfxCI2Qo5ud3StbNFSwWcCUlk=;
+	b=PUKk83Ya5v7q1FFEP1aHvP7tbTC5KZFYVU6QFtcHISJXJjsSTcPOdtvVV3O583Rv91h3nT
+	Ho9cpdbjiEQCnwxb433cxmcqgLNhkOawa6Ssy51WjV9x6UCDW6UAkTwkou+HMIeIkB2Y/6
+	jOd59yDr1glR3nmTkV0PiKgiku9KLqOoj0FhYqC3RAeZ5gzVmadDTQo6/caK18RWxVXUDz
+	QJar3yTFVo7VjcZXkDYdQneaJXqTTGnHNmVCwAhFU4doCxUol72QIUU52nCGeBSzlhlrwJ
+	8XACFmyXoQi84QvLOtVVYfZMjjOB+Yn7PFDMs9qJIjivFXgkT72CnBmwKjsgdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794036589;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zhFos9pLRdck+HNko2pfxCI2Qo5ud3StbNFSwWcCUlk=;
+	b=EhF7yMhuTpptWCWqCmCx9FhL3Nv1ftHkLv+tOyhjQlMeIDXAMulTO3+EJ5DYEFv1OnnsjG
+	ex83l6DnELlN8NXZv+x2DfmfVVd6ChjuP/vW5h+c8+3oKHQcBcbHacQYUK5hCscdcZSYk5
+	OCNs9mqU3wRbMfU3+2IgySYIwx5h+r3kbXC7ADGCzOU0wL0eKdHDBMiNBcWAGT856+L/Qr
+	t49au/398GGcvPMoirnpQtFC4WG67j+ZakSAzhh33oWZTR0qbqB98rcu6kD9yJwHoyTA2V
+	1ZTaCSLs7wb9eDNEykOX+vLz3Fpe/g/hfu76lJSxCci9GES+05g9yriznthzTw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794036589; a=rsa-sha256;
+	cv=none;
+	b=Dr2oArMp/FV3NFobM9t7qxTNEhceCyP4DhRDPciFsHYFEFhsNbAj87fyFdma2epsdVvdAQ
+	GnF9QhGEnuLq5A4ZOWdf7jZuztbwRLpx3ecHJtugmp8HUbv32lwUnIqPh8qpvgFq3Lzyx9
+	0pQ3ct1VJoid7qblsJYk2XIOeij7rxhjwHPLmyJyLElpNe/e0VYvUkmwc9mT6+ysHcoF9j
+	1lCtJ8pHwFL8Z7WiZruV1ViI7dR0HyQzRqgjU0Y5USOu2O67J9t2aEDbIQ2vySf3i8kAXz
+	8Tj2xkFAvubT/H7bRMcrtjXtQL6mgPTNYgr36QD0GLXPMiFFQ5wL6dyW1NfmdQ==
+Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <ore@pengutronix.de>)
+	id 1xPas1-0031FW-12;
+	Sat, 07 Nov 2026 08:29:49 +0100
+Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
+	(envelope-from <ore@pengutronix.de>)
+	id 1xPas1-00000003HIZ-0u96;
+	Sat, 07 Nov 2026 08:29:49 +0100
+Date: Sat, 7 Nov 2026 08:29:49 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Sun Yiqi <sunyiqi2@huawei.com>
+Cc: robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
+	mkl@pengutronix.de, linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+	stable@vger.kernel.org, luoxiaoxing@huawei.com
+Subject: Re: [PATCH net] can: j1939: transport: validate the DPO packet offset
+Message-ID: <au7TbcX4A8LqOjss@pengutronix.de>
+References: <20261105065931.1302-1-sunyiqi2@huawei.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -63,117 +99,40 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20261105065931.1302-1-sunyiqi2@huawei.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+On Thu, Nov 05, 2026 at 02:59:31PM +0800, Sun Yiqi wrote:
+> j1939_xtp_rx_dpo_one() stores the packet offset from a received ETP DPO
+> command without checking it against the session's total packet count.
+> An offset greater than or equal to that count makes
+> j1939_session_skb_get() return NULL. A subsequent EOMA can then cause
+> j1939_session_completed() to pass the NULL skb to j1939_sk_recv(),
+> resulting in a NULL pointer dereference.
+> 
+> Reject an out-of-range offset before storing it and abort the session
+> with J1939_XTP_ABORT_BAD_EDPO_OFFSET. Keeping the previous valid offset
+> also prevents this lookup failure if an EOMA arrives while the session
+> is waiting for the abort to complete.
+> 
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sun Yiqi <sunyiqi2@huawei.com>
 
-Low priority / nit picks for your consideration:
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Tested-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-- [Low] Undisclosed backport dependency.
+Thank you for your work!
 
-Pre-existing issues:
-- [High] This problem wasn't introduced by this patch, but it is a two-
-  CPU deadlock.
-
---
-
-can: j1939: fix "struct j1939_ecu" refcount leak in j1939_ecu_map_locked()
-
-This commit makes j1939_ecu_map_locked() drop the ECU reference it just
-took, and makes j1939_ecu_create_locked() fail with -ENODEV, when the
-netdev is no longer registered or __j1939_rx_release() has already run.
-This keeps j1939_ecu_timer_handler() from re-mapping an ECU after
-j1939_ecu_unmap_all() has finished.
-
-> For now we don't cancel ecu->ac_timer from j1939_ecu_unmap_all(), for
-> we can't safely call hrtimer_cancel() with priv->lock held. However,
-> since ecu->ac_timer expires in 250ms, for now let's tolerate delaying
-> completion of NETDEV_UNREGISTER event for less than one second.
-
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch. Still,
-the rule given here (hrtimer_cancel() is not safe with priv->lock held)
-already seems to be broken in j1939_ac_process() in
-net/can/j1939/address-claim.c.
-
-j1939_ac_process() takes priv->lock for write. While still holding it, it
-calls j1939_ecu_timer_cancel(), which calls hrtimer_cancel() on
-ecu->ac_timer:
-
-CPU0 (CAN RX softirq)
-j1939_can_recv()->j1939_ac_recv()->j1939_ac_process()
-    write_lock_bh(&priv->lock);
-    ...
-    /* cancel pending (previous) address claim */
-    j1939_ecu_timer_cancel(ecu);
-        hrtimer_cancel(&ecu->ac_timer);
-
-The timer callback takes the same lock:
-
-CPU1 (hrtimer softirq)
-__run_hrtimer()->j1939_ecu_timer_handler()
-    write_lock_bh(&priv->lock);
-
-Say ac_timer expires on CPU1, and j1939_ecu_timer_handler() is already
-spinning on priv->lock. At that moment CPU0 gets an ADDRESS_CLAIMED frame
-with the same NAME but a different SA.
-
-hrtimer_try_to_cancel() returns -1 while the callback is running, so
-hrtimer_cancel() keeps retrying in hrtimer_cancel_wait_running(). On
-!PREEMPT_RT that is cpu_relax(). On PREEMPT_RT it blocks on the softirq
-expiry lock while the rwlock is held.
-
-Can this leave both CPUs spinning forever with BH disabled? The trigger is
-ADDRESS_CLAIMED frames, which any node on the bus or a local vcan sender can
-send.
-
-> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index 3422e31338004..77b6788060573 100644
-> --- a/net/can/j1939/bus.c
-> +++ b/net/can/j1939/bus.c
-> @@ -84,6 +84,15 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
->  	if (!j1939_ecu_get(ecu))
->  		return;
->  
-> +	/* Drop the ref if netdev is no longer registered or
-> +	 * __j1939_rx_release() was called.
-> +	 */
-> +	if (READ_ONCE(priv->ndev->reg_state) != NETREG_REGISTERED ||
-> +	    !kref_read(&priv->rx_kref)) {
-> +		j1939_ecu_put(ecu);
-> +		return;
-> +	}
-> +
-
-[Severity: Low]
-This isn't a bug, but is there an undisclosed backport dependency here?
-
-The context line "if (!j1939_ecu_get(ecu)) return;" comes from the earlier
-patch "can: j1939: fix possibility of list corruption in
-__j1939_ecu_release()". That patch turned j1939_ecu_get() into a
-__must_check bool wrapper around kref_get_unless_zero(). It also moved the
-call ahead of the ent->ecu check.
-
-In the trees covered by the Fixes: tag, the code still looks like this:
-
-static void j1939_ecu_get(struct j1939_ecu *ecu)
-{
-	kref_get(&ecu->kref);
-}
-
-and j1939_ecu_map_locked() calls it after the ent->ecu check. So this hunk
-won't apply as-is.
-
-The prerequisite has no Fixes: or Cc: stable tag, and this commit doesn't
-mention it. Since this patch carries "Fixes: 9d71dd0c7009", stable tooling
-will try to pick it up on its own.
-
-Could the prerequisite get a Fixes:/Cc: stable tag, or could this commit
-note the dependency? Either way, backporters would know whether to take
-both patches or adapt this one by hand.
-
-[ ... ]
-
+Best Regards,
+Oleksij
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/3d7e48fa-9af5-43e2-84f7-884e61f9d179%40I-love.SAKURA.ne.jp
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
