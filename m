@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794025201;
-	b=y96JbuiVG7w26naqCxi8xLapQcDsG7u0vMH+OOIo8HGPourmFhbbq6VQg8XJi86n0LU0
-	 QjvZaEV9tKX6FU10fbVmwbHFZCUklOLiZ9Y355RogGs1nZvLglduAlOhTPdR+YkuKg6sd
-	 3wUNInlhDwxgQ0qBW7cT0q+iGVvB78Y8MRWcDQSDB+H1y37D+NDpkfM3UFieMYtf5JiJZ
-	 rkeIJ7j3q9hFrnuNnR8Oj9fqLpoANCiwm3/a/B3ENu2qT4/Zr2vcWuTbCtz5l7t6YVGr9
-	 VTU7zw5P73a96O/MyHZAWXVr++4Sq2LqVL4P/HKO5rxKjROBEfRLMBv6ZPjk46X9TUw==
+	t=1794025743;
+	b=gs1TDVzWFdw2l5lVo212mKWdb0KSkMlt2zoPz9TcQD2+XMjaxS7OuLW4CPKDbhWWJV68
+	 rZi8agdEPdPELtKhYi01hdyZOklxsIP6k8SLFziJOD/dl0hc62pGLzpLFKNkOiM6TQHpF
+	 96mgMM0VfqOcvtx9qqrCFT0MTvOq4YRR5A1xRFh7cULeN7QFLJFlb7ENZETijt6cm5kNv
+	 NELn+Zw6rw50dQb3fvZq4+i5rlAcoHKlIJKhO0+NiKs+kROcE6uPFnjn841TjtlN/VkRG
+	 4yHAL/LDBPtJ3CJIBgyRrx21+rYGZU9J91wc+nEz81ioNM3TRpbLisMrWeY1sSaPTPA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794025201;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794025743;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=n1RI3UsSrdfht+t8RXz2etQ/flEh8u5Q9ScRCNY5aKU=;
-	b=1jgdf8XbjP5DzW7FNDi4BsXtZZExhIdL5iDzh5jRjrqt/wzBSzgQ7uLaykG3ztWj+11I
-	 7nk7rQZwG/ZMpjQWExGE7caq+X/2JHr8XTkgSfJfNHoxEZLaYDcqbODGv78ApyEHzdKW5
-	 sXn7B920a7l3XhGYkmzMStrgwzwubSF4twT47RDvnIiRYleAHi8UdSy5+uBdeDPTvn69J
-	 6mXI/Gup/xA4EylMhqBojYh1jvryw+ta4ZOAQyCCQFU2JfhKDBUI6rQVoPq9Z8VfM/GoO
-	 X3dkrlCTlNT95ipBt3qiHq8QlL0CEKaRVF0mxP5Arxc5Ai9xQCuCWNFCw/snLlsOx1A==
+	bh=++ZwYK1Sl+BrNzS/e+TrJX2njBOKgUNsQ58gQcgiVbw=;
+	b=C+RQL9DwTFswlDdt6TP4sOIhPM5J2mDgXMTcOf5WcxBB7h1zHEpvz67wsHcsoncVg+w+
+	 Dr5OBioiRs4EL5ErTiTp4X6CN4BsuAy+t+xNKEumDIXoz1MNsASDQDx+sw4lDLME92/rM
+	 1WoRpZRmgG1N7SQ3dYJ5xynjIPrimdfJxon0x2AbloFoxHUN60RrsevqCkyqHS4lDEZZS
+	 aCylJxanhU6rpUCA3pDKjyr7DIKp3ekIDzjTBFi1w7cNmqwMrexbkIHDZhJH90R2X4QIr
+	 jEtt8YXS942CMnAG83vOlr8ptqfJ2KEz7BYbEXt0sH3NT32R3VOFG/7mcKVX1wOO1Sw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hYRst09z;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=b7935XZl;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4EAD606A326
-	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 04:20:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C19F606A326
+	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 04:29:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hYRst09z
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 149001F008A1;
-	Sat,  7 Nov 2026 04:20:00 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=b7935XZl
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1B64D1F0089F;
+	Sat,  7 Nov 2026 04:29:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794025200;
-	bh=n1RI3UsSrdfht+t8RXz2etQ/flEh8u5Q9ScRCNY5aKU=;
+	s=k20260515; t=1794025742;
+	bh=++ZwYK1Sl+BrNzS/e+TrJX2njBOKgUNsQ58gQcgiVbw=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=hYRst09zLQGh1OdnmZkwqVKI3aQCKAR4e8YFUARxdR6Z0pjFh3Ju3oxfvphFLLhXp
-	 cjOPRGIrCfFPYz+tP6ccGTDPdBNBjvv50KuwIaYgocKTqO9YmQwtUnHBCrbb6iVfE9
-	 jU+vxlxhl3OQ9CkWb/uWOI81wNmtteDPDGEroNsom9FLCuTIHAuxEnhBmiXXoxytlP
-	 MUOX/kI5WEKLa2qScdQVK2v2nc75FxaeP+MjKI/0MW7+1s8ePhTYGQ6S96M/+sH2Nx
-	 ASYy+RiCqUjztEb8YO18aWjFC7UlowvIF+P4kLqU7os5qhjmAZRuUT5ZDgRRbh2CXe
-	 HewcC7AZ/JgSg==
-Subject: Re: [PATCH v7 2/2] can: j1939: fix "struct j1939_ecu" refcount leak
- in j1939_ecu_map_locked()
+	b=b7935XZlQH7EA0fGxTSrjNZC9Lxa6o6aKX/fFBCUiA4v9HBE5Eu8FyBmGf7OBQlC+
+	 cNPwyZAk09ptMzYHwZ4hFI6nZkPcIbJE2eFrWftOHxtO8Srlnj12J0JGj4QTHYsqif
+	 0E9hPKcVZvbAbc6bZNj3Hq2/WkVmUftss41L6g7T5TKTgHOnCVukDMGvwLFcdU9bNC
+	 v35J5+XbOBzRjvl72ZKPRVmXeuliyo3QxJMcPL3yvT7zNa4MOhtevV2QxjHBVPIIvZ
+	 OvyosK6NNyTpn0shovcVZA5uWuzQbNcidBoj4sE7gtOoIAlUgIK4P9EROA5jbEhcI/
+	 SOcrTDPeIn0sg==
+Subject: Re: [PATCH v8 1/2] can: j1939: fix possibility of list corruption in
+ __j1939_ecu_release()
 From: netdev-bot+sashiko@kernel.org
 To: penguin-kernel@I-love.SAKURA.ne.jp
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
  kuba@kernel.org
-Date: Sat, 07 Nov 2026 04:19:59 +0000
-Message-ID: <179402519966.488853.1117515661539913987@kernel.org>
-In-Reply-To: <f12e4200-9267-424d-99f2-584774bd8eb1@I-love.SAKURA.ne.jp>
-References: <f12e4200-9267-424d-99f2-584774bd8eb1@I-love.SAKURA.ne.jp>
-X-sashiko-severity: Critical
+Date: Sat, 07 Nov 2026 04:29:01 +0000
+Message-ID: <179402574159.488853.7548915141881930317@kernel.org>
+In-Reply-To: <3d7e48fa-9af5-43e2-84f7-884e61f9d179@I-love.SAKURA.ne.jp>
+References: <3d7e48fa-9af5-43e2-84f7-884e61f9d179@I-love.SAKURA.ne.jp>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -64,10 +64,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
+Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 1 · High: 0 · Medium: 0 · Low: 0
+Critical: 0 · High: 0 (1) · Medium: 1 · Low: 2
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -75,122 +75,198 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Critical] The patch adds the new conditions
-  (`READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED` and…
+- [Medium] j1939_module_exit() (net/can/j1939/main.c:430-440) calls
+  destroy_workqueue(j1939_ecu_wq) without making sure no ECU reference…
+- [Low] This patch fixes a real, long-standing bug, but its commit
+  message has no Fixes: tag and no Cc: stable.
+- [Low] The commit message only mentions a "possibility of list
+  corruption".
+
+Pre-existing issues:
+- [High] This problem wasn't introduced by this patch, but it is a
+  deadlock.
 
 --
 
-can: j1939: fix "struct j1939_ecu" refcount leak in j1939_ecu_map_locked()
+can: j1939: fix possibility of list corruption in __j1939_ecu_release()
 
-With this commit, j1939_ecu_get() fails if the netdev tied to j1939_priv
-is no longer NETREG_REGISTERED, or if __j1939_rx_release() has already
-dropped priv->rx_kref to zero. The aim is to stop
-j1939_ecu_timer_handler() from mapping an ECU back into priv->ents[]
-after j1939_ecu_unmap_all() has run.
+This commit moves the final release of struct j1939_ecu (list_del(),
+netdev_put(), kfree() and j1939_priv_put()) to a new j1939_ecu_wq
+workqueue. That way the list removal always runs under
+write_lock_bh(&priv->lock).
 
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
+ECUs with a zero refcount can now still be found on priv->ecus and in
+priv->ents[]. To handle this, j1939_ecu_get() becomes
+kref_get_unless_zero(), and lookups skip ECUs whose kref has dropped to
+zero.
+
+> Since not all callers are calling j1939_ecu_put() with priv->lock held
+> for write, list corruption might happen if the last user called
+> j1939_ecu_put() without priv->lock held for write.
+
+[Severity: Low]
+Is "list corruption" the whole story? Before this patch,
+__j1939_ecu_release() did this with no lock held:
+
+	list_del(&ecu->list);
+	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+	kfree(ecu);
+	j1939_priv_put(priv);
+
+At the same time, other CPUs can walk priv->ecus under read_lock_bh().
+Two examples are j1939_ecu_find_by_name_locked() (called through
+j1939_name_to_addr() on the TX path) and j1939_ecu_get_by_name_locked().
+That looks like a use-after-free of struct j1939_ecu, not just corrupted
+list pointers.
+
+Could the message also name the callers that drop references without the
+lock, j1939_ac_recv() and j1939_ac_fixup()? It could also say that the
+netdev tracker reference and the j1939_priv reference are now released
+later from j1939_ecu_wq, not synchronously.
+
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+
+[Severity: Low]
+This fixes a long-standing memory-safety issue. Should it have a Fixes:
+tag and Cc: stable?
+
+The old lockless last-put path looks like this:
+
+CPU A
+j1939_ac_recv()
+  ecu = j1939_ecu_get_by_addr(priv, skcb->addr.sa);
+  ...
+                                 CPU B
+                                 NETDEV_DOWN
+                                   j1939_ecu_unmap_all()
+                                     j1939_ecu_unmap_locked()
+                                       j1939_ecu_put()  <- mapping ref
+  j1939_ecu_put(ecu);            <- last ref, list_del()/kfree() unlocked
+
+The lockless callers, j1939_ac_recv() on RX and j1939_ac_fixup() on TX,
+look like they go back to the commit that added the protocol:
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+
+The next patch in the series ("can: j1939: fix "struct j1939_ecu"
+refcount leak in j1939_ecu_map_locked()") has a Fixes: tag. It also
+depends on the kref_get_unless_zero() semantics added here. Since this
+patch has no tag, stable backporters have no hint that they need it as a
+prerequisite.
 
 > diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index 3422e31338004..11d08b7485489 100644
+> index cdc3c0a719379..3422e31338004 100644
 > --- a/net/can/j1939/bus.c
 > +++ b/net/can/j1939/bus.c
-> @@ -50,8 +50,13 @@ void j1939_ecu_put(struct j1939_ecu *ecu)
->  
->  static __must_check bool j1939_ecu_get(struct j1939_ecu *ecu)
+
+[ ... ]
+
+> @@ -122,6 +150,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
 >  {
-> -	/* Don't get an ECU ref if __j1939_ecu_release() was called. */
-> -	return kref_get_unless_zero(&ecu->kref);
-> +	struct j1939_priv *priv = ecu->priv;
+>  	if (hrtimer_cancel(&ecu->ac_timer))
+> +		/* Drop the ref from j1939_ecu_timer_start(). */
+>  		j1939_ecu_put(ecu);
+>  }
+
+[Severity: High]
+This isn't a bug introduced by this patch, but can
+j1939_ecu_timer_cancel() deadlock against j1939_ecu_timer_handler()?
+
+j1939_ac_process() takes write_lock_bh(&priv->lock) and cancels the timer
+while still holding it. The soft hrtimer callback takes the same lock
+before doing anything else:
+
+CPU A (CAN RX softirq)
+j1939_ac_recv()
+  j1939_ac_process()
+    write_lock_bh(&priv->lock);
+    ...
+    j1939_ecu_timer_cancel(ecu)
+      hrtimer_cancel(&ecu->ac_timer)
+        hrtimer_try_to_cancel()        <- returns -1, callback running
+        hrtimer_cancel_wait_running()  <- loops
+
+CPU B (hrtimer softirq)
+j1939_ecu_timer_handler()
+  write_lock_bh(&priv->lock);          <- spins, CPU A holds it
+
+On !PREEMPT_RT, hrtimer_cancel_wait_running() is only cpu_relax(), so
+both CPUs spin forever in softirq context. On PREEMPT_RT it also
+deadlocks, through softirq_expiry_lock and the sleeping rwlock.
+
+The trigger is an address-claim frame for an ECU whose ac_timer is
+expiring on another CPU. The frame must carry a different SA, so the
+early goto out_ecu_put is not taken. Remote CAN peers can send such
+frames.
+
+The note below the --- line calls this "can: j1939: ABBA deadlock in
+j1939_ecu_timer_cancel() under priv->lock". The next patch in the series
+also says "we can't safely call hrtimer_cancel() with priv->lock held".
+Neither patch fixes it yet.
+
+[ ... ]
+
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index d9384cf0e356f..2030f24fce704 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+
+[ ... ]
+
+> @@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
+>  	can_proto_unregister(&j1939_can_proto);
+>  
+>  	unregister_netdevice_notifier(&j1939_netdev_notifier);
 > +
-> +	/* Don't get an ECU ref if netdev is no longer registered or
-> +	 * __j1939_rx_release() was called or __j1939_ecu_release() was called.
+> +	/* We need to make sure that __j1939_ecu_release_work() is
+> +	 * no longer running before unmapping memory for this module.
 > +	 */
-> +	return READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED &&
-> +		kref_read(&priv->rx_kref) && kref_get_unless_zero(&ecu->kref);
+> +	destroy_workqueue(j1939_ecu_wq);
+>  }
 
-[Severity: Critical]
-The new gate is in the shared j1939_ecu_get(), not only on the map path.
-Does that make the two name lookups in bus.c disagree?
+[Severity: Medium]
+Can a pending ecu->ac_timer still queue release work after this
+destroy_workqueue() call?
 
-Once reg_state leaves NETREG_REGISTERED, j1939_ecu_get_by_name_locked()
-fails even for a live ECU. j1939_ecu_find_by_name_locked() still only
-checks j1939_ecu_valid():
+destroy_workqueue() drains work that is already queued. It does not stop
+new work from being queued. The ac_timer holds an ECU reference taken in
+j1939_ecu_timer_start(), and nothing on the teardown path cancels the
+timer:
 
-net/can/j1939/bus.c:j1939_ecu_find_by_name_locked() {
-	...
-	list_for_each_entry(ecu, &priv->ecus, list) {
-		if (ecu->name == name && j1939_ecu_valid(ecu))
-			return ecu;
-	}
-	...
-}
+- __j1939_rx_release() only calls j1939_ecu_unmap_all().
+- The NETDEV_DOWN and NETDEV_UNREGISTER handlers don't cancel it either.
 
-j1939_local_ecu_get() takes a NULL from the gated lookup to mean there is
-no ECU with this NAME, so it creates one:
+A possible sequence:
 
-	ecu = j1939_ecu_get_by_name_locked(priv, name);
-	if (!ecu)
-		ecu = j1939_ecu_create_locked(priv, name);
+1. An address-claim frame arrives, and j1939_ac_process() ->
+   j1939_ecu_timer_start() arms the 250 ms soft hrtimer.
+2. The last j1939 socket is closed. j1939_netdev_stop() runs, and the
+   module reference held through the proto owner is dropped.
+3. rmmod runs j1939_module_exit() -> destroy_workqueue(j1939_ecu_wq).
+4. The timer fires:
 
-The duplicate (E2) is added after the original (E1) and holds its own
-kref, netdev_hold() and j1939_priv_get(). j1939_local_ecu_put() uses the
-ungated j1939_ecu_find_by_name_locked(), so it finds and puts E1, not E2.
+j1939_ecu_timer_handler()
+  j1939_ecu_put(ecu)                  <- last reference
+    __j1939_ecu_release()
+      queue_work(j1939_ecu_wq, &ecu->release_work);
 
-unregister_netdevice_many_notify() sets reg_state to NETREG_UNREGISTERING
-before it calls synchronize_net() and before it sends NETDEV_UNREGISTER.
-In that window, the re-bind branch of j1939_sk_bind() runs without any
-reg_state check:
+If the timer fires during the drain, __queue_work() rejects the work with
+a WARN. The ECU, its netdev tracker reference and its j1939_priv
+reference then leak, and netdev unregister can hang waiting for the
+device to become free.
 
-	/* drop old references */
-	j1939_jsk_del(priv, jsk);
-	j1939_local_ecu_put(priv, jsk->addr.src_name, jsk->addr.sa);
-	...
-	ret = j1939_local_ecu_get(priv, jsk->addr.src_name, jsk->addr.sa);
+If the timer fires after destroy_workqueue() returns, queue_work()
+accesses the freed workqueue.
 
-The first-bind reg_state check runs without rtnl, so it can race too.
+The root cause, a pending ac_timer that outlives module exit, predates
+this patch. But this patch adds the dependency on the global workqueue,
+and the new comment promises more than destroy_workqueue() alone can
+guarantee.
 
-Could this sequence happen?
-
-1. Socket A is bound with NAME N, so E1.kref == 1.
-
-2. An address claim for N goes through
-   j1939_ac_process()->j1939_ecu_timer_start(E1). E1.kref == 2 and the
-   250ms ac_timer is armed.
-
-3. The device is unregistered and reg_state becomes NETREG_UNREGISTERING.
-
-4. A re-binds. j1939_local_ecu_put() drops E1 to 1. Then
-   j1939_ecu_get_by_name_locked() fails and E2 is created.
-
-5. NETDEV_UNREGISTER runs
-   j1939_sk_netdev_event_unregister()->j1939_local_ecu_put(). That finds
-   E1 again and drops it to 0, using up the reference held by the
-   pending timer.
-
-6. __j1939_ecu_release_work() calls kfree(ecu) without cancelling
-   ac_timer. j1939_ecu_timer_handler() would then run on freed memory.
-
-There is also a variant. Suppose the timer fires and re-maps E1 before
-reg_state changes. The misdirected put then frees E1 while
-priv->ents[addr].ecu still points at it. After that,
-j1939_netdev_stop()->__j1939_rx_release()->j1939_ecu_unmap_all() would
-dereference and put the freed ECU. E1->nusers and ents[].nusers would
-also go negative.
-
-In both cases E2 is never put. It leaks together with its netdev and priv
-references, so unregister_netdevice() would wait forever. Isn't that the
-same kind of j1939_ecu refcount leak this commit is meant to fix?
-
-Also, the comment in __j1939_ecu_release() still says readers can
-validate with either j1939_ecu_valid() or j1939_ecu_get(), as if they
-were the same check.
-
-Is the reg_state test needed for the reported bug at all? The rx_kref
-test under priv->lock already looks enough to order the timer handler's
-map against __j1939_rx_release().
-
-Could the new checks go only in j1939_ecu_map_locked() and
-j1939_ecu_timer_start()? Or could both name lookups use the same check?
+The next patch in the series also says "For now we don't cancel
+ecu->ac_timer from j1939_ecu_unmap_all()". Do the ECU hrtimers need to be
+cancelled before the workqueue is destroyed?
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/00aae7aa-8351-4d69-8938-4d8e4eee78c2%40I-love.SAKURA.ne.jp
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/3d7e48fa-9af5-43e2-84f7-884e61f9d179%40I-love.SAKURA.ne.jp
