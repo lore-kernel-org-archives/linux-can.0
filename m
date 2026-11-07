@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794057248;
-	b=k2aDfy2Xjalk1CdhChV9Ulfp18PZCn0y0Z9LVkhPs7FmkbQxEJWicH9Sgnr+u/OLI5am
-	 iYiyXcmuxNBxbOcj27mZpuEWJGwGnN6MN0Vug2c5I4sgb7uV9gsnwMBvKlb6xRjcqVy5m
-	 eMWHD3Rys5hVvJOi9il6vsTBrUDAfAmGVoUWc/O9ysO0KcTI+gF1EFo+MSBpOLTL/xr+B
-	 K8IH7x/QPuZwUFMFDHcGs+s5YiMP+49p6ZvwSG+OqhLioi2NDeB+63IvHm/Sm/riK/k7+
-	 etn945arGuLeUNBF5f561zmesxYC/lniS9YNztqI+iytSiVbCDJc4Bn8xgfuhHCbH/w==
+	t=1794057334;
+	b=YxGw8Y55uxckVxtd2H+Cfk4cIquE7jYc6//aetELAMreCDki/Zne1DufDvu11Q9Qhsxx
+	 tGc/wfRUEku+lTjpIx++AciJDicMsNPW2OgzlVDRr1dcw1ZCoIOsoOBMVru7p+9b3Xj5I
+	 funUatv8zgJ6jGqmndpsRDfKKH+tOBy1gDSy5ZVj5GFzdb9nTKigY6e3EH/h29dnER9v/
+	 sVs3yTHzXZA8jHPsqjj3448mtJjAXQ14blXFlv5xPTpWYALTRg036cdgEAxg071zIfUV0
+	 MwFLqtyuBMg/0n3tAXiV4ovO6D0CJ3n4rA1yShPayO56ApypO7HCMpCeZjm67q4shiw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794057248;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794057334;
 	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
 	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=rlJ/KV9W43+kVi2frRB7wfRIXW8dXuvwIETC1wb5XFo=;
-	b=RNzvExiQ7ydZvep76fiXQZrtsS8ZC5RZ/UaqcgNlAPDEEI0QJAtUJA5YhZnsWCrsBUNu
-	 Vzvj52Suv4Y+T+y4ZIT1Ab6wMxGMq9vMmB6Tob6JLUrp5K53gHWDCKiIidL75V3IfcDQr
-	 efWqnTGHLWhXvatjufn5v2SGbl34zjot8LQzUfRT5CWXyNlq/5n2F+4yHpPQoFpxbqwAa
-	 E/0pKTNZ3uqlOTE0fKLtFWrn7m7gpzkLQdt+v4IgD1KEjCGRT3XzueZOrcxxdN/g5tJjY
-	 510u0dKx4X57xYrbmzN4Upu1opdFkeSc6txbEpjYY2hXPoK/JKUN4LVVXi+RVfgML9g==
+	bh=dksHcD0oASjQaqAN4zzMutrZOi4L8bHf0LB8iiT/d/s=;
+	b=CR/6nMxNT3jWuHK/HRIgAskKuhS/AoXv+UCmT20UnZbXnzTlD9tCR2QPr3ku28RmGu3f
+	 kGxW3gph+E5sluvnwK71wh4pNWlBpef7dvKfIWUYndISSS4WUuXhPIbkczpmZSEivCPwQ
+	 2mykOrS8DbMjs7QZMzFyTvnvZ1ACh0hCtprUjbth2dEBFyXQ3dLoGqVmE0gCctVjZeW/c
+	 nmfW6La+uvm23XHWq4amSfHTdAjD/V66BTJZwXNr4AUB2vnxvXEx82R1G2aT9U9xlne29
+	 nf83tlShh7X29/4Cd81R3U2nHM0rwV3gClzg/1aDYD4aJk519qfgEdYQvjs03z7WYyw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FPdw7ERF;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IStdDTXd;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01F6606A337
-	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 13:14:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBF94606D815
+	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 13:15:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FPdw7ERF
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 593E51F008A1;
-	Sat,  7 Nov 2026 13:14:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IStdDTXd
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 316E51F008A1;
+	Sat,  7 Nov 2026 13:15:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794057247;
-	bh=rlJ/KV9W43+kVi2frRB7wfRIXW8dXuvwIETC1wb5XFo=;
+	s=k20260515; t=1794057333;
+	bh=dksHcD0oASjQaqAN4zzMutrZOi4L8bHf0LB8iiT/d/s=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=FPdw7ERFd8adbd0EJvvYnF6WYsrILCS3nbsc3VVrP6eiBTSxWayu5cCRvT+5I1YzR
-	 Fa5JkWTeWODO/YiZlKuoJh588WNp3ZJYcpxS07Gj8qZ2cqXsM8GvwJj90oaJ33R0hL
-	 YKFl1ikRqT7tDmlb18FAtsNvYKG6ENgXUEpOrWQW2/Fa+QSczZ+HlOsef89TO8QGf5
-	 XvvnfA9L944MD01daI2byD6oKsSu4aX94Vnl+kPkQBipzQQSSCrXxzWb0VktNnd25x
-	 9GQCUGCik1n1SWNGcD3zrGBYsce76MOqpAaWZjg5R/+ehMaBzq25YI78EqMrNHrDAX
-	 tIiPWP317dZqA==
-Message-ID: <sashiko-outbox-202902@kernel.org>
+	b=IStdDTXd5mgNgZrPCltsKhEWD3JA8wat5c2038gVpKr5YsOHWlWIlOfup4XdNkrmx
+	 umAjO/X2jL+lm3DpFHZsLUQWFjQB8U/khhHOYcQy8r1TlYaTcXCt95g3q4Z0i5/jL0
+	 x52rwy1wizQRC403hG18lNC8OoPKg5Gy26C1VZQekUtgde2A6p5Xi7iq4bsDFV4PZL
+	 M1Qww68gZmU6UM6mUon1+UR6x7yqXw/1UrpC9h7AaFXxXy+CBBb2ociFv0yKx+htiN
+	 RYkuoMxlDPc0A1YC6N0kvhqvfcSIiASME253MZI5I0F3B9LwB0hSS47S6AfwwdqH3w
+	 +yx+tPWL+bCTg==
+Message-ID: <sashiko-outbox-202903@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH 3/3] can: enable memcg accounting for user triggered
- allocations
+Subject: Re: [PATCH 1/3] can: bcm: copy the CAN frames outside of
+ lock_sock()
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Oliver Hartkopp" <socketcan@hartkopp.net>, linux-can@vger.kernel.org
 Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
  Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261107-can-bcmlock-memcg-v1-3-482d9f5be1fd@hartkopp.net>
+In-Reply-To: <20261107-can-bcmlock-memcg-v1-1-482d9f5be1fd@hartkopp.net>
 References: <20261107-can-bcmlock-memcg-v1-0-482d9f5be1fd@hartkopp.net>
- <20261107-can-bcmlock-memcg-v1-3-482d9f5be1fd@hartkopp.net>
+ <20261107-can-bcmlock-memcg-v1-1-482d9f5be1fd@hartkopp.net>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Sat, 07 Nov 2026 13:14:06 +0000
+Date: Sat, 07 Nov 2026 13:15:32 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -65,68 +65,66 @@ Precedence: list
 Thank you for your contribution! Sashiko AI review found no new issues
 in this patch, but noticed 1 related pre-existing issue it does not
 introduce:
-- [Medium] can: j1939: non-zero setsockopt return value in
-  j1939_sk_setsockopt_flag() [1]
+- [High] can: bcm: indefinite rtnl_lock stall in bcm_notify() [1]
 --
 
-commit b3ee6688711331e68a7e275f9b72d5b3fa8b7ee5
+commit 21cad73125ec2cd172e1d3266d5282c5a3ca76be
 Author: Oliver Hartkopp <socketcan@hartkopp.net>
 
-can: enable memcg accounting for user triggered allocations
+can: bcm: copy the CAN frames outside of lock_sock()
 
-This commit enables memcg accounting via GFP_KERNEL_ACCOUNT and
-SLAB_ACCOUNT for user-triggered allocations in the CAN core, BCM, ISOTP,
-J1939, and RAW socket protocols.
+This commit copies CAN frames from user space into a kernel buffer before
+acquiring lock_sock() in bcm_sendmsg(), preventing a stalled user-space copy
+from blocking bcm_notify() under RTNL.
 
-Link: https://lore.kernel.org/linux-can/350df96b-5f69-490e-b39e-ed6e9bca475=
-4@hartkopp.net/
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 7bd2aa39777af..9c39f7363ca59 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
 
-> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-> index 50a598ef5fd4a..c832465876049 100644
-> --- a/net/can/j1939/socket.c
-> +++ b/net/can/j1939/socket.c
-> @@ -716,9 +716,14 @@ static int j1939_sk_setsockopt(struct socket *sock, =
-int level, int optname,
->  				return -EINVAL;
+[ ... ]
+
+> @@ -1663,6 +1668,47 @@ static int bcm_sendmsg(struct socket *sock, struct=
+ msghdr *msg, size_t size)
+>  	if ((size - MHSIZ) % cfsiz)
+>  		return -EINVAL;
 > =20
->  			count =3D optlen / sizeof(*filters);
-> -			filters =3D memdup_sockptr(optval, optlen);
-> -			if (IS_ERR(filters))
-> -				return PTR_ERR(filters);
-> +			filters =3D kmalloc(optlen, GFP_KERNEL_ACCOUNT);
-> +			if (!filters)
-> +				return -ENOMEM;
-> +
-> +			if (copy_from_sockptr(filters, optval, optlen)) {
-> +				kfree(filters);
-> +				return -EFAULT;
-> +			}
-> =20
->  			for (f =3D filters, c =3D count; c; f++, c--) {
->  				f->name &=3D f->name_mask;
+> +	/* Copy the CAN frames from user space before lock_sock(), so a
+> +	 * stalled copy can not block bcm_notify() waiting for lock_sock()
+> +	 * under RTNL. Only the frames the opcode handler reads are copied.
+> +	 * The handlers keep their checks and read the frames from fmsg.
+> +	 */
 
-[Severity: Medium]
-This problem wasn't introduced by this patch, but should
-j1939_sk_setsockopt_flag() return 0 instead of tmp [1]?
+[Severity: High]
+This problem wasn't introduced by this patch, but can bcm_notify() still
+block RTNL indefinitely in remove_proc_entry() [1]?
 
-net/can/j1939/socket.c:j1939_sk_setsockopt_flag() {
-    ...
-	lock_sock(&jsk->sk);
-	if (tmp)
-		jsk->state |=3D flag;
-	else
-		jsk->state &=3D ~flag;
-	release_sock(&jsk->sk);
-	return tmp;
+When a bound CAN device is unregistered, bcm_notify() is called under
+rtnl_lock and tears down the socket's /proc/net/can-bcm/<inode> entry:
+
+net/can/bcm.c:bcm_notify() {
+	...
+	case NETDEV_UNREGISTER:
+		lock_sock(sk);
+		...
+		if (bo->bound && bo->ifindex =3D=3D dev->ifindex) {
+#if IS_ENABLED(CONFIG_PROC_FS)
+			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
+				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
+				bo->bcm_proc_read =3D NULL;
+			}
+#endif
+	...
 }
 
-When userspace enables SO_J1939_PROMISC or SO_J1939_ERRQUEUE with a
-non-zero value in j1939_sk_setsockopt(), that value is returned to
-userspace from setsockopt(), breaking callers that check for a 0 return on
-success.
+Because that procfs entry is world-readable and remove_proc_entry() waits
+for active readers (pde_users) to finish, a local user who stalls a read()
+on /proc/net/can-bcm/<inode> (for example via userfaultfd or FUSE) causes
+remove_proc_entry() to block forever while holding rtnl_lock and lock_sock(=
+).
 
-[1] https://sashiko.dev/#/bug/linux-35e22274-4165-4b2b-985e-c5f5773b9ef9
+[1] https://sashiko.dev/#/bug/linux-23a32da5-4d8e-457b-9e84-376ce500a113
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261107-can-bcmloc=
-k-memcg-v1-0-482d9f5be1fd@hartkopp.net?part=3D3
+k-memcg-v1-0-482d9f5be1fd@hartkopp.net?part=3D1
