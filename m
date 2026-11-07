@@ -1,65 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.62.57.87
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794020256;
-	b=VcQz1AgGfv0NkvfMFNDo3vW7Vj79ADU5aomBUoKhm3uYBcnttZ8AueApczat7NVuQp8F
-	 4Q43Lj/S9sbIKzSbTTSL8e3dD/kpeI+rU/n4WMPupy4jDzJlWpPg535N761MZhrummW7Z
-	 3AI6HBsH6oxBfzKtlUKd2XCeEmGsDJ7TP4+PngouTXv+yW+zvmPIWZjPUmePRutbthvKs
-	 6x4SZn6qp5+lZv9y7c9ETIWmWXWdS8uOSiuQAQJjbL5PvfWF2f2g/znXNuwMIABnARsLW
-	 9zzJBV+UoMjJ1k7pmsoN5PML0APp01pWbIkuMkcEkBsHcSTJRi+0msXrwkA5xQ5863A==
+	t=1794025200;
+	b=MDUO6GbLqSottA3tNr7vyfBHvnyCZod6z8iuUWwB1luPvFU6jHsEZ+336lAI/tfy4Ysi
+	 x6ypsoRX3tt/Xrk3rK24qgyCti4H5hNPCLZiolhPeXAhMsdY6beW/FzpYb4kcy45PZU9G
+	 fwewyYr6SY18d+r7VQAC/HKNFDdatK/ZyH8SRcAc0Hm+ZZvqfrXhUT+ebQ2Ft5tq3C1xa
+	 IFUIIZUlL1STL8IFmjHD5YRTqZvEWWKciH7iMoq1ws1GeI7UVH59dVjlK/OZzsjydmQuX
+	 23kg9fQ5VIyI36UOVJjHCXLc77sNITzMGyNFTMOI9mPOuCyH0IEBPYZ0a+qSFRb+9hg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794020256;
-	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
-	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
-	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
-	 In-Reply-To:X-QQ-mid;
-	bh=+NfG3aoVVDYg320wMNuDSmqyNFEaM7V/GRWW/LuOKlc=;
-	b=XOcIhmgXgkURmz3/l3lyyB4KNpmPJPnMYx9pz4z652kRuMcFgknqa9I4Yb5NFwVuWnd4
-	 Cq/eKc5caADTb+vfuB2KaVwWA3wOyv1AZy6ItT9Xm74uNnoTn1obQZRmpzSfIIf/LqlK8
-	 TApuOH4OdL4H1Bk8SWrloqy4fEB8GS99qpjLUDuu8OkF7AZbH15TZ9PNnteHrR8kYCt/R
-	 eB5hQynMFcRSv1TDyTl700YspIJus99rZVXWy98mJ3GC2fwqMgOw10fviqc0YI99gfW+p
-	 2sIXkBWdEmUY8+vjPnbhKH6ZV9afDM/tO0ezXGQyuQXXw+iISZk7YZ9TYPhvmcWFI4A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794025200;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=rBmkXn2CzjPa1TgdbrdQ8AakmaLk3EMzm0PkbcfguF4=;
+	b=0fFOZYDjXMJtX3m3qwq+MCONVI+bCaKnXZq1RJjg3UuT86W2P2jPVxc/vBVDpZOcop0B
+	 eCIjf0GkfZqO64OdOaTLGb734rH9a9ZDtKq8VXVTbWSxWPi8+BUfUsVgSmizBTfNTErei
+	 WHwhZZgDMx5X2gaaglLMSInWDC0glaVqIEVb8vpvYm672INOG9A7RkdWM0rzXYn6Wm9gd
+	 gskfwNE9IhGo443rYUM84vUWo213RRTn5TyyeDpGGvuRfkXBrrYHpbJ1bpkb5Rdh3Xdr+
+	 0nIloiawpuPssLz7PUKfQzmKPWiZRt5WKtee8ywhQ5GVWZu3C15tqM9qf0VTGhjh+xg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=qq.com;
-	spf=pass smtp.mailfrom=qq.com;
-	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=MDRyLQRw;
-	arc=none smtp.remote-ip=162.62.57.87
-Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="jzZGyZ/D";
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79533606A32D;
-	Sat,  7 Nov 2026 02:57:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 79533606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A54606A326
+	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 04:19:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=MDRyLQRw
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1794020248; bh=+NfG3aoVVDYg320wMNuDSmqyNFEaM7V/GRWW/LuOKlc=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=MDRyLQRweWcf+xUdMyrRKSmQ4ym8LxPSKGEuTbq8sda/LnBrQsChWSTv29ATNeLl1
-	 5kWV0jo2YqJvU6DKgoUr+AJrGje3BPSoyvyrUwYRyCseF+TMcqFg43W8vPcKoVyG/T
-	 IgribdMGCx+0gdmxzvXarCy4BkxVGjuwgdB5/LrI=
-X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
-X-QQ-XMAILINFO: MdmyWVu0InhASiUkhb//VhxE+kD9CHxdhJTc2eGlkCfKL+hSZzxtKPiKVMWgqY
-	 Lv/UzTv+iDbo7dMZuvj8UN+79ox9/cI1AEMe33S2r7bt3E1M7gv8SGTY9I6pqBky60sk3/mm0O29D
-	 v0tNVj8tRScQbUZinQwt1KFWKmyu1mcSFjpMRKY99eqQ2XcKYoS2kJBZ4JXHIhrufiW9AK7duvXRg
-	 KsCUp8IMW+hWAen10Hz/NonxkHKmrw8902WefN6BT2pi5LZRVi6hT0uRjYwpmCFaBwOCVjazaFZkW
-	 wEvJ2oVheUjYu7K2SVD3dwVH3rg8F1Ym9357Bt5Beoc/RzPFu25LZVECBn5HSGTziBRNIiIuN0BYv
-	 dEY1lbfOgnkbsHmmhhBbM8zSlEo/FBbqBSFXTl0VIE558t1XIs5A0mDldpoYzntiRPQJhZW5ZJhQ+
-	 aXfkpv1h/TX3CVwZKdOX088TERlmDzC1alWuo2aXUMAqKmn5cyZEA2Wx1M+jtxE7XQ9k+lBvG+1l3
-	 Zq1Zh1i3lLMsxAXOGVv4s+FAEJn+M52EhPVreYm8frXOB6zR9f9VIq7AEjHL1lVVAPiG/jnSsdK8g
-	 gl2D5ZEXeGnzyuJvVRK3zNJas9038c4pPTfTWudT0QbHKHcaiCsMBWWtcjr37NAAuyBE3cDToy1Ye
-	 f/fPG5YwGmKcivHs3GSJKCOilYZAH/0NjqGLv3nOMYkIHgSrD4VBqR216mgFGUrYRlRoIglr8SnBX
-	 Vwd9JgaaP0nTboNq8nqGOxkpMXE3N/smmQPyKgVHltVRYPhEjlLCfRnQDg5ahGRRGyn5xfrQC8gxe
-	 1s2Xm/45nDEHVn54Il7wDgGZkucaaWxag1IMmsMYB5qNw+XLMaJV3txEO+bkf7nIXCmNSp5T74x47
-	 JWyeAwNoPjkPUyKjUhtMl566EFDTKOjES7UsQlzb9uxvGRMYCqArnqRcqrnsawcwhe1woh2u7iiVl
-	 juAaZyli3jPdvYY9zMs7UVjONkCX33DbPmQFGSBmrAvtZ92wlRp/O2VU0cnkVetSzWwX5d04zH20e
-	 1OGx3SKWYgTJfYdLdBm+X0RZ6S74lhVe/Wnze8B3OhuP+NB45fbHc/8kqfCjn4GsLlGU6WyVm2SDO
-	 tfRx5hWc/qYBDj4PUGmY2/bZ
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?SGVpa28gU3TDvGJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?RGF2aWQgUy4gTWlsbGVy?=" <davem@davemloft.net>, "=?utf-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?=" <wg@grandegger.com>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?RXJpYyBEdW1hemV0?=" <edumazet@kernel.org>, "=?utf-8?B?SmFrdWIgS2ljaW5za2k=?=" <kuba@kernel.org>, "=?utf-8?B?UGFvbG8gQWJlbmk=?=" <pabeni@redhat.com>, "=?utf-8?B?U2ltb24gSG9ybWFu?=" <horms@kernel.org>, "=?utf-8?B?Sm9uYXRoYW4gQ29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?U2h1YWggS2hhbg==?=" <skhan@linuxfoundation.org>, "=?utf-8?B?UmFuZHkgRHVubGFw?=" <rdunlap@infradead.org>
-Cc: "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re: [PATCH net v7 0/7] can: fix bus-off restart and device close races
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jzZGyZ/D
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F97F1F0089F;
+	Sat,  7 Nov 2026 04:19:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794025199;
+	bh=rBmkXn2CzjPa1TgdbrdQ8AakmaLk3EMzm0PkbcfguF4=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=jzZGyZ/DoRhyCu4cfnaUfFUiR7LFO6XAjVo+Q333ARytumu6EMlce5VxfnjxiK6iR
+	 z/2coddPbv+fjWKcgLWYqr4PlenY8IznlRhsPNyGM5ObJLnb2PzzOjRKWTtCx56K4I
+	 xZrBGIVIT4bA0DOL9A0PT6lsR65jHme2/eSn+A4zyIS2gS8GtF10XSaoH0iBBt0NOq
+	 gGtUcVALqGn+JTIPU2DKayD03OTps/1L53styET7xapEXGMMy3lfTtmy/TtVSHSZ25
+	 Jolf0jY3aICMk2KPNYYW0qASgiwUkALxh7QCbUmyrE23hYMuDrPIh+ZKGErt6GoxYO
+	 Olog7f4fct25w==
+Subject: Re: [PATCH v7 1/2] can: j1939: fix possibility of list corruption in
+ __j1939_ecu_release()
+From: netdev-bot+sashiko@kernel.org
+To: penguin-kernel@I-love.SAKURA.ne.jp
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
+ kuba@kernel.org
+Date: Sat, 07 Nov 2026 04:19:58 +0000
+Message-ID: <179402519856.488853.13100883367235550085@kernel.org>
+In-Reply-To: <00aae7aa-8351-4d69-8938-4d8e4eee78c2@I-love.SAKURA.ne.jp>
+References: <00aae7aa-8351-4d69-8938-4d8e4eee78c2@I-love.SAKURA.ne.jp>
+X-sashiko-severity: Low
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -68,48 +62,199 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Sat, 7 Nov 2026 10:57:26 +0800
-X-Priority: 3
-Message-ID: <tencent_B3369A1199D0849091BB8015C41BBFF0A607@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261106-rockchip-canfd-restart-close-v7-0-accdb11bc845@qq.com>
-	<16255046.uLZWGnKmhe@diego>
-In-Reply-To: <16255046.uLZWGnKmhe@diego>
-X-QQ-mid: xmsezb41-0t1794020246tqmnr7ex0
+MIME-Version: 1.0
 
-SGksCgo+ID7CoFRoaXPCoHNlcmllc8KgZGVwZW5kc8Kgb27CoHRoZcKgdGhyZWXCoHBhdGNo
-ZXPCoGluwqAiY2FuOsKgc2tiOsKgbWFrZcKgQ0FOwqBza2IKPiA+wqBmcmVlaW5nwqBzYWZl
-wqBpbsKgYW55wqBJUlHCoGNvbnRleHQiwqBbMV3CoGFuZMKgdGhlwqB0aHJlZcKgcGF0Y2hl
-c8KgaW7CoCJjYW46Cj4gPsKgcm9ja2NoaXBfY2FuZmQ6wqBmaXjCoFRYwqBzdGFsbHPCoGFu
-ZMKgcmFjZXMiwqBbMl0uCj4gPsKgCj4gPsKgWzFdwqBodHRwczovL2xvcmUua2VybmVsLm9y
-Zy9saW51eC1jYW4vdGVuY2VudF9DRDA1RjAyMEJBRkIyNTM3RjVEMUY0Q0JCNDI1NTg4RUE4
-MEFAcXEuY29tLwo+ID7CoFsyXcKgaHR0cHM6Ly9sb3JlLmtlcm5lbC5vcmcvbGludXgtY2Fu
-L3RlbmNlbnRfRTI1QzlCRTY2ODkyNjRFNDEzOEE0NjQ4MDNCODEwRkRGRDA5QHFxLmNvbS8K
-PiAKPiBCb3RowqB0aGVzZcKgc2VyaWVzwqBhcmXCoGZyb23CoGp1bHnCoGFuZMKgc2VlbWlu
-Z2x5wqBmcm9twqBiZWZvcmXCoHlvdcKgc3RhcnRlZAo+IHVzaW5nwqB0aGXCoGI0LXJlbGF5
-LsKgU2/CoHRoZXnCoG1hecKgb3LCoG1hecKgbm90wqBoYXZlwqBzdXJ2aXZlZMKgdGhlwqBr
-ZXJuZWwKPiByZWxlYXNlc8KgYW5kwqB0aGVpcsKgdGhyZWFkaW5nwqBpc8KgYnJva2VuwqBi
-b3RowqBvbsKgbG9yZcKgYW5kwqBpbsKgYW55wqBtYWlib3gKPiB0aGV5wqBhcnJpdmVkwqBp
-bi4KPiAKPiBBbmTCoGlmwqB0aGVyZcKgaGF2ZW4ndMKgYmVlbsKgYW55wqByZXNwb25zZXPC
-oHRvwqB0aGVtwqBzaW5jZcKgdGhlbizCoEknZMKgdGhpbmsKPiB0aGV5wqBoYXZlwqBiZWVu
-wqBsb3N0wqBvcsKgc28uCj4gCj4gU2/CoEknZMKgc3VnZ2VzdMKgcm9sbGluZ8KgYm90aMKg
-eW91csKgZGVwZW5kZW5jaWVzwqBmb3J3YXJkwqBvbsKgdG9wwqBvZsKgdGhlwqBjYW4KPiB0
-cmVlwqBhbmTCoHNlbmRpbmfCoHRoZW3CoGFzwqBhwqBuZXfCoHZlcnNpb24swqBzb8KgdGhh
-dMKgcmV2aWV3ZXJzwqBjYW7CoGZpbmTCoHRoZW0/CgpUaGFuayB5b3UgdmVyeSBtdWNoIGZv
-ciB0aGUgZ3VpZGFuY2UhIDotUAoKSSBqdXN0IGNoZWNrZWQ6IHRoZSAiY2FuOiBza2I6IG1h
-a2UgQ0FOIHNrYiBmcmVlaW5nIHNhZmUgaW4gYW55IElSUQpjb250ZXh0IiBzZXJpZXMgd2Fz
-IG1lcmdlZCBpbnRvIG1haW5saW5lIHllc3RlcmRheSwgc28gSSB3b24ndCBzZW5kIGEKbmV3
-IHZlcnNpb24gb2YgaXQuIEknbGwgcmVtb3ZlIGl0cyBsaW5rIGZyb20gdGhlIGNvdmVyIGxl
-dHRlci4KClRoZSAiY2FuOiByb2NrY2hpcF9jYW5mZDogZml4IFRYIHN0YWxscyBhbmQgcmFj
-ZXMiIHNlcmllcyBzdGlsbCBoYXMgc29tZQppc3N1ZXMgcmVwb3J0ZWQgYnkgdGhlIGJvdHMg
-ZHVyaW5nIHN1Ym1pc3Npb24gdG8gdGhlIG5ldCB0cmVlIHRoYXQgSQpuZWVkIHRvIGFkZHJl
-c3MuIFNpbmNlIHRob3NlIHBhdGNoZXMgb3ZlcmxhcCB3aXRoIHRoaXMgc2VyaWVzLCBJIHBs
-YW4KdG8gZm9sZCB0aGVtIGludG8gdGhlIG5leHQgdmVyc2lvbiAodjgpIGFuZCBzZW5kIHRo
-ZW0gdG9nZXRoZXIuCgpCZXN0IHJlZ2FyZHMsCkN1bmhhbyBMdQoKcHctYm90OiBjcgoKCgo=
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
+Low priority / nit picks for your consideration:
+
+- [Low] The commit "can: j1939: fix possibility of list corruption in
+  __j1939_ecu_release()" fixes a real, reachable memory-safety bug but…
+- [Low] The commit message calls the bug only a "possibility of list
+  corruption", which understates it.
+
+Pre-existing issues:
+- [High] Nothing cancels a pending ecu->ac_timer on teardown, so the new
+  destroy_workqueue(j1939_ecu_wq) in j1939_module_exit() does not…
+- [High] ABBA-style deadlock in j1939_ac_process()
+  (net/can/j1939/address-claim.c).
+
+--
+
+can: j1939: fix possibility of list corruption in __j1939_ecu_release()
+
+This patch moves the final release of a struct j1939_ecu to a dedicated
+workqueue, so list_del() on priv->ecus always runs under
+write_lock_bh(&priv->lock). ECUs can now stay on priv->ecus with a zero
+refcount, so j1939_ecu_get() switches to kref_get_unless_zero() and the
+list walkers skip ECUs whose kref has dropped to zero.
+
+> Since not all callers are calling j1939_ecu_put() with priv->lock held
+> for write, list corruption might happen if the last user called
+> j1939_ecu_put() without priv->lock held for write.
+
+[Severity: Low]
+Is list corruption the whole problem here? Before this patch, a final put
+without the lock ran list_del() and then kfree() straight away:
+
+__j1939_ecu_release()
+    list_del(&ecu->list);
+    netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+    kfree(ecu);
+
+Some readers walk priv->ecus under read_lock_bh(&priv->lock) and
+dereference ecu->name and ecu->list.next:
+
+  - j1939_ecu_find_by_name_locked(), via j1939_name_to_addr() and
+    j1939_local_ecu_put()
+  - j1939_ecu_get_by_name_locked()
+
+For example:
+
+CPU A: j1939_ac_recv()
+    ecu = j1939_ecu_get_by_addr(priv, skcb->addr.sa);
+CPU B: unmaps the same ECU under write_lock_bh(&priv->lock)
+CPU A:
+    j1939_ecu_put(ecu);   <- final put, kfree(ecu) without priv->lock
+CPU C: j1939_ecu_find_by_name_locked()
+    list_for_each_entry(ecu, &priv->ecus, list)
+        if (ecu->name == name)   <- reads the freed ecu
+
+Wouldn't that be a use-after-free, reachable from the CAN RX softirq and
+from sendmsg?
+
+The code change covers this, because the release now runs under
+write_lock_bh() in __j1939_ecu_release_work(). Could the commit message
+mention the use-after-free too?
+
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+
+[Severity: Low]
+Should this patch carry a Fixes: tag and Cc: stable? The unlocked
+list_del() and kfree() in __j1939_ecu_release() come from:
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+
+j1939_ac_fixup() and j1939_ac_recv() can both drop the last ECU reference
+without priv->lock:
+
+j1939_ac_recv()
+    ecu = j1939_ecu_get_by_addr(priv, skcb->addr.sa);
+    if (ecu) {
+        skcb->addr.src_name = ecu->name;
+        j1939_ecu_put(ecu);
+    }
+
+The next patch in the series, "can: j1939: fix "struct j1939_ecu"
+refcount leak in j1939_ecu_map_locked()", carries Fixes: 9d71dd0c7009. It
+also edits the bool-returning j1939_ecu_get() that this patch adds.
+
+With no tags on this patch, could stable tooling take the follow-up
+without its prerequisite, or skip this fix altogether?
+
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..3422e31338004 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+
+[ ... ]
+
+> @@ -122,6 +150,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+>  {
+>  	if (hrtimer_cancel(&ecu->ac_timer))
+> +		/* Drop the ref from j1939_ecu_timer_start(). */
+>  		j1939_ecu_put(ecu);
+>  }
+
+[Severity: High]
+This is a pre-existing issue, but can this hrtimer_cancel() deadlock
+against j1939_ecu_timer_handler()? j1939_ac_process() calls it with
+priv->lock held for write:
+
+j1939_ac_process()
+    write_lock_bh(&priv->lock);
+    ...
+    /* cancel pending (previous) address claim */
+    j1939_ecu_timer_cancel(ecu);
+        hrtimer_cancel(&ecu->ac_timer);
+
+The timer callback takes the same lock first:
+
+j1939_ecu_timer_handler()
+    write_lock_bh(&priv->lock);
+
+Suppose the soft hrtimer callback is already running on CPU1 and spinning
+on priv->lock. Then hrtimer_try_to_cancel() on CPU0 returns -1, and
+hrtimer_cancel() keeps looping in hrtimer_cancel_wait_running() for a
+callback that can never finish. On PREEMPT_RT it waits on the expiry lock,
+which is held by the softirq that is blocked on priv->lock.
+
+The trigger is an address-claim frame for the same NAME with a different
+SA, arriving while the previous ac_timer is expiring. Any node on the CAN
+bus can send such a frame.
+
+The commit notes list this as a separate problem ("ABBA deadlock in
+j1939_ecu_timer_cancel() under priv->lock"). Neither this patch nor the
+next one in the series changes it.
+
+[ ... ]
+
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index d9384cf0e356f..2030f24fce704 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+
+[ ... ]
+
+> @@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
+>  	can_proto_unregister(&j1939_can_proto);
+>  
+>  	unregister_netdevice_notifier(&j1939_netdev_notifier);
+> +
+> +	/* We need to make sure that __j1939_ecu_release_work() is
+> +	 * no longer running before unmapping memory for this module.
+> +	 */
+> +	destroy_workqueue(j1939_ecu_wq);
+>  }
+
+[Severity: High]
+This isn't a bug introduced by this patch, but does destroy_workqueue()
+here give the guarantee the comment describes? It only drains work that is
+already queued. Nothing cancels an ecu->ac_timer that is still armed at
+teardown.
+
+j1939_ecu_timer_start() takes an ECU reference and arms a 250 ms timer.
+If the last j1939 socket is then closed:
+
+j1939_netdev_stop()
+  __j1939_rx_release()
+    j1939_ecu_unmap_all()
+
+only the priv->ents[] references are dropped, and hrtimer_cancel() is
+never called. With the sockets gone, the module refcount can reach zero,
+and rmmod can run j1939_module_exit() while the timer is still pending.
+
+When the timer fires, j1939_ecu_timer_handler() runs from unloaded module
+text. If its put is the final one:
+
+j1939_ecu_timer_handler()
+  j1939_ecu_put(ecu)
+    __j1939_ecu_release()
+      queue_work(j1939_ecu_wq, &ecu->release_work);
+
+wouldn't queue_work() operate on the workqueue that destroy_workqueue()
+has already freed?
+
+The timer firing into unloaded module text predates this patch, and the
+commit notes list the uncanceled ac_timer as separate work.
+
+The follow-up "can: j1939: fix "struct j1939_ecu" refcount leak in
+j1939_ecu_map_locked()" fixes the re-map leak by making j1939_ecu_get()
+fail once rx_kref is 0. Its commit message says ac_timer is still not
+cancelled, so this race is still present at the end of the series.
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/00aae7aa-8351-4d69-8938-4d8e4eee78c2%40I-love.SAKURA.ne.jp
