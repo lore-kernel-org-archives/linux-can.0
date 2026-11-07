@@ -1,60 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.165
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.51
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1794056828;
-	b=CMhoCc2NLZQlUiG+rexdW+Wj4pq3rWg+5ItBIro/5layALcLWhCONoPcEq/wxN5hW/uT
-	 olVwpuQ6Xxs0c2spHucxMwEPbZLmY5ZaN2OKIuuBJ/t4g82S8jHNywDVuoK2kxqz6Hvie
-	 gLgal4iHK+jF1JhWVCPMxd7EXRKa/Z6hzOjvJjekh+NkenbWC1uv2OORWkdoFMVMmkHX/
-	 KIlZ8J7x2PH7RKcvthL0KLd6nTW8Lpn2YfRQTOJw9uIke+7k082J9IgdnNLl1BmzDtWFd
-	 e5FqJHlcjk0cQnv0RfvkOPR/J8LMCZJ2nfbr0YGCL9hGFI549bzXkgcQsWlYqSH4Y/w==
+	t=1794056827;
+	b=FuG+ex760V9cM1EX667hvaqx2/LdcjfClgfLJDLSreB18GD7fSrgbLijHOKgjIWL07fn
+	 3d7BRnPvQmmcJylcd8T6mtHLzYcWhmKuSFFqMtJWT70lo5aiSLwCGgfpd/h0baEkJ/qr2
+	 M5SBtGAfXwBI+z1aQIsPSFeWxd1rXrM058JIotQz4+D46y2TZuydTNhnmaYMHTtHQ+Z6f
+	 fneOaH8LtBnPx18tdFCRMSTBgK9CVAPcAV3JzktSTU3dC79vLBK9fgQSv8K+9lH5mnXfs
+	 isbuHTKv0Xyn73aCbeXCaxyoVCYoimDZMIOeicygaXjnqVniunyU1RWi9Ht0vmXn5XA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794056828;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794056827;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=ByQiClrFKo9Up3306xnCfIC2hbqifOUGs15GT7AZq1Y=;
-	b=5hfH2yHG6Nm0ugXFqiKWoTr92C72eM+ElgotUf8AEWiUd8jblN3FCgonhrqhA1ppnN5L
-	 xGgz4i4BU/zE0dmE43EP2HtpsTvj+kWdcP4XLjPSa/RpOKD3sQaK00z22UVGC0qMo2EMd
-	 42m/cA2AhWsf4ypF28Edy+IE2a3bXWCZK2EjAGe1cjK2JRlkaT7igGdtoGGFkAcBpG4e2
-	 pvKp58NS+lJDq5IRYRvXAmRkLilsmVRcR2WADOWx0PBGrAQWjZZQZQm2LdlhW/3vtffJ2
-	 LtdeBHJVE+3O24v4paDi6i8cVoIQHwaWTr++DhxdEq/yMan24W+75NIQC5Jd9rvVprQ==
+	bh=iDBjylgIUDl9bFZsKNgztjwZDso9Sb5PJsKvmprM+VY=;
+	b=up2ZC1sOiPEPU7hpf8tALA5Ll8n1B2J/jR5wc2NRg3sBoLyQfoq0sHdzRz02p0cVFgK6
+	 iCiTrrKcDGcmnEgQ9gXHfQae5q3uBnCEUlDS+G/zahk5xbOH7Wn0imAYbeRFfJsAXhKly
+	 xLlmFDLX1DsFekA4japPDSQJb3pZpGQ7kTJPmgyqrkJgHaQYlLZPsZii35UiosWCTdUc2
+	 C/YalfKHKdPrVoTZ4Vi1BcEXzJiLq6kF7iToOelEmMW9ZxnusrR+Jbh1QNRucHSKOOOYf
+	 KipIh2XpSlK67GBqXAtBm+rTBz6ylX0+MH/mjgflrw5slMlX7DgGOSeuT5ZaIXGkZ9Q==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=r22azomx;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=71uT9OtZ;
-	arc=fail smtp.remote-ip=81.169.146.165
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.165])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=T364omlT;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mJr9MCFA;
+	arc=fail smtp.remote-ip=85.215.255.51
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.51])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1D47606A32D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FB9606A32C
 	for <linux-can@vger.kernel.org>; Sat,  7 Nov 2026 13:07:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C1D47606A32D
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C4FB9606A32C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=r22azomx;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=71uT9OtZ
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=T364omlT;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mJr9MCFA
 ARC-Seal: i=1; a=rsa-sha256; t=1794056819; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=NnW+Ug57tyKfcPmvZffcbp15MZwqr44ifgnttVVIIvSXC5VBxHTXIg9kWC0vcUjxUb
-    DZX0LdOatjBb53I9m56yju0MMVJqwhtL8etpQSSV2xW3J2wSQc6qGQnHxoCOXhOJcPyY
-    mqljtpclyuT/0lj3ov4vRqNcw+fpHlnhx7qzxxyKEigCbuDbnbyE670cHb19wuGypUK8
-    Y7u3nS7F7CruaKnhHiEeS0cgPTAKKZwyqFUKSAS1LShL9X7Alv+vjsAghrIr7xjFCjqH
-    wktnQXEJ+UrY57lGltmTxEAn0sxSySaLkM6axS3kFJyswBTDHQR0Ua1XefwkYa2mp+IX
-    wMIg==
+    b=Y1l4cSIEuRCFHwCGQd8Y/0xr3meLfK9KCoOUdruirraTXCcHudVpXrTJmuSQch2mG6
+    1DGfBKKztVCFSfFURITrYc7lZWQRDBtWAS/rjMj7805dLU0fWAU7CPYZlMiHzvUoPpi6
+    S9V45rfqnYEymZaR7sMV1trzIbwh2AqF0bpv2X/Gne8SASOgiLuw40Gj6lOq+OxjdFgv
+    bXrmIHvDlfRudiHPwYc4A2Q3dEP4ffHdRBBMrruTHK4YEeSlm1oDfaJhTwBYzayPPREj
+    LDuG8lzmAQ2AHpEH5/o+Qz2HWQ9knHZ/mIoKk+rbqJzO4xyw7LeuawWYiyabALqiLyB/
+    Larw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794056819;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=ByQiClrFKo9Up3306xnCfIC2hbqifOUGs15GT7AZq1Y=;
-    b=SdDt4xC9viGGfpacn5L80goEQq3gepnbSqcwl0heXdaejDyVRxR/pEOW2BOTw23E4T
-    izL6psulRnB1NG/UkJ1N2ZqcoiRxe1bDE28iCVzMHDyqOlyZ6zFXd75VGJCxuiKe5Ha+
-    NylmKL0rstbsFOzgmGAwvV1MTfG1pAuHjmkEjNN/bknuBd0SbyVxq9N748+igxT/0R34
-    nhC5sAlrPxdrYjb3poZ9Ibrz2Te75d5aievUp+rVfC9FxT0lCWiH3ZUZFrp5/wkzWctx
-    ZKsEtQH6yqhX7uofIFHs5qyIw3GYr3PzRwtosRqp3ACl1IeqjrVmIEjCOBXC3dbXnd0S
-    O0aA==
+    bh=iDBjylgIUDl9bFZsKNgztjwZDso9Sb5PJsKvmprM+VY=;
+    b=ZFK39J2hPYID7RcC9zU7M5N1K+Z0662X6fYd1qFL6FxnOFifPFcNf02PSK406TiZDS
+    3b0fz4O5k4HrmOfDq5llNwNHDbw9PX4LEbBzsVm7BVwGs6f2X4NAuSHcS72Rq2Na7gwN
+    Y6jjdlYSDM3jTYQbfL84dYyOWcqFDOauPYWhpjApFwJ7zDKCVfqkmWVXZ534glky/PFD
+    j5kEOFETtwxW15WzWcGzLg/4+XZMWIUek0jB0tOk2idVRwH+8IQa36TG7t8I6wmQbfcu
+    CQTJQcZZJr4oEzo5v7pX0obUiFqk7EpK9CKA0Yu0uoT/MKk7fsvgW9IBKNyr07KsaRBP
+    aAPg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
@@ -63,30 +63,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794056819;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=ByQiClrFKo9Up3306xnCfIC2hbqifOUGs15GT7AZq1Y=;
-    b=r22azomxQo/IvyKoBYrALJoYX2u56ITOyl8XYo8ISeVMbr1go4Wl/UJdNzsVnFOJ6M
-    OLuzURbIM2XNhg1Rx3RqqcRYSEqDV0zQYvOgEdsr0/WG+jIdXS3PPB3rwS9TLCLEfWgj
-    +mmMnE/k5F6a6ycMaBGh3Synznnd+9iIyMZxthPBulWGqv06nNjnWeyYl88N7FPKIPkZ
-    M9CySvudTJQails6XWWpvkEMdhTgBz9AbYKtqTov8lzTONODSEzsx875XxEQfbgDkQ81
-    t2oepF7UBcV3BQZa5lEr6cMRa//18X/LQf4qEzGFxz/Kd5km40yLlBFwzHCHZo+hT4gZ
-    Ic6Q==
+    bh=iDBjylgIUDl9bFZsKNgztjwZDso9Sb5PJsKvmprM+VY=;
+    b=T364omlTbGvlN3fvK5Bxg5sj04wyGq6T9AKIVEIp1XizX2iaY11CynseoHGq3tQU5e
+    bO/m6HEh7jpkGq/hJle33+pAbXz5inH91bWikgfDp6ODT98Yw6vyRUXpk4ZLEcQB8E2k
+    +iR7hsZeynkR1w1LXXBz+ejx5juiN/poYBefHbJjudd+QY82ZkVqVgj5u05ufymvuf6n
+    EKRmnekKCJLgQk45PhNdB9xbCpKPUoBjri+jTlcqzWwRxW4plCZ+KjGn1dM1XfCBfiqQ
+    E/Zy1urb2Iiqj8keeiTt8LUW+NMJELMoLWjS/cLzV3KXp6OxVNAFA355RY5Sp1z0/UJ4
+    Wgzg==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794056819;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=ByQiClrFKo9Up3306xnCfIC2hbqifOUGs15GT7AZq1Y=;
-    b=71uT9OtZpsLetKCfW6zQW613CinXwcCEXx8ChqmIWJLs91itmTfG2Hr3tnIU7PL5Pe
-    NrjGBotLtG9NJhzT7xAQ==
+    bh=iDBjylgIUDl9bFZsKNgztjwZDso9Sb5PJsKvmprM+VY=;
+    b=mJr9MCFA+cf6jfO6Nn53Po43cN2cozaIbrORfGhHz/WXVCBhbXWg0BnOXn9rVUjsVD
+    cGUmuyifpF+jhDTzFaBQ==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [127.0.1.1]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2A7D6xlPW
+    with ESMTPSA id Kfdf2a2A7D6xlPX
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
     Sat, 7 Nov 2026 14:06:59 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Sat, 07 Nov 2026 14:06:44 +0100
-Subject: [PATCH 1/3] can: bcm: copy the CAN frames outside of lock_sock()
+Date: Sat, 07 Nov 2026 14:06:45 +0100
+Subject: [PATCH 2/3] can: bcm: do not remove the procfs entry in
+ bcm_notify()
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -98,7 +99,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261107-can-bcmlock-memcg-v1-1-482d9f5be1fd@hartkopp.net>
+Message-Id: <20261107-can-bcmlock-memcg-v1-2-482d9f5be1fd@hartkopp.net>
 References: <20261107-can-bcmlock-memcg-v1-0-482d9f5be1fd@hartkopp.net>
 In-Reply-To: <20261107-can-bcmlock-memcg-v1-0-482d9f5be1fd@hartkopp.net>
 To: linux-can@vger.kernel.org
@@ -106,163 +107,96 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
  Oleksij Rempel <o.rempel@pengutronix.de>, 
  Oliver Hartkopp <socketcan@hartkopp.net>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794056818; l=5017;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794056818; l=3516;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=996YvRTbr8SsALqk6KcpUeiQ4HHsa2J/T1DuRKj8/Vk=;
- b=4564WplYP9awleLe9ZdlsLHvO16Y4O4Zekd7ABj+ITyNQhPMKEPP/Gqmtj117prCL8Ll4encn
- UlOxHaRU1eaBHkSnuWGyg7A0/rPiXVYYTEsm2bASMajbKY+m/6RB6cR
+ bh=ralpx01ii5ZAylTnmJdCocP45EBlc13c8sOl/l1KBPU=;
+ b=ZX9X06tTTSzK3I/+c+oz+8K/jgLpytCBHVmR1QJWBhUpWO+JkltL+p0J3H+T/5XYLEsFuIxVk
+ QLBUl+77yBtDnMcfoSnIEBiA3RmO9qoV8w2ZJwNijV+ZgVj9zkeKnxw
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-bcm_sendmsg() copies the CAN frames of TX_SETUP, RX_SETUP and TX_SEND
-from user space while holding lock_sock(). A copy that faults or
-stalls, e.g. on a FUSE backed mapping, holds lock_sock() for its whole
-duration.
+bcm_notify() removes the procfs entry of a CAN_BCM socket that is bound
+to a vanishing CAN device with remove_proc_entry() while holding RTNL.
+remove_proc_entry() waits for all running readers of this entry. A
+reader of /proc/net/can-bcm/<inode> that stalls in its copy to user
+space, e.g. on a FUSE backed mapping, therefore blocks RTNL on the
+unregistration or namespace change of the bound CAN device.
 
-bcm_notify() takes lock_sock() of every CAN_BCM socket in the namespace
-of a vanishing CAN device while holding RTNL, independent of the
-binding of the socket. So a stalled copy on any CAN_BCM socket can
-block RTNL on the unregistration or namespace change of a CAN device in
-this namespace, e.g. of a vcan device in an unprivileged user and
-network namespace.
+The entry has been removed in bcm_notify() so that a later
+bcm_connect() of the unbound socket can register it again without a
+"proc_dir_entry already registered" warning.
 
-Copy the CAN frames that the opcode handler reads to kernel memory
-before lock_sock() and hand them to the handlers with a kvec based
-msghdr. bcm_tx_setup(), bcm_rx_setup() and bcm_tx_send() keep their
-checks and read the frames with memcpy_from_msg() as before. A single
-CAN frame is copied to a buffer on the stack, multiple frames to a
-kvmalloc() buffer of up to MAX_NFRAMES + 1 CAN FD frames.
+The CAN_BCM socket itself stays usable after a NETDEV_UNREGISTER:
+bcm_notify() only unbinds it and reports ENODEV, so the application can
+connect() the socket again, e.g. to a re-created CAN device. The name
+of the procfs entry is the inode number of the socket, which does not
+change until the socket is closed.
 
-As the frames are copied before lock_sock() now, a failing copy is
-reported before the error conditions that are checked under
-lock_sock(). This is in line with POSIX, which does not define an
-order in which multiple error conditions are detected and reported.
+Keep the procfs entry until bcm_release() instead, which removes it
+after the socket has left the notifier list and without holding RTNL.
+bcm_connect() only creates the entry, if it does not exist yet.
+bcm_proc_show() reports an unbound socket as "unbound" instead of
+showing the cleared ifindex as "any".
 
-The generic SOL_SOCKET options in sk_setsockopt() are not affected by
-this patch.
-
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Fixes: 76fe372ccb81 ("can: bcm: Remove proc entry when dev is unregistered.")
 Cc: stable@vger.kernel.org
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/bcm.c | 55 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 52 insertions(+), 3 deletions(-)
+ net/can/bcm.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
 diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 7bd2aa39777a..9c39f7363ca5 100644
+index 9c39f7363ca5..0631293a8b54 100644
 --- a/net/can/bcm.c
 +++ b/net/can/bcm.c
-@@ -1641,10 +1641,15 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- {
- 	struct sock *sk = sock->sk;
+@@ -221,11 +221,15 @@ static int bcm_proc_show(struct seq_file *m, void *v)
  	struct bcm_sock *bo = bcm_sk(sk);
- 	int ifindex;
- 	struct bcm_msg_head msg_head;
-+	struct msghdr fmsg = {};	/* CAN frames copied to kernel memory */
-+	struct kvec kv;
-+	struct canfd_frame sframe;	/* buffer for a single CAN CC / FD frame */
-+	void *frames = &sframe;
-+	size_t flen = 0;
- 	int cfsiz;
- 	int ret; /* read bytes or error codes as return value */
+ 	struct bcm_op *op;
  
- 	/* Lockless fast-path check for bound socket */
- 	if (!READ_ONCE(bo->bound))
-@@ -1661,10 +1666,51 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	seq_printf(m, ">>> sock inode %s", bo->procname);
+ 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
+-	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
++	if (READ_ONCE(bo->bound))
++		seq_printf(m, " / bound %s",
++			   bcm_proc_getifname(net, ifname, bo->ifindex));
++	else
++		seq_puts(m, " / unbound");
+ 	seq_printf(m, " <<<\n");
  
- 	cfsiz = CFSIZ(msg_head.flags);
- 	if ((size - MHSIZ) % cfsiz)
- 		return -EINVAL;
+ 	rcu_read_lock();
  
-+	/* Copy the CAN frames from user space before lock_sock(), so a
-+	 * stalled copy can not block bcm_notify() waiting for lock_sock()
-+	 * under RTNL. Only the frames the opcode handler reads are copied.
-+	 * The handlers keep their checks and read the frames from fmsg.
-+	 */
-+	switch (msg_head.opcode) {
-+	case TX_SETUP:
-+		if (msg_head.nframes >= 1 && msg_head.nframes <= MAX_NFRAMES)
-+			flen = msg_head.nframes * cfsiz;
-+		break;
-+
-+	case RX_SETUP:
-+		if (!(msg_head.flags & RX_FILTER_ID) &&
-+		    msg_head.nframes <= MAX_NFRAMES + 1)
-+			flen = msg_head.nframes * cfsiz;
-+		break;
-+
-+	case TX_SEND:
-+		if (msg_head.nframes == 1 && size == cfsiz + MHSIZ)
-+			flen = cfsiz;
-+		break;
-+	}
-+
-+	/* a message with missing frames still fails in the handler */
-+	flen = min(flen, msg_data_left(msg));
-+
-+	if (flen > sizeof(sframe)) {
-+		frames = kvmalloc(flen, GFP_KERNEL);
-+		if (!frames)
-+			return -ENOMEM;
-+	}
-+
-+	if (!copy_from_iter_full(frames, flen, &msg->msg_iter)) {
-+		ret = -EFAULT;
-+		goto out_free;
-+	}
-+
-+	kv.iov_base = frames;
-+	kv.iov_len = flen;
-+	iov_iter_kvec(&fmsg.msg_iter, ITER_SOURCE, &kv, 1, flen);
-+
- 	lock_sock(sk);
+ 	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
+@@ -1864,16 +1868,10 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 			if (op->ifindex == dev->ifindex)
+ 				hrtimer_cancel(&op->timer);
  
- 	/* Re-validate under the socket lock: a concurrent bcm_notify()
- 	 * may have unbound this socket (device removal) after the
- 	 * lockless fast-path check above. bo->ifindex is only ever
-@@ -1719,15 +1765,15 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 		/* remove device reference, if this is our bound device */
+ 		if (bo->bound && bo->ifindex == dev->ifindex) {
+-#if IS_ENABLED(CONFIG_PROC_FS)
+-			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
+-				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
+-				bo->bcm_proc_read = NULL;
+-			}
+-#endif
+ 			/* Paired with the lockless fast-path check in
+ 			 * bcm_sendmsg(); bo->ifindex itself is only ever
+ 			 * accessed under lock_sock() so it needs no
+ 			 * annotation.
+ 			 */
+@@ -2067,11 +2065,12 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 		/* no interface reference for ifindex = 0 ('any' CAN device) */
+ 		bo->ifindex = 0;
  	}
  
- 	switch (msg_head.opcode) {
- 
- 	case TX_SETUP:
--		ret = bcm_tx_setup(&msg_head, msg, ifindex, sk);
-+		ret = bcm_tx_setup(&msg_head, &fmsg, ifindex, sk);
- 		break;
- 
- 	case RX_SETUP:
--		ret = bcm_rx_setup(&msg_head, msg, ifindex, sk);
-+		ret = bcm_rx_setup(&msg_head, &fmsg, ifindex, sk);
- 		break;
- 
- 	case TX_DELETE:
- 		if (bcm_delete_tx_op(&bo->tx_ops, &msg_head, ifindex))
- 			ret = MHSIZ;
-@@ -1757,20 +1803,23 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	case TX_SEND:
- 		/* we need exactly one CAN frame behind the msg head */
- 		if ((msg_head.nframes != 1) || (size != cfsiz + MHSIZ))
- 			ret = -EINVAL;
- 		else
--			ret = bcm_tx_send(msg, ifindex, sk, cfsiz);
-+			ret = bcm_tx_send(&fmsg, ifindex, sk, cfsiz);
- 		break;
- 
- 	default:
- 		ret = -EINVAL;
- 		break;
- 	}
- 
- out_release:
- 	release_sock(sk);
-+out_free:
-+	if (frames != &sframe)
-+		kvfree(frames);
- 
- 	return ret;
- }
- 
- /*
+ #if IS_ENABLED(CONFIG_PROC_FS)
+-	if (net->can.bcmproc_dir) {
++	/* create the procfs entry once, it is removed in bcm_release() */
++	if (net->can.bcmproc_dir && !bo->bcm_proc_read) {
+ 		/* use unique socket inode number as filename */
+ 		snprintf(bo->procname, sizeof(bo->procname),
+ 			 "%llu", sock_i_ino(sk));
+ 		bo->bcm_proc_read = proc_create_net_single(bo->procname, 0644,
+ 						     net->can.bcmproc_dir,
 
 -- 
 2.53.0
