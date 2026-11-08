@@ -1,95 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794126305;
-	b=XvOh215peJ+923WQio6b1EhPQFtuS7VnOWJ6VmzdXJ1eQSqzlgZxkurW4Cio4qH9azrb
-	 0wWaXjwTaxJlGcbaV0t8dlAK0kveP35hgtG9BTRHJFm2YD3yJ0F2Vjnt5u/nVHNXigO9Z
-	 HUkRko2XJ/yPCGnvyiKT0MwsDhcKCcpP2bOFZ6Qe+Aio+8AGWaexRPv8uuVZx8+Or+U5T
-	 JYWLRG7oWv4hY+Av8o9d3SpoRI8YSV1JzpbqAE0BA4mHoABgbsOD+G5FBpVPDw+BXto4Q
-	 kmwes3EFCJaswdzLpTWKW8Mxu02rj8a4uuK4eILKbVSHYwaDv8vMEk7NDOi1hqe38qg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794126305;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Sent-From:X-URL:X-Accept-Language:
-	 X-Accept-Content-Type;
-	bh=RsUxm452QWuLWchyDZMBEVkx5cFOVZVaDaKx+qNRmfw=;
-	b=eKp5fTQ87J0uQ2WZEjmSE2LgbHKkDJvt4zw6LX7L4zDP/Bwu+PGITXw2L05lBuUrEwdU
-	 ixJ1hP/5Af3H2gI0hbBqTz0k4ZlDPRRx5PIJ9fxAOTFbNxO0S4hyhRPK5jHJDVCjt8snk
-	 NDDkDWqxSEwZ3VTiMYt7ELBRgzrLpHTyUgX0/4KCkREHHjs9e9tyXqQqN6a7V5+svcJjx
-	 t5N1e/11mzVT6EZAs8C0WgKEs7CJPNfOOQXBEFiUMqWcUr6ri2iatPUcHMHH+zUZuPTpT
-	 1Yy2DKdcjEWAaINnycAUD7V/RkppW6tv7KFqG2ek0NV+vRkmGvgcXTm8nD5GmrGPhrg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=BNmzaXTe;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794126324;
+	b=oso6q7yWEx3Y2if0V0GAhRsDkWzKtWdQZNwtoecFtSxFxQAN4E6N/jnqw/mldMwEx2DH
+	 gZ6Vy88C4Maa1NcW1kkE5YjHenjJZlVem7scC1BmVIuT4UoT29W2XrDcwjrv1e5st8OBg
+	 qEMkfrbq4nkbiYIMohoNofCCITS+6UaaEv896y1UeiRcWVmDNAnRoWfAm+IxnCMPWHMPH
+	 l3owh1jitlc6lHf8EoXCBZFQ1AuJTGUrAEHioCSVm53Khbv9rzGWr8mGV5gvBfFmj8rV2
+	 sTzXcU3cqnINzj1yEjd7TNI8A2eIFq4IHReGIMyiQVkUFHJgVpOQ93sQsufjkMh68VQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794126324;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=Wy58vSbXBM0A236dvwH2MVx4ZsW7iGg0quDXtxNLMiM=;
+	b=pPdnu9vrL+597B+ui/3AX1VqUB1q/PxfDsGQOwmupKmHPY/OsDmX8HEKeAKmTK3C7rHO
+	 ixEaH8pRoXRGh5vbVc5E+KpTLaKeoOmquXk65QdVy6mSTO1/jS4p2kYBGSoOYeamwHW2X
+	 sP4WpwYdVBlNHLLfnhHWWdQRz3IYUlEAaWWdFVLmbwunA2ZZ6XJo5C+GGunZ+Jx7hnX3S
+	 6iCV2MToIBkl4+nUg1jiWJ965clhlbzt+kzpZX5Y+/3bE2PhmnqHcHPm+DWHE3w7sCur1
+	 OJQsEOtbaeIidW7/x7pAL266Xea+/SR9Qzo3M64/BpUckgYnM9VRMVp9y6YeyB9W0TA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fCs6nYOj;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 919C5606A31C
-	for <linux-can@vger.kernel.org>; Sun,  8 Nov 2026 08:25:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 919C5606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A64606A31C
+	for <linux-can@vger.kernel.org>; Sun,  8 Nov 2026 08:25:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=BNmzaXTe
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E1B832006B6;
-	Sun, 08 Nov 2026 09:25:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794126302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RsUxm452QWuLWchyDZMBEVkx5cFOVZVaDaKx+qNRmfw=;
-	b=BNmzaXTewaotz33PBVZx5oFOaCtistYdPdQ+3vvMBuSQ3iNJ6vBqk14wKmcoD3sCQ/Feyq
-	nQn18iE4bPiQEhqASQOQAL70Ze7mohhaK5GGcTFlaCtqeeEb8Hl+D+pIIrGwSYQL9U1h9x
-	QdREynHP35XeAuMNx/K/FN0v3R0toN/BIeE8ePae3wmoeBfhZWavtIoeKpvD0QY4v5E7jD
-	PstFiQ/7hKOfs+0Xx5en4zfmIJMk8cheFGszTRkp6AvHk+0OevFeZ/9yQ5RGMaQ5oGXKLA
-	tOZ+a5arpq/cM1BzyfrwNDKNkj5/uzQ29nlvVbU2b3WpGwsn8HiHBxHqnD5rMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794126302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RsUxm452QWuLWchyDZMBEVkx5cFOVZVaDaKx+qNRmfw=;
-	b=JQ7SSvqApWUeg9+mJxQ/gUtdc5nGlcBEhFF4lSRoCCXXLCQ8Pp9C6frpYqMP8aXe3r49po
-	TkRsd3jXtkbdNVVpRujlpTBe/WORS14iRiB9gnyUL0RjSxEOtzYkEpgyTST8E6yO/lkY2g
-	kWJChA+SNnZ2nYnWkndkGils2phd6JDtqyg+78Dt8oQPUxHdQNXOxFC3fhzKVCxwnICh6p
-	BBWyryWfjHuXzDWcsjAFYMatC4+kdnAJDsXLzNSMrqi9s7LSJ4+/saDXXVPHe0JGIyzTPt
-	x6wtt010ALm3OGAdBZYcv7tHX6BqjOlne49GVve2ERgPYuXPVPj4CXMjtqjLAg==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794126302; a=rsa-sha256;
-	cv=none;
-	b=JNYKYCCoZMly5jaw9ctH8Sng+aLuq5wbiVtkyqXUWRMKZNmD+X/6W8YWbphByOXsnEY3O4
-	Fw1GJJE/tXb8IvWyc6lmzQnWTedCXGO7U7xM+a2JcR4459oZu8O2AQOTpEHGvWQLMtVoMM
-	a29E7IN83iCIwIIglaXY7v/nNxutOd4X8HAWBo8o6OIFfPkpDXQaO+fyekcD9gxNrolxTi
-	Pndki/JNDSezon2PYS4x+UqE4FIN3+ty3eDdQ36JKu9yTK/Our9kgYcpG2XRvScycFz9m6
-	0NE8n0dG20UzwvVnJa+z57mrK3IjBvRfcOwodFJlqd9yKEzs9+woTwvSqS0CRw==
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xPyD0-003AJ4-2f;
-	Sun, 08 Nov 2026 09:25:02 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xPyD0-00000006JVv-341U;
-	Sun, 08 Nov 2026 09:25:02 +0100
-Date: Sun, 8 Nov 2026 09:25:02 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-	Sashiko <sashiko-bot@kernel.org>, Zihan Xi <zihanx@nebusec.ai>
-Subject: Re: [PATCH 3/3] can: enable memcg accounting for user triggered
- allocations
-Message-ID: <avAx3l9-EFrSN8IN@pengutronix.de>
-References: <20261107-can-bcmlock-memcg-v1-0-482d9f5be1fd@hartkopp.net>
- <20261107-can-bcmlock-memcg-v1-3-482d9f5be1fd@hartkopp.net>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=fCs6nYOj
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB5F51F0089F;
+	Sun,  8 Nov 2026 08:25:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794126323;
+	bh=Wy58vSbXBM0A236dvwH2MVx4ZsW7iGg0quDXtxNLMiM=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=fCs6nYOjogJkDdTd1nIs0huEoaBJ/vbca0gcmgPZGookUhC7deFT6C4dYxos7XfWs
+	 IhStl/2xdjU/nk/oAHZjlJChsNJhWnEi9/UhT2DL9paAPtK65QULsmkjTXLb7kFcIx
+	 K6uBJupWBs3weBIbWAw/LXMOMckRgKMoP/SFVLZFtkH1kSzoSck0rfWJ/aJsfiXj35
+	 UqqCEF5rjZbGsSYjefEa1OBKqdIMPzML/BqUURXfYUDNadbExNWSypXzUmvSWApOPk
+	 I6bMdocceiu5Q65xHoru5EPomOAJBtolVnixWE5x1j6347qaHmbs576DPKMD0aYtyV
+	 kosPlld+oaAWA==
+Subject: Re: [PATCH v9 1/2] can: j1939: fix possibility of list corruption in
+ __j1939_ecu_release()
+From: netdev-bot+sashiko@kernel.org
+To: penguin-kernel@I-love.SAKURA.ne.jp
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
+ kuba@kernel.org
+Date: Sun, 08 Nov 2026 08:25:22 +0000
+Message-ID: <179412632236.488853.14928482596814971233@kernel.org>
+In-Reply-To: <396b5de7-3fe0-474f-9194-b4816fde7182@I-love.SAKURA.ne.jp>
+References: <396b5de7-3fe0-474f-9194-b4816fde7182@I-love.SAKURA.ne.jp>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,95 +63,214 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20261107-can-bcmlock-memcg-v1-3-482d9f5be1fd@hartkopp.net>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
 
-On Sat, Nov 07, 2026 at 02:06:46PM +0100, Oliver Hartkopp wrote:
-> Unprivileged users can create CAN sockets and trigger allocations that
-> stay in the kernel for the lifetime of the socket or of the related
-> objects. E.g. each CAN_BCM RX_SETUP for a new CAN ID creates a bcm_op
-> with optional frame arrays of up to 257 CAN FD frames and a CAN
-> receiver, without requiring a CAN device (ifindex 0) and without a
-> limit for the number of ops per socket.
-> 
-> None of these allocations are accounted to the memory cgroup of the
-> process that triggers them. So a process can bypass the memory limit
-> of its cgroup, e.g. of a container or a systemd service, and exhaust
-> the memory of the whole system. The OOM killer can not attribute this
-> kernel memory to the responsible process either, which has nearly no
-> RSS, and terminates unrelated processes instead.
-> 
-> Enable memcg accounting for these allocations, as it has been done for
-> other objects that can be created by unprivileged users. This does not
-> introduce any new CAN specific limit and does not make assumptions
-> about the number of sockets, filters or BCM operations an application
-> needs. The CAN related kernel memory is just charged to the cgroup of
-> the allocating process, so that the memory limits which are already
-> configured for this cgroup apply to it as well. Without a configured
-> limit the behaviour is unchanged.
-> 
-> A per socket limit for the number or the memory of the BCM operations,
-> as suggested in the reports, does not bound the memory consumption, as
-> a process can open many sockets and fork. Hard-coded limits can also
-> break existing applications, e.g. one that monitors all 2048 SFF CAN
-> IDs with individual RX operations, without a possibility to adjust
-> them.
-> 
-> The following allocations are accounted:
-> 
-> - af_can: the CAN socket structures (e.g. struct isotp_sock contains
->   two DEFAULT_MAX_PDU_SIZE buffers), the CAN receivers of all CAN
->   protocols and the per-netns receive lists and statistics
-> - bcm: the bcm_op structures and their frames/last_frames arrays
-> - raw: the per-cpu uniq data and the CAN_RAW_FILTER filters
-> - isotp: the TX buffer for PDUs > DEFAULT_MAX_PDU_SIZE
-> - j1939: the SO_J1939_FILTER filters and the per device j1939_priv,
->   which is created by the first bind() to a CAN device
-> 
-> The CAN socket structures are allocated with GFP_KERNEL_ACCOUNT in
-> sk_alloc() instead of creating dedicated slab caches with
-> proto_register(), as the CAN protocols copy socket options directly
-> from their socket structures to user space, which would require
-> usercopy whitelists for these caches.
-> 
-> memdup_sockptr() does not support memcg accounting, so the filters are
-> allocated and copied explicitly.
-> 
-> The isotp RX buffer and the j1939 RX sessions are allocated in softirq
-> context and can not be attributed to a process. The j1939 TX sessions
-> only exist for the duration of a transfer and the can-gw jobs require
-> CAP_NET_ADMIN in the initial user namespace, so they are not changed.
-> Temporary buffers that are freed before the syscall returns are not
-> accounted either.
-> 
-> Reported-by: Sashiko <sashiko-bot@kernel.org>
-> Closes: https://sashiko.dev/#/patchset/20260707-bcm_fixes-v5-0-c3c74f8d8ff7@hartkopp.net
-> Reported-by: Zihan Xi <zihanx@nebusec.ai>
-> Closes: https://lore.kernel.org/linux-can/cover.1793089479.git.zihanx@nebusec.ai/
-> Link: https://lore.kernel.org/linux-can/350df96b-5f69-490e-b39e-ed6e9bca4754@hartkopp.net/
-> Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-> Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-> ---
->  net/can/af_can.c       | 12 +++++++-----
->  net/can/bcm.c          | 10 +++++-----
->  net/can/isotp.c        |  2 +-
->  net/can/j1939/main.c   |  2 +-
->  net/can/j1939/socket.c | 11 ++++++++---
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
 
-For the J1939 part:
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Critical: 0 · High: 0 (1) · Medium: 1 · Low: 2
 
-Thank you!
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Best Regards,
-Oleksij
+- [Medium] At this commit, j1939_module_exit() relies on
+  destroy_workqueue(j1939_ecu_wq) to stop all __j1939_ecu_release_work().
+- [Low] Commit "can: j1939: fix possibility of list corruption in
+  __j1939_ecu_release()" fixes a real memory-safety bug but has no…
+- [Low] The commit message says only that 'list corruption might happen'
+  and does not name the callers that put without the lock.
+
+Pre-existing issues:
+- [High] This problem wasn't introduced by this patch, but it is still
+  present at the end of the series.
+
+--
+
+can: j1939: fix possibility of list corruption in __j1939_ecu_release()
+
+This patch moves the release steps for struct j1939_ecu out of
+__j1939_ecu_release() and into a new j1939_ecu_wq workqueue. There,
+priv->lock can be held for write around list_del(). Lookups now use
+kref_get_unless_zero() and kref_read(), so they skip ECUs whose refcount
+has already reached zero.
+
+> Since not all callers are calling j1939_ecu_put() with priv->lock held
+> for write, list corruption might happen if the last user called
+> j1939_ecu_put() without priv->lock held for write.
+
+[Severity: Low]
+Does "list corruption" cover the whole problem? Could the commit message
+name the callers that drop the last reference without the lock, and the
+use-after-free that follows?
+
+For example, j1939_ac_recv() gets its reference from
+j1939_ecu_get_by_addr(), which drops priv->lock before it returns. It
+then puts that reference without the lock:
+
+net/can/j1939/address-claim.c:j1939_ac_recv() {
+    ...
+		ecu = j1939_ecu_get_by_addr(priv, skcb->addr.sa);
+		if (ecu) {
+			skcb->addr.src_name = ecu->name;
+			j1939_ecu_put(ecu);
+		}
+    ...
+}
+
+If that put is the last one, the old __j1939_ecu_release() runs
+list_del(&ecu->list) and kfree(ecu) without priv->lock.
+
+At the same time, another CPU can be walking priv->ecus under
+read_lock_bh() in j1939_ecu_get_by_name_locked(),
+j1939_ecu_find_by_name_locked() or j1939_name_to_addr(). That CPU would
+dereference the entry being freed. The old j1939_ecu_get_by_name_locked()
+could also kref_get() an ECU whose refcount had already reached zero.
+
+Since frames on the CAN bus can trigger this, should the message call it
+a use-after-free?
+
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+
+[Severity: Low]
+Should this have a Fixes: tag and a Cc: stable? The unlocked list_del()
+and kfree() in __j1939_ecu_release() seem to go back to the original
+J1939 commit:
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+
+The next patch in this series, "can: j1939: fix "struct j1939_ecu"
+refcount leak", has that tag.
+
+This patch also uses WQ_PERCPU, which older trees don't have, so
+backports will need changes. Could the stable intent be stated
+explicitly?
+
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..3422e31338004 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+
+[ ... ]
+
+> @@ -122,6 +150,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+>  {
+>  	if (hrtimer_cancel(&ecu->ac_timer))
+> +		/* Drop the ref from j1939_ecu_timer_start(). */
+>  		j1939_ecu_put(ecu);
+>  }
+
+[Severity: High]
+This isn't a bug introduced by this patch, but can the synchronous
+hrtimer_cancel() here deadlock against j1939_ecu_timer_handler()?
+
+j1939_ac_process() calls j1939_ecu_timer_cancel() while it holds
+priv->lock for write:
+
+net/can/j1939/address-claim.c:j1939_ac_process() {
+    ...
+	write_lock_bh(&priv->lock);
+    ...
+	/* cancel pending (previous) address claim */
+	j1939_ecu_timer_cancel(ecu);
+    ...
+}
+
+The timer callback takes the same lock first:
+
+net/can/j1939/bus.c:j1939_ecu_timer_handler() {
+    ...
+	write_lock_bh(&priv->lock);
+    ...
+}
+
+CPU0                                  CPU1
+j1939_can_recv()
+ j1939_ac_recv()
+  j1939_ac_process()
+   write_lock_bh(&priv->lock)
+                                      j1939_ecu_timer_handler()
+                                       write_lock_bh(&priv->lock)
+                                       <spins>
+   j1939_ecu_timer_cancel()
+    hrtimer_cancel()
+     <callback running, loops>
+
+hrtimer_try_to_cancel() keeps returning -1 while the callback runs. On
+!PREEMPT_RT, hrtimer_cancel_wait_running() is only cpu_relax(), so
+neither CPU makes progress, and bottom halves are disabled on both.
+
+The trigger is an address-claim frame for the same name with a
+different source address. It has to arrive just as that ECU's 250 ms
+ac_timer starts running on another CPU, so any node on the CAN bus can
+cause it.
+
+The notes after the commit message call this a separate problem ("ABBA
+deadlock in j1939_ecu_timer_cancel() under priv->lock"). The FIXME that
+the later patch in this series adds in j1939_ecu_timer_cancel() only
+mentions the PREEMPT_RT softirq_expiry_lock variant.
+
+Does the plain spin-versus-wait case above on !PREEMPT_RT need handling
+too? It still looks present at the end of the series.
+
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index d9384cf0e356f..2030f24fce704 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+
+[ ... ]
+
+> @@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
+>  	can_proto_unregister(&j1939_can_proto);
+>  
+>  	unregister_netdevice_notifier(&j1939_netdev_notifier);
+> +
+> +	/* We need to make sure that __j1939_ecu_release_work() is
+> +	 * no longer running before unmapping memory for this module.
+> +	 */
+> +	destroy_workqueue(j1939_ecu_wq);
+>  }
+
+[Severity: Medium]
+At this commit, can a pending ecu->ac_timer still queue release work
+after destroy_workqueue() has run?
+
+destroy_workqueue() only drains work that is already queued. At this
+point, j1939_ecu_unmap_all() does not cancel ecu->ac_timer:
+
+net/can/j1939/bus.c:j1939_ecu_unmap_all() {
+	...
+	write_lock_bh(&priv->lock);
+	for (i = 0; i < ARRAY_SIZE(priv->ents); i++)
+		if (priv->ents[i].ecu)
+			j1939_ecu_unmap_locked(priv->ents[i].ecu);
+	write_unlock_bh(&priv->lock);
+}
+
+The timer still holds the ECU reference taken in
+j1939_ecu_timer_start(). If rmmod runs within 250 ms of the last j1939
+socket closing, the timer can fire afterwards and do this:
+
+j1939_ecu_timer_handler()
+  j1939_ecu_put()
+    __j1939_ecu_release()
+      queue_work(j1939_ecu_wq, &ecu->release_work);
+
+That would queue work on a workqueue that has already been destroyed.
+
+The timer outliving the module was already a problem before this patch,
+because j1939_ecu_timer_handler() is itself module text.
+
+The later patch in this series, "can: j1939: fix "struct j1939_ecu"
+refcount leak", appears to fix this. It makes j1939_ecu_unmap_all()
+cancel every ac_timer and drop the timer references. It also gates
+j1939_ecu_timer_start() and j1939_ecu_map_locked() with
+j1939_ecu_verify_get(), which fails once priv->rx_kref is zero.
+
+Would it make sense to reorder or combine the two patches, so that this
+commit is safe by itself for bisection and backports?
+
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/396b5de7-3fe0-474f-9194-b4816fde7182%40I-love.SAKURA.ne.jp
