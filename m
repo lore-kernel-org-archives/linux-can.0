@@ -1,51 +1,51 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.3
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794378614;
-	b=N2k89kyy4NE0RxHuszmkw4sTtfJAWO/+0Ewk2bI+7uOSl1EZRmRi0m9PL+z9wGQeD0j0
-	 JZprfHAMKEhSuiaUOP4IqLnsFY+owqla/i9hVreYrEUUlPmUzAFusrPHh8RYtoj0vdEy0
-	 z5j4rfncnQyoIk/nGLyrrIOyPCX4ji0Ul6QpzZZG8LkCpwKXsRBraOjehLK87eBzUhaPs
-	 KtR2zP1i9pFHUxlsSzTjoQv54RoVvlMPJxaroMLU9ddl7tQ7G6ZvD1QZgu1oz9hxeJwPj
-	 WVmCUKDuyokwvysZ8wPFifVAhp2b+pNwmauoV4qdfrVP6zgxXOauYWvKahLf9mosNRg==
+	t=1794378615;
+	b=ZEv6hAvJs8byWV4sDreB5yzxjkbKNssVKMFwQYWS82duVu/SYN7Lvpn2QKxW8UvX5HkT
+	 urHjy62GYJdQb2Sdbr31Dy7miy9GQR9Q9W8R2veO+arxt/Bhn272watv755OT3WcU7bOJ
+	 AIIQalcnR4dHQPwc0oKP9/71HsNkg9b/IJnItJICAE2CU0T7VoXFN+AvyMvWYYXXQC1Ok
+	 VM3O6+7+zeY0hAneCO7JmshvMDY2EmqQhpX9bu0J0f19qXgcfKyNxuNswBjy4V/O+U6BL
+	 9V3L3x6+WyzQl9ecZoKp6StBsyJsl17zfX36eaDeyXhoNIsZDW2mCbwayJLLP83mLIg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794378614;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794378615;
 	h=DMARC-Filter:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 In-Reply-To:References:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
 	 X-CM-SenderInfo;
-	bh=OkP72PiE2ON2H9VZh3M0HnWeTkIa/MFwv0dP7X1pRv8=;
-	b=SJ5mqzn+q5MhOL1G49Na+k3AvlKZVuCNbMOJTfXNYc2uxN09EDcQs8ZNNMPgsqLOHlO/
-	 6iY/N0QV6lsWSjaxcUNE1UJLuWNC2Tv0r9+lc2wwT80l3isCmKeHYSkX57wyTn6PNxP26
-	 vptAji8gBeZzWtvf9lrPOYd4XxJ5C3o8MNL6l2P4UHns8qv7yaFTllOxvMLUc54y80Zlg
-	 7eBhkklzmm2XlZgQJc9ZNiuLpd+6fdRnEI4Q2GcZEPhMJr/wOX6A++Vf/4o9Bevd3iltB
-	 vmSi+UzZhlJRUlQZ67aW9HEhNaGnL3/7jH+BjJZdXUEAunGs9NgiKlRkK5Ttge1eeow==
+	bh=a1FqF8Br2zg85qjr6YI+b6O9gQbxnYbLnUsbz4vQtuU=;
+	b=z4VQrS8xOAlMEoSO8uG84peJJUiqbB57bnG82FSM0k04n6HFKYm49Sn65M7DORJQ44Y0
+	 1UuwCWw8ERe4e61lkJUXpXc2zuUzJWTjr+Jgk5//gKv/twQAOc4wjZme4R+MNHYaatKAY
+	 jU6bPtrsoQIkAXMP7r1EUdNE8YK/H381q8GoBi0WCb5v7aYVgTm34M+SWbLeVMSmIPq85
+	 jws1LgpQDi/krpzN03EsyOQ8U5k4bCTGXtFg562c/SsAuuIUg8B7SsR+k4GsutjD5j0Sp
+	 Ro6CTFO9LmorhaD40piUyxMjXljpEjxFuYKBLENF0pjQ0bn8XEtkpIxVW/mxctUYftg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=163.com;
 	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=F7wfYg17;
-	arc=none smtp.remote-ip=220.197.31.4
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=P0tVSCNP;
+	arc=none smtp.remote-ip=117.135.210.3
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A41F3606A321;
-	Wed, 11 Nov 2026 06:30:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A41F3606A321
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B342E606A334;
+	Wed, 11 Nov 2026 06:30:13 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B342E606A334
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=F7wfYg17
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=P0tVSCNP
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version:
-	Content-Type; bh=OkP72PiE2ON2H9VZh3M0HnWeTkIa/MFwv0dP7X1pRv8=;
-	b=F7wfYg17IGNRwcVZzac9OMBgJgrkx9RprsM+NqGDFeTHIfBSmJsnp295tzEmnB
-	ygrPTFTko6F8oNzIfNmEM2HNAmMjyN1iXOQDyut6Ud2avCLhyimtQrXSu2ecIzlZ
-	Mpmyfohcc9eVICL3byoVwN7TdSEKUHjvld9IhHC/QCxIc=
+	Content-Type; bh=a1FqF8Br2zg85qjr6YI+b6O9gQbxnYbLnUsbz4vQtuU=;
+	b=P0tVSCNPGicpsOAnF06gRjHzAabjZyHjJwos/lVnwn4V8frTzrCyl9ZIzemQbU
+	HZu42ENT4b9wIAwUmHZuTfWxLe4Tbpb/p/Ku3g9mdgTNSsH29X6htoPuygCP+vMB
+	zKm2Taslr4Vv8opxfmd0gFzPXYly798KTdwtmdjoqfejg=
 From: Chaosheng Qu <quchaosheng000406@163.com>
 To: Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v7 1/4] can: j1939: arm the abort timer under the session list lock
+Subject: [PATCH net v7 3/4] can: j1939: drop the message when the reassembled skb is gone
 Date: Sun, 08 Nov 2026 09:34:23 +0800
-Message-ID: <179410166345.60581.16722127854597502548@163.com>
+Message-ID: <179410166346.60581.12668181404057434786@163.com>
 In-Reply-To: <179410166344.60581.3898011861151549156@163.com>
 References: <179410166344.60581.3898011861151549156@163.com>
 X-Mailing-List: linux-can@vger.kernel.org
@@ -59,96 +59,62 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3n7ReC_RqVbDqGQ--.1148S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXr1kKF48Kr4kWr18Kw15urg_yoWrJryrpr
-	W5Kry3Gr1DWr4xZrs7JayDWFyFvwn3Xr48XF1xJ3sayayakF45tF4DG34Igayqyw4kA39x
-	u3WSqw1DGw4kW37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jo89NUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4x+xJ2r0C1+XzAAA37
+X-CM-TRANSID:_____wD3HwNgC_RqGrLqGQ--.51764S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW7WF4xtr4kXw17JF1DJryxZrb_yoW8ZF4rpF
+	98KFy5Gr9rZr17Ars3K3yUX34Yy3Zaqr1rXFy0k3s3A345Cr4rJF4DK34aqa98Jan5u3y3
+	W3sxX3W7Kay0g37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jOHUDUUUUU=
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAAGyKGr0C2Fw2wAA3E
 
-From 672c37cb66569c9103f28405d455c8777c81c9e0 Mon Sep 17 00:00:00 2001
+From ba4643113b5f6ad2b53b98dae1c25d5465d4d0c0 Mon Sep 17 00:00:00 2001
 From: Chaosheng Qu <quchaosheng000406@163.com>
-Date: Sun, 8 Nov 2026 09:22:28 +0800
-Subject: [PATCH net v7 1/4] can: j1939: arm the abort timer under the session
- list lock
+Date: Sun, 8 Nov 2026 09:22:29 +0800
+Subject: [PATCH net v7 3/4] can: j1939: drop the message when the reassembled
+ skb is gone
 
-j1939_session_cancel() cancels the receive timer while holding
-active_session_list_lock.  hrtimer_cancel() waits for a callback that is
-already running, and j1939_tp_rxtimer() takes the same lock, so a softirq
-callback waiting for the lock deadlocks against the CPU that holds it.
-Cancel the timer before taking the lock instead.
+j1939_session_completed() takes the skb for the completed message and hands
+it to j1939_sk_recv() without checking the result.  j1939_session_skb_get()
+returns NULL when the offset it computes lands past the end of the queue.
 
-Cancelling outside the lock opens a second window: the cancel/get/start
-sequence is no longer atomic against j1939_tp_set_rxtimeout(), which rearms
-the same timer from the receive path without holding the lock.  A
-concurrent
-arm in that window queues a timer whose reference is never dropped, and the
-session then never reaches j1939_session_destroy(), keeping both its netdev
-and its j1939_priv reference alive.  Take the lock for the rearms so both
-armers are serialized; hrtimer_start() does not wait for a callback, so it
-is safe to call while holding it.
-
-A session that is already in J1939_SESSION_WAITING_ABORT also gets its
-timer
-back.  A second unparsable frame re-enters j1939_session_cancel() after
-j1939_session_timers_cancel() has killed the timer, and without a rearmed
-timer nothing ever moves that session out of WAITING_ABORT, so
-unregistering
-the device hangs in unregister_netdevice().
-
-The reference accounting stays balanced: one j1939_session_get() per
-hrtimer_start(), dropped by j1939_session_put() in j1939_tp_rxtimer() when
-the timer fires.
+The offset is "pkt.dpo * 7", and pkt.dpo is bounded when an EDPO is
+received,
+so this should not happen.  Guard it anyway: a NULL dereference in the
+receive path is a kernel panic, while a dropped message is a lost datagram.
+j1939_simple_txnext(), the only other caller of j1939_session_skb_get(),
+already checks for NULL.
 
 Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
 ---
- net/can/j1939/transport.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ net/can/j1939/transport.c | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f..590a04c453b5 100644
+index b0e62822b56e..5f05c15114ce 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -1161,12 +1161,38 @@ static void __j1939_session_cancel(struct j1939_session *session,
- static void j1939_session_cancel(struct j1939_session *session,
- 				 enum j1939_xtp_abort err)
- {
-+	bool abort_sent = false;
-+
-+	/* Cancel the abort timer before taking the list lock.
-+	 *
-+	 * hrtimer_cancel() waits for a callback that is already running, and
-+	 * j1939_tp_rxtimer() takes the same lock, so cancelling the timer while
-+	 * holding active_session_list_lock can deadlock: the lock holder waits
-+	 * for the callback, the callback waits for the lock.
-+	 */
-+	j1939_session_rxtimer_cancel(session);
-+
- 	j1939_session_list_lock(session->priv);
+@@ -1269,9 +1269,19 @@ static void j1939_session_completed(struct j1939_session *session)
  
- 	if (session->state >= J1939_SESSION_ACTIVE &&
- 	    session->state < J1939_SESSION_WAITING_ABORT) {
--		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
- 		__j1939_session_cancel(session, err);
-+		abort_sent = true;
-+	}
+ 	if (!session->transmission) {
+ 		se_skb = j1939_session_skb_get(session);
+-		/* distribute among j1939 receivers */
+-		j1939_sk_recv(session->priv, se_skb);
+-		consume_skb(se_skb);
 +
-+	/* Re-arm under the lock, whether the abort frame just went out or the
-+	 * session is already in WAITING_ABORT and only needs its timer back.
-+	 *
-+	 * hrtimer_start() does not wait for a running callback, so arming here
-+	 * cannot deadlock, and taking the lock closes the window against
-+	 * j1939_tp_set_rxtimeout(), which rearms the same timer from the
-+	 * receive path without holding it.
-+	 */
-+	if (abort_sent || session->state == J1939_SESSION_WAITING_ABORT) {
-+		j1939_session_get(session);
-+		hrtimer_start(&session->rxtimer,
-+			      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
-+			      HRTIMER_MODE_REL_SOFT);
++		/* Defense in depth: pkt.dpo is range checked when an EDPO is
++		 * received, so the lookup should always find the skb.  Drop the
++		 * message rather than hand a NULL skb to j1939_sk_recv() if the
++		 * offset arithmetic ever regresses.  The only other caller of
++		 * j1939_session_skb_get(), j1939_simple_txnext(), already does
++		 * this.
++		 */
++		if (se_skb) {
++			/* distribute among j1939 receivers */
++			j1939_sk_recv(session->priv, se_skb);
++			consume_skb(se_skb);
++		}
  	}
  
- 	j1939_session_list_unlock(session->priv);
+ 	j1939_session_deactivate_activate_next(session);
 -- 
 2.43.0
 
