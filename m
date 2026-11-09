@@ -1,58 +1,52 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=82.195.75.108
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=46.38.232.102
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794232163;
-	b=1eyZmrgH+XWfGgl5UqaBs4QXP187UcB042eL9vbbpOavhTXXzzrYWE/z0aoTScN1VoVp
-	 tEIfu0KYZbmJc8OnqIio8lzVgYox9Qx6dNXggYowRvW/DdTF8XtsDRQYWRdQFuzwr1VdG
-	 qM2YiWFXiAnlbMR0zR0KPgmL0Y+RgehRZAxPa4NmHA6SMakMlrxZjRTVd6ssmqlbNjtBU
-	 tYjRovDPoiaYPaMnomhx8drlSwjMDyoK8I6QaZwzzLxjIVMAKC7plGz6O5lNVgbF2W9nQ
-	 +LTbw6O2TIU+HPY98zi9COO+Nzfbsw4XF5sJyDkiMcfjz89sQyHX05OmIMo1BnQMb2A==
+	t=1794244933;
+	b=fgzuQmzOR6NjXtNzdWf6zzSo/SeATD3yl6LRtBnBiPOAtPh8SQdYzOljxbedXEWfhqR3
+	 m8xEfOxH77eyLn9dEsj78NBYq+3TDhG6LfR74KJChkqzPlEfAT/oPWGJzUprP3KyKs6pj
+	 r9cU1sx4lKZ+1gMBvC+acKkdBft1fy44q/nDO2Vtd3mS0xhK9Mxa3iFaFKOZyk3V76hZ2
+	 BqYHth0OCTOEipt5IseQYr56Q524K0wECth3O09yevOVLJFB7JARqD3/uNDCwTMdamB0Z
+	 9b10F+Jp2Ex1FkGJlNhcBJ8pcnyYybcsOCLX6X6s0wGtg1laF+ZNZ1CIF2HIgU3vE7Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794232163;
-	h=DMARC-Filter:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
-	 X-Debian-User;
-	bh=HUFMRdJh5L6LU4pmqmKEHxDfGt/Xqm9jj/GYmHv51FM=;
-	b=xYuVeZKiVEXS+UreRhYVmPo8/mc+4OD76Bnf/L0rkBKa0tZZEhrEwcjHOjB4hhHQjgDH
-	 Aowz+Eo1WVoweH/PxMFEV28jitKEYRxST/J7GMEZtqhmYIjfOz0Lo5LZeOLz5ceYICwyg
-	 Qmsx11TSjVaxld2+teHttyzijZ1Lf+1mRh1l827EwEpsYEXFV7a/ZJ8B7zrGGSafd4iem
-	 xEB6CNrv4SUA7hmEd1b9hzOeRzDtSLjW3OrJuk1gTLgHeQ12nIB0gYzftC2RQN0WP6AIG
-	 vG1tJqGgq9fRnpxOuAtNd+fHyjcUijz1pkyPPpV714JRqQhBg18s5LgfJhw4EGTIZTg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794244933;
+	h=DMARC-Filter:DKIM-Signature:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:Content-Language:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=3EWOE7fT+whQhBFHgodgp1m4XB9MbxSWBAhpv4yJlYw=;
+	b=q4o5X/3kr3ie1rGbJxw2EhDzqdY3JXlaqDW/K43vWNaBYDJKoYqbHOkjddnjTuHFAtBQ
+	 JWm16CRnzQfT16TYSiu9O5TMGwKSXeKDDNpQlf+xdklalurrtVjuvPtDSzSZJlQzJo47s
+	 HYz6PhTsk2Hn3vDhI9R415WbMBMYFFSpZYyrJu0qlgnwQd6/u2fvTjXJxmaJyGyC2Tmqo
+	 A8jj9zBXnRkmE+L+YzGEmMc9nRXck+yYN/IgApRhxuoQNkiKZK/ye+4oiUK+f3m5BsUMZ
+	 xxl27X96PViIVmwxla74a6FeBOtmcdfCSzBqCwxdsjcdNfMBdXDwC31TgcE9OVvqT9w==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=debian.org;
-	spf=pass smtp.mailfrom=debian.org;
-	dkim=pass header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=tBk3IxFQ;
-	arc=none smtp.remote-ip=82.195.75.108
-Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
+	dmarc=pass header.from=enpas.org;
+	spf=pass smtp.mailfrom=enpas.org;
+	dkim=pass header.d=enpas.org header.i=@enpas.org header.a=rsa-sha256 header.s=mail header.b=FTpAEu9H;
+	arc=none smtp.remote-ip=46.38.232.102
+Received: from mail.enpas.org (lighthouse.enpas.org [46.38.232.102])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54730606A336;
-	Mon,  9 Nov 2026 13:49:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 54730606A336
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=debian.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478E7606A321
+	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 17:22:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 478E7606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=enpas.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=enpas.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=tBk3IxFQ
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
-	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:In-Reply-To:References:
-	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
-	From:Reply-To:Content-ID:Content-Description;
-	bh=HUFMRdJh5L6LU4pmqmKEHxDfGt/Xqm9jj/GYmHv51FM=; b=tBk3IxFQ+sYgPjTN/VI97jvmdm
-	Rm7sc99QT9cq+Zb5SaKiZS9fZIFo1w+S/XtM+k0LTif3cVzwNDeesoh1IRIZf7F/5yOjPwjXB0mQz
-	bVxlYMOedxJrw1spyMesFR0PL3sdIkI6dUugL2exx2Ns3FoFevVegURubQnuUI3qMYMXJXDxtwOjS
-	zeJFI0RBpzA8QSpid1aG5ws8Uf/Mf+NAKU8JPjmVuURS/r2V4IhbK1OYwmX+wqStcHNTFykoKBopV
-	3mZ0eE2Cm8Oa8GhZLvHAJ/1L6lEU1GOjQMhw+ymrpnF6s8mcTxpJZnA+pNqPeNCVE2vmwXH4d7/kk
-	9014eR7A==;
-Received: from authenticated-user
-	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.96)
-	(envelope-from <leitao@debian.org>)
-	id 1xQPkP-00BfMg-1l;
-	Mon, 09 Nov 2026 13:49:21 +0000
-From: Breno Leitao <leitao@debian.org>
-Date: Mon, 09 Nov 2026 05:46:27 -0800
-Subject: [PATCH RESEND v2 1/2] can: j1939: convert to getsockopt_iter
+	dkim=pass (2048-bit key, unprotected) header.d=enpas.org header.i=@enpas.org header.a=rsa-sha256 header.s=mail header.b=FTpAEu9H
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=enpas.org; s=mail;
+	t=1794244923; bh=3EWOE7fT+whQhBFHgodgp1m4XB9MbxSWBAhpv4yJlYw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FTpAEu9HGxL8m2hW9cvmi8JFzzrnOhDULsDPIlihDD5O4huxAqUCogYKhHl1FE4Dy
+	 7U4VkHfxBcbrlYSUMbEB78ljkZpGhLfk60GDCue/pDAQ3ZRRyfYq8Ix9qiiEt0baAw
+	 vsc4aFnVJQSVoyp986jZLVcsKgTEXXJbISZvlj13/9A/Ulp6AHwqhQ0LUkW+kwforw
+	 8WhdUvgpkLRcImmY6xAJpmbu7qMVcyQ6nB+3Z5J1dq3Hsfv84waAEVVLx/bC8dMl2o
+	 /Whi0FVnkN+s4fCvq4i0kuSiDIR6+luIM9MWGyd1NfE9pd1jmTO/exWo0sP242b9Ct
+	 hNNXAXUAdZ0bg==
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	by mail.enpas.org (Postfix) with ESMTPSA id 69618105205;
+	Mon, 09 Nov 2026 17:22:01 +0000 (UTC)
+Message-ID: <c9e14a02-c360-414f-9808-8801ba18544d@enpas.org>
+Date: Tue, 10 Nov 2026 02:21:57 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -62,116 +56,80 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 2/2] can: can327: publish tty->disc_data only
+ after register_candev()
+Content-Language: en-US
+To: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Vincent Mailhol <mailhol@kernel.org>,
+ Oliver Hartkopp <socketcan@hartkopp.net>,
+ Oleksij Rempel <o.rempel@pengutronix.de>
+References: <cover.1792118038.git.chaosheng.qu.linux@gmail.com>
+ <e02d5a1d31bb8dbc6397e3469cd0578b85d78970.1792118038.git.chaosheng.qu.linux@gmail.com>
+ <sashiko-outbox-175333@kernel.org>
+ <179289472575.8393.17187271051946169028@gmail.com>
+From: Max Staudt <max@enpas.org>
+In-Reply-To: <179289472575.8393.17187271051946169028@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261109-getsock_two_can-v2-1-763f87fb49b2@debian.org>
-References: <20261109-getsock_two_can-v2-0-763f87fb49b2@debian.org>
-In-Reply-To: <20261109-getsock_two_can-v2-0-763f87fb49b2@debian.org>
-To: Robin van der Gracht <robin@protonic.nl>, 
- Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de, 
- Oliver Hartkopp <socketcan@hartkopp.net>, 
- Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Breno Leitao <leitao@debian.org>, kernel-team@meta.com
-X-Mailer: b4 0.17-dev-ce4c1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2713; i=leitao@debian.org;
- h=from:subject:message-id; bh=Mix/e/rZPt6C+M/+y1NvJNhAMpnntuJoe4+M+NANAuo=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBq8c9ZJc+Ax/pJJxVeoPoYxtvgmpWDLUdlDhppN
- wQE87QWc8eJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCavHPWQAKCRA1o5Of/Hh3
- bUYvD/wIVGbYo4NPMN1gHBkdNy0wIKbhje/YwCIWn8BMCLy37KsKu4ACoQ0s0TM7cu2TMR8CEoL
- 6I/XCMA7C7anePJ0zRN5uL5IUTCSGNq4/MsEg4FjMKPG72jAc78QHd1ktCKR5F2dQ4MrPZU4fpB
- SznwnotfrOWyJFbtNBXgZvPioPT7nIK1FhlkqotNrn3d6YjDyCbySUu+QBzWCFfnxS8tZuj/xO/
- fDnGBeivZqAxsGAAJZkwSIE0fdUzbs4Yx1dOwOoBpP8hTaQ1uR7or3Bb3z7Y0BXDG2xoD1j0kI5
- AClGN8ZTbPpHWDvv+wkjlTIqSZcVpXUi07IjrSH1gbNsUjTDTidhL+6UV86I4dhrCL/bvR50Psr
- M626DAFFnoCsXz9aWLK2W2SvxsJCso1USWNWm6eq/gwcSvEbiBPqXzCcGg1kx4D/suaw3wu4rX8
- t4jVYN9L+EJO6CrMAW6Lt2/6iXHZH8qbyUMB7gItlCndg+ZayPUH4DytlXc8qwE8HcKnQIbJP0a
- P5UfMpYuzOzD/AFfn8HfHIjkHTV+y5LbnpLtqeI8WSXRGWw/egRoXiCL9AvS8MOOfFFWSEFpRVi
- CEkA04JUuvNxAKPwoFui+su6LX94sPDvQkfHCMLRhHndNtme9iDvmZw7PuIJGFhT8XHfjndd5gx
- jAcbxl3ITWjM4IA==
-X-Developer-Key: i=leitao@debian.org; a=openpgp;
- fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
-X-Debian-User: leitao
 
-Convert CAN J1939 socket's getsockopt implementation to use the new
-getsockopt_iter callback with sockopt_t.
+Hi Chaosheng,
 
-Key changes:
-- Replace (char __user *optval, int __user *optlen) with sockopt_t *opt
-- Use opt->optlen for buffer length (input) and returned size (output)
-- Use copy_to_iter() instead of copy_to_user()
-- Restructure the chained if/else if (which depended on put_user() being
-  an expression) into a nested if/else block now that opt->optlen = len
-  is a statement
-- Add linux/uio.h for copy_to_iter()
+Please excuse my late reply, and thank you very much for your patience.
 
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- net/can/j1939/socket.c | 21 +++++++++++++--------
- 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 50a598ef5fd4a5..d0c6ce607b0dc9 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -17,6 +17,7 @@
- #include <linux/can/skb.h>
- #include <linux/errqueue.h>
- #include <linux/if_arp.h>
-+#include <linux/uio.h>
- #include <net/can.h>
- 
- #include "j1939-priv.h"
-@@ -767,7 +768,7 @@ static int j1939_sk_setsockopt(struct socket *sock, int level, int optname,
- }
- 
- static int j1939_sk_getsockopt(struct socket *sock, int level, int optname,
--			       char __user *optval, int __user *optlen)
-+			       sockopt_t *opt)
- {
- 	struct sock *sk = sock->sk;
- 	struct j1939_sock *jsk = j1939_sk(sk);
-@@ -779,8 +780,7 @@ static int j1939_sk_getsockopt(struct socket *sock, int level, int optname,
- 
- 	if (level != SOL_CAN_J1939)
- 		return -EINVAL;
--	if (get_user(ulen, optlen))
--		return -EFAULT;
-+	ulen = opt->optlen;
- 	if (ulen < 0)
- 		return -EINVAL;
- 
-@@ -804,11 +804,16 @@ static int j1939_sk_getsockopt(struct socket *sock, int level, int optname,
- 	 * but most sockopt's are 'int' properties, and have 'len' & 'val'
- 	 * left unchanged, but instead modified 'tmp'
- 	 */
--	if (len > ulen)
--		ret = -EFAULT;
--	else if (put_user(len, optlen))
-+	if (len > ulen) {
- 		ret = -EFAULT;
--	else if (copy_to_user(optval, val, len))
-+		goto no_copy;
-+	}
-+
-+	opt->optlen = len;
-+	/* Even if the copy below fails, we want to update optlen. This is
-+	 * a bit confusing, but, it preserves the original behaviour
-+	 */
-+	if (copy_to_iter(val, len, &opt->iter_out) != len)
- 		ret = -EFAULT;
- 	else
- 		ret = 0;
-@@ -1385,7 +1390,7 @@ static const struct proto_ops j1939_ops = {
- 	.listen = sock_no_listen,
- 	.shutdown = sock_no_shutdown,
- 	.setsockopt = j1939_sk_setsockopt,
--	.getsockopt = j1939_sk_getsockopt,
-+	.getsockopt_iter = j1939_sk_getsockopt,
- 	.sendmsg = j1939_sk_sendmsg,
- 	.recvmsg = j1939_sk_recvmsg,
- 	.mmap = sock_no_mmap,
+As for your patch, thank you for suggesting the improvement. I think 
+it's a good idea to leave tty->disc_data in a sane, or saner, state upon 
+failure.
 
--- 
-2.53.0-Meta
+However, I have to NAK your current patches:
+
+By moving the line that sets tty->disc_data after register_candev(), you 
+create a race against .ndo_open() and friends. Right now the implicit 
+contract within the code is that the ldisc is set up first, then the 
+netdev. This is not interleaved. But your patch interleaves these, thus 
+requiring a review of SMT safety between the ldisc part and the netdev 
+part, and potentially introducing new locking within the drivers.
+
+That's a bit much for a cosmetic issue when debugging.
+
+To make my point a bit clearer, quoting from your 0/2 top message:
+
+ > The series removes a trap for the next modification of these 
+functions rather than fixing a bug that can be hit now.
+
+Racing against .ndo_*() may not be a problem today (I haven't checked 
+though), but it'd be counterintuitive for the next one to touch this 
+code. We'd be trading a "trap" for another one, like you say.
+
+
+By the way, with such a patch that crosses a SMT boundary, I'd be 
+helpful for the patch message to include a discussion of why this is 
+okay to do. It makes review easier, and shows that you've thought it 
+through :)
+
+
+I've been scratching my head over this patch for a while. It's a small, 
+well meant patch, where I see the good intention of not adding more 
+code, only moving it. And yet, it actually complicates the code in a way 
+I haven't seen a patch do before. Something felt off, and I couldn't 
+quite put my finger on it.
+
+Then it dawned on me, and I'd appreciate if you answered purely for my 
+own curiosity:
+Is this patch something that an LLM suggested?
+
+After all, LLMs are trained to sound convincing, and maybe it led you, 
+and then me, down a very neat looking rabbit hole :)
+
+
+Okay, so here is an alternative suggestion, which I think can make us 
+both happy. Instead of deferring the "disc_data = ..." line, how about 
+simply setting disc_data = NULL upon failure? That keeps the SMT 
+separation as-is, you get your nice NULL value, and everyone was happy 
+ever after?
+
+
+Max
 
