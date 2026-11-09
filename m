@@ -1,55 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794190709;
-	b=w75dMY27tcA+kvLrfAO4cwZ+AM5MxlCuiVIY1fm/yabw0eQoYZb0KhV1ePgGy0TcqyiF
-	 k9Ey3/GPGOEvHoyKiiugc7invq2TMvMylQmS/RPsESrOrmfdXIZlVaS62v0hDMDMeV4o4
-	 gbstkoB8PLhgjtlsRX31zSxZpzR4milgzCz0S06KygbsFhQ/KnC6FaqLbHzz1eLRLT9Fk
-	 UMG2oKdSHe66W9Luc7f20qb/2r9//KZ6NW8SArvfux+jmguiTq6SKoOqjwm4R727lpt0M
-	 bF1PphEH7QSrGbc6dqYhdzGsYdT1YnKvByIBy2MJ6nwhbuoR8omsnxKrTeMrg2SHY2g==
+	t=1794190710;
+	b=Ln2i2fLPhog73PDvYQ7rK1BH0ps4KLxeVuvFkQAyQBcAaeBEsqptDe6o5P4pQDgs+Yow
+	 4t+dghOShaCNZuTTShzc0wECHKcW9Cg89/r2XTvWC+l4LZk3JHFGmxgU2WDEAULNM1IV7
+	 uDWdm4A4PGbEbZc3s2LDFuRh+PvHQPEYOxuPTkpaaClPaWI7kYk9zniUU+1EOxvnNLmTF
+	 sQRELfPjFS2ZHqTKhFejZOQqxqQVgDuXxY3651kHHAeQa2DiQA4CdsddJTxGoJ5KKjpGC
+	 Ae7/wCNe2BIM/ruZqaxY3fc/EMmojIDjW/0hrUz160eKOmgmxfiYbG91L8qd/NOTycA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794190709;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794190710;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=vJ7ihLtsvAqtI/3JEYTFcUBQa4uCQLcL+soer6ImUOo=;
-	b=3b5lLukfitjuoILBkmorhAhgZtTfaNAK277WUecuL3l6zAERQv1YLHwkWFTVf022G50L
-	 H6GuPkV1BRTrpStybZgnR+O57WT7GQUJvWmi20DKS18cG0jWs9ybf18G81bNPp6GXaQZC
-	 b0JRQTVO/b3enwpnTxYejexVXZF2NOQewVnCIUwAb1NK1+eeex8t6vFjccvgQHTa+zW6g
-	 7K1ShSpbxEPoA6tWTypESICm4l78rdvguqZE8pSZV5RV75Sc1Thf+MkLk7ChNQXUaxCwi
-	 2KLqHp7VTkOroWdnVf2DKtwbgINsxtTGaqMXkFsMthxf52OriNQThTbdYwxGCbkOf/Q==
+	bh=dmly4DUcZXSyqRnYrDP4D8BKGDOU3GhIDD80/iUNNgU=;
+	b=LQv9+9KZvmZnra/9bWTWNZwJYufzA+UeFgJHFDQ1XgFPuyU+HlmS5CbPU0NELhHcU6bx
+	 zE8TokGOFeDOm0GotLb4TTV6QDAZkRoFod1NP3oHYWlBxddJG6OJLaRK0LC+J+ex2iXq8
+	 Qxb9SWN/+sZnQUC2a/zKVTwtqqw5eloGjWH4KaPB6lroKts/VfrsQEwnmHppP+hOKckjg
+	 5qNyuAv00KYC5kB6SVWIQZ6LkaMbEH/DpYiVX7ezWQ/ngzWw66WqIyEB99S0+t5QsBtjz
+	 h9ebh7Eoq8gxyeO5mZN/wPekS9+ARuWGsoaqnS5y7j0I5Gl0dXTGQwxQb7TCdKQbaqA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=l2taSXw8;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IPYnSH7P;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A6CA606A31C
-	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 02:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDC1A606A31C
+	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 02:18:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=l2taSXw8
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49C1B1F0089F;
-	Mon,  9 Nov 2026 02:18:28 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IPYnSH7P
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40F0A1F008A1;
+	Mon,  9 Nov 2026 02:18:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794190708;
-	bh=vJ7ihLtsvAqtI/3JEYTFcUBQa4uCQLcL+soer6ImUOo=;
+	s=k20260515; t=1794190709;
+	bh=dmly4DUcZXSyqRnYrDP4D8BKGDOU3GhIDD80/iUNNgU=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=l2taSXw8jwk0yGoNnRBCPpOikWx+TJ0m/Y+CIpvlCxm8dUHY33+ujM6D8T+vdq6E6
-	 qTwTcRF5nFkJxyCo8sFUr55RF6a5F3sXqgJRS2pI15O50cjV/r5c800eQ3DJvJf0no
-	 FOXJ/ag0+zj6ZJqUbv8+5v4sriha/9w97HVtzN++iPGLrrDJmbJox4Q3+nJbDFF55i
-	 l9ztV8lfLwp4EspLiD2QdzaPsEYlY0tSg5dp6Z0AsbJT0KMI0yAP+Gic5l3fxydfy2
-	 k4v3MnS5Xl7V3tcanHXDHQwsjN0r/2LamJ8S3+urkbbfFX4LWA6NfHusq03ROaLSUy
-	 MyW13nXr6Ri5Q==
-Subject: Re: [PATCH 1/3] can: bcm: copy the CAN frames outside of lock_sock()
+	b=IPYnSH7PbZDkBdFirvarPRekUynNIknzJEfhay4ZdWhTsJMzzHH7UhwqsE3u+Wxac
+	 mvo16hEukbf8j6ZaWnOsanSmFFIQN8WABoEpy24xZLAJ5IcdWXGiqGxLQuRnAjm9/d
+	 rz42THSPdCD4lItEOWpENdFcykciphXhCVsk7VV3rwHX8uDdgVbhpQFIWmeW+30yht
+	 If9rfn3bQzFVaZF3FXU5wSEgXSum7rGjSujeoDSPIMJolTk+Alt0WBTOgZVXXg7n5F
+	 PagHKivSXizBeNt0sEnXOAZSGAMDawWh4Tr0mkZ/ciNow3zGQYlCsHgPoLRPl0ne6s
+	 n8N5Mo/Hz8BqA==
+Subject:
+ Re: [PATCH 2/3] can: bcm: do not remove the procfs entry in bcm_notify()
 From: netdev-bot+sashiko@kernel.org
 To: socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  sashiko-bot@kernel.org, zihanx@nebusec.ai, kuba@kernel.org
-Date: Mon, 09 Nov 2026 02:18:27 +0000
-Message-ID: <179419070782.488853.4274206106803700746@kernel.org>
-In-Reply-To: <20261107-can-bcmlock-memcg-v1-1-482d9f5be1fd@hartkopp.net>
-References: <20261107-can-bcmlock-memcg-v1-1-482d9f5be1fd@hartkopp.net>
-X-sashiko-severity: High
+Date: Mon, 09 Nov 2026 02:18:28 +0000
+Message-ID: <179419070881.488853.11899058559222233626@kernel.org>
+In-Reply-To: <20261107-can-bcmlock-memcg-v1-2-482d9f5be1fd@hartkopp.net>
+References: <20261107-can-bcmlock-memcg-v1-2-482d9f5be1fd@hartkopp.net>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -62,10 +63,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 2 potential
+Thank you for your contribution! Sashiko AI review found 1 potential
 issue(s) to consider.
 
-Critical: 0 · High: 1 · Medium: 0 · Low: 1
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -73,145 +74,95 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] The patch does not close the RTNL-blocking vector that its
-  commit message describes.
-- [Low] The new comment on the stack buffer in bcm_sendmsg() (`struct
-  canfd_frame sframe; /* buffer for a single CAN CC / FD frame */`) and…
+- [Medium] The procfs reader now races with bind and unbind.
 
 --
 
-can: bcm: copy the CAN frames outside of lock_sock()
+can: bcm: do not remove the procfs entry in bcm_notify()
 
-This patch moves the user space copy of the CAN frames for TX_SETUP,
-RX_SETUP and TX_SEND in bcm_sendmsg() to before lock_sock(). The frames
-go to a stack buffer or a kvmalloc() buffer and are handed to the opcode
-handlers through a kvec based msghdr. The goal is that a stalled copy
-can no longer hold lock_sock() while bcm_notify() waits for it under
-RTNL.
+bcm_notify() no longer calls remove_proc_entry() while holding RTNL.
+The entry now lives from the first bcm_connect() until bcm_release().
+bcm_connect() creates the entry only if it does not exist yet, and
+bcm_proc_show() reports an unbound socket as "unbound".
 
 > diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 7bd2aa39777af..9c39f7363ca59 100644
+> index 9c39f7363ca59..0631293a8b54a 100644
 > --- a/net/can/bcm.c
 > +++ b/net/can/bcm.c
-> @@ -1643,6 +1643,11 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->  	struct bcm_sock *bo = bcm_sk(sk);
->  	int ifindex;
->  	struct bcm_msg_head msg_head;
-> +	struct msghdr fmsg = {};	/* CAN frames copied to kernel memory */
-> +	struct kvec kv;
-> +	struct canfd_frame sframe;	/* buffer for a single CAN CC / FD frame */
-
-[Severity: Low]
-This isn't a bug, but this comment and the commit message don't match
-what the code does. The commit message says:
-
-    A single CAN frame is copied to a buffer on the stack, multiple
-    frames to a kvmalloc() buffer
-
-The code picks the buffer by byte size, not by frame count:
-
-    if (flen > sizeof(sframe)) {
-        frames = kvmalloc(flen, GFP_KERNEL);
-
-sizeof(struct canfd_frame) is 72 (CANFD_MTU). For TX_SETUP or RX_SETUP
-without CAN_FD_FRAME, cfsiz is CAN_MTU (16). So 2 to 4 classic CAN
-frames (flen of 32, 48 or 64) land in sframe, and kvmalloc() only starts
-at the fifth frame.
-
-Could the comment and the commit message say the stack buffer holds up
-to sizeof(struct canfd_frame) bytes? A later change that trusts the
-"single frame" wording, for example shrinking sframe to struct
-can_frame for the CC case, would let the byte-size check overflow the
-stack object.
-
-> +	void *frames = &sframe;
-> +	size_t flen = 0;
->  	int cfsiz;
->  	int ret; /* read bytes or error codes as return value */
+> @@ -223,7 +223,11 @@ static int bcm_proc_show(struct seq_file *m, void *v)
 >  
-> @@ -1663,6 +1668,47 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->  	if ((size - MHSIZ) % cfsiz)
->  		return -EINVAL;
+>  	seq_printf(m, ">>> sock inode %s", bo->procname);
+>  	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
+> -	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
+> +	if (READ_ONCE(bo->bound))
+> +		seq_printf(m, " / bound %s",
+> +			   bcm_proc_getifname(net, ifname, bo->ifindex));
+
+[Severity: Medium]
+
+Can bcm_proc_show() now race with bcm_notify() and bcm_connect() on
+bo->bound and bo->ifindex?
+
+Before this patch, bcm_notify() called remove_proc_entry() before it
+cleared bo->bound and bo->ifindex. remove_proc_entry() waits for running
+readers. bcm_connect() also created a fresh entry only after it had
+assigned bo->ifindex. So bcm_proc_show() never ran while bo->ifindex was
+being written.
+
+The entry now stays from the first connect() until bcm_release(). That
+means these writers can run while a reader is inside bcm_proc_show():
+
+bcm_notify() NETDEV_UNREGISTER:
+    WRITE_ONCE(bo->bound, 0);
+    bo->ifindex = 0;
+
+bcm_connect():
+    bo->ifindex = dev->ifindex;
+    ...
+    WRITE_ONCE(bo->bound, 1);
+
+Take the unbind case: the reader loads bound == 1, then bcm_notify()
+clears both fields, then the reader loads ifindex == 0. In that case
+bcm_proc_getifname() returns "any" and the output is "bound any". Isn't
+that the output the commit message says this patch removes?
+
+For the rebind case, WRITE_ONCE() and READ_ONCE() don't give
+release/acquire ordering. Could a reader see bound == 1 together with
+the stale ifindex == 0, and print "any" for a socket bound to a specific
+device?
+
+The plain store to bo->ifindex and the plain load in bcm_proc_show()
+also look like a data race that KCSAN would report.
+
+The comment this patch keeps in bcm_notify() no longer seems accurate:
+
+    /* Paired with the lockless fast-path check in
+     * bcm_sendmsg(); bo->ifindex itself is only ever
+     * accessed under lock_sock() so it needs no
+     * annotation.
+     */
+
+The comment in bcm_sendmsg() relies on the same assumption, that
+bo->ifindex is only mutated under lock_sock().
+
+Taking lock_sock() in bcm_proc_show() would not fix this.
+bcm_release() calls remove_proc_entry() while holding lock_sock(sk),
+and that call waits for active readers:
+
+bcm_release()
+    lock_sock(sk);
+    ...
+    remove_proc_entry(bo->procname, net->can.bcmproc_dir);
+
+Would it work to use WRITE_ONCE()/READ_ONCE() on bo->ifindex and
+smp_store_release()/smp_load_acquire() on bo->bound? bcm_proc_show()
+could then read one snapshot of ifindex into a local variable.
+
+> +	else
+> +		seq_puts(m, " / unbound");
+>  	seq_printf(m, " <<<\n");
 >  
-> +	/* Copy the CAN frames from user space before lock_sock(), so a
-> +	 * stalled copy can not block bcm_notify() waiting for lock_sock()
-> +	 * under RTNL. Only the frames the opcode handler reads are copied.
-> +	 * The handlers keep their checks and read the frames from fmsg.
-> +	 */
-
-[ ... ]
-
-> +	kv.iov_base = frames;
-> +	kv.iov_len = flen;
-> +	iov_iter_kvec(&fmsg.msg_iter, ITER_SOURCE, &kv, 1, flen);
-> +
->  	lock_sock(sk);
-
-[Severity: High]
-Can RTNL still be blocked the same way through other paths on a CAN_BCM
-socket?
-
-The commit message names the root cause as bcm_notify() taking
-lock_sock() of every CAN_BCM socket in the netns while RTNL is held:
-
-net/can/bcm.c:bcm_notify() {
-    ...
-	case NETDEV_UNREGISTER:
-		lock_sock(sk);
-    ...
-}
-
-That part is unchanged. bcm_ops has no .setsockopt or .getsockopt, so
-SOL_SOCKET options go to the generic sk_setsockopt(), which copies user
-memory while holding the socket lock:
-
-net/core/sock.c:sk_setsockopt() {
-    ...
-	sockopt_lock_sock(sk);
-
-	switch (optname) {
-    ...
-		ret = copy_bpf_fprog_from_user(&fprog, optval, optlen);
-		if (!ret)
-			ret = sk_attach_filter(&fprog, sk);
-    ...
-}
-
-sk_attach_filter()->__get_filter() then does:
-
-	if (copy_from_user(prog->insns, fprog->filter, fsize)) {
-
-fprog->filter is a pointer chosen by the user, and outside of TCP no
-capability is needed. SO_ATTACH_REUSEPORT_CBPF follows the same path.
-SO_GET_FILTER->sk_get_filter() also writes to user memory with
-copy_to_sockptr() while sockopt_lock_sock() is held.
-
-So an unprivileged user in a user and net namespace could do:
-
-    open CAN_BCM socket
-    setsockopt(SOL_SOCKET, SO_ATTACH_FILTER) with fprog.filter on a
-      FUSE backed mapping that never completes the fault
-      -> __get_filter() stalls with the socket lock held
-    delete the vcan device (or tear down the netns)
-      -> bcm_notifier()->bcm_notify()->lock_sock() sleeps under RTNL
-
-Isn't that the same scenario the commit message describes as fixed? The
-statement "The generic SOL_SOCKET options in sk_setsockopt() are not
-affected by this patch" doesn't say that this path can still block
-RTNL, and it doesn't mention the getsockopt path.
-
-bcm_notify() still takes lock_sock(sk) under NETDEV_UNREGISTER after the
-later patches in this series ("can: bcm: do not remove the procfs entry
-in bcm_notify()" and "can: enable memcg accounting for user triggered
-allocations").
-
-Would it be better to change bcm_notify() so it doesn't sleep on
-lock_sock() of unrelated sockets under RTNL, or to defer the per-socket
-cleanup out of the RTNL section? Either of those would replace moving
-individual copies in bcm_sendmsg() out of the lock.
-
->  
->  	/* Re-validate under the socket lock: a concurrent bcm_notify()
+>  	rcu_read_lock();
 
 [ ... ]
 
