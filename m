@@ -1,83 +1,83 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.174
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794230199;
-	b=Nc2DwOVJe5fP+fmAOcoxcLAx30sGG4FXzMuMo2vpY4VTAnPWjikR2qYIf053xWcs07iJ
-	 QaAKiAGFziR5B5QI7wNcZfrhIceeOnRBm7ZAI7aQTkkwriwKCMgmIJ/AIzQOa+yrCZsTw
-	 4kLg1m2t1IU5FociGE27hO6KksA4+XRsjeqGapQvfrdBw5MH2KKj0aZ599ZZ3R0hJvIyF
-	 Wcsbw8qbdWV34gTzuosidfsrUEr67Dfjr0YP1ykxepadl6VapkM76MSuVs7G+hJ7O+hWR
-	 H5iOO/fd4djr9ZJqDYuo3ao+p4HffV/9MbevSTLyWVg3hspFgPf2fkx9ozK575yQbjA==
+	t=1794230207;
+	b=0wzd3qh624SKqw0FRGdfn5g6nNiLH4BUyMb/c+PTA/KPiiTmLdZ3GWFDuyYuzkpMqREN
+	 z/TRtYyfrRbNe9X4daDJ76YKfd0zKSrjyB2An4wdDYTjNa6QWrDxGykltsXX0LllSMkp4
+	 FpmhLQcA+m/dEI32oKoTjTsc0J+M0Sth/Cp7cD8zollgLs3VSmQ6s3WFbwSX2DskKy3Ge
+	 uW3IGW9JMDt5PjdVLD+FCgOiHhZMIHwNSABUIwxfLFNrWIvQDfEHQp99vNnuieCdeBlP8
+	 UknoUdI0h1HzK+anGxRn3a+XqGAKPsIqDsMPQcoa5WRvnTUOAQ5UrPVnNOL4yFV3CIA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794230199;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794230207;
 	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
 	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
 	 Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=0/T42jLxdLYJWKpxxz6BdmjxHyP+SznlJh4hqkOHI/U=;
-	b=BoD8+w4U+bpSi+vy2/rLkA6vhPy1YYcXr7jC3N3JhLrVZP2IB5hS3JPi/zbHMS40Zc4T
-	 gA8a4hRyEaeyL/ScEbEtE2oZ1+x6rjJxMjnIdhWTJzDZGcNZE9UzaO63HCvLO5/fekQGO
-	 iWpPNXU5fYDyKsyCKdAbXl0nKSNwXFFfoZLgVmUd0MI7yhl8z7ZW5mv/xJ+eLpnph5xXR
-	 ll136BIsBXY7DrBYYAzK+7k75SzVvtgZ/FTqEfgZPwhVLvKgef1tvYkiPvmBdE8Yo1caC
-	 nzRr9Ve1XUQPr0/Hbs66azMno9hVBJ6vvh7MRXRu3EzRYV9/Xrc/28OBc0K64bPaRzg==
+	bh=HfwmzgBVbP4RE3XlnnY0kmE2F8lrR9rQJL5FCax2miY=;
+	b=yanPN7NOUFcVtioCMtHEfFfXwmGodMEBQA0uMR9vqZV+xr6VEdUfakhAxT2+2t9XWGB5
+	 9T6kiD3YIFgCYj1/5paIgKC9f5Ggtr1d1kFTdGqyNQTzKFy3stl8ELKRQGNQqF6ZH9tf1
+	 mk9FdxVjIJdtAS+8h7wYWFszrlST4u3lTasT04JSv3B2bbqEMsv5Krcr5K5Wm7Uqfp7l5
+	 riZPwz6ykYAtX5JzJYmea1NXEeInCkxEX+5kYU4Atu5kAOt2GOZqee+7BbtT9yUvDIiPd
+	 eP6tRbl+m2721mN+7bG0MboP8p6a1K2Bt3RusMCx3U5Txuqtcm7NG27oSNnWnYiZCwQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=nebusec.ai;
 	spf=pass smtp.mailfrom=nebusec.ai;
-	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=AaKu5CCU;
-	arc=none smtp.remote-ip=209.85.214.172
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=k4QAicDF;
+	arc=none smtp.remote-ip=209.85.215.174
+Received: from mail-pg1-f174.google.com (mail-pg1-f174.google.com [209.85.215.174])
 	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D6AC606A31C
-	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 13:16:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6D6AC606A31C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB484606A32A
+	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 13:16:46 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EB484606A32A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=AaKu5CCU
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2ed28bac8d7so3105755ad.0
-        for <linux-can@vger.kernel.org>; Mon, 09 Nov 2026 05:16:38 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=k4QAicDF
+Received: by mail-pg1-f174.google.com with SMTP id 41be03b00d2f7-cdb681de50eso248073a12.2
+        for <linux-can@vger.kernel.org>; Mon, 09 Nov 2026 05:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nebusec.ai; s=google; t=1794230198; x=1794834998; darn=vger.kernel.org;
+        d=nebusec.ai; s=google; t=1794230206; x=1794835006; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to:content-type;
-        bh=0/T42jLxdLYJWKpxxz6BdmjxHyP+SznlJh4hqkOHI/U=;
-        b=AaKu5CCUH0EsMJsQuIdM/f14AK5TvlPBpsaWF3J0mpKBQwJqxlkLQvZOisXpy20QeK
-         PVhBawanQKN3w6P1RrDNFHQdaNe9pNX5nOQAeRWXz4NzEqwcTZ1YQvvFNRDqIGEu7lR1
-         5zQzHs8AX7oS/dMDAJW429FtYgc5v8117TB5uMIyQoL9U1LfxofC/N1ICh6vexw2GG5j
-         cyEqHTJpblsGdoim0CiqXEam4/Z0jgFw6LFqzl5it1JG56vEvssa6oByO8cle8+EIYOY
-         N00DpLpMnG9tr5GON4htcMGdUTwrOsiK78ngKZWxa+Nij2SxNiDM374FQA526dYdUCpP
-         AhzQ==
+        bh=HfwmzgBVbP4RE3XlnnY0kmE2F8lrR9rQJL5FCax2miY=;
+        b=k4QAicDFNFoBFc9YGvHhUEQCrivXH3Qb78claVIrHJ9BC0QClL5bR+Pp5EIIv2qNQO
+         FXdfKk5QHC6Qb4L8CU2w8Gh4w1zulzT90yyozfscQpBQXADF9EFpXjsuSEDnp3ZsnVIK
+         3gM9Y2jLv1HTpXuFyiFOiUzjPc5IAfwI6oHyy3MsYhC3+SzjiW2BgC2YIpzUu6pOh+LU
+         fMyq55/RpQre2Ot9cv5IA87e4oVo5hF4alL+1EkANKxVusLABQKiXH97LJ04OJUDxIEw
+         gjUJIfeLvADLgj8nnikxpM/eZ8DSEjj6mXeDJatMZRtLqCWwGSlUueawqo6hge45rPnf
+         xR5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794230198; x=1794834998;
+        d=1e100.net; s=20260707; t=1794230206; x=1794835006;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to:content-type;
-        bh=0/T42jLxdLYJWKpxxz6BdmjxHyP+SznlJh4hqkOHI/U=;
-        b=vfw2/jb9eAbRePebwp9dWaZ1I2slFcTftb6gdm7OyBYgyT5Iy+1KrYBB2Yr6nNiPC7
-         vhWWA148bjWlZbDltp3B+enVZuFI6t3dTn3MbHlUBsxZrBTvEFcDKHHWD/t7q1KHqfhP
-         UXat9bcKyRMzS0i88HYZWe1W2XcAGf5zU+SYAuBEjmfgAsbOn7t2+lV3v7Gs8cZEpO+O
-         Pt58tnkEygzlv8z0y1tWBtcHs3QTGX9PsxQPp0nuxph1AvDlHyLiXPoIfi+cXKpvAmGx
-         AQBNCXVKJH7+bh7juZDKWatr4M0wjjS6jSI3ebubJ2m7EjcZ2LkFiNYDONGh1bmQPf9I
-         UUUA==
-X-Gm-Message-State: APuU4Z+PogC2d3ziEpbFCThNLRTR7+vsX3W049l702DjXICiOxy3Mspz
-	xbmoLHI0Qow866DVvjJBNFPrsJR4XWzsDkh+POI84HtCn4MlbXNNgn2ycYGPNIACQN7HnmY2eVd
-	9Alg1ACAa
-X-Gm-Gg: AYBFou384AjL8pJoM0+o7/Te6Me/qTWHzP2NfSe3RlYEGI+ug65Bb/xIY8ozv5bDRSa
-	OyXK5CECw6iv+pu625tPBv7znVmyn+CTSf6TCoem5F1Z9GUXXG4SrSFuvuQg+TIg8/yz4rOc17M
-	/VW6QXPyW+akznVpLcFkiMeOUTaEKA+zwejbkx2OqXQcxFh+p/z0LZxhe37mq+BeotUqUocfnDZ
-	p7lBV9+TXCRC2b6vEwiOr6pcAroS5WxQ6Kll1ZwLsNaWkFASOoW1qbKLdSKIHLgV7JVMMGQfsk2
-	IrfTBHSic572Ya8U3XFaTL6rhhf9Yd4pe683YQXwwtOsPlzLZi1jdZjGJffXxb9aIF0ElLvwBkS
-	A1ABNJ3No2pZ5B1ZTfzHuZPgtXdf5sxbIfM62YJxjRrObvL+jaA+FOPV2o/KigGeuy5LXC9BwVj
-	DocddqaF92g77D6rbUDtaJtfxG46eQ+/wJ46hfuWBLB3fjQL6Be+Zt6+1WCepUL4s7MT6iS+iMl
-	aE9R3Es6RNtZS6wZlALWK25yG8/2E4feFmDP5XIxbCsyJKLEblhHE4NQgnRJ5eh8em9fPx1VMiH
-	rX8G3LKCthIGXTtG6ZEfhrS1hSmnLUwsflB29+I1ZE+mLQKyMg+SjPkpD3Ev
-X-Received: by 2002:a17:902:cec2:b0:2e8:6540:11b6 with SMTP id d9443c01a7336-2ed837a5e60mr27480655ad.37.1794230197581;
-        Mon, 09 Nov 2026 05:16:37 -0800 (PST)
+        bh=HfwmzgBVbP4RE3XlnnY0kmE2F8lrR9rQJL5FCax2miY=;
+        b=CjKYi6SQU240DJ/Rrf3c4Ct0snaYMv+UQWgX7uXM9WINMHPeyJlh8lGgatD/txTdjk
+         WtFg1LgBTqlgxq1a9mJAX5aYsIr/i4BMKztTsHDKMHEmOcYIUzbMStx1xXTIis6miMv7
+         jMW3u/HKh073eiAROZjSAzekXqmhlJn3FHblL4zZ7t1aWkLmnDLJ0nxieTaqIx44vO3b
+         Lxed5l7oZLdjQzx7PXCFHOA2ehakM/pqM//88316xHJYeEaqzdXHzud3FAhxNBsjUb/f
+         N5BnBOaTyfN8yC81vSsjUldgK2WDvW4h3I7cSMNSrcnqWk+Bk5aMBIC1+36LnqUXKBmD
+         Nwag==
+X-Gm-Message-State: APuU4Z+epMrXo+Bp9hpWzNXgEgSrg+dbbTErsoQ1k+TM0dQHlxyLSqkx
+	1+CvLdNzDAbzND9gw+EoLc67Y84ebmUXWGynN9vusbIq/G31AvS7myKATaTvH4vRiti8SOQ33lp
+	vr9icIw8V
+X-Gm-Gg: AYBFou03EH97IhzcRBh7hyXSodgo7zBmWZFb5gU7adkjNfpNHAxEjlTcs+oBLrdXtbw
+	AoKJONTjxAysEpFN8QroIxcx1HSU01KZ6WfgFqdztQx69S1t32wpPghkrh4HvMwnSydOSilF2lg
+	jJc7dzfs7dWIBbmN2BFHSYPuxs3JK/kmFdEOzAlgsXQrvQzp7CQMCWD/WzhTnOoZv6lRt0RmTjF
+	BmsFozEuH9W4BzAqSN06swo/vgvF49dKFGvhhMGOZ20L15S454TZDyoxcBgYYGeOTN9zf2Fc/Iy
+	iHcLJod7mClfMLFZoMRIZ9s+jLH3i8CeQVm6/1zxNBoZ2WejW46WeKLN2T3gp14Br51WEjgKPhV
+	jhmBmqZnkwtwg+dUvRgr6+K8k4Ml5ZLJwpYmXXJZKvDoTh2XeU3lOX45ymJGO1cQVvKM7V21iTO
+	j6mQ0g20UmkDRM+v9XQ8UvK0mmpMWsM1rScRLiFHXC0WgFoGUgOU4nuDyewUBL2zILqronI2yXt
+	4AVcNPhkYwoPtRdx1g9beYb/aHVqXUdQpz9qCmwIBXEWcmD1MHrMPP4EuS+sVgEB8Os+H90l9VW
+	Slqu4Cj92LimZCK05xIs3vOpibWIonIQGWX9an3myvo01q8eYRPUyVTYzXpR
+X-Received: by 2002:a17:903:2344:b0:2ed:352d:c623 with SMTP id d9443c01a7336-2ed83759ee9mr42689765ad.32.1794230206064;
+        Mon, 09 Nov 2026 05:16:46 -0800 (PST)
 Received: from 24c857d0c3be.. ([122.51.212.64])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ed815e7416sm11221095ad.17.2026.11.09.05.16.32
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2ed815e7416sm11221095ad.17.2026.11.09.05.16.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2026 05:16:36 -0800 (PST)
+        Mon, 09 Nov 2026 05:16:44 -0800 (PST)
 From: Zihan Xi <zihanx@nebusec.ai>
 To: linux-can@vger.kernel.org
 Cc: robin@protonic.nl,
@@ -91,9 +91,9 @@ Cc: robin@protonic.nl,
 	ecathinds@gmail.com,
 	vega@nebusec.ai,
 	zihanx@nebusec.ai
-Subject: [PATCH net v8 1/2] can: j1939: account for timer references across rearm
-Date: Mon,  9 Nov 2026 13:16:23 +0000
-Message-ID: <20261109131624.276943-2-zihanx@nebusec.ai>
+Subject: [PATCH net v8 2/2] can: j1939: serialize TX with session shutdown
+Date: Mon,  9 Nov 2026 13:16:24 +0000
+Message-ID: <20261109131624.276943-3-zihanx@nebusec.ai>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20261109131624.276943-1-zihanx@nebusec.ai>
 References: <20261109131624.276943-1-zihanx@nebusec.ai>
@@ -108,15 +108,17 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rearming a session timer updates the existing hrtimer rather than
-creating another callback. Taking a session reference for every start
-can therefore leave references behind when the timer is rearmed.
+A TX timer callback can pass its ACTIVE-state check just before another
+CPU completes or aborts the session. Serialize session frame transmission
+with terminal state changes so no late TP.DT, CTS, EOMA, or simple frame
+can appear on the CAN bus after shutdown wins.
 
-Track one session reference across each timer's queued and running
-lifetime. Apply the same accounting to the RX timer and synchronize
-rearming and cancellation with terminal state changes. Arm the simple-TX
-echo timeout only after a successful send, and keep terminal session
-transitions from leaving stale timer references or changing the result.
+The shutdown gate also prevents a late TX callback failure from replacing
+the result while a terminal path has shut down the timers but has not yet
+published DONE. Keep this gate in j1939_session_fail() for that interval.
+The RX timer shutdown flag already covers the locked RX-timeout setup, so
+avoid checking the same shutdown state twice. Likewise, let
+__j1939_session_cancel() own the shutdown check shared by its callers.
 
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Cc: stable@vger.kernel.org
@@ -124,808 +126,216 @@ Reported-by: Vega <vega@nebusec.ai>
 Link: https://bugtracker.nebusec.ai/f/11143
 Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
 ---
- net/can/j1939/j1939-priv.h |  11 +
- net/can/j1939/transport.c  | 510 +++++++++++++++++++++++++++++++------
- 2 files changed, 438 insertions(+), 83 deletions(-)
+ net/can/j1939/j1939-priv.h |  3 ++
+ net/can/j1939/transport.c  | 73 ++++++++++++++++++++++++++++++++------
+ 2 files changed, 65 insertions(+), 11 deletions(-)
 
 diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index cf26352d1d8c..123622c82a98 100644
+index 123622c82a98..1d8cbe692fcd 100644
 --- a/net/can/j1939/j1939-priv.h
 +++ b/net/can/j1939/j1939-priv.h
-@@ -10,6 +10,7 @@
- #define _J1939_PRIV_H_
- 
- #include <linux/can/j1939.h>
-+#include <linux/spinlock.h>
- #include <net/sock.h>
- 
- /* Timeout to receive the abort signal over loop back. In case CAN
-@@ -290,6 +291,16 @@ struct j1939_session {
- 		unsigned int dpo;
+@@ -292,6 +292,9 @@ struct j1939_session {
  	} pkt;
  	struct hrtimer txtimer, rxtimer;
-+	unsigned int txtimer_cancelers; /* block starts while a cancel waits */
-+	spinlock_t txtimer_lock; /* Protects TX timer lifetime state. */
-+	/* One reference pins the complete queued/running timer lifetime. */
-+	bool txtimer_shutdown;
-+	bool txtimer_ref;
-+	spinlock_t rxtimer_lock; /* Protects RX timer lifetime state. */
-+	unsigned int rxtimer_cancelers;
-+	/* One reference pins the complete queued/running timer lifetime. */
-+	bool rxtimer_shutdown;
-+	bool rxtimer_ref;
- };
- 
- struct j1939_sock {
+ 	unsigned int txtimer_cancelers; /* block starts while a cancel waits */
++	/* Serialize session frame transmission against terminal state changes. */
++	spinlock_t tx_send_lock;
++	bool tx_send_shutdown;
+ 	spinlock_t txtimer_lock; /* Protects TX timer lifetime state. */
+ 	/* One reference pins the complete queued/running timer lifetime. */
+ 	bool txtimer_shutdown;
 diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f..c327fd9618a0 100644
+index c327fd9618a0..4458b8306743 100644
 --- a/net/can/j1939/transport.c
 +++ b/net/can/j1939/transport.c
-@@ -301,24 +301,176 @@ void j1939_session_put(struct j1939_session *session)
- 	kref_put(&session->kref, __j1939_session_release);
- }
- 
--static void j1939_session_txtimer_cancel(struct j1939_session *session)
-+static void j1939_session_txtimer_cancel(struct j1939_session *session,
-+					 bool shutdown)
- {
--	if (hrtimer_cancel(&session->txtimer))
-+	bool put_ref = false;
-+	int ret;
-+
-+	spin_lock_bh(&session->txtimer_lock);
-+	session->txtimer_cancelers++;
-+	if (shutdown)
-+		session->txtimer_shutdown = true;
-+	ret = hrtimer_try_to_cancel(&session->txtimer);
-+	if (ret == 1) {
-+		if (!WARN_ON_ONCE(!session->txtimer_ref)) {
-+			session->txtimer_ref = false;
-+			put_ref = true;
-+		}
-+	}
-+	spin_unlock_bh(&session->txtimer_lock);
-+
-+	/* Never wait for a softirq callback while holding txtimer_lock. */
-+	if (ret < 0) {
-+		ret = hrtimer_cancel(&session->txtimer);
-+		if (ret == 1) {
-+			spin_lock_bh(&session->txtimer_lock);
-+			if (!WARN_ON_ONCE(!session->txtimer_ref)) {
-+				session->txtimer_ref = false;
-+				put_ref = true;
-+			}
-+			spin_unlock_bh(&session->txtimer_lock);
-+		}
-+	}
-+	spin_lock_bh(&session->txtimer_lock);
-+	if (WARN_ON_ONCE(!session->txtimer_cancelers))
-+		session->txtimer_cancelers = 0;
-+	else
-+		session->txtimer_cancelers--;
-+	spin_unlock_bh(&session->txtimer_lock);
-+
-+	if (put_ref)
-+		j1939_session_put(session);
-+}
-+
-+static bool
-+j1939_session_txtimer_cancel_async_locked(struct j1939_session *session)
-+{
-+	int ret;
-+
-+	lockdep_assert_held(&session->txtimer_lock);
-+	session->txtimer_shutdown = true;
-+	ret = hrtimer_try_to_cancel(&session->txtimer);
-+	/* Let a queued successor finish promptly after callback exit. */
-+	if (ret < 0 && !session->txtimer_cancelers && session->txtimer_ref &&
-+	    hrtimer_is_queued(&session->txtimer))
-+		hrtimer_start(&session->txtimer, 0, HRTIMER_MODE_REL_SOFT);
-+	if (ret != 1)
-+		return false;
-+
-+	if (WARN_ON_ONCE(!session->txtimer_ref))
-+		return false;
-+	session->txtimer_ref = false;
-+	return true;
-+}
-+
-+static void j1939_session_txtimer_cancel_async(struct j1939_session *session)
-+{
-+	bool put_ref;
-+
-+	spin_lock_bh(&session->txtimer_lock);
-+	put_ref = j1939_session_txtimer_cancel_async_locked(session);
-+	spin_unlock_bh(&session->txtimer_lock);
-+
-+	if (put_ref)
+@@ -446,10 +446,18 @@ static void j1939_session_rxtimer_cancel_async(struct j1939_session *session)
  		j1939_session_put(session);
  }
  
- static void j1939_session_rxtimer_cancel(struct j1939_session *session)
++static void j1939_session_tx_send_shutdown(struct j1939_session *session)
++{
++	spin_lock_bh(&session->tx_send_lock);
++	session->tx_send_shutdown = true;
++	spin_unlock_bh(&session->tx_send_lock);
++}
++
+ static void
+ j1939_session_shutdown_intent_locked(struct j1939_session *session)
  {
--	if (hrtimer_cancel(&session->rxtimer))
-+	bool put_ref = false;
-+	int ret;
-+
-+	spin_lock_bh(&session->rxtimer_lock);
-+	session->rxtimer_cancelers++;
-+	session->rxtimer_shutdown = true;
-+	ret = hrtimer_try_to_cancel(&session->rxtimer);
-+	if (ret == 1 && !WARN_ON_ONCE(!session->rxtimer_ref)) {
-+		session->rxtimer_ref = false;
-+		put_ref = true;
-+	}
-+	spin_unlock_bh(&session->rxtimer_lock);
-+
-+	/* Do not wait for the callback while holding rxtimer_lock. */
-+	if (ret < 0) {
-+		ret = hrtimer_cancel(&session->rxtimer);
-+		if (ret == 1) {
-+			spin_lock_bh(&session->rxtimer_lock);
-+			if (!WARN_ON_ONCE(!session->rxtimer_ref)) {
-+				session->rxtimer_ref = false;
-+				put_ref = true;
-+			}
-+			spin_unlock_bh(&session->rxtimer_lock);
-+		}
-+	}
-+
-+	spin_lock_bh(&session->rxtimer_lock);
-+	if (WARN_ON_ONCE(!session->rxtimer_cancelers))
-+		session->rxtimer_cancelers = 0;
-+	else
-+		session->rxtimer_cancelers--;
-+	spin_unlock_bh(&session->rxtimer_lock);
-+
-+	if (put_ref)
- 		j1939_session_put(session);
+ 	lockdep_assert_held(&session->priv->active_session_list_lock);
++	j1939_session_tx_send_shutdown(session);
+ 	spin_lock(&session->rxtimer_lock);
+ 	session->rxtimer_shutdown = true;
+ 	spin_unlock(&session->rxtimer_lock);
+@@ -797,6 +805,25 @@ sk_buff *j1939_tp_tx_dat_new(struct j1939_priv *priv,
+ 	return skb;
  }
  
--void j1939_session_timers_cancel(struct j1939_session *session)
-+static bool
-+j1939_session_rxtimer_cancel_async_locked(struct j1939_session *session)
- {
--	j1939_session_txtimer_cancel(session);
++static int j1939_session_tx_send(struct j1939_session *session,
++				 struct sk_buff *skb)
++{
 +	int ret;
 +
-+	lockdep_assert_held(&session->rxtimer_lock);
-+	session->rxtimer_shutdown = true;
-+	ret = hrtimer_try_to_cancel(&session->rxtimer);
-+	if (ret < 0 && !session->rxtimer_cancelers &&
-+	    session->rxtimer_ref && hrtimer_is_queued(&session->rxtimer))
-+		hrtimer_start(&session->rxtimer, 0, HRTIMER_MODE_REL_SOFT);
-+	if (ret != 1)
-+		return false;
-+	if (WARN_ON_ONCE(!session->rxtimer_ref))
-+		return false;
-+	session->rxtimer_ref = false;
-+	return true;
++	/* Pair the state check and send with terminal state transitions. */
++	spin_lock_bh(&session->tx_send_lock);
++	if (session->tx_send_shutdown ||
++	    READ_ONCE(session->state) != J1939_SESSION_ACTIVE) {
++		spin_unlock_bh(&session->tx_send_lock);
++		kfree_skb(skb);
++		return -ESHUTDOWN;
++	}
++	ret = j1939_send_one(session->priv, skb);
++	spin_unlock_bh(&session->tx_send_lock);
++
++	return ret;
 +}
 +
-+static void j1939_session_rxtimer_cancel_async(struct j1939_session *session)
-+{
-+	bool put_ref;
-+
-+	spin_lock_bh(&session->rxtimer_lock);
-+	put_ref = j1939_session_rxtimer_cancel_async_locked(session);
-+	spin_unlock_bh(&session->rxtimer_lock);
-+
-+	if (put_ref)
-+		j1939_session_put(session);
-+}
-+
-+static void
-+j1939_session_shutdown_intent_locked(struct j1939_session *session)
-+{
-+	lockdep_assert_held(&session->priv->active_session_list_lock);
-+	spin_lock(&session->rxtimer_lock);
-+	session->rxtimer_shutdown = true;
-+	spin_unlock(&session->rxtimer_lock);
-+}
-+
-+static void j1939_session_timers_drain(struct j1939_session *session)
-+{
-+	j1939_session_txtimer_cancel(session, true);
- 	j1939_session_rxtimer_cancel(session);
+ /* TP transmit packet functions */
+ static int j1939_tp_tx_dat(struct j1939_session *session,
+ 			   const u8 *dat, int len)
+@@ -813,12 +840,13 @@ static int j1939_tp_tx_dat(struct j1939_session *session,
+ 	if (j1939_tp_padding && len < 8)
+ 		memset(skb_put(skb, 8 - len), 0xff, 8 - len);
+ 
+-	return j1939_send_one(priv, skb);
++	return j1939_session_tx_send(session, skb);
  }
  
-+void j1939_session_timers_cancel(struct j1939_session *session)
-+{
-+	/* Publish terminal intent before any callback can claim a timeout. */
-+	j1939_session_list_lock(session->priv);
-+	j1939_session_shutdown_intent_locked(session);
-+	j1939_session_list_unlock(session->priv);
-+
-+	j1939_session_timers_drain(session);
-+}
-+
- static inline bool j1939_cb_is_broadcast(const struct j1939_sk_buff_cb *skcb)
+ static int j1939_xtp_do_tx_ctl(struct j1939_priv *priv,
+ 			       const struct j1939_sk_buff_cb *re_skcb,
+-			       bool swap_src_dst, pgn_t pgn, const u8 *dat)
++			       bool swap_src_dst, pgn_t pgn, const u8 *dat,
++			       struct j1939_session *session)
  {
- 	return (!skcb->addr.dst_name && (skcb->addr.da == 0xff));
-@@ -716,18 +868,68 @@ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
+ 	struct sk_buff *skb;
+ 	u8 *skdat;
+@@ -836,6 +864,8 @@ static int j1939_xtp_do_tx_ctl(struct j1939_priv *priv,
+ 	skdat[6] = (pgn >> 8);
+ 	skdat[7] = (pgn >> 16);
+ 
++	if (session)
++		return j1939_session_tx_send(session, skb);
+ 	return j1939_send_one(priv, skb);
+ }
+ 
+@@ -846,7 +876,7 @@ static inline int j1939_tp_tx_ctl(struct j1939_session *session,
+ 
+ 	return j1939_xtp_do_tx_ctl(priv, &session->skcb,
+ 				   swap_src_dst,
+-				   session->skcb.addr.pgn, dat);
++				   session->skcb.addr.pgn, dat, session);
+ }
+ 
+ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
+@@ -863,7 +893,8 @@ static int j1939_xtp_tx_abort(struct j1939_priv *priv,
+ 	memset(dat, 0xff, sizeof(dat));
+ 	dat[0] = J1939_TP_CMD_ABORT;
+ 	dat[1] = err;
+-	return j1939_xtp_do_tx_ctl(priv, re_skcb, swap_src_dst, pgn, dat);
++	return j1939_xtp_do_tx_ctl(priv, re_skcb, swap_src_dst, pgn, dat,
++				   NULL);
+ }
  
  void j1939_tp_schedule_txtimer(struct j1939_session *session, int msec)
- {
--	j1939_session_get(session);
-+	j1939_session_list_lock(session->priv);
-+	if (session->state != J1939_SESSION_ACTIVE) {
-+		j1939_session_list_unlock(session->priv);
-+		return;
-+	}
-+
-+	spin_lock(&session->txtimer_lock);
-+	if (session->txtimer_cancelers || session->txtimer_shutdown) {
-+		spin_unlock(&session->txtimer_lock);
-+		j1939_session_list_unlock(session->priv);
-+		return;
-+	}
-+
-+	/* One pin covers an armed timer and any callback/successor overlap. */
-+	if (!session->txtimer_ref) {
-+		j1939_session_get(session);
-+		session->txtimer_ref = true;
-+	}
-+
- 	hrtimer_start(&session->txtimer, ms_to_ktime(msec),
- 		      HRTIMER_MODE_REL_SOFT);
-+	spin_unlock(&session->txtimer_lock);
-+	j1939_session_list_unlock(session->priv);
- }
- 
--static inline void j1939_tp_set_rxtimeout(struct j1939_session *session,
--					  int msec)
-+/* active_session_list_lock protects the session state checked by callers. */
-+static bool
-+__j1939_tp_set_rxtimeout(struct j1939_session *session, int msec,
-+			 bool abort_timeout)
- {
--	j1939_session_rxtimer_cancel(session);
--	j1939_session_get(session);
-+	lockdep_assert_held(&session->priv->active_session_list_lock);
-+
-+	spin_lock(&session->rxtimer_lock);
-+	if (session->rxtimer_shutdown || session->rxtimer_cancelers ||
-+	    (session->state != J1939_SESSION_ACTIVE &&
-+	     (!abort_timeout ||
-+	      session->state != J1939_SESSION_WAITING_ABORT))) {
-+		spin_unlock(&session->rxtimer_lock);
-+		return false;
-+	}
-+
-+	/* Reuse the pin when replacing a queued timer or rearming a callback. */
-+	if (!session->rxtimer_ref) {
-+		j1939_session_get(session);
-+		session->rxtimer_ref = true;
-+	}
- 	hrtimer_start(&session->rxtimer, ms_to_ktime(msec),
- 		      HRTIMER_MODE_REL_SOFT);
-+	spin_unlock(&session->rxtimer_lock);
-+	return true;
-+}
-+
-+static inline bool j1939_tp_set_rxtimeout(struct j1939_session *session,
-+					  int msec)
-+{
-+	bool armed;
-+
-+	j1939_session_list_lock(session->priv);
-+	armed = __j1939_tp_set_rxtimeout(session, msec, false);
-+	j1939_session_list_unlock(session->priv);
-+
-+	return armed;
- }
- 
- static int j1939_session_tx_rts(struct j1939_session *session)
-@@ -1055,7 +1257,6 @@ static int j1939_xtp_txnext_receiver(struct j1939_session *session)
- 
- static int j1939_simple_txnext(struct j1939_session *session)
- {
--	struct j1939_priv *priv = session->priv;
- 	struct sk_buff *se_skb = j1939_session_skb_get(session);
- 	struct sk_buff *skb;
- 	int ret;
-@@ -1082,12 +1283,12 @@ static int j1939_simple_txnext(struct j1939_session *session)
+@@ -1058,7 +1089,7 @@ static int j1939_session_tx_dat(struct j1939_session *session)
+ 		ret = j1939_tp_tx_dat(session, dat, len + 1);
+ 		if (ret < 0) {
+ 			/* ENOBUFS == CAN interface TX queue is full */
+-			if (ret != -ENOBUFS)
++			if (ret != -ENOBUFS && ret != -ESHUTDOWN)
+ 				netdev_alert(priv->ndev,
+ 					     "%s: 0x%p: queue data error: %i\n",
+ 					     __func__, session, ret);
+@@ -1283,7 +1314,7 @@ static int j1939_simple_txnext(struct j1939_session *session)
  
  	can_skb_set_owner(skb, se_skb->sk);
  
--	j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
--
--	ret = j1939_send_one(priv, skb);
-+	ret = j1939_send_one(session->priv, skb);
+-	ret = j1939_send_one(session->priv, skb);
++	ret = j1939_session_tx_send(session, skb);
  	if (ret)
  		goto out_free;
  
-+	j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
-+
- 	j1939_sk_errqueue(session, J1939_ERRQUEUE_TX_SCHED);
- 	j1939_sk_queue_activate_next(session);
+@@ -1318,7 +1349,9 @@ static bool j1939_session_deactivate_locked(struct j1939_session *session)
+ 		active = true;
  
-@@ -1105,6 +1306,12 @@ static bool j1939_session_deactivate_locked(struct j1939_session *session)
- 	bool active = false;
+ 		list_del_init(&session->active_session_list_entry);
+-		session->state = J1939_SESSION_DONE;
++		spin_lock(&session->tx_send_lock);
++		WRITE_ONCE(session->state, J1939_SESSION_DONE);
++		spin_unlock(&session->tx_send_lock);
+ 		j1939_session_put(session);
+ 	}
  
- 	lockdep_assert_held(&session->priv->active_session_list_lock);
-+	spin_lock(&session->txtimer_lock);
-+	session->txtimer_shutdown = true;
-+	spin_unlock(&session->txtimer_lock);
-+	spin_lock(&session->rxtimer_lock);
-+	session->rxtimer_shutdown = true;
-+	spin_unlock(&session->rxtimer_lock);
+@@ -1350,10 +1383,14 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
  
- 	if (session->state >= J1939_SESSION_ACTIVE &&
- 	    session->state < J1939_SESSION_ACTIVE_MAX) {
-@@ -1126,6 +1333,10 @@ static bool j1939_session_deactivate(struct j1939_session *session)
- 	j1939_session_list_lock(priv);
- 	active = j1939_session_deactivate_locked(session);
- 	j1939_session_list_unlock(priv);
-+	if (active) {
-+		j1939_session_txtimer_cancel_async(session);
-+		j1939_session_rxtimer_cancel_async(session);
-+	}
- 
- 	return active;
- }
-@@ -1137,7 +1348,27 @@ j1939_session_deactivate_activate_next(struct j1939_session *session)
- 		j1939_sk_queue_activate_next(session);
- }
- 
--static void __j1939_session_cancel(struct j1939_session *session,
-+static bool j1939_session_fail(struct j1939_session *session, int err)
-+{
-+	bool deactivate = false;
-+
-+	j1939_session_list_lock(session->priv);
-+	if (session->state == J1939_SESSION_ACTIVE) {
-+		session->err = err;
-+		deactivate = j1939_session_deactivate_locked(session);
-+	}
-+	j1939_session_list_unlock(session->priv);
-+
-+	if (deactivate) {
-+		j1939_session_txtimer_cancel_async(session);
-+		j1939_session_rxtimer_cancel_async(session);
-+		j1939_sk_queue_activate_next(session);
-+	}
-+
-+	return deactivate;
-+}
-+
-+static bool __j1939_session_cancel(struct j1939_session *session,
- 				   enum j1939_xtp_abort err)
+ static bool j1939_session_fail(struct j1939_session *session, int err)
  {
- 	struct j1939_priv *priv = session->priv;
-@@ -1153,26 +1384,47 @@ static void __j1939_session_cancel(struct j1939_session *session,
+-	bool deactivate = false;
++	bool deactivate = false, tx_send_shutdown;
+ 
+ 	j1939_session_list_lock(session->priv);
+-	if (session->state == J1939_SESSION_ACTIVE) {
++	spin_lock(&session->tx_send_lock);
++	tx_send_shutdown = session->tx_send_shutdown;
++	spin_unlock(&session->tx_send_lock);
++	/* Shutdown may precede DONE while a terminal path drains its timers. */
++	if (!tx_send_shutdown && session->state == J1939_SESSION_ACTIVE) {
+ 		session->err = err;
+ 		deactivate = j1939_session_deactivate_locked(session);
+ 	}
+@@ -1376,14 +1413,22 @@ static bool __j1939_session_cancel(struct j1939_session *session,
+ 	WARN_ON_ONCE(!err);
+ 	lockdep_assert_held(&session->priv->active_session_list_lock);
+ 
++	spin_lock(&session->tx_send_lock);
++	if (session->tx_send_shutdown) {
++		spin_unlock(&session->tx_send_lock);
++		return false;
++	}
++
+ 	session->err = j1939_xtp_abort_to_errno(priv, err);
+-	session->state = J1939_SESSION_WAITING_ABORT;
++	WRITE_ONCE(session->state, J1939_SESSION_WAITING_ABORT);
+ 	/* do not send aborts on incoming broadcasts */
+ 	if (!j1939_cb_is_broadcast(&session->skcb)) {
+ 		j1939_xtp_tx_abort(priv, &session->skcb,
  				   !session->transmission,
  				   err, session->skcb.addr.pgn);
  	}
--
++	spin_unlock(&session->tx_send_lock);
++
  	if (session->sk)
  		j1939_sk_send_loop_abort(session->sk, session->err);
-+
-+	return true;
- }
  
--static void j1939_session_cancel(struct j1939_session *session,
-+static bool j1939_session_cancel(struct j1939_session *session,
- 				 enum j1939_xtp_abort err)
- {
-+	bool cancelled = false, deactivate = false;
-+
- 	j1939_session_list_lock(session->priv);
- 
- 	if (session->state >= J1939_SESSION_ACTIVE &&
- 	    session->state < J1939_SESSION_WAITING_ABORT) {
--		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
--		__j1939_session_cancel(session, err);
-+		cancelled = __j1939_session_cancel(session, err);
-+		if (cancelled) {
-+			spin_lock(&session->txtimer_lock);
-+			session->txtimer_shutdown = true;
-+			spin_unlock(&session->txtimer_lock);
-+			if (!__j1939_tp_set_rxtimeout(session,
-+						      J1939_XTP_ABORT_TIMEOUT_MS,
-+						      true))
-+				deactivate =
-+					j1939_session_deactivate_locked(session);
-+		}
- 	}
- 
- 	j1939_session_list_unlock(session->priv);
-+	if (cancelled) {
-+		j1939_session_txtimer_cancel_async(session);
-+		if (deactivate) {
-+			j1939_session_rxtimer_cancel_async(session);
-+			j1939_sk_queue_activate_next(session);
-+		}
-+	}
- 
--	if (!session->sk)
-+	if (cancelled && !session->sk)
- 		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-+
-+	return cancelled;
- }
- 
- static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
-@@ -1180,8 +1432,21 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 	struct j1939_session *session =
- 		container_of(hrtimer, struct j1939_session, txtimer);
- 	struct j1939_priv *priv = session->priv;
-+	bool can_rearm, shutdown, queued;
-+	bool put_ref = false;
- 	int ret = 0;
- 
-+	spin_lock_bh(&session->txtimer_lock);
-+	WARN_ON_ONCE(!session->txtimer_ref);
-+	shutdown = session->txtimer_shutdown;
-+	spin_unlock_bh(&session->txtimer_lock);
-+
-+	j1939_session_list_lock(priv);
-+	can_rearm = session->state == J1939_SESSION_ACTIVE;
-+	j1939_session_list_unlock(priv);
-+	if (shutdown || !can_rearm)
-+		goto txtimer_done;
-+
- 	if (session->skcb.addr.type == J1939_SIMPLE) {
- 		ret = j1939_simple_txnext(session);
- 	} else {
-@@ -1198,12 +1463,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 			session->tx_retry++;
- 			j1939_tp_schedule_txtimer(session,
- 						  10 + get_random_u32_below(16));
--		} else {
-+		} else if (j1939_session_fail(session, -ENETUNREACH)) {
- 			netdev_alert(priv->ndev, "%s: 0x%p: tx retry count reached\n",
- 				     __func__, session);
--			session->err = -ENETUNREACH;
--			j1939_session_rxtimer_cancel(session);
--			j1939_session_deactivate_activate_next(session);
- 		}
+@@ -1476,6 +1521,9 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
+ 		 * propagation of the error to user space.
+ 		 */
  		break;
- 	case -ENETDOWN:
-@@ -1221,25 +1483,60 @@ static enum hrtimer_restart j1939_tp_txtimer(struct hrtimer *hrtimer)
- 		session->tx_retry = 0;
++	case -ESHUTDOWN:
++		/* A terminal state transition won before the frame was sent. */
++		break;
+ 	case -EOVERFLOW:
+ 		j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
  		break;
- 	default:
--		netdev_alert(priv->ndev, "%s: 0x%p: tx aborted with unknown reason: %i\n",
--			     __func__, session, ret);
- 		if (session->skcb.addr.type != J1939_SIMPLE) {
--			j1939_session_cancel(session, J1939_XTP_ABORT_OTHER);
--		} else {
--			session->err = ret;
--			j1939_session_rxtimer_cancel(session);
--			j1939_session_deactivate_activate_next(session);
-+			if (j1939_session_cancel(session, J1939_XTP_ABORT_OTHER))
-+				netdev_alert(priv->ndev, "%s: 0x%p: tx aborted with unknown reason: %i\n",
-+					     __func__, session, ret);
-+		} else if (j1939_session_fail(session, ret)) {
-+			netdev_alert(priv->ndev, "%s: 0x%p: tx aborted with unknown reason: %i\n",
-+				     __func__, session, ret);
- 		}
- 	}
- 
--	j1939_session_put(session);
-+txtimer_done:
-+	j1939_session_list_lock(priv);
-+	can_rearm = session->state == J1939_SESSION_ACTIVE;
-+	j1939_session_list_unlock(priv);
-+	spin_lock_bh(&session->txtimer_lock);
-+	queued = hrtimer_is_queued(&session->txtimer);
-+	if (queued && (session->txtimer_shutdown || !can_rearm) &&
-+	    !session->txtimer_cancelers)
-+		hrtimer_start(&session->txtimer, 0, HRTIMER_MODE_REL_SOFT);
-+	if (!queued && session->txtimer_ref) {
-+		session->txtimer_ref = false;
-+		put_ref = true;
-+	}
-+	spin_unlock_bh(&session->txtimer_lock);
-+
-+	if (put_ref)
-+		j1939_session_put(session);
- 
- 	return HRTIMER_NORESTART;
- }
- 
-+static bool
-+j1939_session_complete_locked(struct j1939_session *session)
-+{
-+	lockdep_assert_held(&session->priv->active_session_list_lock);
-+	if (session->state != J1939_SESSION_ACTIVE)
-+		return false;
-+
-+	j1939_session_shutdown_intent_locked(session);
-+	return j1939_session_deactivate_locked(session);
-+}
-+
- static void j1939_session_completed(struct j1939_session *session)
- {
- 	struct sk_buff *se_skb;
-+	bool completed;
-+
-+	j1939_session_list_lock(session->priv);
-+	completed = j1939_session_complete_locked(session);
-+	j1939_session_list_unlock(session->priv);
-+	if (!completed)
-+		return;
-+
-+	j1939_session_timers_drain(session);
- 
- 	if (!session->transmission) {
- 		se_skb = j1939_session_skb_get(session);
-@@ -1248,7 +1545,7 @@ static void j1939_session_completed(struct j1939_session *session)
- 		consume_skb(se_skb);
- 	}
- 
--	j1939_session_deactivate_activate_next(session);
-+	j1939_sk_queue_activate_next(session);
- }
- 
- static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
-@@ -1257,41 +1554,63 @@ static enum hrtimer_restart j1939_tp_rxtimer(struct hrtimer *hrtimer)
- 						     struct j1939_session,
- 						     rxtimer);
- 	struct j1939_priv *priv = session->priv;
-+	bool cancelled = false, deactivate = false, put_ref = false, queued;
-+	bool stale;
-+	enum j1939_session_state state;
- 
--	if (session->state == J1939_SESSION_WAITING_ABORT) {
--		netdev_alert(priv->ndev, "%s: 0x%p: abort rx timeout. Force session deactivation\n",
--			     __func__, session);
--
--		j1939_session_deactivate_activate_next(session);
--
--	} else if (session->skcb.addr.type == J1939_SIMPLE) {
--		netdev_alert(priv->ndev, "%s: 0x%p: Timeout. Failed to send simple message.\n",
--			     __func__, session);
--
--		/* The message is probably stuck in the CAN controller and can
--		 * be send as soon as CAN bus is in working state again.
--		 */
-+	/* Serialize expiry handling with timeout replacement and state changes. */
-+	j1939_session_list_lock(priv);
-+	spin_lock(&session->rxtimer_lock);
-+	/* A queued successor supersedes this already-running expiry. */
-+	stale = session->rxtimer_shutdown || session->rxtimer_cancelers ||
-+		hrtimer_is_queued(hrtimer);
-+	spin_unlock(&session->rxtimer_lock);
-+	state = session->state;
-+	if (!stale && state == J1939_SESSION_WAITING_ABORT) {
-+		deactivate = j1939_session_deactivate_locked(session);
-+	} else if (!stale && state == J1939_SESSION_ACTIVE &&
-+		   session->skcb.addr.type == J1939_SIMPLE) {
- 		session->err = -ETIME;
--		j1939_session_deactivate(session);
--	} else {
--		j1939_session_list_lock(session->priv);
--		if (session->state >= J1939_SESSION_ACTIVE &&
--		    session->state < J1939_SESSION_ACTIVE_MAX) {
--			netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
--				     __func__, session);
--			j1939_session_get(session);
--			hrtimer_start(&session->rxtimer,
--				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
--				      HRTIMER_MODE_REL_SOFT);
--			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
--		}
--		j1939_session_list_unlock(session->priv);
-+		deactivate = j1939_session_deactivate_locked(session);
-+	} else if (!stale && state == J1939_SESSION_ACTIVE) {
-+		cancelled = __j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-+		if (cancelled)
-+			__j1939_tp_set_rxtimeout(session,
-+						 J1939_XTP_ABORT_TIMEOUT_MS, true);
-+	}
-+	j1939_session_list_unlock(priv);
- 
-+	if (deactivate) {
-+		if (state == J1939_SESSION_WAITING_ABORT)
-+			netdev_alert(priv->ndev, "%s: 0x%p: abort rx timeout. Force session deactivation\n",
-+				     __func__, session);
-+		else
-+			netdev_alert(priv->ndev, "%s: 0x%p: Timeout. Failed to send simple message.\n",
-+				     __func__, session);
-+		j1939_session_txtimer_cancel_async(session);
-+		j1939_session_rxtimer_cancel_async(session);
-+		j1939_sk_queue_activate_next(session);
-+	}
-+	if (cancelled) {
-+		netdev_alert(priv->ndev, "%s: 0x%p: rx timeout, send abort\n",
-+			     __func__, session);
-+		j1939_session_txtimer_cancel_async(session);
- 		if (!session->sk)
- 			j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
- 	}
- 
--	j1939_session_put(session);
-+	spin_lock_bh(&session->rxtimer_lock);
-+	queued = hrtimer_is_queued(&session->rxtimer);
-+	if (queued && session->rxtimer_shutdown &&
-+	    !session->rxtimer_cancelers)
-+		hrtimer_start(&session->rxtimer, 0, HRTIMER_MODE_REL_SOFT);
-+	if (!queued && session->rxtimer_ref) {
-+		session->rxtimer_ref = false;
-+		put_ref = true;
-+	}
-+	spin_unlock_bh(&session->rxtimer_lock);
-+	if (put_ref)
-+		j1939_session_put(session);
- 
- 	return HRTIMER_NORESTART;
- }
-@@ -1357,6 +1676,7 @@ static void j1939_xtp_rx_abort_one(struct j1939_priv *priv, struct sk_buff *skb,
- {
- 	struct j1939_sk_buff_cb *skcb = j1939_skb_to_cb(skb);
- 	struct j1939_session *session;
-+	bool deactivate = false, report = false, rxtimer_shutdown;
- 	u8 abort = skb->data[1];
- 
- 	session = j1939_session_get_by_addr(priv, &skcb->addr, reverse,
-@@ -1371,13 +1691,35 @@ static void j1939_xtp_rx_abort_one(struct j1939_priv *priv, struct sk_buff *skb,
- 		    session, j1939_xtp_ctl_to_pgn(skb->data), abort,
- 		    j1939_xtp_abort_to_str(abort));
- 
-+	/* Report the peer abort here only if it wins the state transition. */
-+	j1939_session_list_lock(priv);
-+	spin_lock(&session->rxtimer_lock);
-+	rxtimer_shutdown = session->rxtimer_shutdown;
-+	spin_unlock(&session->rxtimer_lock);
-+	if (!rxtimer_shutdown && session->state == J1939_SESSION_ACTIVE) {
-+		session->err = j1939_xtp_abort_to_errno(priv, abort);
-+		deactivate = j1939_session_deactivate_locked(session);
-+		report = deactivate;
-+	} else if (!rxtimer_shutdown &&
-+		   session->state == J1939_SESSION_WAITING_ABORT) {
-+		/* Preserve the local abort error instead of replacing it with the peer
-+		 * response. The stored error may still be reported when the session
-+		 * is destroyed.
-+		 */
-+		deactivate = j1939_session_deactivate_locked(session);
-+	}
-+	j1939_session_list_unlock(priv);
-+	if (!deactivate)
-+		goto abort_put;
-+
- 	j1939_session_timers_cancel(session);
--	session->err = j1939_xtp_abort_to_errno(priv, abort);
--	if (session->sk)
--		j1939_sk_send_loop_abort(session->sk, session->err);
--	else
--		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
--	j1939_session_deactivate_activate_next(session);
-+	if (report) {
-+		if (session->sk)
-+			j1939_sk_send_loop_abort(session->sk, session->err);
-+		else
-+			j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-+	}
-+	j1939_sk_queue_activate_next(session);
- 
- abort_put:
- 	j1939_session_put(session);
-@@ -1419,7 +1761,6 @@ j1939_xtp_rx_eoma_one(struct j1939_session *session, struct sk_buff *skb)
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
- 
- 	session->pkt.tx_acked = session->pkt.total;
--	j1939_session_timers_cancel(session);
- 	/* transmitted without problems */
- 	j1939_session_completed(session);
- }
-@@ -1486,7 +1827,7 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
- 			if (session->pkt.tx_acked)
- 				j1939_sk_errqueue(session,
- 						  J1939_ERRQUEUE_TX_SCHED);
--			j1939_session_txtimer_cancel(session);
-+			j1939_session_txtimer_cancel(session, false);
- 			j1939_tp_schedule_txtimer(session, 0);
- 		}
- 	} else {
-@@ -1496,7 +1837,6 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
- 	return;
- 
-  out_session_cancel:
--	j1939_session_timers_cancel(session);
- 	j1939_session_cancel(session, err);
- }
- 
-@@ -1540,6 +1880,8 @@ static struct j1939_session *j1939_session_new(struct j1939_priv *priv,
- 	skcb = j1939_skb_to_cb(skb);
+@@ -1881,6 +1929,7 @@ static struct j1939_session *j1939_session_new(struct j1939_priv *priv,
  	memcpy(&session->skcb, skcb, sizeof(session->skcb));
  
-+	spin_lock_init(&session->txtimer_lock);
-+	spin_lock_init(&session->rxtimer_lock);
+ 	spin_lock_init(&session->txtimer_lock);
++	spin_lock_init(&session->tx_send_lock);
+ 	spin_lock_init(&session->rxtimer_lock);
  	hrtimer_setup(&session->txtimer, j1939_tp_txtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
  	hrtimer_setup(&session->rxtimer, j1939_tp_rxtimer, CLOCK_MONOTONIC, HRTIMER_MODE_REL_SOFT);
+@@ -1950,7 +1999,9 @@ int j1939_session_activate(struct j1939_session *session)
+ 		list_add_tail(&session->active_session_list_entry,
+ 			      &priv->active_session_list);
+ 		j1939_session_get(session);
+-		session->state = J1939_SESSION_ACTIVE;
++		spin_lock(&session->tx_send_lock);
++		WRITE_ONCE(session->state, J1939_SESSION_ACTIVE);
++		spin_unlock(&session->tx_send_lock);
  
-@@ -1717,7 +2059,6 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
- 			return -EBUSY;
- 
- 		/* RTS on active session */
--		j1939_session_timers_cancel(session);
- 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
- 	}
- 
-@@ -1727,16 +2068,11 @@ static int j1939_xtp_rx_rts_session_active(struct j1939_session *session,
- 			     __func__, session, skcb->addr.sa, skcb->addr.da,
- 			     session->last_cmd);
- 
--		j1939_session_timers_cancel(session);
- 		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
- 		if (session->transmission) {
- 			j1939_session_deactivate_activate_next(session);
- 		} else if (session->state == J1939_SESSION_WAITING_ABORT) {
--			/* Force deactivation for the receiver.
--			 * If we rely on the timer starting in j1939_session_cancel,
--			 * a second RTS call here will cancel that timer and fail
--			 * to restart it because the state is already WAITING_ABORT.
--			 */
-+			/* The receiver cannot keep waiting after a duplicate RTS. */
- 			j1939_session_deactivate_activate_next(session);
- 		}
- 
-@@ -1810,7 +2146,7 @@ static void j1939_xtp_rx_rts(struct j1939_priv *priv, struct sk_buff *skb,
- 			j1939_tp_set_rxtimeout(session, 750);
- 	} else {
- 		if (!session->transmission) {
--			j1939_session_txtimer_cancel(session);
-+			j1939_session_txtimer_cancel(session, false);
- 			j1939_tp_schedule_txtimer(session, 0);
- 		}
- 		j1939_tp_set_rxtimeout(session, 1250);
-@@ -1956,7 +2292,6 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 	}
- 
- 	if (final) {
--		j1939_session_timers_cancel(session);
- 		j1939_session_completed(session);
- 	} else if (remain) {
- 		if (!session->transmission)
-@@ -1976,7 +2311,6 @@ static void j1939_xtp_rx_dat_one(struct j1939_session *session,
- 
-  out_session_cancel:
- 	kfree_skb(se_skb);
--	j1939_session_timers_cancel(session);
- 	j1939_session_cancel(session, abort);
- 	j1939_session_put(session);
- }
-@@ -2219,6 +2553,8 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 
- 	j1939_session_list_lock(priv);
- 	session = j1939_session_get_simple(priv, skb);
-+	if (session)
-+		j1939_session_shutdown_intent_locked(session);
- 	j1939_session_list_unlock(priv);
- 	if (!session) {
- 		netdev_warn(priv->ndev,
-@@ -2227,7 +2563,7 @@ void j1939_simple_recv(struct j1939_priv *priv, struct sk_buff *skb)
- 		return;
- 	}
- 
--	j1939_session_timers_cancel(session);
-+	j1939_session_timers_drain(session);
- 	j1939_session_deactivate(session);
- 	j1939_session_put(session);
- }
-@@ -2242,9 +2578,17 @@ int j1939_cancel_active_session(struct j1939_priv *priv, struct sock *sk)
- 				 &priv->active_session_list,
- 				 active_session_list_entry) {
- 		if (!sk || sk == session->sk) {
--			if (hrtimer_try_to_cancel(&session->txtimer) == 1)
-+			bool put_ref;
-+
-+			spin_lock(&session->txtimer_lock);
-+			put_ref = j1939_session_txtimer_cancel_async_locked(session);
-+			spin_unlock(&session->txtimer_lock);
-+			if (put_ref)
- 				j1939_session_put(session);
--			if (hrtimer_try_to_cancel(&session->rxtimer) == 1)
-+			spin_lock(&session->rxtimer_lock);
-+			put_ref = j1939_session_rxtimer_cancel_async_locked(session);
-+			spin_unlock(&session->rxtimer_lock);
-+			if (put_ref)
- 				j1939_session_put(session);
- 
- 			session->err = ESHUTDOWN;
+ 		netdev_dbg(session->priv->ndev, "%s: 0x%p\n",
+ 			   __func__, session);
 -- 
 2.43.0
 
