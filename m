@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=82.195.75.108
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794232167;
-	b=AQmzFloGD3ciF2FuWu1LT6fC1InoCqEaT37TdyxARXQ6c+tC5ZlwCoaWmJ9gTDN+d9er
-	 Zfo15CVY5KYhxpTHXY0cEVuet+NddBlsoe0t2ZJhu4psTtnVIPiblf9TZ3LcFtWLYWfG2
-	 h4pNORXSYpfRwXPoVUHE2p4sdglOglqgk+K36KLdczHnt74Eyt3rCn+KqCULR6RovfGxL
-	 m8MyHvwzlP7906pYXOIM5gONrVDhJMIvcECaBsodqQX9il8QBUDuVE7g87ldcmbpzId2L
-	 dpMH5yTFgylT20eT1LZ/MpBStJs0VjAfKka2Ry5CcFPR0VuWkno6a1d4eHJr97PWqhQ==
+	t=1794232163;
+	b=1eyZmrgH+XWfGgl5UqaBs4QXP187UcB042eL9vbbpOavhTXXzzrYWE/z0aoTScN1VoVp
+	 tEIfu0KYZbmJc8OnqIio8lzVgYox9Qx6dNXggYowRvW/DdTF8XtsDRQYWRdQFuzwr1VdG
+	 qM2YiWFXiAnlbMR0zR0KPgmL0Y+RgehRZAxPa4NmHA6SMakMlrxZjRTVd6ssmqlbNjtBU
+	 tYjRovDPoiaYPaMnomhx8drlSwjMDyoK8I6QaZwzzLxjIVMAKC7plGz6O5lNVgbF2W9nQ
+	 +LTbw6O2TIU+HPY98zi9COO+Nzfbsw4XF5sJyDkiMcfjz89sQyHX05OmIMo1BnQMb2A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794232167;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794232163;
 	h=DMARC-Filter:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:
 	 X-Debian-User;
-	bh=lFoOw2z1RAjxLnDKUL1Bl6y0aTRZqOha4gS26UrJ/i0=;
-	b=QE5o8Lt28Q1rOnmQYmIXMsHzZ7Gcv8CbMF1FKxKOeQ9OyOZutSJkXaEXC007zBIWVbZk
-	 HX/4FshoC3A6dWzqYDOBw7oJM7X1KJWzt86goba3un73of5edq6H2MUZLxWuyQpXQG118
-	 8BKIJ5WxU3hh+0Xwa73ELHvhQJbFlcMNiJWsx1vdFjibPnpZ3QLSbrzVj35zlQsSGvoZC
-	 zlJCkZ+e8fvIFe3ofE36k7Ere1XRWedSDPOl24MLbefKz18iYpPLa6lw/nGy5jfV7Z334
-	 v4cAG8YMeVr78R+fgQxaHQacaNTJffex1onkwS3GOG2MBnB76TucGfzKCq8PPBqM4vg==
+	bh=HUFMRdJh5L6LU4pmqmKEHxDfGt/Xqm9jj/GYmHv51FM=;
+	b=xYuVeZKiVEXS+UreRhYVmPo8/mc+4OD76Bnf/L0rkBKa0tZZEhrEwcjHOjB4hhHQjgDH
+	 Aowz+Eo1WVoweH/PxMFEV28jitKEYRxST/J7GMEZtqhmYIjfOz0Lo5LZeOLz5ceYICwyg
+	 Qmsx11TSjVaxld2+teHttyzijZ1Lf+1mRh1l827EwEpsYEXFV7a/ZJ8B7zrGGSafd4iem
+	 xEB6CNrv4SUA7hmEd1b9hzOeRzDtSLjW3OrJuk1gTLgHeQ12nIB0gYzftC2RQN0WP6AIG
+	 vG1tJqGgq9fRnpxOuAtNd+fHyjcUijz1pkyPPpV714JRqQhBg18s5LgfJhw4EGTIZTg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=debian.org;
 	spf=pass smtp.mailfrom=debian.org;
-	dkim=pass header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=l7rl9YuU;
+	dkim=pass header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=tBk3IxFQ;
 	arc=none smtp.remote-ip=82.195.75.108
 Received: from stravinsky.debian.org (stravinsky.debian.org [82.195.75.108])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E48AB606A334;
-	Mon,  9 Nov 2026 13:49:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E48AB606A334
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54730606A336;
+	Mon,  9 Nov 2026 13:49:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 54730606A336
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=debian.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=debian.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=l7rl9YuU
+	dkim=pass (2048-bit key) header.d=debian.org header.i=@debian.org header.a=rsa-sha256 header.s=smtpauto.stravinsky header.b=tBk3IxFQ
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=debian.org;
 	s=smtpauto.stravinsky; h=X-Debian-User:Cc:To:In-Reply-To:References:
 	Message-Id:Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:
 	From:Reply-To:Content-ID:Content-Description;
-	bh=lFoOw2z1RAjxLnDKUL1Bl6y0aTRZqOha4gS26UrJ/i0=; b=l7rl9YuU1mNWkiESURsxYeqg2T
-	OArjRb6ekb7UzxSd1vuGY57JDivd7ufBA7GMvK8Wmwn/iKDQaRFPXBwqZn1vQXdaFaev+dF2/b42k
-	Ah8ktIvNjDGxmwH/5ONul+ycHLjgMP/c++8gVxqh9oTJFMvRO7DvA82EcYfxH3mMm6m+7eaiIauXp
-	GNbwATTm+mDcJrDRK+zM1ppN4zZRWgJdcnGT3KJqyzUpDAQ5FDKyqYcp8y4nwnpvaZwbKZYzLqDS/
-	tUAoWrQpfosVsoBqv9YTvFwOuX/oAOxRSED+3g1ct4vHvuqNoF28nwtfaRJlXRylp27OOfwLzkWFK
-	GyYwkUyg==;
+	bh=HUFMRdJh5L6LU4pmqmKEHxDfGt/Xqm9jj/GYmHv51FM=; b=tBk3IxFQ+sYgPjTN/VI97jvmdm
+	Rm7sc99QT9cq+Zb5SaKiZS9fZIFo1w+S/XtM+k0LTif3cVzwNDeesoh1IRIZf7F/5yOjPwjXB0mQz
+	bVxlYMOedxJrw1spyMesFR0PL3sdIkI6dUugL2exx2Ns3FoFevVegURubQnuUI3qMYMXJXDxtwOjS
+	zeJFI0RBpzA8QSpid1aG5ws8Uf/Mf+NAKU8JPjmVuURS/r2V4IhbK1OYwmX+wqStcHNTFykoKBopV
+	3mZ0eE2Cm8Oa8GhZLvHAJ/1L6lEU1GOjQMhw+ymrpnF6s8mcTxpJZnA+pNqPeNCVE2vmwXH4d7/kk
+	9014eR7A==;
 Received: from authenticated-user
 	by stravinsky.debian.org with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
 	(Exim 4.96)
 	(envelope-from <leitao@debian.org>)
-	id 1xQPkT-00BfMp-0R;
-	Mon, 09 Nov 2026 13:49:25 +0000
+	id 1xQPkP-00BfMg-1l;
+	Mon, 09 Nov 2026 13:49:21 +0000
 From: Breno Leitao <leitao@debian.org>
-Date: Mon, 09 Nov 2026 05:46:28 -0800
-Subject: [PATCH RESEND v2 2/2] can: isotp: convert to getsockopt_iter
+Date: Mon, 09 Nov 2026 05:46:27 -0800
+Subject: [PATCH RESEND v2 1/2] can: j1939: convert to getsockopt_iter
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,7 +64,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261109-getsock_two_can-v2-2-763f87fb49b2@debian.org>
+Message-Id: <20261109-getsock_two_can-v2-1-763f87fb49b2@debian.org>
 References: <20261109-getsock_two_can-v2-0-763f87fb49b2@debian.org>
 In-Reply-To: <20261109-getsock_two_can-v2-0-763f87fb49b2@debian.org>
 To: Robin van der Gracht <robin@protonic.nl>, 
@@ -74,81 +74,102 @@ To: Robin van der Gracht <robin@protonic.nl>,
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  Breno Leitao <leitao@debian.org>, kernel-team@meta.com
 X-Mailer: b4 0.17-dev-ce4c1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1930; i=leitao@debian.org;
- h=from:subject:message-id; bh=FJnCAijEnJL/dnfukYsYGrSRabAaXyy32MkI8GxZn0g=;
- b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBq8c9ZrsMFSw2Obxtdc6IfrYqRQtW1UZ6TByeFN
- 3jchaLXV0aJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCavHPWQAKCRA1o5Of/Hh3
- bTGTEACVrSvdoNGefaKPNZ/f95negD5kq34teOTuQA6AdnK9FsMoKXk5mUIcOWmIEgHC9W0qEgo
- 6fosJmXbXsYW+3H6RWW683dthdD/uJE5/AaSry0Dwtona0cH0JDYZw+uwiqKWOEPDJ6lW0zYTFN
- kM24FL36puiTwSeyTRMzzMEKMTL+NjWa6/0SaJCv1T32kCdEAi1YslMLqCR0F50MvtCfCsRCBVI
- aVtnCks6kq+C474nYLoHqpEVufS47iq0dqlMaLWP8h5ibZugJPTOsB0fRToDHZiFsxNspLKemty
- HRJzbeJH2NjC7C8PWfojApZK1Jb1Th5NOit4NSym5eWnCdLRDQyXIYrkwFpvLkuJmxhUerWEzgs
- yXUsXnX24GBA55ugDvDmYVXvjoib6TDMtV/9SQO/KtZRZ5CFOGn/xPr2K1qq+Yf1kcmRs2VxDFY
- kvhFubqpXztwyTLeK0t2LHuzKhY3JTyqfLP989LLuJYizA7srb5BSeVSYDEos7IObvZ9btePDMR
- o30IOwb/DCqkRyr7g7ZyYamRW7Oe/zWSIDn785RbSzQo8VMw2smuvw686vWPDjcMCzgegl5n2CK
- P7i/KVqn8zP4ha9Xk+R0a2bEffDEAaPDMlz+J6C1XCaJayF09yMLuVUgFaI27+JQ4CWYzriM9f4
- Ei70w3ZN8CDD6Ng==
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2713; i=leitao@debian.org;
+ h=from:subject:message-id; bh=Mix/e/rZPt6C+M/+y1NvJNhAMpnntuJoe4+M+NANAuo=;
+ b=owEBbQKS/ZANAwAIATWjk5/8eHdtAcsmYgBq8c9ZJc+Ax/pJJxVeoPoYxtvgmpWDLUdlDhppN
+ wQE87QWc8eJAjMEAAEIAB0WIQSshTmm6PRnAspKQ5s1o5Of/Hh3bQUCavHPWQAKCRA1o5Of/Hh3
+ bUYvD/wIVGbYo4NPMN1gHBkdNy0wIKbhje/YwCIWn8BMCLy37KsKu4ACoQ0s0TM7cu2TMR8CEoL
+ 6I/XCMA7C7anePJ0zRN5uL5IUTCSGNq4/MsEg4FjMKPG72jAc78QHd1ktCKR5F2dQ4MrPZU4fpB
+ SznwnotfrOWyJFbtNBXgZvPioPT7nIK1FhlkqotNrn3d6YjDyCbySUu+QBzWCFfnxS8tZuj/xO/
+ fDnGBeivZqAxsGAAJZkwSIE0fdUzbs4Yx1dOwOoBpP8hTaQ1uR7or3Bb3z7Y0BXDG2xoD1j0kI5
+ AClGN8ZTbPpHWDvv+wkjlTIqSZcVpXUi07IjrSH1gbNsUjTDTidhL+6UV86I4dhrCL/bvR50Psr
+ M626DAFFnoCsXz9aWLK2W2SvxsJCso1USWNWm6eq/gwcSvEbiBPqXzCcGg1kx4D/suaw3wu4rX8
+ t4jVYN9L+EJO6CrMAW6Lt2/6iXHZH8qbyUMB7gItlCndg+ZayPUH4DytlXc8qwE8HcKnQIbJP0a
+ P5UfMpYuzOzD/AFfn8HfHIjkHTV+y5LbnpLtqeI8WSXRGWw/egRoXiCL9AvS8MOOfFFWSEFpRVi
+ CEkA04JUuvNxAKPwoFui+su6LX94sPDvQkfHCMLRhHndNtme9iDvmZw7PuIJGFhT8XHfjndd5gx
+ jAcbxl3ITWjM4IA==
 X-Developer-Key: i=leitao@debian.org; a=openpgp;
  fpr=AC8539A6E8F46702CA4A439B35A3939FFC78776D
 X-Debian-User: leitao
 
-Convert CAN ISO-TP socket's getsockopt implementation to use the new
+Convert CAN J1939 socket's getsockopt implementation to use the new
 getsockopt_iter callback with sockopt_t.
 
 Key changes:
 - Replace (char __user *optval, int __user *optlen) with sockopt_t *opt
 - Use opt->optlen for buffer length (input) and returned size (output)
-- Use copy_to_iter() instead of put_user()/copy_to_user()
+- Use copy_to_iter() instead of copy_to_user()
+- Restructure the chained if/else if (which depended on put_user() being
+  an expression) into a nested if/else block now that opt->optlen = len
+  is a statement
+- Add linux/uio.h for copy_to_iter()
 
-Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
 Signed-off-by: Breno Leitao <leitao@debian.org>
 ---
- net/can/isotp.c | 12 +++++-------
- 1 file changed, 5 insertions(+), 7 deletions(-)
+ net/can/j1939/socket.c | 21 +++++++++++++--------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 7a90ba3f1cf1c4..a1efe026dfd15b 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1838,7 +1838,7 @@ static int isotp_setsockopt(struct socket *sock, int level, int optname,
+diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+index 50a598ef5fd4a5..d0c6ce607b0dc9 100644
+--- a/net/can/j1939/socket.c
++++ b/net/can/j1939/socket.c
+@@ -17,6 +17,7 @@
+ #include <linux/can/skb.h>
+ #include <linux/errqueue.h>
+ #include <linux/if_arp.h>
++#include <linux/uio.h>
+ #include <net/can.h>
+ 
+ #include "j1939-priv.h"
+@@ -767,7 +768,7 @@ static int j1939_sk_setsockopt(struct socket *sock, int level, int optname,
  }
  
- static int isotp_getsockopt(struct socket *sock, int level, int optname,
--			    char __user *optval, int __user *optlen)
-+			    sockopt_t *opt)
+ static int j1939_sk_getsockopt(struct socket *sock, int level, int optname,
+-			       char __user *optval, int __user *optlen)
++			       sockopt_t *opt)
  {
  	struct sock *sk = sock->sk;
- 	struct isotp_sock *so = isotp_sk(sk);
-@@ -1847,8 +1847,7 @@ static int isotp_getsockopt(struct socket *sock, int level, int optname,
+ 	struct j1939_sock *jsk = j1939_sk(sk);
+@@ -779,8 +780,7 @@ static int j1939_sk_getsockopt(struct socket *sock, int level, int optname,
  
- 	if (level != SOL_CAN_ISOTP)
+ 	if (level != SOL_CAN_J1939)
  		return -EINVAL;
--	if (get_user(len, optlen))
+-	if (get_user(ulen, optlen))
 -		return -EFAULT;
-+	len = opt->optlen;
- 	if (len < 0)
++	ulen = opt->optlen;
+ 	if (ulen < 0)
  		return -EINVAL;
  
-@@ -1882,9 +1881,8 @@ static int isotp_getsockopt(struct socket *sock, int level, int optname,
- 		return -ENOPROTOOPT;
- 	}
- 
--	if (put_user(len, optlen))
--		return -EFAULT;
--	if (copy_to_user(optval, val, len))
+@@ -804,11 +804,16 @@ static int j1939_sk_getsockopt(struct socket *sock, int level, int optname,
+ 	 * but most sockopt's are 'int' properties, and have 'len' & 'val'
+ 	 * left unchanged, but instead modified 'tmp'
+ 	 */
+-	if (len > ulen)
+-		ret = -EFAULT;
+-	else if (put_user(len, optlen))
++	if (len > ulen) {
+ 		ret = -EFAULT;
+-	else if (copy_to_user(optval, val, len))
++		goto no_copy;
++	}
++
 +	opt->optlen = len;
++	/* Even if the copy below fails, we want to update optlen. This is
++	 * a bit confusing, but, it preserves the original behaviour
++	 */
 +	if (copy_to_iter(val, len, &opt->iter_out) != len)
- 		return -EFAULT;
- 	return 0;
- }
-@@ -2075,7 +2073,7 @@ static const struct proto_ops isotp_ops = {
+ 		ret = -EFAULT;
+ 	else
+ 		ret = 0;
+@@ -1385,7 +1390,7 @@ static const struct proto_ops j1939_ops = {
  	.listen = sock_no_listen,
  	.shutdown = sock_no_shutdown,
- 	.setsockopt = isotp_setsockopt,
--	.getsockopt = isotp_getsockopt,
-+	.getsockopt_iter = isotp_getsockopt,
- 	.sendmsg = isotp_sendmsg,
- 	.recvmsg = isotp_recvmsg,
+ 	.setsockopt = j1939_sk_setsockopt,
+-	.getsockopt = j1939_sk_getsockopt,
++	.getsockopt_iter = j1939_sk_getsockopt,
+ 	.sendmsg = j1939_sk_sendmsg,
+ 	.recvmsg = j1939_sk_recvmsg,
  	.mmap = sock_no_mmap,
 
 -- 
