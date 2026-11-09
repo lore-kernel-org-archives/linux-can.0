@@ -1,57 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=114.242.206.163
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794213751;
-	b=5TpFjGWfpEAZoRRYqbZGaTVQfgVGf2DRGFhzZ1ZBNntl+ogkJfCkaMXj8vxWuHc1nPum
-	 096krYYdU8HKgLUnb91qTQMOWORdEdheu2lswEqvDczgl20iRkY4UVD7WTa4c9rp3Ec05
-	 63RJabhG9UV03JBRfwQ0IU2qLUXzn0+vUhT0CzLQ5B4b/cmf+x1L/+eUl+zUbLc6xWiCE
-	 XpF4DBDzTS0yXR2VAvxSyZ51v7fr4pnNQ3+QULXf7CTOdFHpN/NCef90HtlW+pCHD3/vC
-	 78lkz107ETbqMOZID/VlTDBtcBoSyEkX48TMMSmvirn44mTUk7ZJAzDL8+dSOZ0mF/g==
+	t=1794216714;
+	b=c3eqF0Oz8hE2DGZ0nxi7SaGxvb8Qzf6OuH9d7QjZH6uNAd1Nuwva84gTqY4tagPWcBXC
+	 XxVHU2kxqIG42uiBAYZ0DgrLn5f8hXTjdS+juOvBHqG6CCNxzGICCn+imBMqFKxbgCFbP
+	 PcIXw45YbBuR3ly3pTFDGMJKtELaTt1Q7ezwCh7o8Lx3sDnxACDn7RCDYxegYqAr9+wCK
+	 lP0ZICAgpWWgE1RQsP3nTu7Ee7QJtPwH6+BRplIXbcdx2GbORej/7jamjwTm4D1jsQg3C
+	 ov88q3KvNHaOnWj2Csh3wIOL4sQ1acx9i5YqS6C4DAQbW6VpLeECkZBcg+9xLkFJTSw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794213751;
-	h=DMARC-Filter:Received:Received:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding:X-CM-TRANSID:X-CM-SenderInfo:
-	 X-Coremail-Antispam;
-	bh=+FTsDA5H7s5YLsrgR5L+rTFM6O7wNxeMi8ayL0fSrQ4=;
-	b=2ByChVGGI3vRCttIB059fBYxyUmLtQeeRTF4QhM9mRpmLqAQ3x1JftrsgbkUXQuTwYBP
-	 DA2eVQkJobXVGwfXFyKnnG/6KhqcQT6mw/AjLfYf+rNsu3uvzVTmzeABLaYokkHSi+1Rj
-	 CRQv3O1wHnovvYk2RuPyHeQDS/qaxr57FwjO1QyGjTNHbYsJ1n9kB60fyX3XXuoCi6IaP
-	 fu4IOINz8DJiZdFEn0hZiA6A67kl6C/Rnijh4qzV/COoGi5Ayi/LCithLsuf9mMh++uNF
-	 IWP1eLXaF1YdGFWbeLjf7OuLyJez6rPRPUqVyxUcR6k9N11sd1WjbA/jx1hGFYLlH3A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794216714;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=iEXbf3fM0mgIRaFsPJD6XpdB8OSxS3T29wU97rtf7KA=;
+	b=KKkb7DVRimrfGObsLQJGIv7rdGdnkCMxWUopbdqC8fjT2ekUugkfFN9rY2RUMq16nIbz
+	 4kivpY4MekbCD38E1ePbR40KFsXyxdA6ir4HpbHVrKKFUwtuwEuTeVCNIg8M4uyvWltlD
+	 SqXv+YfvSyfEtT5mo+UalQr9iopCl6gKGr+ZUhgRReDskIenBsVx+JJh49mJsVpPsla8j
+	 4Ph5A4RS7XT/jjuN8WFyoMFiBXKpWkI09QX6rLojLZmjbcEWAnK/0Ke2tvw+hzsVSiy6j
+	 Dxags/Yp4+fQ/v6xgefDj7QgTw+7LYG2R+xThMMuwTJPsjI9Yd512ZSvnMN0cs3Otkg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=loongson.cn;
-	spf=pass smtp.mailfrom=loongson.cn;
-	arc=none smtp.remote-ip=114.242.206.163
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8CBA606A330
-	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 08:42:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B8CBA606A330
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [223.64.69.17])
-	by gateway (Coremail) with SMTP id _____8Bxn9Fzh_FqUMIdAA--.19615S3;
-	Mon, 09 Nov 2026 16:42:27 +0800 (CST)
-Received: from kernelserver (unknown [223.64.69.17])
-	by front1 (Coremail) with SMTP id qMiowJCxf89sh_FqUCYzAA--.40908S4;
-	Mon, 09 Nov 2026 16:42:25 +0800 (CST)
-From: Binbin Zhou <zhoubinbin@loongson.cn>
-To: Binbin Zhou <zhoubb.aaron@gmail.com>,
-	Huacai Chen <chenhuacai@loongson.cn>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Bingxiong Li <libingxiong@loongson.cn>
-Cc: Huacai Chen <chenhuacai@kernel.org>,
-	Xuerui Wang <kernel@xen0n.name>,
-	loongarch@lists.linux.dev,
-	linux-can@vger.kernel.org,
-	jeffbai@aosc.io,
-	Binbin Zhou <zhoubinbin@loongson.cn>
-Subject: [PATCH v9 2/2] can: loongson_canfd: Add RXDMA support
-Date: Mon,  9 Nov 2026 16:42:13 +0800
-Message-ID: <64b77b0ec6ba0c3f747d9ed73bd75e80502b2339.1794213427.git.zhoubinbin@loongson.cn>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <cover.1794213427.git.zhoubinbin@loongson.cn>
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Qa2buI1E;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62448606A339
+	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 09:31:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Qa2buI1E
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA3671F0089F;
+	Mon,  9 Nov 2026 09:31:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794216714;
+	bh=iEXbf3fM0mgIRaFsPJD6XpdB8OSxS3T29wU97rtf7KA=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=Qa2buI1ElsqFshszeRDxgFj0O6jQci4bsvyfBi9LG2h4+vfRo0rrpbNRDUeoN52AX
+	 mOPX3hRhUVNMJ7rFmmS6IzsQ0/WZLOmAYUv1fXEvym5Q4TfVzT15pZ+RXvVe+ehida
+	 KPcQ/MFmmoHXR/0k1IMAex/G+oHHPHJVIZ7jxZdFBQfCbJbIhpV/CfIjs9k/C3v+If
+	 CMA+33TgEIj6U024yc+9JtVR8556Kc/bGfwcdIKwA34NGvNfHt6qRekE+F0P/h+R9A
+	 K+4qC4ewUrJaNDcFYIgohclF4rgg/oeGO+ptNes/uTCGlk/4UZ+F4csVF+P3lQf31P
+	 5el7GwRUBxphg==
+Message-ID: <sashiko-outbox-204707@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v9 1/2] can: Add Loongson CAN-FD controller driver
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Binbin Zhou" <zhoubinbin@loongson.cn>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <a8291518fe60279a18c15393daf3ed3660bcfa5c.1794213427.git.zhoubinbin@loongson.cn>
 References: <cover.1794213427.git.zhoubinbin@loongson.cn>
+ <a8291518fe60279a18c15393daf3ed3660bcfa5c.1794213427.git.zhoubinbin@loongson.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 09 Nov 2026 09:31:53 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -60,976 +61,619 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:qMiowJCxf89sh_FqUCYzAA--.40908S4
-X-CM-SenderInfo: p2kr3uplqex0o6or00hjvr0hdfq/1tbiAgEGCGrxOf4FIwAAs3
-X-Coremail-Antispam: 1Uk129KBj9fXoWfCrW8uryxCF4ktFy7Ar1xCrX_yoW5AF18to
-	WfWFsIga1rG3WUXw40qr1fXr1UZF1DZr1ayrZayr4kCan0v3WqvFZ8Ca13JrWrGFyFgayU
-	uayrWF1fGrWxtr43l-sFpf9Il3svdjkaLaAFLSUrUUUU8b8apTn2vfkv8UJUUUU8wcxFpf
-	9Il3svdxBIdaVrn0xqx4xG64xvF2IEw4CE5I8CrVC2j2Jv73VFW2AGmfu7bjvjm3AaLaJ3
-	UjIYCTnIWjp_UUUYt7kC6x804xWl14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI
-	8IcIk0rVWrJVCq3wAFIxvE14AKwVWUAVWUZwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26r4j6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJwAaw2AFwI0_Jrv_JF1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqjxCEc2
-	xF0cIa020Ex4CE44I27wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_
-	Jw0_WrylYx0Ex4A2jsIE14v26F4j6r4UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2
-	Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-	z7v_Jr0_Gr1l4IxYO2xFxVAFwI0_Jrv_JF1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWxJVW8Jr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07j8-B_UUUUU=
 
-Add optional RX DMA support to the Loongson CAN-FD driver.
+Thank you for your contribution! Sashiko AI review found 16 potential
+issues to consider:
+- [High] can: loongson_canfd: use-after-free in
+  loongson_canfd_start_xmit() after echo
+- [Medium] can: loongson_canfd: use of can_dropped_invalid_skb() in
+  start_xmit()
+- [Medium] can: loongson_canfd: CANFD_FDF cleared in
+  loongson_canfd_rx_deliver()
+- [Medium] can: loongson_canfd: incomplete free check in
+  loongson_canfd_txbuf_freed()
+- [Medium] can: loongson_canfd: TOCTOU race waking TX queue outside
+  priv->tx_lock
+- [Medium] can: loongson_canfd: broken error frame flags and stats in
+  state/overrun paths
+- [Medium] can: loongson_canfd: missing TX queue and chip stop on
+  CAN_STATE_BUS_OFF
+- [Medium] can: loongson_canfd: bogus error skb stats and race on
+  ndev->stats
+- [Medium] can: loongson_canfd: race enabling IRQs before state init in
+  loongson_canfd_chip_start()
+- [Medium] can: loongson_canfd: teardown race with IRQ and restart_work
+  in loongson_canfd_close()
+- [Medium] can: loongson_canfd: hwts capabilities hidden when down in
+  loongson_canfd_get_ts_info()
+- [Medium] can: loongson_canfd: broken REGCACHE_MAPLE config on banked
+  TX and FIFO registers
+- [Medium] can: loongson_canfd: prop_seg > 127 truncated in
+  loongson_canfd_set_btr()
+- [Medium] can: loongson_canfd: RX FIFO desync and tautological check in
+  rx_hdr_valid()
+- [Medium] can: loongson_canfd: missing mode checks in
+  loongson_canfd_start_xmit()
+- [Low] can: loongson_canfd: tautological SFF ID check in
+  loongson_canfd_hdr_plausible()
+--
 
-When an "rx" DMA channel is available, incoming frames are moved into
-a ring buffer by a cyclic DMA transfer and read directly from there,
-reducing MMIO accesses and improving RX throughput under high traffic.
+commit 081a5a8aea730be1bb8b197fafbcd027960619e3
+Author: Binbin Zhou <zhoubinbin@loongson.cn>
 
-The DMA path is fully transparent to the networking stack; the driver
-falls back to FIFO polling when no DMA channel is present.
+can: Add Loongson CAN-FD controller driver
 
-Co-developed-by: Bingxiong Li <libingxiong@loongson.cn>
-Signed-off-by: Bingxiong Li <libingxiong@loongson.cn>
-Signed-off-by: Binbin Zhou <zhoubinbin@loongson.cn>
----
- drivers/net/can/loongson_canfd.c | 697 ++++++++++++++++++++++++++++++-
- 1 file changed, 679 insertions(+), 18 deletions(-)
+This commit adds a driver for the CAN-FD controller integrated in the
+Loongson-2K series SoCs, supporting CAN 2.0B, CAN FD, NAPI RX, TX echo,
+error reporting, and hardware timestamps.
 
-diff --git a/drivers/net/can/loongson_canfd.c b/drivers/net/can/loongson_canfd.c
-index 7a4d8df7815a..b5a5917bc773 100644
---- a/drivers/net/can/loongson_canfd.c
-+++ b/drivers/net/can/loongson_canfd.c
-@@ -12,6 +12,9 @@
- #include <linux/can/error.h>
- #include <linux/cleanup.h>
- #include <linux/clocksource.h>
-+#include <linux/dmaengine.h>
-+#include <linux/dma-direction.h>
-+#include <linux/dma-mapping.h>
- #include <linux/ethtool.h>
- #include <linux/interrupt.h>
- #include <linux/module.h>
-@@ -344,8 +347,11 @@
- #define DEV_NAME			"loongson_canfd"
- #define LOONGSON_CANFD_ID		0xBABE
- #define LOONGSON_CANFD_DW_BYTE		4
-+#define LOONGSON_CANFD_RXBUF_SZ		SZ_32K
-+#define LOONGSON_CANFD_RXDMA_PERIOD	SZ_4K
- #define LOONGSON_CANFD_TXBUF_NUM	8
- #define LOONGSON_CANFD_MAX_RTXTH	0xf
-+#define LOONGSON_CANFD_RXDMA_NUM	(LOONGSON_CANFD_RXBUF_SZ / DMA_SLAVE_BUSWIDTH_4_BYTES)
- 
- /* Upper bound on the number of ISR drain iterations */
- #define LOONGSON_CANFD_IRQ_LOOP_MAX		10000
-@@ -362,6 +368,9 @@
- #define LOONGSON_CANFD_HWTS_SLEW_SHIFT		3
- #define LOONGSON_CANFD_HWTS_SLEW_BAND_NS	2000
- 
-+/* cpu_relax() iterations waiting for the DMA to finish a peeked frame */
-+#define LOONGSON_CANFD_DMA_WAIT_RETRY_MAX	100
-+
- /**
-  * struct loongson_canfd_hwts - Hardware timestamp state
-  * @cc: Cycle counter abstracting the 16-bit timestamp counter
-@@ -409,6 +418,17 @@ struct loongson_canfd_rx_desc {
-  * @tx_lock: Lock for synchronizing TX interrupt handling
-  * @stats_lock: Lock for protecting netdev statistics
-  * @hwts: Hardware timestamp state
-+ * @rx_ch: DMA receive channel, NULL in poll mode
-+ * @rx_cookie: DMA receive cookie
-+ * @rx_dma_addr: DMA RX buffer bus address
-+ * @rx_cpu_buf: DMA RX buffer CPU address
-+ * @rx_rd_pos: Software read position, 64-bit monotonic, in 32-bit words
-+ * @rx_wr_pos: DMA write position, 64-bit monotonic, wrap-extended
-+ * @rx_wr_off: Last raw residue-derived ring offset, 0..RXDMA_NUM-1
-+ * @rx_bad_cnt: Consecutive invalid RX headers seen in DMA mode
-+ * @read_rx_word: Callback for fetching one 32-bit word (DMA or poll mode)
-+ * @rx_is_empty: Predicate: true if the hardware RX FIFO has no frame
-+ * @process_rx: Callback that consumes one frame from the RX stream
-  */
- struct loongson_canfd_priv {
- 	struct can_priv		can;
-@@ -418,6 +438,21 @@ struct loongson_canfd_priv {
- 	spinlock_t		tx_lock;	/* protect the sending queue */
- 	spinlock_t		stats_lock;	/* protect the ndev->stats */
- 	struct loongson_canfd_hwts	hwts;
-+
-+	/* RX ring 64-bit monotonic positions, in 32-bit words */
-+	struct dma_chan		*rx_ch;
-+	dma_cookie_t		rx_cookie;
-+	dma_addr_t		rx_dma_addr;
-+	unsigned int		*rx_cpu_buf;
-+
-+	u64			rx_rd_pos;
-+	u64			rx_wr_pos;
-+	u32			rx_wr_off;
-+	u32			rx_bad_cnt;
-+
-+	u32 (*read_rx_word)(struct loongson_canfd_priv *priv);
-+	bool (*rx_is_empty)(struct loongson_canfd_priv *priv);
-+	int (*process_rx)(struct net_device *ndev);
- };
- 
- /**
-@@ -504,6 +539,213 @@ static void loongson_canfd_disable_interrupts(struct loongson_canfd_priv *priv)
- 	regmap_write(priv->regmap, LOONGSON_CANFD_INT_MASK, REG_INT_MASK_SET);
- }
- 
-+/**
-+ * loongson_canfd_dma_sync_wr() - Refresh the 64-bit DMA write position
-+ * @priv: Driver private data
-+ *
-+ * The DMA engine exposes only a residue; converting it to a raw ring
-+ * offset cannot distinguish full from empty because the residue wraps
-+ * back to the buffer size right after the ring is filled. Detect the
-+ * wrap here and produce a monotonic 64-bit write position.
-+ *
-+ * Idempotent while the DMA engine makes no progress.
-+ */
-+static void loongson_canfd_dma_sync_wr(struct loongson_canfd_priv *priv)
-+{
-+	struct dma_tx_state state;
-+	u32 off;
-+
-+	if (!priv->rx_ch)
-+		return;
-+
-+	if (dmaengine_tx_status(priv->rx_ch, priv->rx_cookie, &state) !=
-+	    DMA_IN_PROGRESS)
-+		return;
-+
-+	if (state.residue > LOONGSON_CANFD_RXBUF_SZ)
-+		state.residue = LOONGSON_CANFD_RXBUF_SZ;
-+
-+	off = (LOONGSON_CANFD_RXBUF_SZ - state.residue) /
-+	      DMA_SLAVE_BUSWIDTH_4_BYTES;
-+	off %= LOONGSON_CANFD_RXDMA_NUM;
-+
-+	if (off < priv->rx_wr_off)
-+		/* The DMA engine wrapped around the end of the ring. */
-+		priv->rx_wr_pos += LOONGSON_CANFD_RXDMA_NUM -
-+				   priv->rx_wr_off + off;
-+	else
-+		priv->rx_wr_pos += off - priv->rx_wr_off;
-+
-+	priv->rx_wr_off = off;
-+}
-+
-+/**
-+ * loongson_canfd_read_rx_word_dma() - Read one word from the DMA buffer
-+ * @priv: Driver private data
-+ *
-+ * Consumes the next word from the cyclic ring and advances rx_rd_pos.
-+ *
-+ * Return: The next 32-bit data word.
-+ */
-+static u32 loongson_canfd_read_rx_word_dma(struct loongson_canfd_priv *priv)
-+{
-+	u32 idx = priv->rx_rd_pos % LOONGSON_CANFD_RXDMA_NUM;
-+
-+	priv->rx_rd_pos++;
-+	return priv->rx_cpu_buf[idx];
-+}
-+
-+/**
-+ * loongson_canfd_ring_peek() - Peek one word from the DMA ring
-+ * @priv: Driver private data
-+ * @pos: 64-bit monotonic word position
-+ *
-+ * Return: word at @pos without advancing rx_rd_pos.
-+ */
-+static u32 loongson_canfd_ring_peek(struct loongson_canfd_priv *priv, u64 pos)
-+{
-+	u32 idx = pos % LOONGSON_CANFD_RXDMA_NUM;
-+
-+	return priv->rx_cpu_buf[idx];
-+}
-+
-+static void loongson_canfd_rxdma_free(struct loongson_canfd_priv *priv,
-+				      struct device *dev)
-+{
-+	if (!priv->rx_cpu_buf)
-+		return;
-+
-+	dma_free_coherent(dev, LOONGSON_CANFD_RXBUF_SZ, priv->rx_cpu_buf,
-+			  priv->rx_dma_addr);
-+	priv->rx_cpu_buf = NULL;
-+}
-+
-+static void loongson_canfd_rxdma_remove(struct loongson_canfd_priv *priv,
-+					struct device *dev)
-+{
-+	if (!priv->rx_ch)
-+		return;
-+
-+	dmaengine_terminate_sync(priv->rx_ch);
-+	loongson_canfd_rxdma_free(priv, dev);
-+	dma_release_channel(priv->rx_ch);
-+	priv->rx_ch = NULL;
-+}
-+
-+/**
-+ * loongson_canfd_rxdma_init() - Initialize RX DMA resources
-+ * @ndev: Network device
-+ *
-+ * Allocates the coherent buffer and programs the slave; the channel is
-+ * started later in open() so it is synchronized with the controller.
-+ *
-+ * On failure the channel is released and @priv->rx_ch is set to NULL;
-+ * the caller must not free it again.
-+ *
-+ * Return: 0 on success, negative error code on failure.
-+ */
-+static int loongson_canfd_rxdma_init(struct net_device *ndev)
-+{
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	struct device *dev = ndev->dev.parent;
-+	struct dma_slave_config config;
-+	int ret;
-+
-+	if (!priv->rx_ch)
-+		return -ENODEV;
-+
-+	priv->rx_cpu_buf = dma_alloc_coherent(dev, LOONGSON_CANFD_RXBUF_SZ,
-+					      &priv->rx_dma_addr, GFP_KERNEL);
-+	if (!priv->rx_cpu_buf) {
-+		dma_release_channel(priv->rx_ch);
-+		priv->rx_ch = NULL;
-+		return -ENOMEM;
-+	}
-+
-+	memset(&config, 0, sizeof(config));
-+	config.src_addr = priv->mem_res->start + LOONGSON_CANFD_RX_DATA;
-+	config.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES;
-+
-+	ret = dmaengine_slave_config(priv->rx_ch, &config);
-+	if (ret < 0) {
-+		netdev_err(ndev, "RX DMA channel config failed\n");
-+		goto err_config;
-+	}
-+
-+	/* Do not start DMA in probe; it is started in open() */
-+	return 0;
-+
-+err_config:
-+	loongson_canfd_rxdma_free(priv, dev);
-+	dma_release_channel(priv->rx_ch);
-+	priv->rx_ch = NULL;
-+	return ret;
-+}
-+
-+/**
-+ * loongson_canfd_rxdma_start() - Submit the cyclic DMA and run it continuously
-+ * @ndev: Network device
-+ *
-+ * Prepares and submits a cyclic descriptor and lets the channel run
-+ * from the first issue_pending() to rxdma_stop(). No pause/resume is
-+ * used: the engine is expected to stall on its own when RX_DATA is
-+ * empty. Zero-fill produced before chip_start() runs is skipped
-+ * because the controller is not yet enabled.
-+ *
-+ * Return: 0 on success, negative error code on failure.
-+ */
-+static int loongson_canfd_rxdma_start(struct net_device *ndev)
-+{
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	struct dma_async_tx_descriptor *desc;
-+
-+	if (!priv->rx_ch)
-+		return 0;
-+
-+	priv->rx_rd_pos = 0;
-+	priv->rx_wr_pos = 0;
-+	priv->rx_wr_off = 0;
-+	priv->rx_bad_cnt = 0;
-+
-+	desc = dmaengine_prep_dma_cyclic(priv->rx_ch, priv->rx_dma_addr,
-+					 LOONGSON_CANFD_RXBUF_SZ,
-+					 LOONGSON_CANFD_RXDMA_PERIOD,
-+					 DMA_DEV_TO_MEM, DMA_PREP_INTERRUPT);
-+	if (!desc) {
-+		netdev_err(ndev, "RX DMA cyclic prep failed\n");
-+		return -EBUSY;
-+	}
-+
-+	priv->rx_cookie = dmaengine_submit(desc);
-+	if (dma_submit_error(priv->rx_cookie)) {
-+		netdev_err(ndev, "RX DMA submit failed\n");
-+		return -EIO;
-+	}
-+
-+	dma_async_issue_pending(priv->rx_ch);
-+
-+	/* Skip zero-fill produced before the controller is enabled */
-+	loongson_canfd_dma_sync_wr(priv);
-+	priv->rx_rd_pos = priv->rx_wr_pos;
-+
-+	return 0;
-+}
-+
-+/**
-+ * loongson_canfd_rxdma_stop() - Stop the RX DMA cyclic transfer
-+ * @priv: Driver private data
-+ *
-+ * Synchronously terminates the DMA. Positions are reset on the next
-+ * rxdma_start().
-+ */
-+static void loongson_canfd_rxdma_stop(struct loongson_canfd_priv *priv)
-+{
-+	if (!priv->rx_ch)
-+		return;
-+
-+	dmaengine_terminate_sync(priv->rx_ch);
-+}
-+
- /**
-  * loongson_canfd_read_rx_word_fifo() - Read RX data in poll mode
-  * @priv: Driver private data
-@@ -922,7 +1164,12 @@ static void loongson_canfd_apply_ctrlmode(struct loongson_canfd_priv *priv)
-  * loongson_canfd_chip_start() - Start the CAN controller
-  * @ndev: Network device
-  *
-- * Configures bit timing, SSP, interrupt enables, and enables the controller.
-+ * Interrupt sources used by the RX path:
-+ *   RBNEI  Primary wake-up on FIFO empty -> non-empty edge; the only
-+ *          source that fires on a quiet bus.
-+ *   DMADI  Secondary wake-up once per cyclic period while the engine
-+ *          is moving data; enabled only when a DMA channel exists.
-+ *   DOI    Safety net when the hardware FIFO overflows.
-  *
-  * Return: 0 on success, negative error on failure.
-  */
-@@ -947,6 +1194,9 @@ static int loongson_canfd_chip_start(struct net_device *ndev)
- 		  REG_INT_STAT_EWLI  | REG_INT_STAT_FCSI   |
- 		  REG_INT_STAT_DOI;
- 
-+	if (priv->rx_ch)
-+		int_ena |= REG_INT_STAT_DMADI;
-+
- 	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
- 		int_ena |= REG_INT_STAT_ALI | REG_INT_STAT_BEI;
- 
-@@ -995,15 +1245,29 @@ static void loongson_canfd_chip_stop(struct net_device *ndev)
-  */
- static int loongson_canfd_do_set_mode(struct net_device *ndev, enum can_mode mode)
- {
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
- 	int ret;
- 
- 	switch (mode) {
- 	case CAN_MODE_START:
- 		loongson_canfd_reset(ndev);
- 
-+		/*
-+		 * The FIFO starts from scratch; DMA and CPU read pointer
-+		 * must be realigned with the new FIFO start.
-+		 */
-+		loongson_canfd_rxdma_stop(priv);
-+
-+		ret = loongson_canfd_rxdma_start(ndev);
-+		if (ret) {
-+			netdev_err(ndev, "RX DMA restart failed\n");
-+			return ret;
-+		}
-+
- 		ret = loongson_canfd_chip_start(ndev);
- 		if (ret < 0) {
- 			netdev_err(ndev, "Failed to start chip\n");
-+			loongson_canfd_rxdma_stop(priv);
- 			return ret;
- 		}
- 
-@@ -1307,7 +1571,7 @@ static bool loongson_canfd_hdr_plausible(u32 hdr0, u32 hdr1)
- static void loongson_canfd_rx_note_bad(struct net_device *ndev, u32 rwcnt)
- {
- 	struct loongson_canfd_priv *priv = netdev_priv(ndev);
--	u32 words, data;
-+	u32 words;
- 
- 	ndev->stats.rx_dropped++;
- 
-@@ -1315,7 +1579,7 @@ static void loongson_canfd_rx_note_bad(struct net_device *ndev, u32 rwcnt)
- 		min_t(u32, rwcnt - 2,
- 		      CANFD_MAX_DLEN / LOONGSON_CANFD_DW_BYTE) : 0;
- 	while (words--)
--		regmap_read(priv->regmap, LOONGSON_CANFD_RX_DATA, &data);
-+		priv->read_rx_word(priv);
- }
- 
- /**
-@@ -1333,8 +1597,8 @@ static bool loongson_canfd_rx_hdr_valid(struct net_device *ndev,
- {
- 	struct loongson_canfd_priv *priv = netdev_priv(ndev);
- 
--	d->hdr0 = loongson_canfd_read_rx_word_fifo(priv);
--	d->hdr1 = loongson_canfd_read_rx_word_fifo(priv);
-+	d->hdr0 = priv->read_rx_word(priv);
-+	d->hdr1 = priv->read_rx_word(priv);
- 
- 	d->rwcnt = FIELD_GET(REG_FRAME_META1_RWCNT, d->hdr1);
- 	if (d->rwcnt < 2) {
-@@ -1420,8 +1684,7 @@ static int loongson_canfd_rx_deliver(struct net_device *ndev,
- 		cfd->len = d->dbcnt;
- 
- 	for (i = 0; i < d->dbcnt; i += LOONGSON_CANFD_DW_BYTE)
--		put_unaligned_le32(loongson_canfd_read_rx_word_fifo(priv),
--				   cfd->data + i);
-+		put_unaligned_le32(priv->read_rx_word(priv), cfd->data + i);
- 
- 	if (!d->is_rtr)
- 		stats->rx_bytes += cfd->len;
-@@ -1435,6 +1698,247 @@ static int loongson_canfd_rx_deliver(struct net_device *ndev,
- 	}
- 
- 	netif_receive_skb(skb);
-+	return 0;
-+}
-+
-+/**
-+ * loongson_canfd_rx_is_empty_dma() - DMA mode: nothing left to process
-+ * @priv: Driver private data
-+ *
-+ * The engine stalls on an empty RX_DATA, so the ring holds exactly the
-+ * words the controller produced. Two defensive cases are handled: a
-+ * zero header pair (DMA zero-fill) and a non-zero implausible pair
-+ * (mid-frame garbage). Both are dropped silently by realigning the
-+ * reader on the write pointer.
-+ *
-+ * A partially-resident header pair is NOT discarded: returning false
-+ * lets process_rx() return -EAGAIN so NAPI retries once the second
-+ * word lands.
-+ *
-+ * Return: true if no complete frame is left to process.
-+ */
-+static bool loongson_canfd_rx_is_empty_dma(struct loongson_canfd_priv *priv)
-+{
-+	u32 rx_stat;
-+	u32 idx, h0, h1;
-+
-+	loongson_canfd_dma_sync_wr(priv);
-+
-+	if (priv->rx_wr_pos < priv->rx_rd_pos)
-+		goto discard;
-+
-+	regmap_read(priv->regmap, LOONGSON_CANFD_RX_STAT, &rx_stat);
-+
-+	/* A complete frame is waiting in the FIFO */
-+	if (FIELD_GET(REG_RX_STAT_RXFRC, rx_stat))
-+		return false;
-+
-+	/* FIFO holds a partial frame the DMA engine is still moving */
-+	if (!(rx_stat & REG_RX_STAT_RXE))
-+		return false;
-+
-+	/* Header pair not yet fully resident: let NAPI retry */
-+	if (priv->rx_wr_pos < priv->rx_rd_pos + 2)
-+		return false;
-+
-+	idx = priv->rx_rd_pos % LOONGSON_CANFD_RXDMA_NUM;
-+	h0 = priv->rx_cpu_buf[idx];
-+	h1 = priv->rx_cpu_buf[(idx + 1) % LOONGSON_CANFD_RXDMA_NUM];
-+
-+	/* Zero header: DMA zero-fill. Drop silently. */
-+	if (h0 == 0 && h1 == 0)
-+		goto discard;
-+
-+	/* Non-zero but implausible: mid-frame garbage. Drop silently. */
-+	if (!loongson_canfd_hdr_plausible(h0, h1))
-+		goto discard;
-+
-+	return false;
-+
-+discard:
-+	priv->rx_rd_pos = priv->rx_wr_pos;
-+	return true;
-+}
-+
-+/**
-+ * loongson_canfd_rx_one_frame_dma_overrun() - Recover from a DMA ring overrun
-+ * @ndev: Network device
-+ * @avail: Words currently pending, i.e. rx_wr_pos - rx_rd_pos
-+ *
-+ * The engine overwrote unread data. Resync on the oldest still-valid
-+ * word instead of discarding the whole ring.
-+ *
-+ * Return: 0, meaning "resynced, nothing consumed".
-+ */
-+static int loongson_canfd_rx_one_frame_dma_overrun(struct net_device *ndev,
-+						   u64 avail)
-+{
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	struct net_device_stats *stats = &ndev->stats;
-+	struct dma_tx_state dbg_state;
-+	u32 dbg_rx_stat = 0;
-+
-+	dmaengine_tx_status(priv->rx_ch, priv->rx_cookie, &dbg_state);
-+	regmap_read(priv->regmap, LOONGSON_CANFD_RX_STAT, &dbg_rx_stat);
-+
-+	netdev_warn(ndev, "RX DMA overrun, resyncing\n");
-+	scoped_guard(spinlock_irqsave, &priv->stats_lock) {
-+		stats->rx_errors++;
-+		stats->rx_over_errors++;
-+		stats->rx_dropped++;
-+	}
-+
-+	/* Words older than rx_wr_pos - RXDMA_NUM are already overwritten */
-+	if (priv->rx_wr_pos > LOONGSON_CANFD_RXDMA_NUM - 2)
-+		priv->rx_rd_pos = priv->rx_wr_pos - LOONGSON_CANFD_RXDMA_NUM + 2;
-+	else
-+		priv->rx_rd_pos = 0;
-+
-+	priv->rx_bad_cnt = 0;
-+	return 0;
-+}
-+
-+/**
-+ * loongson_canfd_rx_one_frame_dma_bad_hdr() - Recover from an invalid header
-+ * @ndev: Network device
-+ * @d: Descriptor containing the bad hdr0/hdr1/rwcnt
-+ * @saved_pos: rx_rd_pos before the two header words were read
-+ *
-+ * Zero headers indicate DMA zero-fill and are dropped silently by
-+ * realigning the reader on the write pointer. Non-zero implausible
-+ * headers mean the reader landed mid-frame; walk forward one word at
-+ * a time looking for the next plausible header, bounded to 32 words.
-+ *
-+ * Return:
-+ *   1        - one word discarded, keep polling
-+ *   -ENODATA - pointers realigned on the write pointer, NAPI may stop
-+ */
-+static int loongson_canfd_rx_one_frame_dma_bad_hdr(struct net_device *ndev,
-+						   const struct loongson_canfd_rx_desc *d,
-+						   u64 saved_pos)
-+{
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	struct net_device_stats *stats = &ndev->stats;
-+	u32 rx_stat, tries;
-+	u64 pos;
-+
-+	regmap_read(priv->regmap, LOONGSON_CANFD_RX_STAT, &rx_stat);
-+
-+	/* Zero header: DMA zero-fill. Realign on the write pointer. */
-+	if (d->hdr0 == 0 && d->hdr1 == 0) {
-+		loongson_canfd_dma_sync_wr(priv);
-+		priv->rx_rd_pos = priv->rx_wr_pos;
-+		priv->rx_bad_cnt = 0;
-+		return -ENODATA;
-+	}
-+
-+	/* Non-zero implausible header: scan forward for a plausible one */
-+	stats->rx_dropped++;
-+
-+	for (tries = 0, pos = saved_pos + 1;
-+	     tries < 32 && pos + 1 < priv->rx_wr_pos;
-+	     tries++, pos++) {
-+		u32 h0 = loongson_canfd_ring_peek(priv, pos);
-+		u32 h1 = loongson_canfd_ring_peek(priv, pos + 1);
-+
-+		/* Zero-fill tail */
-+		if (h0 == 0 && h1 == 0) {
-+			loongson_canfd_dma_sync_wr(priv);
-+			priv->rx_rd_pos = priv->rx_wr_pos;
-+			priv->rx_bad_cnt = 0;
-+			return -ENODATA;
-+		}
-+
-+		if (loongson_canfd_hdr_plausible(h0, h1)) {
-+			priv->rx_rd_pos = pos;
-+			priv->rx_bad_cnt = 0;
-+			return 1;
-+		}
-+	}
-+
-+	/* No plausible header nearby: resync on the write pointer */
-+	loongson_canfd_dma_sync_wr(priv);
-+	priv->rx_rd_pos = priv->rx_wr_pos;
-+	priv->rx_bad_cnt = 0;
-+	return -ENODATA;
-+}
-+
-+/**
-+ * loongson_canfd_rx_one_frame_dma() - Process one RX step in DMA mode
-+ * @ndev: Network device
-+ *
-+ * Return:
-+ *   1        - one frame consumed (delivered or dropped on purpose)
-+ *   0        - ring pointers were resynced, nothing consumed
-+ *   -EAGAIN  - header read but payload not yet resident in the ring
-+ *   -ENODATA - a run of malformed frames was detected and the read
-+ *              position was moved to the DMA write position
-+ */
-+static int loongson_canfd_rx_one_frame_dma(struct net_device *ndev)
-+{
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	struct net_device_stats *stats = &ndev->stats;
-+	u64 avail, saved_rd_pos = priv->rx_rd_pos;
-+	struct loongson_canfd_rx_desc d;
-+	int ret;
-+
-+	/* Guard against unsigned underflow: rd past wr means desync */
-+	if (priv->rx_wr_pos < priv->rx_rd_pos) {
-+		netdev_warn(ndev,
-+			    "RX pointer inversion: rd=%llu wr=%llu, resync\n",
-+			    priv->rx_rd_pos, priv->rx_wr_pos);
-+
-+		scoped_guard(spinlock_irqsave, &priv->stats_lock) {
-+			stats->rx_dropped++;
-+		}
-+
-+		priv->rx_rd_pos = priv->rx_wr_pos;
-+		priv->rx_bad_cnt = 0;
-+		return 0;
-+	}
-+
-+	avail = priv->rx_wr_pos - priv->rx_rd_pos;
-+
-+	if (avail > LOONGSON_CANFD_RXDMA_NUM)
-+		return loongson_canfd_rx_one_frame_dma_overrun(ndev, avail);
-+
-+	if (avail < 2)
-+		return -EAGAIN;
-+
-+	if (!loongson_canfd_rx_hdr_valid(ndev, &d))
-+		return loongson_canfd_rx_one_frame_dma_bad_hdr(ndev, &d,
-+							     saved_rd_pos);
-+
-+	priv->rx_bad_cnt = 0;
-+
-+	/*
-+	 * Re-sample the DMA position: it may have advanced while the
-+	 * header words were being read. If the payload is not fully
-+	 * resident yet, roll the read position back and let NAPI retry.
-+	 */
-+	loongson_canfd_dma_sync_wr(priv);
-+
-+	if (priv->rx_wr_pos < priv->rx_rd_pos) {
-+		priv->rx_rd_pos = priv->rx_wr_pos;
-+		return 0;
-+	}
-+
-+	if (priv->rx_wr_pos - priv->rx_rd_pos < d.rwcnt - 2) {
-+		priv->rx_rd_pos = saved_rd_pos;
-+		return -EAGAIN;
-+	}
-+
-+	ret = loongson_canfd_rx_deliver(ndev, &d);
-+	if (ret != -ENOMEM)
-+		return 1;
-+
-+	stats->rx_dropped++;
-+	priv->rx_rd_pos = saved_rd_pos + 1;
-+	if (++priv->rx_bad_cnt >= 64) {
-+		priv->rx_rd_pos = priv->rx_wr_pos;
-+		priv->rx_bad_cnt = 0;
-+		return -ENODATA;
-+	}
- 	return 1;
- }
- 
-@@ -1532,20 +2036,52 @@ static bool loongson_canfd_rx_overrun_event(struct net_device *ndev)
-  * @can_complete: True if the poll loop saw an empty hardware FIFO
-  * @work_done: Frames processed during this poll
-  *
-- * The RX interrupt is re-armed only after the loop actually quiesced;
-- * a quota-limited exit keeps NAPI scheduled to poll again.
-+ * A DMADI that fires between the last rx_is_empty_dma() call and
-+ * napi_complete_done() is W1C'd by the ISR but its napi_schedule() is
-+ * swallowed by NAPI_STATE_SCHED. Re-syncing the DMA write pointer and
-+ * comparing against rx_rd_pos catches that case.
-  */
- static void loongson_canfd_rx_napi_done(struct napi_struct *napi,
- 					bool can_complete, int work_done)
- {
- 	struct net_device *ndev = napi->dev;
- 	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	u32 rx_stat;
- 
- 	if (!can_complete || !napi_complete_done(napi, work_done))
- 		return;
- 
--	regmap_write(priv->regmap, LOONGSON_CANFD_INT_MASK,
--		     FIELD_PREP(REG_INT_MASK_CLR, REG_INT_STAT_RBNEI));
-+	/*
-+	 * Catch a DMADI that was swallowed while SCHED was still set,
-+	 * and a stale partial header that rx_is_empty_dma() skipped.
-+	 */
-+	if (priv->rx_ch) {
-+		loongson_canfd_dma_sync_wr(priv);
-+		if (priv->rx_wr_pos > priv->rx_rd_pos) {
-+			napi_schedule(napi);
-+			return;
-+		}
-+	}
-+
-+	/*
-+	 * Flush an overrun latched while DOI was masked (e.g. during
-+	 * NAPI). DOR is sticky and the handler is idempotent, so this
-+	 * costs one regmap_read in the common case.
-+	 */
-+	loongson_canfd_rx_overrun_event(ndev);
-+
-+	regmap_read(priv->regmap, LOONGSON_CANFD_RX_STAT, &rx_stat);
-+
-+	if (FIELD_GET(REG_RX_STAT_RXFRC, rx_stat) == 0 &&
-+	    (rx_stat & REG_RX_STAT_RXE)) {
-+		/* Quiescent: unmask RBNEI for the next empty -> non-empty edge */
-+		regmap_write(priv->regmap, LOONGSON_CANFD_INT_MASK,
-+			     FIELD_PREP(REG_INT_MASK_CLR, REG_INT_STAT_RBNEI));
-+		return;
-+	}
-+
-+	/* FIFO still holds data: keep NAPI scheduled, RBNEI stays masked */
-+	napi_schedule(napi);
- }
- 
- /**
-@@ -1559,18 +2095,45 @@ static int loongson_canfd_rx_napi(struct napi_struct *napi, int quota)
- {
- 	struct net_device *ndev = napi->dev;
- 	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	int dma_wait_retry = 0, work_done = 0;
- 	bool can_complete = false;
--	int work_done = 0;
--	int ret;
- 
- 	while (work_done < quota) {
-+		int ret;
-+
- 		/* FIFO empty: nothing left to consume */
--		if (loongson_canfd_rx_is_empty_fifo(priv)) {
-+		if (priv->rx_is_empty(priv)) {
- 			can_complete = true;
- 			break;
- 		}
- 
--		ret = loongson_canfd_rx_one_frame_fifo(ndev);
-+		ret = priv->process_rx(ndev);
-+
-+		if (ret == -EAGAIN) {
-+			/*
-+			 * FIFO holds a frame but the DMA engine has not
-+			 * moved its payload yet. Spin briefly; the RX FIFO
-+			 * is 80 bytes deep, so a long spin only delays the
-+			 * next cycle. Past the budget quiesce and let
-+			 * rx_napi_done() reschedule.
-+			 */
-+			if (dma_wait_retry++ < LOONGSON_CANFD_DMA_WAIT_RETRY_MAX) {
-+				cpu_relax();
-+				continue;
-+			}
-+
-+			can_complete = true;
-+			break;
-+		}
-+
-+		if (ret == -ENODATA) {
-+			/* Pointer realigned by process_rx(), quiesce */
-+			can_complete = true;
-+			break;
-+		}
-+
-+		dma_wait_retry = 0;
-+
- 		if (ret == 1)
- 			work_done++;
- 	}
-@@ -1847,6 +2410,10 @@ static void loongson_canfd_err_interrupt(struct net_device *ndev, u32 isr)
-  * optional HW TX timestamp) and counts it sent; TX_BS_FAIL and
-  * TX_BS_CANCEL free the skb as dropped. Clears the completion record
-  * per slot and wakes the queue if a buffer became free.
-+ *
-+ * RBNEI is serviced by masking it, resuming the paused RX DMA channel
-+ * (no-op in poll mode) and scheduling NAPI. DMADI is never enabled, so
-+ * no DMA completion IRQ is expected in the RX path.
-  */
- static void loongson_canfd_tx_interrupt(struct net_device *ndev)
- {
-@@ -1951,6 +2518,11 @@ static void loongson_canfd_tx_interrupt(struct net_device *ndev)
-  * @irq: IRQ number
-  * @dev_id: Device identifier (net_device)
-  *
-+ * RBNEI is mask-clear-schedule; it is unmasked later by
-+ * rx_napi_done() once the FIFO is empty. DMADI is edge-triggered
-+ * (W1C) and simply schedules NAPI; the channel is never paused, so
-+ * nothing to resume.
-+ *
-  * Return: IRQ_HANDLED if interrupt was handled, IRQ_NONE otherwise.
-  */
- static irqreturn_t loongson_canfd_interrupt(int irq, void *dev_id)
-@@ -1977,6 +2549,13 @@ static irqreturn_t loongson_canfd_interrupt(int irq, void *dev_id)
- 			napi_schedule(&priv->napi);
- 		}
- 
-+		if (isr & REG_INT_STAT_DMADI) {
-+			/* W1C: fresh data in the ring, schedule NAPI */
-+			regmap_write(priv->regmap, LOONGSON_CANFD_INT_STAT,
-+				     REG_INT_STAT_DMADI);
-+			napi_schedule(&priv->napi);
-+		}
-+
- 		if (isr & REG_INT_STAT_TXBHCI) {
- 			/*
- 			 * Mask-clear-handle-unmask: a TX completing during
-@@ -2098,6 +2677,9 @@ static netdev_tx_t loongson_canfd_start_xmit(struct sk_buff *skb, struct net_dev
-  * loongson_canfd_open() - Open the network device
-  * @ndev: Network device
-  *
-+ * Start DMA first, then enable the controller: as soon as chip_start()
-+ * pushes data into RX_DATA, the DMA must already be ready.
-+ *
-  * Return: 0 on success, negative error on failure.
-  */
- static int loongson_canfd_open(struct net_device *ndev)
-@@ -2121,10 +2703,14 @@ static int loongson_canfd_open(struct net_device *ndev)
- 		goto exit_napi_disable;
- 	}
- 
-+	ret = loongson_canfd_rxdma_start(ndev);
-+	if (ret)
-+		goto exit_free_irq;
-+
- 	ret = loongson_canfd_chip_start(ndev);
- 	if (ret < 0) {
- 		netdev_err(ndev, "Chip start failed\n");
--		goto exit_free_irq;
-+		goto exit_stop_dma;
- 	}
- 
- 	netdev_info(ndev, "Loongson CANFD device registered\n");
-@@ -2132,6 +2718,8 @@ static int loongson_canfd_open(struct net_device *ndev)
- 
- 	return 0;
- 
-+exit_stop_dma:
-+	loongson_canfd_rxdma_stop(priv);
- exit_free_irq:
- 	free_irq(ndev->irq, ndev);
- exit_napi_disable:
-@@ -2165,6 +2753,7 @@ static int loongson_canfd_close(struct net_device *ndev)
- 	cancel_delayed_work_sync(&priv->can.restart_work);
- 
- 	loongson_canfd_chip_stop(ndev);
-+	loongson_canfd_rxdma_stop(priv);
- 	free_irq(ndev->irq, ndev);
- 	close_candev(ndev);
- 
-@@ -2316,6 +2905,66 @@ static void loongson_canfd_setup_can_priv(struct net_device *ndev, u32 clk_rate)
- 				       CAN_CTRLMODE_CC_LEN8_DLC;
- }
- 
-+/**
-+ * loongson_canfd_rxdma_setup() - Decide RX mode and arm DMA if available
-+ * @ndev: Network device
-+ *
-+ * On return @priv->rx_ch is either a valid channel (DMA mode) or
-+ * NULL (poll mode or failure); it is never an ERR_PTR.
-+ *
-+ * Return: 0 on success (DMA or poll mode), -EPROBE_DEFER if the DMA
-+ *         controller is not ready yet, negative error code otherwise.
-+ */
-+static int loongson_canfd_rxdma_setup(struct net_device *ndev)
-+{
-+	struct loongson_canfd_priv *priv = netdev_priv(ndev);
-+	struct device *dev = ndev->dev.parent;
-+	int ret;
-+
-+	priv->rx_ch = dma_request_chan(dev, "rx");
-+	if (IS_ERR(priv->rx_ch)) {
-+		ret = PTR_ERR(priv->rx_ch);
-+		priv->rx_ch = NULL;
-+
-+		if (ret == -EPROBE_DEFER)
-+			return -EPROBE_DEFER;
-+
-+		/*
-+		 * -ENODEV: firmware describes no "rx" channel. Normal on
-+		 * poll-mode platforms, so log at info level, not warn.
-+		 */
-+		if (ret == -ENODEV) {
-+			dev_info(dev,
-+				 "No RX DMA channel, using FIFO poll mode");
-+			return 0;
-+		}
-+
-+		/* Anything else is a real DMA setup problem */
-+		return dev_err_probe(dev, ret,
-+				     "Failed to request RX DMA channel");
-+	}
-+
-+	ret = loongson_canfd_rxdma_init(ndev);
-+	if (ret) {
-+		/*
-+		 * rxdma_init() has already released the channel and set
-+		 * rx_ch to NULL on both paths.
-+		 */
-+		if (ret != -ENOMEM)
-+			return ret;
-+
-+		dev_warn(dev,
-+			 "RX DMA buffer alloc failed, using FIFO poll mode");
-+		return 0;
-+	}
-+
-+	priv->read_rx_word = loongson_canfd_read_rx_word_dma;
-+	priv->rx_is_empty = loongson_canfd_rx_is_empty_dma;
-+	priv->process_rx = loongson_canfd_rx_one_frame_dma;
-+
-+	return 0;
-+}
-+
- static int loongson_canfd_probe(struct platform_device *pdev)
- {
- 	struct loongson_canfd_priv *priv;
-@@ -2363,18 +3012,28 @@ static int loongson_canfd_probe(struct platform_device *pdev)
- 	ndev->ethtool_ops = &loongson_canfd_ethtool_ops;
- 	SET_NETDEV_DEV(ndev, dev);
- 
-+	priv->read_rx_word = loongson_canfd_read_rx_word_fifo;
-+	priv->rx_is_empty = loongson_canfd_rx_is_empty_fifo;
-+	priv->process_rx = loongson_canfd_rx_one_frame_fifo;
-+
-+	ret = loongson_canfd_rxdma_setup(ndev);
-+	if (ret)
-+		goto err_candev_free;
-+
- 	netif_napi_add(ndev, &priv->napi, loongson_canfd_rx_napi);
- 
- 	ret = register_candev(ndev);
- 	if (ret) {
- 		dev_err(dev, "register_candev failed with %d", ret);
--		goto err_candev_free;
-+		goto err_napi_del;
- 	}
- 
- 	return 0;
- 
--err_candev_free:
-+err_napi_del:
- 	netif_napi_del(&priv->napi);
-+	loongson_canfd_rxdma_remove(priv, &pdev->dev);
-+err_candev_free:
- 	free_candev(ndev);
- 	return ret;
- }
-@@ -2390,6 +3049,7 @@ static void loongson_canfd_remove(struct platform_device *pdev)
- 
- 	unregister_candev(ndev);
- 	netif_napi_del(&priv->napi);
-+	loongson_canfd_rxdma_remove(priv, &pdev->dev);
- 	free_candev(ndev);
- }
- 
-@@ -2409,6 +3069,7 @@ static struct platform_driver loongson_canfd_driver = {
- };
- module_platform_driver(loongson_canfd_driver);
- 
-+MODULE_SOFTDEP("pre: loongson2-apb-cmc-dma");
- MODULE_AUTHOR("Loongson Technology Corporation Limited");
- MODULE_DESCRIPTION("Loongson CAN-FD Controller driver");
- MODULE_LICENSE("GPL");
--- 
-2.52.0
+> diff --git a/drivers/net/can/loongson_canfd.c b/drivers/net/can/loongson_=
+canfd.c
+> new file mode 100644
+> index 0000000000000..7a4d8df7815ac
+> --- /dev/null
+> +++ b/drivers/net/can/loongson_canfd.c
 
+[ ... ]
+
+> +static void loongson_canfd_set_btr(struct net_device *ndev,
+> +				   struct can_bittiming *bt, bool nominal)
+> +{
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +	u32 prop =3D bt->prop_seg, phase1 =3D bt->phase_seg1;
+> +	u32 ph1_max =3D FIELD_MAX(REG_BTR_PH1);
+> +	u32 btr =3D 0;
+> +
+> +	/* PROP is 7 bits but PH1 only 6; move the excess into PROP */
+> +	if (phase1 > ph1_max) {
+> +		prop +=3D phase1 - ph1_max;
+> +		phase1 =3D ph1_max;
+> +	}
+> +
+> +	if (nominal) {
+> +		btr =3D FIELD_PREP(REG_BTR_PROP, prop) |
+
+[Severity: Medium]
+Can FIELD_PREP(REG_BTR_PROP, prop) and FIELD_PREP(REG_BTR_FD_PROP, prop)
+truncate prop when manual bit-timing parameters specify prop_seg > 127?
+
+loongson_canfd_bit_timing and loongson_canfd_bit_timing_data advertise
+tseg1_max =3D 190, and can_fixup_bittiming() only enforces
+prop_seg + phase_seg1 <=3D tseg1_max.  If userspace sets prop_seg in
+128..189, the excess above FIELD_MAX(REG_BTR_PROP) (127) is not moved
+into phase1 and is masked off by FIELD_PREP(), programming the wrong bit
+rate and sample point.
+
+[ ... ]
+
+> +static int loongson_canfd_chip_start(struct net_device *ndev)
+> +{
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +	u32 int_ena, int_msk;
+> +	int ret;
+> +
+> +	ret =3D loongson_canfd_set_bittiming(ndev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Programs BTR_FD and SSP_CFG together */
+> +	ret =3D loongson_canfd_set_data_bittiming(ndev);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	loongson_canfd_apply_ctrlmode(priv);
+> +
+> +	int_ena =3D REG_INT_STAT_RBNEI | REG_INT_STAT_TXBHCI |
+> +		  REG_INT_STAT_EWLI  | REG_INT_STAT_FCSI   |
+> +		  REG_INT_STAT_DOI;
+> +
+> +	if (priv->can.ctrlmode & CAN_CTRLMODE_BERR_REPORTING)
+> +		int_ena |=3D REG_INT_STAT_ALI | REG_INT_STAT_BEI;
+> +
+> +	int_msk =3D REG_INT_MASK_SET & ~int_ena;
+> +
+> +	/* Clear stale mask/ena bits left by disable_interrupts() */
+> +	regmap_write(priv->regmap, LOONGSON_CANFD_INT_MASK, REG_INT_MASK_CLR);
+> +	regmap_write(priv->regmap, LOONGSON_CANFD_INT_ENA, REG_INT_ENA_CLR);
+> +
+> +	regmap_write(priv->regmap, LOONGSON_CANFD_INT_MASK, int_msk);
+> +	regmap_write(priv->regmap, LOONGSON_CANFD_INT_ENA, int_ena);
+> +
+> +	loongson_canfd_hwts_setup(ndev);
+> +
+> +	priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+> +
+> +	regmap_update_bits(priv->regmap, LOONGSON_CANFD_CONF, REG_CONF_ENA,
+> +			   REG_CONF_ENA);
+> +
+> +	return 0;
+> +}
+
+[Severity: Medium]
+Can enabling LOONGSON_CANFD_INT_ENA before setting priv->can.state =3D
+CAN_STATE_ERROR_ACTIVE trigger a spurious state change report?
+
+CPU0                              <hardirq>
+loongson_canfd_chip_start()
+  regmap_write(..., INT_MASK, int_msk)
+  regmap_write(..., INT_ENA, int_ena)
+                                  loongson_canfd_interrupt()
+                                    loongson_canfd_err_interrupt()
+                                      priv->can.state !=3D state
+                                      loongson_canfd_report_state_change()
+  loongson_canfd_hwts_setup()
+  priv->can.state =3D CAN_STATE_ERROR_ACTIVE;
+
+loongson_canfd_reset() latches REG_INT_STAT_FCSI on reset to Error Active,
+and loongson_canfd_err_interrupt() relies on priv->can.state =3D=3D
+CAN_STATE_ERROR_ACTIVE to ignore that initial interrupt.  Because the IRQ
+is already registered in loongson_canfd_open() and
+loongson_canfd_do_set_mode(), FCSI can fire while priv->can.state is still
+CAN_STATE_STOPPED or CAN_STATE_BUS_OFF and before hwts is initialized.
+
+[ ... ]
+
+> +static bool loongson_canfd_txbuf_freed(struct loongson_canfd_priv *priv)
+> +{
+> +	return !regmap_test_bits(priv->regmap, LOONGSON_CANFD_TX_STAT, REG_TX_S=
+TAT_BRP);
+> +}
+
+[Severity: Medium]
+Does loongson_canfd_txbuf_freed() return true even when no TX buffer is
+writable?
+
+loongson_canfd_find_free_txbuf() requires a slot's BRP bit to be clear,
+its 2-bit BS field to be TX_BS_IDLE, and priv->can.echo_skb[i] to be NULL.
+When a frame finishes on the wire, hardware clears its BRP bit and sets BS
+to TX_BS_VALID or TX_BS_FAIL until loongson_canfd_tx_interrupt() runs
+TXT_CMD_SR_CLEAN.  Checking only REG_TX_STAT_BRP leaves the queue awake in
+loongson_canfd_start_xmit() when the last writable slot is used while
+another slot awaits ISR cleanup, causing the next start_xmit() call to
+return NETDEV_TX_BUSY.
+
+[ ... ]
+
+> +	for (unsigned int i =3D 0; i < cf->len; i +=3D LOONGSON_CANFD_DW_BYTE) {
+> +		unsigned int remain =3D cf->len - i;
+> +		u32 word;
+> +
+> +		if (remain >=3D LOONGSON_CANFD_DW_BYTE) {
+> +			word =3D get_unaligned_le32(cf->data + i);
+
+[Severity: Medium]
+Can an ETH_P_CANXL skb cause loongson_canfd_insert_frame() to read past
+skb->data and write past LOONGSON_CANFD_TX_DATA_18?
+
+loongson_canfd_start_xmit() validates frames with
+can_dropped_invalid_skb() instead of can_dev_dropped_skb().  That skips
+the CAN_CTRLMODE_LISTENONLY and CAN_CTRLMODE_FD checks, allowing frames
+from non-RAW sockets (such as can-bcm or can-isotp) to fill the hardware
+TX buffers while in listen-only mode.  In addition, if an ETH_P_CANXL skb
+is sent via AF_PACKET, cf->len aliases canxl_frame::flags (which has
+CANXL_XLF =3D 0x80 set), so this loop reads out-of-bounds past small CAN XL
+skbs and writes registers past LOONGSON_CANFD_TX_DATA_18.
+
+[ ... ]
+
+> +static bool loongson_canfd_hdr_plausible(u32 hdr0, u32 hdr1)
+> +{
+> +	u32 rwcnt  =3D FIELD_GET(REG_FRAME_META1_RWCNT, hdr1);
+> +	u32 dlc    =3D FIELD_GET(REG_FRAME_META1_DLC,   hdr1);
+> +	bool isfd  =3D !!(hdr1 & REG_FRAME_META1_FDF);
+> +	bool isrtr =3D !!(hdr0 & REG_FRAME_META0_RTR);
+> +	u32 payload_len, expected_rwcnt;
+> +
+> +	/* 2 header words + payload, within CAN FD limits */
+> +	if (rwcnt < 2 || rwcnt > 2 + CANFD_MAX_DLEN / LOONGSON_CANFD_DW_BYTE)
+> +		return false;
+> +
+> +	/* RTR is a Classic CAN concept */
+> +	if (isfd && isrtr)
+> +		return false;
+> +
+> +	/* Standard ID fits in 11 bits */
+> +	if (!(hdr0 & REG_FRAME_META0_XDT) &&
+> +	    FIELD_GET(REG_FRAME_META0_ID_BASE, hdr0) > CAN_SFF_MASK)
+> +		return false;
+
+[Severity: Low]
+Can FIELD_GET(REG_FRAME_META0_ID_BASE, hdr0) ever exceed CAN_SFF_MASK?
+REG_FRAME_META0_ID_BASE is GENMASK(28, 18), an 11-bit field whose maximum
+value is already CAN_SFF_MASK (0x7ff), whereas REG_FRAME_META0_ID_EXT
+(GENMASK(17, 0)) is not checked when REG_FRAME_META0_XDT is clear.
+
+[ ... ]
+
+> +static void loongson_canfd_rx_note_bad(struct net_device *ndev, u32 rwcn=
+t)
+> +{
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +	u32 words, data;
+> +
+> +	ndev->stats.rx_dropped++;
+> +
+> +	words =3D rwcnt > 2 ?
+> +		min_t(u32, rwcnt - 2,
+> +		      CANFD_MAX_DLEN / LOONGSON_CANFD_DW_BYTE) : 0;
+> +	while (words--)
+> +		regmap_read(priv->regmap, LOONGSON_CANFD_RX_DATA, &data);
+> +}
+> +
+> +/**
+> + * loongson_canfd_rx_hdr_valid() - Validate a frame header pair
+> + * @ndev: Network device
+> + * @d: Output descriptor, filled with all parsed fields
+> + *
+> + * Reads and sanity-checks the two header words. The caller must drain
+> + * the remaining payload words when false is returned.
+> + *
+> + * Return: true if the header is valid, false otherwise.
+> + */
+> +static bool loongson_canfd_rx_hdr_valid(struct net_device *ndev,
+> +					struct loongson_canfd_rx_desc *d)
+> +{
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +
+> +	d->hdr0 =3D loongson_canfd_read_rx_word_fifo(priv);
+> +	d->hdr1 =3D loongson_canfd_read_rx_word_fifo(priv);
+> +
+> +	d->rwcnt =3D FIELD_GET(REG_FRAME_META1_RWCNT, d->hdr1);
+> +	if (d->rwcnt < 2) {
+> +		/* Hand the caller a worst-case drain length */
+> +		d->rwcnt =3D 2 + CANFD_MAX_DLEN / LOONGSON_CANFD_DW_BYTE;
+> +		return false;
+> +	}
+
+[Severity: Medium]
+Does setting d->rwcnt to 18 when d->rwcnt < 2 desynchronize the 80-byte
+hardware RX FIFO?
+
+When d->rwcnt < 2, loongson_canfd_rx_note_bad() unconditionally reads 16
+words from LOONGSON_CANFD_RX_DATA without checking
+loongson_canfd_rx_is_empty_fifo(), which consumes following valid frames in
+the FIFO and leaves the next read mid-frame.  Also, the standard-ID check
+in loongson_canfd_hdr_plausible() compares the 11-bit
+REG_FRAME_META0_ID_BASE field against 0x7ff instead of checking whether
+REG_FRAME_META0_ID_EXT is non-zero.
+
+[ ... ]
+
+> +	cfd->flags =3D 0;
+> +
+> +	if (d->is_can_fd) {
+> +		if (d->hdr1 & REG_FRAME_META1_BRS)
+> +			cfd->flags |=3D CANFD_BRS;
+> +		if (d->hdr0 & REG_FRAME_META0_ESI)
+> +			cfd->flags |=3D CANFD_ESI;
+> +	} else if (d->is_rtr) {
+> +		cfd->can_id |=3D CAN_RTR_FLAG;
+> +	}
+
+[Severity: Medium]
+Does setting cfd->flags =3D 0 clear the mandatory CANFD_FDF flag that
+alloc_canfd_skb() initialized on received CAN FD frames?
+
+[ ... ]
+
+> +	skb =3D alloc_can_err_skb(ndev, &cf);
+> +	if (skb) {
+> +		cf->can_id |=3D CAN_ERR_CRTL;
+> +		cf->data[1] =3D CAN_ERR_CRTL_RX_OVERFLOW;
+> +
+> +		scoped_guard(spinlock_irqsave, &priv->stats_lock) {
+> +			stats->rx_packets++;
+> +			stats->rx_bytes +=3D cf->len;
+> +		}
+> +
+> +		/* Hard IRQ: use netif_rx(), not netif_receive_skb() */
+> +		netif_rx(skb);
+> +	}
+
+[Severity: Medium]
+As reported by Vincent Mailhol on v2 [1], should synthetic SocketCAN error
+frames be excluded from stats->rx_packets and stats->rx_bytes here?  Also,
+updating stats->rx_packets and stats->rx_bytes under priv->stats_lock in
+hardirq context races with the unlocked updates to the same counters in
+loongson_canfd_rx_deliver() during NAPI polling.
+
+[ ... ]
+
+> +	/* Stats and BUS_OFF handling must not depend on skb allocation */
+> +	switch (new_state) {
+> +	case CAN_STATE_BUS_OFF:
+> +		priv->can.can_stats.bus_off++;
+> +		can_bus_off(ndev);
+> +		break;
+
+[Severity: Medium]
+Does entering CAN_STATE_BUS_OFF without stopping the TX queue and
+controller allow loongson_canfd_start_xmit() and
+loongson_canfd_tx_interrupt() to race with bus-off recovery?
+
+CPU0                              CPU1
+can_restart_work()
+  can_restart()
+    can_flush_echo_skb()
+      kfree_skb(priv->echo_skb[i])
+                                  loongson_canfd_tx_interrupt()
+                                    can_free_echo_skb()  <-- double free
+    netif_carrier_on()
+    loongson_canfd_do_set_mode()
+      loongson_canfd_reset()
+                                  loongson_canfd_start_xmit()
+
+can_bus_off() only calls netif_carrier_off(), which defers qdisc
+deactivation to linkwatch_work, and can_restart() flushes echo_skb[]
+without holding priv->tx_lock before calling netif_carrier_on() and
+do_set_mode(CAN_MODE_START).
+
+> +	case CAN_STATE_ERROR_PASSIVE:
+> +		priv->can.can_stats.error_passive++;
+> +		break;
+> +	case CAN_STATE_ERROR_WARNING:
+> +		priv->can.can_stats.error_warning++;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	skb =3D alloc_can_err_skb(ndev, &cf);
+> +	if (!skb)
+> +		return;
+> +
+> +	switch (new_state) {
+> +	case CAN_STATE_BUS_OFF:
+> +		cf->can_id |=3D CAN_ERR_BUSOFF;
+> +		goto send;
+> +	case CAN_STATE_ERROR_ACTIVE:
+> +		cf->can_id |=3D CAN_ERR_CNT;
+> +		cf->data[1] =3D CAN_ERR_CRTL_ACTIVE;
+> +		break;
+
+[Severity: Medium]
+Should CAN_STATE_ERROR_ACTIVE also set CAN_ERR_CRTL in cf->can_id when
+reporting CAN_ERR_CRTL_ACTIVE in cf->data[1], and should error_passive and
+error_warning only be incremented when transitioning to a worse state?
+
+Overwriting priv->can.state before checking the transition direction
+counts recoveries (such as CAN_STATE_ERROR_PASSIVE down to
+CAN_STATE_ERROR_WARNING) as new error events.  In addition,
+loongson_canfd_rx_overrun_event() adds cf->len of an error skb to
+stats->rx_bytes under priv->stats_lock while loongson_canfd_rx_deliver()
+updates rx_packets and rx_bytes without priv->stats_lock.
+
+[ ... ]
+
+> +			case TX_BS_VALID:
+> +				u32 dummy_len;
+> +
+> +				/*
+> +				 * The controller does not latch a per-frame
+> +				 * TX stamp, so the instant the handler reads
+> +				 * the counter is the best estimate of the
+> +				 * end of the frame.
+> +				 */
+> +				skb =3D priv->can.echo_skb[buf_id];
+> +				if (skb &&
+> +				    (skb_shinfo(skb)->tx_flags & SKBTX_IN_PROGRESS) &&
+> +				    READ_ONCE(priv->hwts.ready))
+> +					skb_hwtstamps(skb)->hwtstamp =3D
+> +							loongson_canfd_hwts_now(priv);
+> +
+> +				dummy_len =3D can_get_echo_skb(ndev, buf_id, NULL);
+> +				(void)dummy_len;
+> +				stats->tx_packets++;
+> +				break;
+
+[ ... ]
+
+> +		if (!processed)
+> +			netdev_warn_once(ndev, "Spurious TX interrupt\n");
+> +
+> +		wake =3D loongson_canfd_txbuf_freed(priv);
+> +	}
+> +
+> +	if (wake)
+> +		netif_wake_queue(ndev);
+> +}
+
+[Severity: Medium]
+Can calling netif_wake_queue() after dropping priv->tx_lock re-wake the TX
+queue after loongson_canfd_start_xmit() has just filled the last buffer
+and stopped it?
+
+CPU0                              CPU1
+loongson_canfd_tx_interrupt()
+  lock(&priv->tx_lock)
+  wake =3D loongson_canfd_txbuf_freed()
+  unlock(&priv->tx_lock)
+                                  loongson_canfd_start_xmit()
+                                    lock(&priv->tx_lock)
+                                    /* consumes last free TX buffer */
+                                    netif_stop_queue(ndev)
+                                    unlock(&priv->tx_lock)
+  netif_wake_queue(ndev)  <-- wakes full queue
+
+[ ... ]
+
+> +static netdev_tx_t loongson_canfd_start_xmit(struct sk_buff *skb, struct=
+ net_device *ndev)
+> +{
+> +	struct canfd_frame *cf =3D (struct canfd_frame *)skb->data;
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +	struct net_device_stats *stats =3D &ndev->stats;
+> +	int buf_id, ret;
+> +
+> +	if (can_dropped_invalid_skb(ndev, skb))
+> +		return NETDEV_TX_OK;
+
+[Severity: Medium]
+Should loongson_canfd_start_xmit() call can_dev_dropped_skb() instead of
+can_dropped_invalid_skb()?
+
+can_dropped_invalid_skb() is for virtual CAN drivers and does not check
+CAN_CTRLMODE_LISTENONLY or CAN_CTRLMODE_FD, allowing frames sent via
+non-RAW sockets in listen-only mode or CAN FD/XL frames sent via AF_PACKET
+to reach loongson_canfd_insert_frame().
+
+[ ... ]
+
+> +	can_put_echo_skb(skb, ndev, buf_id, 0);
+> +
+> +	if (!(cf->can_id & CAN_RTR_FLAG))
+> +		stats->tx_bytes +=3D cf->len;
+
+[Severity: High]
+Does reading cf->can_id and cf->len after can_put_echo_skb() cause a
+use-after-free of skb?
+
+can_put_echo_skb() consumes or frees skb (for example via kfree_skb() when
+IFF_ECHO is cleared or when skb_clone() fails in can_create_echo_skb()),
+and cf points into skb->data.  Also, incrementing stats->tx_bytes here
+instead of adding the length returned by can_get_echo_skb() in
+loongson_canfd_tx_interrupt() counts bytes for frames that later fail, are
+cancelled, or are flushed.
+
+[ ... ]
+
+> +static int loongson_canfd_close(struct net_device *ndev)
+> +{
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +
+> +	netif_stop_queue(ndev);
+> +	napi_disable(&priv->napi);
+> +
+> +	/*
+> +	 * Cancel a pending bus-off restart before tearing down IRQ/DMA:
+> +	 * do_set_mode() re-arms both, so a restart firing after
+> +	 * free_irq() would touch released resources. close_candev()\
+> +	 * does the same but only after free_irq().
+> +	 */
+> +	cancel_delayed_work_sync(&priv->can.restart_work);
+> +
+> +	loongson_canfd_chip_stop(ndev);
+> +	free_irq(ndev->irq, ndev);
+> +	close_candev(ndev);
+> +
+> +	return 0;
+> +}
+
+[Severity: Medium]
+Can an interrupt firing before loongson_canfd_chip_stop() and free_irq()
+re-schedule restart_work or schedule NAPI after napi_disable()?
+
+CPU0                              <hardirq>
+loongson_canfd_close()
+  napi_disable(&priv->napi)
+  cancel_delayed_work_sync(&restart_work)
+                                  loongson_canfd_interrupt()
+                                    loongson_canfd_err_interrupt()
+                                      can_bus_off()
+                                        schedule_delayed_work(&restart_work)
+  loongson_canfd_chip_stop()
+                                  can_restart_work()
+                                    loongson_canfd_do_set_mode(CAN_MODE_STA=
+RT)
+                                      loongson_canfd_chip_start()  <-- rest=
+arts stopped chip
+  free_irq()
+
+Stopping the chip and freeing the IRQ before cancelling restart_work and
+disabling NAPI avoids the ISR re-arming either during teardown.
+
+[ ... ]
+
+> +static int loongson_canfd_get_ts_info(struct net_device *ndev,
+> +				      struct kernel_ethtool_ts_info *info)
+> +{
+> +	struct loongson_canfd_priv *priv =3D netdev_priv(ndev);
+> +
+> +	info->so_timestamping =3D SOF_TIMESTAMPING_SOFTWARE |
+> +				SOF_TIMESTAMPING_TX_SOFTWARE |
+> +				SOF_TIMESTAMPING_RX_SOFTWARE;
+> +
+> +	info->phc_index =3D -1;
+> +
+> +	if (READ_ONCE(priv->hwts.ready)) {
+> +		info->so_timestamping |=3D SOF_TIMESTAMPING_TX_HARDWARE |
+> +					 SOF_TIMESTAMPING_RX_HARDWARE |
+> +					 SOF_TIMESTAMPING_RAW_HARDWARE;
+> +		info->tx_types =3D BIT(HWTSTAMP_TX_ON);
+> +		info->rx_filters =3D BIT(HWTSTAMP_FILTER_ALL);
+> +	}
+> +
+> +	return 0;
+> +}
+
+[Severity: Medium]
+Does checking priv->hwts.ready in loongson_canfd_get_ts_info() hide the
+device's hardware timestamping capabilities whenever the interface is down?
+
+priv->hwts.ready is only true between loongson_canfd_chip_start() and
+loongson_canfd_chip_stop(), so querying ethtool timestamping info while the
+interface is down omits the hardware timestamping flags and filters even
+though can_hwtstamp_get() and can_hwtstamp_set() are unconditionally wired
+up (see can_ethtool_op_get_ts_info_hwts()).
+
+[ ... ]
+
+> +static bool loongson_canfd_volatile_reg(struct device *dev, unsigned int=
+ reg)
+> +{
+> +	switch (reg) {
+> +	case LOONGSON_CANFD_MODE:
+> +	case LOONGSON_CANFD_CONF:
+> +	case LOONGSON_CANFD_STAT:
+> +	case LOONGSON_CANFD_CMD:
+> +	case LOONGSON_CANFD_INT_STAT:
+> +	case LOONGSON_CANFD_INT_ENA:
+> +	case LOONGSON_CANFD_INT_MASK:
+> +	case LOONGSON_CANFD_ERL:
+> +	case LOONGSON_CANFD_FSTAT:
+> +	case LOONGSON_CANFD_ERC:
+> +	case LOONGSON_CANFD_ERR_CAPT:
+> +	case LOONGSON_CANFD_ALC:
+> +	case LOONGSON_CANFD_TRV_DLY:
+> +	case LOONGSON_CANFD_TX_FR_CNT:
+> +	case LOONGSON_CANFD_TS:
+> +	case LOONGSON_CANFD_RX_STAT:
+> +	case LOONGSON_CANFD_RX_DATA:
+> +	case LOONGSON_CANFD_TX_STAT:
+> +	case LOONGSON_CANFD_TX_CMD:
+> +	case LOONGSON_CANFD_TX_SEL:
+> +		return true;
+> +	default:
+> +		return false;
+> +	};
+> +}
+> +
+> +static const struct regmap_config loongson_canfd_regmap =3D {
+> +	.reg_bits	=3D 32,
+> +	.reg_stride	=3D 4,
+> +	.val_bits	=3D 32,
+> +	.wr_table	=3D &loongson_canfd_reg_table_wr,
+> +	.rd_table	=3D &loongson_canfd_reg_table_rd,
+> +	.volatile_reg	=3D loongson_canfd_volatile_reg,
+> +	.max_register	=3D LOONGSON_CANFD_TX_DATA_18,
+> +	.cache_type	=3D REGCACHE_MAPLE,
+> +};
+
+[Severity: Medium]
+Why does loongson_canfd_regmap enable REGCACHE_MAPLE when the banked TX
+data registers (LOONGSON_CANFD_TX_DATA_1..LOONGSON_CANFD_TX_DATA_18) are
+not marked volatile?
+
+Those offsets are a banked window into 8 TX buffers selected by
+LOONGSON_CANFD_TX_SEL, and caching them with REGCACHE_MAPLE causes
+regmap_write() in loongson_canfd_insert_frame() to perform GFP_ATOMIC
+maple-tree allocations under priv->tx_lock (dropping the frame if an
+allocation fails).  Also, LOONGSON_CANFD_RX_DATA has no precious_reg
+callback, so reading regmap debugfs pops words from the live RX FIFO.
+
+[1] https://lore.kernel.org/r/c9598f85-5b17-4d38-855e-c3840a01452f@kernel.o=
+rg
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/cover.1794213427.gi=
+t.zhoubinbin@loongson.cn?part=3D1
