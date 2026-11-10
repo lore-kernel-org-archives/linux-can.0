@@ -1,78 +1,116 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794330680;
-	b=Ylij6QCLnPhGxe5UTm/jox+ICBfaj1A2xAjXYI1dyWCnUecwBJA1OafnUvfM8S9yuiBv
-	 GIRwdrKhTWJiLLvE7OzNAb86HDrjI1TJSN1p5vWOA3VlIEDM5DTut4ecIqBzcVLx+OmR8
-	 B77MpZaF/pd1XGmO17zzgHOXpvVEVoTPwl3b9Q4mp/0CmErCOzHcNAr6e299mxnw4R5HT
-	 m8VCjagI8ZAe8VWIgHkX24vk2kwsmc35QB9Te5QRJtgc6IhBUntIsBDDBRP3Ay6klh9Tg
-	 uWIYKknZ8bmUm2ZrLV6Ft9981q3xA2QsUBTTq00tbTUm9pL+FU2pSY0kYyBd+hsTLyQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794330680;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=JD64Ud7a3qHc7EvaTpRIa2pxyb3pp+K7JU5At4Osxfo=;
-	b=eqeW6oPTHeFUZhDSGgQP6FIGcVUf2tYWSmS2HE2NDmgi17J80xIvtKyLgsuQ6Bgv4d1G
-	 L1zlqbog5NiuuAW6yesc84B2jUWexLMw0q3UFL4DRmsGfWLdW2iGMy2p0+UZEqpBmdELn
-	 4pEJsa1civgNIOElZf9a0tO0jxjRg2o+puHxq/kfyIhNh43+4SfdXQXonSxhHDfvpbfPL
-	 b8fufG7dg4jJRfV0a1aQqvSiEBXDHmbjwOW5qiGIUEliB9CJOQKLFlyhUKeUSn5Iek+L4
-	 AAUdJQB9OVNqCIn7N3IsbbMOkKReJhTR21qpMjyBeWvO5J+QKZZs6VfdTdTBLj1wnKQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FxrKUzU8;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB36C606A31C;
-	Tue, 10 Nov 2026 17:11:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FxrKUzU8
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1794330679;
-	b=tJiS2txvWvl9sTQjmHlzlcavYhgvA+FQVwxmmGWBUelkEhb0wLfWePRYIZ7RnB0zPM9r
-	 YyRzK9mx5e1KqJHIgOY1uR+RJTrKWryzAyaOl4E86q2E+SW42lpLbllQz4Hm4Egs5IGb4
-	 w9hbLSsLVSmzKmoM52Nj5EH5FEu57WDL+DF09IIJfpIoB0wAzRxQsKBgbYSCi0bH73RdP
-	 3KjBgY71J/zmgMxgP/3ZdJ9NzhMaIEHbDTEfBU7GZ+fBC4fvmY0whP+T/xJa9XeUc0keD
-	 eYEBDiZV7TjDXo1+IgBskXbGTPNosqH6VHxZVLKzo4MLdT5a5Tj6alq1+67G39oGz+w==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1794330679;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=JD64Ud7a3qHc7EvaTpRIa2pxyb3pp+K7JU5At4Osxfo=;
-	b=jn0Xk2sKpv8tn2aFXR0vZihllQkx3bt3G2DIRqhWUp9VBrjy3sCzIYZZh7ZnW+HRQPBH
-	 BnaYJSJyYN52Ec9505OSVkk1Ga4Z4+oZws1Jt4dJC4AMjozNnDc1eA1GncsjX5WZnI3hk
-	 oKB/NRFeFivP4zRxInytW9n2CocMU8gEL/TG0WouuZ8RLGYUgyQX/hYqBXhXPWSwi2hqZ
-	 VzlzmAOqNlDeI1ykyy0kLYABahrnAmT7c7OcSAEzQDNpyufTyLUNopF06IFOhgmKqreuG
-	 ICM4gMB7T9tAeHek34iCNUs0DhYgmwddmGJglH+sGJsLl40HId0kVcd4yHUeRQBXFPQ==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=170.10.133.124
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794331592;
+	b=jCeBKySGT9DpETIJg87GGcEkzsifJsmupyOTlV+E8i155Hy+2O6P2ve0F11rjOzVyYHz
+	 MQK+uX62ZJzPXKSBDlIoMTX3Zku2nh/R3GD77oZGVU/3qn8pGpS/MHhizcq1uIUH1KRiJ
+	 F7bNvgc0WVrArEkVOWfG3BpEciEYNhwTsOFXKZqv8ZIQMGXvB+r58p/SVXvWX80CNQjAU
+	 7kFhF9HVxMhMpvdQNRTnOERgWGtOSOsK4rHdtVyXOrMitRaGS7EoE8pBXdeg+SUAtEyjp
+	 +OLcIe/DB9YxCIqf8IrTb3LaJ9UEbA/ECKploUO4Rz2cDHX/Tkbp/9PqEl+1L94u3Ww==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794331592;
+	h=DMARC-Filter:DKIM-Signature:Received:X-MC-Unique:
+	 X-Mimecast-MFC-AGG-ID:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:
+	 X-Received:Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=EKRRknjMWCPzWVN1v0/d1lk7IVipZL2/q4GtTn0t/go=;
+	b=SNfAbKttvv/fcii1DEIUMXduUGOntEfCoyNkYIIZOfne0AEVevAxJMqRxwrydZ0kMAqk
+	 kbKS+PhMrHBvjSYTAIlbCM2nStCxYBcjKfG/e6vWjgSIwW8LO0CZD4j8lj/SvvpFSoECF
+	 WpKnspPWaAYNuiRJPKrLZrb0mOx5vGC7L9JoHuAiYXb4zkPTtLfGeVAhk0mT9DwDKU9ZZ
+	 vg3Qs7Rx2jaIoVFJ2yf3VjiKtVZesARY71zoQYUbSS7+fWBE0C1Zq80S/UgE9+gFxSomi
+	 VG/BrDLH8nH5BJBNJf+6nqrvapj6bBlYXlp+YX9kz08hn7uxaOl/gSZFvM/8JYpYc4w==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=redhat.com;
+	spf=pass smtp.mailfrom=redhat.com;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=Tj0skr00;
+	dkim=pass header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=BrrYG0IX;
+	arc=none smtp.remote-ip=170.10.133.124
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id ECDEA1F0089F;
-	Tue, 10 Nov 2026 17:11:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794330679;
-	bh=JD64Ud7a3qHc7EvaTpRIa2pxyb3pp+K7JU5At4Osxfo=;
-	h=From:Date:Subject:To:Cc:Reply-To;
-	b=FxrKUzU8vVuhy7ylN5Kl1tZZcNS/y0NEl11bn60auuRfyMYft+r60Gx2Esl93UdEa
-	 u7wGTtCdTBAHZM1BVkNN7tlyqFwSVstTd6CfXkPA177QZ5NZsq4fudV2QMrBpPMQ8J
-	 1lSDLFrAluayNWEqGZSOYLyaJArChPXz/5OvioGz3pmaT9glnunwXq54kmd0gVFF0e
-	 m/baqQEpClM0jsZ/a6+RYRswm2LhbalMRVv+5j8piSmGScczMkLWs58IgNLO9SebB1
-	 nPZ7KxyUNs9BL0XI0rJwRXoVVx+QeiXhtdcs6ATBUEFN369dE1728JwsE/6/3AjVjt
-	 A+hm+ixoRrsxQ==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 7D6DE48C22;
-	Tue, 10 Nov 2026 17:11:18 +0000 (UTC)
-From: Seonghyeon Lim via B4 Relay <devnull+forfortuna.naver.com@kernel.org>
-Date: Wed, 11 Nov 2026 02:11:13 +0900
-Subject: [PATCH] can: virtio: fix virtqueue use before DRIVER_OK
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49364606A323
+	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 17:26:32 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 49364606A323
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=mimecast20190719 header.b=Tj0skr00;
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.a=rsa-sha256 header.s=google header.b=BrrYG0IX
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1794331591;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EKRRknjMWCPzWVN1v0/d1lk7IVipZL2/q4GtTn0t/go=;
+	b=Tj0skr00V0eP7+ylUEUve3V3jWtNU9QQKLshaxMAP19ngaQ6Hu+jxVt8BTR+4h5HelsV2T
+	ZQMaJuK79fYpuv8nJmpynWjXknDAvRNIQpmrrYJU8GGZYgCyqGV8eFkCC9vnIK3bAeLbyT
+	QL4IJKhwU6uYI1QYw10mdZq97Ujqs1A=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-vBV74v3pNFGfNX738m6vSA-1; Tue, 10 Nov 2026 12:26:29 -0500
+X-MC-Unique: vBV74v3pNFGfNX738m6vSA-1
+X-Mimecast-MFC-AGG-ID: vBV74v3pNFGfNX738m6vSA_1794331588
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-4916d47eeb5so1871704f8f.1
+        for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 09:26:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1794331588; x=1794936388; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=EKRRknjMWCPzWVN1v0/d1lk7IVipZL2/q4GtTn0t/go=;
+        b=BrrYG0IX5xDbN5YVeeura7PJUFtwGNuDHcT/BZSvplvewOipt/IF9fNbhJmnZ+I12X
+         S8HIQIyrE+S0L0SlW16G1/gd7olybX+vExvOKt375BnlG1383c74cfcnd2EEqEe7YUf/
+         aLPJw73z5FLvQuQxkWPQpb728MJjhpcAEcSklE0KJjtUj3/4MwfDJKXbRzN76TKcztRs
+         VxF1YkkVAb7nE0W3lPyBlfLARR23UwnARpRAdNODK9knuApTi11IeU+EK0XZq7gkMdXg
+         vmGfkF9wTG/UL/TBNJZOLq02I1kgmUIg8rWUMXTTPAheKPMrucr3MV2s8Gy9QiaZVKAX
+         4S+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794331588; x=1794936388;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=EKRRknjMWCPzWVN1v0/d1lk7IVipZL2/q4GtTn0t/go=;
+        b=qzrPgEyDPsLx4oXhVWWv9Sgbm885OACRiKAUdLI4YKO3udo86SrHn1Jrx9G63+9aRo
+         /oNrCfOknCXqr1gIQSRzqeBbf8nJcr8IloSvNwhr8bFZS7gjenJXR7k7gLpcOYP+HMuV
+         49ClCVj19aDDEkgYcay/cz1N+0etsLkSsGafNUvN+4bbwFnM6uwHLmTnp+p2/zWlTRdB
+         UJTEw9Ec+WtuGTQrfeda0jslcUMQQQBKOq86nbNQnpAZyp7Dj5Klaq4W6OET9LE2LhJ7
+         s1kpxYPXW36faOvj29BD5oQoTIXIJLVsskkx/8VDylRRidm++8Jc9hah39+WaSy+AeWV
+         lCUQ==
+X-Forwarded-Encrypted: i=1; AL+hErGNRlGAEOM7Mw3B8/NpVT5SqpAxyZR09t+VQrAFOeitNN5DYw5I2qTEV7up0AwGCY00vFdECiNr/eU=@vger.kernel.org
+X-Gm-Message-State: APuU4Z9JpVYIdG1CU2AdlxjcBAPqHgpkwgRkZINbCeqcYpvzI1NxMjwV
+	LBzxubFL/zsVJ29pFaGhIFjwQfQoQZSY/S2dMTyZp8hhbMe0UzcX84h6FaxQSDfaetPwvT4BO0K
+	poqqgClNAadv6QBQ7mXkal4M3UAp8OLSqIAab4/jbiBCFKURFzTHEka4CtO2D8w==
+X-Gm-Gg: AYBFou3+L3NG3cFEZCuIhXx/G7UnyXn0TBUhW2zR1SNDoIL5ro9qG5+UB4nEPyE8vHp
+	5nOf3GMyyrSzpWl/g3b7W/oCBpg0EBU3y5XPazcOcho9i4s5bDVwWbi5S3rFyfzkb5DH7eb+9xQ
+	7khEy+jUJOO6koTeVfHU9poZ+VpUZSviH/Jy04rCYnmvIZTt0CbDh+qF4YDZvHFn67J9w3C3aV6
+	jVnChoMPdIqmg8R61thiv8bL7CeEGmw3/TpBCtTEa7JXTPXkIFDsSzDTxUeQCTMKmMHmcpt4D/2
+	bpc+uJpceOz4uka+2/KgB0nGd1LpALvDSmrEV3vJ1+DR8XAou9MHbm+0iXDoRYW3mXkgn8B8D/y
+	gWXnR2tHwxu2XkQLJRqx148jxoAbchZGu2rzUarcwgQ==
+X-Received: by 2002:a5d:5f86:0:b0:491:f34b:49b4 with SMTP id ffacd0b85a97d-498309aeeb5mr6440921f8f.44.1794331588107;
+        Tue, 10 Nov 2026 09:26:28 -0800 (PST)
+X-Received: by 2002:a5d:5f86:0:b0:491:f34b:49b4 with SMTP id ffacd0b85a97d-498309aeeb5mr6440867f8f.44.1794331587415;
+        Tue, 10 Nov 2026 09:26:27 -0800 (PST)
+Received: from redhat.com ([2a0d:6fc0:1511:2900:ff37:b35c:a97:952d])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-498365ccbccsm6152831f8f.44.2026.11.10.09.26.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Nov 2026 09:26:26 -0800 (PST)
+Date: Tue, 10 Nov 2026 12:26:23 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: forfortuna@naver.com
+Cc: Harald Mommer <harald.mommer@oss.qualcomm.com>,
+	Matias Ezequiel Vara Larsen <mvaralar@redhat.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>,
+	Francesco Valla <francesco@valla.it>,
+	virtualization@lists.linux.dev, linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Jason Wang <jasowangio@gmail.com>
+Subject: Re: [PATCH] can: virtio: fix virtqueue use before DRIVER_OK
+Message-ID: <20261110122457-mutt-send-email-mst@kernel.org>
+References: <20261111-virtio-can-ready-v1-1-0b4dd020af0b@naver.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -82,92 +120,77 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261111-virtio-can-ready-v1-1-0b4dd020af0b@naver.com>
-X-B4-Tracking: v=1; b=H4sIADBQ82oC/yXMQQ5AMBCF4avIrE1SgjSuIhZVU8aiZIoQcXfF2
- 32L918QSJgC1MkFQjsHnn1EliZgR+MHQu6jIVd5lcXhzrLyjNZ4FDL9ibq05JxTldEFxNsi5Pj
- 4kk37O2zdRHZ9O3DfD8XMF5F0AAAA
-X-Change-ID: 20261111-virtio-can-ready-85cefff06a84
-To: Harald Mommer <harald.mommer@oss.qualcomm.com>, 
- Matias Ezequiel Vara Larsen <mvaralar@redhat.com>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, 
- Vincent Mailhol <mailhol@kernel.org>, 
- Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>, 
- Francesco Valla <francesco@valla.it>, "Michael S. Tsirkin" <mst@redhat.com>
-Cc: virtualization@lists.linux.dev, linux-can@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Jason Wang <jasowangio@gmail.com>, 
- Seonghyeon Lim <forfortuna@naver.com>
-X-Mailer: b4 0.16.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794330677; l=1943;
- i=forfortuna@naver.com; s=20261110; h=from:subject:message-id;
- bh=MJAobe4rPXYioFnUfp9+XUMNTxBij8wL6gfGu1JqKaQ=;
- b=E1tjMRm3+lNVL2OwfvqZKG7Q0qtbt8SWyZ1IIFGIkPNrZN1rDFwRWWcxA8zCPaJbUwq2c0pta
- au/rzScbiSpAZ3U57rYO8ZM0v+Qsd863Ysb4r0+HahDb4KjqAiFl424
-X-Developer-Key: i=forfortuna@naver.com; a=ed25519;
- pk=NSzj4ReyzmE01C4q/f+7jqXzWqsN5NwQK5UsSI6ufiE=
-X-Endpoint-Received: by B4 Relay for forfortuna@naver.com/20261110 with
- auth_id=1481
-X-Original-From: Seonghyeon Lim <forfortuna@naver.com>
-Reply-To: forfortuna@naver.com
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261111-virtio-can-ready-v1-1-0b4dd020af0b@naver.com>
 
-From: Seonghyeon Lim <forfortuna@naver.com>
+On Wed, Nov 11, 2026 at 02:11:13AM +0900, Seonghyeon Lim via B4 Relay wrote:
+> From: Seonghyeon Lim <forfortuna@naver.com>
+> 
+> virtio_can_probe() and virtio_can_restore() fill the RX virtqueue and
+> kick it before the device is set DRIVER_OK. The virtio specification
+> does not allow the driver to notify the device before DRIVER_OK.
+> 
+> In restore, if the interface was up, virtio_can_open() then sends a
+> START control message and waits for the reply. DRIVER_OK is only set
+> by the virtio core after restore returns, so the device may never
+> handle the request and the wait never completes, which hangs system
+> resume. In probe, an ndo_open() right after register_candev() can
+> likewise send the START message before DRIVER_OK.
+> 
+> Call virtio_device_ready() before the first virtqueue use in both
+> probe and restore, as virtio-net does.
+> 
+> Fixes: 083082a4e6d8 ("can: virtio: Add virtio CAN driver")
+> Signed-off-by: Seonghyeon Lim <forfortuna@naver.com>
 
-virtio_can_probe() and virtio_can_restore() fill the RX virtqueue and
-kick it before the device is set DRIVER_OK. The virtio specification
-does not allow the driver to notify the device before DRIVER_OK.
+however, device ready means you can get callbacks: config
+and vq.
 
-In restore, if the interface was up, virtio_can_open() then sends a
-START control message and waits for the reply. DRIVER_OK is only set
-by the virtio core after restore returns, so the device may never
-handle the request and the wait never completes, which hangs system
-resume. In probe, an ndo_open() right after register_candev() can
-likewise send the START message before DRIVER_OK.
 
-Call virtio_device_ready() before the first virtqueue use in both
-probe and restore, as virtio-net does.
+did you audit the driver to make sure this is safe while
+probe did not yet populate and register the device?
 
-Fixes: 083082a4e6d8 ("can: virtio: Add virtio CAN driver")
-Signed-off-by: Seonghyeon Lim <forfortuna@naver.com>
----
-Tested with QEMU 8.2 + vhost-device-can: with the CAN interface up,
-suspend/resume (pm_test=devices) hangs without this patch and
-completes with it. No new lockdep warnings.
----
- drivers/net/can/virtio_can.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+> ---
 
-diff --git a/drivers/net/can/virtio_can.c b/drivers/net/can/virtio_can.c
-index f67d0bf09681..ae35a00b784b 100644
---- a/drivers/net/can/virtio_can.c
-+++ b/drivers/net/can/virtio_can.c
-@@ -912,6 +912,9 @@ static int virtio_can_probe(struct virtio_device *vdev)
- 		err = -ENOMEM;
- 		goto on_failure;
- 	}
-+
-+	virtio_device_ready(vdev);
-+
- 	virtio_can_populate_rx_vq(vdev);
- 
- 	err = register_virtio_can_dev(dev);
-@@ -966,6 +969,9 @@ static int __maybe_unused virtio_can_restore(struct virtio_device *vdev)
- 		virtio_can_del_vq(vdev);
- 		return -ENOMEM;
- 	}
-+
-+	virtio_device_ready(vdev);
-+
- 	virtio_can_populate_rx_vq(vdev);
- 
- 	if (netif_running(ndev)) {
-
----
-base-commit: ddfe51b0a0f5dc9e415cc2c8ad8db17532dd426b
-change-id: 20261111-virtio-can-ready-85cefff06a84
-
-Best regards,
---  
-Seonghyeon Lim <forfortuna@naver.com>
-
+> Tested with QEMU 8.2 + vhost-device-can: with the CAN interface up,
+> suspend/resume (pm_test=devices) hangs without this patch and
+> completes with it. No new lockdep warnings.
+> ---
+>  drivers/net/can/virtio_can.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/drivers/net/can/virtio_can.c b/drivers/net/can/virtio_can.c
+> index f67d0bf09681..ae35a00b784b 100644
+> --- a/drivers/net/can/virtio_can.c
+> +++ b/drivers/net/can/virtio_can.c
+> @@ -912,6 +912,9 @@ static int virtio_can_probe(struct virtio_device *vdev)
+>  		err = -ENOMEM;
+>  		goto on_failure;
+>  	}
+> +
+> +	virtio_device_ready(vdev);
+> +
+>  	virtio_can_populate_rx_vq(vdev);
+>  
+>  	err = register_virtio_can_dev(dev);
+> @@ -966,6 +969,9 @@ static int __maybe_unused virtio_can_restore(struct virtio_device *vdev)
+>  		virtio_can_del_vq(vdev);
+>  		return -ENOMEM;
+>  	}
+> +
+> +	virtio_device_ready(vdev);
+> +
+>  	virtio_can_populate_rx_vq(vdev);
+>  
+>  	if (netif_running(ndev)) {
+> 
+> ---
+> base-commit: ddfe51b0a0f5dc9e415cc2c8ad8db17532dd426b
+> change-id: 20261111-virtio-can-ready-85cefff06a84
+> 
+> Best regards,
+> --  
+> Seonghyeon Lim <forfortuna@naver.com>
+> 
 
