@@ -1,58 +1,59 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794283395;
-	b=h419QA30kt4oRtJ7eIBV6SDJnBzMF/hKMVt2oakrmqL814ub8dbwdm86yCDV+Py8A8rY
-	 hpnH2YZdOogknekKnGKvFwxM8BFIS8EDwRNNFb9vkzk7k++h4SdwYrkRiIJIO/AVJfW3U
-	 GhdafK7KncpR5Tde2RZ4qRCyGwWtLWIo9tpUeNpWNws95enukXzbKntfBrQHBoHam34XB
-	 YkfXkSbPvSDX67E5ybXpQ8rN1SBR/qYkNjHYP7JOVMfYXNrR1vyCsDi8BFI9zDn/hwiyH
-	 R5cLg56AnNunWMz4LLqAc8gmfbLfnHkxhUx39e449AvIUEsLkTvpEjiPiVWc3y570xA==
+	t=1794283685;
+	b=WF+v5472vF+qITybMZ7VdPe7Aj3Lc5r/T9ccK32h/2rxJnjfbKNYAf3bAL4HWvCkY2LH
+	 WUSQSadhWltNiPF1GwFETo824lIFkegrJKnCSGzAaIOeoSzcvYPX7guQtLOW45M5iXhju
+	 cEOG9z0ba64LKt4Bu1mFzlq1mARXgvOef+qzIXeLpDsyF1o2Z7UvDB7FzYBbeiwSjH59R
+	 GYyaapfgApbtVfaBUXKyJj9Lnbf2mVDRcYSE28sqrk0GBNA7LE16wTNHfJi22ngzRjZMO
+	 iiPVpFE6Rwy3r4T7+0JDMrvq32FFniANuiEMt9AfYrAVUC+VbDniCXyyukSQnOVmSGg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794283395;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794283685;
 	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
 	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=ZLpk/484REO22NGlVI1EKPyVBXVr/bZtmjPZAnw7jzU=;
-	b=GRux4094IRue/oOIFwO+khB4v0n86Lm7lTLqrU7Q7/VIxZtSMJj9x55XwzkHpiiyuaUG
-	 7rXTVmIh3ZepjPr/ielzBG9lW15q+jpnebedtBM1wcW1VJuybzs1iWUowSHke8SSdGXAq
-	 MyNBMFTGL9OcdMmgYA1Sb/Ndn3ZLemvQewypF6L5WITP0NUFaIdn45F7s9HHBrt9FjtY1
-	 mndEEtJydBaG7qpd/vZjVpkDKBTfioly23o37+wbYPEZqLxHjv2LO4MBQILcJWhjoSsh3
-	 R19GZTujp28vf8lEPemBAXrH98M2yLWfSVs0walZaADMdtBUtWq93AbTp70Q2G7sMog==
+	bh=UMlFrJQFjgrD4fVQXRmgs4/95Zb/Oeeir61l5NqojoM=;
+	b=IHHUN62k0AwbiY7NNcdV9MOsT8zbB17o2GBOiiF/WcJU1L16S81gF/HnCvU9ulQRsi9L
+	 5CvcPqJ75MnQoUgorOjwZwZtvH786KS8Pad1RTesznlLf/WuM7ELfb6k3+W7Yww4e2WHa
+	 GY01xrJB2iKGB3FO8nPFu0dx6t9TuKg85VDfxGRebCZ4TgurIyC4scx2qmSX3lGUcZXJV
+	 wXefUSYGEyh1smCcoJMMXEFJH62ZeRlwlN//OH8aaKe+MzEvfff3C93ttWQpDE9zuzV51
+	 hYR98spigNHOLGGvoZDkcxA1q/Q8zPgS1KITEs9BaweP8xYWiwgma40TOoh4IRN+wMA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EyyRsVlv;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AHz+H9Jl;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8534F606A321
-	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 04:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95ED5606A31C
+	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 04:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EyyRsVlv
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 104081F0089F;
-	Tue, 10 Nov 2026 04:03:15 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AHz+H9Jl
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BAA9B1F0089F;
+	Tue, 10 Nov 2026 04:08:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794283395;
-	bh=ZLpk/484REO22NGlVI1EKPyVBXVr/bZtmjPZAnw7jzU=;
+	s=k20260515; t=1794283685;
+	bh=UMlFrJQFjgrD4fVQXRmgs4/95Zb/Oeeir61l5NqojoM=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=EyyRsVlvAQ0rN7AHeFFPHg6ezdFrGUPM/bQKq4HkyVweKGT/qKDzHz/o6thBv9dsu
-	 bVpOkHpmZw6oLNgn5KMNAxW8Cv+KcxZoluCmFznP7CTsLQFuTm51Gh114vZ3aV5FSi
-	 b1UEU2pVHzYEJc6JQ8vtm25cmkzr4jy5NeoSIIKaynEopUBZdNGER5IwMCjZKXQY4+
-	 eDMa189LfK7p2kbIFAsbmY45rBjRj5LqA2v5hLmA8X0pNkXWO78kLwsuhOcdqeqSpH
-	 UK9kwY3wU6G6Qz1IdNmqXg8WT+l0apTCjshKK5dZUIOnFw0gPkv0n1JxjuFIS/R7l+
-	 P1E7IyxemBePA==
-Message-ID: <sashiko-outbox-206162@kernel.org>
+	b=AHz+H9JlMKnmU1RVrGOIwBDBnrfh2vV19WgM1wMc48RF2ocsGHUoUvhhOQ82SIzar
+	 BS33Z4ZzbXuCI8Ntp8MisFlDeLlZRa4h3szL5x8ocfnzcZ+wbinhTQC+ZcYFpEV9V1
+	 uIvOkn9Bc1dwZ9vUzfELTnCpDkN3LOvvGLEoiP6w87NoUakJYOk1fG+Q0oIe9BxT5Z
+	 HxWysD8vYTIvT7AXQ/5AsYeS/6vz1Qxrt3GUe+NEBSxkfpJhlGOd1C1Mcp5orcp+AS
+	 Ogwkl8gAuc4iRI8Tac6Pj2EYMnIVRwc5LyAMo3EznZ3efywdBGSOEyehC5JYoBIsXf
+	 /35aDyP2+/lqg==
+Message-ID: <sashiko-outbox-206169@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH] can: peak_usb: pcan_usb_fd: check that the channel has
- a device
+Subject: Re: [PATCH 1/2] can: kvaser_usb: hydra: reject commands shorter
+ than the header
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Joas Antonio dos Santos" <joasantonio108@gmail.com>
 Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
  Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
  Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261110-pcan-usb-fd-nodev-v1-1-fc11effbfafa@gmail.com>
-References: <20261110-pcan-usb-fd-nodev-v1-1-fc11effbfafa@gmail.com>
+In-Reply-To: <20261110-kvaser-usb-validate-v1-1-f266b85aa908@gmail.com>
+References: <20261110-kvaser-usb-validate-v1-0-f266b85aa908@gmail.com>
+ <20261110-kvaser-usb-validate-v1-1-f266b85aa908@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Tue, 10 Nov 2026 04:03:14 +0000
+Date: Tue, 10 Nov 2026 04:08:04 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -62,61 +63,77 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 
-Thank you for your contribution! Sashiko AI review found no new issues
-in this patch, but noticed 1 related pre-existing issue it does not
-introduce:
-- [Critical] can: peak_usb: missing PCAN_USB_STATE_STARTED check in
-  pcan_usb_fd_decode_buf() [1]
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue to consider:
+- [Medium] can: kvaser_usb: incomplete extended cmd_len check in hydra
+  parsers
 --
 
-commit b1428d71020b5f4ac8a4435284c960096e6c1169
+commit a17f31efe99f81a18058ca235af35d386b0380de
 Author: Joas Antonio dos Santos <joasantonio108@gmail.com>
 
-can: peak_usb: pcan_usb_fd: check that the channel has a device
+can: kvaser_usb: hydra: reject commands shorter than the header
 
-This commit checks that the per-channel device pointer looked up in
-usb_if->dev[] is non-NULL in the four pcan_usb_fd RX decoders before
-dereferencing it.
+This commit adds a minimum command length check against
+sizeof(struct kvaser_cmd_header) in kvaser_usb_hydra_wait_cmd() and
+kvaser_usb_hydra_read_bulk_callback() to prevent infinite loops on
+zero-length extended commands.
 
-> diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can=
-/usb/peak_usb/pcan_usb_fd.c
-> index 39f0740421c36..c42cac2126404 100644
-> --- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-> +++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
-
-[ ... ]
-
-> @@ -609,6 +612,9 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_=
-fd_if *usb_if,
->  		return -ENOMEM;
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/=
+net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> index 687911d764ded..92bfdcb04b019 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> @@ -676,7 +676,8 @@ static int kvaser_usb_hydra_wait_cmd(const struct kva=
+ser_usb *dev, u8 cmd_no,
 > =20
->  	dev =3D usb_if->dev[pucan_stmsg_get_channel(sm)];
-> +	if (!dev)
-> +		return -ENODEV;
+>  			tmp_cmd =3D buf + pos;
+>  			cmd_len =3D kvaser_usb_hydra_cmd_size(tmp_cmd);
+> -			if (pos + cmd_len > actual_len) {
+> +			if (cmd_len < sizeof(struct kvaser_cmd_header) ||
+> +			    pos + cmd_len > actual_len) {
+>  				dev_err_ratelimited(&dev->intf->dev,
+>  						    "Format error\n");
+>  				break;
+> @@ -2156,6 +2157,11 @@ static void kvaser_usb_hydra_read_bulk_callback(st=
+ruct kvaser_usb *dev,
+> =20
+>  		cmd_len =3D kvaser_usb_hydra_cmd_size(cmd);
+> =20
+> +		if (cmd_len < sizeof(struct kvaser_cmd_header)) {
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			return;
+> +		}
 > +
->  	pdev =3D container_of(dev, struct pcan_usb_fd_device, dev);
->  	netdev =3D dev->netdev;
+>  		if (pos + cmd_len > len) {
+>  			/* We got first part of a command */
+>  			int leftover_bytes;
 
-[Severity: Critical]
-This problem wasn't introduced by this patch, but can these decoders still
-process messages for a stopped channel [1] when a sibling channel on
-the same adapter remains open?
+[Severity: Medium]
+Can an extended command with cmd_len between 4 and 31 still pass this
+check and trigger an out-of-bounds read in kvaser_usb_hydra_handle_cmd_ext(=
+)?
 
-On multi-channel adapters that share a bulk IN endpoint,
-peak_usb_read_bulk_callback() checks PCAN_USB_STATE_STARTED only on
-urb->context before calling pcan_usb_fd_decode_buf().  None of the four
-decoders check whether the target channel looked up in usb_if->dev[] has
-PCAN_USB_STATE_STARTED set.
+kvaser_usb_hydra_cmd_size() only returns a device-supplied length when
+cmd->header.cmd_no =3D=3D CMD_EXTENDED; standard commands always return
+sizeof(struct kvaser_cmd) (32 bytes):
 
-If a PUCAN_BUS_BUSOFF status message is decoded for a channel that has
-already been closed via peak_usb_ndo_stop(), pcan_usb_fd_decode_status()
-calls can_bus_off() and re-arms dev->can.restart_work after close_candev()
-canceled it.  That work can then restart the closed controller, or cause a
-use-after-free if the USB device is disconnected and freed before the
-delayed work runs.
+drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:kvaser_usb_hydra_cmd_size=
+() {
+	if (cmd->header.cmd_no =3D=3D CMD_EXTENDED)
+		ret =3D le16_to_cpu(((struct kvaser_cmd_ext *)cmd)->len);
+	else
+		ret =3D sizeof(struct kvaser_cmd);
+}
 
-[1] https://sashiko.dev/#/bug/linux-a0866161-9660-4bc4-9535-9260486564d9
+In struct kvaser_cmd_ext, the extended header itself is 8 bytes (len is at
+bytes 4..5 and cmd_no_ext is at byte 6), and the handlers reached via
+kvaser_usb_hydra_handle_cmd_ext() (kvaser_usb_hydra_tx_acknowledge() and
+kvaser_usb_hydra_rx_msg_ext()) read at least 32 bytes from cmd without
+re-checking cmd_len. Checking against sizeof(struct kvaser_cmd_header) (4
+bytes) lets a CMD_EXTENDED frame with cmd_len in 4..31 near the end of
+buf pass pos + cmd_len <=3D len and read past the end of the URB buffer.
 
 --=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261110-pcan-usb-f=
-d-nodev-v1-1-fc11effbfafa@gmail.com?part=3D1
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261110-kvaser-usb=
+-validate-v1-0-f266b85aa908@gmail.com?part=3D1
