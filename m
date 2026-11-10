@@ -1,99 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794335764;
-	b=tHB5c8EJvTUnVipRgOXArm6wx/rqVofp+JthnporEt0q5nEmi0xIKqxOQzi3SI5ZI5nD
-	 FAPDX7xYaQUF/sWFHd+454MxbqssBYcWzg3SyDQtVujxhLNWig+53vmsv95a7UiNphWA8
-	 6RXGjRhtv0bm4k9Nq10Drq7mAcLUvU2YTYknE2wa3JqzBh07eplpZcovUYsTlVajWUPne
-	 b5OAlp+8Tfj5WT8aN7+rOjbayDPwHFZbdVqiS99LpXLCvtprcK6kYnQa0E474FTK2+joq
-	 jXVrnYSKazJmLWIOk3zlvye4cKGDWxu2fY5J+4HEcDv14dt1V0O7rX3RxGw2legTPpQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794335764;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=BOafJ6cmPXqPWNzGZO/JyPEtr5lk4E3EUztVodxn4Wo=;
-	b=g1h1DQYdfwOdAQK1eK3eH17Z5b3uUp5zmkQL0ohiz1tXZzDCDShDphIOVmLaRwRd7I7Y
-	 p2WhvpFM1+m0hXg5SdbcKmOnNTb8F57T121QQqG7JszONmDnX9I+XXVjwZaI3zNE1C0w8
-	 d/wkoo91VTau6yPjVu5HgrfXgas9IF4Mpi0MrZLntxpt92STmbPA9B+tqeoGDsMXXvq4a
-	 /JQayWVGK64qKVboRMUxB1yRmc+80XiMghur7KimPnlNI+aTzdbIW7sgF1g92WTxGaBIx
-	 f99LFGMV6XwBLFHVH07Jl7qfzLKK6aAQt85Tv4DCExP1VTTD8wWnwmom4roUBo/F0SA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=OkWepP8Z;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794342458;
+	b=FTqlpsFqrwEbNwx8BE6Y99WQ7qhrCnpFUoo7cqg/68rZ/1zaqUm/AXjJ9ZLcQl1hIaUs
+	 Vo5afZ9I6LSiAbOSnk2sG2IsW1RaOKqglZkj6odEQaxZf5BaX+f602nEJ8PorpMDHUN1c
+	 3QaAFqgXDNRxSSWKDvZm17+jxNmStWkRx/N3VeO2VwcLbT/0bByIPx2V3dJrrCsGJERzM
+	 4v3n9GBVLosqNhtTobJUrFL6W8efMq6n08O3f+gsrjig/GEHFehoptwgoqdT07tEhEr2Q
+	 YPgJ/iY87j2z9u6wKInDLxxDEBFO7oZH8DyW//Oo/BH7oHuajjepYg6qGitMyARcpuw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794342458;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=ZQA9tz59isIsGx9GAfU1V+Se4E2UpyC3qIrvYAEQaA0=;
+	b=g7Y2lgWDIv/4JAHiv/JD9vBOEYfM+IDKiJYOwXg3ejpcJ54v1KLP03zo2IzhUwBxeWM2
+	 P/YDGI3FWHWvhPel2MOcnsPJUlhsZ/Bm0qfjwR2IHoI2sKjDm/V1s4bvkcjtVOhkTxR1y
+	 +sL1cQRQiOhvPg8nxlr/YCJyUILX83MN7dO2/ZMNBgm27Qta1a4fIye6iMtU0pPPkE0SH
+	 1G1xmD7xowWXcQUdbwghkS32NMwnubmXknVd48lo/gDxwp7LT5Pc155BmeieDXIvcEosN
+	 nwhuwc9dWTq0g/kGgcHLZYuPN8kx7WoIGcLDZXXIWpu5/B8D9nTgI60xeepB0turTRw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hYGEYbq7;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79C02606A320
-	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 18:36:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 79C02606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25E87606A31C;
+	Tue, 10 Nov 2026 20:27:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=OkWepP8Z
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 445ED2000EB;
-	Tue, 10 Nov 2026 19:35:56 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794335756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BOafJ6cmPXqPWNzGZO/JyPEtr5lk4E3EUztVodxn4Wo=;
-	b=OkWepP8ZLCu6RBbm744WXYrC1bsbDR086eDEyIw5ZvyLjWn9XxuF7rqOvIxuuCRh7GAYJT
-	ihmlk1VjLWsZ7xBwAAYvVrFFe7xkT+p883hZeoCv8Fm41BTpZD2dzrx69Y4fttiUwNldsM
-	Q3V+ILjyUn+RcEi3TvceBr3uBUMGGDjpIsHqIcO8UUm8ZBotkiZ4UUDXyC5xuwGJR3Spm3
-	+THZIZiiib4mH1rak8/P5mhd/Tt5diPkhyPgjOTmosRJN1mYRQd5rPndZZbcQw6jOROVJz
-	h5x+JmYVrZEdHlxedDCNwbGX7Flg35ZiC4GjOLruIIQr68xFeVRDGSBl6Q3rIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794335756;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BOafJ6cmPXqPWNzGZO/JyPEtr5lk4E3EUztVodxn4Wo=;
-	b=dU5eqD6kgI8bBKPJ0460p4vrH1Dc8Tfk0UezJGkL7XdFWh9pb/gt/flLbzRv8znq0RyEJW
-	74xp3G0cOa+frWR2ZVA+6SdHDqWzeCyn+FAytQTXYaxdnfiHMx9/x3ptYFZ6eJyhXy+N63
-	7Ny/gwG7jaQ5ceGe8/zobzDvmewEidZ1M7ykew5/ZgbidVnxkJMGTs7xn0Trx1KhTQWi+s
-	vtIcRin1X5I4M5uftWkIRAOHiKlcENKMbF9mTDXgAsQht87KEqs8DfbU+pQhuLiN+Pnexp
-	K7cIM65j1a22DtkqG7xAUs8Xe5KrNDC0R6UQc4jtaldzuue9JOC3JfipfQZkXw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794335756; a=rsa-sha256;
-	cv=none;
-	b=g9o6qEEb4SpvWZ+vBjPN5TXvWQTRIT9t0sPhdsYegqZk8DNCYo671TDsE29K3cHRWVid+F
-	BTcNOY+vZUbI0NN3d0YrfA3xGCdE3B8qVleqL6FnEKhm4iNVcYw0eXQYT0ZW7dvH7fbzti
-	v8/M68rgg5ccdknPKZHG/PjF36dAtokkAerQxgwgVn+3PGehfGshKL54jlfpsu6w7YzSte
-	bAz9Rkd8/bI45v47cF4ff/RhNb/Jyvm3GF6T7SqDURyNHKpWDZq+I/UykCe6helXLgr7/T
-	CX+aCJ2IHkP/V4bNlZFMdBkBiwuFHPwCpeLPPn3gftkekH28YCX6Qr9AaLW9sg==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xQqhI-003XOr-0X;
-	Tue, 10 Nov 2026 19:35:56 +0100
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id BF1515E7024;
-	Tue, 10 Nov 2026 18:35:55 +0000 (UTC)
-Date: Tue, 10 Nov 2026 19:35:55 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: khj <hj351016@gmail.com>
-Cc: sashiko-reviews@lists.linux.dev, linux-can@vger.kernel.org, 
-	Oliver Hartkopp <socketcan@hartkopp.net>, Vincent Mailhol <mailhol@kernel.org>, 
-	Oleksij Rempel <o.rempel@pengutronix.de>, =?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.fr>
-Subject: Re: [PATCH v2] can: peak_usb: pcan_usb: shut down restart timer on
- free to avoid use-after-free
-Message-ID: <20261110-imperious-daft-mamba-51f539-mkl@pengutronix.de>
-References: <20261109044911.1163505-1-hj351016@gmail.com>
- <sashiko-outbox-206243@kernel.org>
- <CAGr5VtNkwbhJSg9sFi=Lk67y9SA6ofQnpuBFa2NrKy8=mUecmQ@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hYGEYbq7
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4B2531F0089F;
+	Tue, 10 Nov 2026 20:27:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794342457;
+	bh=ZQA9tz59isIsGx9GAfU1V+Se4E2UpyC3qIrvYAEQaA0=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=hYGEYbq7uJ8fAPQma3wots1MIA3E4N5aMLGwm9Y6IPdLvzbrP5UUpI3Cz4BhtrI11
+	 GnszauZEQaq9K8HrQelC6aflbLF+wNhD0DQb9d2sYA8/e/bFuIAR5bqPcWVORybY6z
+	 fIy5n0mqIDMt2NDGJMf+LjywYWXrxWW1Jdt/ptKCsif3p5s81I1YAw+XOxC+8HO6Jq
+	 HeM2MiqUx44+vKxJrTgb1Tgf4rVt28HY86qJRe/DVMU4NRQgOpFsEyjx4WU+dyIVvD
+	 /Q2rZLft3gqI4Dw4tGtL6Y5nnnXtij7qNmjZHII8WE3geolzVnXHdgv9Fq8HAzG7z2
+	 hFArq3jp5DoCg==
+Subject:
+ Re: [PATCH] can: mcp251xfd: Always stop on BUS_OFF and call netif_stop_queue
+From: netdev-bot+sashiko@kernel.org
+To: mike.looijmans@topic.nl
+Cc: linux-can@vger.kernel.org, mani@kernel.org, mkl@pengutronix.de,
+ thomas.kopp@microchip.com, mailhol@kernel.org, linux-kernel@vger.kernel.org,
+ kuba@kernel.org
+Date: Tue, 10 Nov 2026 20:27:36 +0000
+Message-ID: <179434245683.488853.8911871804310453120@kernel.org>
+In-Reply-To: <20261109070605.9761-1-mike.looijmans@topic.nl>
+References: <20261109070605.9761-1-mike.looijmans@topic.nl>
+X-sashiko-severity: High
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -103,65 +63,224 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="k3mqnqapcsr4shmp"
-Content-Disposition: inline
-In-Reply-To: <CAGr5VtNkwbhJSg9sFi=Lk67y9SA6ofQnpuBFa2NrKy8=mUecmQ@mail.gmail.com>
 
+Thank you for your contribution! Sashiko AI review found 4 potential
+issue(s) to consider.
 
---k3mqnqapcsr4shmp
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2] can: peak_usb: pcan_usb: shut down restart timer on
- free to avoid use-after-free
-MIME-Version: 1.0
+Critical: 0 · High: 1 · Medium: 1 (1) · Low: 2 (2)
 
-On 10.11.2026 14:04:08, khj wrote:
-> You're right that timer_shutdown_sync() alone is not sufficient. The
-> restart URB submitted in pcan_usb_restart() is not anchored, so
-> peak_usb_unlink_all_urbs() does not kill it, and its completion handler
-> pcan_usb_restart_pending() can still run after free_candev() and
-> dereference the freed pcan_usb via mod_timer(&pdev->restart_timer, ...).
-> Shutting the timer down does not help once the object backing it is gone.
->
-> So the complete fix has to stop that URB as well, not just the timer --
-> e.g. anchor the restart URB so peak_usb_unlink_all_urbs() kills it, and
-> also cover the probe-error paths you point out (dev_free() being skipped
-> on a pcan_usb_get_serial() failure, and running before unregister_candev()
-> on a dev_set_bus() failure, with the restart URB potentially still in
-> flight because probe failure does not unlink it).
->
-> Since that becomes a teardown reorganization in your driver, I'd rather
-> not guess at the shape. Marc, how would you prefer this handled -- anchor
-> the restart URB into one of the existing anchors (tx_submitted) or a
-> dedicated one, and should the register_candev()-before-dev_init() ordering
-> be part of the same change? I'm happy to send a v3 once the preferred
-> direction is clear.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Please discuss driver design with St=C3=A9phane Grosjean (Cc'ed). Your
-patch/series should probably based on
-https://lore.kernel.org/all/20261103-canfd_check_channel_idx-v8-0-4e8b2c0a8=
-806@peak-system.fr/
+- [High] The new netif_stop_queue() in mcp251xfd_handle_cerrif() (line
+  1138) runs after the state that allows a restart has been published,…
+- [Medium] The new netif_stop_queue() is a lockless bit set from the
+  threaded IRQ handler.
+- [Low] The patch fixes a hang that users can see: after bus-off, a
+  sending process can block in send()/poll() until the interface is…
+- [Low] The commit message does not explain why the hang happens.
 
-regards,
-Marc
+Pre-existing issues:
+- [Medium] mcp251xfd_chip_stop() (lines 755-764) ignores errors from
+  mcp251xfd_chip_interrupts_disable(), mcp251xfd_chip_rx_int_disable()…
+- [Low] If __mcp251xfd_get_berr_counter() fails in
+  mcp251xfd_handle_cerrif(), priv->bec is not updated.
+- [Low] This problem wasn't introduced by this patch, but in
+  mcp251xfd_handle_cerrif() the non-bus-off branch leaks the error skb.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+--
 
---k3mqnqapcsr4shmp
-Content-Type: application/pgp-signature; name="signature.asc"
+can: mcp251xfd: Always stop on BUS_OFF and call netif_stop_queue
 
------BEGIN PGP SIGNATURE-----
+On bus-off, this patch keeps shutting the chip down even when the error
+counter read fails, and logs an error instead of returning early. It also
+stops the TX queue after can_bus_off() and relies on mcp251xfd_set_mode()
+to wake it on restart. The goal is to fix a send()/poll() hang seen after
+bus-off under heavy TX load.
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavNkCAAKCRDMOmT6rpmt
-0v5qAP9dZCRKh8c1Ic5oIGHHDK96Bvwbpym6r8fP1YMMZGDtowEAqIT1rKmdKs6v
-bEjLePxeTi3kJ4XwvhyWD5ga84tKdQY=
-=QXpk
------END PGP SIGNATURE-----
+> This fixes a hangup in either send() or poll() from userspace. To
+> reproduce: I ran "cansequence can0 -p" to flood the system with packets.
 
---k3mqnqapcsr4shmp--
+[Severity: Low]
+Should this have a Fixes: tag and Cc: stable? The bus-off block in
+mcp251xfd_handle_cerrif() goes back to the original driver submission.
+That includes the early return on a failed counter read and the missing
+queue stop. The only later change was the rename in eb79a267c9b3:
+
+Fixes: 55e5b97f003e ("can: mcp25xxfd: add driver for Microchip MCP25xxFD SPI CAN")
+
+> diff --git a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> index f441f2265299e..9770416b24723 100644
+> --- a/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> +++ b/drivers/net/can/spi/mcp251xfd/mcp251xfd-core.c
+> @@ -1131,10 +1131,11 @@ static int mcp251xfd_handle_cerrif(struct mcp251xfd_priv *priv)
+>  		 */
+>  		err = __mcp251xfd_get_berr_counter(priv->ndev, &priv->bec);
+
+[Severity: Low]
+This isn't a bug introduced by this patch, but if
+__mcp251xfd_get_berr_counter() fails here, priv->bec is not updated.
+
+can_change_state() has already set priv->can.state to CAN_STATE_BUS_OFF.
+That means mcp251xfd_get_berr_counter() returns the stale copy to
+userspace:
+
+	if (priv->can.state == CAN_STATE_BUS_OFF) {
+		*bec = priv->bec;
+		return 0;
+	}
+
+The old return err path gave the same result.
+
+Could priv->bec be filled from the trec value already read at the top of
+mcp251xfd_handle_cerrif(), instead of doing a second TREC read?
+
+>  		if (err)
+> -			return err;
+> +			netdev_err(priv->ndev, "Failed to store BER counter\n");
+
+[Severity: Low]
+Would it be useful to print err in this message? Before, the error went
+to the out_fail path in mcp251xfd_irq(), which printed the errno and
+called mcp251xfd_dump(). Now the error code is lost.
+
+The commit message doesn't say what this hunk fixes either. The old
+return err leaked the error skb allocated by
+mcp251xfd_alloc_can_err_skb(). It also left priv->can.state at
+CAN_STATE_BUS_OFF (set by can_change_state()), with the carrier still on
+and no restart scheduled.
+
+For the netif_stop_queue() part, the only justification given is:
+
+  After adding the netif_stop_queue call, I was unable to reproduce the
+  problem.
+
+Can the commit message explain the root cause? can_restart() assumes
+nothing is being transmitted during bus-off:
+
+	/* No synchronization needed because the device is bus-off and
+	 * no messages can come in or go out.
+	 */
+	can_flush_echo_skb(dev);
+
+This driver broke that assumption by leaving the TX queue running.
+
+>  
+>  		mcp251xfd_chip_stop(priv, CAN_STATE_BUS_OFF);
+
+[Severity: Medium]
+This is a pre-existing issue, but mcp251xfd_chip_stop() ignores errors
+from mcp251xfd_chip_interrupts_disable(), mcp251xfd_chip_rx_int_disable()
+and mcp251xfd_chip_set_mode(priv, MCP251XFD_REG_CON_MODE_CONFIG). With
+this patch it is now also called after a failed TREC read.
+
+Suppose the TREC read and the MODE_CONFIG write both fail briefly, and
+SPI recovers before the restart. Could the restart then reprogram the
+FIFOs while the chip is still in Normal mode, causing TEF consistency
+errors?
+
+The other callers of mcp251xfd_chip_stop() use the same unchecked,
+best-effort pattern. This only matters when both failures happen in that
+order.
+
+>  		can_bus_off(priv->ndev);
+> +		netif_stop_queue(priv->ndev);
+
+[Severity: High]
+Can this netif_stop_queue() undo the wake from a restart that has
+already finished?
+
+By this point, mcp251xfd_chip_stop() has set CAN_STATE_BUS_OFF, and
+can_bus_off() has scheduled restart_work if restart_ms is set. When
+restart_ms is 0, a manual restart through can_restart_now() only needs
+priv->state == CAN_STATE_BUS_OFF. Neither restart path is serialized
+against the IRQ thread:
+
+restart path
+can_restart()
+  mcp251xfd_set_mode()
+    mcp251xfd_chip_start()     /* state = CAN_STATE_ERROR_ACTIVE */
+    mcp251xfd_chip_interrupts_enable()
+    netif_wake_queue(ndev);
+
+IRQ thread
+mcp251xfd_handle_cerrif()
+  mcp251xfd_chip_stop(priv, CAN_STATE_BUS_OFF);
+  can_bus_off(priv->ndev);
+  netif_stop_queue(priv->ndev);   /* runs after the wake */
+
+If the wake happens first, the chip runs in ERROR_ACTIVE with an empty TX
+ring. mcp251xfd_handle_tefif() then never wakes the queue. A manual
+can_restart_now() also returns -EBUSY, because the state is no longer
+BUS_OFF.
+
+Wouldn't the queue then stay stopped until ifdown/ifup? That is the hang
+this patch is meant to fix.
+
+Would stopping the queue before mcp251xfd_chip_stop() and can_bus_off()
+avoid this?
+
+[Severity: Medium]
+Is this stop enough to keep the queue stopped during bus-off? Here,
+netif_stop_queue() is a lockless bit set from the threaded IRQ handler.
+It is not serialized against mcp251xfd_start_xmit(), and two other places
+can clear the bit without checking for bus-off.
+
+mcp251xfd_tx_busy() can restart the queue:
+
+	netif_stop_queue(priv->ndev);
+
+	/* Memory barrier before checking tx_free (head and tail) */
+	smp_mb();
+
+	if (mcp251xfd_get_tx_free(tx_ring) == 0) {
+		...
+		return true;
+	}
+
+	netif_start_queue(priv->ndev);
+
+The IRQ loop handles TEF before CERRIF in the same pass. An xmit that saw
+the advanced tail and was then delayed can call netif_start_queue() after
+the bus-off stop.
+
+mcp251xfd_tx_failure_drop() also calls netif_wake_queue()
+unconditionally. It can be reached from a failing spi_async() in the
+xmit path, or from tx_work through mcp251xfd_tx_obj_write_sync(). tx_work
+is not cancelled on bus-off.
+
+Either way, the queue runs again while the chip is in CONFIG mode. That
+brings back the concurrency between can_put_echo_skb() and
+can_flush_echo_skb() in can_restart(). An xmit that has already passed
+the stopped check can also still write TX objects to the stopped chip.
+
+Would these windows close if netif_tx_disable() were called before
+mcp251xfd_chip_stop(), and the wake in mcp251xfd_tx_failure_drop() were
+made bus-off aware (or tx_work cancelled)?
+
+>  	}
+>  
+>  	if (!skb)
+
+[Severity: Low]
+This isn't a bug introduced by this patch, but further down in
+mcp251xfd_handle_cerrif() the non-bus-off branch has a similar early
+return:
+
+	if (new_state != CAN_STATE_BUS_OFF) {
+		struct can_berr_counter bec;
+
+		err = mcp251xfd_get_berr_counter(priv->ndev, &bec);
+		if (err)
+			return err;
+
+Does this return leak the skb from mcp251xfd_alloc_can_err_skb()? On
+this path the skb is neither freed nor queued to rx_offload. The IRQ
+handler then goes to out_fail, so at most one skb leaks per fatal SPI
+error. This code dates back to 55e5b97f003e.
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261109070605.9761-1-mike.looijmans%40topic.nl
