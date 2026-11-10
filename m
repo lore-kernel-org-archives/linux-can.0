@@ -1,91 +1,65 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=81.169.146.220
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1794258263;
-	b=UfZzSpGRTgXxuA9G6edAXl0o6Tmawxpbjmed66B9piCENuiK7zIs3Eq2rR//XnYiKalr
-	 uH0y7ZedlpXkcSMQbi/PDvHL9z+3Wq9L7x0RcZg6YV7Pn6jsE2ADW0fevtPIW45fNDZoR
-	 xBjUX4f5DIcuQCpn+HxjIq2GP9B1rPsVWpa3IenRqSMUBOy2O/FBlkn6I7QfpnBhwLQuJ
-	 dIiThwVtn6f4jtfjyhHIMa+GpTyELpq+VLCK/7q9X71bGfg35jlMuW9SZa9DL2OVH+S0L
-	 Smqf63nBWdhss6FZ4qgJ+lsHO8W0CQQ0gRFILtj4b40i0TB8hB0e19DXGtkflt8uz8g==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794258263;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:From:Subject:Date:Message-Id:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key;
-	bh=ct6EiwlbdCUCiMf+/ow2gXwDv0i5U7dREeDeUjB447U=;
-	b=UUw8e9ALvXpSIktqxFaF2RBWgDFSgp7cu/rSpqEYe9S7+73ir3ByNVPX6lzF6iCGoCjn
-	 wNykntWIvEZ1cCvZoFVO2LBAb3YAhf7QacmO/aYqSDJWHa+k6TxriUPhCNd7Lxs7AkEf5
-	 f12R7db2bzWSrdUZASRX1k1VrzmqFMdBVFYfZ++d+6uJoZTPYpclQBN0472SZbZMm05y1
-	 mlxRCpHenfr8py/jGsYtdKlAErNGmTdxSD4B9LSWFep4W3RT5mO8+d8CMNC7xKcZJlMBg
-	 mvO9GIC4GdO6lT2USeaMlnZde4CAfioEKCCPP7s7eiVcILqYp+pNWRR+on4+p8fHHaA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=sVej1Fq3;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=CAFix5fu;
-	arc=fail smtp.remote-ip=81.169.146.220
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.220])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.62.58.211
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794279947;
+	b=APVWbAPw51thA8TglZxjcy5MrL2M2+3AB+7eVlHadqC1B1fB+YmiUgQO/XprhQu+redz
+	 zicIshJq+7zjbPzVwpl3jS4sD1wKFCvf+BtITcWIkdPUILpSIrbdKQ0ondL9AXD6/lmK8
+	 2pkFtWN+fmjHVfl1aeIXwxmIOlRPYvhLXbgeBMv/5//GToMnR14x17ictwmxqqFc/Os0D
+	 4xfHwYdF5T1IqJzuLGq8foHvu9/wIaJRaJIi77r5FJ2wHzsgovbje3yMnH9XG/gNlfrLz
+	 mAj++L93e1Mjll/UZPupTdsugtxE2+iWmmhivbXgiQTMrFM8/VnZ/qgsrA3uoZjeumA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794279947;
+	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
+	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
+	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
+	 In-Reply-To:X-QQ-mid;
+	bh=q9XOYK7wX+00B6FBPgLD2vBKMAkmDiR49f/zui5qQz0=;
+	b=Gkr855X9Umz1w3iGJS1a0XHk+Sa7T0ProfnyUq/Y+OKDQIPZvBPAJXMaiLDIZBxK/KhS
+	 RafSqrwzI218gvOP5GnTeCOseSNcbt4ac3LOGF1yu7YgBHCqJBf91rhAbcO2a07y5VYf7
+	 N9j5q2aDPe9z1wlwN46Dq15218YjaWYjp5dBN/72EM9e3Oa5ZDxFZ1GR352zka1O3kiZF
+	 MAtSdEiqMWSgb/Mwnz/BEXwuqApV0lRoai8gxXIf6NPCOsVsDnwfCld2t3ifjR9DwOv1i
+	 GpNKL5fJdmRHFVkUZ4BCpOxpWlXwZegOUzgZckecpxcWkCQh+PIUXKzepa3tGkhU5ww==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=qq.com;
+	spf=pass smtp.mailfrom=qq.com;
+	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fZUfxXVy;
+	arc=none smtp.remote-ip=162.62.58.211
+Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CA4606A31C
-	for <linux-can@vger.kernel.org>; Mon,  9 Nov 2026 21:04:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 11CA4606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C9A606A32E;
+	Tue, 10 Nov 2026 03:05:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C6C9A606A32E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=sVej1Fq3;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=CAFix5fu
-ARC-Seal: i=1; a=rsa-sha256; t=1794258240; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=ixYXEkoW+OlDxTyZG0NYByZje6Vu5B4TV1wtRssqIER8+0xUDeAyAOVKpe3+4reiCM
-    my6BXlDpaqiPcbH9awbL8l7Xc0hCxkHS/BekzQf65UKw6gQjzbwHOzXA5H4QN6SPp3C+
-    E7lDsH9YQ3p0XwAQsM+RbYxVcv5pCv/NW4aCMVUA18tolvfcu6pZOnj5KGwN7WQrtKus
-    97vYEyvdPukACdkmb1OPez3eIV8bE382ly80krVDWoRXTD+thTRjVvF2suI194Xaq2z1
-    H/vXe4+kR8Md0uhPhZkrLxbIelvUlNKvIPsKLvk3LB32SMZbogFM0J+aybqMJXcHcJ6v
-    J9sA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794258240;
-    s=strato-dkim-0002; d=strato.com;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=ct6EiwlbdCUCiMf+/ow2gXwDv0i5U7dREeDeUjB447U=;
-    b=oZ2iXmXk7aVPHbRGQ8WhSk5eHThA3OpTIO2EJvawsUflujNkzNK/uTKCIAnEBtJFK7
-    KYZsxvDmFlXn6b9mg9WMTU+0fOOhXeSArPb1pOe82+iY1kpkUASl61SzKDt8Lmr1kzQv
-    4w3rBpVC2G8XWlk4/6J1mJPfyzR57qtA6yLQB67j3szlRnQAJGIvnh/uHQHSM4QpKsgw
-    0UyN0KPMhso2vgUY0hSD0F0vnTUJ1ywE0I3KrbTkhOs1VaWkE+QkW8PmLDta5k7iv8j5
-    JVhlfXsNQGYdMtXb6RFJr4hBhlSujXp+VU8nNbtIWcadtEqapdDYvUWl8QVa0l1XSWte
-    t3JQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794258240;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=ct6EiwlbdCUCiMf+/ow2gXwDv0i5U7dREeDeUjB447U=;
-    b=sVej1Fq3yARtCrJU/ulbtbeWqU1cIUUf83KIgqjMKp8rGzEStC3vPix5IvgfSlALUM
-    HDTF8VDQ23/hFz+SrxTSNClcrKSFE1DRKGbIyBSZXoc0VlyDTNB5SUh+hRMUUlLEAx/d
-    +ap0OFpKYM2NvcRAJ4edE4dEzZVNzWHAzqHyUutXGJTDVc5hFseCFDDtCf3/qge1FA+W
-    w5H6LJKV9yhuBxNnafDRWargSca35MUtBQdiFEvh9mCxyVzeKabera0vAVkqge8GKXDC
-    IS1vugbn4BppT4LQq+CvMDKsmjq/OBIUqMTAP9t6yu6JmpU5O/62KzQm9r/1+h4LvGlb
-    Du7w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794258240;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=Cc:To:Message-Id:Date:Subject:From:Cc:Date:From:Subject:Sender;
-    bh=ct6EiwlbdCUCiMf+/ow2gXwDv0i5U7dREeDeUjB447U=;
-    b=CAFix5fuvpf5vyeBoAuz3FPdEZQUqfCfHngPxAepwKgWK4dvLKa2Gkxi8100QDhuNN
-    w+kVfCPmiwV4KTBbEICA==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [127.0.1.1]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2A9L40w3B
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 9 Nov 2026 22:04:00 +0100 (CET)
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: [PATCH v3 0/3] can: bcm: avoid RTNL stalls and enable memcg
- accounting
-Date: Mon, 09 Nov 2026 22:03:53 +0100
-Message-Id: <20261109-can-bcmlock-memcg-v3-0-2d798ca30578@hartkopp.net>
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fZUfxXVy
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1794279939; bh=q9XOYK7wX+00B6FBPgLD2vBKMAkmDiR49f/zui5qQz0=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=fZUfxXVyc6DAD15Sv5X4swqN9j/GmjL8dRnoagW1DhD+O/L6QRUMlsggANFnRQ0Bj
+	 D5veAtp3I1xww6mVMV1Tr+z5flqP62yg5Y/LzHau/FXDztMX9+63fkAMDnicnryiiA
+	 RfwgTnlQNClTOqf3FGIO1LhVf7JathlzAxx97xHI=
+X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
+X-QQ-XMAILINFO: MzHbHz6ky8ylxXRwvpD01xe5vfDxiM5d4sy1mzo5PARKG0efZTjt8CVhuRmRZB
+	 X916dvvbNf6mSP72RiWNcNkqCoNPOcxgBWOr5TCZcXnrUl9jCXlBL7sN0QJ4T5Y3UdWVhkCbnXnpG
+	 vdp9c5eNmkQygDx70y3v0fP7PLOER3IGW5zxJhXPUmUgyxGfqZwX2rtwe3Jtn8xzOde1dGcyuBCqu
+	 B3CmRyVm7R4LWQcm8jyBLfeacUa7dugB4ZvW+mqQuK17Ml+y8ub7YPpJctk25Nys2Mvv769EMSsdn
+	 gyFpV4NtYY5QzHMlFVwUMf61TfKrDif+QvN+eKFykf8fTRr4P6tUAMX8EjrmxtXe08M0wJY2zcUsV
+	 ZCbbeAv7i2dpy57uuj5FAmeBEfOhOs1aeSEH0H8cMnzrL5dxPYAS/1QrmLQ0Tnz/MFmRldWYiA+AG
+	 caiEA5CJiQ34zO8hIgYLPotpS0901vK+WlSahYTacdWKy7Xxs8wr9JFeu4ioN5jSZWUXuuGtEd6Cl
+	 CCMNpacI0piTaP6oj8dLwYr0Q9s2ZbZuL8q0lDeZOUh53rJLmlKt00fsxUCrOkTvd3utbbRA09EXR
+	 q22YlOFFUVDNvtHFy0LzEi6f3c9jZsOK34FYUDLWr2avoGfnlcSFvpxriZBvxtK3CsV2toP3ohc8y
+	 NMr0xO1FEC1hRQsL77+9TGn1IKzFmrjJJbkuQS4DIcFfsC5fXcYtBCnC/y355xwQqk95Ic+wvYhYN
+	 as5k0cJeG2my4Jt7nJ6eEx/rYbxpgRw5gK4DODp4ef2+JhCC1cgOW3at0NnbaX0f450vYnOJHZEBU
+	 HRoPJhcnehr04GJlF3dwm1u3UCTrR3iDsI5b57xBHS3Aw+ZocdVTg9dcE/M2hyvEV8Hc9ZGCS1eXg
+	 onxDMmUiVaEXvBtajFT5QG0P+nx0d2HHMnE7cURCbigcGOWiCt1GLo+jsbEua2PJZlr7qnaVKSEbf
+	 1i9qJJwVhsoLAP1jhHQzWj1nNX9WYsvWLk6T5wFS+mI9dsL6xI77tQvxdJFZ1pPERKAYtrirzDYJO
+	 fpiPE+5B/T4uxxl4WF2yiIWequDXJkDxKHdZr
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?SmFrdWIgS2ljaW5za2k=?=" <kuba@kernel.org>
+Cc: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?RGF2aWQgUy4gTWlsbGVy?=" <davem@davemloft.net>, "=?utf-8?B?RXJpYyBEdW1hemV0?=" <edumazet@kernel.org>, "=?utf-8?B?UGFvbG8gQWJlbmk=?=" <pabeni@redhat.com>, "=?utf-8?B?U2ltb24gSG9ybWFu?=" <horms@kernel.org>, "=?utf-8?B?Sm9uYXRoYW4gQ29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?U2h1YWggS2hhbg==?=" <skhan@linuxfoundation.org>, "=?utf-8?B?UmFuZHkgRHVubGFw?=" <rdunlap@infradead.org>, "=?utf-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?=" <wg@grandegger.com>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, 
+	"=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
+Subject: Re: [PATCH net v8 00/10] can: fix Rockchip TX stalls and bus-off restart/close races
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -94,82 +68,30 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/33NQQ7CIBQE0Ks0rMUUqi115T2MCwqfFrXQABJN0
- 7sLdWOMcTnJzJsZeXAaPDoUM3IQtdfWpFBtCiQGbnrAWqaMaElrQsoGC25wJ8abFVc8wih6TCX
- j0FQ1YRVDaTc5UPqxmqfzO/t7dwERMpQbg/bBuud6Gknu/fMjwSXeMSpbte+AKHkcuAtXO01bA
- wHli0g/EfYLoQkhreJKKtFKQr+QZVleL1NLcwwBAAA=
-X-Change-ID: 20261107-can-bcmlock-memcg-2d8ae7361838
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Oleksij Rempel <o.rempel@pengutronix.de>, 
- Oliver Hartkopp <socketcan@hartkopp.net>, Sashiko <sashiko-bot@kernel.org>, 
- Zihan Xi <zihanx@nebusec.ai>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794258240; l=2446;
- i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=EJ6GLQHPHUExYoU/vlZvGOyQVl7glit/nRsTRsdpLws=;
- b=w/1fD8rmCisSVngdKrQYGxJeOuBof77JOBibam+jKsZhFf7FwvFYeIHKhrg5lAfJfOyT+UILT
- HZKY0ETD6rSDdN07M7KfiVuZ6jQuETQ8QvGyn9WCYuEVvTJ6nsCutBa
-X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
- pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Tue, 10 Nov 2026 11:05:37 +0800
+X-Priority: 3
+Message-ID: <tencent_F59D327809C523BE014488357EEF4D163408@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20261108-rockchip-canfd-restart-close-v8-0-3e7a23fd9eae@qq.com>
+	<20261109112402.283c16a3@kernel.org>
+In-Reply-To: <20261109112402.283c16a3@kernel.org>
+X-QQ-mid: xmsezb41-0t1794279937tom1cqfol
 
-This series addresses issues that allow unprivileged users to affect
-the whole system through CAN sockets.
-
-Patch 1 copies the CAN frames in bcm_sendmsg() outside of lock_sock(),
-so that a stalled copy from user space can not block bcm_notify(),
-which takes lock_sock() under RTNL.
-
-Patch 2 keeps the procfs entry of a CAN_BCM socket until bcm_release(),
-as remove_proc_entry() in bcm_notify() waits for stalled procfs readers
-while holding RTNL.
-
-Patch 3 enables memcg accounting for the allocations that unprivileged
-users can trigger in the CAN subsystem. As there is no specific commit
-to point to, it has no Fixes: tag and is not marked for stable, like
-most of the memcg accounting patches in the networking subsystem. If
-you prefer this patch for net-next, please let me know.
-
-CAN_J1939 has similar issues with lock_sock() under RTNL, which will
-be addressed separately once the currently discussed j1939 patches
-have been merged.
-
----
-Changes in v3:
-- patch 2: read bo->bound and bo->ifindex with READ_ONCE() for NETDEV_DOWN
-  and shortened the bcm_notify() comment (Sashiko review)
-- Link to v2: https://patch.msgid.link/20261108-can-bcmlock-memcg-v2-0-19fafdfc9d12@hartkopp.net
-
-Changes in v2:
-- patch 1: fixed the description of the stack buffer and described the
-  remaining generic SOL_SOCKET paths (Sashiko review)
-- patch 2: read and write bo->ifindex with READ_ONCE()/WRITE_ONCE() for
-  the lockless access in bcm_proc_show() (Sashiko review)
-- patch 3: keep the GFP_USER | __GFP_NOWARN flags of memdup_sockptr()
-  for the filters and describe the local j1939 ECUs (Sashiko review)
-- Link to v1: https://patch.msgid.link/20261107-can-bcmlock-memcg-v1-0-482d9f5be1fd@hartkopp.net
-
----
-Oliver Hartkopp (3):
-      can: bcm: copy the CAN frames outside of lock_sock()
-      can: bcm: do not remove the procfs entry in bcm_notify()
-      can: enable memcg accounting for user triggered allocations
-
- net/can/af_can.c       | 12 ++++---
- net/can/bcm.c          | 98 ++++++++++++++++++++++++++++++++++++--------------
- net/can/isotp.c        |  2 +-
- net/can/j1939/main.c   |  2 +-
- net/can/j1939/socket.c | 12 +++++--
- net/can/raw.c          | 14 +++++---
- 6 files changed, 100 insertions(+), 40 deletions(-)
----
-base-commit: 30c71476d842b094651bd7712f6c8ee8716147d0
-change-id: 20261107-can-bcmlock-memcg-2d8ae7361838
-
-Best regards,
---  
-Oliver Hartkopp <socketcan@hartkopp.net>
+SGksCgo+ID7CoFN1YmplY3Q6wqBbUEFUQ0jCoG5ldMKgdjjCoDAwLzEwXcKgY2FuOsKgZml4
+wqBSb2NrY2hpcMKgVFjCoHN0YWxsc8KgYW5kwqBidXMtb2ZmwqByZXN0YXJ0L2Nsb3NlwqBy
+YWNlcwo+Cj4gcGxlYXNlwqB1c2XCoGdldF9tYWludGFpbmVyLnBsLMKgZG/CoG5vdMKgQ0PC
+oG5ldGRldsKgb27CoENBTsKgcGF0Y2hlc8KgZGlyZWN0bHkuCgpJIHVzZWQgYjQgcHJlcCAt
+LWF1dG8tdG8tY2MsIHdoaWNoIGludm9rZXMgZ2V0X21haW50YWluZXIucGwuClRoZSBzZXJp
+ZXMgbW9kaWZpZXMgRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2Nhbi5yc3QsIHdoaWNoIG1h
+dGNoZXMKRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nLyB1bmRlciBORVRXT1JLSU5HIFtHRU5F
+UkFMXSBhbmQgaXMgbm90CmV4Y2x1ZGVkIHRoZXJlLCBzbyBuZXRkZXZAdmdlci5rZXJuZWwu
+b3JnIHdhcyBhZGRlZCBhdXRvbWF0aWNhbGx5LgoKSSB3aWxsIG1hbnVhbGx5IHJlbW92ZSBu
+ZXRkZXZAdmdlci5rZXJuZWwub3JnIGZyb20gQ2MgZm9yIHRoZSBuZXh0CnJldmlzaW9uLgoK
+QmVzdCByZWdhcmRzLApDdW5oYW8gTHUK
 
