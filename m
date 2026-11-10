@@ -1,65 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.62.58.211
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794279947;
-	b=APVWbAPw51thA8TglZxjcy5MrL2M2+3AB+7eVlHadqC1B1fB+YmiUgQO/XprhQu+redz
-	 zicIshJq+7zjbPzVwpl3jS4sD1wKFCvf+BtITcWIkdPUILpSIrbdKQ0ondL9AXD6/lmK8
-	 2pkFtWN+fmjHVfl1aeIXwxmIOlRPYvhLXbgeBMv/5//GToMnR14x17ictwmxqqFc/Os0D
-	 4xfHwYdF5T1IqJzuLGq8foHvu9/wIaJRaJIi77r5FJ2wHzsgovbje3yMnH9XG/gNlfrLz
-	 mAj++L93e1Mjll/UZPupTdsugtxE2+iWmmhivbXgiQTMrFM8/VnZ/qgsrA3uoZjeumA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794279947;
-	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
-	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
-	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
-	 In-Reply-To:X-QQ-mid;
-	bh=q9XOYK7wX+00B6FBPgLD2vBKMAkmDiR49f/zui5qQz0=;
-	b=Gkr855X9Umz1w3iGJS1a0XHk+Sa7T0ProfnyUq/Y+OKDQIPZvBPAJXMaiLDIZBxK/KhS
-	 RafSqrwzI218gvOP5GnTeCOseSNcbt4ac3LOGF1yu7YgBHCqJBf91rhAbcO2a07y5VYf7
-	 N9j5q2aDPe9z1wlwN46Dq15218YjaWYjp5dBN/72EM9e3Oa5ZDxFZ1GR352zka1O3kiZF
-	 MAtSdEiqMWSgb/Mwnz/BEXwuqApV0lRoai8gxXIf6NPCOsVsDnwfCld2t3ifjR9DwOv1i
-	 GpNKL5fJdmRHFVkUZ4BCpOxpWlXwZegOUzgZckecpxcWkCQh+PIUXKzepa3tGkhU5ww==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=qq.com;
-	spf=pass smtp.mailfrom=qq.com;
-	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fZUfxXVy;
-	arc=none smtp.remote-ip=162.62.58.211
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794282990;
+	b=Q16yZyaPAEKP/1kQNiFRHYA3OcCqJJ5nQ6rSa/uWkVojT4lK1o4fh2sw+rwy5M1XYU+R
+	 bC5lfaWY77BLA7KHmBN0IAz/K36i1JhgoWI034RacR1zGMstBlx0cUcnMqXX6aIMIJbRz
+	 PlzEQVH+VQ6c2RNSubuk6Nj1yFScaVj2s+QZquVLHTnFNs2XzGvJcGDxZ08pNH6y9p68E
+	 Nvy8qA0w4Z9FnO3fL/Rgy/hRkdLbPhj6hvly8QNzNIx8sIDfS6YvSKmRZTVKiGV1ZJBdi
+	 iK8Ze2aYhILblHwC4RyCeLgK8quEe/iT2MejaID0y57HOu/g6pPvMPQ+QAkvhR5SdNg==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794282990;
+	h=Received:DKIM-Signature:Received:From:Subject:Date:Message-Id:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:To:
+	 Cc:X-Mailer:X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=HKijrm4iFxv0lGr5+TRTQ3vfM4oyEPdmlY0fk3stieo=;
+	b=RcTn3/CUVna8V8jNhp+Ox0QWAqotz71YVfklULCRyJpqidsoujP8nJCJ5N6MJQ/cBg6j
+	 uMQjKYLWH4ifXHFnvv53F0RJ4w44xr8EfP3Xf7XMWi+sN50f6Vg3YY05+1eSZVOrSAgUW
+	 851JWbgXXRhsCpsyqhh2HrX42J5GSPoKYSbfGpUuNpgN1gHQNkpzZwJMZMj198KQP72w7
+	 0qhda+dd8PNHYlFaI80vcVaFWNHzT4exfIda3eLEJxaNY1EBgva/mkgqkuJmouuVagf7Y
+	 0UGwVjEQsmZ3vtBeXwLj+bNsTSoUvo+vDniaI3vzgbx7338hhSPB00Vnp2CN8vf2WFw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jOxfE5EK;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6C9A606A32E;
-	Tue, 10 Nov 2026 03:05:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C6C9A606A32E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2C5E606A330;
+	Tue, 10 Nov 2026 03:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fZUfxXVy
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1794279939; bh=q9XOYK7wX+00B6FBPgLD2vBKMAkmDiR49f/zui5qQz0=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=fZUfxXVyc6DAD15Sv5X4swqN9j/GmjL8dRnoagW1DhD+O/L6QRUMlsggANFnRQ0Bj
-	 D5veAtp3I1xww6mVMV1Tr+z5flqP62yg5Y/LzHau/FXDztMX9+63fkAMDnicnryiiA
-	 RfwgTnlQNClTOqf3FGIO1LhVf7JathlzAxx97xHI=
-X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
-X-QQ-XMAILINFO: MzHbHz6ky8ylxXRwvpD01xe5vfDxiM5d4sy1mzo5PARKG0efZTjt8CVhuRmRZB
-	 X916dvvbNf6mSP72RiWNcNkqCoNPOcxgBWOr5TCZcXnrUl9jCXlBL7sN0QJ4T5Y3UdWVhkCbnXnpG
-	 vdp9c5eNmkQygDx70y3v0fP7PLOER3IGW5zxJhXPUmUgyxGfqZwX2rtwe3Jtn8xzOde1dGcyuBCqu
-	 B3CmRyVm7R4LWQcm8jyBLfeacUa7dugB4ZvW+mqQuK17Ml+y8ub7YPpJctk25Nys2Mvv769EMSsdn
-	 gyFpV4NtYY5QzHMlFVwUMf61TfKrDif+QvN+eKFykf8fTRr4P6tUAMX8EjrmxtXe08M0wJY2zcUsV
-	 ZCbbeAv7i2dpy57uuj5FAmeBEfOhOs1aeSEH0H8cMnzrL5dxPYAS/1QrmLQ0Tnz/MFmRldWYiA+AG
-	 caiEA5CJiQ34zO8hIgYLPotpS0901vK+WlSahYTacdWKy7Xxs8wr9JFeu4ioN5jSZWUXuuGtEd6Cl
-	 CCMNpacI0piTaP6oj8dLwYr0Q9s2ZbZuL8q0lDeZOUh53rJLmlKt00fsxUCrOkTvd3utbbRA09EXR
-	 q22YlOFFUVDNvtHFy0LzEi6f3c9jZsOK34FYUDLWr2avoGfnlcSFvpxriZBvxtK3CsV2toP3ohc8y
-	 NMr0xO1FEC1hRQsL77+9TGn1IKzFmrjJJbkuQS4DIcFfsC5fXcYtBCnC/y355xwQqk95Ic+wvYhYN
-	 as5k0cJeG2my4Jt7nJ6eEx/rYbxpgRw5gK4DODp4ef2+JhCC1cgOW3at0NnbaX0f450vYnOJHZEBU
-	 HRoPJhcnehr04GJlF3dwm1u3UCTrR3iDsI5b57xBHS3Aw+ZocdVTg9dcE/M2hyvEV8Hc9ZGCS1eXg
-	 onxDMmUiVaEXvBtajFT5QG0P+nx0d2HHMnE7cURCbigcGOWiCt1GLo+jsbEua2PJZlr7qnaVKSEbf
-	 1i9qJJwVhsoLAP1jhHQzWj1nNX9WYsvWLk6T5wFS+mI9dsL6xI77tQvxdJFZ1pPERKAYtrirzDYJO
-	 fpiPE+5B/T4uxxl4WF2yiIWequDXJkDxKHdZr
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?SmFrdWIgS2ljaW5za2k=?=" <kuba@kernel.org>
-Cc: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?VmluY2VudCBNYWlsaG9s?=" <mailhol@kernel.org>, "=?utf-8?B?SGVpa28gU3R1ZWJuZXI=?=" <heiko@sntech.de>, "=?utf-8?B?T2xpdmVyIEhhcnRrb3Bw?=" <socketcan@hartkopp.net>, "=?utf-8?B?RGF2aWQgUy4gTWlsbGVy?=" <davem@davemloft.net>, "=?utf-8?B?RXJpYyBEdW1hemV0?=" <edumazet@kernel.org>, "=?utf-8?B?UGFvbG8gQWJlbmk=?=" <pabeni@redhat.com>, "=?utf-8?B?U2ltb24gSG9ybWFu?=" <horms@kernel.org>, "=?utf-8?B?Sm9uYXRoYW4gQ29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?U2h1YWggS2hhbg==?=" <skhan@linuxfoundation.org>, "=?utf-8?B?UmFuZHkgRHVubGFw?=" <rdunlap@infradead.org>, "=?utf-8?B?V29sZmdhbmcgR3JhbmRlZ2dlcg==?=" <wg@grandegger.com>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, 
-	"=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, "=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re: [PATCH net v8 00/10] can: fix Rockchip TX stalls and bus-off restart/close races
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=jOxfE5EK
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794282989;
+	b=IKdzctWWbs6xNMngL9Wf3zgQ5u8lH/w44HbHzW3BCrBsbuhXiM5C5+dLfnjmjMvPNm53
+	 AsBw3LhZgqwf4JP+wfjPQ+QkuNlzME09tCQ3V7GJD0Gck5GjGYavcke845CBccjjCwAJA
+	 bFkukdI8XEDmuyIOlJJb3aLj8eNr9BDh9l8IgMcqLaw2VMILzWDTwKsD0C4VY4wTFA5Eq
+	 jwIGvjfQx9zZUANLGu76HjX5pxYoJzNbY6KajRTsEhoEKXEJuGJdrP7Omh/ZeRxrlHZRB
+	 PlFE9v1Os9pGtTvUDCpb462EbIm7iihZiH4qs0Jhz0h+S8srDdACoEypLpRUFPXpqEg==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794282989;
+	h=DKIM-Signature:Received:From:Subject:Date:Message-Id:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding:X-B4-Tracking:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To;
+	bh=HKijrm4iFxv0lGr5+TRTQ3vfM4oyEPdmlY0fk3stieo=;
+	b=vpykQM1P4U6POx7/rhaJ5aQnoX41Zd4i7P6z864OJfe5JiA3A8ktj3tBT1ApQjc84rbq
+	 sFwZkmGE3E7lfmi2mO0eI44lEL1WsEf6f0iDbDE9xNZT6OTXGqD02lzAhWy+ZebPnt+qR
+	 IkcQOdyZef2HXkPx02cdm5DjZeAl7WZG50yDkJ6dlhHJjprinFpEW9Ph4iO4hQS/zVy21
+	 0aaOnTdciHGOhEuDeyRuqvwggV03lubjDktnZho/E5m5cu78lkl9KEHzs5xI4nz125qub
+	 V+zRcyE2Ma6ALn/y8XiZ+9fXJkIHam+eoKdLnUfFiwznT4TVFCS740fSSp7BAtzw+sw==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id BBBE81F0089F;
+	Tue, 10 Nov 2026 03:56:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794282989;
+	bh=HKijrm4iFxv0lGr5+TRTQ3vfM4oyEPdmlY0fk3stieo=;
+	h=From:Subject:Date:To:Cc:Reply-To;
+	b=jOxfE5EKwTHeW7dc43lRGNsWYloNduS30LcjgjMQzNRTcfry555UUpcXymCmv7cLw
+	 CNtY6e1WpIQywCa+6cpjYdIOW8H3q4xi9b/cQE6ZWEWBXag5aIOKgctJMxCFkBop50
+	 TRtCqcKDOEk+Q+M8Q2EMbWcX3QcMpCS0IeJu64tl++76LAKQbGDZ75u2hj+3Y759wn
+	 c8oVq1RoSLIZES5PmjcGMo3XnNcJIZCfI0a6ctPNgE8gOqd3so5EA++gSvUl+VwCNh
+	 gQY9XOsDKlYALMHG39kCN/pCTuQzZ5isWbZCcESG1fp8qigzX226Of1X6qmbvECkVJ
+	 pF/Mx8HDz5TmQ==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 47002487DE;
+	Tue, 10 Nov 2026 03:56:28 +0000 (UTC)
+From: Joas Antonio dos Santos via B4 Relay <devnull+joasantonio108.gmail.com@kernel.org>
+Subject: [PATCH 0/2] can: esd_usb: validate data received from the device
+Date: Tue, 10 Nov 2026 03:56:27 +0000
+Message-Id: <20261110-esd-usb-validate-v1-0-7ee499b4926d@gmail.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -68,30 +82,59 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Tue, 10 Nov 2026 11:05:37 +0800
-X-Priority: 3
-Message-ID: <tencent_F59D327809C523BE014488357EEF4D163408@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261108-rockchip-canfd-restart-close-v8-0-3e7a23fd9eae@qq.com>
-	<20261109112402.283c16a3@kernel.org>
-In-Reply-To: <20261109112402.283c16a3@kernel.org>
-X-QQ-mid: xmsezb41-0t1794279937tom1cqfol
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAOuV8moC/x3MMQqAMAxA0atIZgNNqYJeRRxaGzUgKo2KIN7d4
+ viG/x9QTsIKbfFA4ktUtjWDygKG2a8To8RssMbWRGSQNeKpAS+/SPQHIzlbu9AYrkKAnO2JR7n
+ /Zde/7wfkG2JqYgAAAA==
+To: mkl@pengutronix.de, mailhol@kernel.org, frank.jungclaus@esd.eu, 
+ socketcan@esd.eu, joasantonio108@gmail.com
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794282987; l=1242;
+ i=joasantonio108@gmail.com; s=20261031; h=from:subject:message-id;
+ bh=NrnaLsUdLYntN7kCE3mY47RXA863esuDVw8vT5S2pSI=;
+ b=l5YWgTSBNmD5y5+OG7ciWxSr/DGlFJJO4JiGeGn0JyeVpi1AhNsSvNO57ZSpK5QajBm2IWBRf
+ fIdDy92OrWsABLFuxxVK9rcsj5bax3v4kHfwn0WXsqEnCfP/smls3Go
+X-Developer-Key: i=joasantonio108@gmail.com; a=ed25519;
+ pk=ZxAznJT/FcPPdzLrDDFJQm4LLjjHVGBBqDSG3TXS23w=
+X-Endpoint-Received: by B4 Relay for joasantonio108@gmail.com/20261031 with
+ auth_id=1371
+X-Original-From: Joas Antonio dos Santos <joasantonio108@gmail.com>
+Reply-To: joasantonio108@gmail.com
 
-SGksCgo+ID7CoFN1YmplY3Q6wqBbUEFUQ0jCoG5ldMKgdjjCoDAwLzEwXcKgY2FuOsKgZml4
-wqBSb2NrY2hpcMKgVFjCoHN0YWxsc8KgYW5kwqBidXMtb2ZmwqByZXN0YXJ0L2Nsb3NlwqBy
-YWNlcwo+Cj4gcGxlYXNlwqB1c2XCoGdldF9tYWludGFpbmVyLnBsLMKgZG/CoG5vdMKgQ0PC
-oG5ldGRldsKgb27CoENBTsKgcGF0Y2hlc8KgZGlyZWN0bHkuCgpJIHVzZWQgYjQgcHJlcCAt
-LWF1dG8tdG8tY2MsIHdoaWNoIGludm9rZXMgZ2V0X21haW50YWluZXIucGwuClRoZSBzZXJp
-ZXMgbW9kaWZpZXMgRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2Nhbi5yc3QsIHdoaWNoIG1h
-dGNoZXMKRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nLyB1bmRlciBORVRXT1JLSU5HIFtHRU5F
-UkFMXSBhbmQgaXMgbm90CmV4Y2x1ZGVkIHRoZXJlLCBzbyBuZXRkZXZAdmdlci5rZXJuZWwu
-b3JnIHdhcyBhZGRlZCBhdXRvbWF0aWNhbGx5LgoKSSB3aWxsIG1hbnVhbGx5IHJlbW92ZSBu
-ZXRkZXZAdmdlci5rZXJuZWwub3JnIGZyb20gQ2MgZm9yIHRoZSBuZXh0CnJldmlzaW9uLgoK
-QmVzdCByZWdhcmRzLApDdW5oYW8gTHUK
+Two fixes for values that esd_usb takes from the USB device without
+checking them.
+
+Patch 1 limits the number of nets reported in the version reply to
+ESD_USB_MAX_NETS.  Marc Kleine-Budde asked for this clamp during the
+review of the esd_usb cleanup series in August 2025; as far as I can
+tell it never landed.
+
+Patch 2 validates the message length in the rx path, so that a zero
+length cannot stall the URB completion handler and a message is not
+handled before checking that it fits in the received data.
+
+These issues were found with the help of an LLM-based code review tool
+(Claude).  I checked the code paths by hand against v7.4-rc3 and
+reviewed the fixes myself.  They are build-tested only (W=1, arm64); I
+do not have the hardware to test them at runtime.
+
+---
+Joas Antonio dos Santos (2):
+      can: esd_usb: limit the number of nets reported by the device
+      can: esd_usb: validate the message length in the rx path
+
+ drivers/net/can/usb/esd_usb.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
+---
+base-commit: b3dfbde62cf1981c4638939c159dfd087b7a72e9
+change-id: 20261110-esd-usb-validate-14264b90e5bb
+
+Best regards,
+-- 
+Joas Antonio dos Santos <joasantonio108@gmail.com>
+
 
