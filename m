@@ -1,76 +1,100 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.46
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794309392;
-	b=f52LBzTFGp0IzXM9ixiiDnDRKS13eJsvBUWV0oc7iX5wpd6rr959a5Uqufs3fKe6Wxqv
-	 27OdHcv6rjlLC27rr1ZGlNJk6352lQaB7qyoNorW0BdMl+OnPlRXRDlI5LLuzUIp/TrcH
-	 s+2o4H/FGydt8qsDq6ZShYWlpPK9/R7kxpzSozeNhDsy/1qmE1nXeLaA7z4jxqquixZqb
-	 1Jpwqyj8KoFBTNLNstiPgYh+rADpfioV33kxKmHM7XOWEuEDO0Qg0HPBFe9bMOXCkMMTE
-	 gASEA+M3YwoWfXL4Ykp73G9L+IGcjJEP9AQ7jPAodLw2Vy9MfgwyogXqluYLhy9PZ/w==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794309392;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=auzMHF9mizeGPb4pIAKNV1dcFrP9ke4ZkvXnr9sGJcA=;
-	b=MlhVVaoZS6syQ/Tdvznqae7tH/D0HWssAk7IHBKZAz/gYuXqvrXdcum6/MDn4ab5OzdB
-	 LCg3QCtuUcjn4USJDegavopDP5XfgCEYz2iWOBUJn1dfNAY09RozrL++wZQTvJNXnWqTd
-	 KzsbrJ1J/iRbrghAKgnVDnBcoi1CBI5Z2oEHwh5TCkr85P0D+/7p10Rkuv/p77KvKQYca
-	 djnCcj2VsHs80XL0/9pvQHYf5/7mV6paTF+VcekUiYAHvY0Gs2B+lVaFURAiL/5/g/0Jl
-	 DaOABxekroSeRJifad4f5npf19H251CGAUuyRh3b7uO8/lAvzPqt5SQ99cJSzTAhmbQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=linux-m68k.org;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.216.46
-Received: from mail-pj1-f46.google.com (mail-pj1-f46.google.com [209.85.216.46])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794310097;
+	b=pflqn+2WQmQw8pVJHu5K5QdyGlghTdVz2Ke1dnrYDQ1iv2yD9RnQ2MIytkYyk9vH795r
+	 3We+eT+MkB0MJ5h4FEOjLfr0h9s8lCqBGZ84MqptdmWdE/D/YnEzwe2ajCfC00z+VjpZa
+	 RJGDeYjbqeui0nX/bHeXhyOHXZl/x7XIDsDCvxoED5QDgaNLJ6rzMP6iTx2snlsTqexPx
+	 r1F2UrSclEsKzNl6ajqUcKyyLGCWEn0KbokoBveaaUqEJXfcM8XyJrBQslislfc636GUA
+	 SDW5Wc1CyeqYC9cNBZUzQmwDD5tlcfiaeATgy7Q21Zs40hzfbOd6WM25xONMpaM7H/g==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794310097;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=I7+FoXiAXnYTR4FAAqnJM6g7iMricC9HMOscVkZdRQc=;
+	b=1rvWaPa1xpGJkcSbzQp3cYxeSWXnGUOXXm1+evn7fDBkBsV51gM+OcrqX5FtUt3dvqkg
+	 vgOYCtSXuqNeyb8a5k2/4dZZsyj34r+i7xMfkuaylabpYC1KR9/oLlhEpHG95Z9t3Zx0a
+	 h2DQWldHTuPdLxmTXBz5zD5bby1y8O1Ez2RzrfpSlifX/Avs55fbExOmtRB+FRF2qP1/0
+	 2+TDQXFmHFQ5cVtbfXTbQq0q8Ohwz4HlQwIP+Hc04x78cMnihNA6wQeELk+D6t7LzeG8g
+	 ZWU2LBoxEoIOiX1zVGhwtMke4ZGszNEAwnSY03rYGlsuX1CJAhfAY7hEi+yxmrFPKog==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="VS14/sgM";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F0D606A31C
-	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 11:16:31 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A8F0D606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f46.google.com with SMTP id 98e67ed59e1d1-3b155f50c24so1247537a91.3
-        for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 03:16:31 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794309391; x=1794914191;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=auzMHF9mizeGPb4pIAKNV1dcFrP9ke4ZkvXnr9sGJcA=;
-        b=hbSDYPkebxG4itmVFAi1xX1R7sXZ9LG+hFVpwvMrQvF3i4bZgwiIgrUKtswQbM0/m3
-         qw2e/8b5SAd8+Lwk94tX7hK8uxQhHDWQP3yRxxXNAHpFn6xIWA1tzOLkoL7wruocuz02
-         kCa239ONgayXtskVZxTADASpiqlArSpyj9eOSBZgrZta0bLNAN4oGuESgAKcnTi9GD1i
-         Aq27esMqy6eDGqch9Be6gGUfjgELxFIN1ffzL7bDnsA51wdItul1Q02iCN3cSD5EJ2yX
-         7gwXSpzYBNJG7V9fsjMdj1PBMBjGOhf8faHO1obmpTEOKB0iKCnUSzIl4z81zY5jz+hX
-         86tw==
-X-Forwarded-Encrypted: i=1; AL+hErFjaAenT2tXRCiWrIPalsUFRlnp7Nmu9bLoGunOe4C8j+PIqQa/pDi46IwjIEmRfKTfjqXY1XxtC04=@vger.kernel.org
-X-Gm-Message-State: APuU4Z/g3+QvOB17QvKxPRMq0VQacVpNNMIOmqaCY7RMISNdW/YgPagp
-	iBnbJ8KBDsepNQ/wsOImZzcBOQ1lMZE4R1fFs6Wal0DNLJoxQELfoL46gL/rx7cF/tE=
-X-Gm-Gg: AYBFou3jDr1bq6Chnsiazw1DPUrbCCVotGQ79+Z8vUPShVyF0j3VREiRbHba/s2ZJaA
-	GvLAjGAOiM4/ZElBoCLpaqv5UW4bib80liZUBOm880EZrK7+qKszFHeZfsuQz7639+PUyryYUo/
-	M1XEF7Nna8NunK43uomJVC5F5qcubBtvWlq7RufCnMGFD7IUUDOSnquju8prtcLej1lYY6jd7Pz
-	UElk6Lyepgg6YcDcLECyUf/Do4gzoSp7DUkfagva0Mgk7K0Hs9rB7AkxC1oXrwJPIviNO3McSQI
-	W6sOF4X3ebtYg6RYhi+3TOxz+bz+8IF0rSnuRg7aNUbuDDI3CAYmRO1PAOEeTQaqRcxlFPyya00
-	0OsP5kXTQ75UtcyqevUHM59XMHGQfLxTQWlCwTmDxLCzzDiqXAD/OhQZ4IXcyNEOY8oLp57wUk6
-	3Z7W1JDTYOo/8qADLCrN37cKOhKT02Fo9GrC6xj3r9VnVyO9U2CgymyAd+qL0cuZtfpyDWMZ6QU
-	Zydh/r6Wvom/I67ONDeRdtLODXsdllY7uoq0Zrcn/uTDt5SIUcjSTsJEmLud6YGte88321ICfpC
-	qjWSFX6bJ1y+Xh1X2uLdN0l64EIp3yB39lYj1+8U1Q0lfwcQZ9c0C11DnAS17bGNPKakob5E
-X-Received: by 2002:a17:90b:3b44:b0:3ae:2969:9031 with SMTP id 98e67ed59e1d1-3b166ce0088mr2633658a91.54.1794309390503;
-        Tue, 10 Nov 2026 03:16:30 -0800 (PST)
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com. [209.85.215.176])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b16779d5c8sm3549177a91.2.2026.11.10.03.16.29
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 10 Nov 2026 03:16:30 -0800 (PST)
-Received: by mail-pg1-f176.google.com with SMTP id 41be03b00d2f7-cc1bc88a20eso1276349a12.3
-        for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 03:16:29 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErGq4mtAHlgACYwONSfYarjLRkaq/gSlygY8ZjJxidVdRwLTP3nwiMvRDXJpIxohmZZ1p+sy3B5iGww=@vger.kernel.org
-X-Received: by 2002:a05:6102:688e:b0:7d2:d65f:b479 with SMTP id
- ada2fe7eead31-7d301c226cfmr561698137.28.1794308940907; Tue, 10 Nov 2026
- 03:09:00 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30902606A326;
+	Tue, 10 Nov 2026 11:28:14 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 30902606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=VS14/sgM
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 8FB08200912;
+	Tue, 10 Nov 2026 12:28:12 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794310092;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I7+FoXiAXnYTR4FAAqnJM6g7iMricC9HMOscVkZdRQc=;
+	b=VS14/sgMg/EYq6G24pQt/Pao9HVnMwghNqa1Dni6A/dK1E19pU7pZ04wct5qp4gzCeZwk+
+	vGNmhlwTX54nysNcrmLdZ2TpjxeAr4w5SiVrnnBJMb/27kcoGefB+JKnr0EayXZ8MTcnHc
+	B/qozjgTIubEFtYhVFOdlo7gnYf6dKnuUXBg0ibCw5Fo8yQSYA+sC1+TRmPlGGc6Vp5uPm
+	z1bizqYI4MzFIFV42rlrMGY7HjsG2Zd5GteBrCHFSDSZQCGuZyT5u0JzV5tJTG9dSdJkYZ
+	yfjv9iC9rM6fXE0PkLBLKhnJx6JFOqTQ5CWxhJdGR3P8djYQXwA9GZdowhLSag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794310092;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=I7+FoXiAXnYTR4FAAqnJM6g7iMricC9HMOscVkZdRQc=;
+	b=I/ukohcz4i1+JrRf0PdAf8d5BG3fHPakwR9eNQFX4FdxA7eH1qvi2Tbn7o7xSt1w35VnNR
+	c3F3qD6fDinoOjEksWh4b4llcrWhghjG+UGkLXrY9FOGyJLzdi+agOlhrqoEsP21RaY6F/
+	0H5sexRB/ANtxhh2TdRg5m0N7ZItiTSHVQb1S1S+qFZMbWA8yYHFsnqy4Jti7UAj3Zc3eT
+	09A0aR3HIKf8XUlVT/hnXMg35LKAd/plKbfckNSNc6vbQ8jDp8bExcvqKYhpteWCJN5v01
+	7cnihzmAh6jhiCnrXO3dcwBZG2lT/jPC59yADaa4EHpbfPM4LwG7fwoaCm8hBg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794310092; a=rsa-sha256;
+	cv=none;
+	b=UJyK30gDMGm7X8N5rL4e0HNcjvoM9kmujer9PjzU0GHslB3wCzfwAqHnbF0EfsZUqwTBwi
+	929b7zK7aJXr6QZ1qENHT8FdtIdp//MFg3SMTwazhj8nZr9FVKDacJs6JbqxtW/4D8UX0y
+	kLrnH5yrg+W8Uk4hFU4q9ba4mY18aTgbkVEHuTlqejuia2nMckn6QJxy/T8ysuci+oyDAW
+	VmMcyOta+A5Gh/h1CKEkp3/hFCn/FDJfoV56e4qpxwa9l4qe58Z2ExotEnUVBnHVFox7zb
+	/G2ZIBBCdxVmBdE9eEP+NA9d6QYR7EU6P48P/I8lv+/ysh5ivFu+mJd+bxduWg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xQk1M-003U7r-1Y;
+	Tue, 10 Nov 2026 12:28:12 +0100
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 192D95E6817;
+	Tue, 10 Nov 2026 11:28:12 +0000 (UTC)
+Date: Tue, 10 Nov 2026 12:28:11 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Geert Uytterhoeven <geert@linux-m68k.org>
+Cc: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>, mailhol@kernel.org, 
+	robh@kernel.org, krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
+	biju.das.jz@bp.renesas.com, fabrizio.castro.jz@renesas.com, claudiu.beznea@tuxon.dev, 
+	linux-can@vger.kernel.org, devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+Subject: Re: [PATCH v4 0/7] can: rcar_canfd: Add support for Renesas RZ/G3S
+Message-ID: <20261110-urban-bald-mastiff-d3cc34-mkl@pengutronix.de>
+References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev>
+ <20260929-loon-of-remarkable-romance-197df6-mkl@pengutronix.de>
+ <CAMuHMdUE1Jh605kgj4ADU7p1UjE-0u3ydBehL_5wsQPbe1EPMw@mail.gmail.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -80,51 +104,63 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev> <20260929-loon-of-remarkable-romance-197df6-mkl@pengutronix.de>
-In-Reply-To: <20260929-loon-of-remarkable-romance-197df6-mkl@pengutronix.de>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Tue, 10 Nov 2026 12:08:49 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdUE1Jh605kgj4ADU7p1UjE-0u3ydBehL_5wsQPbe1EPMw@mail.gmail.com>
-X-Gm-Features: AclHuK8XmPD0hM0Yy0td_5BzKaCizARWIEsuGHtnTdehhY19YbtXTFG2NJSt-Nk
-Message-ID: <CAMuHMdUE1Jh605kgj4ADU7p1UjE-0u3ydBehL_5wsQPbe1EPMw@mail.gmail.com>
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ubmc5fnivmtvuzul"
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdUE1Jh605kgj4ADU7p1UjE-0u3ydBehL_5wsQPbe1EPMw@mail.gmail.com>
+
+
+--ubmc5fnivmtvuzul
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH v4 0/7] can: rcar_canfd: Add support for Renesas RZ/G3S
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>, mailhol@kernel.org, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	biju.das.jz@bp.renesas.com, fabrizio.castro.jz@renesas.com, 
-	claudiu.beznea@tuxon.dev, linux-can@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
 
-Hi Marc,
-
-On Tue, 29 Sept 2026 at 16:19, Marc Kleine-Budde <mkl@pengutronix.de> wrote:
-> On 02.09.2026 17:15:37, Claudiu Beznea wrote:
-> > Series adds CAN support for the Renesas RZ/G3S SoC. Along with it a typo
-> > fix patch was added on the CAN driver.
+On 10.11.2026 12:08:49, Geert Uytterhoeven wrote:
+> On Tue, 29 Sept 2026 at 16:19, Marc Kleine-Budde <mkl@pengutronix.de> wro=
+te:
+> > On 02.09.2026 17:15:37, Claudiu Beznea wrote:
+> > > Series adds CAN support for the Renesas RZ/G3S SoC. Along with it a t=
+ypo
+> > > fix patch was added on the CAN driver.
+> > >
+> > > Merge strategy:
+> > > - patches 1-5/7 should go though the CAN tree
 > >
-> > Merge strategy:
-> > - patches 1-5/7 should go though the CAN tree
+> > Applied 1...5 to the linux-can-next tree.
 >
-> Applied 1...5 to the linux-can-next tree.
+> Thanks, but six weeks later they are still not visible?
+> Same for " [PATCH] dt-bindings: can: renesas,rcar-canfd: Restrict
+> resets in top-level"
+> https://lore.kernel.org/20261009-holistic-warping-puffin-3b92fe-mkl@pengu=
+tronix.de
+>
+> Am I looking at the wrong tree?
 
-Thanks, but six weeks later they are still not visible?
-Same for " [PATCH] dt-bindings: can: renesas,rcar-canfd: Restrict
-resets in top-level"
-https://lore.kernel.org/20261009-holistic-warping-puffin-3b92fe-mkl@pengutronix.de
+I tried to get stuff into the last merge window. For various reasons it
+didn't happen. Anyways - I've pushed all queued Renesas related patches
+to the can-next/testing branch. I hope I've collected all the latest
+series. Can you have a look?
 
-Am I looking at the wrong tree?
-Thanks again!
+regards,
+Marc
 
-Gr{oetje,eeting}s,
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-                        Geert
+--ubmc5fnivmtvuzul
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+-----BEGIN PGP SIGNATURE-----
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavL/yQAKCRDMOmT6rpmt
+0qs4APwLy9Cwk00kuD3KSZmcaeZ7HE18HtTzyb0RIv91mTY89gD+Ob7LZZP5DT9B
+rWbIbde/9R5JHVC2ElHyP0lIP2mtIgc=
+=7Ee6
+-----END PGP SIGNATURE-----
+
+--ubmc5fnivmtvuzul--
