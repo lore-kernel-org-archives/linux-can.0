@@ -1,91 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=85.215.255.50
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1794298821;
-	b=eRR8vsZZw9ODZcOMoUC67fRq32x4c23qPXxWfAYkFJfOMs4sCcNROAtDZ85895/epGdq
-	 2eZ7DuxjLrEcmpEgWH/KMp2YXZjzG9kZ5ZGeUecO0dl/PjDsJ4tiEgBGl6l1Pvj8AqqB4
-	 4yAKHt0NoHfPYmU5JKwUvOZInbfovOIJmWHV+GTY+wOwFoTTWI45tMcZ3T+Mpkl/U/FYU
-	 iWgLlb09u2A0s/3RAC8/77uwn363CrNAdSLFvDO5w1RWR4sxSTXHJt4udpsfGgk5Kn4ys
-	 OtIPPSwFo3E3e/hKe49woeBCL66fVlNsROqTx/Rl7Jf7SSZ9MKAXCjw/5WqEw/kTRdQ==
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794299901;
+	b=F8S9yuK1lDSSA2omfDdLhukykKaNN5U/dI5MKLfRd6+nOw6BhHh4T0REUr8tBllFv2z+
+	 zO8yVrHGsyULDM1Y92/GCm+A/lbvDKMdbUNXSRlHr5hY8Ri8IN7Q15iVR6UHOJQjkXN+2
+	 JXUdAyNPUvEunwmjloWOjUtfB1Te319Six2J0TXc50Cm6z1eDbd0vtvc+RX5JmtPlEGno
+	 +CUGmCEeHeoJUwlrPc0L5lXJQJ7MLCcb3TPAFdk6zRubGXFCDkZs4KccUPcej8gYjfci1
+	 G3ZYuXuY/TJHQqJaMKa4UAivqpegtcFORU1CS3IWm0+3kp3xgvBQ2rtxVsuWpnHl5kA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794298821;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794299901;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
 	 References:Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=bDQzzHO9VqFtCAL00LSoPOvY9cYkmE0SfpK298qffE4=;
-	b=Uz+aVnJZLRHqcfdevrnNOxnZ5Kd605iSEYNTRbajrgrfkK6KB0he9I6vfXr/5kf3VrH1
-	 oy1rH/KdSJ8sjptwo9de0fqng5SUYu0K1uY5PUY+HwGy8OIHXQ5Yze1qljd7ZxuU3CDS0
-	 JAlAb0M2HcHlIziN50ErddjtDGCDclhs5LjX8GNzQXtYoAuL1f2QqaWHi3nVXk1ZADVwJ
-	 +ghJvt4T4EoEzTDpVBf5EYpPnAV3afeePhmlVitReWaRb+DyX0iNotoA44S+M65+GOjZG
-	 TUIyBNzPOf6dCpWUbgNAQPoXttYHn7GDg/rwFqBtdRdMdNsJp5QDvO+KBVzVrcaQGwg==
+	bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
+	b=neOZ/IjVn2eVE32pj2a2xqLwqS1lSLT/UjPlaBpsMRTzcRyGAIx6l8nTIW3BjzW4NbJB
+	 5VdxrGkID7arCioXj0Ww/UvCwjzt+PZq36kWwn7qm0jTqX6FmG3uLL7Jurn6QB+huYwyW
+	 PwJKVE4ZQjySuZptS9IKsqog9jAEWcKg7Za3OfOOqyc+sGiKHywg5Hj0b0BShRR9DG7+N
+	 oRB3mysO5KHW5RfgGtxw3s3iXa3xwhzDJWH9mm1I2w8f+0R+m41fMxi9qH0XTK+RBU4Sl
+	 d3goF+7JVvb9gfTGOKhvCXXqSDCcS/qOYD4GEB0Ry2mPy/RBzhSFlJxaoPm7x1OpXNA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=h+ylEJaq;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dU3CcJ4f;
-	arc=fail smtp.remote-ip=85.215.255.50
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=K4IRRMkv;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="54K7wU/l";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ACCB606A33F
-	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 08:20:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5ACCB606A33F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3EB1606A325;
+	Tue, 10 Nov 2026 08:38:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B3EB1606A325
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=h+ylEJaq;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dU3CcJ4f
-ARC-Seal: i=1; a=rsa-sha256; t=1794298814; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=K4IRRMkv;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=54K7wU/l
+ARC-Seal: i=1; a=rsa-sha256; t=1794299897; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=HI6mwod5QcDFl28CflM44zvBXMP6KpiETp1BQx0u1z1YaFqMbt9Ovi6T8qWEuYokxc
-    U8V8DXf8ICPdT3giV6aK3HfjAu8H8XRX4iYi55wkWGYBf7PJ3NhYskJuUYKvIyLAEQsK
-    e7r809AoP0qPtWEvJ3gGQ2tp/LmGdfF+PavRRgBmBWbTahik5EKMY7t1l+LbcJJ5q0NM
-    4vyoP1njtW0VGFC48D1fMN8HVoRXQIb6Ef2IlwwIrRn2NsJRfugPELfFD4OokphIIEIF
-    qLQOfgbPdRthrT92olU0neTVl55NVe8uGA/Ds1Uf/gJzrfIk81Ob7q2NBRy0f/W3eHbr
-    1a8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794298814;
+    b=rF/jZaXZooc4QGQIShzxRisw3MOImSFty7+jEvO+UZmbeOx10EPnxUj+zAdk+tkfkn
+    RuZLe4odc9KWvUkWWljuwA5ScheCTEQS9oBnAy8zJlwD22EfKzAMphHurBfi7gza5dg1
+    qBnm1eQj1riotr797kTfdg5Fo4br/AibRLNUqEV9+9uFs/oX7XJHIx0R4imeeRSyAi7X
+    h5aE0WV/M4HLZwtiHVHw/FBiN5q2mPRESTXgZXZu5evCXnfSloqEgsposPMkT+P8F2fR
+    APdfoMnXSyl/E7xcodRWIcSxugB9D9rLIXTvptCGEcYZmkCSRCd4atv5f2VfVmnnbv+G
+    Wh5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794299897;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=bDQzzHO9VqFtCAL00LSoPOvY9cYkmE0SfpK298qffE4=;
-    b=XTSXVWy0LlOMiN4Vcplv7P+yLy3YSuXYAtq3NPYf+rndQWPJFUOirza5J+LX0RJOgu
-    6BMLgic3xRDhqvtbuje4V83xvPGF6hw2FWZ5YV5sEeOReUzRHEimvgQLPYrdGpYggSGP
-    mVX3PNstmYlvqyrDR1FrmzGwZsQYMRnwJCOJUd9tkXQvK9Gr8BzJFo/JTKlV/CZZU/t5
-    yz/xJvPgBPSapXecs6ZWHiVym+To6tIapJXJNC74Ns+VuZQe+JKklM8tLx+NTkhiR9n7
-    hVupJNwj8zYw6BlWJiGH2+QmMW2+Gxf6wRtrTni4yUtFwOFF01o75asoXaUA7uguNJDV
-    oTiw==
+    bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
+    b=LIXehTy8A9Flf7MUNDMHUrrkinvZp2qyEXMhVF9fwkdm9fYXhsAL+eX+hmi1G+NkNU
+    84cGHol3H7m4DxUy//vDXX4ZsWRCkspIv0YKAtE478rKURX7ot8xhoFMANKIoXwy+Xoa
+    eWYk/J+HpyAaWcPx7ZeQEoef+xtS2kDGxMcLJeTO+an/EoJ49mqNHJPOvmf2wnc/A41B
+    Uf0aPttzfn2WpWpFZCez9BT7rUinF0Up5SR9ZTNIBHZDrbqtgQ8+gGN+3OPzlz6kToJh
+    owz3pyKijUjhsq84M2UNja3FFYqJawqWezlx3hAOKu2cqkXB/iA2NwiKhGuLR3YaeLNi
+    kEPw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794298814;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794299897;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=bDQzzHO9VqFtCAL00LSoPOvY9cYkmE0SfpK298qffE4=;
-    b=h+ylEJaqQdHasNOejxUEmHPX2jkzwU1P7tRrsyR6ticqydDsfi+sHsH7TUaC9wZ5uY
-    WAK85QIeXeL5r/CdgMi8Ez5xKG2k3xnn2mrgGju138zDEA7WfJfKkFXbx5b1ZoajJEaD
-    AcVCuIXFtGuvzA3BeSPzkj0D4t0wt/08Yv+x7zfhpMIbqtiyTLvVV6F8jNOSAxsF8v2m
-    QLlAMcGJlkoInQsAjB/2f5q/P9PcWVTAWGuvmyFdLfS+t4qAOvlWYVpVVgAKqVcEDP7u
-    vihuMsX4t7Fx5HxYZXGW9o6sbWtoF4sWG/aLsWVbtY0ekNJQSJ7MZHokDQ3lkc6R4e7F
-    agTQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794298814;
+    bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
+    b=K4IRRMkvAhUlDEPkpvyRxUubGSxh8MCK9EgcHoHdxbYgwjHVINGAtQPcuKRo6cp9v5
+    FR//MKn07DnXhJK5EGfuGkuX9L1LEFJvzM+ULQYf/vsacKw9m08P9vNI6Y0aTohiptPL
+    yF9HUr+RNFaTbbVzVFr2WmHUkuPuUo2UdIh3p4/Tlw7+y2caWmxSgUiPcuTZPt6xKcSK
+    zr7LItn4LchH7CsRuBta1yZ+sQ2wyydmt1mhdjLi6EjK2ne+YoQ2LldhhEeWgkc+SQMi
+    JEWXFXFO+KP8cg9kb0e1MsQMv+5PEOmUyWxoNX0GUY4o72gh+S0f1ZaTxs9DqkGLLQEG
+    MEVw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794299897;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=bDQzzHO9VqFtCAL00LSoPOvY9cYkmE0SfpK298qffE4=;
-    b=dU3CcJ4fQiAko7Jfs7Dvp2qX6bQaE1B30mWJ0j4Lf5uP1pd5tmkiIZo2+4yzYAzCsI
-    T+WANc3HqEcrJJ12EBAw==
+    bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
+    b=54K7wU/lJDA6ifTMXpki02gy1gl818vDs9Cz/wdkoIGekNrpTkd0VjDX03m59Nc+kX
+    lKj+zkSWJ4wiom6xMfAw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::989]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AA8KExzG
+    with ESMTPSA id Kfdf2a2AA8cHy5s
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 10 Nov 2026 09:20:14 +0100 (CET)
-Message-ID: <86c39dea-fb15-4228-8e8d-3ae47f8dcad5@hartkopp.net>
-Date: Tue, 10 Nov 2026 09:20:06 +0100
+    Tue, 10 Nov 2026 09:38:17 +0100 (CET)
+Message-ID: <c90c1c35-7f0a-4694-9d29-0a6448d9a327@hartkopp.net>
+Date: Tue, 10 Nov 2026 09:38:16 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,149 +96,107 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] can: bcm: copy the CAN frames outside of
- lock_sock()
-To: netdev-bot+sashiko@kernel.org
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
- sashiko-bot@kernel.org, zihanx@nebusec.ai, kuba@kernel.org
-References: <20261108-can-bcmlock-memcg-v2-1-19fafdfc9d12@hartkopp.net>
- <179428891717.488853.3748927072022061221@kernel.org>
+Subject: Re: [PATCH] can: bcm: Account cyclic transmissions only on success
+To: raoxu <raoxu@uniontech.com>
+Cc: mkl@pengutronix.de, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <45A9B6D8611C63C9+20261110052315.253367-1-raoxu@uniontech.com>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179428891717.488853.3748927072022061221@kernel.org>
+In-Reply-To: <45A9B6D8611C63C9+20261110052315.253367-1-raoxu@uniontech.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+Hello Xu Rao,
 
+thanks for looking into this, but I don't think this change is the
+right approach.
 
-On 10.11.26 06:35, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential
-> issue(s) to consider.
+On 10.11.26 06:23, raoxu wrote:
+> From: Xu Rao <raoxu@uniontech.com>
 > 
-> Critical: 0 · High: 1 · Medium: 0 · Low: 0
+> The CAN broadcast manager advances the cyclic frame index and decrements
+> the initial-interval transmission count even when can_send() fails.
+> For example, taking the CAN interface down makes can_send() return
+> -ENETDOWN, but the timer still consumes the configured transmissions and
+> can report TX_EXPIRED without sending a frame.
+
+This is intended behaviour. The BCM cyclic transmission is designed as
+a time-driven "fire and forget" mechanism: 'count' defines the number
+of ival1 time slots before switching to ival2. It does not define the
+number of successfully transmitted frames. The timer schedule must
+not depend on the state of the CAN interface.
+
+With your patch, if the interface is down (or the tx queue is full
+with -ENOBUFS, e.g. no ACK or bus-off), the following happens:
+
+- bcm_tx_set_expiry() still sees 'kt_ival1 && count' and re-arms the
+   timer with ival1 forever. The op never switches to ival2 and
+   TX_EXPIRED is never sent.
+
+- For setups with ival2 == 0 ("send 'count' frames and stop") the
+   hrtimer now never stops and keeps firing at ival1 until the op is
+   deleted.
+
+- When the interface comes back up, the remaining ival1 burst is sent
+   with a delay that can be arbitrarily long. This defeats the purpose
+   of the initial ival1 phase, which is usually a short burst right
+   after a content change.
+
+- In the ival2 phase, currframe no longer advances on errors. A
+   multiplex sequence then gets stuck repeating the same frame while
+   the tx queue is full. Losing one frame and continuing with the next
+   mux index in the next time slot is the expected behaviour of a
+   time-triggered sender.
+
+> Only update cyclic bookkeeping after can_send() succeeds. This matches
+> the existing successful-send accounting of frames_abs while preserving
+> the concurrent TX_RESET_MULTI_IDX check.
+
+frames_abs is a statistic that counts what was actually sent.
+currframe and count are control data for the transmission schedule.
+They intentionally follow different rules.
+
+The cyclic path has no way to report can_send() errors back to the
+user. Simply following the timing schedule, the same way a sender
+without bus access would, is the consistent behaviour here.
+
+If an application needs "N successfully sent frames", it should
+monitor the interface state (e.g. via rtnetlink) in user space and
+re-issue TX_SETUP with SETTIMER|STARTTIMER after the interface is up
+again.
+
+Therefore I would prefer to keep the current behaviour. So NAK from my 
+side for this patch.
+
+If the current semantics are not clear enough from the documentation,
+I would be happy to take a patch for
+Documentation/networking/can.rst that states explicitly that 'count'
+refers to ival1 timer events and not to successful transmissions.
+
+Best regards,
+Oliver
+
 > 
-> If you believe none of the issues are legitimate, please reply to each
-> issue of Medium severity or higher and explain why the AI is wrong.
-> If any of them are legitimate and you plan to respin, please let patchwork
-> know by including "pw-bot: cr" as a separate line at the end of your reply
-> (one such reply per series is enough).
+> Signed-off-by: Xu Rao <raoxu@uniontech.com>
+> ---
+>   net/can/bcm.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> - [High] The patch is an incomplete fix: an unprivileged user can still
->    block RTNL through a stalled user-space copy made while a CAN_BCM…
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 7bd2aa39777a..cd66b23bf95c 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -375,7 +375,7 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+>   	 * we were sending - a concurrent TX_RESET_MULTI_IDX means this
+>   	 * frame's bookkeeping belongs to a sequence that no longer exists
+>   	 */
+> -	if (!cyclic || op->currframe == idx) {
+> +	if (!err && (!cyclic || op->currframe == idx)) {
+>   		op->currframe++;
 > 
+>   		/* reached last frame? */
 > --
-> 
-> can: bcm: copy the CAN frames outside of lock_sock()
-> 
-> This patch moves the user space copy of the CAN frames for TX_SETUP,
-> RX_SETUP and TX_SEND in bcm_sendmsg() so it happens before lock_sock().
-> The frames go into a stack or kvmalloc() buffer and are passed to the
-> opcode handlers through a kvec based msghdr. The aim is that a stalled
-> copy can no longer block bcm_notify(), which waits for lock_sock() while
-> holding RTNL.
-> 
->> diff --git a/net/can/bcm.c b/net/can/bcm.c
->> index 7bd2aa39777af..3f4c8d8283376 100644
->> --- a/net/can/bcm.c
->> +++ b/net/can/bcm.c
-> 
-> [ ... ]
-> 
->> @@ -1663,6 +1668,47 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
->>   	if ((size - MHSIZ) % cfsiz)
->>   		return -EINVAL;
->>   
->> +	/* Copy the CAN frames from user space before lock_sock(), so a
->> +	 * stalled copy can not block bcm_notify() waiting for lock_sock()
->> +	 * under RTNL. Only the frames the opcode handler reads are copied.
->> +	 * The handlers keep their checks and read the frames from fmsg.
->> +	 */
-> 
-> [Severity: High]
-> 
-> Does this fully close the RTNL stall the commit message describes for
-> CAN_BCM sockets?
-> 
-> bcm_notify() still takes lock_sock() under RTNL for every CAN_BCM socket
-> in the netns, bound or not:
-> 
-> net/can/bcm.c:bcm_notify() {
->      ...
-> 	case NETDEV_UNREGISTER:
-> 		lock_sock(sk);
->      ...
-> }
-> 
-> CAN_BCM does not set SOCK_CUSTOM_SOCKOPT. So the generic SOL_SOCKET
-> paths still read and write user memory on a CAN_BCM socket while holding
-> that same lock:
-> 
-> setsockopt(SOL_SOCKET, SO_ATTACH_FILTER)
->    sk_setsockopt()
->      sockopt_lock_sock(sk)
->      copy_bpf_fprog_from_user()
->      sk_attach_filter()
->        __get_filter()
->          copy_from_user(prog->insns, fprog->filter, fsize)
-> 
-> getsockopt(SOL_SOCKET, SO_GET_FILTER)
->    sk_get_filter()
->      sockopt_lock_sock(sk)
->      copy_to_sockptr(optval, fprog->filter, ...)
-> 
-> Suppose fprog.filter points into a FUSE backed mapping whose daemon never
-> answers. The copy_from_user() then sleeps with sk_lock owned. If a vcan
-> device in the same unprivileged user and net namespace is removed at the
-> same time:
-> 
-> rtnl_lock()
-> unregister_netdevice()
->    bcm_notifier()
->      bcm_notify()
->        lock_sock(sk)    <- waits for the stalled setsockopt()
-> 
-> RTNL then stays held for as long as the FUSE daemon chooses.
-> 
-> The commit message acknowledges this:
-> 
->    "The generic SOL_SOCKET options in sk_setsockopt() and sk_getsockopt(),
->    e.g. SO_ATTACH_FILTER, still access user space under the socket lock.
->    This is not specific to CAN_BCM and not addressed by this patch."
-> 
-> raw_notify() and isotp_notify() also take lock_sock() under RTNL. They do
-> so only for sockets bound to the device that is going away. bcm_notify()
-> does it for every CAN_BCM socket in the netns. So the same unprivileged
-> RTNL stall still seems reachable on CAN_BCM sockets after this patch,
-> which is marked for stable.
-> 
-> Would it be better to stop bcm_notify(), and possibly the other CAN
-> notifiers, from sleeping on lock_sock() under RTNL? Another option is to
-> do the user copies in the core SOL_SOCKET filter paths before the socket
-> lock is taken.
-> 
-
-Yes, that is the right direction. The generic SOL_SOCKET options copy
-user data under sockopt_lock_sock(), not only for SO_ATTACH_FILTER but
-e.g. also for SO_LINGER or SO_TXTIME. In the unprivileged scenario the
-namespace only contains the attacker's sockets, so restricting
-bcm_notify() to related sockets would not help either. Other protocols
-like PPPoE (pppoe_flush_dev()) have the same pattern.
-
-The CAN protocols only use lock_sock() to serialize their own state and
-do not use the socket backlog. With the recent fixes the CAN specific
-user space copies are done outside of the lock. So a socket specific
-mutex that replaces lock_sock() could decouple the CAN notifiers from
-the generic socket lock. I will look into this for can-next.
-
-This patch removes the CAN_BCM specific copies under lock_sock() and
-stays a fix on its own.
-
->> +	switch (msg_head.opcode) {
->> +	case TX_SETUP:
->> +		if (msg_head.nframes >= 1 && msg_head.nframes <= MAX_NFRAMES)
->> +			flen = msg_head.nframes * cfsiz;
->> +		break;
-> 
-> [ ... ]
+> 2.50.1
 > 
 
