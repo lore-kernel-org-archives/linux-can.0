@@ -1,58 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794328743;
-	b=Lu+DRAONJ53lb5857Eya+VJWcbTaGdsKl4ZA7q4IAnUc4gmtSv6JHU46kLLUWBr1oBTB
-	 VpTOsk2LIgfZFGGxLIJxwumCvWbf4jUCKslnFRzoSXbvkAQEqsHHLVa9Zmzr2FzxYUtCt
-	 CMDF6kMkCq3UB5WhAlIuiWkmCou3vUbdquGJQfZhpt5v/4YvVhbxL+JmM83Zq+DleZP4W
-	 dxQyeX97U6zImynqoMTD93W9gctm/fHFf1Eojenhp7jcgzrrZ3l5lWQR5vJbUPt1ibtxE
-	 4fHgJkNg5k3UrI5WbdWiqxyAQ4PxHyJfquo8bl6jjmIKnqRvnyVpwNnNmKUNZ+mmQeA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794328743;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=vcw1cBvSEtlN2FqIjg6q7r4OQdob+cY/u8tWpdzXiGw=;
-	b=jhGYLS6kpOrXdBfuoGCjjQRdUhXZI2wyqs4C66c0kms7F49e+DUbMcojKNRwE9JYmw3Y
-	 07PAbKcBdzKVBNzNg2Wvg3FGkGVLXUta+wx7EPTsD6oE3hNF0SLYJrgFRiIB6SykoGJjY
-	 4kYXgHKA+WjaiI+WUQmNk4lOxwIBj1/rRGG08EBQbIpj2uz2Fy1+t008TXkmSQwLjTH0y
-	 l6ZvTrT2C4FVN2U3qpyfv4NjzAyPnMBtAfV75smDhTdZnTyYmjoKS8Zcnp6rzgtyS9Iaj
-	 dcRqkYDlJ7HJAXEohfa9cP9kyQlTuldhx6MR8ub3GvT1x3JXRFrWAfIhebZJgzBnJTg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BUxBERfL;
-	arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794330680;
+	b=Ylij6QCLnPhGxe5UTm/jox+ICBfaj1A2xAjXYI1dyWCnUecwBJA1OafnUvfM8S9yuiBv
+	 GIRwdrKhTWJiLLvE7OzNAb86HDrjI1TJSN1p5vWOA3VlIEDM5DTut4ecIqBzcVLx+OmR8
+	 B77MpZaF/pd1XGmO17zzgHOXpvVEVoTPwl3b9Q4mp/0CmErCOzHcNAr6e299mxnw4R5HT
+	 m8VCjagI8ZAe8VWIgHkX24vk2kwsmc35QB9Te5QRJtgc6IhBUntIsBDDBRP3Ay6klh9Tg
+	 uWIYKknZ8bmUm2ZrLV6Ft9981q3xA2QsUBTTq00tbTUm9pL+FU2pSY0kYyBd+hsTLyQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794330680;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=JD64Ud7a3qHc7EvaTpRIa2pxyb3pp+K7JU5At4Osxfo=;
+	b=eqeW6oPTHeFUZhDSGgQP6FIGcVUf2tYWSmS2HE2NDmgi17J80xIvtKyLgsuQ6Bgv4d1G
+	 L1zlqbog5NiuuAW6yesc84B2jUWexLMw0q3UFL4DRmsGfWLdW2iGMy2p0+UZEqpBmdELn
+	 4pEJsa1civgNIOElZf9a0tO0jxjRg2o+puHxq/kfyIhNh43+4SfdXQXonSxhHDfvpbfPL
+	 b8fufG7dg4jJRfV0a1aQqvSiEBXDHmbjwOW5qiGIUEliB9CJOQKLFlyhUKeUSn5Iek+L4
+	 AAUdJQB9OVNqCIn7N3IsbbMOkKReJhTR21qpMjyBeWvO5J+QKZZs6VfdTdTBLj1wnKQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FxrKUzU8;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F767606A201
-	for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 16:39:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB36C606A31C;
+	Tue, 10 Nov 2026 17:11:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=BUxBERfL
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 76CAA1F0089F;
-	Tue, 10 Nov 2026 16:39:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FxrKUzU8
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794330679;
+	b=tJiS2txvWvl9sTQjmHlzlcavYhgvA+FQVwxmmGWBUelkEhb0wLfWePRYIZ7RnB0zPM9r
+	 YyRzK9mx5e1KqJHIgOY1uR+RJTrKWryzAyaOl4E86q2E+SW42lpLbllQz4Hm4Egs5IGb4
+	 w9hbLSsLVSmzKmoM52Nj5EH5FEu57WDL+DF09IIJfpIoB0wAzRxQsKBgbYSCi0bH73RdP
+	 3KjBgY71J/zmgMxgP/3ZdJ9NzhMaIEHbDTEfBU7GZ+fBC4fvmY0whP+T/xJa9XeUc0keD
+	 eYEBDiZV7TjDXo1+IgBskXbGTPNosqH6VHxZVLKzo4MLdT5a5Tj6alq1+67G39oGz+w==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794330679;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=JD64Ud7a3qHc7EvaTpRIa2pxyb3pp+K7JU5At4Osxfo=;
+	b=jn0Xk2sKpv8tn2aFXR0vZihllQkx3bt3G2DIRqhWUp9VBrjy3sCzIYZZh7ZnW+HRQPBH
+	 BnaYJSJyYN52Ec9505OSVkk1Ga4Z4+oZws1Jt4dJC4AMjozNnDc1eA1GncsjX5WZnI3hk
+	 oKB/NRFeFivP4zRxInytW9n2CocMU8gEL/TG0WouuZ8RLGYUgyQX/hYqBXhXPWSwi2hqZ
+	 VzlzmAOqNlDeI1ykyy0kLYABahrnAmT7c7OcSAEzQDNpyufTyLUNopF06IFOhgmKqreuG
+	 ICM4gMB7T9tAeHek34iCNUs0DhYgmwddmGJglH+sGJsLl40HId0kVcd4yHUeRQBXFPQ==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id ECDEA1F0089F;
+	Tue, 10 Nov 2026 17:11:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794328742;
-	bh=vcw1cBvSEtlN2FqIjg6q7r4OQdob+cY/u8tWpdzXiGw=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=BUxBERfLY7IepspDbJNJ6v9ut9oDGOiazXDt46Nm7/q2PT+McKUa115ovyw/VoZaK
-	 F19wD9Bv1M/X+8E0lUneHLIWqvt6oenXemMSyCC0fPXH9emaApr1QeXz0hEZLGN39Y
-	 +eS8QhC4GhUeQjA57oKlht6h8/EDX2KDs1JrJDwGJCERG+GJIDlZsrltFe75k8xVcR
-	 RyUqY7Sc6dKya6YO71pgSGjOA2i75F0AGoqs2pToeMvQweqIztxSn1IM35DCYl5wPG
-	 /D7Kr/vCHJuiYvS2FETZufQLHZrWaIUZmI1MsmEhFtF9jRZwWrvw8hSKP4aCDJ1RUV
-	 6XdVhx+6dOx8Q==
-Message-ID: <sashiko-outbox-207397@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v11 2/3] can: j1939: fix possibility of
- hard-lockup/deadlock in j1939_ecu_timer_cancel()
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Tetsuo Handa" <penguin-kernel@I-love.SAKURA.ne.jp>, linux-can@vger.kernel.org
-Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <f516220f-b922-4172-bf35-ce34d5f21b39@I-love.SAKURA.ne.jp>
-References: <a1dd9760-7815-400a-a39c-a1a03cf8262e@I-love.SAKURA.ne.jp>
- <f516220f-b922-4172-bf35-ce34d5f21b39@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 10 Nov 2026 16:39:00 +0000
+	s=k20260515; t=1794330679;
+	bh=JD64Ud7a3qHc7EvaTpRIa2pxyb3pp+K7JU5At4Osxfo=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=FxrKUzU8vVuhy7ylN5Kl1tZZcNS/y0NEl11bn60auuRfyMYft+r60Gx2Esl93UdEa
+	 u7wGTtCdTBAHZM1BVkNN7tlyqFwSVstTd6CfXkPA177QZ5NZsq4fudV2QMrBpPMQ8J
+	 1lSDLFrAluayNWEqGZSOYLyaJArChPXz/5OvioGz3pmaT9glnunwXq54kmd0gVFF0e
+	 m/baqQEpClM0jsZ/a6+RYRswm2LhbalMRVv+5j8piSmGScczMkLWs58IgNLO9SebB1
+	 nPZ7KxyUNs9BL0XI0rJwRXoVVx+QeiXhtdcs6ATBUEFN369dE1728JwsE/6/3AjVjt
+	 A+hm+ixoRrsxQ==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 7D6DE48C22;
+	Tue, 10 Nov 2026 17:11:18 +0000 (UTC)
+From: Seonghyeon Lim via B4 Relay <devnull+forfortuna.naver.com@kernel.org>
+Date: Wed, 11 Nov 2026 02:11:13 +0900
+Subject: [PATCH] can: virtio: fix virtqueue use before DRIVER_OK
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -61,73 +81,93 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261111-virtio-can-ready-v1-1-0b4dd020af0b@naver.com>
+X-B4-Tracking: v=1; b=H4sIADBQ82oC/yXMQQ5AMBCF4avIrE1SgjSuIhZVU8aiZIoQcXfF2
+ 32L918QSJgC1MkFQjsHnn1EliZgR+MHQu6jIVd5lcXhzrLyjNZ4FDL9ibq05JxTldEFxNsi5Pj
+ 4kk37O2zdRHZ9O3DfD8XMF5F0AAAA
+X-Change-ID: 20261111-virtio-can-ready-85cefff06a84
+To: Harald Mommer <harald.mommer@oss.qualcomm.com>, 
+ Matias Ezequiel Vara Larsen <mvaralar@redhat.com>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
+ Mikhail Golubev-Ciuchea <mikhail.golubev-ciuchea@oss.qualcomm.com>, 
+ Francesco Valla <francesco@valla.it>, "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Jason Wang <jasowangio@gmail.com>, 
+ Seonghyeon Lim <forfortuna@naver.com>
+X-Mailer: b4 0.16.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794330677; l=1943;
+ i=forfortuna@naver.com; s=20261110; h=from:subject:message-id;
+ bh=MJAobe4rPXYioFnUfp9+XUMNTxBij8wL6gfGu1JqKaQ=;
+ b=E1tjMRm3+lNVL2OwfvqZKG7Q0qtbt8SWyZ1IIFGIkPNrZN1rDFwRWWcxA8zCPaJbUwq2c0pta
+ au/rzScbiSpAZ3U57rYO8ZM0v+Qsd863Ysb4r0+HahDb4KjqAiFl424
+X-Developer-Key: i=forfortuna@naver.com; a=ed25519;
+ pk=NSzj4ReyzmE01C4q/f+7jqXzWqsN5NwQK5UsSI6ufiE=
+X-Endpoint-Received: by B4 Relay for forfortuna@naver.com/20261110 with
+ auth_id=1481
+X-Original-From: Seonghyeon Lim <forfortuna@naver.com>
+Reply-To: forfortuna@naver.com
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue to consider:
-- [Medium] can: j1939: j1939_ac_process() drops address claim when timer
-  handler is running
---
+From: Seonghyeon Lim <forfortuna@naver.com>
 
-commit 80762ad6fa3d1299e982ed85f13042798ab71255
-Author: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+virtio_can_probe() and virtio_can_restore() fill the RX virtqueue and
+kick it before the device is set DRIVER_OK. The virtio specification
+does not allow the driver to notify the device before DRIVER_OK.
 
-can: j1939: fix possibility of hard-lockup/deadlock in j1939_ecu_timer_canc=
-el()
+In restore, if the interface was up, virtio_can_open() then sends a
+START control message and waits for the reply. DRIVER_OK is only set
+by the virtio core after restore returns, so the device may never
+handle the request and the wait never completes, which hangs system
+resume. In probe, an ndo_open() right after register_candev() can
+likewise send the START message before DRIVER_OK.
 
-This commit replaces hrtimer_cancel() with hrtimer_try_to_cancel() in
-j1939_ecu_timer_cancel() and drops incoming address claim frames in
-j1939_ac_process() when the address claim timer is currently executing.
+Call virtio_device_ready() before the first virtqueue use in both
+probe and restore, as virtio-net does.
 
-> diff --git a/net/can/j1939/address-claim.c b/net/can/j1939/address-claim.c
-> index ca4ad6cdd5cbf..89ba8c6fbe74d 100644
-> --- a/net/can/j1939/address-claim.c
-> +++ b/net/can/j1939/address-claim.c
-> @@ -212,7 +212,8 @@ static void j1939_ac_process(struct j1939_priv *priv,=
- struct sk_buff *skb)
->  		goto out_unlock_bh;
-> =20
->  	/* cancel pending (previous) address claim */
-> -	j1939_ecu_timer_cancel(ecu);
-> +	if (!j1939_ecu_timer_cancel(ecu))
-> +		goto out_ecu_put;
-> =20
->  	if (j1939_address_is_idle(skcb->addr.sa)) {
->  		j1939_ecu_unmap_locked(ecu);
+Fixes: 083082a4e6d8 ("can: virtio: Add virtio CAN driver")
+Signed-off-by: Seonghyeon Lim <forfortuna@naver.com>
+---
+Tested with QEMU 8.2 + vhost-device-can: with the CAN interface up,
+suspend/resume (pm_test=devices) hangs without this patch and
+completes with it. No new lockdep warnings.
+---
+ drivers/net/can/virtio_can.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-[Severity: Medium]
-Can jumping to out_ecu_put when j1939_ecu_timer_cancel() returns false
-leave ecu->addr and priv->ents[] out of sync with the address claim
-frame?
+diff --git a/drivers/net/can/virtio_can.c b/drivers/net/can/virtio_can.c
+index f67d0bf09681..ae35a00b784b 100644
+--- a/drivers/net/can/virtio_can.c
++++ b/drivers/net/can/virtio_can.c
+@@ -912,6 +912,9 @@ static int virtio_can_probe(struct virtio_device *vdev)
+ 		err = -ENOMEM;
+ 		goto on_failure;
+ 	}
++
++	virtio_device_ready(vdev);
++
+ 	virtio_can_populate_rx_vq(vdev);
+ 
+ 	err = register_virtio_can_dev(dev);
+@@ -966,6 +969,9 @@ static int __maybe_unused virtio_can_restore(struct virtio_device *vdev)
+ 		virtio_can_del_vq(vdev);
+ 		return -ENOMEM;
+ 	}
++
++	virtio_device_ready(vdev);
++
+ 	virtio_can_populate_rx_vq(vdev);
+ 
+ 	if (netif_running(ndev)) {
 
-If a new address claim or J1939_IDLE_ADDR frame arrives for the same ECU
-while j1939_ecu_timer_handler() is running on another CPU, the handler
-can be spinning on write_lock_bh(&priv->lock):
+---
+base-commit: ddfe51b0a0f5dc9e415cc2c8ad8db17532dd426b
+change-id: 20261111-virtio-can-ready-85cefff06a84
 
-CPU0                              CPU1
-j1939_ac_process()
-  write_lock_bh(&priv->lock)
-                                  j1939_ecu_timer_handler()
-                                    write_lock_bh(&priv->lock)
-  j1939_ecu_timer_cancel(ecu)
-    hrtimer_try_to_cancel() -> -1
-  goto out_ecu_put;
-  write_unlock_bh(&priv->lock)
-                                    j1939_ecu_map_locked(ecu)
-                                      <-- maps stale ecu->addr
+Best regards,
+--  
+Seonghyeon Lim <forfortuna@naver.com>
 
-Even if j1939_ecu_timer_handler() has already dropped priv->lock and is
-returning, bailing out skips unmapping the old address, updating
-ecu->addr, and starting the 250 ms timer for the new address.  For a
-local ECU claiming a new address, j1939_ac_fixup() has already unmapped
-the old address on TX, so dropping the echoed RX frame leaves the ECU
-permanently unmapped and causes subsequent sendmsg() calls to fail with
--EADDRNOTAVAIL.
 
-Since both j1939_ac_process() and j1939_ecu_timer_handler() serialize on
-priv->lock, could timer cancellation be tracked under priv->lock so the
-handler skips j1939_ecu_map_locked() when superseded instead of dropping
-the frame?
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/a1dd9760-7815-400a-=
-a39c-a1a03cf8262e@I-love.SAKURA.ne.jp?part=3D2
