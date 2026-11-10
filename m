@@ -1,91 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794299901;
-	b=F8S9yuK1lDSSA2omfDdLhukykKaNN5U/dI5MKLfRd6+nOw6BhHh4T0REUr8tBllFv2z+
-	 zO8yVrHGsyULDM1Y92/GCm+A/lbvDKMdbUNXSRlHr5hY8Ri8IN7Q15iVR6UHOJQjkXN+2
-	 JXUdAyNPUvEunwmjloWOjUtfB1Te319Six2J0TXc50Cm6z1eDbd0vtvc+RX5JmtPlEGno
-	 +CUGmCEeHeoJUwlrPc0L5lXJQJ7MLCcb3TPAFdk6zRubGXFCDkZs4KccUPcej8gYjfci1
-	 G3ZYuXuY/TJHQqJaMKa4UAivqpegtcFORU1CS3IWm0+3kp3xgvBQ2rtxVsuWpnHl5kA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794299901;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
-	b=neOZ/IjVn2eVE32pj2a2xqLwqS1lSLT/UjPlaBpsMRTzcRyGAIx6l8nTIW3BjzW4NbJB
-	 5VdxrGkID7arCioXj0Ww/UvCwjzt+PZq36kWwn7qm0jTqX6FmG3uLL7Jurn6QB+huYwyW
-	 PwJKVE4ZQjySuZptS9IKsqog9jAEWcKg7Za3OfOOqyc+sGiKHywg5Hj0b0BShRR9DG7+N
-	 oRB3mysO5KHW5RfgGtxw3s3iXa3xwhzDJWH9mm1I2w8f+0R+m41fMxi9qH0XTK+RBU4Sl
-	 d3goF+7JVvb9gfTGOKhvCXXqSDCcS/qOYD4GEB0Ry2mPy/RBzhSFlJxaoPm7x1OpXNA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=K4IRRMkv;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="54K7wU/l";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794304330;
+	b=rqUWlKjK7fMjbafna0ykegbxssS5mDRKSRqKsHxa7bm05dHNqxSkHAX54oBM46rTyyFf
+	 3EC7F6CmLxc8B8QrTXX8vrARQCls4+7AQxCM2b8TvSZuy8QG3kuxtWadVnJFIavCxFXBg
+	 5/mJyDJLUYYknu1F9XDCOZ2/SlhAyVHMnvHi2B3xd7ODDk7i7lMuPVlmC8OjygfhVAYpz
+	 htyezzU8E3SBvmF6R6qOwzSdYdHfUrwaM6Jkl+bFgySVArcK+Y7nVziFYgSye+fLHawpn
+	 mWZlD09gISYhaz0p7KP9jXpR8BCBFn5OHImJsv2s9SGjwE437Hozbzivnmq+wliWBcQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794304330;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=ZLxgvwGyvbXEkWfR68oMjSG1/4NuLSfmoIF/+Ge58LA=;
+	b=J+Xs474y0SNr/gN5AyCmsd9jmZi6jWso6o5ZXXsvIDr2V2Lp4Q0SiksdwVLVprrI0/4N
+	 1dRLP/xoq4OaUCnNS8bj3zQv4xrom0ipyQOp6FKaXPOlDz383qz1kYGqtlP56rHAKPAz0
+	 3GHDbfyjgWtNqnD9JQHFGIRPVcZ+uorR+oOWAVVaO8jQRjXXyTqmWady53XQdrhctYi4/
+	 41FnSGZ6u8dttSEX/OAV/M/7QKO0OxmBl2wOSu9w8cdaU2/WR1Huwbbw43S2hWca5clwS
+	 QP+XlcdEQb1WdfVyoeYR6gH9JciaCA9ntA6GbJ0CZEGDCqeybP6R2LDZh0COkE/I+9Q==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IYBDMboP;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3EB1606A325;
-	Tue, 10 Nov 2026 08:38:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B3EB1606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46226606A31C;
+	Tue, 10 Nov 2026 09:52:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=K4IRRMkv;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=54K7wU/l
-ARC-Seal: i=1; a=rsa-sha256; t=1794299897; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=rF/jZaXZooc4QGQIShzxRisw3MOImSFty7+jEvO+UZmbeOx10EPnxUj+zAdk+tkfkn
-    RuZLe4odc9KWvUkWWljuwA5ScheCTEQS9oBnAy8zJlwD22EfKzAMphHurBfi7gza5dg1
-    qBnm1eQj1riotr797kTfdg5Fo4br/AibRLNUqEV9+9uFs/oX7XJHIx0R4imeeRSyAi7X
-    h5aE0WV/M4HLZwtiHVHw/FBiN5q2mPRESTXgZXZu5evCXnfSloqEgsposPMkT+P8F2fR
-    APdfoMnXSyl/E7xcodRWIcSxugB9D9rLIXTvptCGEcYZmkCSRCd4atv5f2VfVmnnbv+G
-    Wh5A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794299897;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
-    b=LIXehTy8A9Flf7MUNDMHUrrkinvZp2qyEXMhVF9fwkdm9fYXhsAL+eX+hmi1G+NkNU
-    84cGHol3H7m4DxUy//vDXX4ZsWRCkspIv0YKAtE478rKURX7ot8xhoFMANKIoXwy+Xoa
-    eWYk/J+HpyAaWcPx7ZeQEoef+xtS2kDGxMcLJeTO+an/EoJ49mqNHJPOvmf2wnc/A41B
-    Uf0aPttzfn2WpWpFZCez9BT7rUinF0Up5SR9ZTNIBHZDrbqtgQ8+gGN+3OPzlz6kToJh
-    owz3pyKijUjhsq84M2UNja3FFYqJawqWezlx3hAOKu2cqkXB/iA2NwiKhGuLR3YaeLNi
-    kEPw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794299897;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
-    b=K4IRRMkvAhUlDEPkpvyRxUubGSxh8MCK9EgcHoHdxbYgwjHVINGAtQPcuKRo6cp9v5
-    FR//MKn07DnXhJK5EGfuGkuX9L1LEFJvzM+ULQYf/vsacKw9m08P9vNI6Y0aTohiptPL
-    yF9HUr+RNFaTbbVzVFr2WmHUkuPuUo2UdIh3p4/Tlw7+y2caWmxSgUiPcuTZPt6xKcSK
-    zr7LItn4LchH7CsRuBta1yZ+sQ2wyydmt1mhdjLi6EjK2ne+YoQ2LldhhEeWgkc+SQMi
-    JEWXFXFO+KP8cg9kb0e1MsQMv+5PEOmUyWxoNX0GUY4o72gh+S0f1ZaTxs9DqkGLLQEG
-    MEVw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794299897;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=FtBVWp7IfTZa2B4qEChR/Tm/Wz6nqQjMtb4BDTNUelM=;
-    b=54K7wU/lJDA6ifTMXpki02gy1gl818vDs9Cz/wdkoIGekNrpTkd0VjDX03m59Nc+kX
-    lKj+zkSWJ4wiom6xMfAw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AA8cHy5s
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 10 Nov 2026 09:38:17 +0100 (CET)
-Message-ID: <c90c1c35-7f0a-4694-9d29-0a6448d9a327@hartkopp.net>
-Date: Tue, 10 Nov 2026 09:38:16 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IYBDMboP
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0288D1F0089F;
+	Tue, 10 Nov 2026 09:52:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794304329;
+	bh=ZLxgvwGyvbXEkWfR68oMjSG1/4NuLSfmoIF/+Ge58LA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=IYBDMboPemWW67RTq0xHWDmfQFMyh+8anHQrjn3SK0Pwfbaz1xX5rFUOrLtY62093
+	 RJ4R4mA8LvdccmeNOLEYTJiNzRtBjRgWxPnPWNE6HIhZERyw63GiDInJu8lsdosl3Q
+	 wCX59uadjCz3zVPgz4LgRLx/C6XFj7B6BfDFVYLQwTM+sRlNIglvuTN6S+He1wbBCp
+	 OTwOfHoqIJgkNVhE8K2lZ2FIaDS7BpXe87KRZZiNxvUDvviQ0bhPn9DrlKN4oR4+vl
+	 pGiUnGWFJUk7r0Q4YElWZPxjnAzD/baJYRfWZsDkksKXbt4NyiEYAPl07gkmF27MQG
+	 AldLvWSZM+t0Q==
+Subject: Re: [PATCH can-next v5 6/6] can: gs_usb: fix hardware timestamp state
+ for mixed channels
+From: netdev-bot+sashiko@kernel.org
+To: mkl@pengutronix.de
+Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
+ max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ ciprianmarian.costea@oss.nxp.com, kuba@kernel.org
+Date: Tue, 10 Nov 2026 09:52:08 +0000
+Message-ID: <179430432849.488853.15448419304798286866@kernel.org>
+In-Reply-To: <20261108-gs_usb-fixes-v5-6-d52dd4940d46@pengutronix.de>
+References: <20261108-gs_usb-fixes-v5-6-d52dd4940d46@pengutronix.de>
+X-sashiko-severity: High
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,108 +64,162 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: bcm: Account cyclic transmissions only on success
-To: raoxu <raoxu@uniontech.com>
-Cc: mkl@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <45A9B6D8611C63C9+20261110052315.253367-1-raoxu@uniontech.com>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <45A9B6D8611C63C9+20261110052315.253367-1-raoxu@uniontech.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Hello Xu Rao,
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
 
-thanks for looking into this, but I don't think this change is the
-right approach.
+Critical: 0 · High: 1 · Medium: 0 · Low: 2
 
-On 10.11.26 06:23, raoxu wrote:
-> From: Xu Rao <raoxu@uniontech.com>
-> 
-> The CAN broadcast manager advances the cyclic frame index and decrements
-> the initial-interval transmission count even when can_send() fails.
-> For example, taking the CAN interface down makes can_send() return
-> -ENETDOWN, but the timer still consumes the configured transmissions and
-> can report TX_EXPIRED without sending a frame.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-This is intended behaviour. The BCM cyclic transmission is designed as
-a time-driven "fire and forget" mechanism: 'count' defines the number
-of ival1 time slots before switching to ival2. It does not define the
-number of successfully transmitted frames. The timer schedule must
-not depend on the state of the CAN interface.
+- [High] The patch is meant to stop RX timestamp conversion from using an
+  uninitialized parent->tc when a non-TS channel is opened before a TS…
+- [Low] gs_usb_probe() (drivers/net/can/usb/gs_usb.c) declares `bool
+  ts_supported;` at line 1544 with no initializer.
+- [Low] The comment on tc_lock in struct gs_usb
+  (drivers/net/can/usb/gs_usb.c:335, `spinlock_t tc_lock; /* spinlock to…
 
-With your patch, if the interface is down (or the tx queue is full
-with -ENOBUFS, e.g. no ACK or bus-off), the following happens:
+--
 
-- bcm_tx_set_expiry() still sees 'kt_ival1 && count' and re-arms the
-   timer with ival1 forever. The op never switches to ival2 and
-   TX_EXPIRED is never sent.
+can: gs_usb: fix hardware timestamp state for mixed channels
 
-- For setups with ival2 == 0 ("send 'count' frames and stop") the
-   hrtimer now never stops and keeps firing at ival1 until the op is
-   deleted.
+This patch moves the HW timestamp infrastructure setup into gs_usb_probe().
+It runs there when at least one channel has GS_CAN_FEATURE_HW_TIMESTAMP set.
+The patch also refcounts active timestamp channels in
+gs_usb_timestamp_start()/gs_usb_timestamp_stop(), and calls them based on
+each channel's feature flag instead of the number of active channels.
 
-- When the interface comes back up, the remaining ival1 burst is sent
-   with a delay that can be arbitrarily long. This defeats the purpose
-   of the initial ival1 phase, which is usually a short burst right
-   after a content change.
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index 6327069f63c95..0a1cd14c940cc 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+> @@ -337,6 +337,7 @@ struct gs_usb {
+>  
+>  	unsigned int hf_size_rx;
+>  	u8 active_channels;
+> +	u8 active_timestamp_channels;
+>  	u8 channel_cnt;
 
-- In the ival2 phase, currframe no longer advances on errors. A
-   multiplex sequence then gets stuck repeating the same frame while
-   the tx queue is full. Losing one frame and continuing with the next
-   mux index in the next time slot is the expected behaviour of a
-   time-triggered sender.
+[Severity: Low]
+This isn't a bug, but the comment on tc_lock in struct gs_usb still says:
 
-> Only update cyclic bookkeeping after can_send() succeeds. This matches
-> the existing successful-send accounting of frames_abs while preserving
-> the concurrent TX_RESET_MULTI_IDX check.
+	spinlock_t tc_lock; /* spinlock to guard access tc->cycle_last */
 
-frames_abs is a statistic that counts what was actually sent.
-currframe and count are control data for the transmission schedule.
-They intentionally follow different rules.
+gs_usb_timestamp_start() and gs_usb_timestamp_stop() now also take tc_lock
+around active_timestamp_channels. The lock also doesn't make the counter
+update atomic with timecounter_init(), because gs_usb_timestamp_read() drops
+tc_lock for the USB transfer. In practice both writers run from
+ndo_open/ndo_stop under RTNL.
 
-The cyclic path has no way to report can_send() errors back to the
-user. Simply following the timing schedule, the same way a sender
-without bus access would, is the consistent behaviour here.
+Could the comment be updated to cover the counter, or to note that RTNL
+serializes it?
 
-If an application needs "N successfully sent frames", it should
-monitor the interface state (e.g. via rtnetlink) in user space and
-re-issue TX_SETUP with SETTIMER|STARTTIMER after the interface is up
-again.
+[ ... ]
 
-Therefore I would prefer to keep the current behaviour. So NAK from my 
-side for this patch.
+> @@ -988,10 +1006,10 @@ static int gs_can_open(struct net_device *netdev)
+>  
+>  	can_rx_offload_enable(&dev->offload);
+>  
+> -	if (!parent->active_channels) {
+> -		if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+> -			gs_usb_timestamp_init(parent);
+> +	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+> +		gs_usb_timestamp_start(parent);
 
-If the current semantics are not clear enough from the documentation,
-I would be happy to take a patch for
-Documentation/networking/can.rst that states explicitly that 'count'
-refers to ival1 timer events and not to successful transmissions.
+[Severity: High]
+Can the RX path still use an uninitialized parent->tc here?
 
-Best regards,
-Oliver
+gs_usb_timestamp_init() no longer calls timecounter_init(), and parent is
+allocated with kzalloc_flex(). So parent->tc.cc stays NULL from probe until
+the first gs_usb_timestamp_start().
 
-> 
-> Signed-off-by: Xu Rao <raoxu@uniontech.com>
-> ---
->   net/can/bcm.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/net/can/bcm.c b/net/can/bcm.c
-> index 7bd2aa39777a..cd66b23bf95c 100644
-> --- a/net/can/bcm.c
-> +++ b/net/can/bcm.c
-> @@ -375,7 +375,7 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
->   	 * we were sending - a concurrent TX_RESET_MULTI_IDX means this
->   	 * frame's bookkeeping belongs to a sequence that no longer exists
->   	 */
-> -	if (!cyclic || op->currframe == idx) {
-> +	if (!err && (!cyclic || op->currframe == idx)) {
->   		op->currframe++;
-> 
->   		/* reached last frame? */
-> --
-> 2.50.1
-> 
+__dev_open() sets __LINK_STATE_START before it calls ndo_open. That means
+netif_running() is already true for this channel while open_candev() and
+can_rx_offload_enable() run, and both run before gs_usb_timestamp_start().
 
+If a non-timestamp sibling channel is already open, the shared RX URBs on
+parent->rx_submitted are in flight. gs_usb_receive_bulk_callback() only
+checks the channel range, netif_device_present() and netif_running() before
+it converts the timestamp:
+
+gs_usb_receive_bulk_callback()
+  gs_usb_rx_offload() / gs_usb_get_echo_skb()
+    gs_usb_set_timestamp()
+      gs_usb_skb_set_timestamp()
+        timecounter_cyc2time(&parent->tc, timestamp)
+
+If a frame for this channel completes in that window, timecounter_cyc2time()
+dereferences tc->cc->mask while tc->cc is NULL. That happens in URB
+completion context.
+
+There is a second window just after tc->cc is set. gs_usb_timestamp_read()
+drops tc_lock during the USB transfer:
+
+	/* drop lock for synchronous USB transfer */
+	spin_unlock_bh(&parent->tc_lock);
+	err = gs_usb_get_timestamp(parent, &timestamp);
+	spin_lock_bh(&parent->tc_lock);
+
+A reader can then see cycle_last and nsec still at zero and produce a bogus
+hardware timestamp.
+
+A compliant firmware shouldn't send frames for a channel before
+GS_USB_BREQ_MODE has started it. However, hf->channel is controlled by the
+device. The v3 changelog mentions a guard that skipped RX timestamp
+conversion and the delayed work while no timestamp channel was active. That
+guard is no longer present in v4.
+
+Would it make sense to restore a check in gs_usb_skb_set_timestamp(), or to
+make parent->tc valid from probe?
+
+[ ... ]
+
+> @@ -1526,6 +1541,7 @@ static int gs_usb_probe(struct usb_interface *intf,
+>  	};
+>  	struct gs_device_config dconf;
+>  	unsigned int icount, i;
+> +	bool ts_supported;
+>  	int rc;
+
+[Severity: Low]
+Should ts_supported be initialized to false?
+
+The only assignment is in the per-channel loop, and it only ever sets true:
+
+		if (parent->canch[i]->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+			ts_supported = true;
+
+If no channel reports GS_CAN_FEATURE_HW_TIMESTAMP, the later check
+
+	if (ts_supported)
+		gs_usb_timestamp_init(parent);
+
+reads uninitialized stack memory. KMSAN may report this as an uninit-value
+use, and the compiler may emit a maybe-uninitialized warning.
+
+>  
+>  	rc = usb_find_common_endpoints(intf->cur_altsetting,
+> @@ -1599,6 +1615,9 @@ static int gs_usb_probe(struct usb_interface *intf,
+>  		parent->canch[i] = dev;
+>  		parent->canch[i]->parent = parent;
+>  
+> +		if (parent->canch[i]->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
+> +			ts_supported = true;
+> +
+
+[ ... ]
+
+> @@ -1616,6 +1635,9 @@ static int gs_usb_probe(struct usb_interface *intf,
+>  		parent->hf_size_rx = max(parent->hf_size_rx, hf_size_rx);
+>  	}
+>  
+> +	if (ts_supported)
+> +		gs_usb_timestamp_init(parent);
+> +
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261108-gs_usb-fixes-v5-0-d52dd4940d46%40pengutronix.de
