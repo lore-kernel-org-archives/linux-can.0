@@ -1,79 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794283004;
-	b=i3xEzsEDoQIVWh0vqgRNkdqtELCoyh8ZadeQIeHm++oHfsrWcPueogFkK3coqXA6rYQs
-	 aeFArMXEFokNtINlh224kS/xhisP1kYD2SYOs5sK9HFNkibFL1rZ7mAaVpc2XugTwhzGJ
-	 Vk3YIxxNjknc25ANdi6mxtAi52t4boM+UTukYTgT/3UuqSzH1EM1k3Pb0WfaiSByR9U5t
-	 cVDW4tpkdpR3z2qy/8ukg+nF5n5EkG0rJCk0bztto4qEfq2j54yTq4+TAguD3OuqK/UrX
-	 2IOx/m/kQQYEXANHu8AoSyJXFwPaJnc0WDDxL+Uvyy+T++31POtmu2OWVOvbLcaBMcw==
+	t=1794283006;
+	b=hu0gEMtjfUJEvhJ0ZQr3r9gb8kUO2ZcbSflja5kMmkNjNeMRv8fbDY1aOnhBAQAnTOrX
+	 omc+v4xHUzCfh1dypt2U0P55eB+FHPIMUYnAU5ejT4ZqYvYKhqSV12xjROzkVGhdlK432
+	 RV3qE1DbjHS2f5Jwt8/im1TJIZfMBUHwxqaWpNxF1vAvyTY9PO6oRM1Yy2QO9u2Yw00oj
+	 k88mYCH29QEKT30+rWO2Hpx/zjFNp2vdk3x2io6TyVOS9q4G+y8tmmA0ja3j5QCYYMUjX
+	 JIOkQD667As6DHYUa08OaqCWnRXOhqxLEpH0n6HQgaohQttkY29/21thkkITo+JHIvw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794283004;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794283006;
 	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 Content-Type:Message-Id:X-B4-Tracking:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=FQRPAOczeChNohAnaECEMnatXU5EQobFRvNRBtV70cc=;
-	b=vyoEja9Vsho488WmZTaWCriHP2/2j9cP4YBwXGxHLiarJYW8etbzBWfVt2tB5A3N2HcN
-	 IMEhHeqg385EBzofQsfYR/UPd6xpcPl5YziLStxTU/y6OZTk63LIfCF6fMo8BBla68wUY
-	 DbFZNh/Kda+oWOdZMWkD+L8TPrWoUmH/74kmg2zbnGbaV8UGb+KhQIW4I979piA3jmTfw
-	 BOkvbmg2140+cJ2wgkwbrc+Y8ctcTq29m4YNU0M9nGf15p4WMjEDVLWO7aRVRkI/r6Aq1
-	 csGYgbz/xd3sYRdCa26fhVoB5s/pVsAmmnUqjHpG1LhOaxR4tsjjDwgH5QOYPQavqcg==
+	bh=4k093y5/yFR6nFNSoFAD4QE4dU16QnihF4r5DnoFO+w=;
+	b=WQM8KP5L2iA8uaLef5zTypLbB03FXdOczRA1mmegyBPBm57YUvnXz+XJh2F3/Z8qHQSj
+	 5OeLCxGwIU0NKZr8vEQYze8mu2fNBGprmZM1qs5nsx6Iepwvb+sudwQ6uy1vNCxfNQ7bd
+	 UToDUSU7usbEBHEKAwZsN3OWwrgMGDBtcimy+afyyxrywlQVdbg4UXqFrMrDtstNPkAA9
+	 pnG6FdTNrMXdpDj1zWSj+gW8sQVdmKJ/c/4QTHZ0Xqf0RcOZtVEqZzCR6O16QovNeJrfa
+	 bOmNDZrB1doFPf7vgobqK1r5OdLFKgu2MVEDfyMW/Bi5g4blS4TaOn+HJVxCizLkn9w==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JxgomqhI;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=b426adgh;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E30606A325;
-	Tue, 10 Nov 2026 03:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C9F860A262A;
+	Tue, 10 Nov 2026 03:56:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JxgomqhI
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=b426adgh
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1794283003;
-	b=bq2aUsS0lxmeUTxCHutLfGtm/H6mFmH9xFtPFtYOht99Po1f89VdcHZP63KfH6MMWSX9
-	 9YvmcydHuF5dDL4MUk0nIiqfTkY1iO8dsSvhkcYQdJdgAKPL2nShExfNXdVFkE8rjFDsS
-	 ANlujDI0imHdFLVBtb5noYYzruJhnW9wTCMXxX2C3sqxa1JW7aDJj3vAjjaMOH33yu7Gb
-	 irkg/r9MMh+AF3B9JbLuSZJX0MgEMcMIK9sE4BZnl2f4XpxE7+pQ7alGKiznJdAohQJMt
-	 1U4EJNPjPMDghfTpPjDQPCTafyeS0tJBaS7FHPNpQYHqaWHAFLJdJRIJYfLKYTTBbhw==
+	t=1794283006;
+	b=xa3dkffS6e00hAKVXdWSbBPxEALvOisD1lZ2rLiZ5Ysni1KlIVGkTSu8x+5oZub8zDbc
+	 R87R/4JtBDSssR8H4w8tOWO9r/WnROcr7JiLWrUTYSgGoS99L9FHzq1Zq5tofNUBJjOXC
+	 xhWuSF//lX0LayA6JGhCiSp8OMzeUodnyG6qZ/qsxY2iD5waJlmsS1hZ7GzR0vp1KIEYN
+	 p7fOwkHNT8PbFaymYm931DPaDg9A9ozmzvX+mIhRRSbbYIy+FqyuSgVrNStZWO8uY+Srf
+	 3eE9UA0w1G6qs3ZRWge2G3jypvUwCCtr2x+aooxe/RmAbF9taA+ACBJTnImmExFFv2w==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1794283003;
+	c=relaxed/relaxed; t=1794283006;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=FQRPAOczeChNohAnaECEMnatXU5EQobFRvNRBtV70cc=;
-	b=xze/Kwg0wETMy5l3qihVE3zyETkUsVjRn96XoOH6hlDjnlfjFGWLaewmWm7raHO6bEx7
-	 c/HzAcp2SRDwTec2SYi3OYXmO5MauALteNvS5q3fYP+vqaGJ390wx8fkmZEi4692B/Fks
-	 /pxWO4ebGB7afxODATk05OSfzlPSMCfL4Etjcbh+XVuzFxI1CHyTUJp0sys3klGqAOU3b
-	 NXG0t7iCXzJTXVkHYznhFgamzoeV9RJ+2hcjArgyBemrKknWkvmzM2hYe28Zq0qWeGgSM
-	 VZ65b5SgyiUzYqP8a78mBELgEvngRLYzCF4bZ32tQpjmg7Aqx9bJo3baJ9hPQpt7Snw==
+	 Message-Id:X-B4-Tracking:To:Cc:X-Mailer:X-Developer-Signature:
+	 X-Developer-Key:X-Endpoint-Received:X-Original-From:Reply-To:
+	 Content-Transfer-Encoding;
+	bh=4k093y5/yFR6nFNSoFAD4QE4dU16QnihF4r5DnoFO+w=;
+	b=LOhkKjPLWK61QyOH79T2eNhfozihsMNn9ZWX8PO7oI3ByCqgIRDBoAas3I0CYbEkT0VZ
+	 rmVH5PWlZ3udXcPPWfXJbCGzpXnTYn7NOL06Z84pkrGdKidr9PTueOGoHP5fpxadbTexM
+	 8kxf8uCGv98KEiXJ5OaGPmUxUkKtVC8Gr675TlDbWugR3tbwKfbKYDWor+SVxCKaQuxHB
+	 tGnR4yXPycbhNn0VJyz4s6a5Xm7VgSLDspVOExS4f8j9QLGU4K4j/WAyoz/jrANq1iakJ
+	 Fg4xt2eb0MBlBmSH9sxLn9UzJ0YjHWLWs0OzSP+f4i5cDN+jwc29n7TvIrwXizCvOFg==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id A690B1F008A4;
-	Tue, 10 Nov 2026 03:56:42 +0000 (UTC)
+	by smtp.kernel.org (Postfix) with ESMTPS id 8B4A51F008A6;
+	Tue, 10 Nov 2026 03:56:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794283003;
-	bh=FQRPAOczeChNohAnaECEMnatXU5EQobFRvNRBtV70cc=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=JxgomqhIRIaaT8f5vJlzyVMnQ9+Jz1X60pGJB/oTeNkitYTni3NcfGnMbD1HiHGYT
-	 Vc6gTYUQq7M8BCYzhOQ+ciix3W/PdORphsDURUtSl39tin9jud8836U9knT+8wcmeL
-	 SA5Bws1wnrlupf/hqTZnmV+z/9lIFZuykNWgsUPAcyglnzbT6cl9mMjEjTtvLIavSK
-	 QUiI91KiJtGCeozs63GvqcqjWB3onz+rzh6d8JJ0bJJXvGmQZ6IMPxNYL78UmvVSkT
-	 h+sPwbKpvUyUEi7M4s0pHxzEb/fBbVWbx3gQRtxzT6B1YbSzPyXuxn3z7lZRbj8CRN
-	 GR2lQjGhcA+zw==
+	s=k20260515; t=1794283006;
+	bh=4k093y5/yFR6nFNSoFAD4QE4dU16QnihF4r5DnoFO+w=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=b426adghyB11o6+OcPpPOH49zlvfQjX0eaBeuRwx0PG9oDNAtIgeAOnieej3DsGxR
+	 w7UnoZVJDfICIZVLbTdgK1KW8yjS7MedObvEfHgIWJopKioTrBhJioZ7jHJDwKasJw
+	 OBsl80tuqEarR9zgE07uYQHt+0QNUcMAqqNz4/lutSZFUy7at7G4oRvmB4nF1CWAPh
+	 qlj3vY+wlWzcf6A/er36+m6iAd2oyYOz4mj9YdMsgiUO4VMF1aoqQcGsNRibbYtm1q
+	 eO4Odg6QppEOcVYSr+9yKRJVBeXa6SBJWT1mN6y1mers3WiLS3hWMbE1lU526ffBQn
+	 BbmyaeVpZ+A7A==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 3442D487F1;
-	Tue, 10 Nov 2026 03:56:42 +0000 (UTC)
+	by lkml.kernel.org (Postfix) with ESMTP id 18B76487D7;
+	Tue, 10 Nov 2026 03:56:45 +0000 (UTC)
 From: Joas Antonio dos Santos via B4 Relay <devnull+joasantonio108.gmail.com@kernel.org>
-Date: Tue, 10 Nov 2026 03:56:43 +0000
-Subject: [PATCH 2/2] can: kvaser_usb: reject devices reporting zero max
- outstanding tx
+Date: Tue, 10 Nov 2026 03:56:44 +0000
+Subject: [PATCH] can: peak_usb: pcan_usb_fd: check that the channel has a
+ device
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -84,18 +84,19 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261110-kvaser-usb-validate-v1-2-f266b85aa908@gmail.com>
-References: <20261110-kvaser-usb-validate-v1-0-f266b85aa908@gmail.com>
-In-Reply-To: <20261110-kvaser-usb-validate-v1-0-f266b85aa908@gmail.com>
+Message-Id: <20261110-pcan-usb-fd-nodev-v1-1-fc11effbfafa@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAPuV8moC/x3MTQqAIBBA4avErBtI7Y+uEi1Mx5qNilIE0t2Tl
+ t/ivQKZElOGpSmQ6ObMwVeItgFzan8Qsq0G2clRCNFhNNrjlXd0Fn2wdONs9KSUHOTYK6hdTOT
+ 4+Z/r9r4fEPs1gWMAAAA=
 To: mkl@pengutronix.de, mailhol@kernel.org, joasantonio108@gmail.com
 Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
  stable@vger.kernel.org
 X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794283001; l=1920;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794283003; l=3048;
  i=joasantonio108@gmail.com; s=20261031; h=from:subject:message-id;
- bh=CWXGNrvsTmGzERh91MhkIoNvIPE1iZLcRy1k5EnUGBw=;
- b=SPDeDXx/noF/b91sP8wtQ3fgDtpmBqDRVZprOpBYymgVpwiPSjGcyAfv1RzxJGiyaqozTTpcv
- VDkPMfR4eQLDUhRuS2IZio9mS4cfCm8xd8mU4qikfxA9++DceG7HYAB
+ bh=Unyy5Y2//kCaARk7Mh5QLhPHaGmOGCPoVXqetVMtAwA=;
+ b=jyuCXnde+AGMc0XAGaTNWp5ioRE4QCXdmeIWNWdNHkCnZjjaT7ebhmhjdJUzAzAJmezYst+XO
+ 6hW0Eu/QegcCeI+B3yEZKMF+YPMIIpc7fBKP+MBe5rr++w4MFI+988J
 X-Developer-Key: i=joasantonio108@gmail.com; a=ed25519;
  pk=ZxAznJT/FcPPdzLrDDFJQm4LLjjHVGBBqDSG3TXS23w=
 X-Endpoint-Received: by B4 Relay for joasantonio108@gmail.com/20261031 with
@@ -106,57 +107,92 @@ Content-Transfer-Encoding: 7bit
 
 From: Joas Antonio dos Santos <joasantonio108@gmail.com>
 
-The number of tx contexts is taken from the max_outstanding_tx field of
-the software info reply sent by the device.  The leaf driver uses the
-value as is and the hydra driver only limits it to
-KVASER_USB_MAX_TX_URBS, so a device can report zero.
+The rx decoders of the pcan_usb_fd driver take the channel index from
+the message sent by the device and use it to look up the per-channel
+device:
 
-dev->max_tx_urbs is then used as a divisor when a tx acknowledge is
-received:
+	if (pucan_msg_get_channel(rm) >= ARRAY_SIZE(usb_if->dev))
+		return -ENOMEM;
 
-  kvaser_usb_leaf_tx_acknowledge()
-	context = &priv->tx_contexts[tid % dev->max_tx_urbs];
+	dev = usb_if->dev[pucan_msg_get_channel(rm)];
+	netdev = dev->netdev;
 
-  kvaser_usb_hydra_tx_acknowledge()
-	context = &priv->tx_contexts[transid % dev->max_tx_urbs];
+usb_if->dev[] has PCAN_USB_MAX_CHANNEL (2) entries, but an entry is
+only set for the channels the adapter really has.  The single channel
+adapters (PCAN-USB FD, PCAN-Chip USB) leave usb_if->dev[1] NULL.  A
+device that identifies as one of them and sends a CAN rx, status, error
+or overrun message for channel 1 while the interface is up passes the
+range check and makes the driver dereference a NULL pointer in the URB
+completion handler.
 
-With max_tx_urbs == 0 a tx acknowledge sent by the device while the
-interface is up is a division by zero in the URB completion handler on
-architectures that trap on it.  On architectures that do not
-trap, the index is not reduced at all and tx_contexts[], which was
-allocated with zero elements, is accessed out of bounds.
-
-A device that cannot accept any outstanding tx frame is not usable, so
-fail the probe when it reports zero.
+Check the looked up device in all four decoders and fail the decoding
+of the buffer if the channel does not exist.
 
 Found by LLM-assisted source review.
 
-Fixes: 082d70b6142f ("can: kvaser_usb: Comply with firmware max tx URBs value")
+Fixes: 0a25e1f4f185 ("can: peak_usb: add support for PEAK new CANFD USB adapters")
 Cc: stable@vger.kernel.org
 Signed-off-by: Joas Antonio dos Santos <joasantonio108@gmail.com>
 ---
- drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This issue was found with the help of an LLM-based code review tool
+(Claude).  I checked the code paths by hand against v7.4-rc3 and
+reviewed the fix myself.  It is build-tested only (W=1, arm64); I do
+not have the hardware to test it at runtime.
+---
+ drivers/net/can/usb/peak_usb/pcan_usb_fd.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-index d0a2a2a33c1c..a915e529290b 100644
---- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-+++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c
-@@ -977,6 +977,12 @@ static int kvaser_usb_probe(struct usb_interface *intf,
- 		goto free_devlink;
- 	}
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+index 39f0740421c3..c42cac212640 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb_fd.c
+@@ -540,6 +540,9 @@ static int pcan_usb_fd_decode_canmsg(struct pcan_usb_fd_if *usb_if,
+ 		return -ENOMEM;
  
-+	if (!dev->max_tx_urbs) {
-+		dev_err(&intf->dev, "Invalid max outstanding tx (0)\n");
-+		err = -ENODEV;
-+		goto free_devlink;
-+	}
+ 	dev = usb_if->dev[pucan_msg_get_channel(rm)];
++	if (!dev)
++		return -ENODEV;
 +
- 	if (ops->dev_get_software_details) {
- 		err = ops->dev_get_software_details(dev);
- 		if (err) {
+ 	netdev = dev->netdev;
+ 
+ 	if (rx_msg_flags & PUCAN_MSG_EXT_DATA_LEN) {
+@@ -609,6 +612,9 @@ static int pcan_usb_fd_decode_status(struct pcan_usb_fd_if *usb_if,
+ 		return -ENOMEM;
+ 
+ 	dev = usb_if->dev[pucan_stmsg_get_channel(sm)];
++	if (!dev)
++		return -ENODEV;
++
+ 	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+ 	netdev = dev->netdev;
+ 
+@@ -666,6 +672,9 @@ static int pcan_usb_fd_decode_error(struct pcan_usb_fd_if *usb_if,
+ 		return -EINVAL;
+ 
+ 	dev = usb_if->dev[pucan_ermsg_get_channel(er)];
++	if (!dev)
++		return -ENODEV;
++
+ 	pdev = container_of(dev, struct pcan_usb_fd_device, dev);
+ 
+ 	/* keep a trace of tx and rx error counters for later use */
+@@ -689,6 +698,9 @@ static int pcan_usb_fd_decode_overrun(struct pcan_usb_fd_if *usb_if,
+ 		return -EINVAL;
+ 
+ 	dev = usb_if->dev[pufd_omsg_get_channel(ov)];
++	if (!dev)
++		return -ENODEV;
++
+ 	netdev = dev->netdev;
+ 
+ 	/* allocate an skb to store the error frame */
 
+---
+base-commit: b3dfbde62cf1981c4638939c159dfd087b7a72e9
+change-id: 20261110-pcan-usb-fd-nodev-8ca733252643
+
+Best regards,
 -- 
-2.43.0
+Joas Antonio dos Santos <joasantonio108@gmail.com>
 
 
