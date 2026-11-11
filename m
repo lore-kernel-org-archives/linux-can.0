@@ -1,59 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794423284;
-	b=itWEs5xKQptiefi8Ard+rN/Uj8jgpcpmp1fw/5BP0bCKncV2hDH6hgmolP+H3NUoDfVU
-	 AWB9lJNcIpLEiA4Uhy9ePGRir2PA9BqyvzZsTMpb5Rxcw67rWLZE2pkwkv8D0RWQfIzNH
-	 Mll6Ib1meyex6MSw6+2ipr19/d9qfoD4LuteJfdQBZJXo50GdpBNvGnXropGrqobzEiqg
-	 UBXozcMnerW71ochUp1P6VQSSLCJ4Pgatiu1dtBymPV53PG7Xb4KyCw34mzJGwUAZ1yXd
-	 dIlxhbUa+nQZrqNoCS6rSCB74WghY8U2vMZwDimpI1rtHU/5nGIS2TwYCXlNEs2r5NA==
+	t=1794428848;
+	b=RP/udpmCiF979vr5NdOXTXStEWMmTgeC6LruhvAE5WpRxjVCKgtTChhEm+Tu25jVY6AD
+	 mV35AY+wqXcbgK2QFLdT41GTCLQF9iSZncG/4ctCQV8cCAk+mOEy8ryGEyGV1y57okabv
+	 yF9TNQi3SuYTJO8VEvFanpQicYeI6x4bFLsGQWcSwgGaxuHDMtaJFXPjawY2b4eSjchvr
+	 bZtUzouiP4rxNfoMUldZaxof7Tmper8w8EkhfAGrHsZPxCAmakGta/JAyEaHJ8VXYCL2S
+	 AHvNUUMx+BSzeAlu2xXv955vgG/tIaAnZpeVpsPyrCKVGuty7grlkJ7URtePxQrdjow==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794423284;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=vY+O8PzHjlLsZFJ64pYuT7MRIZ/KUmM6riFyf5APzbE=;
-	b=3kgz6cirBetLhDrAT+Qixn9FnjUQvFP/A4YZ7gmz5N2bJHHJzBZAklwEJRdvxtD7FA2I
-	 hIbZLJXrzsfQhs9YIHZ+YqWWH2gX7JaX6A+gnC9ctXT6e7uhMzrnKWNdqtlVx7NlU8FdF
-	 I+dyFBffzhfuVHxz40tknTdeukKxVwdH5pC9VWAJ5vOmV5JYpU4pzyeaCKSvQej2KjTUr
-	 r0hIg05tAXakAOKUT4VrancUyOM6utJ1OJRZLLh84sSHzn7KSHKFJEC9hsDfwpBsi3KX1
-	 tKVoAggmgOO/SuO/91qbOMlR4jCuGKFc72U4wL5jZNvx8IRmjh9JUgMYNUEsB02DZvg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794428848;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=g+hlyuXTXCIxB36zR/n3kH2plCVxKzMUEqxRKYhxisk=;
+	b=ff9dpWW+mNE77EAgcWczdUX+V9TIydi4r+1HtnurlaDvyLKvMCAJUOpoG4gaYEWFwfKL
+	 rYZb5iH1lOGHXrviKuBBi+O/VAizmGG+KecWulnI/YV7ETYdWlZIZMkd8SSYX0dk6wZ9V
+	 M1a854ZaoGqNG2B9eSxKTUttHORQ8NTqiuPXFlOjfxT8O6hUkkrzVWdy4DJ5TPxeHnpkA
+	 5b/tnTMRV47HQxwpyFrYN0iby46yni0UmTAScVAj47ohpMaHYcXzh+rF82We58tDhlfGU
+	 S007nKVcQgbT2zeFUiJt/1hapReXYMOkn6hzdgCpXrXz0ptR0XeDqTQQGJZWYR/TryQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JZGgcReI;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U4f18klA;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D75606A321
-	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 18:54:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3813F606A330;
+	Wed, 11 Nov 2026 20:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JZGgcReI
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 944D81F00A05;
-	Wed, 11 Nov 2026 18:54:43 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U4f18klA
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FD961F00A05;
+	Wed, 11 Nov 2026 20:27:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794423283;
-	bh=vY+O8PzHjlLsZFJ64pYuT7MRIZ/KUmM6riFyf5APzbE=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=JZGgcReIvlkedRVUY/VuSkyhg4d3o47PDCD640813I06b4GpLmt+JheGbUMTX/DO+
-	 rJ6Uyi+ahVZGS+CkkHOgGo9a8YNu1h9Vi0HJy/vLB0zYkVosyAignsMeYAozDWUZQz
-	 mSCr3bON0ifcmPJUkUrQzSWcFTRkwxowzXsksx02U1AfPwyWkKMmiATAqeRzoseQxH
-	 5Q/cObK5WaQBZwZ3sDcvRgPrjuf3SVtLbaxp2/sAH0Fho12vM02/CTs94jiPBzY0GQ
-	 dEr2FFo3LD+QTZWBW+Yp9HBsLfD4csIDJ8089GrSFgpuvg4u127PDxzSY3WsMBVrS8
-	 GOU2hm1K7WJOA==
-Message-ID: <sashiko-outbox-209507@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH v2 1/2] can: kvaser_usb: hydra: reject commands shorter
- than a standard command
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Joas Antonio dos Santos" <joasantonio108@gmail.com>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261111-kvaser-usb-validate-v2-1-193dc10ca19b@gmail.com>
-References: <20261111-kvaser-usb-validate-v2-0-193dc10ca19b@gmail.com>
- <20261111-kvaser-usb-validate-v2-1-193dc10ca19b@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Wed, 11 Nov 2026 18:54:43 +0000
+	s=k20260515; t=1794428847;
+	bh=g+hlyuXTXCIxB36zR/n3kH2plCVxKzMUEqxRKYhxisk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=U4f18klAluHIX1bmSD6lEPTg6vG33IcCHoGhX6EZvcUEqxSPMZp/CBRoKyLw+C/Hy
+	 VQZv7WUpY4qnzO98DJ2vo82dkDOyhmnedx1WV6CmhlBwn3oX1xGQHu2Gp3zmIuBAQR
+	 ElTC4UzRZGvBs3bSCDrRbWNrvdR7wqmdQZ7xaEoEKS4ukYGhKqM8ObzKVx1mPvtAI+
+	 A92sgoToXys2D4xv0lLl0MjarGgKBhMYjWhweQOTw0yYaASRMr6UcqJh0oir/A+AGL
+	 cH93oo11QU4OHOu9yqMF0Vy9nJcdeEz9PlI1RBgzxA4sKznXvblMjAv5XFON/Zojng
+	 aqSCH3vmCKL0A==
+Subject: Re: [PATCH 1/2] can: kvaser_usb: hydra: reject commands shorter than
+ the header
+From: netdev-bot+sashiko@kernel.org
+To: joasantonio108@gmail.com
+Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
+Date: Wed, 11 Nov 2026 20:27:26 +0000
+Message-ID: <179442884694.488853.1203340184494622977@kernel.org>
+In-Reply-To: <20261110-kvaser-usb-validate-v1-1-f266b85aa908@gmail.com>
+References: <20261110-kvaser-usb-validate-v1-1-f266b85aa908@gmail.com>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -62,104 +61,111 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issues to consider:
-- [Medium] can: kvaser_usb: hydra: out-of-bounds read in
-  kvaser_usb_hydra_cmd_size()
-- [Medium] can: kvaser_usb: hydra: out-of-bounds read in
-  kvaser_usb_hydra_rx_msg_ext()
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue(s) to consider.
+
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
+
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [Medium] The patch says it rejects commands shorter than the header.
+
 --
 
-commit a4f2c83cb489ac1c24979859f6f3261cc4e94f0f
-Author: Joas Antonio dos Santos <joasantonio108@gmail.com>
+can: kvaser_usb: hydra: reject commands shorter than the header
 
-can: kvaser_usb: hydra: reject commands shorter than a standard command
+This commit adds a lower bound on the command length returned by
+kvaser_usb_hydra_cmd_size(). The check is added in both
+kvaser_usb_hydra_wait_cmd() and kvaser_usb_hydra_read_bulk_callback(), so
+a CMD_EXTENDED command with a zero length no longer causes an infinite
+parse loop. Lengths shorter than struct kvaser_cmd_header are now treated
+as format errors.
 
-This commit rejects commands whose length is smaller than sizeof(struct
-kvaser_cmd) in kvaser_usb_hydra_wait_cmd() and
-kvaser_usb_hydra_read_bulk_callback().
-
-> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/=
-net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> index 687911d764ded..9adb4eb36e394 100644
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> index 687911d764ded..92bfdcb04b019 100644
 > --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
 > +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> @@ -676,7 +676,8 @@ static int kvaser_usb_hydra_wait_cmd(const struct kva=
-ser_usb *dev, u8 cmd_no,
-> =20
->  			tmp_cmd =3D buf + pos;
->  			cmd_len =3D kvaser_usb_hydra_cmd_size(tmp_cmd);
+> @@ -676,7 +676,8 @@ static int kvaser_usb_hydra_wait_cmd(const struct kvaser_usb *dev, u8 cmd_no,
+>  
+>  			tmp_cmd = buf + pos;
+>  			cmd_len = kvaser_usb_hydra_cmd_size(tmp_cmd);
 > -			if (pos + cmd_len > actual_len) {
-> +			if (cmd_len < sizeof(struct kvaser_cmd) ||
+> +			if (cmd_len < sizeof(struct kvaser_cmd_header) ||
 > +			    pos + cmd_len > actual_len) {
 >  				dev_err_ratelimited(&dev->intf->dev,
 >  						    "Format error\n");
 >  				break;
-
-[Severity: Medium]
-Can kvaser_usb_hydra_cmd_size() read past the received bytes in buf when
-fewer than offsetofend(struct kvaser_cmd_ext, len) (6) bytes remain?
-
-When tmp_cmd->header.cmd_no is CMD_EXTENDED, kvaser_usb_hydra_cmd_size()
-reads ((struct kvaser_cmd_ext *)cmd)->len at byte offsets 4..5 before
-checking how many bytes are left in the transfer.  If a full
-KVASER_USB_RX_BUFFER_SIZE transfer ends with 1..5 trailing bytes and the
-first byte is CMD_EXTENDED, this reads up to 4 bytes past the end of buf.
-
-In kvaser_usb_hydra_read_bulk_callback(), a valid extended command split
-across two URB transfers with fewer than 6 bytes in the first transfer
-also reads unreceived bytes from buf[pos + 4..5] to compute cmd_len,
-either tripping the new cmd_len < sizeof(struct kvaser_cmd) check or
-saving fewer than 6 bytes into card_data->usb_rx_leftover, where the next
-callback calls kvaser_usb_hydra_cmd_size() before the rest of the header
-is copied in and without checking cmd_len < sizeof(struct kvaser_cmd).
-
-> @@ -2156,6 +2157,11 @@ static void kvaser_usb_hydra_read_bulk_callback(st=
-ruct kvaser_usb *dev,
-> =20
->  		cmd_len =3D kvaser_usb_hydra_cmd_size(cmd);
-> =20
-> +		if (cmd_len < sizeof(struct kvaser_cmd)) {
+> @@ -2156,6 +2157,11 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+>  
+>  		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
+>  
+> +		if (cmd_len < sizeof(struct kvaser_cmd_header)) {
 > +			dev_err(&dev->intf->dev, "Format error\n");
 > +			return;
 > +		}
 > +
+
+[Severity: Medium]
+Is struct kvaser_cmd_header the right lower bound here?
+
+kvaser_usb_hydra_cmd_size() returns sizeof(struct kvaser_cmd), which is
+32, for every non-extended command. So this check only has an effect for
+CMD_EXTENDED.
+
+The fixed header of an extended command is the 8-byte prefix of struct
+kvaser_cmd_ext, and the length field is part of that prefix:
+
+struct kvaser_cmd_ext {
+	struct kvaser_cmd_header header;
+	__le16 len;
+	u8 cmd_no_ext;
+	u8 reserved;
+	...
+
+With a 4-byte bound, a CMD_EXTENDED with len between 4 and 7 still passes
+this check, and also the new check in kvaser_usb_hydra_wait_cmd(). In the
+bulk callback the command is then handled like this:
+
+kvaser_usb_hydra_read_bulk_callback()
+  kvaser_usb_hydra_handle_cmd()
+    kvaser_usb_hydra_handle_cmd_ext()
+      switch (cmd->cmd_no_ext)
+      kvaser_usb_hydra_rx_msg_ext()
+        memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+
+Both cmd_no_ext (offset 6) and rx_can (from offset 8) are outside the
+declared command. So the dispatch decision and the CAN frame passed to
+netif_rx() come from the next command in the transfer, or from stale URB
+buffer bytes. Parsing then resumes 4 to 7 bytes later, in the middle of
+what was just treated as payload.
+
+The commit message says "A command can never be shorter than its header".
+The leaf fix it cites, 0c73772cd2b8, bounds by CMD_HEADER_LEN, and that
+header includes the length field.
+
+Should the CMD_EXTENDED minimum be at least
+offsetof(struct kvaser_cmd_ext, rx_can)? For reference,
+kvaser_usb_hydra_frame_to_cmd_ext() always builds extended commands of at
+least 32 bytes, aligned to 8.
+
+A complete fix would also need per-sub-command minimum sizes, similar to
+kvaser_usb_leaf_verify_size(). The extended handlers already read up to 96
+bytes based on dlc, whatever cmd_len says. That over-read predates this
+patch, and neither bound fixes it.
+
+The later patch in this series, "can: kvaser_usb: reject devices reporting
+zero max outstanding tx", only changes probe in kvaser_usb_core.c and does
+not touch these parsers.
+
 >  		if (pos + cmd_len > len) {
 >  			/* We got first part of a command */
 >  			int leftover_bytes;
 
-[Severity: Medium]
-Does checking cmd_len < sizeof(struct kvaser_cmd) prevent
-kvaser_usb_hydra_rx_msg_ext() from reading past the end of cmd and buf?
-
-In struct kvaser_cmd_ext, the fixed fields of rx_can end at byte 32, and
-the union holding err_frame_data and kcan_payload[64] starts at byte 32:
-
-drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:kvaser_usb_hydra_rx_msg_e=
-xt() {
-	...
-	if (flags & KVASER_USB_HYDRA_CF_FLAG_ERROR_FRAME) {
-		kvaser_usb_hydra_error_frame(priv, &cmd->rx_can.err_frame_data,
-					     hwtstamp);
-		return;
-	}
-	...
-	if (flags & KVASER_USB_HYDRA_CF_FLAG_REMOTE_FRAME) {
-		cf->can_id |=3D CAN_RTR_FLAG;
-	} else {
-		memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
-
-		stats->rx_bytes +=3D cf->len;
-	}
-}
-
-A CMD_RX_MESSAGE_FD command with cmd_len =3D=3D 32 passes this check, after
-which kvaser_usb_hydra_rx_msg_ext() reads err_frame_data or copies up to
-64 bytes from cmd->rx_can.kcan_payload (depending on the DLC in
-kcan_header) past the end of the command and potentially past the end of
-buf into the skb.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261111-kvaser-usb=
--validate-v2-0-193dc10ca19b@gmail.com?part=3D1
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261110-kvaser-usb-validate-v1-0-f266b85aa908%40gmail.com
