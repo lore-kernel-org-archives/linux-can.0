@@ -1,96 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.177
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=111.22.67.137
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794378551;
-	b=X2znRjcRuQfOfRZGuAW6cK5nIvRxlo92x/koHuIoa4Rudp+JijW50Qyfey4sIrDWc1FG
-	 jztTlEFUxtwJhK6ILODUxVVXHu+kAOeAo9HJsqCZMMGJ50ymqYLe1TEEqUIPkZ8wF5KIV
-	 sbaJ34AVGO+HAsrfRqYblvReQLrnwRYTaaUqy7JUAGh4Nzh73NgkUKfTV3uzxY4MC9ZTK
-	 orccuNvLJcKlEgJ1tyjClixr1FZCdjwika44KGQXK9QOiWGHN1t/3e2bc3kyM8Q1wqMqF
-	 9BXs7q8UjMKzmzBfTfCV+M0ado6U5vguoun/troefs24Lue02nL58Q+3ywpjZ6P2i8g==
+	t=1794378552;
+	b=YuQo/o7tV1aBnkX+86s7AJ26cHXsWF5srPnJef9y2BMAOvRf0r5iJyawYFr+FgAhTL1A
+	 NZHz/FtuaXKMOSPX09/fpDDXb331VDlQZK8smjAE3WkF5U2Z6fz0HxzA5MFXZbmGRT03v
+	 rCD9h419f+mvz06Nsw5KSYhQ86QV69JflA0xbhGivRiaC/opswGCHcSHL9DMeGqjVo5D8
+	 Agv4xtI1WxAxnkoiVsZ+NF+he/Fh2IFSHdRqw1hbxmaAtUBDzlnV6Ijhw4zZMej6C/YCs
+	 jmmgkwxNlVnoRY9l3txE8Tr1bPxTULXLmL5kY+2KrlKYDSFQp6v1eROzvwIkjlqf9jw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794378551;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:From:To:Cc:Subject:
-	 Date:Message-ID:In-Reply-To:References:MIME-Version:Content-Type:
+	a=rsa-sha256; c=relaxed/relaxed; t=1794378552;
+	h=DMARC-Filter:DKIM-Signature:X-RM-TagInfo:X-RM-SPAM-FLAG:Received:
+	 X-RM-TRANSID:X-RM-TagInfo:X-RM-SPAM-FLAG:Received:X-RM-TRANSID:From:
+	 To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=/WZuXTnG3QlqmY4khWAwpBN7iLQgfE+jMyzDq4k51ro=;
-	b=it8l3rqj2wQvaDzdTKtJuko6Su0wWCvTgWeV/eGvwTsS4kwRz8cyfiHgoTfJ6NyzEXnt
-	 YaY6SUXfh+8cOVyqe5VLyZNQPWRTraScC0wPGwc/d9wupSPQ0MQj6Ua70ACHndja8W48V
-	 LhY+IG8J1P5KMEEH5yj8WieIQ5LpHCPgx+ejT9LoXge0V79IFP4msxZeSM5SubvQ7kH2A
-	 l+MkxP8/FCvN+p6YvveVGAdT3Uzl2msiBNUrtDkMmTdBmqeM0esevZz+GdXJRDQJP2/Xa
-	 5iV8fdLe2n48ZhYm0z2ylvCMRwbj1pfO5Vv62qADt+xUWJ1/NJIBsLgGo1O3M0+pHhA==
+	bh=eJz7atVcjox5iJ5MMjd33M3oJPbkBzC+EXdgItO6XeI=;
+	b=DUJ2VIo5bmCpfXAp/ENDj+KhduU+x+dYVIr4fDWIodBg1t/uruW9FHq7cbeZ6XUy/1Qp
+	 w79qwMsnAlC+3zrKbgFPRYsZIMz/XRNZ8L9AOD/wHpcj9ToUtDFlEGaK+UU7SOw0j53Ii
+	 eZwlvO8FoADZexZgQ7XaE6wuY2XAm7TJdEw6u6hBCDJlfnYMeOBaBZd3sJsu4Urt8GSM8
+	 bg1PuWB7Y0EZjUwZYuhaY7zE0xY2nczOb+sJAduvmPicTEpC8JCT2+epuIoa1wmZeFoCz
+	 5Un6pbYw+N2XQ2V/x2UC+peooHi6Rsnrq2v4C8M2ebxQEnR1j+U5hAWsmtzfF34Bwsw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ROY8Ge3E;
-	arc=none smtp.remote-ip=74.125.82.177
-Received: from mail-dy1-f177.google.com (mail-dy1-f177.google.com [74.125.82.177])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3C0D606A324
-	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 06:29:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C3C0D606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	dmarc=pass header.from=cmss.chinamobile.com;
+	spf=pass smtp.mailfrom=cmss.chinamobile.com;
+	dkim=pass header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=L4YQsXmA;
+	arc=none smtp.remote-ip=111.22.67.137
+Received: from cmccmta4.chinamobile.com (cmccmta4.chinamobile.com [111.22.67.137])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FB33606A31C;
+	Wed, 11 Nov 2026 06:29:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7FB33606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmss.chinamobile.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmss.chinamobile.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=ROY8Ge3E
-Received: by mail-dy1-f177.google.com with SMTP id 5a478bee46e88-36f6295304dso3681057eec.1
-        for <linux-can@vger.kernel.org>; Tue, 10 Nov 2026 22:29:10 -0800 (PST)
+	dkim=pass (1024-bit key) header.d=cmss.chinamobile.com header.i=@cmss.chinamobile.com header.a=rsa-sha256 header.s=default header.b=L4YQsXmA
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1794378550; x=1794983350; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=/WZuXTnG3QlqmY4khWAwpBN7iLQgfE+jMyzDq4k51ro=;
-        b=ROY8Ge3EJP4qcR5iNI21mlhLWXRkGQMfj6CVisQ3eBfqGQ8/ffyDnODxIS/AXaIHYc
-         jUqz0aT+wulIgdLSKmxhc4hRcOA/zW3fq7vkb1z4or6dHIeJE56sRn11CP2coc+mUXHl
-         J1bbFUN2oHzJE/8h3vHxsxFjaMjFylbaziU/5tPdZHdncUr7kaOyaq8tU8FXa1LXDKtf
-         cXVJqGZr7aodKoOPumjVwtB6Y4dEXBTH87zOgh/ifiUeHwf1fi45fSEsDg8A1RqV9jJ5
-         7yj5u4TDTil42RVje38/riSdWWQXSGyq0vjgLn8CVRCI3/nrAm3/aEg3Dt8MOJxy4Fpg
-         /SbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794378550; x=1794983350;
-        h=content-transfer-encoding:content-type:mime-version:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=/WZuXTnG3QlqmY4khWAwpBN7iLQgfE+jMyzDq4k51ro=;
-        b=ilah8VQDrjbl/IuYssCJN4d3g/eEtJqh5GgzwHkiwqDLe9gej/Ic0ZRitN5/EYAMcf
-         gInZe01pSOtW3dzNDk5Y6TiNamKONdHCmDLM8VWaLwGWtb76FluDeCk0q+eJ8iHk7ee3
-         jntx9pfpu8ExgXEwq1ykXcZF4OL3cMSXomHn/uSNgwflv2Hs6TYjFePAwd+CtMmRKUng
-         pbl2ap0jUcEAu86kV9/wFUTgyXkjaPq1WoqLziCQb8e6/Rqt8UCS2Hed9owblfS9+3sS
-         rTinBEQJCMjwpe0LBYJJ233vwl0JdjBhnJuMA4SEJOIuAfu+71aEtGuGUOCejz0x2MKk
-         YDeA==
-X-Gm-Message-State: APuU4Z835NQsvclFgnlupz7qt6PUeZwC10XQs03vF0rpkU2xJ798k0IP
-	7C+sbggkwbCDTSbv2PMo2x8VnSlROetElaQpukDaIQ//oBPZl1LKsIQ7vQbJRTvj
-X-Gm-Gg: AYBFou2G/Ih84YyH8mp2qs7WVBgzHV2dhYglt4y9ittu+XNrDsPaV3F486fozKTO4K9
-	LPJ32rHI/p42CzPKJvNpX3+1ZTjz7CqhOJmKJXatITu/wCi+DSV7cEbivZtCPsR26uJ7x8htnFF
-	pJgE/bEXm/ppkIArCD02HhWpIc/xTP6YP6vwt6uET4oPSQSDekAgE9yGzsYBri8wvT6KNdMXNQ4
-	TlWW8YD7KK9HtHJitd8kNL13vkGL1GCva3hyh+EdZULocpop8kQPXKSw1aXlNGo4ULBJSSDRvEO
-	opFTRcdF4lagdTjKqpBMO7h48VDepnRUjy9N4h/D06H/yH7H9B+UvtZMyFSl/ZwrawfaGSqkCkN
-	werFXXYL/5H1PcQYn2i1XwbuHdh/tXvl1PHNfJYqDmm1SXgBzZwSc+p/0+/3edshSdPtFbcF1A6
-	2Q0RWTcI7fhjqkwGlL8k2TiCofJHDetCMXWw2dfUbZ1qLrXGhqaXdN9420myk+zT2agj68kCEFY
-	bCgBfF2H0drizEhBuFeEMFyPlOh3ISoFSYsNiAuBHrPcv3fx3krs2iJn6MGekiVvlI5r+bZ4z5f
-	laO2vA0204TPX017g4IrMbkKxt12ksZ6XWxNqhGtiSqkdYw8MjozAB5X4LcFkzs=
-X-Received: by 2002:a05:7301:dcd:b0:370:d7fe:6585 with SMTP id 5a478bee46e88-37685c7a46dmr1921905eec.11.1794378549751;
-        Tue, 10 Nov 2026 22:29:09 -0800 (PST)
-Received: from [127.0.1.1] ([183.242.161.82])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3751ff2ab59sm12812621eec.6.2026.11.10.22.29.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2026 22:29:09 -0800 (PST)
-From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
-To: linux-can@vger.kernel.org
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net-next 0/2] can: publish tty->disc_data only after register_candev()
-Date: Wed, 11 Nov 2026 14:40:00 +0800
-Message-ID: <1794300000.12345.987654321@gmail.com>
-In-Reply-To: <c9e14a02-c360-414f-9808-8801ba18544d@enpas.org>
-References: <afc724d533dc3e7d6d423a641ecb6ca5b40451f7.1792118038.git.chaosheng.qu.linux@gmail.com>
-	<e02d5a1d31bb8dbc6397e3469cd0578b85d78970.1792118038.git.chaosheng.qu.linux@gmail.com>
-	<179289472575.8393.17187271051946169028@gmail.com>
-	<c9e14a02-c360-414f-9808-8801ba18544d@enpas.org>
+	d=cmss.chinamobile.com; s=default; l=0;
+	h=from:subject:message-id:to:cc:mime-version;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	b=L4YQsXmAJ1JE3lbLNOSLdSu8b5HhIDSXakNh7oxnSKaAt/yrNsh9ozW8FOTdyZ4BSZ7Zvp5KL47uD
+	 tXITVote5NrH2Wx69Korr5+DpOZ2ULsms/wrue219n+R2swhVorPzbqA2dcnbcrUrO6hodWpDO/siE
+	 Cms1WYuTW8bXr0o8=
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from spf.mail.chinamobile.com (unknown[10.188.0.87])
+	by rmmx-syy-dmz-app08-12008 (RichMail) with SMTP id 2ee86af40b35d5d-74ec6;
+	Wed, 11 Nov 2026 14:29:09 +0800 (CST)
+X-RM-TRANSID:2ee86af40b35d5d-74ec6
+X-RM-TagInfo: emlType=0                                       
+X-RM-SPAM-FLAG:00000000
+Received:from devin-VMware-Virtual-Platform.localdomain (unknown[10.55.1.72])
+	by rmsmtp-syy-appsvr03-12003 (RichMail) with SMTP id 2ee36af40b3360f-d0794;
+	Wed, 11 Nov 2026 14:29:09 +0800 (CST)
+X-RM-TRANSID:2ee36af40b3360f-d0794
+From: Zhu Jun <zhujun2@cmss.chinamobile.com>
+To: socketcan@hartkopp.net
+Cc: mkl@pengutronix.de,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzbot+a6205fafcbfe69a5fd67@syzkaller.appspotmail.com,
+	Zhu Jun <zhujun2@cmss.chinamobile.com>
+Subject: [PATCH] can: gw: avoid losing statistics updates on concurrent receive
+Date: Wed, 11 Nov 2026 14:29:07 +0800
+Message-ID: <20261111062907.16857-1-zhujun2@cmss.chinamobile.com>
+X-Mailer: git-send-email 2.51.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -100,51 +70,152 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-Hi Max,
+can_can_gw_rcv() can run on multiple CPUs for the same gateway job. RCU
+protects the job's lifetime, but does not serialize its frame counters.
+Concurrent plain increments can lose updates, and netlink dumps race
+with the counter updates as well.
 
-Thank you for the thorough review, and for taking the time to work out why the
-patch felt wrong. You are right, and I am dropping this approach.
+Use atomic counters for handled, dropped and deleted frames. Read each
+counter once into a u32 for the netlink dump, preserving the existing
+32-bit attributes and their wraparound behavior.
 
-The point I missed is the first one you made: "ldisc first, then netdev" is an
-implicit contract in these two drivers, and my patch interleaves it. Even if
-nothing races today, the next person to touch these functions would have to
-reason about SMT safety that was previously not theirs to reason about. That is
-swapping one trap for another, which is exactly what I claimed to be removing.
+Fixes: c1aabdf379bc ("can-gw: add netlink based CAN routing")
+Signed-off-by: Zhu Jun <zhujun2@cmss.chinamobile.com>
+---
+ net/can/gw.c | 43 ++++++++++++++++++++++++-------------------
+ 1 file changed, 24 insertions(+), 19 deletions(-)
 
-So v3 will use your alternative instead of mine, and nothing else:
+diff --git a/net/can/gw.c b/net/can/gw.c
+index 8a5327d8a00e..a5233b4606da 100644
+--- a/net/can/gw.c
++++ b/net/can/gw.c
+@@ -40,6 +40,7 @@
+  */
+ 
+ #include <linux/module.h>
++#include <linux/atomic.h>
+ #include <linux/init.h>
+ #include <linux/types.h>
+ #include <linux/kernel.h>
+@@ -129,9 +130,9 @@ struct can_can_gw {
+ struct cgw_job {
+ 	struct hlist_node list;
+ 	struct rcu_head rcu;
+-	u32 handled_frames;
+-	u32 dropped_frames;
+-	u32 deleted_frames;
++	atomic_t handled_frames;
++	atomic_t dropped_frames;
++	atomic_t deleted_frames;
+ 	struct cf_mod __rcu *cf_mod;
+ 	union {
+ 		/* CAN frame data source */
+@@ -484,12 +485,12 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 	 */
+ 	if (csx->can_gw_hops >= max_hops) {
+ 		/* indicate deleted frames due to misconfiguration */
+-		gwj->deleted_frames++;
++		atomic_inc(&gwj->deleted_frames);
+ 		return;
+ 	}
+ 
+ 	if (!(gwj->dst.dev->flags & IFF_UP)) {
+-		gwj->dropped_frames++;
++		atomic_inc(&gwj->dropped_frames);
+ 		return;
+ 	}
+ 
+@@ -510,7 +511,7 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 		nskb = skb_clone(skb, GFP_ATOMIC);
+ 
+ 	if (!nskb) {
+-		gwj->dropped_frames++;
++		atomic_inc(&gwj->dropped_frames);
+ 		return;
+ 	}
+ 
+@@ -521,7 +522,7 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 	ncsx = skb_ext_add(nskb, SKB_EXT_CAN);
+ 	if (!ncsx) {
+ 		kfree_skb(nskb);
+-		gwj->dropped_frames++;
++		atomic_inc(&gwj->dropped_frames);
+ 		return;
+ 	}
+ 
+@@ -552,7 +553,7 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 		/* dlc may have changed, make sure it fits to the CAN frame */
+ 		if (cf->len > max_len) {
+ 			/* delete frame due to misconfiguration */
+-			gwj->deleted_frames++;
++			atomic_inc(&gwj->deleted_frames);
+ 			kfree_skb(nskb);
+ 			return;
+ 		}
+@@ -571,9 +572,9 @@ static void can_can_gw_rcv(struct sk_buff *skb, void *data)
+ 
+ 	/* send to netdevice */
+ 	if (can_send(nskb, gwj->flags & CGW_FLAGS_CAN_ECHO))
+-		gwj->dropped_frames++;
++		atomic_inc(&gwj->dropped_frames);
+ 	else
+-		gwj->handled_frames++;
++		atomic_inc(&gwj->handled_frames);
+ }
+ 
+ static inline int cgw_register_filter(struct net *net, struct cgw_job *gwj)
+@@ -640,6 +641,7 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
+ 	struct rtcanmsg *rtcan;
+ 	struct nlmsghdr *nlh;
+ 	struct cf_mod *mod;
++	u32 handled, dropped, deleted;
+ 
+ 	nlh = nlmsg_put(skb, pid, seq, type, sizeof(*rtcan), flags);
+ 	if (!nlh)
+@@ -652,18 +654,21 @@ static int cgw_put_job(struct sk_buff *skb, struct cgw_job *gwj, int type,
+ 
+ 	/* add statistics if available */
+ 
+-	if (gwj->handled_frames) {
+-		if (nla_put_u32(skb, CGW_HANDLED, gwj->handled_frames) < 0)
++	handled = atomic_read(&gwj->handled_frames);
++	if (handled) {
++		if (nla_put_u32(skb, CGW_HANDLED, handled) < 0)
+ 			goto cancel;
+ 	}
+ 
+-	if (gwj->dropped_frames) {
+-		if (nla_put_u32(skb, CGW_DROPPED, gwj->dropped_frames) < 0)
++	dropped = atomic_read(&gwj->dropped_frames);
++	if (dropped) {
++		if (nla_put_u32(skb, CGW_DROPPED, dropped) < 0)
+ 			goto cancel;
+ 	}
+ 
+-	if (gwj->deleted_frames) {
+-		if (nla_put_u32(skb, CGW_DELETED, gwj->deleted_frames) < 0)
++	deleted = atomic_read(&gwj->deleted_frames);
++	if (deleted) {
++		if (nla_put_u32(skb, CGW_DELETED, deleted) < 0)
+ 			goto cancel;
+ 	}
+ 
+@@ -1146,9 +1151,9 @@ static int cgw_create_job(struct sk_buff *skb,  struct nlmsghdr *nlh,
+ 		goto out_free_cf;
+ 	}
+ 
+-	gwj->handled_frames = 0;
+-	gwj->dropped_frames = 0;
+-	gwj->deleted_frames = 0;
++	atomic_set(&gwj->handled_frames, 0);
++	atomic_set(&gwj->dropped_frames, 0);
++	atomic_set(&gwj->deleted_frames, 0);
+ 	gwj->flags = r->flags;
+ 	gwj->gwtype = r->gwtype;
+ 	gwj->limit_hops = limhops;
+-- 
+2.51.0
 
-	err = register_candev(dev);
-	if (err) {
-+		tty->disc_data = NULL;
-		free_candev(dev);
-		pr_err("can't register candev\n");
-		return err;
-	}
-
-Same in can327. The ordering stays as it is, so the implicit contract is
-untouched, and the failure path no longer leaves tty->disc_data pointing at
-memory that free_candev() has just released. The commit message will say that
-plainly, and will state why no barrier or extra locking is needed: the pointer
-is read exactly where it was read before, and the only write on this path
-happens before the interface can be brought up.
-
-The sashiko report on 1/2 (a lost tty_wakeup while ldisc_sem is held) also goes
-away with your version, since nothing is reordered any more.
-
-On your question: yes. I use an AI assistant when I write patches, and the
-disclosure line required by Documentation/process/coding-assistants.rst will be
-on v3. Your instinct about why this one looked too neat is right: the assistant
-was good at exactly one thing here, finding the smallest diff that removes the
-dangling pointer, and moving the assignment is a smaller diff than clearing it.
-That is the move that quietly crossed the SMT boundary. Knowing when the
-smaller diff is the wrong one is still my job, and I got it wrong.
-
-v3 in a day or two, after I have re-read both drivers end to end rather than
-trusting the diff.
-
-Thanks,
-Chaosheng
 
