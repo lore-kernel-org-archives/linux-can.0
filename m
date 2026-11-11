@@ -1,55 +1,54 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794428848;
-	b=RP/udpmCiF979vr5NdOXTXStEWMmTgeC6LruhvAE5WpRxjVCKgtTChhEm+Tu25jVY6AD
-	 mV35AY+wqXcbgK2QFLdT41GTCLQF9iSZncG/4ctCQV8cCAk+mOEy8ryGEyGV1y57okabv
-	 yF9TNQi3SuYTJO8VEvFanpQicYeI6x4bFLsGQWcSwgGaxuHDMtaJFXPjawY2b4eSjchvr
-	 bZtUzouiP4rxNfoMUldZaxof7Tmper8w8EkhfAGrHsZPxCAmakGta/JAyEaHJ8VXYCL2S
-	 AHvNUUMx+BSzeAlu2xXv955vgG/tIaAnZpeVpsPyrCKVGuty7grlkJ7URtePxQrdjow==
+	t=1794434081;
+	b=xNDWk80sCjTC/LxH5n4y8Gl26N3VKFx1R3oauh17ReQlkg95u5mzul5E9NjiL56jHbQn
+	 j29JECAc5IvJpSunZC7ivkVb9DTtgCSlmYZYgyMpZth2HCAx4FP7/GWdswXQRy6ylXkK5
+	 9+ijP1owuBja6EaFKv81GflJdH41dmAheFa/ARj/vT8FhdTnPXBgQlpcNxHUQSyf/+iPz
+	 m2giPEcFyvn4GqMDIG11fM3+wMHE8zIHJR3iUdkcmOhMDuDsdNNOteXy5lwP/oeQ0NQJ5
+	 fK+HjgPG1zWiB9w33ygjMzzWMpcrLkGinuTNKf0i+FhS/FmavQgbR5YfWE5Hh+lUrtg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794428848;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794434081;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=g+hlyuXTXCIxB36zR/n3kH2plCVxKzMUEqxRKYhxisk=;
-	b=ff9dpWW+mNE77EAgcWczdUX+V9TIydi4r+1HtnurlaDvyLKvMCAJUOpoG4gaYEWFwfKL
-	 rYZb5iH1lOGHXrviKuBBi+O/VAizmGG+KecWulnI/YV7ETYdWlZIZMkd8SSYX0dk6wZ9V
-	 M1a854ZaoGqNG2B9eSxKTUttHORQ8NTqiuPXFlOjfxT8O6hUkkrzVWdy4DJ5TPxeHnpkA
-	 5b/tnTMRV47HQxwpyFrYN0iby46yni0UmTAScVAj47ohpMaHYcXzh+rF82We58tDhlfGU
-	 S007nKVcQgbT2zeFUiJt/1hapReXYMOkn6hzdgCpXrXz0ptR0XeDqTQQGJZWYR/TryQ==
+	bh=2rS138tZ8RE3buif2rtlqT+xmKuZZmZLB5+CNF7K6Kk=;
+	b=1ZiHuKJKRz10jAvllFWninwFd94tsrg3SltqLpMg4Sj+fYimpKjzfToVyMRKBNHsnEaQ
+	 f0UbICUf6cug4A2ljwMBN4GkpGCmFZDyhK12+73gn3D48haffiSEl3sGSxe3Ab2Mo7nh+
+	 FEyrvq/7ItZ9l6JX7lm1wuWI2mvZtnuR/WU+e6gAQOyv1bTG14iyUlAbl8JxQMguSiXj9
+	 4U7hObr3b8dVg3Wju499grvlQOM6J6IVLCICKfu2FfXkeIhKJqsI7+llm5pN6NxIpa4BM
+	 o1BcZoW4aL4avFBrEk1y/qrl2cWspMP+QU2SNFT/oCHmtzZ+ChOm7Fugeu3MgAgfrIA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U4f18klA;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I1ixBxvB;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3813F606A330;
-	Wed, 11 Nov 2026 20:27:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5F34606A33E;
+	Wed, 11 Nov 2026 21:54:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U4f18klA
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FD961F00A05;
-	Wed, 11 Nov 2026 20:27:27 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I1ixBxvB
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02C851F00A06;
+	Wed, 11 Nov 2026 21:54:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794428847;
-	bh=g+hlyuXTXCIxB36zR/n3kH2plCVxKzMUEqxRKYhxisk=;
+	s=k20260515; t=1794434081;
+	bh=2rS138tZ8RE3buif2rtlqT+xmKuZZmZLB5+CNF7K6Kk=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=U4f18klAluHIX1bmSD6lEPTg6vG33IcCHoGhX6EZvcUEqxSPMZp/CBRoKyLw+C/Hy
-	 VQZv7WUpY4qnzO98DJ2vo82dkDOyhmnedx1WV6CmhlBwn3oX1xGQHu2Gp3zmIuBAQR
-	 ElTC4UzRZGvBs3bSCDrRbWNrvdR7wqmdQZ7xaEoEKS4ukYGhKqM8ObzKVx1mPvtAI+
-	 A92sgoToXys2D4xv0lLl0MjarGgKBhMYjWhweQOTw0yYaASRMr6UcqJh0oir/A+AGL
-	 cH93oo11QU4OHOu9yqMF0Vy9nJcdeEz9PlI1RBgzxA4sKznXvblMjAv5XFON/Zojng
-	 aqSCH3vmCKL0A==
-Subject: Re: [PATCH 1/2] can: kvaser_usb: hydra: reject commands shorter than
- the header
+	b=I1ixBxvBR9WfSewv1oaLsCZ3oPQmwNI7tN27NDmjLp3ZTp1CTaC2j4CmvhyltzL9G
+	 Db5X2y1xha2zCgxMzPfp0h/koTSbHUUtDueoVRb2YFsEcY9CPWCza1RAGbGdTrl/hx
+	 q9kFxsaJ8p937DGkvLtqMvAYCRZ0cc/uL2URvLXKUzJWvI4BrQupS0Qk1xcjQ8jFe8
+	 U1wdYSvUyMlzorKS9bh0sdl6S12yvnd4q/3CtYv49Y6gZoZYoqlo6/9QPBVIt2/mms
+	 +555WGO/TUYw20zrj4fXc3ChViuSUb5Cu1QdGJOYQ071ObI5gFJjf78GqbUGctEpQx
+	 5OqZigXu24lLQ==
+Subject: Re: [PATCH] can: bcm: Account cyclic transmissions only on success
 From: netdev-bot+sashiko@kernel.org
-To: joasantonio108@gmail.com
-Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
-Date: Wed, 11 Nov 2026 20:27:26 +0000
-Message-ID: <179442884694.488853.1203340184494622977@kernel.org>
-In-Reply-To: <20261110-kvaser-usb-validate-v1-1-f266b85aa908@gmail.com>
-References: <20261110-kvaser-usb-validate-v1-1-f266b85aa908@gmail.com>
+To: raoxu@uniontech.com
+Cc: socketcan@hartkopp.net, mkl@pengutronix.de, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kuba@kernel.org
+Date: Wed, 11 Nov 2026 21:54:40 +0000
+Message-ID: <179443408049.488853.9633574112206236032@kernel.org>
+In-Reply-To: <45A9B6D8611C63C9+20261110052315.253367-1-raoxu@uniontech.com>
+References: <45A9B6D8611C63C9+20261110052315.253367-1-raoxu@uniontech.com>
 X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -63,10 +62,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
+Thank you for your contribution! Sashiko AI review found 2 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 0
+Critical: 0 · High: 0 · Medium: 1 · Low: 1
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -74,98 +73,108 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] The patch says it rejects commands shorter than the header.
+- [Medium] In bcm_can_tx() (net/can/bcm.c:378), the patch changes the
+  condition to `if (!err && (!cyclic || op->currframe == idx))`.
+- [Low] The commit fixes a user-visible BCM bug: cyclic transmissions and
+  the ival1 count are used up, and TX_EXPIRED can be reported, without…
 
 --
 
-can: kvaser_usb: hydra: reject commands shorter than the header
+can: bcm: Account cyclic transmissions only on success
 
-This commit adds a lower bound on the command length returned by
-kvaser_usb_hydra_cmd_size(). The check is added in both
-kvaser_usb_hydra_wait_cmd() and kvaser_usb_hydra_read_bulk_callback(), so
-a CMD_EXTENDED command with a zero length no longer causes an infinite
-parse loop. Lengths shorter than struct kvaser_cmd_header are now treated
-as format errors.
+This patch changes bcm_can_tx() so that op->currframe and op->count only
+move forward when can_send() returns success. The goal is to stop the BCM
+timer from using up the configured ival1 transmissions, and reporting
+TX_EXPIRED, when no frame was sent, for example while the interface is down.
 
-> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> index 687911d764ded..92bfdcb04b019 100644
-> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
-> @@ -676,7 +676,8 @@ static int kvaser_usb_hydra_wait_cmd(const struct kvaser_usb *dev, u8 cmd_no,
->  
->  			tmp_cmd = buf + pos;
->  			cmd_len = kvaser_usb_hydra_cmd_size(tmp_cmd);
-> -			if (pos + cmd_len > actual_len) {
-> +			if (cmd_len < sizeof(struct kvaser_cmd_header) ||
-> +			    pos + cmd_len > actual_len) {
->  				dev_err_ratelimited(&dev->intf->dev,
->  						    "Format error\n");
->  				break;
-> @@ -2156,6 +2157,11 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
->  
->  		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
->  
-> +		if (cmd_len < sizeof(struct kvaser_cmd_header)) {
-> +			dev_err(&dev->intf->dev, "Format error\n");
-> +			return;
-> +		}
-> +
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 7bd2aa39777af..cd66b23bf95c2 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
+> @@ -375,7 +375,7 @@ static void bcm_can_tx(struct bcm_op *op, struct canfd_frame *cf)
+>  	 * we were sending - a concurrent TX_RESET_MULTI_IDX means this
+>  	 * frame's bookkeeping belongs to a sequence that no longer exists
+>  	 */
+> -	if (!cyclic || op->currframe == idx) {
+> +	if (!err && (!cyclic || op->currframe == idx)) {
 
 [Severity: Medium]
-Is struct kvaser_cmd_header the right lower bound here?
 
-kvaser_usb_hydra_cmd_size() returns sizeof(struct kvaser_cmd), which is
-32, for every non-extended command. So this check only has an effect for
-CMD_EXTENDED.
+What happens here when can_send() keeps failing with a persistent error?
 
-The fixed header of an extended command is the 8-byte prefix of struct
-kvaser_cmd_ext, and the length field is part of that prefix:
+With the new !err gate, op->count is never decremented. The timer logic
+depends on op->count reaching zero:
 
-struct kvaser_cmd_ext {
-	struct kvaser_cmd_header header;
-	__le16 len;
-	u8 cmd_no_ext;
-	u8 reserved;
-	...
+net/can/bcm.c:bcm_tx_timeout_handler() {
+    ...
+	tx_ival1 = op->kt_ival1 && (op->count > 0);
+    ...
+		if (!count && (flags & TX_COUNTEVT)) {
+			/* create notification to user */
+    ...
+}
 
-With a 4-byte bound, a CMD_EXTENDED with len between 4 and 7 still passes
-this check, and also the new check in kvaser_usb_hydra_wait_cmd(). In the
-bulk callback the command is then handled like this:
+net/can/bcm.c:bcm_tx_set_expiry() {
+    ...
+	if (op->kt_ival1 && op->count)
+		ival = op->kt_ival1;
+	else if (op->kt_ival2) {
+		ival = op->kt_ival2;
+	} else {
+		spin_unlock_bh(&op->bcm_tx_lock);
+		return false;
+	}
+    ...
+}
 
-kvaser_usb_hydra_read_bulk_callback()
-  kvaser_usb_hydra_handle_cmd()
-    kvaser_usb_hydra_handle_cmd_ext()
-      switch (cmd->cmd_no_ext)
-      kvaser_usb_hydra_rx_msg_ext()
-        memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+While the error lasts, the op stays in the ival1 phase with no limit. It
+never switches to ival2 and never sends TX_EXPIRED.
 
-Both cmd_no_ext (offset 6) and rx_can (from offset 8) are outside the
-declared command. So the dispatch decision and the CAN frame passed to
-netif_rx() come from the next command in the transfer, or from stale URB
-buffer bytes. Parsing then resumes 4 to 7 bytes later, in the middle of
-what was just treated as payload.
+An op with ival2 == 0 used to stop on its own after count attempts. It now
+keeps re-arming at ival1 until the error clears or userspace sends
+TX_DELETE.
 
-The commit message says "A command can never be shorter than its header".
-The leaf fix it cites, 0c73772cd2b8, bounds by CMD_HEADER_LEN, and that
-header includes the length field.
+Several can_send() failures on this path look persistent:
 
-Should the CMD_EXTENDED minimum be at least
-offsetof(struct kvaser_cmd_ext, rx_can)? For reference,
-kvaser_usb_hydra_frame_to_cmd_ext() always builds extended commands of at
-least 32 bytes, aligned to 8.
+- -ENETDOWN while the interface is administratively down. The NETDEV_DOWN
+  handling in bcm_notifier() only sets sk->sk_err. Only NETDEV_UNREGISTER
+  cancels the tx_op timers.
+- -EMSGSIZE when a CAN_FD_FRAME op targets a device with CAN_MTU, or after
+  the MTU is lowered. bcm_tx_setup() only checks cf->len.
+- -EPERM and -EINVAL.
+- -ENOBUFS once the qdisc fills on a stopped or bus-off controller.
 
-A complete fix would also need per-sub-command minimum sizes, similar to
-kvaser_usb_leaf_verify_size(). The extended handlers already read up to 96
-bytes based on dlc, whatever cmd_len says. That over-read predates this
-patch, and neither bound fixes it.
+This also changes what count means in the UAPI. It used to count ival1
+transmission attempts. It now counts frames that can_send() accepted. The
+value reported through TX_READ and TX_STATUS changes to match.
 
-The later patch in this series, "can: kvaser_usb: reject devices reporting
-zero max outstanding tx", only changes probe in kvaser_usb_core.c and does
-not touch these parsers.
+Documentation/networking/can.rst describes count as a timer schedule:
+"run 'count' times with ival1". It describes TX_EXPIRED as "Notification
+when counter finishes sending at initial interval". It does not say that
+failed sends are retried at ival1 with no limit.
 
->  		if (pos + cmd_len > len) {
->  			/* We got first part of a command */
->  			int leftover_bytes;
+The commit message only covers the opposite symptom, TX_EXPIRED being
+reported too early.
+
+Was this change in meaning intended? If so, could the commit message and
+the documentation describe it? Should there be a limit when the error is
+permanent, such as -ENETDOWN or -EMSGSIZE?
+
+[Severity: Low]
+
+Should this commit have a Fixes: tag?
+
+The behaviour being changed goes back to the original BCM code. git blame
+points at ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol").
+The count decrement was later moved into bcm_can_tx() by c2aba69d0c36a4.
+The TX_RESET_MULTI_IDX guard was added by 749179c2e25b95.
+
+Could the commit name one of these in a Fixes: tag? If it is not meant for
+stable, could it say that this is a behaviour change instead?
+
+>  		op->currframe++;
+>  
+>  		/* reached last frame? */
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261110-kvaser-usb-validate-v1-0-f266b85aa908%40gmail.com
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/45A9B6D8611C63C9%2B20261110052315.253367-1-raoxu%40uniontech.com
