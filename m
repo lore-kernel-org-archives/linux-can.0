@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794410779;
-	b=dnFTa01jaaibITWbWln5mT22raGvSPGYriS+t7wxraSTxPaS1G+4mQbOT5d7u8J7ZYFg
-	 PZcP6ifHSia55vpHk+SYr07znot+R6J5jcH9Y0TiotEZjG6z22Xyo+kgQFOWR2wvSLRIs
-	 jylUWlNnoy0f37CSx8VrcqdvUU3uqRVbeA0hQCU7jCIfWJtdRI7tF2tsW7eRvWJxdqsOF
-	 HEyQiPai7QLtsqJLMguKsuMEExJWZCx6Ni3CPaUT21/gGAC/jiXcpQY/3F5h03DSRiaVI
-	 YtrlJ0qaNhgaWhfhxkKOFgVIDVs4EZuTSfMj6ZyDMj6HvDy4N/bV1qc9AFj3WWts2jA==
+	b=vy+MxGyw1wvkvHtozU2HOhqiUS6Tt1A60h2w9TsdWrMDJcH/7r1jU10n5blWDXWztljr
+	 UZXcuJNHiH8imdS72b9w1b80e1bUOWIHY2EpVfFBV+o39f++COM02E7GuLllB/azdWujT
+	 VR56Omrla+Y9mwkv+wpJWmx1grnWXQ+1v/5KuMTpJREb6RC93ynPaYQzhecqSy1wudxad
+	 lwPRy6yaJ7vibBkn925b9XUsITCs7JARd0kfb/Ttk7gFUmJcYsbxNBFUJFOv56UgG+CYV
+	 uPswiTKAaaMvnKfevcZmdMdyl2ujPy8NTqiqvtzYfWGO2znNz9u4UIa9K0TcUsmFe3g==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794410779;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer;
-	bh=2fxkd5XtxWrN4OuOPftc2euzm/8D22lYJH0e/4ZOSEI=;
-	b=fcOKZycGLAl2VAQ9oh450qoZlNGBJam06wOAG65Ol/ZfqF96QVc3hgGCCZk+mASQPKFn
-	 +koyg00pepf9T/yAaLAORYejBj6tl5W2B/32Iq8nJyhmQHsh3gNftmcV68PaFvWfcZkIm
-	 iVUl9cDuE2E82DpbfU2VrZeGwAYCM11TGfD9rB52+P2PG3y6kmiTIQw95Vwt+WSK0bxZh
-	 SbtHfv6cmvOngx0JZxeOf6bXqXPw/2ThNohpal1P3Bun/fuWgnCVu7XUyi6qEXBya738n
-	 gHDsCFApnBBFOtt/dMVlKfDPR+tQmLmcY5a/qQdQ2XVLJs5jICGJG93S5RbfxkkEKqA==
+	bh=ZLP1bQdKMTOUeaib0RyPWcm9nzauaOurDoU+JgGbOCM=;
+	b=EHu3anqo2opfgGpCfGMnptrNINHFGb/hzg/CwY8hth93rk58cL/4Rbpjt468Fz1G4/Gi
+	 8b0FjkDdewIxSs4St0MZlP5ShaO4f5JqLYVb1Ix4nUIChc0oqARwtYE9Xqv90LMgPyEtG
+	 4WdLY0b4pXTo8okcKaBxpTNd/hDDWzqnQ+bpIdaJWqchSnImt/qAB5j0cp/kWsGwIAOwh
+	 yUqZSl4MQZUQAG0BgnFBRLjGzAGlMlfWST898N83apjxkQdrumrFe/M6+sCB50UOyTgiN
+	 rkUXfm30KfLe4oGtuoQqEzmgV0QeCpepWrAcNHvj01jwSRWd54A2B1NXuCASYMh1OIg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=D29ncAJ4;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=eIKXde3H;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3ED8606A337;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3EF6606A338;
 	Wed, 11 Nov 2026 15:26:17 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D3ED8606A337
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D3EF6606A338
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=D29ncAJ4
-Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.pengutronix.de [IPv6:2a0a:edc0:0:1101:1d::ac])
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=eIKXde3H
+Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.4.pengutronix.de [10.17.1.12])
 	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id D9034202C83;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C5F39200AD7;
 	Wed, 11 Nov 2026 16:26:11 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794410771;
@@ -43,40 +43,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2fxkd5XtxWrN4OuOPftc2euzm/8D22lYJH0e/4ZOSEI=;
-	b=D29ncAJ4/IBEi6gp/yoO4fVzyH68nC95juaFvsCbgJkXQv/yPs7qg1VpQjNvT/tQm5v8DX
-	+oOkALXPrzTGWRfJtJXJ/ucd4FDn7WhdrQHxo7Vd1r+VV0xwl/c08L/7EIUvQ5YnZhIF7z
-	srFqlvPDD4rZ/7vKfjd0EObmKktmlw7MYhUqvDwF5LxyNyt5gBuTFn5lwqMSvlrevB3l8/
-	Ylfl32f+I8L1JgT5YlGWnQLRkNANDBFmLt+teR+ErkrF1XCvnlKKQPbLggyDtmJQbQielk
-	oqfF5p/R6Rcx1/OSTpac25dLqturZ7QS/Z6srAj6Yg0tsVzRtXIH68SxriQ5Ag==
+	bh=ZLP1bQdKMTOUeaib0RyPWcm9nzauaOurDoU+JgGbOCM=;
+	b=eIKXde3H6/Jstgr9v2+dyeToonYazyNAhVH5OcgvmUVZOXbV7yT8W3dyvkG9rY26w7GEW7
+	vpavF7YdYRlg1ICDZ9dh2C6fwtXBNUoiomXefmoJSGq1cL9WonAKlrbCvx08oeedLobBnn
+	8G+Go7v+KcDCj2ukSJBIg6UbdiV9A55J2qZyjyu5k2AnVeKCS7J6+1/9TCf1bJnh8ZeYVP
+	pS+GXQqinsn43n9t2AxlWHhIDznp8LebrZbzzWc23tA/KVFDyyC+F8MTHTPmhbLQIYVzYh
+	s0R/tS5T+WnlizhoKyv8QJW8sNcic7TS68AIN+lScdSiCvdfFXCM8CweB2VQEQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794410771;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=2fxkd5XtxWrN4OuOPftc2euzm/8D22lYJH0e/4ZOSEI=;
-	b=EJ9EujD7OYWFcfqjM66b6pLbjt38WcuBE5S0Ne8z4AyssU3gJzjRwvK18rrVaHMhc+DHJj
-	mJawEeHezmwRpR1UDHG/MYILYclqLKprKgHh9Ua9gu7cq4jgYvkw09Q7JSc+E8boWMhr9i
-	W+p2HxMrikXIEmkfV9jjciH6+62BfQiRa72JCWlNBltXqW9pFzV+DlP0oTHZIhx46GlZRm
-	8OR2Xt5dcbukIE8uGtr+iAEar1gGQIZBdBk1Wh9IgbZEQPg/5xUgbKXhD/AUBcq5Oo31nG
-	LcI6cqVGQuMaFZq+122f7haOYKZyhnCx2v01iIBUAa1Z0dF7zuJNryWifKT9tQ==
+	bh=ZLP1bQdKMTOUeaib0RyPWcm9nzauaOurDoU+JgGbOCM=;
+	b=JJNooeXZX2f+esP7lJgiqfCg1VKNijwEPiaq0st0tA9dQaeF5iMPzbZRlN+9H1VJ92ag0r
+	gQ4/502FUdd8NoJBPo7NK8p7C/8sBf6w6XI85mUNQ8W7GF9lKsa4H4Prj5ZQs/T13ejk0E
+	91puqLfLzWRFFrpdhE8gXqI7THBkNd3ukKPHE/Oz/cZeyA6Z1w+UuA97DWzFy59AaMBhGX
+	jBLEa8R6sLUOM5d3cxNtJxCC7uG/ngtNHKIDWVFhOwGLNZ2PDFtIr+RdtjSlZ2/tn/8RFY
+	p+giduANitdo7JErqOy2djMQ97mItL8fKA0zbgY08SxiqSyLBN4AxNa7x12rSQ==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794410771; a=rsa-sha256;
 	cv=none;
-	b=ZZhliRsYSx9bP258H3ZVRDFnYZlaTn557b0FqodvLNQy5HZTRLKUmQuaGzYu4ZOyyxRrMi
-	8zLV7kpYGv7AtKVBG6P19cqV2LMpQDJQnUR6SLUovlK1UByZQOSkBfQRRrZR3u+vs3mKon
-	Cp9g08SPj9Be3gXmKhpdXA7gSvhsknY4ZuBZIdEr0BtuRNAlW2sXM6887LGSds/ovUkkNL
-	la+CEBawV+5cVnlmTW2GEGKIMnCWMItmQbqyEaG8WjgkcJGslWbClJDWEGKD68upcRBGc4
-	d4GSh5GUKnaEI+oabKfPhxtexVdHal8nfEkclZPaEvbyXv9dwQuFlUSFPR3Cgg==
+	b=CL9NTQwhT8Q0kwhqF6bzzm7ddPQYJpR+Y/XP63nxEQvLn4HaUc43G1Cuv9wOX0hInIrSsh
+	eEb5lLNHfFO3ATWa5PXhDiid3yEVYhv1ouq8zfc+h/Hv1G7zd1rKXVBLlD0XeBAKmh5pwN
+	Gy6ExNG0sdYu6kRduZ0ptBlNXprz1Ql6AS8xNqSHT5mPlLcHYvp5eGiqoviG99kFE5fJC1
+	J+zMMBYYn6UtQEjAac+G2ZkBafIDHe8BzW/hiCE6lcQ3cbDahiGhe7FPcZxUhv9S0Hcqbu
+	zCScwVaGXjE3Hwtl+D/3ydJ8AAzhDI9fr60AgIfxC8HkzYAZE8z5gWNFsBVWgw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
 Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
-	id B2FD4381190; Wed, 11 Nov 2026 16:26:11 +0100 (CET)
+	id AEE4F380B9A; Wed, 11 Nov 2026 16:26:11 +0100 (CET)
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Date: Wed, 11 Nov 2026 16:25:53 +0100
-Subject: [PATCH can-next v3 4/9] selftests: can: add J1939 socket option
- and metadata tests
+Date: Wed, 11 Nov 2026 16:25:51 +0100
+Subject: [PATCH can-next v3 2/9] selftests: can: add J1939 test helper
+ header and library
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,7 +88,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261111-j1939-selftests-v3-4-5a80277ab363@pengutronix.de>
+Message-Id: <20261111-j1939-selftests-v3-2-5a80277ab363@pengutronix.de>
 References: <20261111-j1939-selftests-v3-0-5a80277ab363@pengutronix.de>
 In-Reply-To: <20261111-j1939-selftests-v3-0-5a80277ab363@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>, 
@@ -103,520 +103,1063 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  Oleksij Rempel <o.rempel@pengutronix.de>
 X-Mailer: b4 0.14.2
 
-Add a selftest for the J1939 socket options and send metadata. The send
-priority is checked on the wire via a CAN_RAW peer, and the option values
-are read back with getsockopt. The test also covers the SO_J1939_FILTER
-PGN whitelist, unconnected sendto(), a bind() with a wrong address family
-and the SO_J1939_ERRQUEUE TX-completion ACK.
+Add code shared by the later J1939 selftests. j1939_helpers.h and
+j1939_helpers.c hold the C helpers for socket setup, timed receive and
+CAN id encoding. They also hold the helpers for TP and ETP frames. Only
+the multi-frame tests build those frames. j1939_tests.h holds the parts
+that use the kselftest harness: the fixture setup macros and
+j1939_test_main(). j1939_lib.sh holds the vcan setup and cleanup and the
+test runner. A wrapper sources j1939_lib.sh and runs the test binary of
+the same name.
+
+j1939_lib.sh runs the tests only on a vcan that it creates itself. The
+tests that follow send frames as other nodes and forge Address Claims, so
+they must not run on a real CAN bus.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-Q (sashiko): setsockopt() for SO_J1939_PROMISC and SO_J1939_ERRQUEUE
-returns 1 on success, not 0. Why does the test accept that?
-A: It is a stack bug. j1939_sk_setsockopt_flag() returns the value that
-the caller passed, not 0. A negative value sets the flag too, and the
-call then fails. For -1 the errno is 1 (EPERM). This series changes no
-kernel code. The tests set only 0 and 1. They accept any return value
->= 0, so they pass with or without a fix.
+Q: can timespec_diff_ms() overflow on 32-bit, where long is 32 bits?
+A: No. A static assert pins NSEC_PER_SEC and NSEC_PER_MSEC to long
+long, so the product is computed in long long; the result in ms fits
+a long.
 
 Changes in v3:
-- add j1939_set_flag_ok(), with a comment that the return value is a
-  stack bug (sashiko)
-- assert that PRIO_SET is a valid unprivileged priority
-- assert that PGN_A and PGN_B are valid PDU1 PGNs with PS 0, and that
-  SA_TX and SA_RX are two different unicast addresses
-- fail the error-queue read on a truncated cmsg, and check ee_errno
-- check SO_J1939_SEND_PRIO strictly in the round-trip test; errno is 0
-  when only the value read back is wrong
-- check that the filter drops PGN_B with an ordering barrier, not a
-  timeout
+- say which protocol is missing before skipping (sashiko)
+- say in the J1939_RECV_TIMEOUT_MS comment that it covers whole messages
+  too
+- say whether CANIF already exists or cannot be created
+- add static asserts for the type of NSEC_PER_SEC and NSEC_PER_MSEC and
+  for the control-frame layout
 - fix comments that did not match the code
-- put the new helpers in j1939_helpers.c and j1939_helpers.h
+- do not repeat the test name in the SKIP line
+- move the helper code from the header to j1939_helpers.c and
+  j1939_helpers.h; j1939_tests.h keeps the parts that use the harness
 
 Changes in v2:
 - drop the Assisted-by trailer; the cover letter says how an LLM was used
 - wrap at 80 columns and fix the checkpatch warnings (Marc)
-- name all constants, add static asserts, avoid casts, return bool from
-  helpers named *_ok() and fill test payloads with fill_pattern()
-- raw_prio(): take only a J1939 data frame; no other node sends on the
-  vcan that j1939_lib.sh now creates (sashiko)
-- check the errno of bind() with a wrong address family
-- request only the TX ACK timestamp, the one the test checks
-- also clear the PROMISC and ERRQUEUE flags and read them back
-- move CONFIG_CAN_RAW to the base patch
-- keep the raw socket in the fixture; without CAN_RAW the test is now
-  skipped (sashiko)
-- keep the Makefile and .gitignore lists sorted; the wrapper no longer
-  sets J1939_TEST_PROG
+- replace the J1939_TEST_MAIN() macro with j1939_test_main(), called
+  from a small main() in each test
+- fix a -Wstringop-truncation warning in j1939_if_index()
+- add a relaxed (default) and a strict (J1939_STRICT_TIMING) timing mode
+- skip, not fail, when the kernel lacks CAN_RAW (sashiko)
+- name all constants and add static asserts for dependent values
+- return bool from success/failure helpers named *_ok(), avoid casts
+- receive into a buffer one byte longer than expected, so that a longer
+  message fails the check (sashiko)
+- j1939_lib.sh: run only on a vcan it creates, drop the real CAN path
+  (sashiko)
+- j1939_lib.sh: trap only EXIT (sashiko)
+- j1939_lib.sh: run the test binary from the script directory
+- j1939_lib.sh: fix the shellcheck warnings
+- j1939_lib.sh: take the test binary name from the wrapper name, and say
+  why the setup is skipped
 ---
- tools/testing/selftests/net/can/.gitignore         |   1 +
- tools/testing/selftests/net/can/Makefile           |   1 +
- tools/testing/selftests/net/can/j1939_helpers.c    |  56 ++++
- tools/testing/selftests/net/can/j1939_helpers.h    |  29 ++
- tools/testing/selftests/net/can/test_j1939_opts.c  | 309 +++++++++++++++++++++
- tools/testing/selftests/net/can/test_j1939_opts.sh |   4 +
- 6 files changed, 400 insertions(+)
+ tools/testing/selftests/net/can/Makefile        |   2 +
+ tools/testing/selftests/net/can/j1939_helpers.c | 461 ++++++++++++++++++++++++
+ tools/testing/selftests/net/can/j1939_helpers.h | 337 +++++++++++++++++
+ tools/testing/selftests/net/can/j1939_lib.sh    |  92 +++++
+ tools/testing/selftests/net/can/j1939_tests.h   |  71 ++++
+ 5 files changed, 963 insertions(+)
 
-diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
-index ac9a3abe416f924998b4b337df3ea6a3891ca3de..81c6e5e4396ac789e0ac1ebad4f11d0f7ef9cbaa 100644
---- a/tools/testing/selftests/net/can/.gitignore
-+++ b/tools/testing/selftests/net/can/.gitignore
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0-only
- test_j1939_base
-+test_j1939_opts
- test_raw_filter
 diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
-index 64a436a59aa69a381cb98bb6a9b15a3feeac9eff..6b51f8e671461555ee4818cf9a3e8ea7d5fe7c35 100644
+index 3adaa13dcbfa303c4be2bb6a9b5dbdac76d68260..953f4538740984d7342f6e264ac13fadc0790ed2 100644
 --- a/tools/testing/selftests/net/can/Makefile
 +++ b/tools/testing/selftests/net/can/Makefile
-@@ -8,6 +8,7 @@ LOCAL_HDRS := j1939_helpers.h j1939_tests.h ../../clock-helpers.h
+@@ -6,6 +6,8 @@ CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INC
  
- TEST_PROGS := \
- 	test_j1939_base.sh \
-+	test_j1939_opts.sh \
- 	test_raw_filter.sh \
- # end of TEST_PROGS
+ TEST_PROGS := test_raw_filter.sh
  
++TEST_FILES := j1939_lib.sh
++
+ TEST_INCLUDES := ../lib.sh $(wildcard ../lib/sh/*.sh)
+ 
+ TEST_GEN_FILES := test_raw_filter
 diff --git a/tools/testing/selftests/net/can/j1939_helpers.c b/tools/testing/selftests/net/can/j1939_helpers.c
-index 2457513c559c50acbba409c6b4c429a79b7798e0..0435c973e837c09bc73eb774939a957f31fdd554 100644
---- a/tools/testing/selftests/net/can/j1939_helpers.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..2457513c559c50acbba409c6b4c429a79b7798e0
+--- /dev/null
 +++ b/tools/testing/selftests/net/can/j1939_helpers.c
-@@ -441,6 +441,62 @@ bool recv_cm_cmd_ok(int raw, uint8_t want_pf, uint8_t want_da,
- 	return frame->data[J1939_CM_CMD_OFF] == want_cmd;
- }
- 
-+bool j1939_set_flag_ok(int s, int optname, int val)
+@@ -0,0 +1,461 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++/* Code of the shared J1939 selftest helpers, see j1939_helpers.h. */
++#include "j1939_helpers.h"
++
++char CANIF[IFNAMSIZ];
++
++int j1939_id_prio(canid_t id)
 +{
-+	return setsockopt(s, SOL_CAN_J1939, optname, &val, sizeof(val)) >= 0;
++	return (id >> J1939_ID_PRIO_SHIFT) & J1939_ID_PRIO_MASK;
 +}
 +
-+bool errqueue_enable_ack_ok(int s)
++int j1939_id_pgn(canid_t id)
 +{
-+	int tstamp_flags = SOF_TIMESTAMPING_TX_ACK;
++	return (id >> J1939_ID_PGN_SHIFT) & J1939_PGN_MAX;
++}
 +
-+	if (!j1939_set_flag_ok(s, SO_J1939_ERRQUEUE, 1))
++int j1939_id_pf(canid_t id)
++{
++	return J1939_PF(j1939_id_pgn(id));
++}
++
++int j1939_id_ps(canid_t id)
++{
++	return j1939_id_pgn(id) & UINT8_MAX;
++}
++
++int j1939_id_sa(canid_t id)
++{
++	return id & UINT8_MAX;
++}
++
++bool j1939_is_data_frame(canid_t can_id)
++{
++	return (can_id & (CAN_EFF_FLAG | CAN_RTR_FLAG | CAN_ERR_FLAG)) ==
++	       CAN_EFF_FLAG;
++}
++
++int j1939_timing_ms(int relaxed_ms, int strict_ms)
++{
++	return getenv("J1939_STRICT_TIMING") ? strict_ms : relaxed_ms;
++}
++
++int j1939_if_index(void)
++{
++	struct ifreq ifr = {};
++	int s, idx = -1;
++
++	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
++	if (s < 0)
++		return -1;
++	snprintf(ifr.ifr_name, sizeof(ifr.ifr_name), "%s", CANIF);
++	if (ioctl(s, SIOCGIFINDEX, &ifr) >= 0)
++		idx = ifr.ifr_ifindex;
++	close(s);
++	return idx;
++}
++
++int j1939_open_flags(int ifindex, name_t name, uint8_t sa,
++		     pgn_t pgn, int flags)
++{
++	struct sockaddr_can addr = {
++		.can_family = AF_CAN,
++		.can_ifindex = ifindex,
++	};
++	int s, one = 1;
++
++	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
++	if (s < 0)
++		return -1;
++
++	if ((flags & J1939_OPEN_BCAST) &&
++	    setsockopt(s, SOL_SOCKET, SO_BROADCAST, &one, sizeof(one))) {
++		close(s);
++		return -1;
++	}
++
++	addr.can_addr.j1939.name = name;
++	addr.can_addr.j1939.addr = sa;
++	addr.can_addr.j1939.pgn = pgn;
++	if (bind(s, (struct sockaddr *)&addr, sizeof(addr))) {
++		close(s);
++		return -1;
++	}
++	return s;
++}
++
++int j1939_open(int ifindex, uint8_t sa, pgn_t pgn)
++{
++	return j1939_open_flags(ifindex, J1939_NO_NAME, sa, pgn,
++				J1939_OPEN_NONE);
++}
++
++bool j1939_connect_name_ok(int s, int ifindex, name_t name,
++			   uint8_t da, pgn_t pgn)
++{
++	struct sockaddr_can addr = {
++		.can_family = AF_CAN,
++		.can_ifindex = ifindex,
++	};
++
++	addr.can_addr.j1939.name = name;
++	addr.can_addr.j1939.addr = da;
++	addr.can_addr.j1939.pgn = pgn;
++	return !connect(s, (struct sockaddr *)&addr, sizeof(addr));
++}
++
++bool j1939_connect_ok(int s, int ifindex, uint8_t da, pgn_t pgn)
++{
++	return j1939_connect_name_ok(s, ifindex, J1939_NO_NAME, da, pgn);
++}
++
++void j1939_fill_sockaddr(struct sockaddr_can *addr, int ifindex,
++			 name_t name, uint8_t da, pgn_t pgn)
++{
++	memset(addr, 0, sizeof(*addr));
++	addr->can_family = AF_CAN;
++	addr->can_ifindex = ifindex;
++	addr->can_addr.j1939.name = name;
++	addr->can_addr.j1939.addr = da;
++	addr->can_addr.j1939.pgn = pgn;
++}
++
++ssize_t j1939_sendto_addr(int s, const void *buf, size_t len,
++			  const struct sockaddr_can *dst)
++{
++	return sendto(s, buf, len, 0, (const struct sockaddr *)dst,
++		      sizeof(*dst));
++}
++
++ssize_t j1939_sendto(int s, const void *buf, size_t len,
++		     int ifindex, name_t name, uint8_t da,
++		     pgn_t pgn)
++{
++	struct sockaddr_can dst;
++
++	j1939_fill_sockaddr(&dst, ifindex, name, da, pgn);
++	return j1939_sendto_addr(s, buf, len, &dst);
++}
++
++bool j1939_sendto_ok(int s, const void *buf, size_t len,
++		     int ifindex, name_t name, uint8_t da,
++		     pgn_t pgn)
++{
++	ssize_t want_len = len;
++
++	return j1939_sendto(s, buf, len, ifindex, name, da, pgn) == want_len;
++}
++
++bool send_all_ok(int s, const void *buf, size_t len)
++{
++	ssize_t want_len = len;
++
++	return send(s, buf, len, 0) == want_len;
++}
++
++bool write_all_ok(int fd, const void *buf, size_t len)
++{
++	ssize_t want_len = len;
++
++	return write(fd, buf, len) == want_len;
++}
++
++bool read_all_ok(int fd, void *buf, size_t len)
++{
++	ssize_t want_len = len;
++
++	return read(fd, buf, len) == want_len;
++}
++
++int open_raw_rcvbuf(int ifindex, int rcvbuf)
++{
++	struct sockaddr_can addr = {
++		.can_family = AF_CAN,
++		.can_ifindex = ifindex,
++	};
++	int s;
++
++	s = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (s < 0)
++		return -1;
++
++	if (rcvbuf != J1939_RAW_RCVBUF_DEFAULT &&
++	    setsockopt(s, SOL_SOCKET, SO_RCVBUFFORCE, &rcvbuf, sizeof(rcvbuf)))
++		fprintf(stderr, "# %s: SO_RCVBUFFORCE(%d) failed: %d\n",
++			__func__, rcvbuf, errno);
++
++	if (bind(s, (struct sockaddr *)&addr, sizeof(addr))) {
++		close(s);
++		return -1;
++	}
++	return s;
++}
++
++int open_raw(int ifindex)
++{
++	return open_raw_rcvbuf(ifindex, J1939_RAW_RCVBUF_DEFAULT);
++}
++
++ssize_t recv_timeout(int s, void *buf, size_t len,
++		     int timeout_ms)
++{
++	struct pollfd pfd = { .fd = s, .events = POLLIN };
++
++	if (poll(&pfd, 1, timeout_ms) <= 0)
++		return -1;
++	return recv(s, buf, len, 0);
++}
++
++bool recvfrom_verify_ok(int s, const void *want, size_t len,
++			int timeout_ms, struct sockaddr_can *src)
++{
++	struct pollfd pfd = { .fd = s, .events = POLLIN };
++	socklen_t src_len = sizeof(*src);
++	size_t rx_len = len + 1;
++	uint8_t *rx_buf = malloc(rx_len);
++	ssize_t want_len = len, n = -1;
++	bool ok;
++
++	if (!rx_buf)
 +		return false;
 +
-+	return !setsockopt(s, SOL_SOCKET, SO_TIMESTAMPING, &tstamp_flags,
-+			   sizeof(tstamp_flags));
++	if (poll(&pfd, 1, timeout_ms) > 0)
++		n = recvfrom(s, rx_buf, rx_len, 0, (struct sockaddr *)src,
++			     &src_len);
++	ok = n == want_len && !memcmp(want, rx_buf, len);
++
++	free(rx_buf);
++	return ok;
 +}
 +
-+bool msg_has_tstamp_ack(struct msghdr *msg)
++bool recv_verify_ok(int s, const void *want, size_t len,
++		    int timeout_ms)
 +{
-+	struct cmsghdr *cmsg;
++	return recvfrom_verify_ok(s, want, len, timeout_ms, NULL);
++}
 +
-+	for (cmsg = CMSG_FIRSTHDR(msg); cmsg; cmsg = CMSG_NXTHDR(msg, cmsg)) {
-+		struct sock_extended_err *serr;
++bool send_recv_verify_ok(int tx, int rx, const void *buf,
++			 size_t len, int timeout_ms)
++{
++	if (!send_all_ok(tx, buf, len))
++		return false;
++	return recv_verify_ok(rx, buf, len, timeout_ms);
++}
 +
-+		if (cmsg->cmsg_level != SOL_CAN_J1939 ||
-+		    cmsg->cmsg_type != SCM_J1939_ERRQUEUE)
-+			continue;
++bool recv_frame_ok(int raw, struct can_frame *frame,
++		   int timeout_ms)
++{
++	ssize_t want_len = sizeof(*frame);
 +
-+		serr = (struct sock_extended_err *)CMSG_DATA(cmsg);
-+		if (serr->ee_errno == ENOMSG &&
-+		    serr->ee_origin == SO_EE_ORIGIN_TIMESTAMPING &&
-+		    serr->ee_info == SCM_TSTAMP_ACK)
++	return recv_timeout(raw, frame, sizeof(*frame), timeout_ms) == want_len;
++}
++
++canid_t j1939_canid(uint8_t prio, pgn_t pgn, uint8_t da,
++		    uint8_t sa)
++{
++	canid_t id = CAN_EFF_FLAG | (prio << J1939_ID_PRIO_SHIFT) |
++		     (pgn << J1939_ID_PGN_SHIFT) | sa;
++
++	/* PDU1: the destination goes into the PS byte; PDU2 ignores da */
++	if (J1939_IS_PDU1(pgn))
++		id |= da << J1939_ID_PGN_SHIFT;
++	return id;
++}
++
++void cm_dat_init(uint8_t *dat, uint8_t cmd)
++{
++	memset(dat, J1939_FILL_BYTE, CAN_MAX_DLEN);
++	dat[J1939_CM_CMD_OFF] = cmd;
++}
++
++void put_name(uint8_t *dat, name_t name)
++{
++	size_t i;
++
++	for (i = 0; i < sizeof(name); i++)
++		dat[i] = name >> (CHAR_BIT * i);
++}
++
++void put_le(uint8_t *p, uint32_t v, size_t n)
++{
++	size_t i;
++
++	for (i = 0; i < n; i++)
++		p[i] = v >> (CHAR_BIT * i);
++}
++
++uint32_t get_le(const uint8_t *p, size_t n)
++{
++	uint32_t v = 0;
++	size_t i;
++
++	for (i = 0; i < n; i++) {
++		uint32_t byte = p[i];
++
++		v |= byte << (CHAR_BIT * i);
++	}
++	return v;
++}
++
++void put_le16(uint8_t *p, uint16_t v)
++{
++	put_le(p, v, sizeof(v));
++}
++
++void put_le24(uint8_t *p, uint32_t v)
++{
++	put_le(p, v, J1939_LE24_LEN);
++}
++
++void put_le32(uint8_t *p, uint32_t v)
++{
++	put_le(p, v, sizeof(v));
++}
++
++uint16_t get_le16(const uint8_t *p)
++{
++	return get_le(p, sizeof(uint16_t));
++}
++
++uint32_t get_le24(const uint8_t *p)
++{
++	return get_le(p, J1939_LE24_LEN);
++}
++
++uint32_t get_le32(const uint8_t *p)
++{
++	return get_le(p, sizeof(uint32_t));
++}
++
++void put_pgn(uint8_t *dat, pgn_t pgn)
++{
++	put_le24(&dat[J1939_CM_PGN_OFF], pgn);
++}
++
++bool send_raw8_ok(int raw, uint8_t prio, pgn_t pgn, uint8_t da,
++		  uint8_t sa, const uint8_t dat[CAN_MAX_DLEN])
++{
++	struct can_frame f = {};
++
++	f.can_id = j1939_canid(prio, pgn, da, sa);
++	f.can_dlc = CAN_MAX_DLEN;
++	memcpy(f.data, dat, CAN_MAX_DLEN);
++	return write_all_ok(raw, &f, sizeof(f));
++}
++
++size_t j1939_dt_chunk_len(size_t size, size_t off)
++{
++	size_t n = size - off;
++
++	return n < J1939_DT_DATA_LEN ? n : J1939_DT_DATA_LEN;
++}
++
++bool send_dt_ok(int raw, uint8_t prio, pgn_t dt_pgn, uint8_t da,
++		uint8_t sa, uint8_t seq, const uint8_t *payload,
++		size_t off, size_t size)
++{
++	uint8_t dat[CAN_MAX_DLEN];
++
++	/*
++	 * off >= size would make the size_t subtraction size - off
++	 * underflow.
++	 */
++	if (off >= size)
++		return false;
++
++	memset(dat, J1939_FILL_BYTE, sizeof(dat));
++	dat[J1939_DT_SEQ_OFF] = seq;
++	memcpy(&dat[J1939_DT_DATA_OFF], payload + off,
++	       j1939_dt_chunk_len(size, off));
++	return send_raw8_ok(raw, prio, dt_pgn, da, sa, dat);
++}
++
++long timespec_diff_ms(const struct timespec *a,
++		      const struct timespec *b)
++{
++	return ((b->tv_sec - a->tv_sec) * NSEC_PER_SEC +
++		(b->tv_nsec - a->tv_nsec)) / NSEC_PER_MSEC;
++}
++
++void deadline_after_ms(struct timespec *deadline, int timeout_ms)
++{
++	clock_gettime(CLOCK_MONOTONIC, deadline);
++	deadline->tv_sec += timeout_ms / MSEC_PER_SEC;
++	deadline->tv_nsec += (timeout_ms % MSEC_PER_SEC) * NSEC_PER_MSEC;
++	if (deadline->tv_nsec >= NSEC_PER_SEC) {
++		deadline->tv_sec++;
++		deadline->tv_nsec -= NSEC_PER_SEC;
++	}
++}
++
++bool recv_match_ok(int raw, int timeout_ms,
++		   struct can_frame *frame,
++		   bool (*match)(canid_t id, const void *ctx),
++		   const void *ctx)
++{
++	struct pollfd pfd = { .fd = raw, .events = POLLIN };
++	struct timespec now, deadline;
++	int remaining = timeout_ms;
++
++	deadline_after_ms(&deadline, timeout_ms);
++
++	while (remaining > 0 && poll(&pfd, 1, remaining) > 0) {
++		if (recv(raw, frame, sizeof(*frame), 0) < 0)
++			return false;
++		if (j1939_is_data_frame(frame->can_id) &&
++		    match(frame->can_id, ctx))
 +			return true;
++		clock_gettime(CLOCK_MONOTONIC, &now);
++		remaining = timespec_diff_ms(&now, &deadline);
 +	}
 +	return false;
 +}
 +
-+bool errqueue_read_ack_ok(int s)
++bool match_peer_dest(canid_t id, const void *ctx)
 +{
-+	struct pollfd pfd = { .fd = s, .events = POLLERR };
-+	union {
-+		char buf[CMSG_SPACE(sizeof(struct sock_extended_err))];
-+		struct cmsghdr align;	/* portable cmsg alignment */
-+	} ctrl;
-+	struct msghdr msg = {
-+		.msg_control = ctrl.buf,
-+		.msg_controllen = sizeof(ctrl.buf),
++	const struct j1939_peer_match *m = ctx;
++
++	return j1939_id_pf(id) == m->want_pf &&
++	       j1939_id_ps(id) == m->want_da &&		/* destination */
++	       j1939_id_sa(id) == m->want_sa;		/* source */
++}
++
++bool recv_for_peer_ok(int raw, uint8_t want_pf, uint8_t want_da,
++		      uint8_t want_sa, struct can_frame *frame,
++		      int timeout_ms)
++{
++	struct j1939_peer_match m = {
++		.want_pf = want_pf, .want_da = want_da, .want_sa = want_sa,
 +	};
 +
-+	if (poll(&pfd, 1, J1939_RECV_TIMEOUT_MS) <= 0 ||
-+	    recvmsg(s, &msg, MSG_ERRQUEUE) < 0 ||
-+	    msg.msg_flags & MSG_CTRUNC)
++	return recv_match_ok(raw, timeout_ms, frame, match_peer_dest, &m);
++}
++
++bool recv_cm_cmd_ok(int raw, uint8_t want_pf, uint8_t want_da,
++		    uint8_t want_sa, struct can_frame *frame,
++		    int timeout_ms, uint8_t want_cmd)
++{
++	if (!recv_for_peer_ok(raw, want_pf, want_da, want_sa, frame,
++			      timeout_ms))
 +		return false;
-+
-+	return msg_has_tstamp_ack(&msg);
++	return frame->data[J1939_CM_CMD_OFF] == want_cmd;
 +}
 +
- void fill_pattern(uint8_t *buf, size_t len)
- {
- 	size_t i;
++void fill_pattern(uint8_t *buf, size_t len)
++{
++	size_t i;
++
++	for (i = 0; i < len; i++)
++		buf[i] = i ^ (i >> CHAR_BIT) ^ J1939_PATTERN_SEED;
++}
++
++bool can_proto_missing(int type, int proto)
++{
++	int probe = socket(PF_CAN, type, proto);
++
++	if (probe < 0)
++		return errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT;
++
++	close(probe);
++	return false;
++}
 diff --git a/tools/testing/selftests/net/can/j1939_helpers.h b/tools/testing/selftests/net/can/j1939_helpers.h
-index 7dcd5bbe57f05f21c7707ea73fb5f283fba1c810..0acb7ce1fcc6459989604b19d8dcc5861e5f7086 100644
---- a/tools/testing/selftests/net/can/j1939_helpers.h
-+++ b/tools/testing/selftests/net/can/j1939_helpers.h
-@@ -35,6 +35,8 @@
- #include <linux/can.h>
- #include <linux/can/raw.h>
- #include <linux/can/j1939.h>
-+#include <linux/errqueue.h>
-+#include <linux/net_tstamp.h>
- 
- #include "clock-helpers.h"
- 
-@@ -321,6 +323,33 @@ bool recv_cm_cmd_ok(int raw, uint8_t want_pf, uint8_t want_da,
- 		    uint8_t want_sa, struct can_frame *frame,
- 		    int timeout_ms, uint8_t want_cmd);
- 
-+/*
-+ * Set the J1939 flag option optname (SO_J1939_PROMISC or SO_J1939_ERRQUEUE)
-+ * to val. A stack bug makes setsockopt() return val instead of 0 on success
-+ * (j1939_sk_setsockopt_flag()), so any value >= 0 counts as success.
-+ */
-+bool j1939_set_flag_ok(int s, int optname, int val);
-+
-+/*
-+ * Enable the error queue of s with SOF_TIMESTAMPING_TX_ACK only: a finished
-+ * send then queues one TX-completion ACK, or an abort entry if the session
-+ * fails (__j1939_sk_errqueue() in net/can/j1939/socket.c). The kernel reads
-+ * the timestamping flags when the session ends, so the caller may call this
-+ * function after the send, as long as the session has not ended.
-+ */
-+bool errqueue_enable_ack_ok(int s);
-+
-+/* Does the error-queue message msg carry the TX-completion ACK? */
-+bool msg_has_tstamp_ack(struct msghdr *msg);
-+
-+/*
-+ * Read one message from the error queue of s, set up by
-+ * errqueue_enable_ack_ok(), and check that it is the TX-completion ACK. With
-+ * those flags the kernel returns each entry with one cmsg, SCM_J1939_ERRQUEUE.
-+ * No iovec is passed, so no message data is read.
-+ */
-+bool errqueue_read_ack_ok(int s);
-+
- /* Arbitrary; keeps fill_pattern() from being the plain byte offset. */
- #define J1939_PATTERN_SEED	0x3c
- 
-diff --git a/tools/testing/selftests/net/can/test_j1939_opts.c b/tools/testing/selftests/net/can/test_j1939_opts.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..a729e39c0be4fc8e77717c71000f205dd14f453b
+index 0000000000000000000000000000000000000000..7dcd5bbe57f05f21c7707ea73fb5f283fba1c810
 --- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_opts.c
-@@ -0,0 +1,309 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++++ b/tools/testing/selftests/net/can/j1939_helpers.h
+@@ -0,0 +1,337 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
 +/*
-+ * J1939 socket option and metadata selftests.
++ * Shared helpers for the J1939 selftests.
 + *
-+ * On top of the basic transport, cover the user-visible J1939 socket options
-+ * and addressing: the SO_J1939_FILTER PGN whitelist, the SO_J1939_SEND_PRIO
-+ * send priority seen in the CAN id (via a CAN_RAW peer, including the kernel's
-+ * default), unconnected sendto(2), a wrong-family bind rejection,
-+ * SO_J1939_ERRQUEUE TX-completion notifications, and set/getsockopt
-+ * round-trips of SO_J1939_SEND_PRIO, SO_J1939_PROMISC and SO_J1939_ERRQUEUE.
++ * The individual tests are standalone kselftest binaries. This header
++ * declares the helpers they share, and j1939_helpers.c holds their code.
++ * The parts that use the kselftest harness are in j1939_tests.h.
 + *
-+ * Run by test_j1939_opts.sh, see j1939_tests.h.
++ * Helpers named *_ok() return true on success and false on failure, with
++ * errno set where a system call failed. Helpers that return a file
++ * descriptor or a length return -1 on failure.
++ *
++ * Timing modes: timer checks use relaxed bounds by default, so that slow
++ * machines such as QEMU in CI pass. Set J1939_STRICT_TIMING in the
++ * environment (any value) for tight bounds on a real machine.
 + */
++#ifndef __SELFTESTS_NET_CAN_J1939_HELPERS_H__
++#define __SELFTESTS_NET_CAN_J1939_HELPERS_H__
++
++#include <limits.h>
++#include <stdbool.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
++#include <unistd.h>
++#include <poll.h>
++#include <stdint.h>
 +#include <errno.h>
++#include <time.h>
 +
-+#include "kselftest_harness.h"
-+#include "j1939_tests.h"
++#include <sys/socket.h>
++#include <sys/ioctl.h>
++#include <net/if.h>
++#include <linux/if.h>
++#include <linux/can.h>
++#include <linux/can/raw.h>
++#include <linux/can/j1939.h>
 +
-+/* arbitrary addresses */
-+#define SA_TX			0x80
-+#define SA_RX			0x90
++#include "clock-helpers.h"
 +
-+/* two different destination-specific PGNs, otherwise arbitrary */
-+#define PGN_A			0x0ab00
-+#define PGN_B			0x0cd00
-+_Static_assert(J1939_IS_PDU1(PGN_A) && J1939_IS_PDU1(PGN_B) && PGN_A != PGN_B,
-+	       "PGN_A and PGN_B must be two different PDU1 PGNs");
-+_Static_assert((PGN_A & UINT8_MAX) == 0 && (PGN_B & UINT8_MAX) == 0,
-+	       "the kernel rejects a PDU1 PGN whose PS byte is not 0");
-+_Static_assert(PGN_A <= J1939_PGN_MAX && PGN_B <= J1939_PGN_MAX,
-+	       "PGN_A and PGN_B must be valid PGNs");
-+_Static_assert(SA_TX != SA_RX && SA_TX <= J1939_MAX_UNICAST_ADDR &&
-+	       SA_RX <= J1939_MAX_UNICAST_ADDR,
-+	       "SA_TX and SA_RX must be two different unicast addresses");
++#ifndef ARRAY_SIZE
++#define ARRAY_SIZE(a)		(sizeof(a) / sizeof((a)[0]))
++#endif
++#ifndef DIV_ROUND_UP
++#define DIV_ROUND_UP(n, d)	(((n) + (d) - 1) / (d))
++#endif
 +
 +/*
-+ * SO_J1939_SEND_PRIO values below this one need CAP_NET_ADMIN
-+ * (j1939_sk_setsockopt()).
++ * How long to wait for an expected frame or message. Not a protocol timer: a
++ * guess with room for a slow VM.
 + */
-+#define PRIO_MIN_UNPRIV		2
-+
-+/* a valid priority that needs no privilege and differs from the default */
-+#define PRIO_SET		3
-+_Static_assert(PRIO_SET >= PRIO_MIN_UNPRIV && PRIO_SET <= J1939_ID_PRIO_MASK &&
-+	       PRIO_SET != J1939_PRIO_DEFAULT,
-+	       "PRIO_SET must be a valid, unprivileged, non-default priority");
++#define J1939_RECV_TIMEOUT_MS	2000
 +
 +/*
-+ * An arbitrary size that needs TP, so that the ACK ends a multi-frame
-+ * session.
++ * Timeout for a check that expects no frame. Long enough that a real
++ * local frame would have arrived, so a timeout means "nothing came".
++ * Much shorter than J1939_RECV_TIMEOUT_MS, to keep the test fast. A guess.
 + */
-+#define ERRQUEUE_MSG_SIZE	128
-+_Static_assert(ERRQUEUE_MSG_SIZE > J1939_SF_MAX_SIZE,
-+	       "ERRQUEUE_MSG_SIZE must need TP");
-+_Static_assert(ERRQUEUE_MSG_SIZE <= J1939_TP_MAX_SIZE,
-+	       "ERRQUEUE_MSG_SIZE must fit TP");
++#define J1939_NEG_RECV_TIMEOUT_MS	300
++_Static_assert(J1939_NEG_RECV_TIMEOUT_MS < J1939_RECV_TIMEOUT_MS,
++	       "J1939_NEG_RECV_TIMEOUT_MS must be the shorter timeout");
++
++/* Send priority of a new J1939 socket, see j1939_sk_init() in the kernel. */
++#define J1939_PRIO_DEFAULT	6
++
++/* Unused data bytes are sent as 0xff (SAE J1939-21:2001 Figures 14, 15). */
++#define J1939_FILL_BYTE		0xff
 +
 +/*
-+ * Read the next CAN frame from a raw socket and return its J1939 priority, or
-+ * -1 on timeout or if it is not a J1939 data frame.
++ * PGN fields: PF is the second byte, PS the low byte. A PF of at least
++ * J1939_PDU2_PF_MIN selects PDU2, and PS is not an address
++ * (SAE J1939-21:2001 sections 5.1.2 and 5.2.5).
 + */
-+static int raw_prio(int raw, int timeout_ms)
-+{
-+	struct can_frame frame;
-+
-+	if (!recv_frame_ok(raw, &frame, timeout_ms) ||
-+	    !j1939_is_data_frame(frame.can_id))
-+		return -1;
-+	return j1939_id_prio(frame.can_id);
-+}
++#define J1939_PGN_PF_SHIFT	CHAR_BIT	/* below PF: the PS byte */
++#define J1939_PDU2_PF_MIN	0xf0
++#define J1939_PF(pgn)		(((pgn) >> J1939_PGN_PF_SHIFT) & UINT8_MAX)
++#define J1939_IS_PDU1(pgn)	(J1939_PF(pgn) < J1939_PDU2_PF_MIN)
++/* Data Page bit of a PGN (SAE J1939-21:2001 section 5.2.3) */
++#define J1939_PGN_DP		0x10000
 +
 +/*
-+ * Set an int J1939 sockopt, read it back, and return the value read, or -1 if
-+ * a call fails. errno is 0 if both calls succeed. SO_J1939_SEND_PRIO must
-+ * return 0; the flag options go through j1939_set_flag_ok().
++ * Fields of the 29-bit CAN id (SAE J1939-21:2001 section 5.2): the priority,
++ * then the PGN, whose PS byte holds the destination of a PDU1 frame, then
++ * the source address in the low byte. The j1939_id_*() decoders mask their
++ * field, so they take a can_id with the CAN_*_FLAG bits still set.
 + */
-+static int sockopt_roundtrip(int s, int optname, int val)
-+{
-+	int got = -1;
-+	socklen_t len = sizeof(got);
-+	bool set_ok;
++#define J1939_ID_PRIO_BITS	3
++#define J1939_ID_PRIO_SHIFT	(CAN_EFF_ID_BITS - J1939_ID_PRIO_BITS)
++#define J1939_ID_PRIO_MASK	((1U << J1939_ID_PRIO_BITS) - 1)
++#define J1939_ID_PGN_SHIFT	CHAR_BIT	/* below the PGN: the SA byte */
++_Static_assert((J1939_PGN_MAX + 1) << J1939_ID_PGN_SHIFT ==
++	       1U << J1939_ID_PRIO_SHIFT,
++	       "the PGN field must end where the priority starts");
 +
-+	errno = 0;
-+	if (optname == SO_J1939_SEND_PRIO)
-+		set_ok = !setsockopt(s, SOL_CAN_J1939, optname, &val,
-+				     sizeof(val));
-+	else
-+		set_ok = j1939_set_flag_ok(s, optname, val);
-+	if (!set_ok)
-+		return -1;
-+	if (getsockopt(s, SOL_CAN_J1939, optname, &got, &len) < 0)
-+		return -1;
-+	return got;
-+}
++int j1939_id_prio(canid_t id);
++int j1939_id_pgn(canid_t id);
++int j1939_id_pf(canid_t id);
++int j1939_id_ps(canid_t id);
++int j1939_id_sa(canid_t id);
 +
-+FIXTURE(j1939_opts)
-+{
-+	int ifindex;
-+	int tx;
-+	int rx;
-+	int raw;
-+};
++/* Bytes in a 24-bit field of a TP or ETP control frame. */
++#define J1939_LE24_LEN		3
 +
-+FIXTURE_SETUP(j1939_opts)
-+{
-+	self->tx = -1;
-+	self->rx = -1;
-+	self->raw = -1;
++/*
++ * Byte offsets in TP and ETP frames (SAE J1939-21:2001 Figures 14 and 15,
++ * ISO 11783-6:2004 K.2.2.1 and K.2.3).
++ */
++#define J1939_CM_CMD_OFF	0	/* control byte */
++#define J1939_CM_PGN_OFF	5	/* message PGN, J1939_LE24_LEN bytes */
++#define J1939_DT_SEQ_OFF	0	/* sequence number */
++#define J1939_DT_DATA_OFF	1	/* first payload byte */
++_Static_assert(J1939_CM_PGN_OFF + J1939_LE24_LEN == CAN_MAX_DLEN,
++	       "the message PGN is the last field of a control frame");
 +
-+	J1939_SETUP_IFINDEX(self);
++/* Sizes and limits. */
++#define J1939_SF_MAX_SIZE	CAN_MAX_DLEN	/* largest single frame */
++/* payload bytes in one TP/ETP data (DT) frame */
++#define J1939_DT_DATA_LEN	(CAN_MAX_DLEN - J1939_DT_DATA_OFF)
++/* highest TP sequence number: the field is one byte */
++#define J1939_DT_SEQ_MAX	UINT8_MAX
++/* largest TP message; anything larger needs ETP */
++#define J1939_TP_MAX_SIZE	(J1939_DT_SEQ_MAX * J1939_DT_DATA_LEN)
++_Static_assert(J1939_TP_MAX_SIZE == 1785,
++	       "SAE J1939-21:2001 section 5.10.1.1 gives 1785 bytes");
++/* number of TP/ETP DT packets needed for len bytes, rounded up */
++#define J1939_NUM_PKTS(len)	DIV_ROUND_UP(len, J1939_DT_DATA_LEN)
 +
-+	J1939_SETUP_RAW(self, J1939_RAW_RCVBUF_DEFAULT);
-+}
++/*
++ * J1939 uses 29-bit data frames only. Its CAN filter in net/can/j1939/main.c
++ * drops RTR frames, and error frames never reach it.
++ */
++bool j1939_is_data_frame(canid_t can_id);
 +
-+FIXTURE_TEARDOWN(j1939_opts)
-+{
-+	if (self->tx >= 0)
-+		close(self->tx);
-+	if (self->rx >= 0)
-+		close(self->rx);
-+	if (self->raw >= 0)
-+		close(self->raw);
-+}
++/*
++ * Size of a CAN_RAW receive buffer for every frame of the largest ETP test
++ * message. A guess with plenty of headroom, not computed. Set best-effort
++ * via SO_RCVBUFFORCE.
++ */
++#define J1939_RAW_BIG_RCVBUF	(8 * 1024 * 1024)
 +
-+/* SO_J1939_FILTER whitelists PGN_A; PGN_A is received, PGN_B is dropped. */
-+TEST_F(j1939_opts, filter_pgn)
-+{
-+	struct j1939_filter filt = {
-+		.pgn = PGN_A,
-+		.pgn_mask = J1939_PGN_MAX,
-+	};
-+	struct sockaddr_can src = {};
-+	uint8_t tx_buf[CAN_MAX_DLEN];
-+	uint8_t rx_buf[CAN_MAX_DLEN];
++/* Flags for j1939_open_flags(). */
++#define J1939_OPEN_NONE		0
++#define J1939_OPEN_BCAST	0x1
 +
-+	fill_pattern(tx_buf, sizeof(tx_buf));
++/* rcvbuf value for open_raw_rcvbuf(): keep the default receive buffer. */
++#define J1939_RAW_RCVBUF_DEFAULT	0
 +
-+	self->rx = j1939_open(self->ifindex, SA_RX, J1939_NO_PGN);
-+	ASSERT_GE(self->rx, 0);
-+	ASSERT_EQ(setsockopt(self->rx, SOL_CAN_J1939, SO_J1939_FILTER,
-+			     &filt, sizeof(filt)), 0)
-+		TH_LOG("SO_J1939_FILTER failed: %d", errno);
++/* Set by j1939_test_main() from the CANIF environment variable. */
++extern char CANIF[IFNAMSIZ];
 +
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
++/*
++ * Return relaxed_ms by default, or strict_ms if J1939_STRICT_TIMING is set in
++ * the environment. See "Timing modes" at the top of this file.
++ */
++int j1939_timing_ms(int relaxed_ms, int strict_ms);
 +
-+	/* PGN_A must pass the filter */
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
-+				    self->ifindex, J1939_NO_NAME, SA_RX, PGN_A))
-+		TH_LOG("sendto PGN_A failed: %d", errno);
-+	EXPECT_TRUE(recv_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
-+				   J1939_RECV_TIMEOUT_MS))
-+		TH_LOG("PGN_A was not received despite matching filter");
++/* Resolve the ifindex of the test interface named by CANIF. */
++int j1939_if_index(void);
 +
-+	/*
-+	 * PGN_B must be dropped by the filter. Send PGN_A after it and read it
-+	 * back: a PGN_B that got through is read before PGN_A or is still
-+	 * queued after it.
-+	 */
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
-+				    self->ifindex, J1939_NO_NAME, SA_RX, PGN_B))
-+		TH_LOG("sendto PGN_B failed: %d", errno);
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
-+				    self->ifindex, J1939_NO_NAME, SA_RX, PGN_A))
-+		TH_LOG("sendto PGN_A failed: %d", errno);
-+	ASSERT_TRUE(recvfrom_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
-+				       J1939_RECV_TIMEOUT_MS, &src))
-+		TH_LOG("PGN_A after PGN_B was not received");
-+	EXPECT_EQ(src.can_addr.j1939.pgn, filt.pgn)
-+		TH_LOG("PGN_B was received before PGN_A");
-+	EXPECT_EQ(recv(self->rx, rx_buf, sizeof(rx_buf), MSG_DONTWAIT), -1)
-+		TH_LOG("PGN_B was received but should have been filtered out");
-+	EXPECT_EQ(errno, EAGAIN);
-+}
++/*
++ * Open a J1939 socket bound to (name, sa, pgn); flags may set
++ * J1939_OPEN_BCAST.
++ */
++int j1939_open_flags(int ifindex, name_t name, uint8_t sa,
++		     pgn_t pgn, int flags);
 +
-+/* Without SO_J1939_SEND_PRIO the kernel's default priority is used. */
-+TEST_F(j1939_opts, send_prio_default)
-+{
-+	uint8_t buf[CAN_MAX_DLEN] = {};
++/* Open a J1939 socket bound to (sa, pgn) with no NAME and no broadcast. */
++int j1939_open(int ifindex, uint8_t sa, pgn_t pgn);
 +
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
++/* Connect a J1939 socket to the peer (name, da, pgn). */
++bool j1939_connect_name_ok(int s, int ifindex, name_t name,
++			   uint8_t da, pgn_t pgn);
++bool j1939_connect_ok(int s, int ifindex, uint8_t da, pgn_t pgn);
 +
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, buf, sizeof(buf), self->ifindex,
-+				    J1939_NO_NAME, SA_RX, PGN_A));
++/* Fill a sockaddr_can describing a J1939 (name, da, pgn) destination. */
++void j1939_fill_sockaddr(struct sockaddr_can *addr, int ifindex,
++			 name_t name, uint8_t da, pgn_t pgn);
 +
-+	EXPECT_EQ(raw_prio(self->raw, J1939_RECV_TIMEOUT_MS),
-+		  J1939_PRIO_DEFAULT);
-+}
++/* sendto() len bytes from buf to the J1939 destination dst. */
++ssize_t j1939_sendto_addr(int s, const void *buf, size_t len,
++			  const struct sockaddr_can *dst);
 +
-+/* SO_J1939_SEND_PRIO changes the priority carried in the CAN id. */
-+TEST_F(j1939_opts, send_prio_set)
-+{
-+	int prio = PRIO_SET;
-+	uint8_t buf[CAN_MAX_DLEN] = {};
++/* sendto() len bytes from buf to the J1939 (name, da, pgn) destination. */
++ssize_t j1939_sendto(int s, const void *buf, size_t len,
++		     int ifindex, name_t name, uint8_t da,
++		     pgn_t pgn);
 +
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	ASSERT_EQ(setsockopt(self->tx, SOL_CAN_J1939, SO_J1939_SEND_PRIO,
-+			     &prio, sizeof(prio)), 0)
-+		TH_LOG("SO_J1939_SEND_PRIO failed: %d", errno);
++/* One j1939_sendto() that sent all len bytes; no retry. */
++bool j1939_sendto_ok(int s, const void *buf, size_t len,
++		     int ifindex, name_t name, uint8_t da,
++		     pgn_t pgn);
 +
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, buf, sizeof(buf), self->ifindex,
-+				    J1939_NO_NAME, SA_RX, PGN_A));
++/* One send(), write() or read() that moved all len bytes; no retry. */
++bool send_all_ok(int s, const void *buf, size_t len);
++bool write_all_ok(int fd, const void *buf, size_t len);
++bool read_all_ok(int fd, void *buf, size_t len);
 +
-+	EXPECT_EQ(raw_prio(self->raw, J1939_RECV_TIMEOUT_MS), PRIO_SET);
-+}
++/*
++ * Open a CAN_RAW socket on ifindex. Unless rcvbuf is J1939_RAW_RCVBUF_DEFAULT,
++ * request that SO_RCVBUFFORCE size (best-effort: a failure is logged, not
++ * fatal).
++ */
++int open_raw_rcvbuf(int ifindex, int rcvbuf);
++int open_raw(int ifindex);
 +
-+/* An unconnected socket can address a peer via sendto(2). */
-+TEST_F(j1939_opts, sendto_unconnected)
-+{
-+	uint8_t tx_buf[CAN_MAX_DLEN];
++/* poll() + recv(): returns the recv() result, or -1 on timeout/error. */
++ssize_t recv_timeout(int s, void *buf, size_t len,
++		     int timeout_ms);
 +
-+	fill_pattern(tx_buf, sizeof(tx_buf));
++/*
++ * recvfrom() one message on s within timeout_ms, check that it is the len
++ * bytes in want, and return the sender in *src unless src is NULL. The buffer
++ * has one spare byte, so a longer message fails the check.
++ */
++bool recvfrom_verify_ok(int s, const void *want, size_t len,
++			int timeout_ms, struct sockaddr_can *src);
 +
-+	self->rx = j1939_open(self->ifindex, SA_RX, PGN_A);
-+	ASSERT_GE(self->rx, 0);
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
++/* recvfrom_verify_ok() without the sender. */
++bool recv_verify_ok(int s, const void *want, size_t len,
++		    int timeout_ms);
 +
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
-+				    self->ifindex, J1939_NO_NAME, SA_RX,
-+				    PGN_A));
++/* Send len bytes on tx and verify they arrive byte-for-byte on rx. */
++bool send_recv_verify_ok(int tx, int rx, const void *buf,
++			 size_t len, int timeout_ms);
 +
-+	EXPECT_TRUE(recv_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
-+				   J1939_RECV_TIMEOUT_MS));
-+}
++/* Receive one whole CAN frame from a raw socket within timeout_ms. */
++bool recv_frame_ok(int raw, struct can_frame *frame,
++		   int timeout_ms);
 +
-+/* A bind(2) with a wrong address family is rejected. */
-+TEST_F(j1939_opts, bind_wrong_family)
-+{
-+	struct sockaddr_can addr = {
-+		.can_family = AF_INET,
-+		.can_ifindex = self->ifindex,
-+	};
-+	int s;
++/*
++ * Build the 29-bit CAN id of a J1939 frame. prio must fit in
++ * J1939_ID_PRIO_BITS, and the PS byte of a PDU1 pgn must be 0.
++ */
++canid_t j1939_canid(uint8_t prio, pgn_t pgn, uint8_t da,
++		    uint8_t sa);
 +
-+	s = socket(PF_CAN, SOCK_DGRAM, CAN_J1939);
-+	ASSERT_GE(s, 0);
-+	EXPECT_LT(bind(s, (struct sockaddr *)&addr, sizeof(addr)), 0)
-+		TH_LOG("bind with AF_INET unexpectedly succeeded");
-+	EXPECT_EQ(errno, EINVAL);
-+	close(s);
-+}
++/*
++ * Start a TP/ETP control frame: every byte J1939_FILL_BYTE, then the control
++ * byte cmd.
++ */
++void cm_dat_init(uint8_t *dat, uint8_t cmd);
 +
-+/* SO_J1939_ERRQUEUE delivers TX completion notifications for a TP send. */
-+TEST_F(j1939_opts, errqueue_tx_completion)
-+{
-+	uint8_t tx_buf[ERRQUEUE_MSG_SIZE];
++/*
++ * Serialize a 64-bit NAME little-endian into a buffer of sizeof(name_t)
++ * bytes (host-agnostic).
++ */
++void put_name(uint8_t *dat, name_t name);
 +
-+	fill_pattern(tx_buf, sizeof(tx_buf));
++/*
++ * Little-endian codecs for the multi-byte fields of TP/ETP connection
++ * management (CM) frames (host-agnostic).
++ */
++void put_le(uint8_t *p, uint32_t v, size_t n);
++uint32_t get_le(const uint8_t *p, size_t n);
++void put_le16(uint8_t *p, uint16_t v);
++void put_le24(uint8_t *p, uint32_t v);
++void put_le32(uint8_t *p, uint32_t v);
++uint16_t get_le16(const uint8_t *p);
++uint32_t get_le24(const uint8_t *p);
++uint32_t get_le32(const uint8_t *p);
 +
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
++/* Embed the PGN of the transported message into a TP/ETP control frame. */
++void put_pgn(uint8_t *dat, pgn_t pgn);
 +
-+	ASSERT_TRUE(errqueue_enable_ack_ok(self->tx))
-+		TH_LOG("enabling the error queue failed: %d", errno);
++/* Send one J1939-encoded frame of CAN_MAX_DLEN bytes with priority prio. */
++bool send_raw8_ok(int raw, uint8_t prio, pgn_t pgn, uint8_t da,
++		  uint8_t sa, const uint8_t dat[CAN_MAX_DLEN]);
 +
-+	/* A receiver lets the TP session complete and be acknowledged. */
-+	self->rx = j1939_open(self->ifindex, SA_RX, PGN_A);
-+	ASSERT_GE(self->rx, 0);
++/*
++ * Payload bytes of the DT frame that starts at offset off of a message of
++ * size bytes; off must be below size.
++ */
++size_t j1939_dt_chunk_len(size_t size, size_t off);
 +
-+	ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
-+				    self->ifindex, J1939_NO_NAME, SA_RX,
-+				    PGN_A));
++/*
++ * Send a TP/ETP data (DT) frame: sequence number seq and up to
++ * J1939_DT_DATA_LEN bytes from offset off of payload, a message of size
++ * bytes.
++ */
++bool send_dt_ok(int raw, uint8_t prio, pgn_t dt_pgn, uint8_t da,
++		uint8_t sa, uint8_t seq, const uint8_t *payload,
++		size_t off, size_t size);
 +
-+	ASSERT_TRUE(recv_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
-+				   J1939_RECV_TIMEOUT_MS));
++/* Milliseconds from a to b (negative if b is earlier), CLOCK_MONOTONIC. */
++long timespec_diff_ms(const struct timespec *a,
++		      const struct timespec *b);
 +
-+	EXPECT_TRUE(errqueue_read_ack_ok(self->tx))
-+		TH_LOG("no SCM_TSTAMP_ACK TX completion on the error queue");
-+}
++_Static_assert(__builtin_types_compatible_p(__typeof__(NSEC_PER_SEC),
++					    long long) &&
++	       __builtin_types_compatible_p(__typeof__(NSEC_PER_MSEC),
++					    long long),
++	       "timespec_diff_ms() needs signed long long arithmetic");
 +
-+/* getsockopt(2) reads back SO_J1939_SEND_PRIO. */
-+TEST_F(j1939_opts, getsockopt_send_prio)
-+{
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_SEND_PRIO, PRIO_SET),
-+		  PRIO_SET)
-+		TH_LOG("SO_J1939_SEND_PRIO round-trip failed: %d", errno);
-+}
++/* Set *deadline to timeout_ms from now on CLOCK_MONOTONIC. */
++void deadline_after_ms(struct timespec *deadline, int timeout_ms);
 +
-+/* getsockopt(2) reads back the SO_J1939_PROMISC flag, set and cleared. */
-+TEST_F(j1939_opts, getsockopt_promisc)
-+{
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_PROMISC, true), true)
-+		TH_LOG("SO_J1939_PROMISC set round-trip failed: %d", errno);
-+	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_PROMISC, false), false)
-+		TH_LOG("SO_J1939_PROMISC clear round-trip failed: %d", errno);
-+}
++/*
++ * Poll and recv on raw until match() accepts a frame, or time out. match()
++ * gets the raw can_id; the j1939_id_*() decoders mask the flag bits. Other
++ * traffic must not extend the wait, so poll against a fixed deadline.
++ */
++bool recv_match_ok(int raw, int timeout_ms,
++		   struct can_frame *frame,
++		   bool (*match)(canid_t id, const void *ctx),
++		   const void *ctx);
 +
-+/* getsockopt(2) reads back the SO_J1939_ERRQUEUE flag, set and cleared. */
-+TEST_F(j1939_opts, getsockopt_errqueue)
-+{
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_ERRQUEUE, true), true)
-+		TH_LOG("SO_J1939_ERRQUEUE set round-trip failed: %d", errno);
-+	EXPECT_EQ(sockopt_roundtrip(self->tx, SO_J1939_ERRQUEUE, false), false)
-+		TH_LOG("SO_J1939_ERRQUEUE clear round-trip failed: %d", errno);
-+}
++struct j1939_peer_match { uint8_t want_pf, want_da, want_sa; };
 +
-+int main(int argc, char **argv)
-+{
-+	return j1939_test_main(argc, argv);
-+}
-diff --git a/tools/testing/selftests/net/can/test_j1939_opts.sh b/tools/testing/selftests/net/can/test_j1939_opts.sh
-new file mode 100755
-index 0000000000000000000000000000000000000000..61f65365ec568f928b58bc4f892f97e9ec887027
++bool match_peer_dest(canid_t id, const void *ctx);
++
++/*
++ * Receive the next frame whose CAN-id PF == want_pf, sent from want_sa to
++ * want_da (PS).
++ */
++bool recv_for_peer_ok(int raw, uint8_t want_pf, uint8_t want_da,
++		      uint8_t want_sa, struct can_frame *frame,
++		      int timeout_ms);
++
++/* recv_for_peer_ok() and check that the control byte is want_cmd. */
++bool recv_cm_cmd_ok(int raw, uint8_t want_pf, uint8_t want_da,
++		    uint8_t want_sa, struct can_frame *frame,
++		    int timeout_ms, uint8_t want_cmd);
++
++/* Arbitrary; keeps fill_pattern() from being the plain byte offset. */
++#define J1939_PATTERN_SEED	0x3c
++
++/*
++ * Fill buf with a deterministic, position-dependent byte pattern. The
++ * i >> CHAR_BIT term makes each 256-byte block of the first 64 KiB differ,
++ * so a misplaced packet shows up.
++ */
++void fill_pattern(uint8_t *buf, size_t len);
++
++/* Is the CAN protocol proto missing from this kernel? */
++bool can_proto_missing(int type, int proto);
++
++#endif /* __SELFTESTS_NET_CAN_J1939_HELPERS_H__ */
+diff --git a/tools/testing/selftests/net/can/j1939_lib.sh b/tools/testing/selftests/net/can/j1939_lib.sh
+new file mode 100644
+index 0000000000000000000000000000000000000000..07e960e155fabcef9c0f159b0fa808d29f0d3d3b
 --- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_opts.sh
-@@ -0,0 +1,4 @@
++++ b/tools/testing/selftests/net/can/j1939_lib.sh
+@@ -0,0 +1,92 @@
 +#!/bin/bash
 +# SPDX-License-Identifier: GPL-2.0
++#
++# Shared bring-up for the J1939 selftest wrappers. A wrapper sources this
++# file and runs the test binary of the same name, without .sh:
++#
++#	source "$(dirname "$0")/j1939_lib.sh"
++#
++# It creates (and deletes) the vcan named by CANIF (vcan0 by default), runs the
++# test binary through the kselftest net lib and reports the result. The tests
++# send frames as other nodes and forge Address Claims, so they must not run on
++# a real CAN bus: a CANIF whose name does not start with "vcan" is skipped.
++#
++# For the J1939_STRICT_TIMING timing mode, see j1939_helpers.h.
 +
-+source "$(dirname "$0")/j1939_lib.sh"
++# shellcheck disable=SC2034 # used by tests_run in lib.sh
++ALL_TESTS="j1939_run"
++
++net_dir=$(dirname "$0")/..
++# shellcheck source=../lib.sh
++source "$net_dir/lib.sh"
++
++export CANIF=${CANIF:-"vcan0"}
++J1939_TEST_PROG=$(basename "$0" .sh)
++
++# Undo only what this script did: delete a vcan we created, and bring
++# down an interface only if we brought it up. A failed setup() (e.g. CANIF
++# already exists) must not disturb a pre-existing interface.
++created=0
++brought_up=0
++
++setup()
++{
++	if [[ $CANIF != vcan* ]]; then
++		echo "SKIP: CANIF name '$CANIF' does not start with vcan"
++		exit "$ksft_skip"
++	fi
++
++	if ip link show "$CANIF" >/dev/null 2>&1; then
++		echo "SKIP: $CANIF already exists;" \
++		     "delete it and run the test again"
++		exit "$ksft_skip"
++	fi
++
++	if ! ip link add name "$CANIF" type vcan; then
++		echo "SKIP: cannot create $CANIF" \
++		     "(no vcan support or no permission)"
++		exit "$ksft_skip"
++	fi
++	created=1
++
++	if ! ip link set dev "$CANIF" up; then
++		echo "SKIP: cannot bring up $CANIF"
++		exit "$ksft_skip"
++	fi
++	brought_up=1
++}
++
++cleanup()
++{
++	if [ "$brought_up" = 1 ]; then
++		ip link set dev "$CANIF" down 2>/dev/null
++	fi
++	if [ "$created" = 1 ]; then
++		ip link delete "$CANIF" 2>/dev/null
++	fi
++}
++
++j1939_run()
++{
++	local rc
++
++	"$(dirname "$0")/$J1939_TEST_PROG"
++	rc=$?
++
++	# The test binary exits ksft_skip when it cannot run (see
++	# j1939_test_main()); keep that a skip instead of letting check_err
++	# turn any non-zero into a failure.
++	if ((rc == ksft_skip)); then
++		ret_set_ksft_status "$ksft_skip" ""
++	else
++		check_err "$rc"
++	fi
++	log_test "$J1939_TEST_PROG"
++}
++
++trap cleanup EXIT
++setup
++
++tests_run
++
++exit "$EXIT_STATUS"
+diff --git a/tools/testing/selftests/net/can/j1939_tests.h b/tools/testing/selftests/net/can/j1939_tests.h
+new file mode 100644
+index 0000000000000000000000000000000000000000..3536adfd9892f938f99708208dc97ac24db5c113
+--- /dev/null
++++ b/tools/testing/selftests/net/can/j1939_tests.h
+@@ -0,0 +1,71 @@
++/* SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause) */
++/*
++ * The parts of the J1939 selftest helpers that use the kselftest harness:
++ * the fixture setup macros and j1939_test_main(). The other helpers are in
++ * j1939_helpers.h, which this header includes.
++ *
++ * Each test binary is run by its .sh wrapper (see j1939_lib.sh), which sets up
++ * the vcan interface and passes its name in the CANIF environment variable.
++ *
++ * The including .c file must include "kselftest_harness.h" before this
++ * header.
++ */
++#ifndef __SELFTESTS_NET_CAN_J1939_TESTS_H__
++#define __SELFTESTS_NET_CAN_J1939_TESTS_H__
++
++#include "j1939_helpers.h"
++
++/*
++ * FIXTURE_SETUP helper: resolve CANIF's ifindex into self->ifindex and abort
++ * the test if it cannot be found. Used as a statement:
++ * J1939_SETUP_IFINDEX(self);
++ */
++#define J1939_SETUP_IFINDEX(self)					       \
++	do {								       \
++		(self)->ifindex = j1939_if_index();			       \
++		ASSERT_GE((self)->ifindex, 0)				       \
++			TH_LOG("failed to resolve ifindex for '%s': %d",       \
++			       CANIF, errno);				       \
++	} while (0)
++
++/*
++ * FIXTURE_SETUP helper: open a CAN_RAW socket on self->ifindex into self->raw
++ * with the given SO_RCVBUFFORCE size (or J1939_RAW_RCVBUF_DEFAULT) and abort
++ * the test if it cannot be opened. Used as a statement:
++ * J1939_SETUP_RAW(self, rcvbuf);
++ */
++#define J1939_SETUP_RAW(self, rcvbuf)					       \
++	do {								       \
++		(self)->raw = open_raw_rcvbuf((self)->ifindex, (rcvbuf));      \
++		ASSERT_GE((self)->raw, 0)				       \
++			TH_LOG("failed to open raw socket: %d", errno);	       \
++	} while (0)
++
++/*
++ * Body of each test's main(): require CANIF in the environment and a kernel
++ * that supports CAN_J1939 and CAN_RAW, then run the harness. Skip when any
++ * of them is missing.
++ */
++static inline int j1939_test_main(int argc, char **argv)
++{
++	char *ifname = getenv("CANIF");
++
++	if (!ifname) {
++		fprintf(stderr, "# CANIF must name the test interface\n");
++		return KSFT_SKIP;
++	}
++	strncpy(CANIF, ifname, sizeof(CANIF) - 1);
++
++	if (can_proto_missing(SOCK_DGRAM, CAN_J1939)) {
++		fprintf(stderr, "# kernel lacks CAN_J1939\n");
++		return KSFT_SKIP;
++	}
++	if (can_proto_missing(SOCK_RAW, CAN_RAW)) {
++		fprintf(stderr, "# kernel lacks CAN_RAW\n");
++		return KSFT_SKIP;
++	}
++
++	return test_harness_run(argc, argv);
++}
++
++#endif /* __SELFTESTS_NET_CAN_J1939_TESTS_H__ */
 
 -- 
 2.47.3
