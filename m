@@ -1,97 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794376393;
-	b=YZE6++W02befxIsO/wSeaxeYzhLeceFiGSAffkA32Vh8z0KwH/mbjOxXttGF6sgfAxiu
-	 TgiROPxuPuwU59JL5iPW2uy4MlQGnVGg15THUEoFhnSCKp4Xv7FETbF46ltrk4O4MCtFj
-	 wjaJG8fHYqq8Si8tJG3yyPHHAY1Vh8GbpFRCZo6yT6d/BfVZ+5jLOLvLLI5+fuWVBlUrz
-	 SWqsmTz6q9OrGMXSKvTrVAO8f2PGJr05AU95qHbJwKPZwD0c7XinehD6oW93P+56+sviI
-	 qq+lcJML0dvOJb5o6irkwUfDcyxPQZ4eyOaZ3CBXsMVHNGJ750UcIo2uCEYdJUZaKXQ==
+	t=1794377928;
+	b=y7fceuBYJGLqJXnmfk1grblWpMEFS1iEE+3Z8YaWYIotDKGqsS5t5ELWgnNrnV1LFij1
+	 BUJ9vzH5AO2GdFNVro8iwq0LHgeRPTCpVLoSsHhG7VWwEi/PutaDKYoarkwUr/Fm4INNp
+	 IQ7w7u/XtcOBjCqx6nXuGJmSDxzUgn1FPiBK5mXUYmQpprtKiGQ/VWcS83lVW76NSLruQ
+	 2xPm8sC5B5enSzFbrQyXMM5PWpRe0/KCKFA80HF/jNaN6Rf76mJyJ+S/4CQuqSQS5+j8N
+	 Vatp3vgVBBIP5JN1KCgdKWNL3PEPVdj2L4wliAmCjRVXUh1veqYuPE7RqKeexMxqKJg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794376393;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Sent-From:X-URL:X-Accept-Language:
-	 X-Accept-Content-Type;
-	bh=li7BCG6ejq/8Rt0GJ74/8s2kndGFg8iIv0Lf2Gro7kg=;
-	b=tq73IM7d2UKCk3mYJiSQ8ya1uFv7v75fxOkRjiJ/a8Aezey8CpKFlvOZKBQG4T/0U6yP
-	 F2TzqHqGe0R4AJWO/P9GcXY5JNlXCRgrnrcgKpLhWK7gCgY3BUn56nzkSGmYAGmsXEt4V
-	 kYe8DLVvFsyiee1YHFe+IQs1ZydnHF3/dzQgOExlmpH+gJ0kuEUy6xLL5fPdOPn0+6/li
-	 2JhtiPN28WAuRx5NDVuv5NpNGWsG43mbcBFQxfEklT7uS/i1K018tGUf01MA5vs6IycXx
-	 pyysSdOgzm7vr3rFyFcFY0YuHkA2lXhZUR8QrP2/2BfdwJAnj2TD3Arqeeymggqt4AQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794377928;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=irh7FtabIZf9G5NtC74mI7+F4qF39JvEMv9fHyqNNSU=;
+	b=Lft7t/Pd6lbQ1q/PbU6GADsR1ZcLNV2ta2CQM+/hYSYFNy3Fvc6XkSZOFal0jETgBoAA
+	 29MDfcA4nnhRzHzbpGmYhu6q3CclHscEzyVxnz/TA5hHIJPcQHb3QyfGTDEDVxGJyfbAe
+	 QmA0Ph8yCWusIPCIUJ7CqldPdlucFiNslcpxesqt6X5W0DE0S6TpbePdZtODZl4vuZdr7
+	 TJt98wdE2PscqWIxcOlY8azi3x/R+8axJEzFZbiSQaP6TbhntFIYQ4rI2cJWzII952em+
+	 /x+n7M0xuR0Vy/3oI4qxfJkHH0mpVyJZzrYcP62fEYFvonpx4ZzaPRAqe1ROrAhD6Qg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PZqfRFP1;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WEAqvzN9;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B36F606A320;
+	Wed, 11 Nov 2026 06:18:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WEAqvzN9
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794377928;
+	b=h7ueBH+XYghige5DuadhGiB1glqCVPaEF2UnujYUOt10x4+jKh+NpOxkGW/H/PmNHkb+
+	 +xCbeMp8LuBhTs5vWUtywFN5P99n82IcZRwoHKRwX4HXlOASD5ilfjKoa7nRvLW9bEHtx
+	 TfFu66YUYkyR3deY+a15SDC6VUXQwJAzDQgrED6NBnio+tliLRSXUKHgJ+B3xeVJGSSK7
+	 0I8uJGS9KYe/QchmBdZ2ZKvAPrP1BV9YqfIQ3XSRvoTDxdw0qkrPdaUPcug2BPzcpTAK5
+	 FgeJCug4Rp1gFitthKEA5I1nznU9DYhFkaGWlZ1gLbVTCdECqQJ0f+2YjR0ijzUiqhg==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794377928;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=irh7FtabIZf9G5NtC74mI7+F4qF39JvEMv9fHyqNNSU=;
+	b=ndiPg7eoTcOJuB1Uik/N3u215eB51Z8n0mzXpFetCI2mDLlhb6TL8LSGdg5OYmARGNkM
+	 fcrTUSfEHODgWT6t+RMSZHURCsuMWexiBn+Vg4Mlj6KwNQrZqGJP0fmONBD1/SaKSY8KT
+	 C6rhGTijy2+wITsD5+Gw7Tido8SvRG3xDTdUGjRONrWoFP3hZJoIGptSyLsPezYxve92j
+	 /CqsNShE3giIRjmuW1aX9sZlZ21AyI5Aqq5oOCaPBS86NZ+qPvTmqyM/3wmcotL7p9uVQ
+	 KaqM1R/dNdYFUKXAD976STzEeW10lzkeEYaaoRizBca770w6naDIsN3P3ZV/k5HazNw==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3B16606A31C
-	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 05:53:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F3B16606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PZqfRFP1
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 1F13D2017D7;
-	Wed, 11 Nov 2026 06:53:09 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794376389;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=li7BCG6ejq/8Rt0GJ74/8s2kndGFg8iIv0Lf2Gro7kg=;
-	b=PZqfRFP1Tdvne2qZ7vS4zn2aM9eEv0BfKWxplIWhNxBrE3VB753aU8zu8rjnRM/O693m+M
-	fe2/G92SXZtf+jHPNWqQ7uVzfvVAcoy5ckNJtQd6aoeXonCfkilPQHn5o3d8ARyQbhR1M+
-	bD5kBd48aYnTLrnrEsjIjL7uLjIWkG4cIBcOm6tSJy/91Dt1Uvne6zdmHFHNahCJdp9avB
-	4Jd+S3ZjgvPoFfWQ4G4xyDLhl59eFJ4z1z3jfbO71wGVOGfO/R6a3PVgtbWmKCa93SR1PT
-	2TSTcgIdSuBbsguKVMFMQenduCjx8hoLPuTSPPeQdWycJeEpbHpl6xEHq5X9CA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794376389;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=li7BCG6ejq/8Rt0GJ74/8s2kndGFg8iIv0Lf2Gro7kg=;
-	b=PUbkT1sy4uctXZlphuYXailUoyAnJexZLGrQcyTgSzg9zjEK86q+U296O+hhtflSTRorej
-	Me8z83EEhl2NnB0rgeu3LWqGV0m/7WJtEgrffUtxF9CXwDHjnEdqzr63uKpD4gPAFqfK2i
-	Me88sNPnCFcDDWR5e8Cr8LrzkxTFh7wNS8tIbtBZixNBV52y5gyl8yO/6CA2AvNACPcz3M
-	pW40GBP2NKafOdYdTHrwKjfCURhFDxgyM1+K2v5DuWQXG4C/hMktlAtm6GE+mCVAV+/bP5
-	FjZhbTw8+hAnHKtM9p/0xRlxOwV2b3JCfJFBA6m0J3SVtdsPUhOBSnzii77TxQ==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794376389; a=rsa-sha256;
-	cv=none;
-	b=ZEhOHktZ6WExCWwhppf6I8AmOy7I1SRQ/nmwm10rJ2TZW7IZO7CfSDYumOPMmj11heaQa5
-	o13TD+pHi2xp5llkdKyDNTMumHEizufCNBMw0+P4R4YrzpbU50izVUzynQ0IMm8HTbEuhd
-	s/NAQPQaFEj51BCnkd9NccqvJQA+IvBIS4UcsHyjwYouWYWqHTNs0Uigtq8LIZnomGCRuj
-	bLezlgh0YYyfKbLCLjvc5T8DZqI/eQziI9musKME0yvPKiYrbigVzBBgYzaxmqkW9ylF/q
-	hgoVG0JRWuHtQYLdekmB8yBFuVT3ICF/ZFvh6fOOdeLIT+W92pdkyfRhb2cglw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xR1Gf-003bR0-09;
-	Wed, 11 Nov 2026 06:53:09 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xR1Ge-0000000FPR9-3wTJ;
-	Wed, 11 Nov 2026 06:53:08 +0100
-Date: Wed, 11 Nov 2026 06:53:08 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Zihan Xi <zihanx@nebusec.ai>
-Cc: linux-can@vger.kernel.org, robin@protonic.nl, kernel@pengutronix.de,
-	socketcan@hartkopp.net, mkl@pengutronix.de, bst@pengutronix.de,
-	lkp@intel.com, maxime.jayat@mobile-devices.fr, ecathinds@gmail.com,
-	vega@nebusec.ai
-Subject: Re: [PATCH net v8 1/2] can: j1939: account for timer references
- across rearm
-Message-ID: <avQCxNIDeBaTsX2c@pengutronix.de>
-References: <20261109131624.276943-1-zihanx@nebusec.ai>
- <20261109131624.276943-2-zihanx@nebusec.ai>
+	by smtp.kernel.org (Postfix) with ESMTPS id 6FFCD1F00A08;
+	Wed, 11 Nov 2026 06:18:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794377928;
+	bh=irh7FtabIZf9G5NtC74mI7+F4qF39JvEMv9fHyqNNSU=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=WEAqvzN94RlB8SiMI75i32D73GYujz1zPy7KZVpLkkN7csNeA7eTtCAqdd5xgdwFF
+	 QuVRMBhUJhw/yIQjYGSsTy+6Wz9+M1KHt0atvOtTL/vL/8+5IM1bFFoWSLAhhfRqEy
+	 N9O/VcqP3ppsVtJi7VmxoTXtlTk82UF4hRysY7sBINxb88F+XT8gFusTqbCxyMFNU0
+	 i17Miv8OpMO30aL85e5lzlgHb8DIrDOoXAMIj6jp8MQfTxMMgCGsxTwMjCg9gmr7ie
+	 eJxB3Dv/KE0jX7L+DXbf4AU4jPhqhUNMv57+9xihqF8e08vtmoWN0n2/Y2dwz+VFLt
+	 Rw2NDzxk6LLdw==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id EFBC648E06;
+	Wed, 11 Nov 2026 06:18:46 +0000 (UTC)
+From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
+Date: Wed, 11 Nov 2026 14:17:57 +0800
+Subject: [PATCH net v9 03/10] can: rockchip_canfd: retry the outstanding TX
+ buffer
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -101,80 +83,80 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20261109131624.276943-2-zihanx@nebusec.ai>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261111-rockchip-canfd-restart-close-v9-3-6643f3825ba3@qq.com>
+References: <20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3@qq.com>
+In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3@qq.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
+ Vincent Mailhol <mailhol@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <skhan@linuxfoundation.org>, 
+ Randy Dunlap <rdunlap@infradead.org>, 
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Cunhao Lu <1579567540@qq.com>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794377925; l=1735;
+ i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
+ bh=mAdiDJWuUPvQyM82hTpk52wGLUSpbq2jpnpY6emM93U=;
+ b=DzwygOqoERFHhFngW+ttdCvPayAo5SCyAJg6NN02KVaARwkXTLiaR2cVUEUmPSWO6BeSrJlw7
+ Dl2C05kKccfAfx0OCDOESTknt/QULmXvs4rJArR/0E+j/VJG7WUdSoZ
+X-Developer-Key: i=1579567540@qq.com; a=ed25519;
+ pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
+X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
+ auth_id=1177
+X-Original-From: Cunhao Lu <1579567540@qq.com>
+Reply-To: 1579567540@qq.com
+Content-Transfer-Encoding: 7bit
 
-Hi Zihan,
+From: Cunhao Lu <1579567540@qq.com>
 
-Thank you for your work.
+rkcanfd_xmit_retry() uses tx_head to select the buffer for the erratum 6
+retransmission. With a TX FIFO depth of one, the masked head and tail
+indices both select buffer 0. With two buffers and one outstanding frame,
+tx_head selects the next free buffer instead of the pending one.
 
-To avoid duplicate work, please take a look at this series:
-https://lore.kernel.org/all/a1dd9760-7815-400a-a39c-a1a03cf8262e@I-love.SAKURA.ne.jp/
+Use tx_tail to retry the outstanding buffer. Otherwise, the pending echo
+entry can remain incomplete and leave the TX queue stopped.
 
-and sync it with Tetsuo.
+Backports must include the preceding TX serialization fix or equivalent
+synchronization. It prevents completion and retry from observing a newly
+published head before its initial TX command and serializes the
+MODE/CMD/MODE sequences used by submission and retry.
 
-On Mon, Nov 09, 2026 at 01:16:23PM +0000, Zihan Xi wrote:
-> Rearming a session timer updates the existing hrtimer rather than
-> creating another callback. Taking a session reference for every start
-> can therefore leave references behind when the timer is rearmed.
-> 
-> Track one session reference across each timer's queued and running
-> lifetime. Apply the same accounting to the RX timer and synchronize
-> rearming and cancellation with terminal state changes. Arm the simple-TX
-> echo timeout only after a successful send, and keep terminal session
-> transitions from leaving stale timer references or changing the result.
-> 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Cc: stable@vger.kernel.org
-> Reported-by: Vega <vega@nebusec.ai>
-> Link: https://bugtracker.nebusec.ai/f/11143
-> Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
-> ---
->  net/can/j1939/j1939-priv.h |  11 +
->  net/can/j1939/transport.c  | 510 +++++++++++++++++++++++++++++++------
->  2 files changed, 438 insertions(+), 83 deletions(-)
-> 
-> diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-> index cf26352d1d8c..123622c82a98 100644
-> --- a/net/can/j1939/j1939-priv.h
-> +++ b/net/can/j1939/j1939-priv.h
-> @@ -10,6 +10,7 @@
->  #define _J1939_PRIV_H_
->  
->  #include <linux/can/j1939.h>
-> +#include <linux/spinlock.h>
->  #include <net/sock.h>
->  
->  /* Timeout to receive the abort signal over loop back. In case CAN
-> @@ -290,6 +291,16 @@ struct j1939_session {
->  		unsigned int dpo;
->  	} pkt;
->  	struct hrtimer txtimer, rxtimer;
-> +	unsigned int txtimer_cancelers; /* block starts while a cancel waits */
-> +	spinlock_t txtimer_lock; /* Protects TX timer lifetime state. */
-> +	/* One reference pins the complete queued/running timer lifetime. */
-> +	bool txtimer_shutdown;
-> +	bool txtimer_ref;
-> +	spinlock_t rxtimer_lock; /* Protects RX timer lifetime state. */
-> +	unsigned int rxtimer_cancelers;
-> +	/* One reference pins the complete queued/running timer lifetime. */
-> +	bool rxtimer_shutdown;
-> +	bool rxtimer_ref;
+Fixes: a5605d61c7dd ("can: rockchip_canfd: enable full TX-FIFO depth of 2")
+Cc: stable@vger.kernel.org
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
 
-If you add new variables, pleas use __guarded_by()
-https://docs.kernel.org/dev-tools/context-analysis.html
+---
+Changes in v8:
+- Apply the retry-slot correction after TX serialization.
+---
+ drivers/net/can/rockchip/rockchip_canfd-tx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Thank you!
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+index caa71cf8e39a..8998b7855d15 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+@@ -63,8 +63,8 @@ static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
+ 
+ void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
+ {
+-	const unsigned int tx_head = rkcanfd_get_tx_head(priv);
+-	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
++	const unsigned int tx_tail = rkcanfd_get_tx_tail(priv);
++	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_tail);
+ 
+ 	lockdep_assert_held(&priv->tx_lock);
+ 
 
-Best Regards
-Oleksij
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.34.1
+
+
