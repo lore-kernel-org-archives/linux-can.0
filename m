@@ -1,55 +1,70 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=114.111.35.233
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=156.67.10.101
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794355874;
-	b=D5wCtDvb/PgEab4h3jMJtRs1L+1MIlDsGTd/TEl+cOmFQFrn+c1QN/5EYuf9s/nNoMJf
-	 143G7XyBnPeMj04onlRC7s4MXk13Omj3lAAgec9NNmsxllj0YVRxbuUfPu9fHXyoNsDLy
-	 h9oi6GLmDxIY63bR5SjAlkVNXNr2YBcsRPNWO+3jNkfchR0YQ6xK54FMLEj6aJwqQPnQS
-	 49SCEHX5Zq7hi9lqAiEWw+RHk1fJS3hpV9g2lPZdPLTmLrxsWcdK7FA/lQA10u1cvbVXm
-	 /Ge3SRWOxizqLhakxS6Bv915T5c4GInaTW8EauzhrZhPXAa/+vvyyy3VECX3qoYIs4w==
+	t=1794363165;
+	b=VKAJHyUg74libFE/G7lxSLRWzsugE7MJYW4q3c5uSO3KZz51taTX4M9Zk5fiJCMAfAuK
+	 uUNWV2Car4ekwINkhGn3ByTTUyHQkMMrTU3ULulA0SKSglxEWt2MJskotIrnrS7qWWvvA
+	 mrhTpCqeoNOgoJRZgbjmdZrb7gj2/fVk3Yzy7tqc5dmCIZQIPVqqNgcASgkp5bhAD5uAT
+	 MD3aw22gGbvHy+a9BENwiUB2NLLr3HE/KHa3gQNC3bmXPVOUh/TvVGzDlYM4koppKUvW1
+	 MTUVHoV0DYP2XNPTrQTrcR6mVO2ZdokI31wjQEnbbtLuylSuceC3XZ28JoZt2hUCqBw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794355874;
-	h=DMARC-Filter:X-Originating-IP:X-Works-Smtp-Source:Received:
-	 DKIM-Signature:X-Session-ID:MIME-Version:Message-ID:Date:From:
-	 In-Reply-To:References:Importance:To:Cc:Subject:X-Originating-IP:
-	 X-Works-Send-Opt:Content-Type:Content-Transfer-Encoding;
-	bh=66m7ZBHAd5MCUYL+NObH+dSeUwaoKEwcjZoMx+AWcMw=;
-	b=CLkDuIxJYmot59095DYcDOHN1iUI1HAK/eZ3Ez8jKdmNpUVywgac6CtyJte37iyOJw1n
-	 m3vFUr78TZa52/BiScvGx7GYEinOppGPGLhACxT74KPgeJu0Z0snqdANGEVgeu09CYuKv
-	 eLeoU2b7dH9mAGmLzPk6W7FoIGmKWgyRZcK1BJHmesAbJyMvllBzfDv11+K1qh2pZDGy2
-	 5B67ReeeVB2ZOHShXE6ANPInrJggjYgnRII7U41LfzD1Vz1ZGNZOdWe30umD8M4Z6lFaM
-	 VlsIimG8R7P8JS/kklPMp73G6RnR+irDYU5N9Y46g3LiPEvW08q1ljIKS5pSYzmoPgg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794363165;
+	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=DuqYtNneUEuH9evPuapHLCBL5pEX/5BkjSDOaIOKRgs=;
+	b=mVVJCksXnJ/t2PeypLEqkY6W2Cug04EO1ZVecWCIPDvrw5GFlooTkTSAdEWyftVeELCN
+	 IukppRhD7aXS4R/+J0Z50zQHnQ06IvRFkwobZK2NQci8RzYpayLuLjs1/Bb68CZhNr+gy
+	 Mzs0eW5ABe0I4ua/MsAK4vvDvuPC/mZ79ypNqv/u77XicZziOlD/NOrPjzfZTRyN6St9W
+	 1sglvZqeN3wucsI0oD86HsSJVZe9iNc+JDYhwYk6Ml0XI5nQ4a1Hi0bP7ha9aMH+pOYQU
+	 KoYt3L43pMyrCGlGiH2G0xgIo97zLHAqJ9NyJvT6zkmPO0hViRafDxP+DAW+CNe5kVg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=naver.com;
-	spf=pass smtp.mailfrom=naver.com;
-	dkim=pass header.d=naver.com header.i=@naver.com header.a=rsa-sha256 header.s=s20171208 header.b="wNuYm/Qn";
-	arc=none smtp.remote-ip=114.111.35.233
-Received: from cvsmtppost16.nm.naver.com (cvsmtppost16.nm.naver.com [114.111.35.233])
+	dmarc=pass header.from=lunn.ch;
+	spf=pass smtp.mailfrom=lunn.ch;
+	dkim=pass header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256 header.s=20171124 header.b=UWgDXJNq;
+	arc=none smtp.remote-ip=156.67.10.101
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB304606A31C;
-	Wed, 11 Nov 2026 00:11:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DB304606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=naver.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE189606A31C;
+	Wed, 11 Nov 2026 02:12:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EE189606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=naver.com header.i=@naver.com header.a=rsa-sha256 header.s=s20171208 header.b=wNuYm/Qn
-X-Works-Smtp-Source: PrnZKqtlFqJCpNmrFotqWHF0
-Received: from nv1s-hmac-real-11 ([10.180.31.91])
-  by cvsmtppost16.nm.naver.com with ESMTP id A0PYaXLUSSyvyalMg1qzsQ
-  for <multiple recipients>;
-  Wed, 11 Nov 2026 00:11:06 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=naver.com; s=s20171208;
-	t=1794355866; bh=66m7ZBHAd5MCUYL+NObH+dSeUwaoKEwcjZoMx+AWcMw=;
-	h=Message-ID:Date:From:To:Subject:From:Subject:Feedback-ID:
-	 X-Works-Security;
-	b=wNuYm/QntdXDQqeWtI9A5azkmONYJ6wl+8OeH64gqDcTvpOojjkwNqCMNp1fbEPOF
-	 dEP3JkTIoYzie/exp1M483gDP5Fq6y/hrEmZyFxkFNEADYqdx2KYUQr4UyQx+jlABJ
-	 Sc7CD7mayItIGYGui8muwbtlQCRIte0pSt63nRE2RMcvEzIZ4BlpWo0azpQ5b7H3t2
-	 qsS6ggPXXkDGlu250S6DQ7E36RSl4d2eawp7AnbC8n91gGDVt3u8eGv0YUheViosg/
-	 ZYzw3BD7asvSq7bsdEOKcYaLIkfMNbK7iYk/Ll4ZMmDv9emNfvWsMEduyslcWAnedA
-	 IGOTrn2HE5dMA==
-X-Session-ID: 42f67c1586dde36270c192f6b2c1d0e2b43e502752c06cf0562d77cf14dd97c5
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256 header.s=20171124 header.b=UWgDXJNq
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=DuqYtNneUEuH9evPuapHLCBL5pEX/5BkjSDOaIOKRgs=; b=UWgDXJNqXBh/YLE2LI9GNZiocG
+	c6UK7T6Q9IcIIj2LbSO7d6OKp/KBBFzGh3zomvFgO2F7bIGLlylRTiBMEqiIWmGLzWsa6XtM58Jce
+	I90WnPA63oR6I7RURgkzBxntuZ7iNGXqdjZ24pNFh7J81WjQgG6gTUJOuWf1i3D+/nYM=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1xQxpH-00Fd71-03; Wed, 11 Nov 2026 03:12:39 +0100
+Date: Wed, 11 Nov 2026 03:12:38 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Stefan Wahren <wahrenst@gmx.net>
+Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>, Frank Li <Frank.Li@nxp.com>,
+	Vinod Koul <vkoul@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
+	Fabio Estevam <festevam@gmail.com>,
+	Manivannan Sadhasivam <mani@kernel.org>, devicetree@vger.kernel.org,
+	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
+	linux-gpio@vger.kernel.org, linux-can@vger.kernel.org,
+	linux-phy@lists.infradead.org
+Subject: Re: [PATCH 5/5] ARM: mxs: add EVAchargeSE board support
+Message-ID: <61d1cb97-5c8e-45f1-8c01-1745e768e4e4@lunn.ch>
+References: <20261106230746.21954-1-wahrenst@gmx.net>
+ <20261106230746.21954-6-wahrenst@gmx.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -59,43 +74,21 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Message-ID: <f439b7997e31bf938812e27bb02a2762@cweb013.nm>
-Date: Wed, 11 Nov 2026 09:11:05 +0900
-From: =?utf-8?B?7J6E7ISx7ZiE?= <forfortuna@naver.com>
-In-Reply-To: <20261110122457-mutt-send-email-mst@kernel.org>
-References: <20261111-virtio-can-ready-v1-1-0b4dd020af0b@naver.com>
-	<20261110122457-mutt-send-email-mst@kernel.org>
-Importance: normal
-To: =?utf-8?B?TWljaGFlbCBTLiBUc2lya2lu?= <mst@redhat.com>
-Cc: =?utf-8?B?SGFyYWxkIE1vbW1lcg==?= <harald.mommer@oss.qualcomm.com>,
-	=?utf-8?B?TWF0aWFzIEV6ZXF1aWVsIFZhcmEgTGFyc2Vu?= <mvaralar@redhat.com>,
-	=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?= <mkl@pengutronix.de>,
-	=?utf-8?B?VmluY2VudCBNYWlsaG9s?= <mailhol@kernel.org>,
-	=?utf-8?B?TWlraGFpbCBHb2x1YmV2LUNpdWNoZWE=?= <mikhail.golubev-ciuchea@oss.qualcomm.com>,
-	=?utf-8?B?RnJhbmNlc2NvIFZhbGxh?= <francesco@valla.it>,
-	<virtualization@lists.linux.dev>,
-	<linux-can@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>,
-	=?utf-8?B?SmFzb24gV2FuZw==?= <jasowangio@gmail.com>
-Subject: =?utf-8?B?UmU6IFtQQVRDSF0gY2FuOiB2aXJ0aW86IGZpeCB2aXJ0cXVldWUgdXNlIGJlZm9yZSBEUg==?=
-	=?utf-8?B?SVZFUl9PSw==?=
-X-Works-Send-Opt: 0r+4b4e4jHwYM6l9+HiTKHmwKBmwFovXFxEqaA2ZjJkaBd9YKBmm
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261106230746.21954-6-wahrenst@gmx.net>
 
-T24gVHVlLCBOb3YgMTAsIDIwMjYgYXQgMTI6MjY6Li4uLCBNaWNoYWVsIFMuIFRzaXJraW4gd3Jv
-dGU6Cj4gaG93ZXZlciwgZGV2aWNlIHJlYWR5IG1lYW5zIHlvdSBjYW4gZ2V0IGNhbGxiYWNrczog
-Y29uZmlnCj4gYW5kIHZxLgo+Cj4gZGlkIHlvdSBhdWRpdCB0aGUgZHJpdmVyIHRvIG1ha2Ugc3Vy
-ZSB0aGlzIGlzIHNhZmUgd2hpbGUKPiBwcm9iZSBkaWQgbm90IHlldCBwb3B1bGF0ZSBhbmQgcmVn
-aXN0ZXIgdGhlIGRldmljZT8KClRoYW5rcyBmb3IgdGhlIHJldmlldy4KCkNvbmZpZyBjYWxsYmFj
-a3MgYXJlIGZpbmU6IGNvbmZpZ19jb3JlX2VuYWJsZWQgc3RheXMgZmFsc2UgdW50aWwKcHJvYmUv
-cmVzdG9yZSByZXR1cm5zLCBzbyBhIGNvbmZpZyBjaGFuZ2UgaXMgZGVmZXJyZWQgdW50aWwgdGhl
-bi4KCkZvciB2cSBjYWxsYmFja3MsIHRoZXJlIGlzIGEgcmVhbCBwcm9ibGVtLCBhbHNvIHJlcG9y
-dGVkIGJ5CnNhc2hpa28tYm90OiBhbiBSWC9UWCBpbnRlcnJ1cHQgdGhhdCBhcnJpdmVzIGJlZm9y
-ZQp2aXJ0aW9fY2FuX25hcGlfZW5hYmxlKCkgaW4gdmlydGlvX2Nhbl9vcGVuKCkgY2FsbHMKdmly
-dHF1ZXVlX2Rpc2FibGVfY2IoKSB3aGlsZSBOQVBJIGlzIHN0aWxsIGRpc2FibGVkLCBzbyB0aGUg
-cXVldWUKc3RhbGxzLiBUaGlzIGFscmVhZHkgZXhpc3RzIGluIHRoZSBvcGVuIHBhdGgsIGJ1dCB3
-aXRoIHRoaXMgcGF0Y2gKcmVzdG9yZSBjYW4gbm93IHJlYWNoIGl0LgoKSSB3aWxsIGZpeCB0aGF0
-IGZpcnN0IGluIGEgc2VwYXJhdGUgcGF0Y2ggYW5kIHNlbmQgdjIgYXMgYQp0d28tcGF0Y2ggc2Vy
-aWVzLgoKVGhhbmtzLApTZW9uZ2h5ZW9u
+ +	mdio {
+> +		#address-cells = <1>;
+> +		#size-cells = <0>;
+> +
+> +		ethphy: ethernet-phy@0 {
+> +			compatible = "ethernet-phy-ieee802.3-c22";
+> +			reg = <0>;
+> +			clocks = <&clks 64>; /* enet_out */
+> +			interrupt-parent = <&gpio4>;
+> +			interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+
+PHY interrupts are pretty much always level, not edge.
+
+	Andrew
