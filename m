@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794410782;
-	b=ZoA+AQnp8OT3rXjBO4DxBtzNRhzYwsM95q/LDeSKZBu4elf2Ai0Otuv1QW+zE0aLzmrK
-	 9Fa4xcH9BDPAqX3PIJGlLi+h8pmscFp1yyeI27ZcTM3SLrKFLM8BZ4GU7MtOFZD1ilzc6
-	 7c/+p66YPmcoTYl0he9b0mff0gKngJq9k1EMYHgqYtoBQAo7wswN2QtFhFLfc2pudydWf
-	 NtaljBfTI6uzZgg6oK96Ok5J6eX34vkQUKca3AZ7qbEJ/NS9tuvNt5Jg43ywdalNeXZ8k
-	 uEPSnpuTPkire8EjgS5PLHLwsFKZ7AHlYPmG/8syFFrguNdn5fpdpom2eivoi50mvhg==
+	t=1794410783;
+	b=s2SAQNyF+axJ0NTm0NAb1Wq77ypepfyIlQiFd71j53BN011LGcWkhY8BgzDzaaGQTWEq
+	 6iFHh4RRngI71qdeTb+p0ie+VCkjGm+qlQBEZhAOQpP9KW5nXUJmbmsqy83Pv0qWNtaLZ
+	 tCyzhHKejXY236si64W66igXTQJPiFmolvKouC7s0AoklF7ez1u83dtWAG6T50JpzIQ1L
+	 vlTBcc0TQwVtAC89N1fU6+OwFMphZexB8dHWScQIdPLqJiBM+se3wXtqMTvByR1aw2e3v
+	 ru6HDYSCyVF3aLzMISHn3VT+zM50K0B39mgqd02s1aQmiAkgV+lqXDYw+Eew9GO8qDw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794410782;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794410783;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer;
-	bh=S5IaH5R6gNfXFWbBtMbcPSEEhEFOJ4oIVv/E3UYOR08=;
-	b=H40ypv57kfJEYJP35FtsYnZbWIIT8Y26LGtYexKr7NC5KSDTY+ghWhh8MweLVCBj+ClC
-	 TaQZwkKKUB3b8smp9/3UPXpwuMb+V50GGbmaPbplhZm6HmcHJo0InD2cUBzsJKHKgdtkD
-	 UbKrUPoMsZ0NS7QElom7MBRG6PihbSqgirEqO0WS3YoqN96xVdj7WaHwPVN9SS2UgqSST
-	 L0HyLYHd2XXuOpOkFjb6cSqe2NOdWl8xx+SH3JIiwtiEzpnh/mFiYAHN5dkpzP/Do9prE
-	 N63bHK78l/6prDv+WT77m7USjuNjoGIhIclXi4uwY00wNea8dF7xlacay+BarCRIcnQ==
+	bh=0iOZ0Xo1WJYBctB11LmNr03kLXScFMd7/t16aS3UGRk=;
+	b=hbSfOdWIOKjb/uTWUzp+iI1kR8Zfx+eM2nb9F/6AgTXpz/mdC3SGSb+TT/zR0bdVd9tK
+	 sx4Mraok8WZG92CCmsPI9bYl3LlZd/D4tI4jf3BNn2NBKR+mHrfxaLiWkl8kaz5Zychyj
+	 xTaB39a/QAxYZbiWJ0+zVyt8IEg7hkjBCb2/ZGVslgwHoy7elk+LBUIQXEBVzn5J5s29L
+	 Ow8Lj6lhnBtk9bvMb9UA9Szw4vQ2rF/sgy35Zrvst6HEd8W4Q/AzsSDrGxaFrWDoQK63j
+	 86Tp7mP4OQAqvtW8vvAde2iShWRb3/FMERox/Xr37AjG/bWWocXSsrlfgFkrPI4htMw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="ZEJkcpi/";
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="Xmw/OXv2";
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E45606A897;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B598606A893;
 	Wed, 11 Nov 2026 15:26:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C0E45606A897
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B598606A893
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZEJkcpi/
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Xmw/OXv2
 Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.pengutronix.de [IPv6:2a0a:edc0:0:1101:1d::ac])
 	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 075C8202C95;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0B783202C9A;
 	Wed, 11 Nov 2026 16:26:16 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794410776;
@@ -43,40 +43,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=S5IaH5R6gNfXFWbBtMbcPSEEhEFOJ4oIVv/E3UYOR08=;
-	b=ZEJkcpi/Dco83sG+SPzFMgio25R1RaqCbZ93zY5Bpp474jjBgRVs7tX2EQ0DkPhcInhBaR
-	ksZ3szS6nG7oaopK/cNWsV2LzGrp3Zp734lDMTx6BxFOdO9ulYa7uaVDZKjKwySQXKKlHk
-	brrLuFvjoiJDvaLfpJGY8S4kVt7FJQt6TaUPDVBmX61GhV6R4jyMHVMWXm0kHwLJvd6U8o
-	vlgFTTZDjUPJW5POY4dGiSLqRyIHtOvki+h9F8enH3VSm/7xRdVZCnqsRHI0viZHViNsOa
-	aWICmYbf02boJc4VKth6gN9APR9j7bhl/3qICrNd7Phz3RNpmccSZX964Aawjw==
+	bh=0iOZ0Xo1WJYBctB11LmNr03kLXScFMd7/t16aS3UGRk=;
+	b=Xmw/OXv28ZmkXHXj9t/77lEJY7bDzM9iX9NCAHJs6UYeMKjyIImpGXM9Z6QCG6Fa+xmwhh
+	IkTks2ZtYiPeMZiZCfb3FcaTdzTC4Gv4U1WvIHnX8wqZBWgV8YaXGCmaffIdo5MK6lk3V5
+	uv9qd2StIFzxByB8hMtXi9gZge7daygvbY7ugmYDTogAdbp7OfX4gCPqiwg1h3mO4QCdbh
+	y/N0uW4Apz3prgH8yrA4krLQdwkdLB8f/2w2GnBEw2uf73b1HFqmY9KYg25jKeq0h6xTOm
+	h7XhNKFTQE0m6k+HRHgNaFRQs2m3ccPTS5iqewltn1WW4c/Ev/dLGDYzzOUwjA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794410776;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=S5IaH5R6gNfXFWbBtMbcPSEEhEFOJ4oIVv/E3UYOR08=;
-	b=aQ2iS8fjOFQO8xicFHfh6yaxN+cViSttK9SJmBCtd2ILaT9hJyk90MrmNhICQZDwQ7WfZA
-	0ySNbI+QnFQCI3HHXbUrRqOhPmTF+eAB1ZGvY+QD/vRr8Hrpo6Y7U56mEBPN3DbIwkJiYe
-	F4Kf1R0COEOCbUaOnLpXc66V3R5uR+QgxUjkVfjCVHCZ8CwQjPAfbWuA2AbmWeX6BOaKLm
-	mxSkgjYXuKInKLpcZHbM5MCMWk/4b88gTQB1eECcZh8CW9oruiwhRwwH0S1R8j9tktOU7Z
-	fjlwFkWKBR6OPzkVpTByk0IjUPi/lxsZ7h06QyK9JqS1Oiqpgmf8OPzLeCX+tw==
+	bh=0iOZ0Xo1WJYBctB11LmNr03kLXScFMd7/t16aS3UGRk=;
+	b=W+NeVHfdZWAtykPo9yPihncNRUwrrCR5MuWUmzZgunbhHh6bxysfdTfSifxA45HPqhK3mb
+	yWZWlubCvFRX48ZGT6U/KEG/v7o7bn6bNXKluc2kiBWHIEydivaf0s2CE0JY3BpARRb6yu
+	e+BWpw67fCcWhou3WkLBGwztbBVMQYNAJCEOsUUxBwPk2gFPsMUDE6rM6wMWAgMfaBdodz
+	gJXbe0iRLM56TazARFlBHSQaSXNR7v30BhUSlqTfdMpbWldBX3fAwBPuxR6V0VxNec6HBp
+	ShoeGQYWHIlHtdyxWMi2u3PRTD6MX2apjhyFnG5nSrs8LbT/h/OwyXb04s50PQ==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794410776; a=rsa-sha256;
 	cv=none;
-	b=CKmKWjJZ3u5l8N8tt6sdskHjxE8nqAE1PFD/SoZebVuPjI3lo+rvA8cLIL1BwOGBPL5w/g
-	rHB1BtsI/hs5qYbdjxK/Nu3hFVxCr1nO+QX2VswWDyctRbtmNUvnTp7E4wayBx3HVgbZO3
-	P4IBJB6hV2Fm83L/mycOePFEQaP1FhzA72/iMpd0o4Xd16MwE3TEXhkBDHBfC7aoMpjmZG
-	j6kDbS7UIU3Kz2esWF9p1kxQGDsTrgRetN2A922HpumCVcIIkzAOahw3CRrMFqxU9Npv4q
-	ijWaheJwxky1HjcHhk96ZXym06YYe28/mM7poeRrNWMbJNN3sxAoj8813oO3Tg==
+	b=J/IBWFfqdUzPRr5MK/LBZpBQ27YPShMT6A9vcAxCvVEVn7ZeKvAqiO+Gwd/D9nSuuPvdZB
+	wqBKLFVKNexdBgEdmX4eYFIAvp9h4usw1EXxtziFr0gAQ/4TDGtnqORNsoQqhTRNsK6k9f
+	UYz6xLUbbkFw3/VOalNhKi2Fns/0rSpETq9EN4JZiv+wQllGIMMde4ZskHapkd/iFQPywv
+	A3TL3E+6nqWEJr4DAZfcQIPw3NiEbs4maVIfZbg2WcJLVuJLbDFM8Dg8kxzS2KwobjtbeQ
+	/tFsbRt+up+H9Gkq/khik+4Wodx1MXE0DpEpmcCZDzUqvKk1MTRZBr3BasRW9g==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
 Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
-	id B5247381265; Wed, 11 Nov 2026 16:26:11 +0100 (CET)
+	id BB1193815B6; Wed, 11 Nov 2026 16:26:11 +0100 (CET)
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Date: Wed, 11 Nov 2026 16:25:54 +0100
-Subject: [PATCH can-next v3 5/9] selftests: can: add J1939 addressing and
- concurrency tests
+Date: Wed, 11 Nov 2026 16:25:57 +0100
+Subject: [PATCH can-next v3 8/9] selftests: can: cover J1939 transport
+ abort and timeout paths
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,7 +88,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261111-j1939-selftests-v3-5-5a80277ab363@pengutronix.de>
+Message-Id: <20261111-j1939-selftests-v3-8-5a80277ab363@pengutronix.de>
 References: <20261111-j1939-selftests-v3-0-5a80277ab363@pengutronix.de>
 In-Reply-To: <20261111-j1939-selftests-v3-0-5a80277ab363@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>, 
@@ -103,872 +103,370 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  Oleksij Rempel <o.rempel@pengutronix.de>
 X-Mailer: b4 0.14.2
 
-Add a selftest for J1939 NAME-based addressing and address claiming. In
-the two conflict tests, a lower NAME takes the address from the socket
-and a higher NAME does not. A stress test runs several TP sessions at the
-same time, each with its own payload.
+Add transport edge cases to the multi-frame tests. The round-trip tests
+only run transfers that succeed, and no TP transfer there is split into
+CTS blocks. They leave out these cases:
 
-The kernel lets a NAME use a claimed address only 250 ms after the
-claim. The tests do not sleep for a fixed time before the first send.
-They retry it until it succeeds, and two of them also check that it does
-not succeed well before the hold-off ends. With J1939_STRICT_TIMING set,
-it must also succeed soon after the hold-off ends. The early and late
-limits are guesses.
+- a CTS that asks for fewer packets than the message has
+- the T3 timeout, when no CTS follows the RTS
+- the T2 timeout, when no DT follows the CTS
+- an Abort from the peer
 
-In the NAME-addressed test the receiver is bound to a NAME and no
-address, so the frame reaches it only through the kernel's NAME match.
-
-The test that loses its address waits until the kernel has mapped the
-winning NAME before it closes its sockets. If the last socket closes
-while the hold-off timer of a claim is still pending, the kernel keeps a
-reference to the interface and deleting it hangs.
-
-The NAME is serialized onto the wire byte-wise (put_name) so the tests
-behave the same on big- and little-endian hosts.
+The timeouts must end in a Connection Abort. The Abort from the peer must
+cancel an incoming session.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-Q (sashiko): can the forged Address Claims take an address from another
-ECU on a real bus?
-A: No. j1939_lib.sh runs the tests only on a vcan it creates.
+Q (sashiko): does tp_rx_cts_block_limit run into the echo race of
+patch 7?
+A: Yes, and more often: it waits for more CTS frames. The answer in
+patch 7 applies.
 
-Q (sashiko): the hang when the last socket closes during the hold-off is
-a kernel bug. Why is it not fixed here?
-A: This series changes no kernel code; the fix belongs in the stack. The
-tests keep a socket open until the hold-off timer has run, even when a
-test fails.
+Q: why is there no test for a Connection Abort received on a kernel TX
+session?
+A: The stack ignores it today and ends the session only on the T3
+timeout, so such a test would fail. This series changes no kernel code.
 
 Changes in v3:
-- wait out the claim hold-off in the teardown of a failed test, so that
-  a failure does not hang the interface delete (sashiko)
-- assert that the claim retry is shorter than the strict window and than
-  1 s, and that the fixed addresses are unicast
-- check that a receiver bound to another NAME gets nothing, and that the
-  lost address stays lost after the winner is mapped
-- check that a send from a claimed NAME carries the claimed address
-- assert that the claim test data fits one frame
-- fix comments that did not match the code
+- say in the body which cases the round-trip tests leave out
+- assert that the last TP CTS window is partial
+- check that the first CTS of the abort and T2 tests asks for all packets,
+  and check the EOMA of tp_rx_cts_block_limit
+- reword the TP_CTS_LIMIT and T2 comments
 
 Changes in v2:
 - drop the Assisted-by trailer; the cover letter says how an LLM was used
 - wrap at 80 columns and fix the checkpatch warnings (Marc)
 - name all constants, add static asserts, avoid casts and return bool
   from helpers named *_ok()
-- retry the first send after a claim instead of a fixed 300 ms sleep
-  (sashiko)
-- wait until the kernel has handled a forged claim (sashiko)
-- check the kernel's 250 ms hold-off after a claim; in strict mode the
-  first send must also succeed soon after it ends
-- bind the receiver of the NAME test to a NAME only (sashiko)
-- stress: give each session its own payload (sashiko), start all
-  sessions together and check the source address of each message
-- stress: if a fork() fails, still reap the children (sashiko)
-- check the priority, destination and NAME of the Address Claimed frame
-- in the test that loses its address, wait until the kernel has mapped
-  the winning NAME before closing the sockets
-- check that the losing NAME of a defended claim gets no address
-- keep the Makefile and .gitignore lists sorted; the wrapper no longer
-  sets J1939_TEST_PROG
+- time T2 and T3 against the bounds of the timing mode; strict mode
+  catches a doubled timer, and the header no longer claims that the
+  default mode does (sashiko)
+- tp_tx_rts_cts_timeout: check that the sender sees EHOSTUNREACH
+- tp_rx_cts_block_limit: check the exact packet count in each CTS, not
+  only an upper bound
+- time T2 and T3 from before the test opens its socket, so a delay in
+  the test cannot make an abort look early (sashiko)
 ---
- tools/testing/selftests/net/can/.gitignore         |   1 +
- tools/testing/selftests/net/can/Makefile           |   1 +
- tools/testing/selftests/net/can/j1939_helpers.h    |   7 +-
- tools/testing/selftests/net/can/test_j1939_addr.c  | 736 +++++++++++++++++++++
- tools/testing/selftests/net/can/test_j1939_addr.sh |   4 +
- 5 files changed, 748 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/can/test_j1939_multi.c | 270 ++++++++++++++++++++-
+ 1 file changed, 269 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
-index 81c6e5e4396ac789e0ac1ebad4f11d0f7ef9cbaa..c9b50d4865c4a1f7523b96516669d7fc6e0d151c 100644
---- a/tools/testing/selftests/net/can/.gitignore
-+++ b/tools/testing/selftests/net/can/.gitignore
-@@ -1,4 +1,5 @@
- # SPDX-License-Identifier: GPL-2.0-only
-+test_j1939_addr
- test_j1939_base
- test_j1939_opts
- test_raw_filter
-diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
-index 6b51f8e671461555ee4818cf9a3e8ea7d5fe7c35..857ff49298290aa7322a5f1b02ecc4566442cbbb 100644
---- a/tools/testing/selftests/net/can/Makefile
-+++ b/tools/testing/selftests/net/can/Makefile
-@@ -7,6 +7,7 @@ CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INC
- LOCAL_HDRS := j1939_helpers.h j1939_tests.h ../../clock-helpers.h
- 
- TEST_PROGS := \
-+	test_j1939_addr.sh \
- 	test_j1939_base.sh \
- 	test_j1939_opts.sh \
- 	test_raw_filter.sh \
-diff --git a/tools/testing/selftests/net/can/j1939_helpers.h b/tools/testing/selftests/net/can/j1939_helpers.h
-index 0acb7ce1fcc6459989604b19d8dcc5861e5f7086..a120713a1d3d036146d04c3f415406cd9ad17c56 100644
---- a/tools/testing/selftests/net/can/j1939_helpers.h
-+++ b/tools/testing/selftests/net/can/j1939_helpers.h
-@@ -12,7 +12,12 @@
+diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
+index aec96e83305cf2d9129aed3ccdf4035437337ba7..b35c5477afddf25ae650d2c9bfd32d4375b52809 100644
+--- a/tools/testing/selftests/net/can/test_j1939_multi.c
++++ b/tools/testing/selftests/net/can/test_j1939_multi.c
+@@ -5,7 +5,8 @@
+  * A CAN_RAW socket plays the transport peer against the kernel J1939 stack,
+  * in both directions. It takes the other side of the RTS/CTS/DT/EOMA
+  * exchange, for TP with a short message and for ETP with a payload that
+- * spans several CTS blocks (DPO windows).
++ * spans several CTS blocks (DPO windows). The tests also cover the TP CTS
++ * block limit and the TP abort and timeout paths.
   *
-  * Timing modes: timer checks use relaxed bounds by default, so that slow
-  * machines such as QEMU in CI pass. Set J1939_STRICT_TIMING in the
-- * environment (any value) for tight bounds on a real machine.
-+ * environment (any value) for tight bounds on a real machine:
-+ *
-+ *	J1939_STRICT_TIMING=1 ./test_j1939_addr.sh
-+ *
-+ * Where a bound differs between the modes, the check picks it with
-+ * j1939_timing_ms().
-  */
- #ifndef __SELFTESTS_NET_CAN_J1939_HELPERS_H__
- #define __SELFTESTS_NET_CAN_J1939_HELPERS_H__
-diff --git a/tools/testing/selftests/net/can/test_j1939_addr.c b/tools/testing/selftests/net/can/test_j1939_addr.c
-new file mode 100644
-index 0000000000000000000000000000000000000000..b3e325be38ddd30255700d327e4e9f53a4e792cd
---- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_addr.c
-@@ -0,0 +1,736 @@
-+// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
+  * Known stack race: the stack updates a session from the loopback echo of
+  * its own CTS, RTS and DT frames, and the CAN_RAW peer can read that echo
+@@ -59,6 +60,7 @@ _Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
+ #define TP_CMD_RTS		0x10
+ #define TP_CMD_CTS		0x11
+ #define TP_CMD_EOMA		0x13
++#define TP_CMD_ABORT		0xff
+ 
+ #define ETP_CMD_RTS		0x14
+ #define ETP_CMD_CTS		0x15
+@@ -75,6 +77,7 @@ _Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
+ #define TP_CTS_NEXT_OFF		2
+ #define TP_EOMA_SIZE_OFF	1	/* le16 */
+ #define TP_EOMA_PKTS_OFF	3
++#define TP_ABORT_REASON_OFF	1
+ 
+ #define ETP_RTS_SIZE_OFF	1	/* le32 */
+ #define ETP_CTS_PKTS_OFF	1
+@@ -118,6 +121,67 @@ _Static_assert(J1939_NUM_PKTS(ETP_SIZE) % ETP_CTS_MAX_PKTS != 0,
+ #define TP_CTS_ALL		J1939_NUM_PKTS(TP_SIZE)
+ _Static_assert(TP_CTS_ALL <= UINT8_MAX, "the TP.CM packet counts are one byte");
+ 
 +/*
-+ * J1939 addressing and concurrency selftests.
-+ *
-+ * Cover NAME-based addressing and address claiming: binding a NAME and reading
-+ * it back, the bound source address appearing in the CAN id, a sender reaching
-+ * a peer by NAME, the Address Claimed frame on the wire and the kernel's
-+ * hold-off after it, address-claim contention where the lower NAME wins, and
-+ * a stress run of many concurrent transport sessions.
-+ *
-+ * Run by test_j1939_addr.sh, see j1939_tests.h.
++ * arbitrary limit on packets per CTS, sent in the RTS, below the packet
++ * count of TP_SIZE
 + */
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <unistd.h>
-+#include <string.h>
-+#include <errno.h>
-+#include <sys/wait.h>
-+
-+#include "kselftest_harness.h"
-+#include "j1939_tests.h"
-+
-+/* fixed unicast addresses, arbitrary */
-+#define SA_TX			0x80
-+#define SA_RX			0x90
-+#define SA_CLAIM		0x50
-+#define SA_DST			0x60
-+
-+/* stress session i sends from SA_STRESS_TX + i to SA_STRESS_RX + i */
-+#define SA_STRESS_TX		0x40
-+#define SA_STRESS_RX		0x20
-+
-+/* NAMEs, arbitrary except for the order of the conflict NAMEs */
-+#define NAME_TX			0x00000000c0ffee01ULL
-+#define NAME_RX			0x00000000c0ffee02ULL
-+/*
-+ * Industry Group, NAME bits 62-60. Bit 63, Arbitrary Address Capable, stays
-+ * clear.
-+ */
-+#define NAME_IG_SHIFT		60
-+#define NAME_IG_BITS		3
-+#define NAME_IG(ig)		((ig) * (1ULL << NAME_IG_SHIFT))
-+/*
-+ * NAME_LOWER has the lower Industry Group but the higher bottom byte, and
-+ * NAME_HIGHER the reverse, so a kernel that compares byte-swapped NAMEs
-+ * picks the wrong winner in the conflict tests.
-+ */
-+#define NAME_CLAIM		(NAME_IG(4) | 0xc0ffee40)
-+#define NAME_LOWER		(NAME_IG(2) | 0xc0ffee60)	/* wins */
-+#define NAME_HIGHER		(NAME_IG(5) | 0xc0ffee20)	/* loses */
-+_Static_assert(((NAME_CLAIM | NAME_LOWER | NAME_HIGHER) >> NAME_IG_SHIFT) <
-+	       1U << NAME_IG_BITS,
-+	       "the Industry Group must fit its bits, so bit 63 stays clear");
-+_Static_assert(NAME_LOWER < NAME_CLAIM && NAME_CLAIM < NAME_HIGHER,
-+	       "NAME_CLAIM must lie between NAME_LOWER and NAME_HIGHER");
-+_Static_assert((NAME_HIGHER & UINT8_MAX) < (NAME_CLAIM & UINT8_MAX),
-+	       "a byte-swapped NAME compare must reverse the order");
-+_Static_assert((NAME_CLAIM & UINT8_MAX) < (NAME_LOWER & UINT8_MAX),
-+	       "a byte-swapped NAME compare must reverse the order");
-+/* the data of an Address Claimed frame is the NAME */
-+_Static_assert(sizeof(name_t) == CAN_MAX_DLEN, "a NAME must fill one frame");
-+
-+/* PGN, arbitrary */
-+#define PGN_TEST		0x0ab00
-+_Static_assert(J1939_IS_PDU1(PGN_TEST), "PGN_TEST must be PDU1");
-+
-+/* stress run, arbitrary tuning */
-+#define STRESS_N		8
-+#define STRESS_SIZE		128	/* a TP size */
-+_Static_assert(STRESS_SIZE > J1939_SF_MAX_SIZE, "STRESS_SIZE must need TP");
-+_Static_assert(STRESS_SIZE <= J1939_TP_MAX_SIZE, "STRESS_SIZE must fit TP");
-+/* the stress addresses lie below all fixed ones, which all differ */
-+_Static_assert(SA_STRESS_RX + STRESS_N <= SA_STRESS_TX &&
-+	       SA_STRESS_TX + STRESS_N <= SA_CLAIM &&
-+	       SA_CLAIM < SA_DST && SA_CLAIM < SA_TX && SA_CLAIM < SA_RX &&
-+	       SA_DST != SA_TX && SA_DST != SA_RX && SA_TX != SA_RX,
-+	       "test addresses overlap");
-+_Static_assert((SA_TX <= J1939_MAX_UNICAST_ADDR) &&
-+	       (SA_RX <= J1939_MAX_UNICAST_ADDR) &&
-+	       (SA_DST <= J1939_MAX_UNICAST_ADDR),
-+	       "the fixed addresses must be unicast");
-+
-+/* ends of a pipe(2) fd pair */
-+enum { PIPE_RD, PIPE_WR, PIPE_NUM };
-+
-+/* bytes of the data frames the claim tests send */
-+#define SEND_DATA_LEN		CAN_MAX_DLEN
-+_Static_assert(SEND_DATA_LEN <= J1939_SF_MAX_SIZE,
-+	       "SEND_DATA_LEN must fit one frame");
++#define TP_CTS_LIMIT		3U
++_Static_assert(J1939_NUM_PKTS(TP_SIZE) > TP_CTS_LIMIT,
++	       "TP_SIZE must need more packets than TP_CTS_LIMIT");
++_Static_assert(J1939_NUM_PKTS(TP_SIZE) % TP_CTS_LIMIT != 0,
++	       "the last TP CTS window must be partial");
 +
 +/*
-+ * The kernel lets a NAME use a claimed address only ACLAIM_HOLDOFF_MS after
-+ * the Address Claimed frame (j1939_ecu_timer_start() in
-+ * net/can/j1939/bus.c). Before that, a send from or to that NAME fails with
-+ * EADDRNOTAVAIL.
-+ *
-+ * The first send must succeed no later than ACLAIM_MAX_MS (strict:
-+ * ACLAIM_STRICT_MAX_MS). A defended address must stay ours, and the
-+ * contender must get none, until that latest time. The tests that time the
-+ * first send also check that it does not succeed before ACLAIM_MIN_MS.
-+ * ACLAIM_MARGIN_MS is a guess.
++ * Connection Abort reasons (SAE J1939-21:2001 Table 6); the kernel names them
++ * J1939_XTP_ABORT_*.
 + */
-+#define ACLAIM_HOLDOFF_MS	250
-+#define ACLAIM_MARGIN_MS	50
-+#define ACLAIM_MIN_MS		(ACLAIM_HOLDOFF_MS - ACLAIM_MARGIN_MS)
-+#define ACLAIM_MAX_MS		J1939_RECV_TIMEOUT_MS
-+#define ACLAIM_STRICT_MAX_MS	(ACLAIM_HOLDOFF_MS + ACLAIM_MARGIN_MS)
-+#define ACLAIM_RETRY_MS		25	/* retry interval, arbitrary */
++#define ABORT_REASON_BUSY	1
++#define ABORT_REASON_TIMEOUT	3
 +
-+_Static_assert(ACLAIM_MARGIN_MS < ACLAIM_HOLDOFF_MS,
-+	       "ACLAIM_MIN_MS must stay above zero");
-+_Static_assert(ACLAIM_STRICT_MAX_MS <= ACLAIM_MAX_MS,
-+	       "strict mode must not allow more than relaxed mode");
-+_Static_assert(ACLAIM_RETRY_MS < ACLAIM_MARGIN_MS,
-+	       "a retry must land inside the strict window");
-+_Static_assert(ACLAIM_RETRY_MS < MSEC_PER_SEC,
-+	       "usleep() may reject 1 s or more");
++/*
++ * TP responder T2: wait for the next DT after CTS (SAE J1939-21:2001
++ * section 5.10.2.4 and Figure C1).
++ */
++#define TP_T2_MS		1250
++/*
++ * TP originator T3: wait for a CTS after RTS (SAE J1939-21:2001 section
++ * 5.10.2.4 and Figure C1).
++ */
++#define TP_T3_MS		1250
 +
-+static int j1939_open_name(int ifindex, name_t name, uint8_t sa, pgn_t pgn)
++/*
++ * Bounds for the time from before the test opens its socket to the kernel's
++ * abort.
++ * The values below are guesses, not spec values.
++ */
++
++/* relaxed (default, for slow VMs): catches a timer that fires early or never */
++#define TP_RELAXED_EARLY_MS	450
++#define TP_RELAXED_LATE_MS	1250
++#define TP_RELAXED_MIN_MS(t)	((t) - TP_RELAXED_EARLY_MS)
++#define TP_RELAXED_MAX_MS(t)	((t) + TP_RELAXED_LATE_MS)
++
++/* strict: also catches a doubled timer */
++#define TP_STRICT_EARLY_MS	100
++#define TP_STRICT_LATE_MS	200
++#define TP_STRICT_MIN_MS(t)	((t) - TP_STRICT_EARLY_MS)
++#define TP_STRICT_MAX_MS(t)	((t) + TP_STRICT_LATE_MS)
++
++/* for any timer: the relaxed bounds must contain the strict bounds */
++_Static_assert(TP_RELAXED_EARLY_MS >= TP_STRICT_EARLY_MS,
++	       "the relaxed minimum must not be above the strict one");
++_Static_assert(TP_RELAXED_LATE_MS >= TP_STRICT_LATE_MS,
++	       "the relaxed maximum must not be below the strict one");
++_Static_assert(TP_T2_MS > TP_RELAXED_EARLY_MS,
++	       "TP_T2_MS must exceed TP_RELAXED_EARLY_MS");
++_Static_assert(TP_T3_MS > TP_RELAXED_EARLY_MS,
++	       "TP_T3_MS must exceed TP_RELAXED_EARLY_MS");
++/* so that strict mode catches a doubled T2 or T3 */
++_Static_assert(TP_STRICT_LATE_MS < TP_T2_MS,
++	       "TP_STRICT_LATE_MS must stay below TP_T2_MS");
++_Static_assert(TP_STRICT_LATE_MS < TP_T3_MS,
++	       "TP_STRICT_LATE_MS must stay below TP_T3_MS");
++
+ FIXTURE(j1939_multi)
+ {
+ 	int ifindex;
+@@ -558,6 +622,116 @@ TEST_F(j1939_multi, tp_tx_to_raw)
+ 		TH_LOG("no TX-completion ACK after the EOMA");
+ }
+ 
++/*
++ * TP RX, per-CTS block limit: the RTS asks for at most TP_CTS_LIMIT packets
++ * per CTS, fewer than the message has. Each CTS from the kernel must ask
++ * for TP_CTS_LIMIT packets, or for the rest.
++ */
++TEST_F(j1939_multi, tp_rx_cts_block_limit)
 +{
-+	return j1939_open_flags(ifindex, name, sa, pgn, J1939_OPEN_NONE);
++	struct can_frame frame;
++
++	ASSERT_TRUE(tp_rx_roundtrip_ok(self, TP_CTS_LIMIT, &frame))
++		TH_LOG("TP RX round-trip against the raw peer failed");
++
++	/* frame is the kernel's EOMA */
++	EXPECT_EQ(get_le16(&frame.data[TP_EOMA_SIZE_OFF]), TP_SIZE);
++	EXPECT_EQ(frame.data[TP_EOMA_PKTS_OFF], J1939_NUM_PKTS(TP_SIZE));
++}
++
++/* Set *min_ms and *max_ms to the abort bounds of a TP timer of timer_ms. */
++static void tp_abort_window(int timer_ms, int *min_ms, int *max_ms)
++{
++	*min_ms = j1939_timing_ms(TP_RELAXED_MIN_MS(timer_ms),
++				  TP_STRICT_MIN_MS(timer_ms));
++	*max_ms = j1939_timing_ms(TP_RELAXED_MAX_MS(timer_ms),
++				  TP_STRICT_MAX_MS(timer_ms));
 +}
 +
 +/*
-+ * Wait on obs until deadline for an Address Claimed frame that carries
-+ * name_bytes; skip other claims. On failure errno is set, ETIMEDOUT at the
-+ * deadline.
++ * Wait until max_ms after t0 for the kernel's Connection Abort to the peer
++ * and store it in *frame; *elapsed_ms gets the time from t0 to its arrival.
 + */
-+static bool recv_claim_name_ok(int obs,
-+			       const uint8_t name_bytes[sizeof(name_t)],
-+			       const struct timespec *deadline)
++static bool recv_abort_timed_ok(int raw, const struct timespec *t0,
++				int max_ms, struct can_frame *frame,
++				long *elapsed_ms)
 +{
-+	/* one spare byte: a longer message shows up as a wrong length */
-+	uint8_t rx[sizeof(name_t) + 1];
-+	const ssize_t want_len = sizeof(name_t);
 +	struct timespec now;
-+	long left_ms;
-+	ssize_t n;
++	bool ok;
 +
-+	for (;;) {
-+		clock_gettime(CLOCK_MONOTONIC, &now);
-+		left_ms = timespec_diff_ms(&now, deadline);
-+		if (left_ms <= 0) {
-+			errno = ETIMEDOUT;
-+			return false;
-+		}
-+
-+		errno = 0;
-+		n = recv_timeout(obs, rx, sizeof(rx), left_ms);
-+		if (n < 0) {
-+			if (!errno)	/* poll() timed out */
-+				errno = ETIMEDOUT;
-+			return false;
-+		}
-+
-+		if (n == want_len && !memcmp(rx, name_bytes, sizeof(name_t)))
-+			return true;
-+	}
-+}
-+
-+/*
-+ * Send an Address Claimed frame for (sa, name) from the raw socket, so that
-+ * the kernel maps name to sa, and set *t0 to the time just before it is sent.
-+ * Return once the kernel has handled it: j1939_can_recv()
-+ * (net/can/j1939/main.c) runs j1939_ac_recv() before j1939_sk_recv(), so a
-+ * J1939 socket that receives the claim proves it.
-+ *
-+ * The caller must keep another J1939 socket bound on ifindex; closing the
-+ * last one would drop the mapping. On failure errno is set, ETIMEDOUT if the
-+ * claim did not come back within J1939_RECV_TIMEOUT_MS.
-+ */
-+static bool forge_address_claim_ok(int raw, int ifindex, uint8_t sa,
-+				   name_t name, struct timespec *t0)
-+{
-+	uint8_t name_bytes[sizeof(name_t)];
-+	struct timespec deadline;
-+	bool ok = false;
-+	int obs, err;
-+
-+	obs = j1939_open_flags(ifindex, J1939_NO_NAME, J1939_NO_ADDR,
-+			       J1939_PGN_ADDRESS_CLAIMED, J1939_OPEN_BCAST);
-+	if (obs < 0)
++	clock_gettime(CLOCK_MONOTONIC, &now);
++	*elapsed_ms = timespec_diff_ms(t0, &now);
++	if (*elapsed_ms > max_ms)
 +		return false;
 +
-+	put_name(name_bytes, name);
-+	clock_gettime(CLOCK_MONOTONIC, t0);
-+	deadline_after_ms(&deadline, J1939_RECV_TIMEOUT_MS);
-+	if (send_raw8_ok(raw, J1939_PRIO_DEFAULT, J1939_PGN_ADDRESS_CLAIMED,
-+			 J1939_NO_ADDR, sa, name_bytes))
-+		ok = recv_claim_name_ok(obs, name_bytes, &deadline);
-+
-+	err = errno;
-+	close(obs);
-+	errno = err;
++	ok = recv_kernel_cm_ok(raw, TP_CM, TP_CMD_ABORT, frame,
++			       max_ms - *elapsed_ms);
++	clock_gettime(CLOCK_MONOTONIC, &now);
++	*elapsed_ms = timespec_diff_ms(t0, &now);
 +	return ok;
 +}
 +
-+static int aclaim_max_ms(void)
++/*
++ * Wait for an error on s and return it (SO_ERROR), or 0 if none came within
++ * J1939_RECV_TIMEOUT_MS.
++ */
++static int sock_wait_error(int s)
 +{
-+	return j1939_timing_ms(ACLAIM_MAX_MS, ACLAIM_STRICT_MAX_MS);
++	struct pollfd pfd = { .fd = s };
++	socklen_t len;
++	int err = 0;
++
++	if (poll(&pfd, 1, J1939_RECV_TIMEOUT_MS) <= 0 ||
++	    !(pfd.revents & POLLERR))
++		return 0;
++
++	len = sizeof(err);
++	if (getsockopt(s, SOL_SOCKET, SO_ERROR, &err, &len))
++		return 0;
++	return err;
 +}
 +
 +/*
-+ * The first sendto() after an Address Claimed frame (send() if dst is NULL).
-+ * t0 is the time just before the claim was sent. Retry a failed sendto()
-+ * every ACLAIM_RETRY_MS until aclaim_max_ms() after t0. Sets *elapsed_ms to
-+ * the time from t0 to the end of the last try.
++ * TP TX, RTS->CTS timeout: the J1939 socket starts a TP transmit; the raw peer
++ * receives the RTS but never answers with a CTS. The kernel must give up after
++ * T3 (TP_T3_MS), send a Connection Abort and report the error to the sender.
 + *
-+ * Returns true if a send succeeded in time. On false, errno is ETIMEDOUT if
-+ * the send succeeded too late (the data was sent), EIO if it sent only part
-+ * of the data, else the errno of sendto().
++ * The kernel starts T3 when it sends the RTS, and starts it again when it
++ * receives its own RTS back from the CAN echo (j1939_xtp_rx_rts() in
++ * net/can/j1939/transport.c). The wait is timed from before the socket is
++ * opened, so a delay in this test cannot make the abort look early.
 + */
-+static bool send_after_claim_ok(int s, const void *buf, size_t len,
-+				const struct sockaddr_can *dst,
-+				const struct timespec *t0, long *elapsed_ms)
++TEST_F(j1939_multi, tp_tx_rts_cts_timeout)
 +{
-+	int max_ms = aclaim_max_ms();
-+	/* a NULL dst with length 0 makes sendto() act as send() */
-+	socklen_t dst_len = dst ? sizeof(*dst) : 0;
-+	ssize_t want_len = len, ret;
-+	struct timespec now;
-+
-+	for (;;) {
-+		ret = sendto(s, buf, len, 0, (const struct sockaddr *)dst,
-+			     dst_len);
-+		clock_gettime(CLOCK_MONOTONIC, &now);
-+		*elapsed_ms = timespec_diff_ms(t0, &now);
-+
-+		if (ret >= 0 && ret != want_len) {
-+			errno = EIO;
-+			return false;
-+		}
-+		if (*elapsed_ms > max_ms) {
-+			if (ret == want_len)
-+				errno = ETIMEDOUT;
-+			return false;
-+		}
-+		if (ret == want_len)
-+			return true;
-+		usleep(ACLAIM_RETRY_MS * USEC_PER_MSEC);
-+	}
-+}
-+
-+/*
-+ * Check that every sendto() to dst fails with EADDRNOTAVAIL. Retry every
-+ * ACLAIM_RETRY_MS until aclaim_max_ms() after t0, the latest time a claim may
-+ * take effect. One try could hide a claim that the kernel applies late. On
-+ * false, errno is that of the last sendto(), or 0 if it succeeded.
-+ */
-+static bool send_refused_ok(int s, const void *buf, size_t len,
-+			    const struct sockaddr_can *dst,
-+			    const struct timespec *t0)
-+{
-+	int max_ms = aclaim_max_ms();
-+	struct timespec now;
-+
-+	for (;;) {
-+		if (j1939_sendto_addr(s, buf, len, dst) >= 0) {
-+			errno = 0;
-+			return false;
-+		}
-+		if (errno != EADDRNOTAVAIL)
-+			return false;
-+
-+		clock_gettime(CLOCK_MONOTONIC, &now);
-+		if (timespec_diff_ms(t0, &now) > max_ms)
-+			return true;
-+		usleep(ACLAIM_RETRY_MS * USEC_PER_MSEC);
-+	}
-+}
-+
-+/*
-+ * One TP transfer from sa_tx to sa_rx. The payload depends on sa_tx, so a
-+ * receiver that gets the data of another session fails. After the setup, write
-+ * one byte to ready, close it and wait until the parent closes go, so that all
-+ * sessions start together.
-+ * Returns the exit status of the child process.
-+ */
-+static int stress_child(int ifindex, uint8_t sa_tx, uint8_t sa_rx, int ready,
-+			int go)
-+{
-+	uint8_t tx_buf[STRESS_SIZE];
-+	int tx, rx, rc = EXIT_FAILURE;
-+	struct sockaddr_can src;
-+	bool setup, signalled;
-+	char c = 0;	/* the sync byte, any value */
-+	size_t i;
-+
-+	fill_pattern(tx_buf, sizeof(tx_buf));
-+	for (i = 0; i < sizeof(tx_buf); i++)
-+		tx_buf[i] ^= sa_tx;
-+
-+	rx = j1939_open(ifindex, sa_rx, PGN_TEST);
-+	tx = j1939_open(ifindex, sa_tx, J1939_NO_PGN);
-+	setup = rx >= 0 && tx >= 0 &&
-+		j1939_connect_ok(tx, ifindex, sa_rx, PGN_TEST);
-+
-+	/*
-+	 * Signal even after a setup error, and close ready at once: then the
-+	 * parent gets EOF, not a hang, if a child dies before its write.
-+	 */
-+	signalled = write_all_ok(ready, &c, sizeof(c));
-+	close(ready);
-+
-+	/* read() returns 0 at EOF, when the parent closes go */
-+	if (!signalled || read(go, &c, sizeof(c)) != 0 || !setup)
-+		goto out;
-+
-+	if (!send_all_ok(tx, tx_buf, sizeof(tx_buf)))
-+		goto out;
-+
-+	if (recvfrom_verify_ok(rx, tx_buf, sizeof(tx_buf),
-+			       J1939_RECV_TIMEOUT_MS, &src) &&
-+	    src.can_addr.j1939.addr == sa_tx)
-+		rc = EXIT_SUCCESS;
-+out:
-+	if (rx >= 0)
-+		close(rx);
-+	if (tx >= 0)
-+		close(tx);
-+	return rc;
-+}
-+
-+FIXTURE(j1939_addr)
-+{
-+	int ifindex;
-+	int tx;
-+	int rx;
-+	int raw;
-+};
-+
-+FIXTURE_SETUP(j1939_addr)
-+{
-+	self->tx = -1;
-+	self->rx = -1;
-+	self->raw = -1;
-+
-+	J1939_SETUP_IFINDEX(self);
-+}
-+
-+FIXTURE_TEARDOWN(j1939_addr)
-+{
-+	/*
-+	 * A failed test can stop while the hold-off timer of a claim is
-+	 * pending (see ac_conflict_lose). The teardown does not know when the
-+	 * claim started, so wait as long as a claim may take.
-+	 */
-+	/* POSIX allows usleep() to fail with EINVAL for 1 s or more */
-+	if (_metadata->exit_code != KSFT_PASS)
-+		poll(NULL, 0, ACLAIM_MAX_MS);
-+
-+	if (self->tx >= 0)
-+		close(self->tx);
-+	if (self->rx >= 0)
-+		close(self->rx);
-+	if (self->raw >= 0)
-+		close(self->raw);
-+}
-+
-+/* Bind with a NAME and read it back with getsockname(2). */
-+TEST_F(j1939_addr, name_bind_getsockname)
-+{
-+	struct sockaddr_can addr = {};
-+	socklen_t len = sizeof(addr);
-+
-+	self->tx = j1939_open_name(self->ifindex, NAME_TX, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0)
-+		TH_LOG("bind with NAME failed: %d", errno);
-+
-+	ASSERT_EQ(getsockname(self->tx, (struct sockaddr *)&addr, &len), 0);
-+	EXPECT_EQ(addr.can_addr.j1939.name, NAME_TX);
-+	EXPECT_EQ(addr.can_addr.j1939.addr, SA_TX);
-+}
-+
-+/* The bound source address is used as source address on the wire. */
-+TEST_F(j1939_addr, source_sa_on_wire)
-+{
-+	uint8_t buf[CAN_MAX_DLEN] = {};
-+	struct can_frame frame;
-+
-+	self->raw = open_raw(self->ifindex);
-+	ASSERT_GE(self->raw, 0);
-+
-+	/* static source address: no address claim needed to transmit */
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	ASSERT_TRUE(j1939_connect_name_ok(self->tx, self->ifindex,
-+					  J1939_NO_NAME, SA_RX, PGN_TEST));
-+
-+	ASSERT_TRUE(send_all_ok(self->tx, buf, sizeof(buf)));
-+
-+	ASSERT_TRUE(recv_frame_ok(self->raw, &frame, J1939_RECV_TIMEOUT_MS));
-+	ASSERT_TRUE(j1939_is_data_frame(frame.can_id))
-+		TH_LOG("CAN id 0x%08x is not a 29-bit data frame",
-+		       frame.can_id);
-+	EXPECT_EQ(j1939_id_sa(frame.can_id), SA_TX)
-+		TH_LOG("source address on wire is 0x%02x, expected 0x%02x",
-+		       j1939_id_sa(frame.can_id), SA_TX);
-+}
-+
-+/*
-+ * NAME based addressing reaches the socket bound to that NAME.
-+ *
-+ * The peer must have claimed its address before it is reachable by NAME, so
-+ * inject an Address Claimed message for (SA_RX, NAME_RX) first. The sender
-+ * uses a static source address and resolves the destination by NAME.
-+ */
-+TEST_F(j1939_addr, name_addressing)
-+{
-+	uint8_t tx_buf[CAN_MAX_DLEN];
-+	struct timespec t0;
-+	long elapsed_ms;
-+	int other;
-+
-+	fill_pattern(tx_buf, sizeof(tx_buf));
-+
-+	/*
-+	 * Bind the receiver to NAME_RX and no address, so it gets the frame
-+	 * only if the kernel matches the destination NAME. The forged claim
-+	 * maps NAME_RX -> SA_RX.
-+	 */
-+	self->rx = j1939_open_name(self->ifindex, NAME_RX, J1939_NO_ADDR,
-+				   PGN_TEST);
-+	ASSERT_GE(self->rx, 0);
-+
-+	/* a receiver bound to another NAME must not get the frame */
-+	other = j1939_open_name(self->ifindex, NAME_TX, J1939_NO_ADDR,
-+				PGN_TEST);
-+	ASSERT_GE(other, 0);
-+
-+	self->raw = open_raw(self->ifindex);
-+	ASSERT_GE(self->raw, 0);
-+
-+	ASSERT_TRUE(forge_address_claim_ok(self->raw, self->ifindex, SA_RX,
-+					   NAME_RX, &t0))
-+		TH_LOG("failed to inject address claim: %d", errno);
-+
-+	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
-+	ASSERT_GE(self->tx, 0);
-+	ASSERT_TRUE(j1939_connect_name_ok(self->tx, self->ifindex, NAME_RX,
-+					  J1939_NO_ADDR, PGN_TEST))
-+		TH_LOG("connect to peer NAME failed: %d", errno);
-+
-+	ASSERT_TRUE(send_after_claim_ok(self->tx, tx_buf, sizeof(tx_buf), NULL,
-+					&t0, &elapsed_ms))
-+		TH_LOG("send to peer NAME failed after %ld ms: %s",
-+		       elapsed_ms, strerror(errno));
-+	/* but not before the kernel's hold-off after the claim */
-+	EXPECT_GE(elapsed_ms, ACLAIM_MIN_MS)
-+		TH_LOG("peer NAME reachable after only %ld ms", elapsed_ms);
-+
-+	EXPECT_TRUE(recv_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
-+				   J1939_RECV_TIMEOUT_MS));
-+	EXPECT_EQ(recv_timeout(other, tx_buf, sizeof(tx_buf),
-+			       J1939_NEG_RECV_TIMEOUT_MS), -1)
-+		TH_LOG("a receiver bound to another NAME got the frame");
-+	close(other);
-+}
-+
-+/* Many concurrent transport-protocol sessions run without corruption. */
-+TEST_F(j1939_addr, stress_concurrent_sessions)
-+{
-+	int i, n, ready[PIPE_NUM], go[PIPE_NUM], failed = 0;
-+	pid_t pids[STRESS_N];
-+	char c;
-+
-+	ASSERT_EQ(pipe(ready), 0);
-+	ASSERT_EQ(pipe(go), 0);
-+
-+	for (n = 0; n < STRESS_N; n++) {
-+		pids[n] = fork();
-+		if (pids[n] < 0)
-+			break;
-+		if (pids[n] == 0) {
-+			close(ready[PIPE_RD]);
-+			close(go[PIPE_WR]);
-+			_exit(stress_child(self->ifindex, SA_STRESS_TX + n,
-+					   SA_STRESS_RX + n, ready[PIPE_WR],
-+					   go[PIPE_RD]));
-+		}
-+	}
-+
-+	close(ready[PIPE_WR]);
-+	close(go[PIPE_RD]);
-+
-+	/* wait until all children are set up, then start them */
-+	for (i = 0; i < n; i++)
-+		if (!read_all_ok(ready[PIPE_RD], &c, sizeof(c)))
-+			break;
-+	close(ready[PIPE_RD]);
-+	close(go[PIPE_WR]);
-+
-+	for (i = 0; i < n; i++) {
-+		int status;
-+
-+		if (waitpid(pids[i], &status, 0) < 0 ||
-+		    !WIFEXITED(status) || WEXITSTATUS(status) != EXIT_SUCCESS)
-+			failed++;
-+	}
-+
-+	ASSERT_EQ(n, STRESS_N)
-+		TH_LOG("fork failed after %d of %d children", n, STRESS_N);
-+	EXPECT_EQ(failed, 0)
-+		TH_LOG("%d of %d concurrent sessions failed", failed, STRESS_N);
-+}
-+
-+/*
-+ * Claim an address the way j1939acd would: bind a NAME to an address and send
-+ * an Address Claimed message. Returns the (still open) socket on success, and
-+ * in *t0 the time just before the claim was sent.
-+ */
-+static int claim_addr(int ifindex, name_t name, uint8_t sa,
-+		      struct timespec *t0)
-+{
-+	uint8_t name_bytes[sizeof(name_t)];
-+	int s;
-+
-+	s = j1939_open_flags(ifindex, name, sa, J1939_NO_PGN, J1939_OPEN_BCAST);
-+	if (s < 0)
-+		return -1;
-+
-+	put_name(name_bytes, name);
-+	clock_gettime(CLOCK_MONOTONIC, t0);
-+	if (!j1939_sendto_ok(s, name_bytes, sizeof(name_bytes), ifindex,
-+			     J1939_NO_NAME, J1939_NO_ADDR,
-+			     J1939_PGN_ADDRESS_CLAIMED)) {
-+		close(s);
-+		return -1;
-+	}
-+
-+	return s;
-+}
-+
-+/* The destination of the data frames, PGN_TEST to SA_DST. */
-+static void fill_data_dst(struct sockaddr_can *dst, int ifindex)
-+{
-+	j1939_fill_sockaddr(dst, ifindex, J1939_NO_NAME, SA_DST, PGN_TEST);
-+}
-+
-+static ssize_t send_data(int s, int ifindex)
-+{
-+	uint8_t data[SEND_DATA_LEN] = {};
-+	struct sockaddr_can dst;
-+
-+	fill_data_dst(&dst, ifindex);
-+	return j1939_sendto_addr(s, data, sizeof(data), &dst);
-+}
-+
-+/* send_data(), as the first send after a claim; see send_after_claim_ok() */
-+static bool send_data_after_claim_ok(int s, int ifindex,
-+				     const struct timespec *t0,
-+				     long *elapsed_ms)
-+{
-+	uint8_t data[SEND_DATA_LEN] = {};
-+	struct sockaddr_can dst;
-+
-+	fill_data_dst(&dst, ifindex);
-+	return send_after_claim_ok(s, data, sizeof(data), &dst, t0, elapsed_ms);
-+}
-+
-+/*
-+ * Is id an Address Claimed frame from the address in *ctx (a uint8_t), as
-+ * claim_addr() sends it: default priority, global destination?
-+ */
-+static bool match_addr_claimed(canid_t id, const void *ctx)
-+{
-+	const uint8_t *sa = ctx;
-+
-+	return j1939_id_prio(id) == J1939_PRIO_DEFAULT &&
-+	       j1939_id_pf(id) == J1939_PF(J1939_PGN_ADDRESS_CLAIMED) &&
-+	       j1939_id_ps(id) == J1939_NO_ADDR &&
-+	       j1939_id_sa(id) == *sa;
-+}
-+
-+/* Is id a PGN_TEST data frame from the source address *ctx? */
-+static bool match_data_from(canid_t id, const void *ctx)
-+{
-+	const uint8_t *sa = ctx;
-+
-+	return j1939_id_pf(id) == J1939_PF(PGN_TEST) &&
-+	       j1939_id_sa(id) == *sa;
-+}
-+
-+/* Sending an Address Claimed message puts it on the wire and claims. */
-+TEST_F(j1939_addr, address_claim_send)
-+{
-+	uint8_t name_bytes[sizeof(name_t)];
-+	const uint8_t claim_sa = SA_CLAIM;
++	uint8_t payload[TP_SIZE];
 +	struct can_frame frame;
 +	struct timespec t0;
++	int min_ms, max_ms;
 +	long elapsed_ms;
-+	int name_tx;
 +
-+	put_name(name_bytes, NAME_CLAIM);
++	fill_pattern(payload, sizeof(payload));
++	tp_abort_window(TP_T3_MS, &min_ms, &max_ms);
 +
-+	self->raw = open_raw(self->ifindex);
-+	ASSERT_GE(self->raw, 0);
++	clock_gettime(CLOCK_MONOTONIC, &t0);
++	ASSERT_TRUE(tp_tx_start_session_ok(self, payload, sizeof(payload),
++					   &frame));
 +
-+	self->tx = claim_addr(self->ifindex, NAME_CLAIM, SA_CLAIM, &t0);
-+	ASSERT_GE(self->tx, 0)
-+		TH_LOG("address claim failed: %d", errno);
++	ASSERT_TRUE(recv_abort_timed_ok(self->raw, &t0, max_ms, &frame,
++					&elapsed_ms))
++		TH_LOG("kernel did not send a Connection Abort within %d ms",
++		       max_ms);
 +
-+	ASSERT_TRUE(recv_match_ok(self->raw, J1939_RECV_TIMEOUT_MS, &frame,
-+				  match_addr_claimed, &claim_sa))
-+		TH_LOG("no Address Claimed frame seen on the wire");
-+	EXPECT_EQ(frame.can_dlc, sizeof(name_bytes));
-+	EXPECT_EQ(memcmp(frame.data, name_bytes, sizeof(name_bytes)), 0)
-+		TH_LOG("Address Claimed frame does not carry NAME_CLAIM");
++	/* the T3 timer has to run before the abort */
++	ASSERT_GE(elapsed_ms, min_ms)
++		TH_LOG("abort after only %ld ms, expected at least %d ms",
++		       elapsed_ms, min_ms);
++	EXPECT_EQ(frame.data[TP_ABORT_REASON_OFF], ABORT_REASON_TIMEOUT);
 +
-+	/*
-+	 * Send from a socket bound to NAME_CLAIM and no address, so that only
-+	 * the kernel's NAME lookup can put SA_CLAIM on the wire.
-+	 */
-+	name_tx = j1939_open_name(self->ifindex, NAME_CLAIM, J1939_NO_ADDR,
-+				  J1939_NO_PGN);
-+	ASSERT_GE(name_tx, 0);
-+	EXPECT_TRUE(send_data_after_claim_ok(name_tx, self->ifindex, &t0,
-+					     &elapsed_ms))
-+		TH_LOG("transmit from claimed address failed after %ld ms: %s",
-+		       elapsed_ms, strerror(errno));
-+	/* but not before the kernel's hold-off after the claim */
-+	EXPECT_GE(elapsed_ms, ACLAIM_MIN_MS)
-+		TH_LOG("claimed address usable after only %ld ms", elapsed_ms);
-+	/* and the data frame carries the claimed address */
-+	EXPECT_TRUE(recv_match_ok(self->raw, J1939_RECV_TIMEOUT_MS, &frame,
-+				  match_data_from, &claim_sa))
-+		TH_LOG("no data frame from the claimed address on the wire");
-+	close(name_tx);
++	/* j1939_xtp_abort_to_errno() reports a timeout as EHOSTUNREACH */
++	EXPECT_EQ(sock_wait_error(self->j1939), EHOSTUNREACH)
++		TH_LOG("the sender did not see the aborted session");
++}
++
+ /*
+  * ETP RX: the CAN_RAW peer transmits an ETP message to the J1939 socket.
+  * The kernel requests blocks with ETP.CTS; raw answers each with a DPO and
+@@ -676,6 +850,100 @@ TEST_F(j1939_multi, etp_tx_to_raw)
+ 		TH_LOG("no TX-completion ACK after the EOMA");
+ }
+ 
++/* Send a TP.CM_Abort control frame from the peer to the kernel. */
++static bool send_abort_ok(int raw, uint8_t reason)
++{
++	uint8_t dat[CAN_MAX_DLEN];
++
++	cm_dat_init(dat, TP_CMD_ABORT);
++	dat[TP_ABORT_REASON_OFF] = reason;
++	return peer_send_cm_ok(raw, TP_CM, dat);
 +}
 +
 +/*
-+ * Claim SA_CLAIM with NAME_CLAIM and check that we can send. Then forge a
-+ * claim for SA_CLAIM with the contender NAME and set *forge_t0 to the time
-+ * just before it is sent. Store the result of the next send in *tx_ret, with
-+ * errno as that send set it. Return false if a setup step failed.
++ * Open a TP RX j1939 socket, send an RTS that allows all packets in one CTS
++ * and check that the first CTS asks for all of them.
 + */
-+static bool ac_conflict_probe_ok(FIXTURE_DATA(j1939_addr) *self,
-+				 name_t contender, ssize_t *tx_ret,
-+				 struct timespec *forge_t0)
++static bool tp_rx_start_session_ok(int *j1939, int raw, int ifindex,
++				   struct can_frame *cts)
 +{
++	if (!tp_rx_open_and_send_rts_ok(j1939, raw, ifindex, TP_CTS_ALL))
++		return false;
++
++	return recv_kernel_cm_ok(raw, TP_CM, TP_CMD_CTS, cts,
++				 J1939_RECV_TIMEOUT_MS) &&
++	       cts_accept_ok(cts->data[TP_CTS_PKTS_OFF],
++			     cts->data[TP_CTS_NEXT_OFF], 0,
++			     J1939_NUM_PKTS(TP_SIZE), TP_CTS_ALL);
++}
++
++/*
++ * TP RX timeout: the CAN_RAW peer opens a session with RTS but never sends the
++ * data; the kernel's T2 timer must abort the session and emit a TP.CM_Abort.
++ * The kernel starts its receive timer when it gets the RTS
++ * (j1939_xtp_rx_rts()). It starts it again as T2 when it sends the CTS
++ * (j1939_session_tx_cts()) and on the CAN echo of that CTS
++ * (j1939_xtp_rx_cts_one()). The wait is timed from before the socket is
++ * opened.
++ */
++TEST_F(j1939_multi, tp_rx_timeout)
++{
++	struct can_frame frame;
 +	struct timespec t0;
++	int min_ms, max_ms;
 +	long elapsed_ms;
 +
-+	self->raw = open_raw(self->ifindex);
-+	if (self->raw < 0)
-+		return false;
-+	self->tx = claim_addr(self->ifindex, NAME_CLAIM, SA_CLAIM, &t0);
-+	if (self->tx < 0)
-+		return false;
++	tp_abort_window(TP_T2_MS, &min_ms, &max_ms);
 +
-+	/* baseline: we own the address and can transmit */
-+	if (!send_data_after_claim_ok(self->tx, self->ifindex, &t0,
-+				      &elapsed_ms))
-+		return false;
++	clock_gettime(CLOCK_MONOTONIC, &t0);
++	ASSERT_TRUE(tp_rx_start_session_ok(&self->j1939, self->raw,
++					   self->ifindex, &frame))
++		TH_LOG("failed to open and start the TP rx session");
 +
-+	if (!forge_address_claim_ok(self->raw, self->ifindex, SA_CLAIM,
-+				    contender, forge_t0))
-+		return false;
++	ASSERT_TRUE(recv_abort_timed_ok(self->raw, &t0, max_ms, &frame,
++					&elapsed_ms))
++		TH_LOG("kernel did not abort the stalled rx session");
++
++	/* the T2 timer has to run before the abort */
++	ASSERT_GE(elapsed_ms, min_ms)
++		TH_LOG("abort after only %ld ms, expected at least %d ms",
++		       elapsed_ms, min_ms);
++	EXPECT_EQ(frame.data[TP_ABORT_REASON_OFF], ABORT_REASON_TIMEOUT);
++}
++
++/*
++ * TP RX abort: the CAN_RAW peer aborts an open session; the kernel must cancel
++ * it and deliver nothing to the J1939 socket.
++ */
++TEST_F(j1939_multi, tp_rx_abort_from_raw)
++{
++	uint8_t payload[TP_SIZE];
++	unsigned int num_pkts = J1939_NUM_PKTS(TP_SIZE);
++	struct can_frame frame;
++	struct pollfd pfd;
++
++	fill_pattern(payload, sizeof(payload));
++
++	ASSERT_TRUE(tp_rx_start_session_ok(&self->j1939, self->raw,
++					   self->ifindex, &frame))
++		TH_LOG("failed to open and start the TP rx session");
++
++	ASSERT_TRUE(send_abort_ok(self->raw, ABORT_REASON_BUSY));
 +
 +	/*
-+	 * One plain send, no retry: the kernel has already handled the
-+	 * contending claim (see forge_address_claim_ok()), so the result must
-+	 * be final now. A retry could hide a wrong first result.
++	 * Send all DT frames anyway. A kernel that ignored the abort would
++	 * deliver the message.
 +	 */
-+	*tx_ret = send_data(self->tx, self->ifindex);
-+	return true;
++	ASSERT_TRUE(send_tp_dt_burst_ok(self->raw, SA_LOCAL, SA_PEER,
++					TP_FIRST_PKT, num_pkts, payload,
++					TP_SIZE));
++
++	pfd.fd = self->j1939;
++	pfd.events = POLLIN;
++	EXPECT_EQ(poll(&pfd, 1, J1939_NEG_RECV_TIMEOUT_MS), 0)
++		TH_LOG("socket delivered data despite the abort");
 +}
 +
-+/* A higher-priority competing claim takes the address away from us. */
-+TEST_F(j1939_addr, ac_conflict_lose)
-+{
-+	uint8_t data[SEND_DATA_LEN] = {};
-+	struct sockaddr_can winner;
-+	struct timespec forge_t0;
-+	long elapsed_ms;
-+	ssize_t tx_ret;
-+
-+	ASSERT_TRUE(ac_conflict_probe_ok(self, NAME_LOWER, &tx_ret,
-+					 &forge_t0));
-+
-+	EXPECT_LT(tx_ret, 0)
-+		TH_LOG("transmit still succeeded after losing the address");
-+	EXPECT_EQ(errno, EADDRNOTAVAIL);
-+
-+	/*
-+	 * Keep the sockets open until the kernel maps NAME_LOWER at the end
-+	 * of its hold-off. If the last socket closes while that timer is
-+	 * pending, the kernel keeps a reference to the interface and
-+	 * deleting it hangs.
-+	 */
-+	self->rx = j1939_open(self->ifindex, SA_RX, J1939_NO_PGN);
-+	ASSERT_GE(self->rx, 0);
-+	j1939_fill_sockaddr(&winner, self->ifindex, NAME_LOWER, J1939_NO_ADDR,
-+			    PGN_TEST);
-+	EXPECT_TRUE(send_after_claim_ok(self->rx, data, sizeof(data), &winner,
-+					&forge_t0, &elapsed_ms))
-+		TH_LOG("send to NAME_LOWER failed after %ld ms: %s",
-+		       elapsed_ms, strerror(errno));
-+
-+	/* the lost address stays lost once the winner is mapped */
-+	EXPECT_LT(send_data(self->tx, self->ifindex), 0)
-+		TH_LOG("transmit succeeded again after the winner was mapped");
-+	EXPECT_EQ(errno, EADDRNOTAVAIL);
-+}
-+
-+/* A lower-priority competing claim does not take our address. */
-+TEST_F(j1939_addr, ac_conflict_defend)
-+{
-+	uint8_t data[SEND_DATA_LEN] = {};
-+	struct sockaddr_can loser;
-+	struct timespec forge_t0;
-+	ssize_t tx_ret;
-+
-+	ASSERT_TRUE(ac_conflict_probe_ok(self, NAME_HIGHER, &tx_ret,
-+					 &forge_t0));
-+
-+	EXPECT_EQ(tx_ret, SEND_DATA_LEN)
-+		TH_LOG("lost the address to a lower-priority claim");
-+
-+	self->rx = j1939_open(self->ifindex, SA_RX, J1939_NO_PGN);
-+	ASSERT_GE(self->rx, 0);
-+	j1939_fill_sockaddr(&loser, self->ifindex, NAME_HIGHER, J1939_NO_ADDR,
-+			    PGN_TEST);
-+	EXPECT_TRUE(send_refused_ok(self->rx, data, sizeof(data), &loser,
-+				    &forge_t0))
-+		TH_LOG("no EADDRNOTAVAIL for the lower-priority NAME: %s",
-+		       errno ? strerror(errno) : "it was sent");
-+
-+	EXPECT_EQ(send_data(self->tx, self->ifindex), SEND_DATA_LEN)
-+		TH_LOG("lost the address later to a lower-priority claim");
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	return j1939_test_main(argc, argv);
-+}
-diff --git a/tools/testing/selftests/net/can/test_j1939_addr.sh b/tools/testing/selftests/net/can/test_j1939_addr.sh
-new file mode 100755
-index 0000000000000000000000000000000000000000..61f65365ec568f928b58bc4f892f97e9ec887027
---- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_addr.sh
-@@ -0,0 +1,4 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+source "$(dirname "$0")/j1939_lib.sh"
+ int main(int argc, char **argv)
+ {
+ 	return j1939_test_main(argc, argv);
 
 -- 
 2.47.3
