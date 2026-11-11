@@ -1,96 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794418431;
-	b=G2sg1WKbEaEnjqb5oPCv+5q+/BsLSnRgpA6cyRGK3oDN4/gNLnfgJF+EHSXpfBbCRMr3
-	 p6Wb89OGVancL6ypzcRXEmW6SiaQfDY2zwb1RlFTgSwQMly5rqh2C2kmY8JNOFyj4Zia0
-	 9Db4CgsERTIt6ZhHGLZsOr+f1iDomyEjnY/Ovb/dD8DUI4uH4QXteX7hgu3VBEHL2JTGf
-	 MBpQpAZ0l3eW4AXlZ2HJEBl/FTShPfmkWNAYPoLnQUB6z5rH7Iqyob6Mh+jcvFb3UdheM
-	 iUtiwDEcJA++q6Vak4/fxTnHGUD8qC86UAQbZMn1rRrFDPbY3FtgK0Pq3Dho2s2gdUw==
+	t=1794423284;
+	b=itWEs5xKQptiefi8Ard+rN/Uj8jgpcpmp1fw/5BP0bCKncV2hDH6hgmolP+H3NUoDfVU
+	 AWB9lJNcIpLEiA4Uhy9ePGRir2PA9BqyvzZsTMpb5Rxcw67rWLZE2pkwkv8D0RWQfIzNH
+	 Mll6Ib1meyex6MSw6+2ipr19/d9qfoD4LuteJfdQBZJXo50GdpBNvGnXropGrqobzEiqg
+	 UBXozcMnerW71ochUp1P6VQSSLCJ4Pgatiu1dtBymPV53PG7Xb4KyCw34mzJGwUAZ1yXd
+	 dIlxhbUa+nQZrqNoCS6rSCB74WghY8U2vMZwDimpI1rtHU/5nGIS2TwYCXlNEs2r5NA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794418431;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To;
-	bh=YvexIMYqiMiz1q4JNqaiQjkR3iTnjNBJbrIGwBNzjEU=;
-	b=K9oz7tD37eOyjsa9hK0/MCXVbGqRDOQTUksLjbE3gaWwcZk/jecb62ED35I+6mfnnZk4
-	 2P86fGuk51h6VrPxer4DgB4liVUWrLy1qC77eYRDPQzrgXG9FGUarceEtkohId2L6H+my
-	 Lxx+fvMYHbMdrxTl6UzLgkqQBXcLUtCMvknLIpSVPZRW+2JObvPqd731O2OLF6g4b6tq8
-	 6jd4+DFdnNH5o9seHdgBpJ02p4QKAtsMt16wi3TreZBhBzxAwhxAS8oMCI677FfwVVyr0
-	 wc8fhB32/v58JSE9v4n7JhpEBl+g7C0MRHKcTgKemmpkfK+CRw3mqPRtUw45vMfVFEQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794423284;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=vY+O8PzHjlLsZFJ64pYuT7MRIZ/KUmM6riFyf5APzbE=;
+	b=3kgz6cirBetLhDrAT+Qixn9FnjUQvFP/A4YZ7gmz5N2bJHHJzBZAklwEJRdvxtD7FA2I
+	 hIbZLJXrzsfQhs9YIHZ+YqWWH2gX7JaX6A+gnC9ctXT6e7uhMzrnKWNdqtlVx7NlU8FdF
+	 I+dyFBffzhfuVHxz40tknTdeukKxVwdH5pC9VWAJ5vOmV5JYpU4pzyeaCKSvQej2KjTUr
+	 r0hIg05tAXakAOKUT4VrancUyOM6utJ1OJRZLLh84sSHzn7KSHKFJEC9hsDfwpBsi3KX1
+	 tKVoAggmgOO/SuO/91qbOMlR4jCuGKFc72U4wL5jZNvx8IRmjh9JUgMYNUEsB02DZvg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=baylibre.com;
-	spf=pass smtp.mailfrom=baylibre.com;
-	dkim=pass header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=inicpcHI;
-	arc=none smtp.remote-ip=209.85.128.53
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JZGgcReI;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 518ED606A324
-	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 17:33:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 518ED606A324
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D75606A321
+	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 18:54:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre.com header.i=@baylibre.com header.a=rsa-sha256 header.s=google header.b=inicpcHI
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4a2d6d01ecbso21771795e9.0
-        for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 09:33:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre.com; s=google; t=1794418429; x=1795023229; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=YvexIMYqiMiz1q4JNqaiQjkR3iTnjNBJbrIGwBNzjEU=;
-        b=inicpcHIZnCmcEzzbQ3MmS+YvAq5Scx+eJ9EP0DS5vSfJefOX+7im3R61WEtmbEGl+
-         dQYNLm4/6io+doNd9QANIQ6WylX4hduah5G4JDStbFnEWoV7P84iUQF85tuo0xJNCzNw
-         aN3V9JTnWA60LAX3s+/huqc4XN5Ns1yt4BpdYMf8A0yraHLiQTVM47EhyXSISbGtnFBD
-         yHlXYVmCDGP3L3un4HqqS8xbEzkjU/Iq6t3mMA2sgks6KILzghfpJ9AblOFId4RbNlm9
-         uAlIC0j7fn+700Zw+nQvMXzWSW9GLuHq2IuV6bR8sm70AUw5ZcaB+j09j1imryd9SPzk
-         gPIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794418429; x=1795023229;
-        h=in-reply-to:content-disposition:content-type:mime-version
-         :references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=YvexIMYqiMiz1q4JNqaiQjkR3iTnjNBJbrIGwBNzjEU=;
-        b=LgRg0f4SK0cXwi1sl+GkAOCE3131MorKk1MYsim96aCcSqvsDoNqa9i0uzoF+xNdHi
-         6J2+hMz0Xx1jpIlkqxpFZ/v7jvlguj8dBdYjVtxMQLjxqlFRZPFYd4v90j2kL1o4phU3
-         TgjI35ejLJ26mJXW05RvDqR7X4O8W7TJayK5pZgvOJANFZZmYzChIwZDugZMG5k9VPDF
-         FZxRMR1W2j82LWnUpkNzc8/BcWqbqydtxUfION7hvP3GiOrssFmWU1sXK5W2zluaGRlp
-         N4uHhGWxiGV2muA+Y4BAwzi7pt/ZbCoS/kafyyiH4R3hSQB1HPbsTYaTJtR+YjXZJtPU
-         sYtg==
-X-Forwarded-Encrypted: i=1; AL+hErH6BaHhFjnJkk3nnDp7egu+tEZA3XlQY83fDMvu8i2mgXR5YnMc1tc/Tl/H7d/+E8JPaWzEsJxpol0=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9D7kBiiKU00LPBUs4FEM6bsuFj9pmYJRDZR+QpX9MJ+t8/Fjr0
-	Tiij87FVPgxWvUs6YPVQw4zW+lDXkg6XEtwuI59LTVmdQdbo8DTf5fitBeIOoMB0Yoo=
-X-Gm-Gg: AYBFou3uyG47TLH4F3mR1hSeCU48yKH3+kx4A1cWa3clHOckI8hCPXKn/d0SUjBOtDO
-	5o8pZpJsal+9sSbgNC0C+kEcik9DKR+cbSke4AuZo+BCjQUwhKGuNzKKE6EMlEmJzL51+YwhOtz
-	lP8pCExBaKoCOnQ2409RnSGcHWvGoa8rzYpyY3zQynwdqdFRUR7j8gZS85qP3q4HZa+R7XhmmKe
-	XkG44hEQ1viumIUtAu8juJs9D6kjo4QbdGz7PGPzer5bGygsSe5bt/PN/S5Twg+/l+Of3lWQIla
-	98GV7vTL9k5UWxiVRXIH3CEld2ynBmmTa3YEWlOq/BzUYRTup/a0oYo/lgZp3mBoZNT7lo/69Z3
-	KRnDSR+axT85jPJ9PLqK72MlzvDpuTm0qtGpgJUG92/TIw3aDRAyHdsq30ZprCDqSApuq15rlU+
-	vLu6pm3wMZ9MNchwLLYRBYpXfm+pOmMPnK1ITu33cB6WyJkEe0vkRF5+uG+gsoWbi1uCJmtpoNf
-	+B4UOgbt/CTWsItPaHBvOssTfAKb0uMJ/lI3DL+ROds8oj3unQmWoL5yykGUcOA0aldSXIZzCxD
-	uy67ZONa3NJU6lySGhNx3x/uXDjuMaOXDtPenHfMzAFF8O8jJP1jONinL2c62MzA0IMrECCQGDH
-	5Cxn3BcV+X8my6gx/y+VNWvIcC3b/YhYG6qIp6g==
-X-Received: by 2002:a05:600c:81c5:b0:4a1:d087:f6ab with SMTP id 5b1f17b1804b1-4ba09376cc2mr50842555e9.18.1794418428621;
-        Wed, 11 Nov 2026 09:33:48 -0800 (PST)
-Received: from localhost (p200300f65f19a9045674a4e2f3db58c3.dip0.t-ipconnect.de. [2003:f6:5f19:a904:5674:a4e2:f3db:58c3])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-4ba0951bf2asm51567095e9.4.2026.11.11.09.33.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Nov 2026 09:33:47 -0800 (PST)
-Date: Wed, 11 Nov 2026 18:33:46 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, 
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH net] can: flexcan: Fix probing for m68k/coldfire
-Message-ID: <avSmq-LRKgRWDfxH@monoceros>
-References: <20260618140147.142489-2-u.kleine-koenig@baylibre.com>
- <akfoYuyHMAxIfalD@monoceros>
- <al4lxVud4_6NTZQG@monoceros>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=JZGgcReI
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 944D81F00A05;
+	Wed, 11 Nov 2026 18:54:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794423283;
+	bh=vY+O8PzHjlLsZFJ64pYuT7MRIZ/KUmM6riFyf5APzbE=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=JZGgcReIvlkedRVUY/VuSkyhg4d3o47PDCD640813I06b4GpLmt+JheGbUMTX/DO+
+	 rJ6Uyi+ahVZGS+CkkHOgGo9a8YNu1h9Vi0HJy/vLB0zYkVosyAignsMeYAozDWUZQz
+	 mSCr3bON0ifcmPJUkUrQzSWcFTRkwxowzXsksx02U1AfPwyWkKMmiATAqeRzoseQxH
+	 5Q/cObK5WaQBZwZ3sDcvRgPrjuf3SVtLbaxp2/sAH0Fho12vM02/CTs94jiPBzY0GQ
+	 dEr2FFo3LD+QTZWBW+Yp9HBsLfD4csIDJ8089GrSFgpuvg4u127PDxzSY3WsMBVrS8
+	 GOU2hm1K7WJOA==
+Message-ID: <sashiko-outbox-209507@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH v2 1/2] can: kvaser_usb: hydra: reject commands shorter
+ than a standard command
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Joas Antonio dos Santos" <joasantonio108@gmail.com>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261111-kvaser-usb-validate-v2-1-193dc10ca19b@gmail.com>
+References: <20261111-kvaser-usb-validate-v2-0-193dc10ca19b@gmail.com>
+ <20261111-kvaser-usb-validate-v2-1-193dc10ca19b@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 11 Nov 2026 18:54:43 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,77 +62,104 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="4hfc67dntoyzrou5"
-Content-Disposition: inline
-In-Reply-To: <al4lxVud4_6NTZQG@monoceros>
 
+Thank you for your contribution! Sashiko AI review found 2 potential
+issues to consider:
+- [Medium] can: kvaser_usb: hydra: out-of-bounds read in
+  kvaser_usb_hydra_cmd_size()
+- [Medium] can: kvaser_usb: hydra: out-of-bounds read in
+  kvaser_usb_hydra_rx_msg_ext()
+--
 
---4hfc67dntoyzrou5
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net] can: flexcan: Fix probing for m68k/coldfire
-MIME-Version: 1.0
+commit a4f2c83cb489ac1c24979859f6f3261cc4e94f0f
+Author: Joas Antonio dos Santos <joasantonio108@gmail.com>
 
-Hello,
+can: kvaser_usb: hydra: reject commands shorter than a standard command
 
-On Mon, Jul 20, 2026 at 03:43:09PM +0200, Uwe Kleine-K=F6nig (The Capable H=
-ub) wrote:
-> On Fri, Jul 03, 2026 at 06:53:16PM +0200, Uwe Kleine-K=F6nig (The Capable=
- Hub) wrote:
-> > On Thu, Jun 18, 2026 at 04:01:47PM +0200, Uwe Kleine-K=F6nig (The Capab=
-le Hub) wrote:
-> > > When determining the device details was reworked in commit 5e6c3454b4=
-05
-> > > ("net: can: Use device_get_match_data()") there was no replacement for
-> > > the previous handling of non-of instantiated devices via the device's
-> > > id_entry which then results in a NULL pointer exception. The only
-> > > in-tree provider of such a device is arch/m68k/coldfire/device.c.
-> > >=20
-> > > Given the id_table only contains a single entry just hardcode the res=
-ult
-> > > of `platform_get_device_id(pdev)->driver_data` and drop the unused
-> > > assignment to .driver_data from the table.
-> > >=20
-> > > While touching the id table, drop the unusual comma after the termina=
-tor
-> > > entry.
-> > >=20
-> > > Fixes: 5e6c3454b405 ("net: can: Use device_get_match_data()")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Uwe Kleine-K=F6nig (The Capable Hub) <u.kleine-koenig@=
-baylibre.com>
-> >=20
-> > Given this fixes a crash (NULL pointer exception), it would be great to
-> > get this applied. The issue is already old (Sept 2023, v6.8-rc1), so
-> > there is probably no urge to get this in before 7.2, but getting it into
-> > next and then 7.3-rc1 would be good.
->=20
-> This still stands. Marc, do you have this patch still on your radar?
+This commit rejects commands whose length is smaller than sizeof(struct
+kvaser_cmd) in kvaser_usb_hydra_wait_cmd() and
+kvaser_usb_hydra_read_bulk_callback().
 
-For a fix it takes quite some time to get applied. The patch now missed
-7.4-rc1 ...
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/=
+net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> index 687911d764ded..9adb4eb36e394 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> @@ -676,7 +676,8 @@ static int kvaser_usb_hydra_wait_cmd(const struct kva=
+ser_usb *dev, u8 cmd_no,
+> =20
+>  			tmp_cmd =3D buf + pos;
+>  			cmd_len =3D kvaser_usb_hydra_cmd_size(tmp_cmd);
+> -			if (pos + cmd_len > actual_len) {
+> +			if (cmd_len < sizeof(struct kvaser_cmd) ||
+> +			    pos + cmd_len > actual_len) {
+>  				dev_err_ratelimited(&dev->intf->dev,
+>  						    "Format error\n");
+>  				break;
 
-Is someone reading this ping?
+[Severity: Medium]
+Can kvaser_usb_hydra_cmd_size() read past the received bytes in buf when
+fewer than offsetofend(struct kvaser_cmd_ext, len) (6) bytes remain?
 
-Best regards
-Uwe
+When tmp_cmd->header.cmd_no is CMD_EXTENDED, kvaser_usb_hydra_cmd_size()
+reads ((struct kvaser_cmd_ext *)cmd)->len at byte offsets 4..5 before
+checking how many bytes are left in the transfer.  If a full
+KVASER_USB_RX_BUFFER_SIZE transfer ends with 1..5 trailing bytes and the
+first byte is CMD_EXTENDED, this reads up to 4 bytes past the end of buf.
 
---4hfc67dntoyzrou5
-Content-Type: application/pgp-signature; name="signature.asc"
+In kvaser_usb_hydra_read_bulk_callback(), a valid extended command split
+across two URB transfers with fewer than 6 bytes in the first transfer
+also reads unreceived bytes from buf[pos + 4..5] to compute cmd_len,
+either tripping the new cmd_len < sizeof(struct kvaser_cmd) check or
+saving fewer than 6 bytes into card_data->usb_rx_leftover, where the next
+callback calls kvaser_usb_hydra_cmd_size() before the rest of the header
+is copied in and without checking cmd_len < sizeof(struct kvaser_cmd).
 
------BEGIN PGP SIGNATURE-----
+> @@ -2156,6 +2157,11 @@ static void kvaser_usb_hydra_read_bulk_callback(st=
+ruct kvaser_usb *dev,
+> =20
+>  		cmd_len =3D kvaser_usb_hydra_cmd_size(cmd);
+> =20
+> +		if (cmd_len < sizeof(struct kvaser_cmd)) {
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			return;
+> +		}
+> +
+>  		if (pos + cmd_len > len) {
+>  			/* We got first part of a command */
+>  			int leftover_bytes;
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmr0pvYACgkQj4D7WH0S
-/k4bNwgAsQchSshsvcSs/c8msQEUeFLmy38NQ5NvYG9rkvtJ5DGZBJZCWbiMnvQN
-UxxEUyz189PGDh41YHwkGDS1NMvdFvrl9uptRZGvbI/iB6fJP38y+ves8Dp1BBUQ
-CiGoYQ2oqm2R2WnYwsUzdVL3E9R7zMvkueC0YW5h6BerQroVMVDLtclvQ8iXMMou
-Ko+Dpwg76ba2xYTAHwNhyrNxQraVOp+o6+IlCIcKCK8hCwV7AFS6VU9zwEgLsUms
-X3yeTFHRNc3aZGjulbY35I7d0ujF5iRrEFLzI8MIUcCUiIXqCkFSGGV9450s+uz9
-RcNFp/Rrj1+U4tKfnch8QGtgmLvSRw==
-=5KoS
------END PGP SIGNATURE-----
+[Severity: Medium]
+Does checking cmd_len < sizeof(struct kvaser_cmd) prevent
+kvaser_usb_hydra_rx_msg_ext() from reading past the end of cmd and buf?
 
---4hfc67dntoyzrou5--
+In struct kvaser_cmd_ext, the fixed fields of rx_can end at byte 32, and
+the union holding err_frame_data and kcan_payload[64] starts at byte 32:
+
+drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c:kvaser_usb_hydra_rx_msg_e=
+xt() {
+	...
+	if (flags & KVASER_USB_HYDRA_CF_FLAG_ERROR_FRAME) {
+		kvaser_usb_hydra_error_frame(priv, &cmd->rx_can.err_frame_data,
+					     hwtstamp);
+		return;
+	}
+	...
+	if (flags & KVASER_USB_HYDRA_CF_FLAG_REMOTE_FRAME) {
+		cf->can_id |=3D CAN_RTR_FLAG;
+	} else {
+		memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+
+		stats->rx_bytes +=3D cf->len;
+	}
+}
+
+A CMD_RX_MESSAGE_FD command with cmd_len =3D=3D 32 passes this check, after
+which kvaser_usb_hydra_rx_msg_ext() reads err_frame_data or copies up to
+64 bytes from cmd->rx_can.kcan_payload (depending on the DLC in
+kcan_header) past the end of the command and potentially past the end of
+buf into the skb.
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261111-kvaser-usb=
+-validate-v2-0-193dc10ca19b@gmail.com?part=3D1
