@@ -1,53 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794378616;
-	b=boPMG9h1MMHdh5YrrwaZUPbULjJvrIU49iRcIDuJpYUGxOvgtnqNRmAcfM4guOpTwz5G
-	 eOnkicvkrYEnZTBjtRQX1DPISdt6z/4L8BxKq6MeGrEwa/5yWjNT2xnnjVgYqHz9MYjpe
-	 x2Hg6qhCHVd2Ku1RVZE8aDYLp3EkikxxRr3O8hfZW2p+Sd8RtP1sizKraW4GcqepBncEx
-	 Bz6DHm+Ezl4DenN3tyJegOLvIYPuYM0K61qGP68XUByyz/He0IWcIsg1orcptFx3fTzR4
-	 u3M1qiRibkbyod+u28FMtZXlLywz5Jzet+BCbA9TwzczOWZauTWGPXV7krYwCfhz+rw==
+	t=1794378784;
+	b=CS4TTYZpGXjiVaA29XBY0V2V+qJ5NfbwJEt9OUdQxSwLuUvbk6BcNHawGSnFF4yP323x
+	 VOUh0z4pcMzrSF5s6ns9+YOLzuPlvZwiE6mt3oEQGw1MQCtLFyChhOn8lDkc2bk8DnSCc
+	 jdqK2D6vKkZ8UcvW9sftz3xYJc+sXMyoQ9CpfMPM+xUvynNAccpEgVV9gd2f+84uJqHyb
+	 g6tX2lE2AujNP/cfB4KSrIpmioOQvHKdoHUq+1AGq+8YHPsxKTQPB1qUJbdeat1eZZBMC
+	 33s+JOtRXlgI2yhDnjwB05nd8yTYv1LIMMftZ1LJa8H0GGPRmJqS44P7Csv1Xbo1+BA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794378616;
-	h=DMARC-Filter:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
-	 X-CM-SenderInfo;
-	bh=UgN1zSNadRzxbt9jpslpGAsoDeZYTmReGXXIuMOSvag=;
-	b=IE8vo39TPY/0QHwBHP3uN/A/DfG4rfwOeucFl9ZMohmU2wlphIGBUoOKvpW7Kyo3R5Zf
-	 7Z3OFgXhT73N4h+yaI0aJjbd4XQjF2/4pQxIycn3h2kici5uyOIb48OVVYTWymNEWcOiG
-	 VxLAK9qLmX0eU6YM8tab7dKhtD7deSl0iXnQHW61YkpqG6AZAp21auINHYqvBcQ+vWJvi
-	 gMLu+MzFMw2LHRlcRv6wpzo3TSmgzJyjp3e9N5uyvhOP/apwpD4rbQjgmNtWfytoeuA3a
-	 02oovNmoHWFjJNXZoqACdl1HDP/oNKgnm7UMIdE6dI1lzzP8/H/nLXHoCWcQ7yE5+pQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794378784;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=PM8DzaE9feM9UiVT9RNTcf77AiMkN7ELEScMqdL8P78=;
+	b=fbKdSl3IgO00p/AlenkvcnULamsh0UpL0+BRZ3AL5AAk8uAOEsJSPol8C68pA8x6Oyzi
+	 yb6FCWjR6T7cLZH0ZWA7+7X/zmldNj2AxxujZHsfsW3xP/1J5ErhNihMEOyQ9V1mNrJK5
+	 rxLfCMWPFxrh+mzQbv32Kgr2u7EmyQ3bh0pa9f65hGqKsbEUZpQcrCCjyr99jCnnn/diy
+	 NYujSCu3R3mNhe3dsawH1bDQWuc7aDElixft/Fd+sKW3/3ZdL7tzJ1/GDGddBl/npZGrl
+	 eml3cV88ifXvZuZhQyuJXtJehiGiSJOigJLm8e4bST0vfkHpc9szqIJtx0+zP+CdBYg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=163.com;
-	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=Ynr9hIt2;
-	arc=none smtp.remote-ip=220.197.31.3
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AC3sqa55;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D09606A330;
-	Wed, 11 Nov 2026 06:30:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 00D09606A330
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2EA5606A31C
+	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 06:33:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=Ynr9hIt2
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version:
-	Content-Type; bh=UgN1zSNadRzxbt9jpslpGAsoDeZYTmReGXXIuMOSvag=;
-	b=Ynr9hIt2V/Ol22CFwQ/LD87xUXirJvPCieVcOsNf9xa3JfXimrRi+IL9yVg7Xi
-	Ybz6en27ZjS+kP8kuSDSGalvz3r2XsVfZ6Pai0OLXL9hkvdMI/xsUZSKLZARsWFF
-	hnlgTnlBHcWuK0D9JH/0Myk6FM6lgoLvYa/LRmzGmu+3o=
-From: Chaosheng Qu <quchaosheng000406@163.com>
-To: Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH net v7 4/4] can: j1939: reject a CTS that names more packets than the message has
-Date: Sun, 08 Nov 2026 09:34:23 +0800
-Message-ID: <179410166346.60581.17199842424718803160@163.com>
-In-Reply-To: <179410166344.60581.3898011861151549156@163.com>
-References: <179410166344.60581.3898011861151549156@163.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AC3sqa55
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DF391F00A05;
+	Wed, 11 Nov 2026 06:33:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794378783;
+	bh=PM8DzaE9feM9UiVT9RNTcf77AiMkN7ELEScMqdL8P78=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=AC3sqa55s1/9dHfodf2ql5Qm+TJh0Dg5qXC9cP5fTuhr/lLu/1pCOD0B1B848zuUt
+	 7An6uXMv/gUUOFMkJV09E2XhpiSRWzQlhl3pxfNTaSon5hTR85xkr8xZ5JvkI3VWfl
+	 qFfm4s2gwzFxloGuSTI0AHpLJ/fquged1uQ8kTrGkzoS+x+2VgxX+CNVeYKK/b3M9j
+	 a7aYLwMkSYYIYVrILbWt8oensGb6CLCu41N5IzvdgXwoEWByANPYtPaozIvQlDX+ba
+	 4djyCOrY4bOw1BZTwzA7OX3rITCboxJ0qyOnENZzpmdmcJll3xzRO0/8laRllMy37y
+	 FcRBECSvOmRAA==
+Message-ID: <sashiko-outbox-208446@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH] can: gw: avoid losing statistics updates on concurrent
+ receive
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Zhu Jun" <zhujun2@cmss.chinamobile.com>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261111062907.16857-1-zhujun2@cmss.chinamobile.com>
+References: <20261111062907.16857-1-zhujun2@cmss.chinamobile.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 11 Nov 2026 06:33:03 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -56,61 +61,81 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3_4NhC_Rqz5ZtGw--.9039S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Kw13WryrXrWkuw4kAFWUJwb_yoW8AFWUp3
-	ZxKry7Cr97Jrn3Ars7KF1DJFyUCws8Ca47WFyjq3s3twsrCF13ta90qrZFgayDJF4UW3y5
-	ZF4Yqwn3W340g37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jODGOUUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC4wKyKGr0C2KYIgAA32
 
-From d4e65724a76b0d8570b7e4603948219f11128999 Mon Sep 17 00:00:00 2001
-From: Chaosheng Qu <quchaosheng000406@163.com>
-Date: Sun, 8 Nov 2026 09:22:30 +0800
-Subject: [PATCH net v7 4/4] can: j1939: reject a CTS that names more packets
- than the message has
+Thank you for your contribution! Sashiko AI review found no new issues
+in this patch, but noticed 1 related pre-existing issue it does not
+introduce:
+- [High] can: data race modifying shared SKB in can_send() [1]
+--
 
-j1939_xtp_rx_cts_one() rejects a zero packet number and a window above
-pkt.block, but not a packet number above pkt.total.  It then stores
-"pkt - 1" in pkt.tx_acked, and the transmitter reports that value back in
-an
-ETP.CM_DPO.
+commit 10078742ee4a6687a5a77083fa056c99b8f26a52
+Author: Zhu Jun <zhujun2@cmss.chinamobile.com>
 
-That value is what j1939_xtp_rx_dpo_one() now bounds, so an oversized CTS
-is
-currently caught one step later and reported as a bad EDPO offset.  Reject
-it where it originates instead, with the abort code that describes it:
-J1939_XTP_ABORT_ECTS_TOO_BIG, "ECTS requested packets exceeds message
-size".
+can: gw: avoid losing statistics updates on concurrent receive
 
-Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
----
- net/can/j1939/transport.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+This commit converts the frame statistics counters in struct cgw_job to
+atomic_t so concurrent receive paths and netlink dumps do not race on
+counter updates.
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 5f05c15114ce..6cb3dec49f3f 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1504,6 +1504,15 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
- 		goto out_session_cancel;
- 	else if (dat[1] > session->pkt.block /* 0xff for etp */)
- 		goto out_session_cancel;
-+	else if (pkt > session->pkt.total) {
-+		/* The responder asks for more packets than the message has.
-+		 * pkt - 1 becomes pkt.tx_acked below, and the transmitter
-+		 * reports that value in an ETP.CM_DPO, where it would name a
-+		 * packet past the end of the message.
-+		 */
-+		err = J1939_XTP_ABORT_ECTS_TOO_BIG;
-+		goto out_session_cancel;
-+	}
- 
- 	/* set packet counters only when not CTS(0) */
- 	session->pkt.tx_acked = pkt - 1;
--- 
-2.43.0
+> diff --git a/net/can/gw.c b/net/can/gw.c
+> index 8a5327d8a00e8..a5233b4606dad 100644
+> --- a/net/can/gw.c
+> +++ b/net/can/gw.c
 
+[ ... ]
 
+> @@ -510,7 +511,7 @@ static void can_can_gw_rcv(struct sk_buff *skb, void =
+*data)
+>  		nskb =3D skb_clone(skb, GFP_ATOMIC);
+> =20
+>  	if (!nskb) {
+> -		gwj->dropped_frames++;
+> +		atomic_inc(&gwj->dropped_frames);
+>  		return;
+>  	}
+
+[ ... ]
+
+> @@ -571,9 +572,9 @@ static void can_can_gw_rcv(struct sk_buff *skb, void =
+*data)
+> =20
+>  	/* send to netdevice */
+>  	if (can_send(nskb, gwj->flags & CGW_FLAGS_CAN_ECHO))
+> -		gwj->dropped_frames++;
+> +		atomic_inc(&gwj->dropped_frames);
+>  	else
+> -		gwj->handled_frames++;
+> +		atomic_inc(&gwj->handled_frames);
+>  }
+
+[Severity: High]
+This problem wasn't introduced by this patch, but can routing an unmodified
+CAN FD frame cause a data race [1] on the shared skb payload in
+can_send()?
+
+When no modification functions are configured (!mod->modfunc[0]),
+can_can_gw_rcv() duplicates the incoming skb with skb_clone(), which shares
+skb->data with the original skb, and passes nskb to can_send():
+
+net/can/af_can.c:can_send() {
+	...
+	} else if (can_is_canfd_skb(skb)) {
+		struct canfd_frame *cfd =3D (struct canfd_frame *)skb->data;
+
+		skb->protocol =3D htons(ETH_P_CANFD);
+
+		/* set CAN FD flag for CAN FD frames by default */
+		cfd->flags |=3D CANFD_FDF;
+	...
+}
+
+can_send() modifies cfd->flags in place on the shared buffer while other
+receivers (such as raw sockets or packet sniffers) may be reading the
+original skb concurrently, causing a data race and corrupting the flags for
+concurrent readers.
+
+[1] https://sashiko.dev/#/bug/linux-89b38ada-4acb-4bf7-afe0-3d8d244ba058
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261111062907.1685=
+7-1-zhujun2@cmss.chinamobile.com?part=3D1
