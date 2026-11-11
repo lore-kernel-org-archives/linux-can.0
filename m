@@ -1,56 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794399618;
-	b=AT6pkJ8DA3JaG2OgJEOXa+IJtcMiK9nQ6++PK7IobS0jJMdeb8g7kLd/k9/fGdxUh1wW
-	 dpG5ZxqHQHK8GZk67CAyhB70vMOajU3DUQ3tckcwJTmWpQ1HNDqkwUlcbgHE9o/zn4GyL
-	 G8FLLlGKSV+jZ96NU7BrfeQqZPgvPKUvgnGrkjsOvQ0h/SGhS22polpALKPZfCTFffqN4
-	 1c1GKgh3+dDMjzAcdvS3poRQH16Vq1ezuXQBkKJ0Yu+2pcj+ZLrQcfu3nF8p/VD1dSiDm
-	 ub0il12obU9WtPFjCfY+zRyaQ+DskDbOZbRHqQqBG4SMJhtMnHkmDP353TsX/Rl3Ayw==
+	t=1794399620;
+	b=eGSYnBwx3yBtpn9Zjgk1CjQCOnDJpsAcJaYH0lZlSKkLtQ+pQGZhD/ZOG3JylfLJfRUD
+	 zhh0RDESYVeypxjuugvFehjLRHpF+Zku/v3XDPTUOL5hjc9lh8oyNeIm80vSTKdwnpTAw
+	 9+h6h82yfzzwLrXocBs2QTAVQvCwJ2Drmwq7O13I34OR2GFu+OMQFmW1k8+FSI98x94Fp
+	 2S/le9QSwLagmuto+Ku0lfhGHU4u3VZka4anXj8CHXySPasBtBy03S1yhY5UQ3hAYtm/8
+	 HeA7f8zpPhSIt8wIEWbTdMMnQFIwoduaXe23vpiDQi9PGcIRi+kaQCue7rtZlyiUZYw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794399618;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794399620;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=hWb41iZm0R0yNMhR+sLYT85PthxOfiiXrl7+TyvZ8Ws=;
-	b=K5TN3D5YP5vQoD599rvkqlW0nx20TU5JP9Jk8od+0SS9rZ3NAG1Jqi1bQPuvhImc4HhK
-	 Ttx8RwQHvz2VhojMpgN8EG3dQfZmbJ0de6hYpUeJ9Po/apZn6YfX4r+phmGYijvN+NJ3h
-	 fdaPvrOWj1jBD/lxdiVa9tgDj/Kep5uw/50Ft/uhcAs3sc5Do0F/OUAab8KU9i/ArBiX6
-	 mZrntBt+BdWCimy/8A+JGmBilJJfYF2AD4JrosSbB+bOsHLPr8A9R7mVmurUJK9az/rSB
-	 3od3FS9+1rljd6NnREJ+lfgiJS9LJC+gFfmxuOoWRHTNWBVFoXhuGViiBX67mt9+Jhg==
+	bh=RTPnT3LdeumQQgNEh6wdlvvEooxZofAWChf4+Bqv2DI=;
+	b=F/qd3knTpPDQugcRUI5neAEuJ/VKC/+/VgzyfdwVBykEOeFnbVACKI+n8JaKaRoyGoob
+	 Ofzw9xasVeiYObJbFpoDMdUpTfmvQl20vbbmlbJJiZw95t21UYXbDip3/ODurJ42lL9Z+
+	 Rh0Qhb+DTpF+GrxpBL1sDzKmm3pj/Xfgwcpr0f72tjwgotQ0yX8mSU4rDPTz39ieWnwri
+	 coW49EKecMtk9XUZs7Hw8FTnEGrrNkVF/ULx6Bx4o/odGelkaBlwIjYsBerbzonttevbp
+	 v13krJSd6wRHd3MnSfVOU/z2D8hFh54Q3g5VrOxtOKWBWXcivnV16hXA2vcooHlbMPg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PH+MMIFM;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UndZJali;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C501606A324;
-	Wed, 11 Nov 2026 12:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E9D606A885;
+	Wed, 11 Nov 2026 12:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=PH+MMIFM
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F8851F00A0A;
-	Wed, 11 Nov 2026 12:20:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UndZJali
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C64B1F00A0D;
+	Wed, 11 Nov 2026 12:20:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794399617;
-	bh=hWb41iZm0R0yNMhR+sLYT85PthxOfiiXrl7+TyvZ8Ws=;
+	s=k20260515; t=1794399620;
+	bh=RTPnT3LdeumQQgNEh6wdlvvEooxZofAWChf4+Bqv2DI=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=PH+MMIFMmcPHKErf4C+zzI47QjpQwLz1C6t57pLcEpI0W7IHd4tdDu0LtDKvV0VZn
-	 wIiEc4GFQntpE85LKtbUSTkYHZjAzzpM8mFTCj1WMHd2CKmg6k2Py9e9k0lkEcrSz+
-	 hmRujoGfpg885TfrT8GzO/KkoAcR5StZvAyzKYPnDaHvmRFepognOdXIQfQ5E5Is4O
-	 p4W+/EXE/ij34EYfuqMbcjMcWn6w4m/reojFrLmR05pFFmMaYhGimuGr+bwbxlEeUJ
-	 njlZi9wvsUKqSD6Y0vnObhdTDXGq0ahgPyiLCYe99DNAKSH8GG+lta6iSLE4AFrEgY
-	 lpa3qbGdN8NVg==
-Subject: Re: [PATCH net-next 01/12] dt-bindings: can: renesas,rcar-canfd:
- Document RZ/G3S SoC
+	b=UndZJaliigWVcNdaYjSTMnik1DNcNBvNUusIpk8MoLxBbR62bkhm3/5JZYLj3gwey
+	 owvsTmAAfxE0NPv3i5tlUQ6DCtRt8H2HeAlMB43tNGaOT29R/FNHDX2gt1di7CvaBC
+	 dSt8r2O9pCe8Gg+pHyGa5OqM82DuAahuUBfF0IQOdncf/iEuEqvrpsQChnMin74xAa
+	 IUr+/9TV9YxaaPG0JGm9WNQthAHzeHVdaea48E39pV5s0dHL2ANtl3Seymd8OUcxL+
+	 W+FDPr3hx8wafdPfJc0HoDxqo9sZ92YmYfiLH7721nLu9mlouEqRtMstUnamW9Pydw
+	 +plIRK1XklRhA==
+Subject:
+ Re: [PATCH net-next 05/12] can: rcar_canfd: Add support for Renesas RZ/G3S
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
  linux-can@vger.kernel.org, kernel@pengutronix.de,
  claudiu.beznea.uj@bp.renesas.com, geert+renesas@glider.be
-Date: Wed, 11 Nov 2026 12:20:16 +0000
-Message-ID: <179439961681.2199510.4253042970495028693@kernel.org>
-In-Reply-To: <20261110115112.3807247-2-mkl@pengutronix.de>
-References: <20261110115112.3807247-2-mkl@pengutronix.de>
+Date: Wed, 11 Nov 2026 12:20:19 +0000
+Message-ID: <179439961902.2199510.3239778793056609646@kernel.org>
+In-Reply-To: <20261110115112.3807247-6-mkl@pengutronix.de>
+References: <20261110115112.3807247-6-mkl@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,101 +70,95 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] In this patch's tree state, the binding documents
-  `renesas,r9a08g045-canfd` as a standalone compatible with no fallback,…
-
-Pre-existing issues:
-- [Low] The concern says the RZ/G3S compatible `renesas,r9a08g045-canfd`
-  gets the unchanged top-level `clocks`/`clock-names` schema, and that…
+- [Low] Concern: r9a08g045_hw_info sets .fixed_canfd = 1, but
+  rcar_canfd_probe() still reads "renesas,no-can-fd" (fdmode = false,…
 
 --
 
-dt-bindings: can: renesas,rcar-canfd: Document RZ/G3S SoC
+can: rcar_canfd: Add support for Renesas RZ/G3S
 
-This adds the renesas,r9a08g045-canfd compatible for the RZ/G3S CAN FD
-controller and adds it to the existing allOf conditional blocks. It also
-moves the assigned-clocks/assigned-clock-rates requirement into a new
-conditional that exempts RZ/G3S, and disallows renesas,no-can-fd and
-renesas,fd-only for RZ/G3S.
+This patch adds an r9a08g045_hw_info entry for the RZ/G3S CAN-FD
+controller and binds it to the "renesas,r9a08g045-canfd" compatible. The
+variant is gen4-like, with two channels, 16 AFL pages, an fcan clock
+sourced from pclk, and the operating mode fixed to CAN FD.
 
-Link: https://patch.msgid.link/20260902141544.565763-2-claudiu.beznea+renesas@tuxon.dev
+Link: https://patch.msgid.link/20260902141544.565763-6-claudiu.beznea+renesas@tuxon.dev
 
-> diff --git a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> index b9d9dd7a79676..bbaaef8f4282e 100644
-> --- a/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> +++ b/Documentation/devicetree/bindings/net/can/renesas,rcar-canfd.yaml
-> @@ -13,6 +13,7 @@ properties:
->    compatible:
->      oneOf:
->        - enum:
-> +          - renesas,r9a08g045-canfd        # RZ/G3S
->            - renesas,r9a09g047-canfd        # RZ/G3E
->            - renesas,r9a09g077-canfd        # RZ/T2H
-
-[Severity: Low]
-At this point in the series, does anything bind to this compatible?
-
-The patch adds it as a standalone string with no fallback. However,
-rcar_canfd_of_table[] in drivers/net/can/rcar/rcar_canfd.c has no
-renesas,r9a08g045-canfd entry yet. An RZ/G3S node that passes validation
-would therefore not probe.
-
-A later patch in the series, "can: rcar_canfd: Add support for Renesas
-RZ/G3S", appears to fix this by adding:
-
-    { .compatible = "renesas,r9a08g045-canfd", .data = &r9a08g045_hw_info },
+> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+> index ac5d5959d8e4c..74c3c3f20991f 100644
+> --- a/drivers/net/can/rcar/rcar_canfd.c
+> +++ b/drivers/net/can/rcar/rcar_canfd.c
+> @@ -661,6 +661,26 @@ static const struct rcar_canfd_hw_info rzg2l_hw_info = {
+>  	.fixed_canfd = 0,
+>  };
+>  
+> +static const struct rcar_canfd_hw_info r9a08g045_hw_info = {
+> +	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
+> +	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
 
 [ ... ]
 
-> @@ -350,6 +352,20 @@ allOf:
->        properties:
->          reset-names: false
->  
-> +  - if:
-> +      properties:
-> +        compatible:
-> +          contains:
-> +            const: renesas,r9a08g045-canfd
-> +    then:
-> +      properties:
-> +        renesas,no-can-fd: false
-> +        renesas,fd-only: false
-> +    else:
-> +      required:
-> +        - assigned-clocks
-> +        - assigned-clock-rates
+> +	.ch_interface_mode = 1,
+> +	.shared_can_regs = 1,
+> +	.external_clk = 1,
+> +	.fcan_pclk = 1,
+> +	.fixed_canfd = 1,
+> +};
 
 [Severity: Low]
-This is a pre-existing issue, but should this block also narrow
-clock-names for RZ/G3S? The top-level clock-names still accepts both
-forms:
+This isn't a bug as long as the DT follows the binding, but should
+rcar_canfd_probe() ignore or reject "renesas,no-can-fd" and
+"renesas,fd-only" when info->fixed_canfd is set?
 
-  clock-names:
-    oneOf:
-      - items:
-          - const: fck
-          - const: canfd
-          - const: can_clk
-      - items:
-          - const: fck
-          - const: ram_clk
-          - const: can_clk
+This is the first hw_info with fixed_canfd = 1. Both properties are still
+read without checking that flag:
 
-No allOf entry picks one of these forms per compatible.
+drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
+    ...
+	if (of_property_read_bool(dev->of_node, "renesas,no-can-fd"))
+		fdmode = false;			/* Classical CAN only mode */
+    ...
+	if (of_property_read_bool(dev->of_node, "renesas,fd-only"))
+		gpriv->fd_only_mode = true; /* FD-Only mode for CAN-FD */
+    ...
+}
 
-The RZ/G3S CPG only supplies the peripheral and RAM clocks. Even so, an
-RZ/G3S node that uses the canfd form would still pass dt_binding_check.
-The driver would then get a NULL clk_ram from devm_clk_get_optional(),
-and the RAM clock would never be enabled.
+Meanwhile rcar_canfd_reset_controller() skips the CLOE/FDOE writes, so
+the controller stays in CAN FD mode:
 
-The renesas,rzg2l-canfd and renesas,r9a09g047-canfd compatibles already
-have the same gap.
+	/* Set the controller into appropriate mode */
+	if (gpriv->info->fixed_canfd)
+		continue;
 
-Requiring the third can_clk entry looks fine, though. The internal
-divider setup can be described with a 0 Hz can_clk fixed-clock, as in
-r9a07g044.dtsi. The fck fallback that "can: rcar_canfd: Allow the CAN FD
-clock to be sourced from fck" adds to rcar_canfd_probe() then handles
-that case.
+With "renesas,no-can-fd", fdmode == false makes the rest of the driver
+set up classical CAN while the controller is still in CAN FD mode:
+
+  - 8 byte RFPLS/CFPLS in rcar_canfd_configure_rx() and
+    rcar_canfd_configure_tx()
+  - no RCANFD_GCFG_CMPOC in rcar_canfd_configure_controller()
+  - no RCANFD_GCTR_CFMPOFIE in rcar_canfd_enable_global_interrupts()
+  - only nominal bit timing in rcar_canfd_channel_probe()
+
+FD frames on the bus would then be dropped silently instead of being
+reported as errors.
+
+With "renesas,fd-only", the probe message reports "fd-only" mode, but the
+hardware cannot enter that mode.
+
+The binding change for this compatible sets "renesas,no-can-fd: false"
+and "renesas,fd-only: false". Only a DT that fails schema validation can
+hit this, and the compatible is new, so no existing DTs carry these
+properties.
+
+As hardening, could probe force fdmode = true and clear fd_only_mode when
+fixed_canfd is set, or fail probe instead?
+
+> +
+>  static const struct rcar_canfd_hw_info r9a09g047_hw_info = {
+>  	.nom_bittiming = &rcar_canfd_gen4_nom_bittiming_const,
+>  	.data_bittiming = &rcar_canfd_gen4_data_bittiming_const,
+
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261110115112.3807247-2-mkl%40pengutronix.de
