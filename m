@@ -1,56 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794363303;
-	b=hgc3B0ibE9NaWJLLNHugkGsRoAbeZk5eDl0ccIOwjxFNp+dq4/Ww7tECJ7MrUEtv2w+A
-	 rhk4AbVr0ONpynhsK1NFhLTk5PxkRwA/VKdGcYH00Sj2MvepiAKPcBk41aRve+jpRtrNR
-	 IAY/c3e7fYEWWZ4x5L3RKuaR8vgKj6bf8KfGT68/pBqmHINFGDzD40zH2YPfGWMo5+3b1
-	 LMTgUhJ9LTtQMNRG6wIOX4iTQ2oiFN54KWoz6AMVKEwtUJ00RGU17iMuhrHR9Di9NcCbU
-	 Nm+9GjfGEV1zaEkoQEsA5RYOyHwnNtmyUrdOk80tt+OUzBT6NFY8HTvTLeGIThOxe3Q==
+	t=1794368902;
+	b=PcJh9HS6WnHdMJWvbB6EBucQdXcGnZjWk4HQqOySq7PIHjO+nO+5MnT0HsHbZ02p1ArF
+	 6nMH7fkpe70c+9UsUth12tCvCnG4mSGVxedUg1dbh1ZuC3PiAy2dkbuKKcajTVj8UzgjW
+	 qKx1Z5cQMr/pdqBIAKMJwOcaVgZ/Vvcn1n260vG7zOoPgGmn661Y+Cn5Sdc1VQJ1SZXyG
+	 yenz0UtmKQ+G7NdA0/fgS+hJlTTDuhrJQa4DBICNuRImwhs+UHGXMX+VNtpynrU+g7OCL
+	 0Q5BhJBI9eUQCy86oDH9LgfA4g2EpJd5f3+VYEJrSeD3hz50eQ51zgPCt7uabSzCxpQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794363303;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794368902;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=8Khbbrx8RtYMMbTHptqZ8BeBrgbUwTQxKVRyE2HzIXU=;
-	b=Fi1CAF32ZxsF7Xc/wY+UPDFL/svgFo6lJ4VOtFvRHYfaqYIGiSEIhb4bAIwSVwkrzbTD
-	 FnZXvh4KViQ2PTZW1r/4zZGoWPCpy2FckCzOEeNlbgY+7jhsXBDJeqfRql8lkccYpl96c
-	 /gr0i1Z7msbeYsNtzPLXqGSZ2pXX1ObRfT4nAJdroNjLA9ljCZLH8T1RMOMoz2LAQWp/j
-	 tUcBSZKmIMD5zqGtISflE2WkGWLff4lMgAKnom/QEx0EgxZkMRrIKD6LUGLmj3LtlyR+w
-	 35xw4mHqp1UwEq8gBvq0ySEg+XcThq1Jc6ouB1kHY9KF6T37y5ybWh35PvhjMIWyL3A==
+	bh=8MugCmGZ4cK60f5hecujTUnNRYO5tymPTKM8TTppB2A=;
+	b=ey1eYE3o2jvqssfHPIeX8rQvXCR/dBe6hAQw7H3sY7+45AqSe6abEIR5YFHPTfiAGKjA
+	 4oMlGfvzRNVNmyOHsWiAj6kFv9xIxsK511hg4j62FGIAik39zHHK6a0KzDFbvuD5RrRpI
+	 1TmxBfK75HZQt9n5c2L8U1s/sAsUpaYmG/+0cURfpIFoPIQPFdD/zTZ11bzvErnzgK4Q/
+	 HSzUclU5oc5r4LONPsIvFMZqR+m1Jk3/89olSI65wJEpaiygsZXI+xiiAGZEIr2hn6XBq
+	 RN9dYpo7ZRaUAq9/gsfo0Y9J+IsRzi9NGWhb0k2pH89RXJO0DG0YCyWyw1SyHlW3FZA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XejXyDI8;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gVjoAVxC;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E31FA606A32E;
-	Wed, 11 Nov 2026 02:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 571D6606A32A
+	for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 03:48:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XejXyDI8
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6C1E91F0089F;
-	Wed, 11 Nov 2026 02:15:02 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=gVjoAVxC
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A9391F0093C;
+	Wed, 11 Nov 2026 03:48:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794363302;
-	bh=8Khbbrx8RtYMMbTHptqZ8BeBrgbUwTQxKVRyE2HzIXU=;
+	s=k20260515; t=1794368901;
+	bh=8MugCmGZ4cK60f5hecujTUnNRYO5tymPTKM8TTppB2A=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=XejXyDI84coFVpqhr9IUyGQtKRbZ3O413i2nxS6YrMB8FfK31rjx7gaOydfEt1YoF
-	 Nm4P5uzqRON4Ez9Is3f8QL3EMHLazQGRrmBCCyy0oPlzF2FwBTCUwoufU1kSBAHi9X
-	 HAkYymAseTwdllyYSbAvZLfKNr3RM90Pu9p1Mpl2q53udhXXyKNGgFjoRLjl6aJbZe
-	 Dua3eeTxAVYhoP5hVUI7xvL7aynEk1pXfDOs69DMPxzH5ZWXVcXGcMTkDRfSIkuswL
-	 wEqGJPyDCzLKZoTgF2cQQ53sjWvkpQ6ffjtMAroBSS8lBo1FBBXBezsrZ0zhHtWpP9
-	 AHjp9nxRxQ/nw==
+	b=gVjoAVxCxP2J+GM5sVKahXTkBRibxZt1pSqnQXsKl/KXWoZq8KFCZMiozfDVUH2xw
+	 Z7Tr3C/cloBotdCEOxMYfVIODY8zJDx63Mw4v9aQrCCKuWV95v/cdWEIl6G/v81fKJ
+	 5vZZfGamf3iuzq7grlpd6Wndf3AO83gov1yQT+pQi/FDkA5JJlwn6helfYuwL446I4
+	 GFVLy0DvP9xZTPqtO/dlPCTlYGAYXDIK+XLkZm8GyzqYnJcr33s6MRbqdHyKlKyh4v
+	 DWmpNOhUfcdpo3QfUQMmqETg2v3RUhuAFDv//1O34LrtbWoI5j0Bmxl+KG9j+4AchW
+	 Lx+3zV15otLXQ==
 Subject:
- Re: [PATCH net] can: peak_pci: Fix potential use-after-free during removal
+ Re: [PATCH net v8 1/2] can: j1939: account for timer references across rearm
 From: netdev-bot+sashiko@kernel.org
-To: liguangshuo@mail.sdu.edu.cn
-Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Wed, 11 Nov 2026 02:15:01 +0000
-Message-ID: <179436330191.488853.6308521949106037669@kernel.org>
-In-Reply-To: <20261109-21df1234b2-can-peak-pci@mail.sdu.edu.cn>
-References: <20261109-21df1234b2-can-peak-pci@mail.sdu.edu.cn>
-X-sashiko-severity: High
+To: zihanx@nebusec.ai
+Cc: linux-can@vger.kernel.org, robin@protonic.nl, o.rempel@pengutronix.de,
+ kernel@pengutronix.de, socketcan@hartkopp.net, mkl@pengutronix.de,
+ bst@pengutronix.de, lkp@intel.com, maxime.jayat@mobile-devices.fr,
+ ecathinds@gmail.com, vega@nebusec.ai, kuba@kernel.org
+Date: Wed, 11 Nov 2026 03:48:20 +0000
+Message-ID: <179436890073.488853.351945341699455054@kernel.org>
+In-Reply-To: <20261109131624.276943-2-zihanx@nebusec.ai>
+References: <20261109131624.276943-2-zihanx@nebusec.ai>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -63,10 +65,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
+Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 0 · High: 1 (2) · Medium: 0 · Low: 0
+Critical: 0 · High: 0 · Medium: 1 · Low: 2
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -74,173 +76,166 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] peak_pci_remove() can still hit a use-after-free after this
-  patch.
-
-Pre-existing issues:
-- [High] The failure_remove_channels cleanup in peak_pci_probe() reads
-  chan->pciec_card from freed memory.
-- [High] When channel 0's register_sja1000dev() fails on a PCAN-
-  ExpressCard, peak_pci_probe() never cleans up the ExpressCard context.
+- [Medium] The commit message ("account for timer references across
+  rearm") understates what this stable-tagged patch does.
+- [Low] The commit message names neither the leak trigger nor its impact.
+- [Low] In j1939_simple_txnext(), the J1939_SIMPLE echo timeout is now
+  armed only after a successful send (j1939_send_one at line 1286, then…
 
 --
 
-can: peak_pci: Fix potential use-after-free during removal
+can: j1939: account for timer references across rearm
 
-This patch moves unregister_sja1000dev() ahead of peak_pciec_remove() in
-peak_pci_remove(). The first channel's write_reg callback,
-peak_pciec_write_reg(), then still has a valid ExpressCard context and I2C
-adapter when set_reset_mode() writes the controller reset register.
+This patch makes each j1939 session timer hold one session reference for
+its whole queued and running lifetime, instead of taking one on every
+hrtimer_start(). It adds per-timer locks, shutdown flags and canceler
+counts so that rearming and cancellation are synchronized with terminal
+state changes, and it arms the simple-TX echo timeout only after a
+successful send.
 
-> diff --git a/drivers/net/can/sja1000/peak_pci.c b/drivers/net/can/sja1000/peak_pci.c
-> index 69c61ccf621df..618f8f6a57500 100644
-> --- a/drivers/net/can/sja1000/peak_pci.c
-> +++ b/drivers/net/can/sja1000/peak_pci.c
-> @@ -752,10 +752,10 @@ static void peak_pci_remove(struct pci_dev *pdev)
->  		struct net_device *prev_dev = chan->prev_dev;
+Link: https://bugtracker.nebusec.ai/f/11143
+
+> Rearming a session timer updates the existing hrtimer rather than
+> creating another callback. Taking a session reference for every start
+> can therefore leave references behind when the timer is rearmed.
+
+[Severity: Low]
+Could the commit message name the trigger and the impact here?
+
+Before this patch, the receiver do_cts_eoma branch of
+j1939_xtp_rx_dat_one() calls j1939_tp_schedule_txtimer() without
+cancelling first:
+
+	} else if (do_cts_eoma) {
+		j1939_tp_set_rxtimeout(session, 1250);
+		if (!session->transmission)
+			j1939_tp_schedule_txtimer(session, 0);
+
+The old j1939_tp_schedule_txtimer() called j1939_session_get() and then
+hrtimer_start(). Several TP.DT frames that satisfy pkt.rx >= pkt.last can
+be processed before the txtimer softirq runs, for example duplicates of
+the last packet in one NET_RX batch. Each of those calls takes a
+reference, but the single callback drops only one.
+
+The session is then never freed, so j1939_session_destroy() never reaches
+netdev_put() and j1939_priv_put(). The session memory leaks and the CAN
+net_device stays pinned, which can hang unregister_netdevice(). A remote
+CAN node can trigger this.
+
+> Track one session reference across each timer's queued and running
+> lifetime. Apply the same accounting to the RX timer and synchronize
+> rearming and cancellation with terminal state changes. Arm the simple-TX
+> echo timeout only after a successful send, and keep terminal session
+> transitions from leaving stale timer references or changing the result.
+
+[Severity: Medium]
+Is this description complete for a patch tagged Cc: stable? Besides the
+timer reference accounting, several changes in net/can/j1939/transport.c
+are visible to userspace. "changing the result" only hints at them.
+
+j1939_xtp_rx_abort_one(): a peer abort that arrives in
+J1939_SESSION_WAITING_ABORT no longer overwrites session->err. It also no
+longer calls j1939_sk_send_loop_abort() or queues J1939_ERRQUEUE_RX_ABORT:
+
+	} else if (!rxtimer_shutdown &&
+		   session->state == J1939_SESSION_WAITING_ABORT) {
+		...
+		deactivate = j1939_session_deactivate_locked(session);
+
+Peer aborts are also ignored completely once rxtimer_shutdown is set.
+
+j1939_session_completed(): this now returns early unless the state is
+J1939_SESSION_ACTIVE. An EOMA, or the final BAM TP.DT, that arrives after
+a local abort no longer completes the session. The reassembled data is
+not delivered through j1939_sk_recv() either:
+
+	if (!completed)
+		return;
+
+j1939_session_cancel(): J1939_ERRQUEUE_RX_ABORT is now queued only when
+the call wins the transition. Before, it was queued on every call:
+
+	if (cancelled && !session->sk)
+		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+
+j1939_tp_schedule_txtimer() and j1939_tp_set_rxtimeout() now silently
+refuse to arm for non-active sessions, or while a cancel is pending.
+
+j1939_tp_rxtimer(): the simple message echo timeout path now calls
+j1939_sk_queue_activate_next(). The old code only called
+j1939_session_deactivate().
+
+Several netdev_alert() messages are now printed only when the caller wins
+the state transition.
+
+The follow-up commit "can: j1939: serialize TX with session shutdown"
+does not describe these changes either.
+
+Could these changes be spelled out in the commit message, or split into
+separate patches? That would let stable backporters see which
+userspace-visible changes are part of the fix.
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..c327fd9618a0c 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+
+[ ... ]
+
+> @@ -1082,12 +1283,12 @@ static int j1939_simple_txnext(struct j1939_session *session)
 >  
->  		dev_info(&pdev->dev, "removing device %s\n", dev->name);
-> +		unregister_sja1000dev(dev);
->  		/* do that only for first channel */
->  		if (!prev_dev && chan->pciec_card)
->  			peak_pciec_remove(chan->pciec_card);
-> -		unregister_sja1000dev(dev);
->  		free_sja1000dev(dev);
->  		dev = prev_dev;
+>  	can_skb_set_owner(skb, se_skb->sk);
 >  
+> -	j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
+> -
+> -	ret = j1939_send_one(priv, skb);
+> +	ret = j1939_send_one(session->priv, skb);
+>  	if (ret)
+>  		goto out_free;
+>  
+> +	j1939_tp_set_rxtimeout(session, J1939_SIMPLE_ECHO_TIMEOUT_MS);
+> +
 
-[Severity: High]
-Can peak_pciec_led_work() still read a freed net_device during removal?
-This ordering also seems to make the window wider.
+[Severity: Low]
+Can this leave a J1939_SIMPLE session in J1939_SESSION_ACTIVE with no
+timer armed?
 
-peak_pciec_probe() stores a raw pointer for every channel. Nothing clears
-it when the channel is freed:
+If j1939_send_one() fails with -ENETDOWN, the code jumps to out_free and
+the echo timeout is never armed. j1939_tp_txtimer() then does nothing for
+that error, because it expects a later netdev event to clean up:
 
-    card->channel[card->chan_count++].netdev = dev;
+	case -ENETDOWN:
+		/* In this case we should get a netdev_event(), all active
+		 * sessions will be cleared by j1939_cancel_active_session().
 
-peak_pciec_led_work() dereferences each of those pointers. It re-arms
-itself every second while any channel is up:
+That expectation does not hold if the interface was already down before
+the session was created. On the path
+j1939_sk_sendmsg()->j1939_sk_send_loop()->j1939_tp_send(), no function
+checks IFF_UP. j1939_session_activate() checks only the registration
+state:
 
-    netdev = card->channel[i].netdev;
-    if (!netdev || !(netdev->flags & IFF_UP))
-        continue;
-    ...
-    if (netdev->stats.rx_bytes != card->channel[i].prev_rx_bytes) {
-    ...
-    if (up_count)
-        schedule_delayed_work(&card->led_work, HZ);
+	} else if (priv->ndev->reg_state != NETREG_REGISTERED) {
+		ret = -ENODEV;
 
-The loop in peak_pci_remove() walks from the last channel back to
-channel 0. Channels N..1 go through unregister_sja1000dev() and
-free_sja1000dev() first.
+j1939_sk_netdev_event_netdown() leaves ENETDOWN in sk_err. The first
+sendmsg consumes it through sock_error() in sock_alloc_send_skb(). A
+second sendmsg then activates a simple session, and can_send() returns
+-ENETDOWN.
 
-The only cancel_delayed_work_sync() on led_work is in
-peak_pciec_remove()->peak_pciec_stop_led_work(). That runs only on
-channel 0's iteration.
+Before this patch, the pre-armed echo timeout fired after
+J1939_SIMPLE_ECHO_TIMEOUT_MS, set session->err = -ETIME, and deactivated
+the session. Now the session stays on priv->active_session_list until
+socket close, NETDEV_UNREGISTER or another down event.
 
-On a two-channel ExpressCard with channel 0 up, this is the sequence
-after this patch:
+The old rxtimer path also left the session at the head of the socket's
+sk_session_queue, because it did not call
+j1939_sk_queue_activate_next(). So the socket queue stall is not new.
 
-peak_pci_remove()
-  free_sja1000dev(ch1)            <- card->channel[1].netdev now dangling
-  unregister_sja1000dev(ch0)
-    set_reset_mode()
-      peak_pciec_write_reg()      <- bit-banged I2C LED write
-    unregister_candev()           <- RTNL, close, synchronize_net(), ...
-  peak_pciec_remove()
-    cancel_delayed_work_sync()
+The follow-up commit "can: j1939: serialize TX with session shutdown"
+keeps this ordering.
 
-Before this patch, only dev_info() ran between free_sja1000dev(ch1) and
-cancel_delayed_work_sync(). Now the whole unregister of channel 0 runs in
-between. During that time the 1 Hz work can fire and read
-card->channel[1].netdev->flags and ->stats from freed memory.
-
-The commit aims to fix use-after-free during removal. Could the teardown
-be restructured to fix this as well, for example:
-
-  1. unregister all channels,
-  2. call peak_pciec_remove(),
-  3. free the net_devices.
-
-Cancelling led_work, or clearing card->channel[i].netdev, before the
-first free_sja1000dev() would also close this.
-
-The probe error path in peak_pci_probe() has the same ordering. The
-failure_remove_channels loop frees every net_device before
-peak_pciec_remove() cancels led_work.
-
-[Severity: High]
-This isn't a bug introduced by this patch, but the
-failure_remove_channels path in peak_pci_probe() seems to have the same
-chan-after-free pattern that commit 949fe9b35570 fixed in
-peak_pci_remove():
-
-drivers/net/can/sja1000/peak_pci.c:peak_pci_probe() {
-    ...
-	chan = NULL;
-	for (dev = pci_get_drvdata(pdev); dev; dev = prev_dev) {
-		priv = netdev_priv(dev);
-		chan = priv->priv;
-		prev_dev = chan->prev_dev;
-
-		unregister_sja1000dev(dev);
-		free_sja1000dev(dev);
-	}
-
-	/* free any PCIeC resources too */
-	if (chan && chan->pciec_card)
-		peak_pciec_remove(chan->pciec_card);
-    ...
-}
-
-chan points into the net_device private area: alloc_sja1000dev() sets
-priv->priv to just past struct sja1000_priv. After the last iteration,
-chan points into channel 0's freed allocation.
-
-Is chan->pciec_card then read from freed memory and passed to
-peak_pciec_remove()? That function calls cancel_delayed_work_sync(),
-i2c_del_adapter() and kfree() on it.
-
-This path is reachable on any multi-channel board when
-alloc_sja1000dev(), peak_pciec_probe() or register_sja1000dev() fails for
-channel i >= 1. Channels 0..i-1 are already registered at that point.
-
-[Severity: High]
-This is also a pre-existing issue, but what happens on a PCAN-ExpressCard
-when register_sja1000dev() fails for channel 0?
-
-For i == 0, peak_pciec_probe() has already done three things:
-
-  - allocated the card,
-  - registered the bit-banging adapter with
-    i2c_bit_add_bus(&card->led_chip),
-  - set chan->pciec_card.
-
-The error path then does:
-
-failure_free_dev:
-	pci_set_drvdata(pdev, chan->prev_dev);
-	free_sja1000dev(dev);
-
-failure_remove_channels:
-	...
-	chan = NULL;
-	for (dev = pci_get_drvdata(pdev); dev; dev = prev_dev) {
-	...
-	if (chan && chan->pciec_card)
-		peak_pciec_remove(chan->pciec_card);
-
-For channel 0, prev_dev is NULL, so drvdata becomes NULL. The loop body
-never runs, chan stays NULL, and peak_pciec_remove() is skipped.
-
-Does this leak the card? It also seems to leave the "peak_i2c" adapter
-registered after cfg_base has been unmapped with pci_iounmap() and the
-PCI device has been disabled.
-
-The adapter's pita_setsda(), pita_setscl(), pita_getsda() and
-pita_getscl() callbacks access card->cfg_base. A later transfer on the
-adapter, for example through /dev/i2c-N, would touch unmapped MMIO. After
-rmmod, the adapter would still point into the unloaded module.
+Would it make sense to also arm the echo timeout, or deactivate the
+session, when the send fails with -ENETDOWN?
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261109-21df1234b2-can-peak-pci%40mail.sdu.edu.cn
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261109131624.276943-1-zihanx%40nebusec.ai
