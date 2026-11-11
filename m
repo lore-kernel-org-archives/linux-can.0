@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794410783;
-	b=s2SAQNyF+axJ0NTm0NAb1Wq77ypepfyIlQiFd71j53BN011LGcWkhY8BgzDzaaGQTWEq
-	 6iFHh4RRngI71qdeTb+p0ie+VCkjGm+qlQBEZhAOQpP9KW5nXUJmbmsqy83Pv0qWNtaLZ
-	 tCyzhHKejXY236si64W66igXTQJPiFmolvKouC7s0AoklF7ez1u83dtWAG6T50JpzIQ1L
-	 vlTBcc0TQwVtAC89N1fU6+OwFMphZexB8dHWScQIdPLqJiBM+se3wXtqMTvByR1aw2e3v
-	 ru6HDYSCyVF3aLzMISHn3VT+zM50K0B39mgqd02s1aQmiAkgV+lqXDYw+Eew9GO8qDw==
+	b=GE21+SqUGE51jql62tmwsvh56Xs5jbrxlg//MPxDbls5HW9w0jwUpENaPwM0z5YOz4jR
+	 4cEArkAwUMWFap/l35MGsoKFp5T4M7MXibT7BGzOCqCZ+t5aPQbq1wsgn4GJ5SPMcwgEK
+	 m7UgyPavjY37C6kL6GP9Jd83PGkVasyAf8ECn5qp9eMlD5WMI0lQEzMl8lkgve3emNQ9X
+	 Jr4hfURy/oLryc1qhbou2Tc3aKBTFern6vCjSX/c7RzDnhZlFgaH9Sc8RvZ8crqN/Eyeo
+	 tri+op0MvPb0i7L1IXKe9Lry2t3sHbHx4jCUEqaqXI/61FSQlSOQ7kwb9YQ3NG7vdKg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794410783;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer;
-	bh=0iOZ0Xo1WJYBctB11LmNr03kLXScFMd7/t16aS3UGRk=;
-	b=hbSfOdWIOKjb/uTWUzp+iI1kR8Zfx+eM2nb9F/6AgTXpz/mdC3SGSb+TT/zR0bdVd9tK
-	 sx4Mraok8WZG92CCmsPI9bYl3LlZd/D4tI4jf3BNn2NBKR+mHrfxaLiWkl8kaz5Zychyj
-	 xTaB39a/QAxYZbiWJ0+zVyt8IEg7hkjBCb2/ZGVslgwHoy7elk+LBUIQXEBVzn5J5s29L
-	 Ow8Lj6lhnBtk9bvMb9UA9Szw4vQ2rF/sgy35Zrvst6HEd8W4Q/AzsSDrGxaFrWDoQK63j
-	 86Tp7mP4OQAqvtW8vvAde2iShWRb3/FMERox/Xr37AjG/bWWocXSsrlfgFkrPI4htMw==
+	bh=6wmlD7jtirBkDzpzQmnWDtjg7VyKMwqIZMobKF2/Aac=;
+	b=KjGkrH62MC9LLqIzRmJoEeK/63rNVeNQpmV1g83TXE5/mg3cFN1cCUYLkIldJQZe7RMC
+	 rqOEAWgsAuOgX8erq8NcqmCBeNPVnZZW33uNAQgMBp3U7GSn2h89aiTIpzbSD2THrtuzH
+	 2mtv+acFvj0wBfyUtN1kGiEqoSXeFr4AA3afPkEUHAV9JO95ELceB+yOlRfDk0GhEIsqY
+	 6ohwmwyR5uNZJssDxFF/mKDtoliWUJcio6a0HNIEkK8pmxXBcJvgSqiig0CBC0L+dEgLe
+	 esM0+FIdoqEVmu7KjlMCKCH7O2AnG144OXCR6a+p2e9DOz7a8yD+zn12Nnb6ZrNlICw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="Xmw/OXv2";
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=MPspumvp;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B598606A893;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC629606A88C;
 	Wed, 11 Nov 2026 15:26:21 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9B598606A893
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CC629606A88C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Xmw/OXv2
-Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.pengutronix.de [IPv6:2a0a:edc0:0:1101:1d::ac])
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=MPspumvp
+Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.4.pengutronix.de [10.17.1.12])
 	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0B783202C9A;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 17B39202C9B;
 	Wed, 11 Nov 2026 16:26:16 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794410776;
@@ -43,40 +43,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0iOZ0Xo1WJYBctB11LmNr03kLXScFMd7/t16aS3UGRk=;
-	b=Xmw/OXv28ZmkXHXj9t/77lEJY7bDzM9iX9NCAHJs6UYeMKjyIImpGXM9Z6QCG6Fa+xmwhh
-	IkTks2ZtYiPeMZiZCfb3FcaTdzTC4Gv4U1WvIHnX8wqZBWgV8YaXGCmaffIdo5MK6lk3V5
-	uv9qd2StIFzxByB8hMtXi9gZge7daygvbY7ugmYDTogAdbp7OfX4gCPqiwg1h3mO4QCdbh
-	y/N0uW4Apz3prgH8yrA4krLQdwkdLB8f/2w2GnBEw2uf73b1HFqmY9KYg25jKeq0h6xTOm
-	h7XhNKFTQE0m6k+HRHgNaFRQs2m3ccPTS5iqewltn1WW4c/Ev/dLGDYzzOUwjA==
+	bh=6wmlD7jtirBkDzpzQmnWDtjg7VyKMwqIZMobKF2/Aac=;
+	b=MPspumvp9rE19KxVRZgKG69iQ8ia1bQxFZ4S2V4yOSPEu23YjG075f9rL5NperW0Ubvp+s
+	aR9VcfQMyZX6k34twB8FYRQRAgxprv0WWAnnnIw/V9fXcZ4P/ZDNXATxljgUicTFjzry76
+	HX+VOQCaygJ4zVxFxlPiSSVoyLUf9rzEBd1WMXqSnfuXj5rwi/8Y7uwBVA7jGFmACBm2WF
+	r52ue1aoKQ/NIljW2Sa7WgP5huwmJ4GdtEZawpKCuA/J4C3cpWs9sr2th3TWY/roqIO6q5
+	imvkNyD9x5Tl9Uwci8+5+mXiLqoqA4qUyyF0Gm8Ix4IgUjg0fbswd+eU+uflzw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794410776;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0iOZ0Xo1WJYBctB11LmNr03kLXScFMd7/t16aS3UGRk=;
-	b=W+NeVHfdZWAtykPo9yPihncNRUwrrCR5MuWUmzZgunbhHh6bxysfdTfSifxA45HPqhK3mb
-	yWZWlubCvFRX48ZGT6U/KEG/v7o7bn6bNXKluc2kiBWHIEydivaf0s2CE0JY3BpARRb6yu
-	e+BWpw67fCcWhou3WkLBGwztbBVMQYNAJCEOsUUxBwPk2gFPsMUDE6rM6wMWAgMfaBdodz
-	gJXbe0iRLM56TazARFlBHSQaSXNR7v30BhUSlqTfdMpbWldBX3fAwBPuxR6V0VxNec6HBp
-	ShoeGQYWHIlHtdyxWMi2u3PRTD6MX2apjhyFnG5nSrs8LbT/h/OwyXb04s50PQ==
+	bh=6wmlD7jtirBkDzpzQmnWDtjg7VyKMwqIZMobKF2/Aac=;
+	b=ChQmwy0jnqffyVzjpNFXuk6/ZYm07Yn7xhAW4VfnLBjF5ibjFlUvnl84deyv9qylpKby+d
+	1AxjbNjFEwON5asJA1R+8H9SaRRqC9Ux0+ThC4Yov4KMzo1u7kjArMKcs/FKCoEetg1Qm/
+	6LHqkwQgR/FbvEkBQil1R7P2dUaY+/utQe5RTaEP36/n0CulpHGIOneLrd+gi+nzrEr4Mo
+	R0OajHZnu0Ju+mkPeeoPnWmhqSc/Ns6oMSH5dOCaaqXP2fYpXAEPMG1k1OxqG+IbA7jZBL
+	GToLBsARqVRH4lI9PSMqAY5Wypg3QibjRgQ3TJ5ciosr8OCR9zPW+0yYXnYNfw==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794410776; a=rsa-sha256;
 	cv=none;
-	b=J/IBWFfqdUzPRr5MK/LBZpBQ27YPShMT6A9vcAxCvVEVn7ZeKvAqiO+Gwd/D9nSuuPvdZB
-	wqBKLFVKNexdBgEdmX4eYFIAvp9h4usw1EXxtziFr0gAQ/4TDGtnqORNsoQqhTRNsK6k9f
-	UYz6xLUbbkFw3/VOalNhKi2Fns/0rSpETq9EN4JZiv+wQllGIMMde4ZskHapkd/iFQPywv
-	A3TL3E+6nqWEJr4DAZfcQIPw3NiEbs4maVIfZbg2WcJLVuJLbDFM8Dg8kxzS2KwobjtbeQ
-	/tFsbRt+up+H9Gkq/khik+4Wodx1MXE0DpEpmcCZDzUqvKk1MTRZBr3BasRW9g==
+	b=fxLCx0s16mUK45h4ufgzRgkhZA5mVuV89Mhar85jQp+kxOvL9vdHgUehOQZ1ZeJWlvOX6X
+	HHpuqZGAi+qXxWEH+/+pZO8z6gEbCGPWl8SoqgO/4P+KvCBdlnUy2L3Yz721gUUNEmdTSP
+	o4hEp25kMNMIwJ/pmXK5aO7cDOoUXHNLC9sYMJco64u/7UIyv5p9IF2cNPFVmMOu8X+d+D
+	SHgfy+4IkSRm8xQ8m7AeYsZSX4La24oz44rQI2BDhJfFL7YGKrU3I6s7a9KxD45LUbu0VN
+	VfQNxwLGXS44jo4N4F2IdehDxfQlqA07hjstAQIOO716xJ6gOqr17PFS4w8ObA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
 Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
-	id BB1193815B6; Wed, 11 Nov 2026 16:26:11 +0100 (CET)
+	id BCC8A3818BA; Wed, 11 Nov 2026 16:26:11 +0100 (CET)
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Date: Wed, 11 Nov 2026 16:25:57 +0100
-Subject: [PATCH can-next v3 8/9] selftests: can: cover J1939 transport
- abort and timeout paths
+Date: Wed, 11 Nov 2026 16:25:58 +0100
+Subject: [PATCH can-next v3 9/9] selftests: can: check SO_J1939_PROMISC
+ receive effect
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,7 +88,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261111-j1939-selftests-v3-8-5a80277ab363@pengutronix.de>
+Message-Id: <20261111-j1939-selftests-v3-9-5a80277ab363@pengutronix.de>
 References: <20261111-j1939-selftests-v3-0-5a80277ab363@pengutronix.de>
 In-Reply-To: <20261111-j1939-selftests-v3-0-5a80277ab363@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>, 
@@ -103,370 +103,198 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  Oleksij Rempel <o.rempel@pengutronix.de>
 X-Mailer: b4 0.14.2
 
-Add transport edge cases to the multi-frame tests. The round-trip tests
-only run transfers that succeed, and no TP transfer there is split into
-CTS blocks. They leave out these cases:
+Add a test that SO_J1939_PROMISC changes what the RX path delivers. The
+existing coverage only round-trips the flag through set/getsockopt, so a
+kernel that stores the flag but never acts on it still passes.
 
-- a CTS that asks for fewer packets than the message has
-- the T3 timeout, when no CTS follows the RTS
-- the T2 timeout, when no DT follows the CTS
-- an Abort from the peer
-
-The timeouts must end in a Connection Abort. The Abort from the peer must
-cancel an incoming session.
+The test uses one probe per filter. One probe goes to a different
+address from the bound one. The other has a different PGN. The test
+sends the probes three times: before the flag is set, while the flag is
+set, and after the flag is cleared. The probes must arrive only while
+the flag is set. After the flag is cleared, the test also sends a frame
+for the bound address and PGN. That frame must arrive.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-Q (sashiko): does tp_rx_cts_block_limit run into the echo race of
-patch 7?
-A: Yes, and more often: it waits for more CTS frames. The answer in
-patch 7 applies.
-
-Q: why is there no test for a Connection Abort received on a kernel TX
-session?
-A: The stack ignores it today and ends the session only on the T3
-timeout, so such a test would fail. This series changes no kernel code.
+Q: why does j1939_set_flag_ok() accept a return value of 1 from
+setsockopt(SO_J1939_PROMISC)?
+A: See patch 4: the return value is a stack bug, and this series changes
+no kernel code.
 
 Changes in v3:
-- say in the body which cases the round-trip tests leave out
-- assert that the last TP CTS window is partial
-- check that the first CTS of the abort and T2 tests asks for all packets,
-  and check the EOMA of tp_rx_cts_block_limit
-- reword the TP_CTS_LIMIT and T2 comments
+- check the PGN of each probe received after SO_J1939_PROMISC is set;
+  both carry the same payload (sashiko)
+- set the flag with j1939_set_flag_ok(), and check that the probes are
+  filtered again after SO_J1939_PROMISC is cleared
+- check that a matching frame still arrives after SO_J1939_PROMISC is
+  cleared, and stop at once if it does not
+- name each probe after what differs from the binding
+- define the bound address and PGN once and derive the probes from them
+- assert that SA_OTHER is a third unicast address
 
 Changes in v2:
 - drop the Assisted-by trailer; the cover letter says how an LLM was used
 - wrap at 80 columns and fix the checkpatch warnings (Marc)
-- name all constants, add static asserts, avoid casts and return bool
-  from helpers named *_ok()
-- time T2 and T3 against the bounds of the timing mode; strict mode
-  catches a doubled timer, and the header no longer claims that the
-  default mode does (sashiko)
-- tp_tx_rts_cts_timeout: check that the sender sees EHOSTUNREACH
-- tp_rx_cts_block_limit: check the exact packet count in each CTS, not
-  only an upper bound
-- time T2 and T3 from before the test opens its socket, so a delay in
-  the test cannot make an abort look early (sashiko)
+- name all constants and avoid casts
+- check the address and the PGN filter each on its own
 ---
- tools/testing/selftests/net/can/test_j1939_multi.c | 270 ++++++++++++++++++++-
- 1 file changed, 269 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/can/test_j1939_opts.c | 129 +++++++++++++++++++++-
+ 1 file changed, 127 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
-index aec96e83305cf2d9129aed3ccdf4035437337ba7..b35c5477afddf25ae650d2c9bfd32d4375b52809 100644
---- a/tools/testing/selftests/net/can/test_j1939_multi.c
-+++ b/tools/testing/selftests/net/can/test_j1939_multi.c
-@@ -5,7 +5,8 @@
-  * A CAN_RAW socket plays the transport peer against the kernel J1939 stack,
-  * in both directions. It takes the other side of the RTS/CTS/DT/EOMA
-  * exchange, for TP with a short message and for ETP with a payload that
-- * spans several CTS blocks (DPO windows).
-+ * spans several CTS blocks (DPO windows). The tests also cover the TP CTS
-+ * block limit and the TP abort and timeout paths.
+diff --git a/tools/testing/selftests/net/can/test_j1939_opts.c b/tools/testing/selftests/net/can/test_j1939_opts.c
+index a729e39c0be4fc8e77717c71000f205dd14f453b..4be2db1e2bb64b3aba534cb9405996f6b1d34edd 100644
+--- a/tools/testing/selftests/net/can/test_j1939_opts.c
++++ b/tools/testing/selftests/net/can/test_j1939_opts.c
+@@ -6,8 +6,9 @@
+  * and addressing: the SO_J1939_FILTER PGN whitelist, the SO_J1939_SEND_PRIO
+  * send priority seen in the CAN id (via a CAN_RAW peer, including the kernel's
+  * default), unconnected sendto(2), a wrong-family bind rejection,
+- * SO_J1939_ERRQUEUE TX-completion notifications, and set/getsockopt
+- * round-trips of SO_J1939_SEND_PRIO, SO_J1939_PROMISC and SO_J1939_ERRQUEUE.
++ * SO_J1939_ERRQUEUE TX-completion notifications, the SO_J1939_PROMISC receive
++ * effect, and set/getsockopt round-trips of SO_J1939_SEND_PRIO,
++ * SO_J1939_PROMISC and SO_J1939_ERRQUEUE.
   *
-  * Known stack race: the stack updates a session from the loopback echo of
-  * its own CTS, RTS and DT frames, and the CAN_RAW peer can read that echo
-@@ -59,6 +60,7 @@ _Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
- #define TP_CMD_RTS		0x10
- #define TP_CMD_CTS		0x11
- #define TP_CMD_EOMA		0x13
-+#define TP_CMD_ABORT		0xff
+  * Run by test_j1939_opts.sh, see j1939_tests.h.
+  */
+@@ -19,6 +20,10 @@
+ /* arbitrary addresses */
+ #define SA_TX			0x80
+ #define SA_RX			0x90
++#define SA_OTHER		0x50	/* neither SA_TX nor SA_RX */
++_Static_assert(SA_OTHER != SA_TX && SA_OTHER != SA_RX &&
++	       SA_OTHER <= J1939_MAX_UNICAST_ADDR,
++	       "SA_OTHER must be a third unicast address");
  
- #define ETP_CMD_RTS		0x14
- #define ETP_CMD_CTS		0x15
-@@ -75,6 +77,7 @@ _Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
- #define TP_CTS_NEXT_OFF		2
- #define TP_EOMA_SIZE_OFF	1	/* le16 */
- #define TP_EOMA_PKTS_OFF	3
-+#define TP_ABORT_REASON_OFF	1
- 
- #define ETP_RTS_SIZE_OFF	1	/* le32 */
- #define ETP_CTS_PKTS_OFF	1
-@@ -118,6 +121,67 @@ _Static_assert(J1939_NUM_PKTS(ETP_SIZE) % ETP_CTS_MAX_PKTS != 0,
- #define TP_CTS_ALL		J1939_NUM_PKTS(TP_SIZE)
- _Static_assert(TP_CTS_ALL <= UINT8_MAX, "the TP.CM packet counts are one byte");
- 
-+/*
-+ * arbitrary limit on packets per CTS, sent in the RTS, below the packet
-+ * count of TP_SIZE
-+ */
-+#define TP_CTS_LIMIT		3U
-+_Static_assert(J1939_NUM_PKTS(TP_SIZE) > TP_CTS_LIMIT,
-+	       "TP_SIZE must need more packets than TP_CTS_LIMIT");
-+_Static_assert(J1939_NUM_PKTS(TP_SIZE) % TP_CTS_LIMIT != 0,
-+	       "the last TP CTS window must be partial");
-+
-+/*
-+ * Connection Abort reasons (SAE J1939-21:2001 Table 6); the kernel names them
-+ * J1939_XTP_ABORT_*.
-+ */
-+#define ABORT_REASON_BUSY	1
-+#define ABORT_REASON_TIMEOUT	3
-+
-+/*
-+ * TP responder T2: wait for the next DT after CTS (SAE J1939-21:2001
-+ * section 5.10.2.4 and Figure C1).
-+ */
-+#define TP_T2_MS		1250
-+/*
-+ * TP originator T3: wait for a CTS after RTS (SAE J1939-21:2001 section
-+ * 5.10.2.4 and Figure C1).
-+ */
-+#define TP_T3_MS		1250
-+
-+/*
-+ * Bounds for the time from before the test opens its socket to the kernel's
-+ * abort.
-+ * The values below are guesses, not spec values.
-+ */
-+
-+/* relaxed (default, for slow VMs): catches a timer that fires early or never */
-+#define TP_RELAXED_EARLY_MS	450
-+#define TP_RELAXED_LATE_MS	1250
-+#define TP_RELAXED_MIN_MS(t)	((t) - TP_RELAXED_EARLY_MS)
-+#define TP_RELAXED_MAX_MS(t)	((t) + TP_RELAXED_LATE_MS)
-+
-+/* strict: also catches a doubled timer */
-+#define TP_STRICT_EARLY_MS	100
-+#define TP_STRICT_LATE_MS	200
-+#define TP_STRICT_MIN_MS(t)	((t) - TP_STRICT_EARLY_MS)
-+#define TP_STRICT_MAX_MS(t)	((t) + TP_STRICT_LATE_MS)
-+
-+/* for any timer: the relaxed bounds must contain the strict bounds */
-+_Static_assert(TP_RELAXED_EARLY_MS >= TP_STRICT_EARLY_MS,
-+	       "the relaxed minimum must not be above the strict one");
-+_Static_assert(TP_RELAXED_LATE_MS >= TP_STRICT_LATE_MS,
-+	       "the relaxed maximum must not be below the strict one");
-+_Static_assert(TP_T2_MS > TP_RELAXED_EARLY_MS,
-+	       "TP_T2_MS must exceed TP_RELAXED_EARLY_MS");
-+_Static_assert(TP_T3_MS > TP_RELAXED_EARLY_MS,
-+	       "TP_T3_MS must exceed TP_RELAXED_EARLY_MS");
-+/* so that strict mode catches a doubled T2 or T3 */
-+_Static_assert(TP_STRICT_LATE_MS < TP_T2_MS,
-+	       "TP_STRICT_LATE_MS must stay below TP_T2_MS");
-+_Static_assert(TP_STRICT_LATE_MS < TP_T3_MS,
-+	       "TP_STRICT_LATE_MS must stay below TP_T3_MS");
-+
- FIXTURE(j1939_multi)
- {
- 	int ifindex;
-@@ -558,6 +622,116 @@ TEST_F(j1939_multi, tp_tx_to_raw)
- 		TH_LOG("no TX-completion ACK after the EOMA");
+ /* two different destination-specific PGNs, otherwise arbitrary */
+ #define PGN_A			0x0ab00
+@@ -173,6 +178,126 @@ TEST_F(j1939_opts, filter_pgn)
+ 	EXPECT_EQ(errno, EAGAIN);
  }
  
 +/*
-+ * TP RX, per-CTS block limit: the RTS asks for at most TP_CTS_LIMIT packets
-+ * per CTS, fewer than the message has. Each CTS from the kernel must ask
-+ * for TP_CTS_LIMIT packets, or for the rest.
++ * rx binds to (PROMISC_BOUND_DA, PROMISC_BOUND_PGN). Without SO_J1939_PROMISC
++ * it must not get the probes below. Each probe differs from the binding only
++ * in the address or only in the PGN, so each filter is tested on its own.
 + */
-+TEST_F(j1939_multi, tp_rx_cts_block_limit)
-+{
-+	struct can_frame frame;
++#define PROMISC_BOUND_DA	SA_RX
++#define PROMISC_BOUND_PGN	PGN_A
++_Static_assert(SA_OTHER != PROMISC_BOUND_DA && PGN_B != PROMISC_BOUND_PGN,
++	       "each probe must differ from the binding");
++_Static_assert(J1939_IS_PDU1(PROMISC_BOUND_PGN) &&
++	       PROMISC_BOUND_DA <= J1939_MAX_UNICAST_ADDR,
++	       "the binding must be a unicast address and a PDU1 PGN");
 +
-+	ASSERT_TRUE(tp_rx_roundtrip_ok(self, TP_CTS_LIMIT, &frame))
-+		TH_LOG("TP RX round-trip against the raw peer failed");
++enum { PROBE_OTHER_PGN, PROBE_OTHER_ADDR, PROBE_NUM };
 +
-+	/* frame is the kernel's EOMA */
-+	EXPECT_EQ(get_le16(&frame.data[TP_EOMA_SIZE_OFF]), TP_SIZE);
-+	EXPECT_EQ(frame.data[TP_EOMA_PKTS_OFF], J1939_NUM_PKTS(TP_SIZE));
-+}
++static const struct {
++	uint8_t da;
++	pgn_t pgn;
++} promisc_probes[] = {
++	[PROBE_OTHER_PGN] = { PROMISC_BOUND_DA, PGN_B },
++	[PROBE_OTHER_ADDR] = { SA_OTHER, PROMISC_BOUND_PGN },
++};
 +
-+/* Set *min_ms and *max_ms to the abort bounds of a TP timer of timer_ms. */
-+static void tp_abort_window(int timer_ms, int *min_ms, int *max_ms)
-+{
-+	*min_ms = j1939_timing_ms(TP_RELAXED_MIN_MS(timer_ms),
-+				  TP_STRICT_MIN_MS(timer_ms));
-+	*max_ms = j1939_timing_ms(TP_RELAXED_MAX_MS(timer_ms),
-+				  TP_STRICT_MAX_MS(timer_ms));
-+}
++_Static_assert(ARRAY_SIZE(promisc_probes) == PROBE_NUM,
++	       "promisc_probes needs one row per probe");
 +
 +/*
-+ * Wait until max_ms after t0 for the kernel's Connection Abort to the peer
-+ * and store it in *frame; *elapsed_ms gets the time from t0 to its arrival.
++ * Send every probe from tx and check that rx gets none of them. Keep
++ * sending after a probe arrives, so each filter is checked on its own.
++ * Return false if a probe arrives. Also return false at once if a probe
++ * cannot be sent.
 + */
-+static bool recv_abort_timed_ok(int raw, const struct timespec *t0,
-+				int max_ms, struct can_frame *frame,
-+				long *elapsed_ms)
++static bool no_probe_received_ok(FIXTURE_DATA(j1939_opts) *self,
++				 const uint8_t *buf, size_t len)
 +{
-+	struct timespec now;
-+	bool ok;
++	uint8_t rx_buf[CAN_MAX_DLEN];
++	bool ok = true;
++	size_t i;
 +
-+	clock_gettime(CLOCK_MONOTONIC, &now);
-+	*elapsed_ms = timespec_diff_ms(t0, &now);
-+	if (*elapsed_ms > max_ms)
-+		return false;
-+
-+	ok = recv_kernel_cm_ok(raw, TP_CM, TP_CMD_ABORT, frame,
-+			       max_ms - *elapsed_ms);
-+	clock_gettime(CLOCK_MONOTONIC, &now);
-+	*elapsed_ms = timespec_diff_ms(t0, &now);
++	for (i = 0; i < ARRAY_SIZE(promisc_probes); i++) {
++		if (!j1939_sendto_ok(self->tx, buf, len, self->ifindex,
++				     J1939_NO_NAME, promisc_probes[i].da,
++				     promisc_probes[i].pgn)) {
++			fprintf(stderr, "# sendto probe %zu failed: %d\n", i,
++				errno);
++			return false;
++		}
++		if (recv_timeout(self->rx, rx_buf, sizeof(rx_buf),
++				 J1939_NEG_RECV_TIMEOUT_MS) != -1) {
++			fprintf(stderr, "# probe %zu was received\n", i);
++			ok = false;
++		}
++	}
 +	return ok;
 +}
 +
-+/*
-+ * Wait for an error on s and return it (SO_ERROR), or 0 if none came within
-+ * J1939_RECV_TIMEOUT_MS.
-+ */
-+static int sock_wait_error(int s)
++/* SO_J1939_PROMISC delivers frames that do not match the bound (addr, pgn). */
++TEST_F(j1939_opts, promisc_receive)
 +{
-+	struct pollfd pfd = { .fd = s };
-+	socklen_t len;
-+	int err = 0;
++	struct sockaddr_can bound_src = {};
++	const pgn_t bound_pgn = PROMISC_BOUND_PGN;
++	uint8_t tx_buf[CAN_MAX_DLEN];
++	size_t i;
 +
-+	if (poll(&pfd, 1, J1939_RECV_TIMEOUT_MS) <= 0 ||
-+	    !(pfd.revents & POLLERR))
-+		return 0;
++	fill_pattern(tx_buf, sizeof(tx_buf));
 +
-+	len = sizeof(err);
-+	if (getsockopt(s, SOL_SOCKET, SO_ERROR, &err, &len))
-+		return 0;
-+	return err;
-+}
++	self->rx = j1939_open(self->ifindex, PROMISC_BOUND_DA,
++			      PROMISC_BOUND_PGN);
++	ASSERT_GE(self->rx, 0);
++	self->tx = j1939_open(self->ifindex, SA_TX, J1939_NO_PGN);
++	ASSERT_GE(self->tx, 0);
 +
-+/*
-+ * TP TX, RTS->CTS timeout: the J1939 socket starts a TP transmit; the raw peer
-+ * receives the RTS but never answers with a CTS. The kernel must give up after
-+ * T3 (TP_T3_MS), send a Connection Abort and report the error to the sender.
-+ *
-+ * The kernel starts T3 when it sends the RTS, and starts it again when it
-+ * receives its own RTS back from the CAN echo (j1939_xtp_rx_rts() in
-+ * net/can/j1939/transport.c). The wait is timed from before the socket is
-+ * opened, so a delay in this test cannot make the abort look early.
-+ */
-+TEST_F(j1939_multi, tp_tx_rts_cts_timeout)
-+{
-+	uint8_t payload[TP_SIZE];
-+	struct can_frame frame;
-+	struct timespec t0;
-+	int min_ms, max_ms;
-+	long elapsed_ms;
++	EXPECT_TRUE(no_probe_received_ok(self, tx_buf, sizeof(tx_buf)))
++		TH_LOG("probe check without promisc failed");
 +
-+	fill_pattern(payload, sizeof(payload));
-+	tp_abort_window(TP_T3_MS, &min_ms, &max_ms);
++	ASSERT_TRUE(j1939_set_flag_ok(self->rx, SO_J1939_PROMISC, 1))
++		TH_LOG("setting SO_J1939_PROMISC failed: %d", errno);
 +
-+	clock_gettime(CLOCK_MONOTONIC, &t0);
-+	ASSERT_TRUE(tp_tx_start_session_ok(self, payload, sizeof(payload),
-+					   &frame));
++	for (i = 0; i < ARRAY_SIZE(promisc_probes); i++) {
++		struct sockaddr_can src = {};
++		bool got;
 +
-+	ASSERT_TRUE(recv_abort_timed_ok(self->raw, &t0, max_ms, &frame,
-+					&elapsed_ms))
-+		TH_LOG("kernel did not send a Connection Abort within %d ms",
-+		       max_ms);
++		ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
++					    self->ifindex, J1939_NO_NAME,
++					    promisc_probes[i].da,
++					    promisc_probes[i].pgn))
++			TH_LOG("sendto probe %zu failed: %d", i, errno);
++		got = recvfrom_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
++					 J1939_RECV_TIMEOUT_MS, &src);
++		EXPECT_TRUE(got)
++			TH_LOG("probe %zu not received despite promisc", i);
++		if (!got)
++			continue;
++		/* the probes carry the same payload, so check which one came */
++		EXPECT_EQ(src.can_addr.j1939.pgn, promisc_probes[i].pgn)
++			TH_LOG("probe %zu came with PGN 0x%05x", i,
++			       src.can_addr.j1939.pgn);
++	}
 +
-+	/* the T3 timer has to run before the abort */
-+	ASSERT_GE(elapsed_ms, min_ms)
-+		TH_LOG("abort after only %ld ms, expected at least %d ms",
-+		       elapsed_ms, min_ms);
-+	EXPECT_EQ(frame.data[TP_ABORT_REASON_OFF], ABORT_REASON_TIMEOUT);
-+
-+	/* j1939_xtp_abort_to_errno() reports a timeout as EHOSTUNREACH */
-+	EXPECT_EQ(sock_wait_error(self->j1939), EHOSTUNREACH)
-+		TH_LOG("the sender did not see the aborted session");
-+}
-+
- /*
-  * ETP RX: the CAN_RAW peer transmits an ETP message to the J1939 socket.
-  * The kernel requests blocks with ETP.CTS; raw answers each with a DPO and
-@@ -676,6 +850,100 @@ TEST_F(j1939_multi, etp_tx_to_raw)
- 		TH_LOG("no TX-completion ACK after the EOMA");
- }
- 
-+/* Send a TP.CM_Abort control frame from the peer to the kernel. */
-+static bool send_abort_ok(int raw, uint8_t reason)
-+{
-+	uint8_t dat[CAN_MAX_DLEN];
-+
-+	cm_dat_init(dat, TP_CMD_ABORT);
-+	dat[TP_ABORT_REASON_OFF] = reason;
-+	return peer_send_cm_ok(raw, TP_CM, dat);
-+}
-+
-+/*
-+ * Open a TP RX j1939 socket, send an RTS that allows all packets in one CTS
-+ * and check that the first CTS asks for all of them.
-+ */
-+static bool tp_rx_start_session_ok(int *j1939, int raw, int ifindex,
-+				   struct can_frame *cts)
-+{
-+	if (!tp_rx_open_and_send_rts_ok(j1939, raw, ifindex, TP_CTS_ALL))
-+		return false;
-+
-+	return recv_kernel_cm_ok(raw, TP_CM, TP_CMD_CTS, cts,
-+				 J1939_RECV_TIMEOUT_MS) &&
-+	       cts_accept_ok(cts->data[TP_CTS_PKTS_OFF],
-+			     cts->data[TP_CTS_NEXT_OFF], 0,
-+			     J1939_NUM_PKTS(TP_SIZE), TP_CTS_ALL);
-+}
-+
-+/*
-+ * TP RX timeout: the CAN_RAW peer opens a session with RTS but never sends the
-+ * data; the kernel's T2 timer must abort the session and emit a TP.CM_Abort.
-+ * The kernel starts its receive timer when it gets the RTS
-+ * (j1939_xtp_rx_rts()). It starts it again as T2 when it sends the CTS
-+ * (j1939_session_tx_cts()) and on the CAN echo of that CTS
-+ * (j1939_xtp_rx_cts_one()). The wait is timed from before the socket is
-+ * opened.
-+ */
-+TEST_F(j1939_multi, tp_rx_timeout)
-+{
-+	struct can_frame frame;
-+	struct timespec t0;
-+	int min_ms, max_ms;
-+	long elapsed_ms;
-+
-+	tp_abort_window(TP_T2_MS, &min_ms, &max_ms);
-+
-+	clock_gettime(CLOCK_MONOTONIC, &t0);
-+	ASSERT_TRUE(tp_rx_start_session_ok(&self->j1939, self->raw,
-+					   self->ifindex, &frame))
-+		TH_LOG("failed to open and start the TP rx session");
-+
-+	ASSERT_TRUE(recv_abort_timed_ok(self->raw, &t0, max_ms, &frame,
-+					&elapsed_ms))
-+		TH_LOG("kernel did not abort the stalled rx session");
-+
-+	/* the T2 timer has to run before the abort */
-+	ASSERT_GE(elapsed_ms, min_ms)
-+		TH_LOG("abort after only %ld ms, expected at least %d ms",
-+		       elapsed_ms, min_ms);
-+	EXPECT_EQ(frame.data[TP_ABORT_REASON_OFF], ABORT_REASON_TIMEOUT);
-+}
-+
-+/*
-+ * TP RX abort: the CAN_RAW peer aborts an open session; the kernel must cancel
-+ * it and deliver nothing to the J1939 socket.
-+ */
-+TEST_F(j1939_multi, tp_rx_abort_from_raw)
-+{
-+	uint8_t payload[TP_SIZE];
-+	unsigned int num_pkts = J1939_NUM_PKTS(TP_SIZE);
-+	struct can_frame frame;
-+	struct pollfd pfd;
-+
-+	fill_pattern(payload, sizeof(payload));
-+
-+	ASSERT_TRUE(tp_rx_start_session_ok(&self->j1939, self->raw,
-+					   self->ifindex, &frame))
-+		TH_LOG("failed to open and start the TP rx session");
-+
-+	ASSERT_TRUE(send_abort_ok(self->raw, ABORT_REASON_BUSY));
++	/* with promisc cleared, the bound (addr, pgn) filters again */
++	ASSERT_TRUE(j1939_set_flag_ok(self->rx, SO_J1939_PROMISC, 0))
++		TH_LOG("clearing SO_J1939_PROMISC failed: %d", errno);
++	EXPECT_TRUE(no_probe_received_ok(self, tx_buf, sizeof(tx_buf)))
++		TH_LOG("probe check after clearing promisc failed");
 +
 +	/*
-+	 * Send all DT frames anyway. A kernel that ignored the abort would
-+	 * deliver the message.
++	 * Send a frame for the bound address and PGN. It must still
++	 * arrive. A socket that receives nothing would pass the probe
++	 * check after clearing, too.
 +	 */
-+	ASSERT_TRUE(send_tp_dt_burst_ok(self->raw, SA_LOCAL, SA_PEER,
-+					TP_FIRST_PKT, num_pkts, payload,
-+					TP_SIZE));
-+
-+	pfd.fd = self->j1939;
-+	pfd.events = POLLIN;
-+	EXPECT_EQ(poll(&pfd, 1, J1939_NEG_RECV_TIMEOUT_MS), 0)
-+		TH_LOG("socket delivered data despite the abort");
++	ASSERT_TRUE(j1939_sendto_ok(self->tx, tx_buf, sizeof(tx_buf),
++				    self->ifindex, J1939_NO_NAME,
++				    PROMISC_BOUND_DA, PROMISC_BOUND_PGN))
++		TH_LOG("sendto of the matching frame failed: %d", errno);
++	ASSERT_TRUE(recvfrom_verify_ok(self->rx, tx_buf, sizeof(tx_buf),
++				       J1939_RECV_TIMEOUT_MS, &bound_src))
++		TH_LOG("no matching frame after promisc was cleared");
++	EXPECT_EQ(bound_src.can_addr.j1939.pgn, bound_pgn);
 +}
 +
- int main(int argc, char **argv)
+ /* Without SO_J1939_SEND_PRIO the kernel's default priority is used. */
+ TEST_F(j1939_opts, send_prio_default)
  {
- 	return j1939_test_main(argc, argv);
 
 -- 
 2.47.3
