@@ -1,48 +1,49 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.2
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=117.135.210.3
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794393473;
-	b=cLEpGiMJ5veopgXA/rYEfbV47JYjuR+sd70ahriev9tAt0v3+4Pj+hfxfAyGqr1wAJGo
-	 od+plP1XQDDyvUNPVHVXHvYGjTYhfBDhWOyiN7hRoCVTJNO8bbPFxYjPiDo+kxSP9uAHz
-	 goC7hAev3Z4XSrr8OfKtHsY72pAZ2r/SA/xyMB/vHQAbVTCiTJA1Yu1UQ+DWb4yS7auEI
-	 2DV1qhf8zeo13i0uzCz55xC5/XwaLaOqcUAetSWMupZyeMrVnVaeEnpmye5wCbdgcCuLv
-	 qsfdYha/7fovMWq91JhitvgBS+W2pzuhrU1wvp3k3UzUGs6AtFIGHDhpzBgrvQUuWFw==
+	t=1794393474;
+	b=tCyp9dsYe91mVw0jVaFhbYCegvKZ5d1YKgJXAXqzzEokkSDqdFG0K1aoxVYMRgIav8bs
+	 jfIZ0B/ehhCjam2vffRQC3yoig5Y8I8Z6lWtYb/YKjeQo+AvF60HA32SXbrligL7EuNwg
+	 oJayq96/UKTPKPv31WjgkqBhXBf/S4sNsXshCOfn6yNZJF1krG7ZZRG50fRWm/xqr4DIk
+	 zouUh4u3J6wrq/C7Ay5PPZw8Ix0yu84tTiI8EgRYDPWG5+V5rzlyd0Q7f0uyRD/ZbIfxg
+	 5ZpatdEg4ZFywNOTFWHw3mB33gLdCqV1AMhHOQDT/JflYBVLvD2LIUUrSKbugLdIT+Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794393473;
-	h=DMARC-Filter:DKIM-Signature:From:Date:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
-	 In-Reply-To:To:Cc:X-Mailer:X-CM-TRANSID:X-Coremail-Antispam:Sender:
+	a=rsa-sha256; c=relaxed/relaxed; t=1794393474;
+	h=DMARC-Filter:DKIM-Signature:From:Subject:Date:Message-Id:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:X-B4-Tracking:
+	 X-Change-ID:To:Cc:X-Mailer:X-CM-TRANSID:X-Coremail-Antispam:Sender:
 	 X-CM-SenderInfo;
-	bh=d3FKuqc6u/Y7Kk2Jk+Mpg4j89GV6lD7jgrDIj8trkuE=;
-	b=YRtHTQhLM+quLZNwE4AENSiytxcK2AmrOb5+C0vMkuaYWNxbthduWXSBCwVlEHIzavFo
-	 e4IUl6xno9qoO4MdLgUff1uVm9UUSggVrDOhfFl6yj0XsLsMkAAJhEkPya/Ge0f5hyeHa
-	 S8+3wPMgIg3CymYlFQQ8TKMsTBwJT/FLciDhnjCnI6Luf4vsZoobjYsErTiJ+1J0UryxJ
-	 Q/xVR9miqBut3nt7085bgD88IavlikLCNxjLKwMttvOPKRFmz4lqHaY0AJbPfuqoOxdAf
-	 ep/pSzNL0yDdgY7F0Fncmz9qeEZ432roA9cGdsM7M0GjkURCVEd01ZmqMKG5DIph9jA==
+	bh=Dso1ta380YcEMHupulitAz3YzmTiixvx3621zNH+NpM=;
+	b=FQr1kVIdWuMFooUY3RVfVyNqPPdve7OVLPvvJ0XJruF+lkcM+nYz8oYs17wizFx4AhGr
+	 irODsK12wWA4xY/XqwcZrH2EcaCg5ntqu3T2FdJj4P4IUkhV3pARtUEYCFbvzbwtC4N72
+	 PAkOJstMwWHu1c2zsDbqyfdTWnembi5yLGFvyp4JFKUCslOk0qd5dsz1UjXCAAhr2c791
+	 kSGXQdHim10VlVUXZB1FyTF5rb7OIGh1r8JR9DXIORAmd5K+NdIYhFUYJ1oK9vgWh3ESq
+	 0xhScmVfjAqx7oFj3gcNxP44zPtyK/RNDnISLKP5Lw4MLO9cB9YCgBBKr0xWyjfCt1g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=fail header.from=gmail.com;
 	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b="n+InSik/";
-	arc=none smtp.remote-ip=117.135.210.2
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.2])
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=G6mwolTN;
+	arc=none smtp.remote-ip=117.135.210.3
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0CBE606A332;
-	Wed, 11 Nov 2026 10:37:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B0CBE606A332
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD02606A32D;
+	Wed, 11 Nov 2026 10:37:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0AD02606A32D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=n+InSik/
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=G6mwolTN
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Date:Subject:MIME-Version:Content-Type:
-	Message-Id:To; bh=d3FKuqc6u/Y7Kk2Jk+Mpg4j89GV6lD7jgrDIj8trkuE=;
-	b=n+InSik/pCTGBactsyLDZqen3iv5yu+rrX65WOIj97riEnt6ATOP9OAuhmimCC
-	Kuuz4Qb+8LAO/F+PN24sQjV5L4wRP6HNAZHGqv0OR+R86moWldYjxzoKzkGB76K0
-	OCbodr4t7cXbJbWo/aAQ1skuGj4ZROJpAZZx/q5VTbfn8=
+	s=s110527; h=From:Subject:Date:Message-Id:MIME-Version:
+	Content-Type:To; bh=Dso1ta380YcEMHupulitAz3YzmTiixvx3621zNH+NpM=;
+	b=G6mwolTNAeWl/uaRaypqdXOQr2u6tZPi9h27+/jsMgDAE7dfjRLiWLY6zBZVnC
+	5A7muMzBl59snsTCtHsJ5RV/RM/FOF4W1rQQoRq70nu3v5ydbx9h8Nve62HPuQpr
+	FLY2a69JRTF8rTElxXmxhK77n1K+K8KUyw+RMXRySq3y0=
 From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
-Date: Wed, 11 Nov 2026 18:31:23 +0800
-Subject: [PATCH net v9 2/4] can: j1939: validate the EDPO packet number
+Subject: [PATCH net v9 0/4] can: j1939: fix the abort timer and bound EDPO
+Date: Wed, 11 Nov 2026 18:31:21 +0800
+Message-Id: <20261111-j1939-edpo-v9-v9-0-e779ca334a81@163.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -54,9 +55,10 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261111-j1939-edpo-v9-v9-2-e779ca334a81@163.com>
-References: <20261111-j1939-edpo-v9-v9-0-e779ca334a81@163.com>
-In-Reply-To: <20261111-j1939-edpo-v9-v9-0-e779ca334a81@163.com>
+X-B4-Tracking: v=1; b=H4sIAPlD9GoC/yWMywqDQBAEf0X6nAEfIIy/EnJY3TaOh1V2jQTEf
+ 89q+lYNVQcSozGhKw5E7pZsCRn0UWCYXHhTzGdGXdZtlSdzpY0K/brIruId2belG1UbZGeNHO1
+ 7954I3PD6n+nTzxy2q4Tz/AHkQYV8dgAAAA==
+X-Change-ID: 20261111-j1939-edpo-v9-daeeb60af993
 To: Robin van der Gracht <robin@protonic.nl>, 
  Oleksij Rempel <o.rempel@pengutronix.de>, 
  Oliver Hartkopp <socketcan@hartkopp.net>, 
@@ -64,109 +66,93 @@ To: Robin van der Gracht <robin@protonic.nl>,
 Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
  linux-kernel@vger.kernel.org, stable@vger.kernel.org
 X-Mailer: b4 0.16.0
-X-CM-TRANSID:_____wD3f79uRfRqf2sZGg--.8132S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxCF1xWryDXrWfKr18Wr1kAFb_yoWrAr1kpa
-	y3KrW3GrnrJr1Iyws3trZYqryayrs3JFWfW3W2q3sakwsxCF4rtFyDKry2gayDJ3y8u345
-	uryDX3ZxGr4DXrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UMWl9UUUUU=
+X-CM-TRANSID:PCgvCgAXI3dtRfRqn9XoEg--.16848S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxXw1kJF4DtFykXF4kJw1fWFg_yoWrWF4rpF
+	ZxKFy3KF1kJF42kws7ZF48Xry5ZFs3tay5GrySg3s5Aw45Cr1ftFWxKw1Sga17C393u3y2
+	vr1qqF98WF4DZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07j7o7NUUUUU=
 Sender: quchaosheng000406@163.com
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5A9EuWr0RW+jwgAA3D
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDAA1EuWr0RW03FwAA3m
 
-From: Chaosheng Qu <quchaosheng000406@163.com>
+This series fixes two bugs in the j1939 transport layer, plus two small
+hardening changes that fall out of them.
 
-Validate the packet number in ETP.CM_DPO, which is peer controlled and
-currently accepted without any check.  It names the packet a transmission
-window starts at, and j1939_xtp_rx_dat_one() places incoming data at
-"dat[0] - 1 + pkt.dpo", so a value past the end of the message moves
-pkt.dpo beyond the reassembled buffer.
+The first bug is a timer reference leak.  The receive timer is cancelled and
+restarted from three places, and they do not agree on
+active_session_list_lock: the receive handlers call the helper without the
+lock, j1939_session_cancel() called it with the lock held, and the rx timeout
+branch of j1939_tp_rxtimer() open-coded the same sequence.  Two callers can
+interleave between the cancel and the start, and the second hrtimer_start()
+reprograms an already armed timer without dropping the reference the first
+caller took, so the session and its netdev_hold() reference leak.  [1/4]
+replaces the three copies with one helper that cancels with
+hrtimer_try_to_cancel() under the lock, so the cancel and the start are one
+step.
 
-The transfer still completes normally in that case.  With
-pkt.dpo == pkt.total, a closing ETP.DT frame with dat[0] == 0 evaluates to
-packet pkt.total - 1, which is the last in-order packet, so pkt.rx reaches
-pkt.total and the receiver emits its own EOMA.  The local loopback of that
-EOMA runs j1939_session_completed(), which asks j1939_session_skb_get()
-for offset "pkt.dpo * 7" -- one full packet past the end of the queued
-skb -- gets NULL, and passes it straight to j1939_sk_recv(), which
-dereferences oskb->sk.
+The second bug is a NULL dereference driven by a peer.  ETP.CM_DPO is peer
+controlled and its packet number is not validated; a value at or past
+pkt.total moves pkt.dpo past the reassembled buffer, the transfer still
+completes, and the local loopback of the receiver's own EOMA hands a NULL
+skb to j1939_sk_recv(), which dereferences oskb->sk.  [2/4] rejects that
+EDPO.  [3/4] checks the skb in j1939_session_completed() anyway, so a future
+regression in the offset arithmetic degrades to a dropped message instead of
+a panic.  [4/4] rejects an oversized CTS where it is parsed, instead of
+letting it come back one step later as a bad EDPO offset.
 
-Reject a packet number at or past pkt.total and abort the session.  The
-check has to be ">=" and not ">": pkt.total is a packet count, so the last
-valid packet is pkt.total - 1.  The abort code depends on the role: a
-receiver rejects a bad offset with J1939_XTP_ABORT_BAD_EDPO_OFFSET, while a
-transmitter only builds an EDPO from pkt.tx_acked, which comes from the
-responder's ETP.CM_CTS, so an out-of-range value there is an oversized CTS
-and is reported as J1939_XTP_ABORT_ECTS_TOO_BIG.
+Testing: [2/4] was verified on a local vcan link -- ETP.CM_RTS with a size of
+1786 bytes (256 packets), then ETP.CM_DPO packet 256 and an ETP.DT with
+sequence 0, dereferenced a NULL skb 3/3 times before the bound check and was
+rejected 3/3 times after it.  The seq 0 case is the one that made
+j1939_xtp_rx_dat_one() compute the last in-order packet, so the transfer
+completed and the receiver's own EOMA came back through the loopback, as
+described in [2/4].  For the timer side: two unparsable ETP.DT frames
+followed by "ip link del" left unregister_netdevice() waiting for the session
+reference; with the abort timer rearmed the session is deactivated about
+500 ms after the second frame.  Each patch builds standalone (net/can/j1939
+built in, x86_64) and passes scripts/checkpatch.pl with no errors or
+warnings.  I have no j1939 hardware, so none of this ran on a real CAN bus,
+and the race in [1/4] is argued from the lock ordering rather than caught in
+the act.
 
-Cancel the session timers before aborting, as the other receive-path abort
-handlers do.  j1939_session_cancel() only rearms the abort timer and
-leaves session->txtimer armed, so on the transmitter path the retry timer
-keeps firing on an aborting session, retries up to J1939_XTP_TX_RETRY_LIMIT
-and overwrites session->err with -ENETUNREACH; on the receiver path the
-retries transmit CTS or EOMA and clobber the abort timeout.
+Changes in v9:
 
-The CTS packet number that feeds the transmitter-side EDPO is bounded in
-4/4, on its own, because it is a different input parsed in a different
-function; this patch only stops an EDPO value from being used as an
-offset.
+- Send the patches as replies to the cover letter; in v8 they went out as
+  four separate threads.
+- Start the first sentence of every changelog in the imperative.
+- Add the Assisted-by tag required by
+  Documentation/process/coding-assistants.rst, which v8 was missing.
+- Add the missing Fixes tags and Cc: stable for [1/4] and [4/4]; all four
+  patches fix behaviour that dates from the original J1939 commit.
+- Say in [2/4] where the CTS bound lives, instead of calling it a separate
+  fix while [4/4] of the same series does it.
+- Give this cover letter an overview of the series and this changelog.
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: stable@vger.kernel.org
-Assisted-by: LLM
-Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
+Functionally the patches are unchanged since v8; the only code text that
+changed is one comment in [2/4].
+
+Changes in v8:
+
+- [1/4] rewritten: the v7 version armed the timer after cancelling it outside
+  the lock, which left the race it was meant to close.
+- [2/4] cancels the session timers before aborting, and carries the Fixes tag
+  for the NULL dereference.
+- [3/4] and [4/4] unchanged from v7.
+
 ---
- net/can/j1939/transport.c | 30 +++++++++++++++++++++++++++++-
- 1 file changed, 29 insertions(+), 1 deletion(-)
+Chaosheng Qu (4):
+      can: j1939: serialize cancel and rearm of the receive timer
+      can: j1939: validate the EDPO packet number
+      can: j1939: drop the message when the reassembled skb is gone
+      can: j1939: reject a CTS that names more packets than the message has
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index fa23260e1..258009182 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1853,14 +1853,42 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
- 				 struct sk_buff *skb)
- {
- 	const u8 *dat = skb->data;
-+	unsigned int dpo;
- 
- 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
- 		return;
- 
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
- 
-+	dpo = j1939_etp_ctl_to_packet(dat);
-+
-+	/* EDPO is peer controlled.  j1939_xtp_rx_dat_one() places data at
-+	 * "dat[0] - 1 + pkt.dpo", so a value at or past pkt.total moves
-+	 * pkt.dpo past the reassembled buffer, and the ETP completion path
-+	 * then looks up an offset no queued skb covers.
-+	 *
-+	 * This bounds the receiver-side writer only.  j1939_session_tx_dpo()
-+	 * copies pkt.tx_acked, which comes from an ETP.CM_CTS packet number
-+	 * that the responder controls, and 4/4 bounds it where it is parsed.
-+	 */
-+	if (dpo >= session->pkt.total) {
-+		netdev_warn(session->priv->ndev,
-+			    "%s: 0x%p: EDPO %u out of range (total %u), aborting\n",
-+			    __func__, session, dpo, session->pkt.total);
-+		j1939_session_timers_cancel(session);
-+		/* The transmitter only sees this on the echo of an EDPO it built
-+		 * from an oversized ETP.CM_CTS packet number, so it is the
-+		 * responder's CTS that is too big, not the EDPO offset.
-+		 */
-+		j1939_session_cancel(session,
-+				     session->transmission ?
-+				     J1939_XTP_ABORT_ECTS_TOO_BIG :
-+				     J1939_XTP_ABORT_BAD_EDPO_OFFSET);
-+		return;
-+	}
-+
- 	/* transmitted without problems */
--	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
-+	session->pkt.dpo = dpo;
- 	session->last_cmd = dat[0];
- 	j1939_tp_set_rxtimeout(session, 750);
- 
+ net/can/j1939/transport.c | 119 +++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 97 insertions(+), 22 deletions(-)
+---
+base-commit: 2f2f7eeef8b0a1a9b9ca998231419873ccae8d4e
+change-id: 20261111-j1939-edpo-v9-daeeb60af993
 
--- 
-2.43.0
+Best regards,
+--  
+Chaosheng Qu <quchaosheng000406@163.com>
 
 
