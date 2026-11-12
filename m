@@ -1,99 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794469708;
-	b=WMVFHur34oyVGSFntuGFKuu5sg+Y0IiirhLNdinVMmRMD8rG/hc7iKAsMMQ5CGCnxi5F
-	 fWnhQkrOqZN+MpFJZhqY8KgktYwJtG8Fr46JfBI2D7pcDGVK+rCABFbKfSgMkDL+fAW+r
-	 9Jz0aOqco499i4w3IdmP4dhhag1koQp7BjZRLyLAJfApw36r+JC1V31jD5l8FNinsDVST
-	 sFcwJrW+jQTV3G0+9EihUkO5QMWFlwCUT8nyxPhrba+Px2e+lqX/YTWYCwvqKa+TLGRJ3
-	 7mS+dF4CDLTUS/AB28IPbLF0MUonUzNv6GN4lzt3L3NP+oE6tZ86h83+f+CFZE8OCUw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794469708;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=esxd/9sLOSpGoMqXGfKabFqq52K/StC20xJ5PydSlMI=;
-	b=UGn9+kRDZVEy2Qdtg+hQDCNq/a5ZLcu7oatUgGCyhBFu61Ru34mwNSidvoxCVNUMIsWU
-	 OkbMe5PYzxXYaH+3I0yFmWkv++pQ1uQL+0cIghjxboqGI7KQ93NjByXxFYo6OwNnWPXHB
-	 iLLA+Znn+LthcS+op++arRNcN9eLluvlInxdnWABVcdv15UGjB0LDTQ3JZqVf/kD76tLP
-	 +94RmW3S3fPfuMqeVPAKbXbQ4pC60j/0efiryE1QtOpEcSDMY08yx8hur4wFRwus4eu4W
-	 4z/HtBsvHVPPvVIwCwAkkRUg76dfnPqLojYDnSBCdKWofDu3ZmbqooVDuVBdPYcZz6A==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XhOJa7K1;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794473456;
+	b=YYX3mAiQUzcmED/vIURc2Ypw3aO3qH+VkQ6Ce3KwuTSxv5M4t64Vf77BUS1Kl73n6o6/
+	 vssIZmeo/zMj/RXK/KTfbF+KqzUY/hElYXpk8nYh5UhMuwOBYbiZFpGj3BkrynzCD1lnt
+	 gAuScs9+9f6leKetXREMYsme13TVws+C8FJn0Py8d9WorCwUK4rP3X0BDwptTwvfcTFyF
+	 dtCJilUpW4Y66nzzlSV4FcUWkdQyC4rxHAzwo0dAPxYQqzjxFDKBEUYpIbm+oVzPC3cKX
+	 TYJuvrwP9pSFea2AFhr9XhrwRlOOHsHitBQL35Ef8bQ34VOCJj/49KLaypVjqs5m7dA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794473456;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=7CX91LtA04PMt4a9KO8kqyKdV7N0/UmraKQmcIVaGQM=;
+	b=W6dK4z1jVX+0Yjf5KHxjx8B4D3/rANdBbToklZlxMKPj8tpl+mE/gDUsL2o8CVyX4X35
+	 egYh/VAonWvj04zxdoz8b17MjCgWgKeNKZKuwDWpR5otVmrveFhDkYqYwlr5ccQRhIBWb
+	 hqrFSwO6cEQQPyYRPa+mqNZtm/FvOtXWgnXQW/BXdj+XBZ/O0hLWqq8HiJ+Ah9Q4QRvGX
+	 LUkGzXBG5E+qhzjttAAxZnOUJHKGqoG5exK9v0tjyn/hDTYwPFTYiN4HD/TH4bt2+xxjS
+	 XnM/M16kYWig2TKrPsG72rBp+W++kKchSkNImLRl2yEylNObjDa7j0ZLE06ozUpwDGw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ht8w3eoQ;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C17606A31C;
-	Thu, 12 Nov 2026 07:48:26 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9C17606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4870606A323
+	for <linux-can@vger.kernel.org>; Thu, 12 Nov 2026 08:50:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XhOJa7K1
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7BC78201A86;
-	Thu, 12 Nov 2026 08:48:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794469704;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=esxd/9sLOSpGoMqXGfKabFqq52K/StC20xJ5PydSlMI=;
-	b=XhOJa7K1ppi9m5gol6fiYbdkVe7nGmIozHFOPKcq/+l9QHAtvuP8zfb3RpKsrDycPMhTFq
-	FTB/7J2uEnAiW2FWlF234tS1xLW429HZCIPFiyfknZ15ZppgCw69MugW2VhQwrB1mGfeSH
-	oY7Drd/CugvdxDBFvKX7KXb2ERXOTF0/+ZSUsBye4ahhlfDTOZ7kzZ/+GvW91lwrD7CQas
-	etSx+4Mg+axoYeb8TR4bjPjW6jL82JFRJFc/xiqvOkuK8U9rilut9Aj0KtGTvFZjepqP7z
-	dG5YRnYQLhIYswiZkv3cJPyd0mP9fhgZ4QMhAY12Ht4P7aJrRLxdH/xFdu/OdQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794469704;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=esxd/9sLOSpGoMqXGfKabFqq52K/StC20xJ5PydSlMI=;
-	b=UMe27jIxxJ0F9WltgkteHnR/eyeOcgz0bUazaUvETkx6YtLZlaf2+4tPJKE+4/RsG4u9jq
-	ns2OIAvGwzWFARjiY/+ZGWoMf5kR10RdoEsMoJ/05AMuKPd1C7Y3G8Lr9x5tLbY0GX7eiZ
-	RJpo2bxTCMjaLmxg60e4QzSzBjkFdmtVaSnAHXvzsmPdDmNZNyfywouunuAKh47oxkeJwn
-	YNl+qUZkrNOXAcU/QqqGOItMI1R8k6HEYxY+wJClkntqPo6cqXyAkdryoGQSQDitGVH1sF
-	BF1G0lwg2coxAD9kW6FJ1MkteR40Ym+kQbiJab83cJRFnD0gYqpVDgysvMO4Nw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794469704; a=rsa-sha256;
-	cv=none;
-	b=O1Gg1jlZGVjaMjeRiFx3doZlj7mbsWxxsd6pqu4HONe7HyoRqYKpM1tF6fHvDL1OHZmaTF
-	rLgjze+jG2S7cevZW/hhDzQJnK4bJN4tUIVxhWuuI62p+8I5Mgn6DuVevVPzYNlH0j6MKA
-	J4ysIBsXzHZyGZVBAYxzzmvkOiI7SaEO9kryYFdQScKfuXRPU/MUcdjqA43bCBYlXLjqRa
-	Yc1+wZoy0eyDqCki5jTZ9++itK+DQk1tR60EkLAIvW/Cjx5NaKPPf1igdgg4SBxCEP0hn5
-	vWfnFsQX9DI3UJYMwHOlv1okQ7sPLknMkJ+ROxHW8/84NWcD+UPlz13X64HsPw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xRPXk-003lV4-1G;
-	Thu, 12 Nov 2026 08:48:24 +0100
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 05CDE5E8A31;
-	Thu, 12 Nov 2026 07:48:23 +0000 (UTC)
-Date: Thu, 12 Nov 2026 08:48:23 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
-Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, 
-	davem@davemloft.net, edumazet@kernel.org, pabeni@redhat.com, horms@kernel.org, 
-	mailhol@kernel.org, socketcan@hartkopp.net, robin@protonic.nl, 
-	o.rempel@pengutronix.de, kernel@pengutronix.de, max@enpas.org, linux-can@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Cunhao Lu <1579567540@qq.com>
-Subject: Re: [PATCH net] MAINTAINERS: exclude CAN documentation from general
- networking
-Message-ID: <20261112-polite-nano-peccary-fdf491-mkl@pengutronix.de>
-References: <20261112-exclude-can-docs-from-netdev-v1-1-b5eb3ba4ae86@qq.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ht8w3eoQ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 506061F00A05;
+	Thu, 12 Nov 2026 08:50:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794473455;
+	bh=7CX91LtA04PMt4a9KO8kqyKdV7N0/UmraKQmcIVaGQM=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=ht8w3eoQk0b3q36alEpoQN7MTSjWNPYGdXpYXxXab2Q8Muhgpd5zL/IHUD1tFSlee
+	 VdKy4iPKKRFSol9rI4lbresINDhVZu0zhQ2jZYbeMiAEYhUXTpIbKdeawl0yXWoUwl
+	 gxkIr/cuezU9Bc9tTiX/T60JX+sv80WxmLLRBbbwKIiCf9Ls7NvSDw1qfjwgREJ0DD
+	 IS1R7iy587npCqFMyWCyFIaqkj5DnozzjCgzF4MuFoTlcOvd1h0/KVCU50Je/+9j6Z
+	 5n+mmALtEzhBdxDMIfRTkTQV9dxWd4rqqlNY3J7feNzTiNaJOcpCG1fODaPvlhiSeS
+	 F0SB8SPJW8xbQ==
+Subject: Re: [PATCH v11 2/3] can: j1939: fix possibility of
+ hard-lockup/deadlock in j1939_ecu_timer_cancel()
+From: netdev-bot+sashiko@kernel.org
+To: penguin-kernel@I-love.SAKURA.ne.jp
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
+ kuba@kernel.org
+Date: Thu, 12 Nov 2026 08:50:54 +0000
+Message-ID: <179447345481.488853.2498503016448521701@kernel.org>
+In-Reply-To: <f516220f-b922-4172-bf35-ce34d5f21b39@I-love.SAKURA.ne.jp>
+References: <f516220f-b922-4172-bf35-ce34d5f21b39@I-love.SAKURA.ne.jp>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -103,84 +63,215 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lgjyhat5ekftt3sc"
-Content-Disposition: inline
-In-Reply-To: <20261112-exclude-can-docs-from-netdev-v1-1-b5eb3ba4ae86@qq.com>
 
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
---lgjyhat5ekftt3sc
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net] MAINTAINERS: exclude CAN documentation from general
- networking
-MIME-Version: 1.0
+Critical: 0 · High: 0 (1) · Medium: 1 · Low: 1
 
-On 12.11.2026 13:50:25, Cunhao Lu via B4 Relay wrote:
-> From: Cunhao Lu <1579567540@qq.com>
->
-> The SocketCAN, ISO-TP, J1939 and ELM327 documents are already covered by
-> CAN maintainer entries, but also match the broad Documentation/networking/
-> pattern in NETWORKING [GENERAL]. This makes get_maintainer.pl select
-> netdev and the general networking maintainers for these CAN-specific
-> documentation changes.
->
-> Exclude these four documents from NETWORKING [GENERAL], as is already
-> done for net/can/ and the CAN selftests.
->
-> Suggested-by: Jakub Kicinski <kuba@kernel.org>
-> Link: https://lore.kernel.org/all/20261111161459.4879a82d@kernel.org/
-> Signed-off-by: Cunhao Lu <1579567540@qq.com>
-> ---
-> CAN documentation changes currently match NETWORKING [GENERAL], causing
-> get_maintainer.pl and b4 prep --auto-to-cc to select general networking
-> recipients for CAN-specific changes.
->
-> This patch excludes the SocketCAN, ISO-TP, J1939 and ELM327 documents from
-> that entry. All four already have CAN maintainer entries.
-> ---
->  MAINTAINERS | 4 ++++
->  1 file changed, 4 insertions(+)
->
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 222b7fc2c3aa..cb1fec8ec5f5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -19600,6 +19600,10 @@ F:	samples/pktgen/
->  F:	tools/net/
->  F:	tools/testing/selftests/net/
->  X:	Documentation/networking/batman-adv.rst
-> +X:	Documentation/networking/can.rst
-> +X:	Documentation/networking/device_drivers/can/can327.rst
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Why not exclude the while "can" subdir?
+- [Medium] j1939_ac_process() (net/can/j1939/address-claim.c) now gives
+  up on an Address Claimed frame whenever hrtimer_try_to_cancel()…
+- [Low] On the new hrtimer_try_to_cancel() == -1 path, the in-code
+  comment and Documentation/networking/j1939.rst no longer match the…
 
-> +X:	Documentation/networking/iso15765-2.rst
-> +X:	Documentation/networking/j1939.rst
->  X:	Documentation/networking/mac80211-injection.rst
->  X:	Documentation/networking/mac80211_hwsim/
->  X:	Documentation/networking/regulatory.rst
+Pre-existing issues:
+- [High] At the target commit, j1939_ecu_unmap_all()
+  (net/can/j1939/bus.c) only walks priv->ents[] and calls…
 
-Marc
+--
 
-pw-bot: cr
+can: j1939: fix possibility of hard-lockup/deadlock in j1939_ecu_timer_cancel()
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+The patch switches j1939_ecu_timer_cancel() from hrtimer_cancel() to
+hrtimer_try_to_cancel(). This avoids waiting for a running ac_timer
+callback while priv->lock is held for write. If the callback is running,
+j1939_ecu_timer_cancel() now returns false and j1939_ac_process() ignores
+the address claim frame.
 
---lgjyhat5ekftt3sc
-Content-Type: application/pgp-signature; name="signature.asc"
+> diff --git a/net/can/j1939/address-claim.c b/net/can/j1939/address-claim.c
+> index ca4ad6cdd5cbf..89ba8c6fbe74d 100644
+> --- a/net/can/j1939/address-claim.c
+> +++ b/net/can/j1939/address-claim.c
+> @@ -212,7 +212,8 @@ static void j1939_ac_process(struct j1939_priv *priv, struct sk_buff *skb)
+>  		goto out_unlock_bh;
+>  
+>  	/* cancel pending (previous) address claim */
+> -	j1939_ecu_timer_cancel(ecu);
+> +	if (!j1939_ecu_timer_cancel(ecu))
+> +		goto out_ecu_put;
 
------BEGIN PGP SIGNATURE-----
+[Severity: Medium]
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavVvRAAKCRDMOmT6rpmt
-0hHvAPwKCOR8CfkY8/pW8HZ84qEN0q5XoUcNS2Z0nHSfDj1yXgD8Dk4w5K9qcoQe
-xI9LeAYgRMidSw1qk39indiI23+0Xgc=
-=aaNm
------END PGP SIGNATURE-----
+If the previous ac_timer callback is running, this path skips several
+steps: the idle/unmap handling, the ecu->addr update, the contention
+check against prev, and j1939_ecu_timer_start(). Could the kernel then
+end up committing the superseded claim instead of the new one?
 
---lgjyhat5ekftt3sc--
+Once j1939_ac_process() releases priv->lock, the running handler takes
+it and maps the ECU at the old, unchanged ecu->addr:
+
+net/can/j1939/bus.c:j1939_ecu_timer_handler() {
+	write_lock_bh(&priv->lock);
+	...
+	j1939_ecu_map_locked(ecu);
+	...
+	write_unlock_bh(&priv->lock);
+}
+
+Say the new claim moved the ECU to a different SA, or was a Cannot-Claim
+with SA 0xFE that should have unmapped it. That update seems to be lost.
+The old NAME<->SA pairing would then stay in priv->ents[] until the NAME
+sends another AC, and ACs are not periodic.
+
+The frame is also not really dropped, as the commit message suggests,
+because j1939_can_recv() still passes it on:
+
+net/can/j1939/main.c:j1939_can_recv() {
+	...
+	j1939_ac_recv(priv, skb);
+
+	if (j1939_tp_recv(priv, skb))
+		goto done;
+
+	j1939_simple_recv(priv, skb);
+	j1939_sk_recv(priv, skb);
+	...
+}
+
+So userspace sees the NAME at the new SA while the kernel keeps it at
+the old SA. Would j1939_name_to_addr() then return the stale SA? If so,
+j1939_ac_fixup() would fill in the wrong SA for sockets bound by NAME,
+and the wrong DA for dst_name sends.
+
+For local ECUs, j1939_ac_fixup() unmaps the ECU when the new claim is
+transmitted, but the running handler would then map it back at the old
+SA.
+
+hrtimer_try_to_cancel() also returns -1 for as long as
+hrtimer_callback_running() is true, not only while the handler is
+spinning on priv->lock. That includes the window after the handler's
+write_unlock_bh() but before __run_hrtimer() clears base->running. On
+PREEMPT_RT this window can be wider, because the softirq thread can be
+preempted.
+
+In that window the old hrtimer_cancel() would have waited briefly
+without deadlocking, then processed the claim correctly. Are claims that
+used to be handled correctly now lost too?
+
+The commit message says it is impossible to drop priv->lock, and
+"Therefore" the frame is dropped. Is ignoring the claim the only option
+that keeps the lock held?
+
+One alternative: on -1, carry on with the update and re-arm the timer.
+Calling hrtimer_start() on a timer whose callback is running is allowed.
+j1939_ecu_timer_handler() could then skip the mapping if
+hrtimer_is_queued() is true, or if a per-ECU generation counter has
+changed.
+
+This code is still the same at the end of the series.
+
+[Severity: Low]
+
+This isn't a bug, but the comment above the call still says "cancel
+pending (previous) address claim". On the new false path, the previous
+claim is not cancelled, because its running handler maps the ECU at the
+old SA. The new claim is the one that gets discarded. Could a comment
+here say what happens to the frame in that case?
+
+j1939_ecu_timer_cancel() says "Let the caller decide how to handle this
+situation". However, j1939_ac_process(), the only caller, does not
+document what it chose.
+
+Documentation/networking/j1939.rst says that after binding with a new
+SA and sending a valid address claim:
+
+  This restarts the state machine in the kernel (and any other
+  participant on the bus) for this NAME.
+
+It also says the NAME-SA pair becomes valid if nobody contests it within
+250ms. When this race hits, the state does not change and no 250ms timer
+is started for the new claim. Should the documentation be updated to
+match?
+
+>  
+>  	if (j1939_address_is_idle(skcb->addr.sa)) {
+>  		j1939_ecu_unmap_locked(ecu);
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index c49c96dea7960..c6278d7cb1b1f 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -151,11 +151,19 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  		      HRTIMER_MODE_REL_SOFT);
+>  }
+>  
+> -void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+> +bool j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+>  {
+> -	if (hrtimer_cancel(&ecu->ac_timer))
+> +	switch (hrtimer_try_to_cancel(&ecu->ac_timer)) {
+> +	case 0:	/* Not active or already finished. */
+> +		return true;
+> +	case 1:	/* Successfully canceled. */
+>  		/* Drop the ref from j1939_ecu_timer_start(). */
+>  		j1939_ecu_put(ecu);
+> +		return true;
+> +	default: /* Currently executing. */
+> +		/* Let the caller decide how to handle this situation. */
+> +		return false;
+> +	}
+>  }
+
+[Severity: High]
+
+This is a pre-existing issue and was not introduced by this patch. At
+this commit, j1939_ecu_unmap_all() does not cancel any pending
+ecu->ac_timer:
+
+net/can/j1939/bus.c:j1939_ecu_unmap_all() {
+	write_lock_bh(&priv->lock);
+	for (i = 0; i < ARRAY_SIZE(priv->ents); i++)
+		if (priv->ents[i].ecu)
+			j1939_ecu_unmap_locked(priv->ents[i].ecu);
+	write_unlock_bh(&priv->lock);
+}
+
+Suppose an AC frame arms ac_timer just before the last socket closes:
+
+j1939_sk_release()
+  j1939_netdev_stop()
+    __j1939_rx_release()
+      j1939_can_rx_unregister(priv);
+      j1939_ecu_unmap_all(priv);
+      j1939_priv_set(priv->ndev, NULL);
+
+The timer can still fire up to 250ms later. Can j1939_ecu_timer_handler()
+then map the ECU back into the detached priv, taking an ECU reference
+that is never dropped? That would leak the ECU, the priv and the netdev
+tracker reference, and unregister_netdevice could wait forever.
+
+Can the handler also run after j1939_module_exit() has destroyed
+j1939_ecu_wq and the module has been unloaded?
+
+The hrtimer_cancel() in __j1939_ecu_release_work() can't help here,
+because the armed timer itself holds an ECU reference.
+
+The later patch in this series, "can: j1939: fix "struct j1939_ecu"
+refcount leak", appears to fix this. With it, j1939_ecu_unmap_all()
+walks priv->ecus and tries to cancel each timer under priv->lock. If
+that fails, it drops priv->lock, holds a temporary reference, and calls
+hrtimer_cancel().
+
+j1939_ecu_timer_start() and j1939_ecu_map_locked() also switch to
+j1939_ecu_verify_get(). It refuses once rx_kref is 0 or the netdev is
+unregistered.
+
+[ ... ]
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/a1dd9760-7815-400a-a39c-a1a03cf8262e%40I-love.SAKURA.ne.jp
