@@ -1,60 +1,64 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.62.57.87
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794474243;
-	b=cDiAdvoQ89vT7cSC5NlIcmiWrIJPoYVmkkP5s+RIJJEUsqJm7WtuiChCqBpoCmHvhbpX
-	 5RbZ46jtUELt6WGwlsWgJNITHpR8j6r7Qd4BWoSsHMEDBqFeGXWKWygqrND7UKFl7H/ep
-	 ds/SsTHfRA2WMnOQc6LKBEUhxK7EmH1XVywFf1U5zuJLTKlXHX2QNwu8e1Q/830/piUW7
-	 A8iaUSkX1YmcuD2cy7fdcKMJx0qPvxUxZKucJvApGZn9lHAw01pt3rec+6/Up5TC7r5zM
-	 E9VAZzI+NmVgU/ynt/N8xnGyszJ3GIAMWt3ONqYHIdFVIXaY5OD0m46f+aTH+73x6xg==
+	t=1794475082;
+	b=Zoh9LdGmhuqaQLaPmJ1rT/Hvks0NdvASajbgLT34bTOZ+MlWZmBuIYkh/seOXRdi6P09
+	 xH8fbDu7NruoHGkzFnFHlHR0GmZqSK98WdF78hVvxI67Xo6o8iFb3LQrHW6KMBGn6XbXL
+	 miAm1KxP6l1GQxhbsgN6i9VMUn7TuhDshNyNGya3A2DXCVqoC14jAg4eEdCJ46edcfpXE
+	 ROxHvRlxAIyWbwfIXIB492E0x2otI5/9fZmJZ1cUfrtWK4bgGVC4EBHaMV+Bn9pbiAipo
+	 EFDJgErscrCiPb6LUfiGaAY7fvfISLdULB+RzotbdCsiDCXAqXf7LgpTIdLnJT2fKQA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794474243;
-	h=Received:DKIM-Signature:From:To:Cc:In-Reply-To:References:Subject:
-	 Message-Id:Date:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	 X-Mailer;
-	bh=dWFD3THYHsWU9y1SttPbbRwEUnR6O/yGa6Xh8feGmTI=;
-	b=JaIve9IE6iDT+JtOwOzvxteD/RD2S33t1qet3XAxptazK2hgMN9VP7bCphReTOu5j8Md
-	 kmkxku6EWRTfbq1ctHiu8n3eiQTD/v7dC1gR1eD74GDow8/QxU2k3juGLdBkSqhfRQfZQ
-	 UJdfHixWlEnvx2nP0fntT1wYadicDQ5kxQmtxU95Q7zSySKJ8V8Y2RYRF/McW2FhcK170
-	 GmlSoq/ywvegYaS+unMBSkYUhxqKeSrKEiJZ8NC2BS+ZvL5BBKB4Ttq4QtrzkDHpTWHEJ
-	 MKt8nnAjacAqqIKD/h6pNo52orOMuJog/yrswAcej2P6anwUEC13WLkTP6vbdTyMHHw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794475082;
+	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
+	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
+	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
+	 In-Reply-To:X-QQ-mid;
+	bh=FxECJ+at7tUmdA4jpirQioDBaofqfSHvgn+uUGiUknw=;
+	b=a/alDLprmPEqJR2GCPeD4CxnS/zR+A5X4lKCiYxN0nmHWURX4rz4TudkeTJ19jVScQt3
+	 daPc3mE2OkUBwGOStQhhu0+nrXOPWM+bAZ+gz/SEpEYxpPzuOPDQdt55+NVpqKoxjupDx
+	 E7mtXRZWFVamUInIpsIKm7QHde5eAohPj0r9uZt2LqWOjZi3uRA/M4k/WM2ZGPbnjI1Cc
+	 molQ2/iKbyyrMy8fMJ6yl1vkFgdim60d4lflBhWOE4MHlRgPfjw0LIc+5O0sTLtuu9CB1
+	 XNWz3YO+HIkSpOX/U/jdeW79zb+4vGJZy77oTNRhNXrhBQEzEbaZeoLp9YZkws7Y7Tg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CzilFVWX;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=qq.com;
+	spf=pass smtp.mailfrom=qq.com;
+	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=qLeW0Xau;
+	arc=none smtp.remote-ip=162.62.57.87
+Received: from out162-62-57-87.mail.qq.com (out162-62-57-87.mail.qq.com [162.62.57.87])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72637606A332;
-	Thu, 12 Nov 2026 09:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2AF4606A321;
+	Thu, 12 Nov 2026 09:18:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E2AF4606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CzilFVWX
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64DB81F00A05;
-	Thu, 12 Nov 2026 09:03:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794474243;
-	bh=dWFD3THYHsWU9y1SttPbbRwEUnR6O/yGa6Xh8feGmTI=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date;
-	b=CzilFVWXa4D/+g2U7PP0xEDL4dLuN5Qwy4sUdENoRqLbk+axDMjvWlYZa40R1IaAS
-	 lj8EZhkMlcRk0vzyCzu572Li6R/Hkh7PCHPVPR/MrFTIQC2IAAUJWS7mBvrKOetjHY
-	 v9Zlz2U6EB3WJfOAEW1s5WpfBrrUCnvopP0utWfsBSkUuCkFvwu2UVRXIsrXFauYPJ
-	 2AdvdPawNQEVyL1iAVorUBA0gjGtPf1hcQvENWCYVYHuZ1lP8MV/x0x5vEaRQj+xTR
-	 UHAarNplydgfLH3Liif/hlv+SAe/Uo/LNLeKo+woO1bZ5xgr66r5oLm2VJRz6+nxZ4
-	 le0JY5ibm/7Lw==
-From: Vinod Koul <vkoul@kernel.org>
-To: linux-arm-kernel@lists.infradead.org, Marek Vasut <marex@nabladev.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>, 
- Aswath Govindraju <a-govindraju@ti.com>, Conor Dooley <conor+dt@kernel.org>, 
- Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>, 
- Krzysztof Kozlowski <krzk+dt@kernel.org>, 
- Marc Kleine-Budde <mkl@pengutronix.de>, Rob Herring <robh@kernel.org>, 
- devicetree@vger.kernel.org, imx@lists.linux.dev, linux-can@vger.kernel.org, 
- linux-kernel@vger.kernel.org
-In-Reply-To: <20260930214729.809649-1-marex@nabladev.com>
-References: <20260930214729.809649-1-marex@nabladev.com>
-Subject: Re: (subset) [PATCH v6 1/3] dt-bindings: phy: ti,tcan104x-can:
- Document Microchip ATA6563
-Message-Id: <179447423905.428303.6835437411622016722.b4-ty@kernel.org>
-Date: Thu, 12 Nov 2026 14:33:59 +0530
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=qLeW0Xau
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1794475071; bh=FxECJ+at7tUmdA4jpirQioDBaofqfSHvgn+uUGiUknw=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=qLeW0XauRtiEoT2dbWAjBO2gfFyDL+LHJV7vq0XUbVPRvPsVXOaBtCZzssuNRrLHr
+	 JnJ3QNxc0yLlR51F+YICuoRLe07rF0Fh2ysJmaFLfqusLGXoPDITzmhDAdkLQ0PwF0
+	 fmTRDxIfTmoMXoXuzT64gTu2HG9v4h7ZlwsdJSwc=
+X-QQ-XMRINFO: MSVp+SPm3vtSI1QTLgDHQqIV1w2oNKDqfg==
+X-QQ-XMAILINFO: N2nZekq4carkcWSgLcJAY8XpK+xVtIIJ0Wzo/gyWOBR9I2B/I5Eu15r0GdMhWU
+	 /0KGhzB4wIVlpqNusptcHGTNasQzVmH4xSUQzb+69ogv+JRxpFqmCnzfCKJO+w7B94VvjmcyhuG9a
+	 MK80C+/qCZFMWIMIg+g2Haqm8FlLgJ4EUTXPAeP8vS6A4MKD36mFUEsVvt8JfLwwn9gxWGLuDlW4a
+	 28KcfPDhxHRsZOr6x9SYV1qVxe2puaPVgNUM6+/MDudauksb05OP7no9K0svZmn+vS4Ut8PY7mT0H
+	 w+7dWHZZzHTh9mXKLtfgVlefWqnA/wigeSYPb6S09fD9yCUVSuCHpahAdViqVxjia8b3EwFCXTNou
+	 jmeyUz5oWZpk1bEhiPrcTBan6wUtNIJFVNnrU8BnOR8OdnAvJ7VGiNcyZtcYR3uemNDMefz5HPFqA
+	 r3nmmZ1quH6EFqAZgVkZNs3rPDX0G6iekzNNBmfxY92ejI6C/adNs13b6zIdg0kmdGFvvE02fijuy
+	 WBxpIISuk9dFSL6alMizHmZ+OnOMRJMs/7SvviNfkv8lPzQT6y9dA9AlcTK7nYNl5kI/LwZa0kvh7
+	 ZEGj+qhzC2Gm6KkJP5JyQ9aO7lc0WAZH3IEzX11V/TbK+KLrWWVRpweM0IqqW5e+9u7Yn1ng+17eZ
+	 YLan45g7yyWRkw4jLdxbDQy8vZ5cUiH0jpeD0tPf4YCrFvjnz/T8Ac73SKdE6+g1uwX4BNsarFrUI
+	 +7UKfHBXcB+BJYCFM4S/ic9Iy13FwtqLonCqG+4F0685JAr8fYRh1GoYRRKmb2bQS91LbJMjvETqX
+	 oeDeZa7ggPFqBdffEKHGh9Vw3yNH13GQ1BgzeqXlINK8v4HV+IYSWDbQEPIQWVHzgDy+GWDUVOPfg
+	 R+7C4t7jMrhkflBt5rGaHTSeVG1JZpGfgHVje3ucqPXMHRepw7aH6AbEki0rxW6Rx0YuZ/dw/Pm6A
+	 hPofonKmUVHor6ZyA6Rkjg3scLiQ3U5XVlKSU/27pAAQd1DT2EpbDj74XcSZ0jJcHCkwa891Z0DwS
+	 KiBYhDnwC1AJ26xL25zu6LONplvnMM3Zhxd7l5CDUdScWmf4IVHSXuhAHTQ==
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?TWFyYyBLbGVpbmUtQnVkZGU=?=" <mkl@pengutronix.de>
+Cc: "=?utf-8?B?SmFrdWIgS2ljaW5za2k=?=" <kuba@kernel.org>, "=?utf-8?B?bmV0ZGV2?=" <netdev@vger.kernel.org>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?ZWR1bWF6ZXQ=?=" <edumazet@kernel.org>, "=?utf-8?B?cGFiZW5p?=" <pabeni@redhat.com>, "=?utf-8?B?aG9ybXM=?=" <horms@kernel.org>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?cm9iaW4=?=" <robin@protonic.nl>, "=?utf-8?B?by5yZW1wZWw=?=" <o.rempel@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bWF4?=" <max@enpas.org>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] MAINTAINERS: exclude CAN documentation from general networking
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -63,26 +67,34 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Thu, 12 Nov 2026 17:17:49 +0800
+X-Priority: 3
+Message-ID: <tencent_FD28A290DF67931DCD970C5042E788514006@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20261112-exclude-can-docs-from-netdev-v1-1-b5eb3ba4ae86@qq.com>
+	<20261112-polite-nano-peccary-fdf491-mkl@pengutronix.de>
+In-Reply-To: <20261112-polite-nano-peccary-fdf491-mkl@pengutronix.de>
+X-QQ-mid: xmsezb41-0t1794475069t1av64kev
 
-
-On Wed, 30 Sep 2026 23:46:38 +0200, Marek Vasut wrote:
-> Microchip ATA6563 is High-Speed CAN Transceiver with Standby Mode.
-> It is pin-compatible with TI TCAN1042 and has a compatible programming
-> model, therefore use ti,tcan1042 as fallback compatible.
-> 
-> 
-
-Applied, thanks!
-
-[1/3] dt-bindings: phy: ti,tcan104x-can: Document Microchip ATA6563
-      commit: b338621a7e68bb9dc91d08e1774262deb0db50f6
-
-Best regards,
--- 
-~Vinod
-
+SGkgTWFyYywKCj4gPsKgZGlmZsKgLS1naXTCoGEvTUFJTlRBSU5FUlPCoGIvTUFJTlRBSU5F
+UlMKPiA+wqBpbmRleMKgMjIyYjdmYzJjM2FhLi5jYjFmZWM4ZWM1ZjXCoDEwMDY0NAo+ID7C
+oC0tLcKgYS9NQUlOVEFJTkVSUwo+ID7CoCsrK8KgYi9NQUlOVEFJTkVSUwo+ID7CoEBAwqAt
+MTk2MDAsNsKgKzE5NjAwLDEwwqBAQMKgRjogc2FtcGxlcy9wa3RnZW4vCj4gPsKgwqBGOiB0
+b29scy9uZXQvCj4gPsKgwqBGOiB0b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy9uZXQvCj4gPsKg
+wqBYOiBEb2N1bWVudGF0aW9uL25ldHdvcmtpbmcvYmF0bWFuLWFkdi5yc3QKPiA+wqArWDog
+RG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2Nhbi5yc3QKPiA+wqArWDogRG9jdW1lbnRhdGlv
+bi9uZXR3b3JraW5nL2RldmljZV9kcml2ZXJzL2Nhbi9jYW4zMjcucnN0Cj4KPiBXaHnCoG5v
+dMKgZXhjbHVkZcKgdGhlwqB3aGlsZcKgImNhbiLCoHN1YmRpcj8KClN1cmUsIEknbGwgZXhj
+bHVkZSB0aGUgd2hvbGUgRG9jdW1lbnRhdGlvbi9uZXR3b3JraW5nL2RldmljZV9kcml2ZXJz
+L2Nhbi8KZGlyZWN0b3J5IGluIHYyLgoKSSB3YXNuJ3Qgc3VyZSBhdCBmaXJzdCB3aGV0aGVy
+IHRoZSB3aG9sZSBkaXJlY3Rvcnkgc2hvdWxkIGJlIGV4Y2x1ZGVkLApzbyBJIHRvb2sgYSBj
+b25zZXJ2YXRpdmUgYXBwcm9hY2ggYW5kIG9ubHkgY2hhbmdlZCB0aGUgZW50cmllcyB3aGVy
+ZQpJIGhhZCBjb25maXJtZWQgdGhlIGlzc3VlLgoKQmVzdCByZWdhcmRzLApDdW5oYW8gTHUK
+Cg==
 
