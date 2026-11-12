@@ -1,100 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794467913;
-	b=xoxmZumsqcYOd0st0ZSTiiflFsmYL/Cn4v4M7e0P0LFhGVccAsmgy/ioEqrQJe/yCkcD
-	 ZSufux/vFL5S+FxaTfMO9bx0a4xHRPhMrfM8trxiEwF4BOPEfCzGM/NPKoz2MqmqE9x9y
-	 tpSoN/B6PyNk2zRcG7+tnB82+6rNWwmDX932L9vV8muOQaxxb60kSyLozCdOAA6ng0ERA
-	 MPQ1CmHue3PGI35zcNmi+ggLHf8ZjrLNQu27IOJj50gR88B77piGGKVC3Tsz6okOq07fK
-	 p9v1SQYcOr4/Wi0/znXzR+Hmf4KZ2X4JFUGZ8UxcnPRPNdJZjOfdcPvti9kN3+DZkZw==
+	t=1794469708;
+	b=WMVFHur34oyVGSFntuGFKuu5sg+Y0IiirhLNdinVMmRMD8rG/hc7iKAsMMQ5CGCnxi5F
+	 fWnhQkrOqZN+MpFJZhqY8KgktYwJtG8Fr46JfBI2D7pcDGVK+rCABFbKfSgMkDL+fAW+r
+	 9Jz0aOqco499i4w3IdmP4dhhag1koQp7BjZRLyLAJfApw36r+JC1V31jD5l8FNinsDVST
+	 sFcwJrW+jQTV3G0+9EihUkO5QMWFlwCUT8nyxPhrba+Px2e+lqX/YTWYCwvqKa+TLGRJ3
+	 7mS+dF4CDLTUS/AB28IPbLF0MUonUzNv6GN4lzt3L3NP+oE6tZ86h83+f+CFZE8OCUw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794467913;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:MIME-Version:References:
-	 In-Reply-To:From:Date:X-Gm-Features:Message-ID:Subject:To:Cc:
-	 Content-Type:Content-Transfer-Encoding;
-	bh=REChCuy6FdBNhfnjUQfWWgT6NMEdKOk89wFXRsMuVnw=;
-	b=gRBv+AF0WGfjgc/h6mgAeeLVPN9xpZyqfdmgDli/JnnW92jPxDAL6UXsX+TBJqRueUtX
-	 wVSaM8q9b4AhXgZvustpoZwX0v1YnWfVH6r2yV9GAmuvOT0kwy+Jmw3tvLLA1V3Zz7NLF
-	 C2jMLr4bcqILZKK6NQWehQ+7mn/ublHkmt8YJNl0NBLfKbo062q5Od5hng5MEYka/75Ti
-	 Cvb5I8pP2w9Xi2xR5jJ9B6f8vdOCV9xTABSfxwq8AvEElrJvU32MQEaEodK7ibJTc3SRB
-	 PxjHv2Lf7mrKOSrgFT8Cf7lWQS4r5lgVm1b5CqD2/7DGJZO+RbinSchcxiSWEAiIUuQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794469708;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=esxd/9sLOSpGoMqXGfKabFqq52K/StC20xJ5PydSlMI=;
+	b=UGn9+kRDZVEy2Qdtg+hQDCNq/a5ZLcu7oatUgGCyhBFu61Ru34mwNSidvoxCVNUMIsWU
+	 OkbMe5PYzxXYaH+3I0yFmWkv++pQ1uQL+0cIghjxboqGI7KQ93NjByXxFYo6OwNnWPXHB
+	 iLLA+Znn+LthcS+op++arRNcN9eLluvlInxdnWABVcdv15UGjB0LDTQ3JZqVf/kD76tLP
+	 +94RmW3S3fPfuMqeVPAKbXbQ4pC60j/0efiryE1QtOpEcSDMY08yx8hur4wFRwus4eu4W
+	 4z/HtBsvHVPPvVIwCwAkkRUg76dfnPqLojYDnSBCdKWofDu3ZmbqooVDuVBdPYcZz6A==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=nebusec.ai;
-	spf=pass smtp.mailfrom=nebusec.ai;
-	dkim=pass header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=g7PD3rtz;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=209.85.208.177
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XhOJa7K1;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E9460A382C
-	for <linux-can@vger.kernel.org>; Thu, 12 Nov 2026 07:18:32 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D2E9460A382C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=nebusec.ai
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nebusec.ai
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9C17606A31C;
+	Thu, 12 Nov 2026 07:48:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9C17606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=nebusec.ai header.i=@nebusec.ai header.a=rsa-sha256 header.s=google header.b=g7PD3rtz
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-3adfc004920so32229561fa.3
-        for <linux-can@vger.kernel.org>; Wed, 11 Nov 2026 23:18:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1794467911; cv=none;
-        d=google.com; s=arc-20260327;
-        b=fH+oAmkA6+uo7SJvNwqglFMkvkMMJy/tnP6P+5er1YiW/DhpMrnNHy277yZVrJeI6u
-         XNY2nyuA2yqrJnME0ZVNIrlkgxlNlhsQz91JIHFSnCtih2F6hSzkP1VErCzpJ3gGgNxd
-         9CF54dq620vCXEGvwDoBOZf9CIWO9BSAcsfb1bnYTG6rrx8YCiMRbKPftR4kEELE2UYd
-         K+Phn3ZGftbpt5oZvdAJv82reWrLZS8fBubhgyv2z837mYfNPwepfvaVEToZEoUpMpwr
-         zSHRSsWWCOKzaoP8O4pXt7KvTk8dw8TFrnjPMhhc57AkQQyXB86/hqGvt4LkQ40tV5PZ
-         NrQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20260327;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=REChCuy6FdBNhfnjUQfWWgT6NMEdKOk89wFXRsMuVnw=;
-        fh=uPqm4MlwCauKHF6PbY6Pl3/Db9FuGK3NY0aLh/sxkww=;
-        b=ME/lmqW7uMlMXVX76CcUZsA+V65g7Nv2GAgtVJQSxUiwUcM2t/todNRiopAeWDT2Wa
-         g/YBUUBNMdlxwxoZVENH270c4LgxJEDw4s2udmJAQccmr45GbUdZdnIZ1jxB4/SHT3P3
-         sYzLywubvUoKZ2gDSyr/R0LFi891a0rEqpuBB5uaTEBKeEAjTLqevrGDFRQ15mb51Vdx
-         m2ei7BgImyqAVv/bvmS1viDcEiWg6Ma7O4asg72IJZA8lEritSoB7MBimr7AX0JRFCdk
-         ezAqY805EkLHSdMr33iN4nqDRUwd7LN3jON2O0zvrhBCcEmkEnOZ9C+Wai0UAfoJuncw
-         55tA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=nebusec.ai; s=google; t=1794467911; x=1795072711; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:from:to:cc:subject
-         :date:message-id:reply-to:content-type;
-        bh=REChCuy6FdBNhfnjUQfWWgT6NMEdKOk89wFXRsMuVnw=;
-        b=g7PD3rtz1cGpwmnGuR4xHeHp1G3sYARi73LG5l1w43EBy3FYi6RttNF8rtyjNLlymU
-         EQcpOXW4asfw1TIVZHzxSjdhBtEOvrsdvOAEl/+CefHgKnzRI90evR76ICx3YfQK9uKl
-         f0XoSSGw7HTNu5QFztXAARd2s/fD7vBQUDT2js6C/SgQr6Kt6XB09kCvmi0ADY9rvtIU
-         XHJvDpWDhgM6bmHQsLfdLg1V+xQp/UjNAzlqidujdbsM1NRm2LY2aRx3tpYFXuJhvW/I
-         ubXbLDJLm2aASsfkhYQ3UgP6NZf4EiHjbB3Bi3/01p+xtpqNtH6Aih+Qa44eAY1ql4QJ
-         f0Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1794467911; x=1795072711;
-        h=content-transfer-encoding:content-type:cc:to:subject:message-id
-         :date:from:in-reply-to:references:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=REChCuy6FdBNhfnjUQfWWgT6NMEdKOk89wFXRsMuVnw=;
-        b=NKmStwPf3dOXiAvJQCATw96UQE3/dZHz8UODuYDYaxIpLkZ7Cz9GqYgIkTBwLTlBAU
-         +LrsxXZTL0RQxsGphmtQJGthoKsNex8sKfwXh8wWXexJsdp6rCadY67JkCXUaDUuRZ35
-         gtjbYnVrL+O1wOCztgEiVTJYuNG5kCnhy0+7uVIPKCFw3OXdR7gu1L+ikgg/cW90gYvw
-         xIEZwxF4zhNPOu4FnUg8Isq8NSYe4iAHG1YVtmq5dQZu7jrWXSwKEn+z1lcpIGrofzoh
-         ALkklaApYahDkO473OHnjE9hvQHpw2+qBuBhxKHFWyyXGP24eO2r7/bE65Q3/bmyrQ/J
-         QvlQ==
-X-Gm-Message-State: APuU4Z8/B3Evs7mHBMR6S3mcTOGQu7dGCXIcMmOMCvUulSkCAdagjgXJ
-	S1jKdpd5AcPePORuMagu/q42rhBJHudTesHCZw/RJ9KjQ9R6AB5/vwoHrwRYOq3w4kPOKdLVHFb
-	8bYIuQ8s7EnQVeKeqNqTNoMhK5LQuF4wJhRri61qJpeE=
-X-Gm-Gg: AYBFou0y0v52VpAqs2OEnUKZkO8RQlVf6z5HRfVlSxjcbE/MTWGTAsmsd/gcGeQeL3g
-	h2bmW0uMwZbHs3Y+UnDn367ultpTvmirfFn6YXL2WdsYaJKXsQwoQxCDZvmEbTn+Q+VjcNAoDgY
-	cfUVQZsSO+wpIDRn8oy7kY7YLN9UyddwY68LuLhRkWKBxi5J0xo2k1/30IIC0+7sXkMDgurXtta
-	3MUZUGKcCplcQHFLLle9vOpGZzYrKLZPD7CqxbF/WAyssb9gspBD/dFCWBm1NfjSUSDc9J3r7AZ
-	CW4c0zjtuB4cGTRghLUZErQcYmW4FmUGm/ZqjHUljZ2rByaHQvi5NkF00iN5mK1QoBlsZTGFYZ8
-	+68rjs79csnsqSDIxBbY/ruHJkfWKPAOhA3DNL5hF099kHk6nJtfDrSyDEDm+JL+o+GeFhY9iun
-	6AW4je2hs3Mx1pcwaqe0nwVYy3J4XX2yz12pjG6TpnM3+LB4VUNw==
-X-Received: by 2002:a2e:bd08:0:b0:3ac:e26b:d9cc with SMTP id
- 38308e7fff4ca-3ae126ced96mr9601081fa.23.1794467911016; Wed, 11 Nov 2026
- 23:18:31 -0800 (PST)
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XhOJa7K1
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7BC78201A86;
+	Thu, 12 Nov 2026 08:48:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794469704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=esxd/9sLOSpGoMqXGfKabFqq52K/StC20xJ5PydSlMI=;
+	b=XhOJa7K1ppi9m5gol6fiYbdkVe7nGmIozHFOPKcq/+l9QHAtvuP8zfb3RpKsrDycPMhTFq
+	FTB/7J2uEnAiW2FWlF234tS1xLW429HZCIPFiyfknZ15ZppgCw69MugW2VhQwrB1mGfeSH
+	oY7Drd/CugvdxDBFvKX7KXb2ERXOTF0/+ZSUsBye4ahhlfDTOZ7kzZ/+GvW91lwrD7CQas
+	etSx+4Mg+axoYeb8TR4bjPjW6jL82JFRJFc/xiqvOkuK8U9rilut9Aj0KtGTvFZjepqP7z
+	dG5YRnYQLhIYswiZkv3cJPyd0mP9fhgZ4QMhAY12Ht4P7aJrRLxdH/xFdu/OdQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794469704;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=esxd/9sLOSpGoMqXGfKabFqq52K/StC20xJ5PydSlMI=;
+	b=UMe27jIxxJ0F9WltgkteHnR/eyeOcgz0bUazaUvETkx6YtLZlaf2+4tPJKE+4/RsG4u9jq
+	ns2OIAvGwzWFARjiY/+ZGWoMf5kR10RdoEsMoJ/05AMuKPd1C7Y3G8Lr9x5tLbY0GX7eiZ
+	RJpo2bxTCMjaLmxg60e4QzSzBjkFdmtVaSnAHXvzsmPdDmNZNyfywouunuAKh47oxkeJwn
+	YNl+qUZkrNOXAcU/QqqGOItMI1R8k6HEYxY+wJClkntqPo6cqXyAkdryoGQSQDitGVH1sF
+	BF1G0lwg2coxAD9kW6FJ1MkteR40Ym+kQbiJab83cJRFnD0gYqpVDgysvMO4Nw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794469704; a=rsa-sha256;
+	cv=none;
+	b=O1Gg1jlZGVjaMjeRiFx3doZlj7mbsWxxsd6pqu4HONe7HyoRqYKpM1tF6fHvDL1OHZmaTF
+	rLgjze+jG2S7cevZW/hhDzQJnK4bJN4tUIVxhWuuI62p+8I5Mgn6DuVevVPzYNlH0j6MKA
+	J4ysIBsXzHZyGZVBAYxzzmvkOiI7SaEO9kryYFdQScKfuXRPU/MUcdjqA43bCBYlXLjqRa
+	Yc1+wZoy0eyDqCki5jTZ9++itK+DQk1tR60EkLAIvW/Cjx5NaKPPf1igdgg4SBxCEP0hn5
+	vWfnFsQX9DI3UJYMwHOlv1okQ7sPLknMkJ+ROxHW8/84NWcD+UPlz13X64HsPw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xRPXk-003lV4-1G;
+	Thu, 12 Nov 2026 08:48:24 +0100
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 05CDE5E8A31;
+	Thu, 12 Nov 2026 07:48:23 +0000 (UTC)
+Date: Thu, 12 Nov 2026 08:48:23 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
+Cc: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org, 
+	davem@davemloft.net, edumazet@kernel.org, pabeni@redhat.com, horms@kernel.org, 
+	mailhol@kernel.org, socketcan@hartkopp.net, robin@protonic.nl, 
+	o.rempel@pengutronix.de, kernel@pengutronix.de, max@enpas.org, linux-can@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Cunhao Lu <1579567540@qq.com>
+Subject: Re: [PATCH net] MAINTAINERS: exclude CAN documentation from general
+ networking
+Message-ID: <20261112-polite-nano-peccary-fdf491-mkl@pengutronix.de>
+References: <20261112-exclude-can-docs-from-netdev-v1-1-b5eb3ba4ae86@qq.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -104,121 +103,84 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20261109131624.276943-1-zihanx@nebusec.ai> <20261109131624.276943-2-zihanx@nebusec.ai>
- <avQCxNIDeBaTsX2c@pengutronix.de>
-In-Reply-To: <avQCxNIDeBaTsX2c@pengutronix.de>
-From: zihan xi <zihanx@nebusec.ai>
-Date: Thu, 12 Nov 2026 15:18:18 +0800
-X-Gm-Features: AclHuK8IIoBEKAHzEp5N_p1hiYdWxp0RYHF_i1RV4mZc9CpDq1b1kOx3PVE2r4U
-Message-ID: <CAANe3eQGFX2JG+KRBjW-vDBhY7gA91Fg5z19Rk-cc6_8hxT_Lg@mail.gmail.com>
-Subject: Re: [PATCH net v8 1/2] can: j1939: account for timer references
- across rearm
-To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: linux-can@vger.kernel.org, robin@protonic.nl, kernel@pengutronix.de, 
-	socketcan@hartkopp.net, mkl@pengutronix.de, bst@pengutronix.de, lkp@intel.com, 
-	maxime.jayat@mobile-devices.fr, ecathinds@gmail.com, vega@nebusec.ai
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="lgjyhat5ekftt3sc"
+Content-Disposition: inline
+In-Reply-To: <20261112-exclude-can-docs-from-netdev-v1-1-b5eb3ba4ae86@qq.com>
+
+
+--lgjyhat5ekftt3sc
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net] MAINTAINERS: exclude CAN documentation from general
+ networking
+MIME-Version: 1.0
 
-On Wed, Nov 11, 2026 at 1:53=E2=80=AFPM Oleksij Rempel <o.rempel@pengutroni=
-x.de> wrote:
+On 12.11.2026 13:50:25, Cunhao Lu via B4 Relay wrote:
+> From: Cunhao Lu <1579567540@qq.com>
 >
-> Hi Zihan,
+> The SocketCAN, ISO-TP, J1939 and ELM327 documents are already covered by
+> CAN maintainer entries, but also match the broad Documentation/networking/
+> pattern in NETWORKING [GENERAL]. This makes get_maintainer.pl select
+> netdev and the general networking maintainers for these CAN-specific
+> documentation changes.
 >
-> Thank you for your work.
+> Exclude these four documents from NETWORKING [GENERAL], as is already
+> done for net/can/ and the CAN selftests.
 >
-> To avoid duplicate work, please take a look at this series:
-> https://lore.kernel.org/all/a1dd9760-7815-400a-a39c-a1a03cf8262e@I-love.S=
-AKURA.ne.jp/
+> Suggested-by: Jakub Kicinski <kuba@kernel.org>
+> Link: https://lore.kernel.org/all/20261111161459.4879a82d@kernel.org/
+> Signed-off-by: Cunhao Lu <1579567540@qq.com>
+> ---
+> CAN documentation changes currently match NETWORKING [GENERAL], causing
+> get_maintainer.pl and b4 prep --auto-to-cc to select general networking
+> recipients for CAN-specific changes.
 >
-> and sync it with Tetsuo.
+> This patch excludes the SocketCAN, ISO-TP, J1939 and ELM327 documents from
+> that entry. All four already have CAN maintainer entries.
+> ---
+>  MAINTAINERS | 4 ++++
+>  1 file changed, 4 insertions(+)
 >
-> On Mon, Nov 09, 2026 at 01:16:23PM +0000, Zihan Xi wrote:
-> > Rearming a session timer updates the existing hrtimer rather than
-> > creating another callback. Taking a session reference for every start
-> > can therefore leave references behind when the timer is rearmed.
-> >
-> > Track one session reference across each timer's queued and running
-> > lifetime. Apply the same accounting to the RX timer and synchronize
-> > rearming and cancellation with terminal state changes. Arm the simple-T=
-X
-> > echo timeout only after a successful send, and keep terminal session
-> > transitions from leaving stale timer references or changing the result.
-> >
-> > Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> > Cc: stable@vger.kernel.org
-> > Reported-by: Vega <vega@nebusec.ai>
-> > Link: https://bugtracker.nebusec.ai/f/11143
-> > Signed-off-by: Zihan Xi <zihanx@nebusec.ai>
-> > ---
-> >  net/can/j1939/j1939-priv.h |  11 +
-> >  net/can/j1939/transport.c  | 510 +++++++++++++++++++++++++++++++------
-> >  2 files changed, 438 insertions(+), 83 deletions(-)
-> >
-> > diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-> > index cf26352d1d8c..123622c82a98 100644
-> > --- a/net/can/j1939/j1939-priv.h
-> > +++ b/net/can/j1939/j1939-priv.h
-> > @@ -10,6 +10,7 @@
-> >  #define _J1939_PRIV_H_
-> >
-> >  #include <linux/can/j1939.h>
-> > +#include <linux/spinlock.h>
-> >  #include <net/sock.h>
-> >
-> >  /* Timeout to receive the abort signal over loop back. In case CAN
-> > @@ -290,6 +291,16 @@ struct j1939_session {
-> >               unsigned int dpo;
-> >       } pkt;
-> >       struct hrtimer txtimer, rxtimer;
-> > +     unsigned int txtimer_cancelers; /* block starts while a cancel wa=
-its */
-> > +     spinlock_t txtimer_lock; /* Protects TX timer lifetime state. */
-> > +     /* One reference pins the complete queued/running timer lifetime.=
- */
-> > +     bool txtimer_shutdown;
-> > +     bool txtimer_ref;
-> > +     spinlock_t rxtimer_lock; /* Protects RX timer lifetime state. */
-> > +     unsigned int rxtimer_cancelers;
-> > +     /* One reference pins the complete queued/running timer lifetime.=
- */
-> > +     bool rxtimer_shutdown;
-> > +     bool rxtimer_ref;
->
-> If you add new variables, pleas use __guarded_by()
-> https://docs.kernel.org/dev-tools/context-analysis.html
->
-> Thank you!
->
-> Best Regards
-> Oleksij
-> --
-> Pengutronix e.K.                           |                             =
-|
-> Steuerwalder Str. 21                       | http://www.pengutronix.de/  =
-|
-> 31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    =
-|
-> Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 =
-|
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 222b7fc2c3aa..cb1fec8ec5f5 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -19600,6 +19600,10 @@ F:	samples/pktgen/
+>  F:	tools/net/
+>  F:	tools/testing/selftests/net/
+>  X:	Documentation/networking/batman-adv.rst
+> +X:	Documentation/networking/can.rst
+> +X:	Documentation/networking/device_drivers/can/can327.rst
 
-Hi Oleksij,
+Why not exclude the while "can" subdir?
 
-Thanks for pointing this out.
+> +X:	Documentation/networking/iso15765-2.rst
+> +X:	Documentation/networking/j1939.rst
+>  X:	Documentation/networking/mac80211-injection.rst
+>  X:	Documentation/networking/mac80211_hwsim/
+>  X:	Documentation/networking/regulatory.rst
 
-I compared Tetsuo's v11 series with my current timer patch. They appear
-to address separate paths: his series changes ECU/address-claim
-lifetime handling, while mine changes session timer lifetime and TX
-shutdown handling. They both touch j1939-priv.h, but in different
-areas. I have not tested the patches together, so I cannot yet confirm
-that they apply cleanly as a combined series.
+Marc
 
-I will hold my timer patch until Tetsuo's series is applied, then
-rebase and rework mine on top of it. I will also add __guarded_by()
-annotations for the new protected fields and run context analysis with
-Clang before sending an updated series.
+pw-bot: cr
 
-I will coordinate with Tetsuo to avoid duplicate work.
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-Best regards,
-Zihan
+--lgjyhat5ekftt3sc
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavVvRAAKCRDMOmT6rpmt
+0hHvAPwKCOR8CfkY8/pW8HZ84qEN0q5XoUcNS2Z0nHSfDj1yXgD8Dk4w5K9qcoQe
+xI9LeAYgRMidSw1qk39indiI23+0Xgc=
+=aaNm
+-----END PGP SIGNATURE-----
+
+--lgjyhat5ekftt3sc--
