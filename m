@@ -1,57 +1,62 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794520183;
-	b=fLEeorODHxXwjX2j01ij9+Vs+FRd+0VuEbdEjV2CaMTYy8HlIznbsDOAJy4z7WP8imgs
-	 5OGAnj1aZnLxu9c10Chmfk4/yi1AnxV/DZI9qtvtV5MeB4Mq1hBOEyvx4ej7H449HW3Qu
-	 VPEoIjiCJ8SVopWH243KQolZramDM4Caj2YLz7ywQ/pIWYa/bkpDbM85DVsWWJtWj9Bbb
-	 Wu/V+fMpKisGB7hn2sI1AaDoKqVEgkqJpWGy9lFwRJicIBn3DWPl+7wemUL6a4Dm9h9Bf
-	 1KRvlj/EgD1LUB8m4UMN7d/OjONbyXr2SLnMugnTaERouK7kke/sKq+EtcyEdyhCexQ==
+	t=1794522726;
+	b=pepPYLDiQTORkQiiDN5PyuO55bCSxtEYwOp08ZIDG8Wy4ZtatL4lump8ErCXDif9zS6c
+	 sAk+nIga5oKu6LiHiC0X9Z+C5v+a08ZDFILgjVJjYf323b8ZWjqxIWqW9733ydLdSc8pb
+	 9KEhKhhZPdhiKY5PPHYAfEQLo0s04NYd1AAXnHcQvee8L7YclXtXqeqjlLFU3STcb9QfM
+	 +vrHn225ohRC40O7QX8b8H7iDae6LdUH5Q6F4ThGagSoaFsK1NF77JQco6yGerC7cEWzr
+	 gs63qVNUnpz4PB4xhIHT01nOE9qskhfCf15Tg5qv4/Pf3VsfLAfy2Y0ccTTVtjxeOsg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794520183;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794522726;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=VNDpWZ/WbAOErLSFshS8UFWvuUmheFhDs22oNrK3ADo=;
-	b=GkU3udqqtTBcxSb6XrZCggorFxCfm4uDo3Lf0aHeMRMp5oxRmAuaIz/4qEjgHFYQIRxp
-	 H/eIzoQfVhteOwLF7i+qT+wyMehUgQ6YEdaG9s49Hi4tHtbb0S+zWT1VH1wX+j7O7G5hj
-	 Qwm+PrboVxoYG61sab8CLj4oY/02BXkzUgL9mSO67ehW8Sdj2zzZdvt6inxRPkvTBhVoA
-	 DAFeKd1xIhNkpyL8y5SCCsHvWuFsvOHIDxeOXCE9Vd0wSs0jmtQ52AnsYOCSyJgkFCsyP
-	 KDmVSHZhvaUdSzq5SzV4xdz0jqhAdTcfkiTmMA8MPFApSxMWsw5Dgsd9iYcyLwt/9vQ==
+	bh=7Dww7rLEK29Z8yiJXV5V5KMhrywlVHiQMndBRuw4E/0=;
+	b=U6kvSDm9saedIENkHWGZD/hP3iE5srjWVzVH/ra/WO50kSLetl9lWj6FvZ3L1Qk4dmXH
+	 h5w/P/yc6eYS2hW1Cl2OjFtuekZM2hNba7/iX3OF9KdkGfMq2skxxdPObm7v8NvePmcgr
+	 2Uog5JpRaUPEnLTai+qAkehTOf4Tw+cC8CjYdadsQwxhrFWmgWauU6ABlJ1EEI7IYSY1S
+	 AGcFDIK3sDvxAZewMIUzZkbu9FCN0Bwpqfzsd57ZSiW7us+QoWK6AMlkcOuydazcraetA
+	 l0BKFI6tXXCX+uJNsuLRb2HR4vOPGqL04CGH2YyB6cmpWLcIHTZ1nM9FJibU+gAJ2Dw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZgjvYr6B;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Qu4iskwl;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 780FC606A89A;
-	Thu, 12 Nov 2026 21:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB70606A31C;
+	Thu, 12 Nov 2026 22:32:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ZgjvYr6B
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE2B51F000C4;
-	Thu, 12 Nov 2026 21:49:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Qu4iskwl
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B53AD1F000C4;
+	Thu, 12 Nov 2026 22:32:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794520183;
-	bh=VNDpWZ/WbAOErLSFshS8UFWvuUmheFhDs22oNrK3ADo=;
+	s=k20260515; t=1794522725;
+	bh=7Dww7rLEK29Z8yiJXV5V5KMhrywlVHiQMndBRuw4E/0=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=ZgjvYr6B8OPQLXmYagMsG7NamPs2/1vzqFcT1XXgyX+mlyUBoREH4UqQGbgbqDyFN
-	 fnSm4ACVQGy/IRtxeQCU4CjhRl4xuUK4GfoNrmFUp+9CAGRwVuWawQ3AOe5zJh1FIA
-	 8ZBQkFNK3aXwJKaklPQ6kA9zlTHLt1r0DNK9hticqBIS/BKFYXFvHaqnzkv5foOpVv
-	 32g+7cGASJVqP49EHUTF6piuTG6Fy6rjSVYM5fJ1WiKVuq05emBx2D3KBLJ93UuosO
-	 vc/PwynLLz5WQ6+k5mcYL/nC9DjPzvmT+rYak3SKPfeNr3NmsBCzjUkoVcV057QROm
-	 9AVflc3RvUfCw==
-Subject: Re: [PATCH net v7 4/4] can: j1939: reject a CTS that names more
- packets than the message has
+	b=Qu4iskwlFTCn0sPnAuYguLRUDzos0rP2oiB2AV6297+eONMYTmxzBG9ldyx/ZiwMH
+	 4BY6Bbuc8BzogjDhd1FpX2D22Bq66YV3QjstHiZVSsAEAvwBb+IGvdpRR74rHU+oa8
+	 KBMUbqeMZcw0Oi/dEada+JA93TRZo6z9Ru+aC1yc8NlYXImB561/9XVKiugV9zc3U4
+	 JSoYaEkEnSBNr67EPpqg/LjteW0gzZHlx1WD/ZvUv+5UWCga6NW18cNLWNCGd823qe
+	 Aj3DX1K027sMoeGt+7Dnkhqg/2zyOjFh7nkH3/Ab2FVepFBESbMmCI2HNXYfJ1ZTfV
+	 /qZN/Ot3wccGg==
+Subject: Re: [PATCH net v9 01/10] can: rockchip_canfd: prevent TX stall on
+ echo skb failure
 From: netdev-bot+sashiko@kernel.org
-To: quchaosheng000406@163.com
-Cc: robin@protonic.nl, o.rempel@pengutronix.de, socketcan@hartkopp.net,
- mkl@pengutronix.de, kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, kuba@kernel.org
-Date: Thu, 12 Nov 2026 21:49:42 +0000
-Message-ID: <179452018249.488853.178284371976315484@kernel.org>
-In-Reply-To: <179410166346.60581.17199842424718803160@163.com>
-References: <179410166346.60581.17199842424718803160@163.com>
-X-sashiko-severity: Medium
+To: 1579567540@qq.com
+Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
+ heiko@sntech.de, socketcan@hartkopp.net, davem@davemloft.net,
+ edumazet@kernel.org, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
+ wg@grandegger.com, linux-can@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ stable@vger.kernel.org
+Date: Thu, 12 Nov 2026 22:32:04 +0000
+Message-ID: <179452272422.488853.17004807498883326670@kernel.org>
+In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-1-6643f3825ba3@qq.com>
+References: <20261111-rockchip-canfd-restart-close-v9-1-6643f3825ba3@qq.com>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -64,140 +69,72 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 1
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [Medium] The commit message of "can: j1939: reject a CTS that names
-  more packets than the message has" gets the current behaviour wrong…
-- [Low] This patch makes the transmitter-role branch of
-  j1939_xtp_rx_dpo_one() (net/can/j1939/transport.c, lines 1894-1899)…
+- [Low] The commit message understates how bad the bug is.
 
 --
 
-can: j1939: reject a CTS that names more packets than the message has
+can: rockchip_canfd: prevent TX stall on echo skb failure
 
-This patch adds a check to j1939_xtp_rx_cts_one(). A CTS whose packet
-number is above pkt.total is now rejected, and the session is aborted
-with J1939_XTP_ABORT_ECTS_TOO_BIG. Before this, the function only
-rejected a zero packet number and a window above pkt.block.
+This commit moves can_put_echo_skb() in rkcanfd_start_xmit() so it runs
+before the hardware TX buffer is written. If no echo skb was installed, the
+frame is dropped and tx_head and the BQL bytes are left unchanged. It also
+passes an extra skb reference to can_put_echo_skb() and releases the
+original skb once submission finishes or fails.
 
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 5f05c15114ce4..6cb3dec49f3f7 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1504,6 +1504,15 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
->  		goto out_session_cancel;
->  	else if (dat[1] > session->pkt.block /* 0xff for etp */)
->  		goto out_session_cancel;
-> +	else if (pkt > session->pkt.total) {
-> +		/* The responder asks for more packets than the message has.
-> +		 * pkt - 1 becomes pkt.tx_acked below, and the transmitter
-> +		 * reports that value in an ETP.CM_DPO, where it would name a
-> +		 * packet past the end of the message.
-> +		 */
-> +		err = J1939_XTP_ABORT_ECTS_TOO_BIG;
-> +		goto out_session_cancel;
-> +	}
-
-[Severity: Medium]
-Does the commit message describe the current behaviour correctly? It
-says:
-
-  That value is what j1939_xtp_rx_dpo_one() now bounds, so an oversized
-  CTS is currently caught one step later and reported as a bad EDPO
-  offset.
-
-Before this patch, the host that receives an oversized ETP CTS goes
-through this path:
-
-j1939_xtp_rx_cts_one()
-    session->pkt.tx_acked = pkt - 1;   /* >= pkt.total */
-j1939_xtp_txnext_transmiter()
-    j1939_session_tx_dpo()
-        dat[1] = session->pkt.last - session->pkt.tx_acked; /* 0 or wraps */
-local echo of that DPO -> j1939_tp_cmd_recv()
-    j1939_xtp_rx_dpo(priv, skb, true)
-        j1939_xtp_rx_dpo_one()
-
-In j1939_xtp_rx_dpo_one(), the echo then takes the transmitter branch:
-
-	if (dpo >= session->pkt.total) {
-		if (session->transmission) {
-			...
-			j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
-		} else {
-			j1939_session_cancel(session, J1939_XTP_ABORT_BAD_EDPO_OFFSET);
-		}
-
-So isn't the abort code already ECTS_TOO_BIG, not a bad EDPO offset?
-The earlier commit in this series, "can: j1939: validate the EDPO
-packet number", says the same. For ETP, the actual change seems to be
-that the out-of-range DPO, with a zero or wrapped dat[1], is no longer
-sent on the bus.
-
-The new check also runs for plain TP sessions. There, pkt = dat[2] and
-there is no DPO step. Before this patch, an oversized TP CTS reached
-j1939_session_tx_dat() with pkt.tx >= pkt.total:
-
-	se_skb = j1939_session_skb_get_by_offset(session, session->pkt.tx * 7);
-	if (!se_skb)
-		return -ENOBUFS;
-
-The txtimer then retried until one of two things happened:
-
-  - the rxtimer aborted the session with J1939_XTP_ABORT_TIMEOUT, or
-  - the retry limit ended the session with -ENETUNREACH.
-
-With this patch, a TP session aborts at once with code 15. That code is
-documented as "ECTS requested packets exceeds message size".
-
-Could the commit message and the new comment cover the TP case as well?
-The peer and the socket user will see this change. The comment
-currently explains the check only through ETP.CM_DPO.
-
->  
->  	/* set packet counters only when not CTS(0) */
->  	session->pkt.tx_acked = pkt - 1;
+> rkcanfd_start_xmit() advances tx_head and requests transmission even when
+> can_put_echo_skb() fails. Completion matches self-received frames against
+> the echo ring, so an entry without an echo skb cannot be completed and
+> can leave the TX queue stopped.
 
 [Severity: Low]
-With this check in place, does the transmitter branch in
-j1939_xtp_rx_dpo_one() still match its comment?
+The code change looks right to me. Does this description cover the whole
+impact, though? It looks like RX stops as well as TX.
 
-net/can/j1939/transport.c:j1939_xtp_rx_dpo_one() {
-	...
-		if (session->transmission) {
-			/* A transmitter only builds an EDPO from pkt.tx_acked,
-			 * which comes from the responder's ETP.CM_CTS, so an
-			 * out-of-range value there is an oversized CTS.
-			 */
-			j1939_session_cancel(session, J1939_XTP_ABORT_ECTS_TOO_BIG);
-	...
+can_create_echo_skb() uses skb_clone(GFP_ATOMIC), so can_put_echo_skb() can
+fail with -ENOMEM under memory pressure. Before this patch, the empty slot
+still became tx_tail, so rkcanfd_get_tx_pending() stayed non-zero.
+
+After that, every received frame goes through rkcanfd_rxstx_filter():
+
+drivers/net/can/rockchip/rockchip_canfd-rx.c:rkcanfd_rxstx_filter() {
+    ...
+	skb = priv->can.echo_skb[tx_tail];
+	if (!skb) {
+		netdev_err(priv->ndev, ...);
+
+		return -ENOMSG;
+	}
+    ...
 }
 
-After this patch, pkt.tx_acked is at most pkt.total - 1 here. The one
-exception is j1939_xtp_rx_eoma_one(), which sets it to pkt.total just
-before the session completes. j1939_session_tx_dpo() copies
-pkt.tx_acked into the DPO packet number, so a DPO built by the local
-transmitter can no longer reach dpo >= pkt.total.
+By this point rkcanfd_handle_rx_int_one() has already pulled the frame out
+of the FIFO with rkcanfd_read_rep(). It then returns before
+alloc_can_skb() and can_rx_offload_queue_timestamp() are called:
 
-The only frame that can still reach this branch is an ETP.CM_DPO with a
-local SA that the local transmitter did not build. One example is
-another node on the bus using the same SA. Another is a raw CAN frame
-injected on the interface. j1939_tp_cmd_recv() passes such a frame to
-j1939_xtp_rx_dpo(priv, skb, true).
+drivers/net/can/rockchip/rockchip_canfd-rx.c:rkcanfd_handle_rx_int_one() {
+    ...
+	if (rkcanfd_get_tx_pending(priv)) {
+		bool tx_done = false;
 
-For that frame, wouldn't J1939_XTP_ABORT_BAD_EDPO_OFFSET be the more
-accurate abort reason? The commit message refers to the bound in
-j1939_xtp_rx_dpo_one(). Should that role split and its comment be
-updated as part of this patch?
+		err = rkcanfd_rxstx_filter(priv, cfd, header->ts, &tx_done);
+		if (err)
+			return err;
+    ...
+}
+
+rkcanfd_handle_rx_int() then leaves its FIFO loop on that error. tx_tail
+never advances, so the same thing happens on every later RX interrupt, with
+a netdev_err() each time. Frames from other nodes on the bus are lost as
+well until the interface is restarted.
+
+Could the commit message say that both RX and TX stop? That would help
+stable backporters judge how urgent this fix is.
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/179410166344.60581.3898011861151549156%40163.com
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3%40qq.com
