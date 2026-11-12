@@ -1,70 +1,99 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=156.67.10.101
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794493411;
-	b=xIzO/zTLVjK17z3lhCYnhB8Mg3ibAG37HJJ+QgRubip3Zvdm4R3DS35l85q5TziW0MQh
-	 0a0e2tkt/pguPe7qmV5qld/moHScHRiHC0OhYWAd/Y642eEdH3p28pr3y/d777Yyzkwd7
-	 C77S6bH0Jo0GAOqUIUGQK0MzEa6lCPRdvdA7LuMv0o50Eh1tSY2R9Iwgiv55U3bV3HYGo
-	 YxJbBI/7N2wu/DPSi4sz7KLmIr3LM5VAYweWfO3tEwAu5Te7mpgz/rrIcPBv4u9DvF2Xm
-	 6U/BqxUnGUG8/hvFUx2QedVtVxqf87aFOmosYQr0X99AoUKOj7zDvai3NP/6ed1Ueaw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794493411;
-	h=DMARC-Filter:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=9gXiTKwhd0i3FmOeF109/if7WExvzUv7qcneIWltTw4=;
-	b=p07NXsYUSKZnIEKD2t2y1xoiCtVhszIQx12l9uF6yfs2Q5l9ZnX8zBo+G6x7LdOCzQHE
-	 eCgLwpbUb+kF69s5j/ikwe5ASgtzirTYJvXNAbmJOwaenoEaqPy0pM/0voAjOTART3jPb
-	 /USCxkd+HgieMhET4PB7g9MOgQ90TImLJhtx1fSI7CIGS9nROSoSeZwQ9eCEMcx9iec0G
-	 TAkqOxlrQ2qNhAY3nFQIiSf5BcKFTUfhcRi/MY5sGHh3y/SlD2SppzZJ8gEcyYL2WbkZG
-	 RlnBRWgVuTJRRdHS53aNQbrPRW6egl+0d5BqNTQF7cCnalSRP/qRIERJknXNQveINXQ==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=lunn.ch;
-	spf=pass smtp.mailfrom=lunn.ch;
-	dkim=pass header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256 header.s=20171124 header.b=GkM8K1QJ;
-	arc=none smtp.remote-ip=156.67.10.101
-Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794499573;
+	b=t+tkn25ty+FHKmSulg3P0H9JA0h01Lckf1Ndgpv8Vk98DcRwpBl25CAjJVmpuB5ddY2E
+	 ZzoXrfDGsOYTbeXKOPf9Es0xNbXqMdaF3CdpgwbdwukgGIfjcVD8ZkarrLS5VS5H+cQwi
+	 2CkrvY2FEzRcMk2Tq/XUIuuVDT0PNSolA9v/KqzGjI4QEzxJRzGtvNpZmJ5ntJc4N3ye6
+	 r9jQ5xU09MRSFfYpxAABikc2Lu76NqgS+hP0J98zBs3cEpbelAq/GlpMDMQsuPquwF/qd
+	 wTpLSLj2ha9sCEUiEfxQzMhdjsVphihfXt590aU2U1hF2Izw14CnPRrVympy4e8vdfw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794499573;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=BW54H/tIq66HNt10goFmoDLmSFzUJN7adLDDoq1NiGY=;
+	b=Jic848/JQse3Q/573ark6nBuXdpq/Ni7VzJmlLKWnruXXZLqcK1jMOcSunS7x4qLJhoB
+	 rau9IQ0aeHpIXLN5fPZ+THCREzOIXdb4RcS3NUo/qQV6BJywqspsUbclD7CSpIemRzIoB
+	 JXkCaszDevTzYeSoAA1qoeDg7W6umOyEcvrM7rTK72b3uebMr87C+4dlCFxD7ysB/1YG4
+	 tyNJzoAetphIs3os48Y2+z7e9RPRhl07EyekP/iQ2vbP8keJJe2yJUsMomnDCOs2H1nGc
+	 O6WuhrQ/FUPM5k6/3zIYM2eDUAjI24MASuCjb5GX5oRdWjkWv41lVZAMeyI9DsUDVeg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PnZ+LYYz;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298BF606A33D;
-	Thu, 12 Nov 2026 14:23:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 298BF606A33D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F30606A31C;
+	Thu, 12 Nov 2026 16:06:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 72F30606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.a=rsa-sha256 header.s=20171124 header.b=GkM8K1QJ
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
-	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
-	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
-	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
-	bh=9gXiTKwhd0i3FmOeF109/if7WExvzUv7qcneIWltTw4=; b=GkM8K1QJwEYb9aj1af7OXzpN/G
-	g5/5QCVE6DP0q/LKaEPIJTuDFHiIOj6a6I/AgVt9J9E21WMfjotLjCaUmL7RtVSuSIDQag+Wgil14
-	NsMKr+8wvC+9gpqaUbXyB7NMVW9yQ02S67CO+kHdejDpBBDi6aj7c/JAMTSDGHkBra2c=;
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-	(envelope-from <andrew@lunn.ch>)
-	id 1xRVhr-00G2ck-B3; Thu, 12 Nov 2026 15:23:15 +0100
-Date: Thu, 12 Nov 2026 15:23:15 +0100
-From: Andrew Lunn <andrew@lunn.ch>
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>, Frank Li <Frank.Li@nxp.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de,
-	Fabio Estevam <festevam@gmail.com>,
-	Manivannan Sadhasivam <mani@kernel.org>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org, linux-can@vger.kernel.org,
-	linux-phy@lists.infradead.org
-Subject: Re: [PATCH V2 5/6] ARM: dts: mxs: add EVAchargeSE board support
-Message-ID: <bf6040aa-9cb0-4566-a2cb-f3edf39bf4c8@lunn.ch>
-References: <20261112130506.12823-1-wahrenst@gmx.net>
- <20261112130506.12823-6-wahrenst@gmx.net>
+	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PnZ+LYYz
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 254FF2000E3;
+	Thu, 12 Nov 2026 17:06:06 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794499566;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BW54H/tIq66HNt10goFmoDLmSFzUJN7adLDDoq1NiGY=;
+	b=PnZ+LYYzScXD2F44VSWVnfRI3cXaz7sL8qW+9mJ2S86mVyHc2SIJ+OHWKPiHOVkkeA3mnY
+	bzoq+YSr8Mo4q2C0QiK7B5JHcTUdvS3czveP1FDUCXbIWFDA8FxcZhc1J3Q9oqabCkswfi
+	h0XoJO/j4w4/LMXl0IjwDjQ8zVMIpWiUobE2xJASpjcP/DNFPK2qoFELuH2SwiIytA3Gpm
+	jwv/9B8Y1oopdJch9JcaNFPiXt/kRhXqgPRpJ/bncJyPt7kKADkkfj1IKT2TRQxWrS1D3B
+	HLUdZcv02JEOik+H1pK8NqK4IWqQZ/m2uqR85UvtAOMwPA6wLh4X1E2rB15xpg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794499566;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BW54H/tIq66HNt10goFmoDLmSFzUJN7adLDDoq1NiGY=;
+	b=EpneAu42DM1tpitoYTsQPfdUHZ2TaH8bczP5n3NyK2J9BywP5a8Nnz4onCOFvj/bbgMfsp
+	ZoAe5HxpaFt8xJnaVJFgTkOeuOcOxpYV19tDxge8z5T6kPg7tk8gztOMrvNMqZfsjwm/e+
+	J6NeZrCkTVqvA+UD5mwt2ZOMc3BzFtWKPCp4bbHDi4HxiGBzm0LH0D2KTKBvDy76MMejdM
+	eHGd8aVSAgNgkZ26vSb/D9xU77S7gYcqZIOR9lLP1YUD6SYYX3ZxANgeQFKU+qc7XJqNvb
+	W+LM1XLOp1tUDH8puZDb7iOBmvCmftpJBjmQ1GK/ELqeOi8yex4yPT32Cz6euQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794499566; a=rsa-sha256;
+	cv=none;
+	b=e8Teg8wu77pv0kCSyq2F7tavFJaxHZLjB9F4sclzU1lZBJv2AXhJvTZ4J9KPnKo++u0xo2
+	VNF9ZsSIYpu22Y2qmqEbpSrTFUdj9azfxxF74jrmDSRoKyttHFSQu9tWRjE5+tdC2sb8HY
+	bL0PsgqFQyEC2ZnbDugGF9HWfM4r9Da3nD09r8lat5iErV1p8lkUbwI0Z9uUO17maEZSDB
+	TX899lAa0a+9lFnTRbvZJfsu9cc6sADOOzF8L4rp+Oc1nGQGXepLlU+T/+MunFB3u0RyQs
+	GVf9pFI2SvFjjCo70oOYVZIx9gT478xyVMI+jXgyU2UuaDs2JkxjvqwvaXpL+Q==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xRXJO-003rQi-0C;
+	Thu, 12 Nov 2026 17:06:06 +0100
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 253A35E99E1;
+	Thu, 12 Nov 2026 13:44:44 +0000 (UTC)
+Date: Thu, 12 Nov 2026 14:44:43 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: claudiu beznea <claudiu.beznea@tuxon.dev>
+Cc: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, 
+	netdev@vger.kernel.org, linux-can@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH net-next 07/12] can: rcar_canfd: Use DT clock names in
+ the probe message
+Message-ID: <20261112-private-tangible-dragonfly-3de373-mkl@pengutronix.de>
+References: <20261110115112.3807247-1-mkl@pengutronix.de>
+ <20261110115112.3807247-8-mkl@pengutronix.de>
+ <20261111-wise-graceful-avocet-27fa57-mkl@pengutronix.de>
+ <7c5f9cc9-8e3a-4f3d-b9a5-b5b0462833af@tuxon.dev>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -74,43 +103,108 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="akelckda7ijpga4b"
 Content-Disposition: inline
-In-Reply-To: <20261112130506.12823-6-wahrenst@gmx.net>
+In-Reply-To: <7c5f9cc9-8e3a-4f3d-b9a5-b5b0462833af@tuxon.dev>
 
-> +&mac0 {
-> +	clocks = <&clks 57>, <&clks 57>, <&clks 64>;
-> +	clock-names = "ipg", "ahb", "enet_out";
-> +	phy-handle = <&ethphy>;
-> +	phy-mode = "rmii";
-> +	phy-supply = <&reg_3p3v>;
-> +	pinctrl-0 = <&mac0_pins_a &mac0_phy_reset_pin>;
-> +	pinctrl-names = "default";
-> +
-> +	status = "okay";
-> +
-> +	mdio {
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-> +
-> +		ethphy: ethernet-phy@0 {
-> +			compatible = "ethernet-phy-id0007.c0f0","ethernet-phy-ieee802.3-c22";
-> +			reg = <0>;
-> +			interrupt-parent = <&gpio4>;
-> +			interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-> +			max-speed = <100>;
-> +			pinctrl-0 = <&mac0_phy_int_pin>;
-> +			pinctrl-names = "default";
-> +			reset-assert-us = <500>;
-> +			reset-deassert-us = <500>;
-> +			reset-gpios = <&gpio4 13 GPIO_ACTIVE_LOW>;
-> +			smsc,disable-energy-detect;
-> +		};
-> +	};
-> +};
 
-For these nodes only:
+--akelckda7ijpga4b
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next 07/12] can: rcar_canfd: Use DT clock names in
+ the probe message
+MIME-Version: 1.0
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+On 12.11.2026 15:39:39, claudiu beznea wrote:
+> > > diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar=
+/rcar_canfd.c
+> > > index bb2d03b75142a..4f5cdfa8211da 100644
+> > > --- a/drivers/net/can/rcar/rcar_canfd.c
+> > > +++ b/drivers/net/can/rcar/rcar_canfd.c
+> > > @@ -2312,7 +2312,7 @@ static int rcar_canfd_probe(struct platform_dev=
+ice *pdev)
+> > >
+> > >   	platform_set_drvdata(pdev, gpriv);
+> > >   	dev_info(dev, "global operational state (%s clk, %s mode)\n",
+> > > -		 gpriv->extclk ? "ext" : "canfd",
+> > > +		 gpriv->extclk ? "can_clk" : (info->fcan_pclk ? "fck" : "canfd"),
+> >
+> > Is the right name printed when can_clk is in use on hardware where
+> > external_clk is 0?
+> >
+> > gpriv->extclk does not record which DT clock was picked. In the branch
+> > that uses "can_clk", it is copied from the hw_info flag that controls
+> > the GCFG DCS bit:
+> >
+> > drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
+> >      ...
+> > 	} else {
+> > 		fcan_freq =3D clk_get_rate(gpriv->can_clk);
+> > 		gpriv->extclk =3D gpriv->info->external_clk;
+> > 	}
+> >      ...
+> > }
+> >
+> > r9a09g047_hw_info has:
+> >
+> > 	.external_clk =3D 0,
+> > 	.fcan_pclk =3D 0,
+> >
+> > RZ/G3E uses this hw_info, and so do RZ/V2N and RZ/V2H through the
+> > r9a09g047 fallback compatible. Their device trees (r9a09g047.dtsi,
+> > r9a09g056.dtsi and r9a09g057.dtsi) only list:
+> >
+> > 	clock-names =3D "fck", "ram_clk", "can_clk";
+> >
+> > On these SoCs, devm_clk_get_optional(dev, "can_clk") returns a clock
+> > with a non-zero rate, so the else branch runs. extclk then ends up
+> > false, and the message prints "canfd clk".
+> >
+> > None of those device trees has a "canfd" clock, so a successful probe on
+> > these SoCs can only have used "can_clk".
+>
+> RZ/G3E, RZ/V2H, RZ/V2N have input clocks named in the HW manual as pclk,
+> clk_ram and canfd. These are described in [1] page 3365, [2] page 3286, [=
+3]
+> page 3160.
+>
+> All these have external_clk =3D 0, fcan_pclk =3D 0 and the patch here wil=
+l print
+> "canfd clk" for them, as it is actually defined in HW, and as the previous
+> code did.
+>
+> It is true the commit message mentions it uses DT binding clock names. Ma=
+ybe
+> that should be amended.
+>
+> With the current binding names and various usage of it across different S=
+oCs
+> I'm not sure we can use binding names for all the cases.
+>
+> Please let me know how would you like me to proceed.
 
-    Andrew
+I think it's fine. Let's see what the netdev people say :)
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--akelckda7ijpga4b
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavXCyQAKCRDMOmT6rpmt
+0ivrAQDaGjOFJSef3DVl1L7QOJUbB2TV1TvOirww3G5QE7BbUQEA0DLAehY6XfA7
+ImNBWKm57KtvhixSfhCZgWLkTNFyXQU=
+=t6cy
+-----END PGP SIGNATURE-----
+
+--akelckda7ijpga4b--
