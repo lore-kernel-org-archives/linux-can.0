@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794522733;
-	b=FjU2GnRBD1cKxlgCoNfMTridKRE07D5CEwHZtF5zdUT/Y1/zqR7uJQl590esuqzfBwtT
-	 GYah1rwMl2BxViR+KaVEboa9vC1kVQSPiL/61YmrrJwDP4h7wdrfoD9tEC3IqPSK1yfsL
-	 6M0q0QmOsLaf7GztYT14gX2/pPgwRSKLMUhpfxZfjtafRRgHX7wbIxnmCWx7kXDN9H4Xg
-	 1jvLQ7ijPgHT5U6l4eKA2a9YJof5lIw6Dmx1rOypa4rL7SL2SEFaMZll4bHtw9YCVHy5E
-	 u1/ymS2uNUr/Lh30OfEGyhGecrkO7iI/vyE9iiUmHnZGHQDFIbT553+bLJdVVoaClyg==
+	t=1794522729;
+	b=NgSFiSRZJnRxo40BTdGP+kqaz8iQZdGSDAqWiXC8AJibD3tzD4QegvyK89jN9nN9cuh5
+	 HV8fyKH688QSc2UST3yOfqnejpwyU404cBsUrBLEPdsYON6EnBF/APoeFGj+DcPZj0S1Z
+	 XZ+BwVqYgyNHMpqSNf9PnmqjeXuArwR3ymtLErl4VTbBTICxDgmLddc3mRrW8hi9ikefN
+	 bcdzeMjAWEb6+I9pJITCAOnkMgoYNnKefjSZzUpzeG17WF0lzL4UlwLFqlYpaCK/K4jkg
+	 zcSAkaaJwB7NsvLZ7V9BIoX/tEZ7wRlFoA3aOLL5tFrFq0vHJ1FJ2Y2v9vMg0tTQVnQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794522733;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794522729;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=OH+0WymoBgcUXGycaB4LMqft3m6k34R9ciQ53jyzM9o=;
-	b=E9a2QQCiD7QncGAlS9NwzXgU+1OaSpzEexb26OgyUQ/mblAfR6KAEydBeWgYrogf6GVu
-	 BfezyiI1e8wwnlWhRq5IJnlXzhg0XtUtk9rPSH2aWmDTQiXt2/8031+6PU/6NMrx8coaz
-	 uJnrhi/L3miuDDOE2/QCi0ZWBTpcQl20+C57aglSJIVscwrMOJYzyNR/JtyXRre+S0l4Z
-	 s7ndWVq2GVLeCu9DQdF1SbpUnCiV6tgerKUx5AgTByY+Ueab7pRHCG+qHS7QYn/V7OCts
-	 PdFsucJpaB3RHEHjxsYPYp9nLwRDW/kxP19x+BR2KGQoZqglmbiSh9+56jT+aOsBmaQ==
+	bh=8bqvMnyVEvBroB2d7Xzxe6U8AVpllM+eYYP2hE1nUBE=;
+	b=rsCXFkftXXhepsOLeEflKKnoVL6MkGSv4sPGeSsxSOJK6Eaf5qXR9VhhNfzR0CV5D/K5
+	 ci40mBBL2Z/dIW+kdz/rHSaPDcAL3Ab+BIdpS8DP3Y690D+nP0zzqUy43jWqzWfRTkaE+
+	 BAl3rIyVqfUjElndPMThQgT7kJVQDn4T6Df66kmTZIYRPJSPkDGzB9pWX4ZK85+YqdRB+
+	 hpgVE3pc0nUn3275lzSWW9RIzrMlF5BoN1GG+n3vikIb21bjOlYvmqdZPDElT7VMzVYJ9
+	 vryefH0YgUCUdTBHxDR93eFqbKABa8Y7xLdRmZAfunYUjTffo79navTn7ENTM/y5xDg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="MzC3q/kC";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Rb8Wmlwk;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC69060A260F;
-	Thu, 12 Nov 2026 22:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEB4D606A8A7;
+	Thu, 12 Nov 2026 22:32:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MzC3q/kC
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1C3F1F000CD;
-	Thu, 12 Nov 2026 22:32:11 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Rb8Wmlwk
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 433AA1F000CA;
+	Thu, 12 Nov 2026 22:32:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794522732;
-	bh=OH+0WymoBgcUXGycaB4LMqft3m6k34R9ciQ53jyzM9o=;
+	s=k20260515; t=1794522729;
+	bh=8bqvMnyVEvBroB2d7Xzxe6U8AVpllM+eYYP2hE1nUBE=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=MzC3q/kClS6U+kXLRaoowhQjOzZ63Z0TSjrBiLo+2gXsCGgsZg/DvhPVGPzQN0ab3
-	 Wm8lXXAOcEv3RbykuHY8mMukhtoSIq2GT1ZcL7yOWJ1WvxiWo/VuhBIiCwjb6cgOTc
-	 RlNbBw4eAT2IwrqW5kkDKAbkwbCOuym1fZqAmnnJ7rFlxDMKytJnZgk0y8wY1wwv4t
-	 r3ougT1O1IWbiWG6vYwfqF/fEj18XVAETxLyvyznpH8x9OXfritCFEvi9HY7qoTeuw
-	 EKqTf1fXoBgEb0PPlG3UC6QC6KCysBDHpr8PEhr4u5ueCUpgcxoUk9PEh/oejeQSNt
-	 313pXofxZFk9g==
+	b=Rb8WmlwkkN8eW1QyRTBK5Hqqvke4TxCEcBmr5FFJJU454l6AstuqjtdgKNnkxjejO
+	 4nX0qSnlV1/zzh201Zx1C4uAPlNKKRwS48dbE0xaFgI3EKeXHItBtlvh68cgjBenDA
+	 uoW8RlDcgWPJ+r+HGfIdRnmcwp5hN5zTBGx9vYO9ulo/GLgnPvaqUng4VnaPPU7RyH
+	 03ZEomcjO97MSDvl9qy3GvxSwZsmRo37rD70/SAYOdZea6L3/IILtTymTZCHmpuI+i
+	 hN76EfRIobqjBTVaM7YbG+CJE+jXJ+mi4raeNdwjmpmZ10FRzzPscicsh3hPf+D884
+	 ud1skVr3vjEcQ==
 Subject:
- Re: [PATCH net v9 05/10] can: dev: add close_candev_cancel_restart_sync()
+ Re: [PATCH net v9 03/10] can: rockchip_canfd: retry the outstanding TX buffer
 From: netdev-bot+sashiko@kernel.org
 To: 1579567540@qq.com
 Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
@@ -52,10 +52,10 @@ Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
  stable@vger.kernel.org
-Date: Thu, 12 Nov 2026 22:32:11 +0000
-Message-ID: <179452273127.488853.12768732215259424178@kernel.org>
-In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-5-6643f3825ba3@qq.com>
-References: <20261111-rockchip-canfd-restart-close-v9-5-6643f3825ba3@qq.com>
+Date: Thu, 12 Nov 2026 22:32:07 +0000
+Message-ID: <179452272781.488853.6815349480401824438@kernel.org>
+In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-3-6643f3825ba3@qq.com>
+References: <20261111-rockchip-canfd-restart-close-v9-3-6643f3825ba3@qq.com>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -75,72 +75,58 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The patch adds close_candev_cancel_restart_sync() as a static
-  inline in include/linux/can/dev.h and moves close_candev() onto it.
+- [Low] The commit message for "can: rockchip_canfd: retry the
+  outstanding TX buffer" leaves out a likely bus-visible effect of the…
 
 --
 
-can: dev: add close_candev_cancel_restart_sync()
+can: rockchip_canfd: retry the outstanding TX buffer
 
-This commit adds a static inline helper, close_candev_cancel_restart_sync(),
-to include/linux/can/dev.h. The helper synchronously cancels the CAN core
-bus-off restart work, and close_candev() now calls it. Drivers can then
-wait for recovery to finish before they tear down IRQ and hardware
-resources, and echo skb cleanup stays in close_candev().
+This patch changes rkcanfd_xmit_retry() to pick the TX buffer for the
+erratum 6 retransmission with tx_tail instead of tx_head. With a TX FIFO
+depth of two and one frame outstanding, tx_head points at the free buffer
+and not at the pending one.
 
-> diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
-> index 346faddee02eb..2a286f906394b 100644
-> --- a/include/linux/can/dev.h
-> +++ b/include/linux/can/dev.h
-
-[ ... ]
-
-> @@ -115,6 +116,22 @@ struct can_priv *safe_candev_priv(struct net_device *dev);
->  
->  int open_candev(struct net_device *dev);
->  void close_candev(struct net_device *dev);
-> +
-> +/**
-> + * close_candev_cancel_restart_sync() - cancel bus-off restart synchronously
-> + * @dev: CAN network device
-> + *
-> + * Call before tearing down resources used by the restart callback.
-> + * The driver must quiesce restart work producers before calling
-> + * close_candev() for the final cleanup.
-> + */
-> +static inline void close_candev_cancel_restart_sync(struct net_device *dev)
-> +{
-> +	struct can_priv *priv = netdev_priv(dev);
-> +
-> +	cancel_delayed_work_sync(&priv->restart_work);
-> +}
+> Use tx_tail to retry the outstanding buffer. Otherwise, the pending echo
+> entry can remain incomplete and leave the TX queue stopped.
 
 [Severity: Low]
-This isn't a runtime bug, but should this patch carry a stable tag? The
-alternative would be for the following Rockchip fix to list it as a
-prerequisite.
+The tx_head to tx_tail change looks correct for the one-pending case. Does
+this paragraph describe the full impact of the old code, though?
 
-The next patch in the series, "can: rockchip_canfd: cancel bus-off restart
-before closing the device", has Fixes: ff60bfbaf67f and
-Cc: stable@vger.kernel.org. It calls the new helper at the start of
-rkcanfd_stop() in drivers/net/can/rockchip/rockchip_canfd-core.c:
+The erratum 6 retry can only run when exactly one frame is pending and
+that frame is EFF. In that state rkcanfd_get_effective_tx_free() returns 0:
 
-    close_candev_cancel_restart_sync(ndev);
+	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_6 &&
+	    rkcanfd_tx_tail_is_eff(priv))
+		return 0;
 
-This commit has no Cc: stable tag, and the Rockchip fix does not name it
-as a dependency.
+So before this patch, the masked tx_head in rkcanfd_xmit_retry() always
+pointed at the other hardware buffer.
 
-If stable picks up only the tagged Rockchip fix, would the backport fail
-to build? close_candev_cancel_restart_sync() would be undefined there.
+The fix assumes that RKCANFD_REG_CMD_TX_REQ(i) sends whatever is already
+stored in buffer i. If so, did every erratum 6 retry with the old code
+re-send the stale contents of the non-pending buffer instead of the
+mangled EFF frame? That would usually be an earlier SFF frame that had
+already completed.
 
-Documentation/process/stable-kernel-rules.rst gives this form for
-prerequisites:
+If that happened, other nodes on the bus would see a duplicate frame.
+Locally, the self-received copy would not match echo_skb[tx_tail] in
+rkcanfd_rxstx_filter(). It would then go to local sockets as a normal
+received frame through rkcanfd_handle_rx_int_one().
 
-    Cc: <stable@vger.kernel.org> # x.y.z: <sha>: <subject>
+If instead TX_REQ(i) latches the shared FD_TXFRAMEINFO, FD_TXID and
+FD_TXDATA registers written in rkcanfd_start_xmit(), the old and new code
+would both send the EFF frame. In that case the stall described above
+would not happen.
 
-Other patches in the series already state their backport dependencies.
-The earlier core patch "can: dev: check netif_running() before bus-off
-recovery" is also tagged for stable.
+The driver code alone doesn't show which of these is the real hardware
+behavior. Could the commit message say which TX_REQ semantics the fix
+depends on? If they apply, could it also mention the duplicate
+transmission and the phantom local RX frame?
+
+Was this reproduced or tested on RK3568 hardware? If so, a note on that
+or a Tested-by tag would help.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3%40qq.com
