@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794522738;
-	b=hpc1YYJGAJXoB2SyCV2FJlqiNLEmI2+6e8GIqG5WbxFTatH2cMTNykWsORJ0loT/v4KS
-	 P6YJKlHV5/RiCFPUUWBh8sk+E9vcRzCZ8MwZDsvGVhujdgarJOZBhFiFHMD83f43EAQiM
-	 Z6C7iW/5+ZLzMN9eB4slXIJBQjJcFRNNLqQ0TN19qyPIOy+qD5hxGklsePlfvwruH/ruD
-	 1/jnfsGk9HL3u/E9PvBS5k8S6qMAOLvdp0gb97BkiageVnEmguJJA7q2DCoE5B9TpOavl
-	 KTzT9iv6R6RswpXuhBiEJuDR6rR7wYghx3q7pe9moArmNvTH/JBSmfyOPypnssPzikA==
+	t=1794522734;
+	b=C8Nk8g077p9jc2t4oPZFHPVoPGkXY179sMpKPxxwlVX0WcLNZf55OQ47Hnrq2l20HOLa
+	 mALxqxJxBGdZWYuWV7+kTc/DXb3rfnKvTZUZ0E74BP2FbEgxAN3cgvGzh3GuMw4ggyHpK
+	 ZQ2DDmeEVN9L/eh4xkaAjZL9GW0RdRMaFQPbOY0zuO48gbonisFeljc4xV81QCcjcJWm5
+	 qvJBwDKRZM3X/LAvn+IrG7Fggvjpu/lmW2ofyKYGWWYvP0UU5r4/hBjp20/lQsbFKwZTU
+	 vyHRLiLR9FsbVa50otuDjLQO57XsgyZKxVYff2FcwACGf3AFZkRl6SGKYu4DU8AEUkA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794522738;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794522734;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=7I8Bl8j2DkVNE27qVMX3vqtaNvrvL7NhHRJK3KxV54A=;
-	b=irzdLl6g2hWL1aX55X442Bk5lBVAaWt1PBma3y7OjfI5F5SDH5kaY86LxLvYt4Dvi12k
-	 qpJZxacMm7eTy79Ear/Un6InfRv8v/0P+jVrepYuIP8xNKEhecMl6Ct3O/KL5Zv4nExvd
-	 5H/xb0JWmouRmzO9MUerIVNFE+S1lNjjBKYkdfJw5O5UF8iJ3fxCLh+Fy22rrjJzlwePR
-	 v2OJyMbiJebGGJonrYr5cllBForNOAE91YLmb0unTWid4r+85v1TnoS5uS8Dje70wyh8C
-	 d0edHkEaXec9FnXincRGQH0BtuBxYHL8LOFKkPdOdBHiO/dNSvjnrnTZmnUzqijn5ZQ==
+	bh=48VJYDAuIt0iLg0S1Cc71k3C6Jpv8GbdLJgMXR02WJE=;
+	b=mSTTIz8F+eYvt0/ncPQhw5oeHYf7GZQhgOKMK9diyRE3RbhTQpNWvz5dq6vepq26/dAB
+	 HH7SRDfQA+4MNJrhbFDsl2MgGr6IcKbcLjDpLn08BBA6x1UEMIZpkhHXkxmnimKJsG6H1
+	 2zKJptfIw8HEmwgs2YoB+AR2IxTaV/hlsG04wzf/+fi2S7rR+WPK3u/FFnmbkNz0wnoDY
+	 +HEL1dkKJWn6V9cWiFVbudiA2Lkj6s3aEkwirB39amaGWsw6ZOze7LRZosaOkpJTIuW7e
+	 eaLZg7byZQp8wtDZUsM2QXhVzZO4ovwCgiTN2TSPtrRoBSpBLKoRVYLALl0ZSl1FgUg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WR3VWbUK;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WK1SZ2ty;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18AF260A3811;
-	Thu, 12 Nov 2026 22:32:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D09BC60A262A;
+	Thu, 12 Nov 2026 22:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WR3VWbUK
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B350D1F000C5;
-	Thu, 12 Nov 2026 22:32:16 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=WK1SZ2ty
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 68B8B1F000C9;
+	Thu, 12 Nov 2026 22:32:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794522737;
-	bh=7I8Bl8j2DkVNE27qVMX3vqtaNvrvL7NhHRJK3KxV54A=;
+	s=k20260515; t=1794522734;
+	bh=48VJYDAuIt0iLg0S1Cc71k3C6Jpv8GbdLJgMXR02WJE=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=WR3VWbUK1imnQlQmpNAhqSsCOW99QnIUHIcVwRERBUB4R/jAwYxqHbCFi1NkKzLoa
-	 ++/G59vhWLixAa9mEUEFGaU4gePyrs3VnVA09595dCjvaKajFGHofoN8XhUcYErqHP
-	 mChkoSGEKpddY3E1an1/DwCzTOeoAfXiiV55MWuRWtgoWvpRLoORurIa4d8gh/hEcp
-	 K+epw8KzroVsBPW5kuFg8ur7b1k8r1APmZnYOG0rRYfEeEaF5aWQPJ6qMb639O7JbH
-	 0Y8hT2yAVt9BfRDAyG2aNSLli4ZxHj62IV5iifmtuRZCbF+l9cL+Y+KQCwGeE9GoNI
-	 XttgZKyF9yFfw==
-Subject: Re: [PATCH net v9 09/10] can: rockchip_canfd: prevent timestamp work
- from rearming after bus-off
+	b=WK1SZ2tyrMYhJF/bZa4tEgn7hNxQSuUHNriOZekpe0FEf805H9H30EWWPUzGdG7ZS
+	 f7dFNPDMTUlTK6k6D75/z7hCezGI6bgRaNl6oSBghVHoMYD7rdlST0RoxoBQxJG+e0
+	 RSnR8GmZyArpwpmvQ/eKbVkZLDmX3l1txiaQ+H2uNYyFZcRXI21LbkxrxWrRKZniHF
+	 07g5RCfvQp+KYJlx7oF45NucDumEpUZCq2rWM3gJk5i8HbbQpnT2wmVSK7Qznn0mdB
+	 /GIlK/W6mEITS/+PzTCZjOosbMjnuKZcnyDNwEu/fvNL38lZxAYFOodbg7rdU4emV/
+	 SR2CImU1I8o2g==
+Subject: Re: [PATCH net v9 06/10] can: rockchip_canfd: cancel bus-off restart
+ before closing the device
 From: netdev-bot+sashiko@kernel.org
 To: 1579567540@qq.com
 Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
@@ -52,10 +52,10 @@ Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
  stable@vger.kernel.org
-Date: Thu, 12 Nov 2026 22:32:16 +0000
-Message-ID: <179452273623.488853.960003123754786062@kernel.org>
-In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-9-6643f3825ba3@qq.com>
-References: <20261111-rockchip-canfd-restart-close-v9-9-6643f3825ba3@qq.com>
+Date: Thu, 12 Nov 2026 22:32:12 +0000
+Message-ID: <179452273299.488853.8253978964891645481@kernel.org>
+In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-6-6643f3825ba3@qq.com>
+References: <20261111-rockchip-canfd-restart-close-v9-6-6643f3825ba3@qq.com>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -75,68 +75,84 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] Commit "can: rockchip_canfd: prevent timestamp work from rearming
-  after bus-off" is tagged Cc: stable but does not say it depends on the…
+- [Low] The patch has a missing stable dependency annotation.
 
 --
 
-can: rockchip_canfd: prevent timestamp work from rearming after bus-off
+can: rockchip_canfd: cancel bus-off restart before closing the device
 
-After bus-off, the rockchip_canfd timestamp worker could requeue itself
-and keep polling. This patch switches the worker to disable_delayed_work()
-and enable_delayed_work() to stop that. It also adds timestamp_lock and
-timestamp_active so counter reads are serialized with start and stop, and
-rkcanfd_timestamp_stop_sync() now calls the non-sync stop before it
-cancels the work.
+The patch adds a call to close_candev_cancel_restart_sync() at the start
+of rkcanfd_stop(). Today restart_work is only cancelled in close_candev(),
+which runs after the IRQ has been freed and the controller stopped. The
+earlier cancel is meant to stop a concurrent bus-off restart from turning
+the controller back on after IRQ teardown.
 
-> Keep workqueue operations outside timestamp_lock; the IRQ and restart
-> paths already serialize start and stop. Synchronous stop waits for the
-> callback before reinitialization or clock shutdown.
->
-> Fixes: 4e1a18bab124 ("can: rockchip_canfd: add hardware timestamping support")
-> Cc: stable@vger.kernel.org
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
+> index 1cae86973da5a..59a79fe057e66 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+> @@ -758,6 +758,7 @@ static int rkcanfd_stop(struct net_device *ndev)
+>  {
+>  	struct rkcanfd_priv *priv = netdev_priv(ndev);
+>  
+> +	close_candev_cancel_restart_sync(ndev);
+>  	netif_stop_queue(ndev);
+>  
+>  	rkcanfd_chip_interrupts_disable(priv);
 
 [Severity: Low]
-This doesn't affect the current tree, but should this patch say that
-it depends on the previous commit, "can: rockchip_canfd: serialize TX
-with bus-off and restart"?
+This patch has Fixes: ff60bfbaf67f and Cc: stable@vger.kernel.org. Will it
+build when backported on its own?
 
-That commit created the one-time probe helper that this patch extends.
-It moved INIT_DELAYED_WORK() out of rkcanfd_timestamp_init(), which
-runs on every chip start. With this patch, rkcanfd_timestamp_work_init()
-in rockchip_canfd-timestamp.c becomes:
+The close_candev_cancel_restart_sync() helper is only added to
+include/linux/can/dev.h by the earlier commit "can: dev: add
+close_candev_cancel_restart_sync()". That commit has no Fixes: tag and no
+Cc: stable tag:
 
-	spin_lock_init(&priv->timestamp_lock);
-	priv->timestamp_active = false;
-	INIT_DELAYED_WORK(&priv->timestamp, rkcanfd_timestamp_work);
-	disable_delayed_work(&priv->timestamp);
+static inline void close_candev_cancel_restart_sync(struct net_device *dev)
+{
+	struct can_priv *priv = netdev_priv(dev);
 
-Three calls need to stay balanced: the disable at probe,
-enable_delayed_work() in rkcanfd_timestamp_start(), and
-disable_delayed_work() in rkcanfd_timestamp_stop(). That only works if
-the work is initialized exactly once.
+	cancel_delayed_work_sync(&priv->restart_work);
+}
 
-The sentence "the IRQ and restart paths already serialize start and
-stop" also relies on that commit. It added the restart quiescing in
-rkcanfd_set_mode() for CAN_MODE_START:
+The early cancel also appears to depend on the earlier commit "can: dev:
+check netif_running() before bus-off recovery". That commit adds these
+checks in drivers/net/can/dev/dev.c:
 
-	WRITE_ONCE(priv->irq_suspended, true);
-	/* Wait for handlers that already passed the suspended check. */
-	synchronize_irq(ndev->irq);
-	rkcanfd_timestamp_stop_sync(priv);
+can_bus_off():
+	restart = priv->restart_ms && netif_running(dev);
 
-Without the prerequisite, this patch won't apply to stable trees.
-Suppose a backport fixes the conflict by hand and leaves
-INIT_DELAYED_WORK() in rkcanfd_timestamp_init(). Then every chip start
-resets the disable count to 0 just before enable_delayed_work() runs.
-That would trigger the workqueue disable count underflow warning and
-undo the requeue blocking added here.
+can_restart():
+	if (!netif_running(dev))
+		return -ENETDOWN;
 
-The prerequisite is in the same series and is also Cc: stable, so
-stable tooling would normally apply both in order. Could the dependency
-still be made explicit? A prerequisite note on the Cc: stable line, as
-stable-kernel-rules.rst describes, or a "Backports must include ..."
-line would do it.
+Without those checks, a bus-off IRQ can still arrive after the new early
+cancel but before free_irq(). In that case can_bus_off() would requeue
+restart_work.
+
+can_restart() would then call do_set_mode(CAN_MODE_START) unconditionally:
+
+can_restart_work()
+  can_restart()
+    priv->do_set_mode(dev, CAN_MODE_START)
+      rkcanfd_set_mode()
+        rkcanfd_chip_start()
+
+That turns the controller and its interrupts back on and schedules
+timestamp work after free_irq() and rkcanfd_chip_stop_sync(). This is the
+same failure the commit message describes. The cancel_delayed_work_sync()
+in close_candev() runs after rkcanfd_chip_stop_sync(), so it comes too late
+to prevent it.
+
+In mainline both prerequisites come earlier in the series, so the in-tree
+fix is complete. Other patches in this series say what their backports need
+(for example, the "Backports must include ..." notes in "can:
+rockchip_canfd: retry the outstanding TX buffer" and "can: rockchip_canfd:
+serialize TX state and command writes").
+
+Could this patch carry a similar note, or Stable-dep-of annotations, for
+both of these dependencies?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3%40qq.com
