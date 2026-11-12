@@ -1,47 +1,47 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794522731;
-	b=H8qdaGInhHH46Z57m78MTIRGER6hgRYjD3Ojm0WMmZTlK7p3zRJhAoiTaVhzUvX6fVrj
-	 RfhgH6e5iL+uCJy9nedny9MDFBwTVrRiRYhlxzze6tEScGqJFzdOdYtOpI7kLOV8WmQ4o
-	 Gq607KjBwvEHp97z0MT235xTQzLQzok71iCNrOQybExj6NvnXcMaPA5xahVPrrmri1l59
-	 UlCbBucska9Q1FLJtj33XqC6isVX/SpmSiDNi35I0ixN/b9UthhHMnAxHZsyJUsJ8K4sd
-	 BitpuKd5ynJbnZPDa6yuTWy51nshh15mepmM8JVfXR6K6zO3vb3bHcQyqQyslLP8VUg==
+	t=1794522727;
+	b=rg0MiC8JIqPyAeE8QdM/Zf2hsd24lvP2K53DPQ/Ljh2WJu6YBGNJddV8YV7uw/lTCMW2
+	 cVb9QbmaMeBBDyBL2jkY5u/IxGSCYNmXjYuMQ0DNdMXw0IAGp0BUsokn8Atgg/HOyM+Kn
+	 URnSOGOJpdPd8u9UDk1zViwganrQ448XRLHoo7mm+VPqa5fuaFU9q2tHWpbm1xaXv6g2f
+	 lEP92VqSY/KUcX2kg0OTASbBxWfeQ0iH90KT+DKQQcoElj4Hrm3AAEinAq9/cr3rO8kvT
+	 TLsjqGzCDscBsrKKyJCqS9B1VO9PZrzOH+//4Jf9Y94K4gKakWD/bxKG67hRjonV/3Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794522731;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794522727;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=OX3gd22w+rlqDW01NdjSI/b/1yTOJXzOcVqRAE9xFAs=;
-	b=TPB61fYxmbDsv1PlAtXFalcRytH8CXO6x5P6otN8jSnTKJdLTMFmZR8kPhtoJn3BoKp4
-	 8tzpMukeMiHFoVlDPB1UmKwtJaQ1sLTf5Eik4kEiXJTvd+HYyGPlvBHyYTTGp1ynY26ly
-	 PbeQb07yVb4B0EObIzT4jkLhERTB7zBaZPOcANIMyqdTbM6s2XsXWCqMhgzzkI7cD1lnK
-	 oOEQWhiMkuGwr6kEfktVUoH6DA7g2534IOvZPbfjxF5G67w8ZXFds186MUvW60CqelKTE
-	 ABDYJF4FuHfYbRxKbOjGpYqF+UmKisiqu8La8gYw2BxOMmXimVsOlJqZjd9bgTZ1m4g==
+	bh=FnKwjWoPH+aBZ+Vqr2z+nXlMKyFxL9fotAh/0RuRiL8=;
+	b=uX+4lVgyusYDGtf9LT+YtyWZdyw+h3cgNn8WEWpTYpXISYzpYXsA+oxoe9TskuNCsV+O
+	 8qMW7srxk85gAL+BP3qzSfWRqS/el14m1yFK2gwXi83x5pyGwhOc9GPcklNsGkPkth/fe
+	 rU9opYml14V/9ourzrvbiIsGw3MpuFOXlJSQuBi7S8KwepK+MSNtpBxeJWq5CYBOZCB7n
+	 wrCwNfOmHOWbQR3FxZW81mJ4WlwUQP0O1ytP4pPUnWc//AAY/61sdKUOiPthJrhygrU+Y
+	 MTJb6YpGCfPVm/12Lox/hELUgimnL1GoedyBbgUHgHi9yHOkboqAzP75QAzCanJvpXA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=m6vmzzYQ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="ku09BI/e";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FD51606A338;
-	Thu, 12 Nov 2026 22:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C80E6606A887;
+	Thu, 12 Nov 2026 22:32:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=m6vmzzYQ
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0261D1F000CC;
-	Thu, 12 Nov 2026 22:32:09 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ku09BI/e
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7CBB21F000C5;
+	Thu, 12 Nov 2026 22:32:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794522731;
-	bh=OX3gd22w+rlqDW01NdjSI/b/1yTOJXzOcVqRAE9xFAs=;
+	s=k20260515; t=1794522727;
+	bh=FnKwjWoPH+aBZ+Vqr2z+nXlMKyFxL9fotAh/0RuRiL8=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=m6vmzzYQbxZxkawCQFWOClVFKpZIGPRjM8NvycCdpGoXEmLZt25/U/wcMNRDuWYri
-	 1E+zZR6ErAggzzyv+x4ngfSgoUs5phdn+s8u1G8j2ynEdRdo+dP1+aXZ90onXJJtUk
-	 leEqtDIaNF1Ur7O0UPMapTuhaS1xg6OIDD63O7wZbnvxxum2QK2PM+EZ9S6inkLYzg
-	 KV5cvXSmBSHQUxgD6howM8wph//Mxxfv7nkY9A3LMv9g19GFPBMH69Y8v4+U1hICVk
-	 umzfpe8Qsh1bJjiWLBdDl+/FPxflsnGsJG4bjBUDqIbhOvTYD6ABl+auc+axpC4bhY
-	 ism3xWQjHUrHg==
-Subject: Re: [PATCH net v9 04/10] can: dev: check netif_running() before
- bus-off recovery
+	b=ku09BI/eyf5/4gS0ojO5Fg6F7AfCgiDpTOgR9wpaDZfwcZbV7Wg5OEDk0af+tAutO
+	 Ui7w7ozndnXJ0fgWidzs46IT67MyD57dmujEKGGhqzclAcvxd3iRXPV+ABdBBa/Dgp
+	 CRd2qfic1QHiVB9seLYQpFACMFAmZRhHBjuLWf3JIU8fIvXCDiR/HUnrURtfUHAVaK
+	 M8IY9O1gXEVaQoTDPFduEGPATl+gp6y1s+mtu8r+Kyi5vmPVLL1BHCn81yxF42emUQ
+	 iqAjcNR7iUX2Nfn9yNrJfAj0sdPRYUAGSMsOyw/2VUj6c4ZOp+Blo3vRKGeSKePFYy
+	 3SHEQbNlwMq8A==
+Subject: Re: [PATCH net v9 02/10] can: rockchip_canfd: serialize TX state and
+ command writes
 From: netdev-bot+sashiko@kernel.org
 To: 1579567540@qq.com
 Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
@@ -52,11 +52,11 @@ Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
  linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
  stable@vger.kernel.org
-Date: Thu, 12 Nov 2026 22:32:09 +0000
-Message-ID: <179452272955.488853.2430789088711910750@kernel.org>
-In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-4-6643f3825ba3@qq.com>
-References: <20261111-rockchip-canfd-restart-close-v9-4-6643f3825ba3@qq.com>
-X-sashiko-severity: High
+Date: Thu, 12 Nov 2026 22:32:06 +0000
+Message-ID: <179452272605.488853.7766222371781076513@kernel.org>
+In-Reply-To: <20261111-rockchip-canfd-restart-close-v9-2-6643f3825ba3@qq.com>
+References: <20261111-rockchip-canfd-restart-close-v9-2-6643f3825ba3@qq.com>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -69,233 +69,74 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 2 · Medium: 0 · Low: 1
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] In can_bus_off() (drivers/net/can/dev/dev.c:274-285), the new
-  running check and the schedule_delayed_work() call are two separate…
-- [High] The new netif_running() check in can_restart()
-  (drivers/net/can/dev/dev.c:201) runs from the restart delayed work on…
-- [Low] The new text in Documentation/networking/can.rst makes an
-  unconditional promise about restart-ms.
+- [Low] The commit message carries Cc: stable and makes the backport
+  depend on three other fixes, but only describes them loosely and never…
 
 --
 
-can: dev: check netif_running() before bus-off recovery
+can: rockchip_canfd: serialize TX state and command writes
 
-This patch adds netif_running() checks to can_restart() and can_bus_off().
-The goal is to stop automatic bus-off recovery from being scheduled or
-started once the interface has begun closing. It also updates
-Documentation/networking/can.rst to describe the new behaviour and to
-recommend setting restart-ms while the interface is down.
+This patch adds a tx_lock spinlock to struct rkcanfd_priv. The lock
+serializes rkcanfd_start_xmit() against RX-side echo completion and the
+erratum 12 retry path. It covers the TX free-space checks, echo handling,
+head/tail updates, BQL accounting and the MODE/CMD/MODE command sequence.
+The retained original skb is now released after the lock is dropped.
 
-Link: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261017-rockchip-canfd-restart-close-v6-0-ed605feb4b6e%40qq.com
-
-> diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-> index 51bc70748f753..9debef8702d5f 100644
-> --- a/Documentation/networking/can.rst
-> +++ b/Documentation/networking/can.rst
-> @@ -1302,7 +1302,8 @@ More info to the above output:
->  	Automatic restart delay time. If set to a non-zero value, a
->  	restart of the CAN controller will be triggered automatically
->  	in case of a bus-off condition after the specified delay time
-> -	in milliseconds. By default it's off.
-> +	in milliseconds. Recovery is skipped if the interface is found
-> +	to be down. By default it's off.
-
-[ ... ]
-
-> +Before scheduling or starting recovery, the kernel checks whether the
-> +interface is running and skips recovery if it is down.
+> Release the original skb retained by the preceding echo-failure fix after
+> unlocking and restoring IRQs, so its socket destructor cannot run under
+> tx_lock. Backports need that retained-reference handling and the CAN skb
+> ownership fix, or equivalent handling.
 
 [Severity: Low]
-Does this hold for every driver? Only the core software recovery path
-(can_bus_off() -> restart_work -> can_restart()) does the new check.
+This isn't a bug, but since the patch carries Cc: stable and depends on
+other fixes for backports, could those fixes be named by subject (and by
+hash where the hash is stable)?
 
-Several in-tree drivers read a non-zero restart_ms as "let the controller
-recover from bus-off by itself". In that case they never call can_bus_off()
-or can_restart(). For example, kvaser_pciefd_change_state():
+The "preceding echo-failure fix" looks like the previous patch in this
+series:
 
-	if (!can->can.restart_ms) {
-		kvaser_pciefd_start_controller_flush(can);
-		can_bus_off(ndev);
-	}
+  can: rockchip_canfd: prevent TX stall on echo skb failure
 
-and grcan_err():
+The "CAN skb ownership fix" looks like:
 
-	if (priv->can.restart_ms && oldstate == CAN_STATE_BUS_OFF) {
-		unsigned long flags;
+  b4ebcbbf66ba ("can: dev: can_put_echo_skb(): free skb on invalid echo index")
 
-		cf.can_id |= CAN_ERR_RESTARTED;
-		netdev_dbg(dev, "restarted\n");
-		priv->can.can_stats.restarts++;
-		netif_carrier_on(dev);
+The skb_get() passed to can_put_echo_skb() in rkcanfd_start_xmit(),
+together with the dev_consume_skb_any() / dev_kfree_skb_any() calls after
+the unlock, only balances if can_put_echo_skb() also frees the passed
+reference on the -EINVAL path. That makes b4ebcbbf66ba a hard
+prerequisite for any backport.
 
-kvaser_usb_leaf and kvaser_usb_hydra follow the same pattern. None of these
-check netif_running(). A hardware recovery between the clearing of
-__LINK_STATE_START and ndo_stop() stopping the controller is therefore not
-covered by the documented check.
+> This lock covers running TX, completion and retry. Synchronization with
+> bus-off and controller reinitialization is provided by the later
+> lifecycle fix.
 
-Given the races in the core path described below, would it be more
-accurate to say the check applies only to core-driven recovery and is
-best effort?
+Which patch is "the later lifecycle fix"? It appears to be "can:
+rockchip_canfd: serialize TX with bus-off and restart" later in this
+series.
 
-> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-> index 769745e22a3c7..a893a49a33813 100644
-> --- a/drivers/net/can/dev/dev.c
-> +++ b/drivers/net/can/dev/dev.c
-> @@ -198,6 +198,9 @@ static int can_restart(struct net_device *dev)
->  	if (!priv->do_set_mode)
->  		return -EOPNOTSUPP;
->  
-> +	if (!netif_running(dev))
-> +		return -ENETDOWN;
-> +
+At this commit, rkcanfd_chip_fifo_setup(), reached via
+rkcanfd_set_mode(CAN_MODE_START) -> rkcanfd_chip_start(), still resets
+the TX ring and BQL state without tx_lock:
 
-[Severity: High]
-Can a restart worker pass this check and still restart the controller
-while ndo_stop() is running?
-
-can_restart_work() runs on system_percpu_wq in preemptible process
-context. It holds neither RTNL nor the netdev instance lock, so nothing
-orders this test_bit() against __dev_close_many():
-
-worker                              close path
-can_restart_work()
-  can_restart()
-    netif_running() == true
-    <preempted>
-                                    __dev_close_many()
-                                      clear_bit(__LINK_STATE_START, ...)
-                                      ndo_stop()
-    can_flush_echo_skb()
-    netif_rx(CAN_ERR_RESTARTED skb)
-    netif_carrier_on()
-    priv->do_set_mode(dev, CAN_MODE_START)
-
-The only thing that waits for the worker is cancel_delayed_work_sync() in
-close_candev(). Many drivers call it at the end of ndo_stop, for example
-flexcan_close():
-
-	free_irq(dev->irq, dev);
-	can_rx_offload_disable(&priv->offload);
-	flexcan_chip_stop_disable_on_error(dev);
-
-	can_rx_offload_del(&priv->offload);
-	flexcan_transceiver_disable(priv);
-	close_candev(dev);
-
-In that case the worker's CAN_MODE_START can restart the chip after it
-was stopped. The chip can then stay active on the bus after the interface
-is down.
-
-The worker's can_flush_echo_skb() can also run at the same time as the
-driver's echo/TX teardown. That contradicts the "No synchronization needed
-because the device is bus-off" comment in can_restart().
-
-The commit message says these checks do not serialize with close. It
-also says the problem being fixed is "potentially re-enabling hardware
-while the driver is tearing it down", and that outcome still looks
-reachable here.
-
-Would the check and the restart need to be serialized against close? For
-example, can_restart_work() could take rtnl_trylock() or the instance lock
-and requeue on contention, or the core could enforce cancel ordering.
-
-The rest of the series appears to fix only rockchip_canfd, through
-close_candev_cancel_restart_sync(). The core and drivers such as FlexCAN
-are left unchanged.
-
-> @@ -259,13 +262,17 @@ int can_restart_now(struct net_device *dev)
-
-[ ... ]
-
->  void can_bus_off(struct net_device *dev)
->  {
->  	struct can_priv *priv = netdev_priv(dev);
-> +	bool restart;
->  
-> -	if (priv->restart_ms)
-> +	restart = priv->restart_ms && netif_running(dev);
-> +	if (restart)
->  		netdev_info(dev, "bus-off, scheduling restart in %d ms\n",
->  			    priv->restart_ms);
->  	else
-> @@ -273,7 +280,7 @@ void can_bus_off(struct net_device *dev)
->  
->  	netif_carrier_off(dev);
->  
-> -	if (priv->restart_ms)
-> +	if (restart)
->  		schedule_delayed_work(&priv->restart_work,
->  				      msecs_to_jiffies(priv->restart_ms));
->  }
-
-[Severity: High]
-Can restart_work still be queued after close_candev() has already
-cancelled it?
-
-The netif_running() test and schedule_delayed_work() are two separate
-steps with no lock between them. The cancel in close_candev() is not tied
-to either step:
-
-IRQ thread                          close path
-can_bus_off()
-  restart == true
-                                    __dev_close_many()
-                                      clear_bit(__LINK_STATE_START, ...)
-                                      ndo_stop()
-                                        close_candev()
-                                          cancel_delayed_work_sync()
-                                          (nothing queued yet)
-  schedule_delayed_work(&priv->restart_work, ...)
-
-HI3110 hits this case. hi3110_stop() calls close_candev() before free_irq(),
-so its IRQ thread can still be inside can_bus_off() when the cancel runs:
-
-	close_candev(net);
-
-	priv->force_quit = 1;
-	free_irq(spi->irq, priv);
-
-On removal, free_candev() only frees the netdev. It does not cancel
-restart_work, which lives inside netdev_priv(dev):
-
-void free_candev(struct net_device *dev)
-{
-	free_netdev(dev);
+drivers/net/can/rockchip/rockchip_canfd-core.c:rkcanfd_chip_fifo_setup() {
+    ...
+	WRITE_ONCE(priv->tx_head, 0);
+	WRITE_ONCE(priv->tx_tail, 0);
+	netdev_reset_queue(priv->ndev);
 }
 
-Would can_restart_work() then run on a freed can_priv? The new
-netif_running(priv->dev) check would itself read freed memory.
+The chip stop / can_bus_off() handling in rkcanfd_handle_state_error_int()
+also runs outside the lock.
 
-On a fast reopen within restart_ms, open_candev() does not cancel the stale
-work, and netif_running() is true again. The new check in can_restart()
-can't tell stale pre-close work apart from work for the new open session.
-
-can_flush_echo_skb() would then free priv->echo_skb[] entries while the
-driver's xmit and TX completion paths may be using them. After that it
-calls netif_carrier_on() and do_set_mode(CAN_MODE_START) on a healthy
-controller.
-
-The underlying lifetime problem predates this patch, and the new check
-narrows the window. But the commit message says recovery "can therefore be
-queued or started after the interface has begun closing". The queuing side
-still seems reachable through this window.
-
-include/linux/workqueue.h already provides disable_delayed_work_sync() and
-enable_delayed_work(). If close_candev() used disable_delayed_work_sync()
-and open_candev() used enable_delayed_work(), any late
-schedule_delayed_work() would become a no-op for every driver. Would that
-work better than relying on the unlocked running check?
+Could the follow-up be named explicitly, so a stable backport of this
+patch also picks up the change that closes that window?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3%40qq.com
