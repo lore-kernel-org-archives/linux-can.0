@@ -1,100 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.218.45
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794488791;
-	b=LEGSOpIkcx9/kdUGrQA2iJhHNjbax5WpUDFNMTRLsrIoQsXvul2oqbD2HZuXNeaDpsj8
-	 BrPqgp2ISy47VI6gam7DmY8vA9JPFbitNa/97m6k7V5mCVa2R9SwcNmpXL2NxSyzG1u3R
-	 Yb9C9UoMyRdEf5HqqDRVGcppUgkWiXb3dPVbYpWprZODAwfeKTvDIqQSIAOsjKKimHYIC
-	 prfSr0Ogrg9oFzL7OtyRh/6hu8OzTwMLws1IeTs0DXf+SQb+RHkI7oCAUfg8RGzBlkKzD
-	 8ric2aDXPFFlhaan43zNbsKxzdnextl5CK4vvlwlW+AtpHpRX9uUTDFzSlMNFN+594A==
+	t=1794490784;
+	b=vopfMsx/qAso3XXJtiyRO9UuN9Qy/Ht6GnwWuszxly9Uqt3QOp4A6nJLiLWyTAljwu4E
+	 p982dp6+m8d7GGRJ1k6KHoIt+yYk5Msns+tZMBheBc7qyKZkWs52cP7MEItCnlLiPmSFZ
+	 Tc4j8E1qzFuaXPAcMQphFqTdOP1Qpue6Ds0AtVLUOIKj9B+S6WHmJPYHOxBtA/JRpKYoj
+	 O4MYfm9wsJ27ywTPIJBtW0wphSRNVfFn+SNH6SVsRKeomlW2FgFKM1M5FSsrkMifnosIF
+	 W8jR+fqc2fRAfOlIezuMrbkXw68OttkkA0lrUEWdag0oZnnWzB4zrMJT1RTJUmLUBrw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794488791;
-	h=DMARC-Filter:DKIM2-Signature:Message-Instance:DKIM-Signature:
-	 X-UI-Sender-Class:Received:From:To:Cc:Subject:Date:Message-ID:
-	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-Provags-ID:
-	 X-Spam-Flag:UI-OutboundReport;
-	bh=cm/CJD/gYt9QlVkp5IudTxx8hQBfl6+NF/k9mP6AOAw=;
-	b=pKRabyXafzGyOaU/QXC1oztZHYElM3PJDvwJvTC+xVugtpIpnDkY8p0qzwyDrztmuoJZ
-	 MxeCqDB8c0bajCLrtl5pM+iSaf6JVdvkFVlI7FVXEE6ekcY/Rk7/LErPJR6YtLGI9wQBz
-	 Wg8uHA6swcB446wuOzMBLKEJ8D3jRJxPPo3QzjicX7z3fSyIoni9bD38htIkCKPbYTds2
-	 6P3lXjpdKsuHeNxnJo1JYFMQIJ4MdhJk00fUY3Tcy8otpVHzUGEJI2FFVjH+LFm5BYAvI
-	 yDStaJ7AU8O2ZZ/B5Yt+GJMBcxbjxBh2JU3LeSLXZwb+1JQrNCZP9aBlpSw7agHmXUw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794490784;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Message-ID:Date:
+	 MIME-Version:User-Agent:Subject:To:Cc:References:Content-Language:
+	 From:In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	bh=v2RDXyRKlu8YgCg3hXrjnzaY8toU8EVa/lRmWnLFezM=;
+	b=cVMXC4IGscmlb5Jd9+Jut6/PBZM62/5Np69ydSkhFVuNuoJFEpOWg5CIfIKnNdimBRkE
+	 y6WJOTPeAM21Hsz56pcUeEq/zHiZIrmk7wj1wRiFdEBL7cb/7wzaYj04iqNWYS/m6KGCr
+	 1x4a9By7I76vDQTYiyT9MSVdsXFuO78WMkX4qT9GGe8060ldSUGdjTcCPrUKIaBwrfItC
+	 Ipx6EV0GAMdL4Uyo1Z1B5gmjEUbDqs791+8pFU2phOKvFfYTAK1aA0yZLlgcHVCjk7quE
+	 RHOlLINhtBUTdvkQ64SMk5jkU+dBDA+H6amLeQOIHNNnDIQpDv/0xbkJJxqUP3R4O4g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmx.net;
-	spf=pass smtp.mailfrom=gmx.net;
-	dkim=pass header.d=gmx.net header.i=wahrenst@gmx.net header.a=rsa-sha256 header.s=s31663417 header.b=AeDYq+44;
-	arc=none smtp.remote-ip=212.227.17.22
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	dmarc=none header.from=tuxon.dev;
+	spf=pass smtp.mailfrom=tuxon.dev;
+	dkim=pass header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256 header.s=google header.b=TfAPXEZf;
+	arc=none smtp.remote-ip=209.85.218.45
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74BC8606A31C
-	for <linux-can@vger.kernel.org>; Thu, 12 Nov 2026 13:06:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 74BC8606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ACC9606A339
+	for <linux-can@vger.kernel.org>; Thu, 12 Nov 2026 13:39:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4ACC9606A339
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tuxon.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxon.dev
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.a=rsa-sha256 header.s=s31663417 header.b=AeDYq+44
-DKIM2-Signature:  i=1; m=1; t=1794488788;
- mf=PHdhaHJlbnN0QGdteC5uZXQ+;
- rt=PGxpbnV4LWNhbkB2Z2VyLmtlcm5lbC5vcmc+;
- d=gmx.net;
- s=s31663417:rsa-sha256:gNB89nBmmTRlVhkx7RFM2Egv3Uhh
-   3oLEhlXaNWxune6TsEC07gqi4sYGrvFaBOgWnjVw9IKDI0mRG1iXILZpPpMjGAZaa0v2TcGZfiD
-   sRcpCDdCJ6Cb/i2LEiAignhT27TWxvh4eM1pQ8sp7LFSF4ZRuf8ZN/R8Ejc19wvT5WgbmtTAohf
-   nnWlSIg+OtmjRgQ8OMosNeZaWjx4W2Lylzh65yy+9LkZOCXMa5Oxw9rG0ayxrGUfx6f828tceYD
-   Fop1k6NJxnmczyp63hszk5RsaSYilaIWrFKF/43a7Ku4eVlNwIbhFrVlE3BX0Lsu9k1DuTb4zbo
-   aG1mhkqirgDDzQ==;
-Message-Instance:  m=1;
- h=sha256:
-   n9W6cQrIaeF4LFWZhxK5qAwLewbr8r7efK+cohxjhn8=:
-   N7IIzZ8uHhKfeU9hdA2mf/whVs6F+2ufEA71jkU0cg8=,
-  sha512:
-   5V98BCEM7s8huQPK/bAsyBuge90QYEeTGcLJUNM4bE7y8ZG3MJu+P+KJuBw3uZZeGofuimf6IJ1u2+MMnsSRNw==:
-   zDH3+lvv1aLbPeLB56hDoxCDDps5WfuvY+sKwNJugqutTUC1IdFl211hx+z4xV31esovKAxeNuIuIng+t5GbgA==;
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1794488731; x=1795093531; i=wahrenst@gmx.net;
-	bh=cm/CJD/gYt9QlVkp5IudTxx8hQBfl6+NF/k9mP6AOAw=;
-	h=X-UI-Sender-Class:From:To:Cc:Subject:Date:Message-ID:
-	 MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=AeDYq+440OqEYUngerjYBKGCZiMv30RIpFEpozprAl1VC7AoA6E4FM0YajooUIXf
-	 t/RJW8JL9OWYifXe9EjD56k9/yRNzxAL6NxjCvePoNw6KaGZ6Xy7sKK5vfG+lFJ54
-	 k9PfOtsmZbux0I+a9GZe2Jb5+7SMmxaqCc1yKQPBOH+12eJ0MmTbNcdymA2wtjpq3
-	 0kdRuhZBnYdNIS1bpYnJoSL3OrfIMuBsahRnpnePRGh0CYd+q3/NN1t1q5HMJOg6m
-	 KS6eFoaqDnXU7Zy+KVB7qngz1gjsfnn5CA7gTYIaePX4qUuHqMtdIYla22MjC3OtK
-	 qak2pzj8zGlipW/8Fg==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mof57-1wgosM2D6X-00pk6J; Thu, 12
- Nov 2026 14:05:31 +0100
-From: Stefan Wahren <wahrenst@gmx.net>
-To: Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Linus Walleij <linusw@kernel.org>,
-	Bartosz Golaszewski <brgl@kernel.org>,
-	Frank Li <Frank.Li@nxp.com>,
-	Vinod Koul <vkoul@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>,
-	Vincent Mailhol <mailhol@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	kernel@pengutronix.de,
-	Fabio Estevam <festevam@gmail.com>,
-	Andrew Lunn <andrew@lunn.ch>,
-	Manivannan Sadhasivam <mani@kernel.org>,
-	devicetree@vger.kernel.org,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-gpio@vger.kernel.org,
-	linux-can@vger.kernel.org,
-	linux-phy@lists.infradead.org,
-	Stefan Wahren <wahrenst@gmx.net>
-Subject: [PATCH V2 0/6] ARM: mxs: add EVAchargeSE board support
-Date: Thu, 12 Nov 2026 14:04:59 +0100
-Message-ID: <20261112130506.12823-1-wahrenst@gmx.net>
-X-Mailer: git-send-email 2.53.0
+	dkim=pass (2048-bit key, unprotected) header.d=tuxon.dev header.i=@tuxon.dev header.a=rsa-sha256 header.s=google header.b=TfAPXEZf
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-c45551fa84eso654775466b.3
+        for <linux-can@vger.kernel.org>; Thu, 12 Nov 2026 05:39:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=tuxon.dev; s=google; t=1794490782; x=1795095582; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=v2RDXyRKlu8YgCg3hXrjnzaY8toU8EVa/lRmWnLFezM=;
+        b=TfAPXEZfYdGS4nyKKQ9186EaI0rvQhYBFPMR8QyhKUKBCr1+buGAgHTCrDc8MVGpv/
+         qqr5CHJuGjy9jyVGqcg5lXGP3ZOxs8SRLLBOv86duKHKy74IUilBd+hboQcnODmg5YP5
+         lHQaQlF+22MFhytGhqw+q9v7x3/m9fOF617NG9Qq/rX05gT8l9MdBRuOFILysy44uPiJ
+         cmnwkG9LDqcak7jdtXCiuxtPsTOFV2pfuAI4unmOvPEi6EYh1DBc/UWqoZliJttWACt8
+         +xixG4esyEHdqDr4uW0ieA0m/I4u8seBPet6HAUY/aIwR3/Jro0+CsAp4rHvBJct1qGk
+         jqSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794490782; x=1795095582;
+        h=content-transfer-encoding:content-type:in-reply-to:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=v2RDXyRKlu8YgCg3hXrjnzaY8toU8EVa/lRmWnLFezM=;
+        b=dA742Xc7ibXzT5nssfd8q2wkKpqgClGpCJZKrZGZJi74/oh2wCLNrMRvseFXcur0f6
+         w98DVXGpB3/8Yn8q75mZ/wGkU5qUPZxdpzxP7/TLEN5aiNBJivUxAp/SgQSG4drpiF3r
+         RsX4/RNnpPYQv2TM8uWrHP+HWxBQZHLTcQddCS2CQpi0nVRZnUTXvtidALUkQc8WZ0p6
+         757EdPhEwWyoMfPH9ltgHl3l3sNF7hqfkzBIb4XO6yJDW5KjlYV8EJ8jzmqB9bZRTp0m
+         qCOCVVCBu3q04YR95bO6ay7iAIzT64X6NMwJU0xc2wCfgRKKx+eBuq+EwChLNZQwqm3l
+         JgSQ==
+X-Gm-Message-State: APuU4Z8D+9/6AzPBCGtaop/8xqiQhPdjDDYEazM/0BCJLPo4nlW1MXx+
+	XivCjzjB19tBVb19G7k0ovGcBPdMAno35cBfFLMPoHJQXJdWVLcpwqhrgIvdJzpFQo4=
+X-Gm-Gg: AYBFou3meufARwnXMTE1qUaA4vOCiLv+3DrCnKdIm+rsW0OEEXVU1X+5Kjv7el8FSLj
+	xz6aehpqSfKRbtxQHVgBR0JqaJXXv0VEZxlZ2tg1LUylKPQvTpgyh9Gzv4W/b4PPeFIKBVMdo9A
+	w3ew35GL+WbENm07qnCAbMojsARcnD72EBaYO53k0HlnkYgV4QXZGKE6EmUz3Ifyo3f4M+ZLrPI
+	aTVXiQwvedjtbazqgJqe9/gvvqimKciQfUrpl2QsnCiA6x+gZm9hkvMGjUqyI9juFbFQlB/9Sdb
+	CyEfO3y52Iu8bFKf3S63QvjWfLPWF5i1LtZW11QbkNzMTj0tKFEpxXtWWLqZkiUnQHTS+Z9s0xt
+	k/G9pCHvdWCmBEDyZI1llCQwWbrG7HxCxqU3D9pAvP7NariTcL+sVM4DLjK8p/4blQ/auqov/Ne
+	XGpRwFbTwEYidZ32gdLgQhhNTQqrMOwQlb/B/lvsBvNIWcZULHqLrMzMSwL9iIt8unuxZ1nd3Ut
+	YqGdkbJHIQgbVU93fKHcw2hcICzEcdiqadLgNKm1+2Xe0GejD+cMbtpEqQYNoAa8NJkWYNVDGFb
+	nJIJYFaE/L93p0QqtNgalMNEAq1vE8n2ZdrynA==
+X-Received: by 2002:a17:907:3e10:b0:c40:6ed9:b962 with SMTP id a640c23a62f3a-c5066b43140mr466325766b.26.1794490781537;
+        Thu, 12 Nov 2026 05:39:41 -0800 (PST)
+Received: from [192.168.50.4] ([82.78.167.244])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-c504a3a6bc5sm354373766b.3.2026.11.12.05.39.40
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Nov 2026 05:39:41 -0800 (PST)
+Message-ID: <7c5f9cc9-8e3a-4f3d-b9a5-b5b0462833af@tuxon.dev>
+Date: Thu, 12 Nov 2026 15:39:39 +0200
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -104,157 +90,143 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hCNvVusAbzHTonvPIZCO1jALX3FJsVy9qfR8X4wV72Z7obQFhcD
- ViwdC8+PEgVnqvjjcPmyNqyzo/RHRRIUN9scy2LoVbRFbirrDh5cqA1lgeC0jOoEJyWZHNJ
- 7I+FI4jde1wsPYU783tuEaFIqgRjJVZPAkU6ZAFNossB6LxWEenOgwJZTf4Ml3jAanwsvFl
- 6vaXI+iJ7dVA6gsJykckg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:rjL3rNuuovI=;2XfDIgGya1qnkE5EI/8eq7Uw4xb
- 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
- W35jnxRp0pw==
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next 07/12] can: rcar_canfd: Use DT clock names in the
+ probe message
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+ Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>, netdev@vger.kernel.org
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
+References: <20261110115112.3807247-1-mkl@pengutronix.de>
+ <20261110115112.3807247-8-mkl@pengutronix.de>
+ <20261111-wise-graceful-avocet-27fa57-mkl@pengutronix.de>
+Content-Language: en-US
+From: claudiu beznea <claudiu.beznea@tuxon.dev>
+In-Reply-To: <20261111-wise-graceful-avocet-27fa57-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-This series adds support for the chargebyte EVAcharge SE, which is a
-ISO 15118 compliant controller for electric vehicle & charging stations.
+Hi, Marc,
 
-Changes in V2:
-- add Krzysztof's Acked-by to Patches 1-3
-- align writing of EVAcharge SE (reported by sashiko)
-- add "dts:" to subject of Patch 5 (reported by Andrew)
-- add PHY ID of LAN8720Ai (reported by sashiko)
-- move enet_out clock to MAC node as in imx28-btt3.dtsi
-- adjust IRQ type of PHY (reported by Andrew)
-- add new patch to enable EVAcharge SE peripherals in mxs_defconfig
+On 11/11/26 14:01, Marc Kleine-Budde wrote:
+> On 10.11.2026 12:41:30, Marc Kleine-Budde wrote:
+>> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>>
+>> Print the DT binding clock names when reporting the selected clock at the
+>> end of probe. These names are part of the DT ABI, so they are stable and
+>> match what users see in the device tree.
+>>
+>> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+>> Link: https://patch.msgid.link/20261019121356.2421761-3-claudiu.beznea@kernel.org
+>> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+> 
+> 
+> The netdev sashiko/clashiko found a medium issue. Can you comment on it?
+> 
+> If you re-spin the series, take a look at the low issues, too:
+> 
+> https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261110115112.3807247-1-mkl@pengutronix.de
+> 
+> regards,
+> Marc
+> 
+> --- Patch [7]: [PATCH net-next 07/12] can: rcar_canfd: Use DT clock names in the probe message ---
+> commit d7a69a85fec4c0746ff8cbfad2799f58cd2059c3
+> Author: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
+> 
+> can: rcar_canfd: Use DT clock names in the probe message
+> 
+> This commit changes the clock name in the final dev_info() of
+> rcar_canfd_probe(). It now prints DT binding clock names ("can_clk",
+> "fck" or "canfd") instead of "ext" or "canfd".
+> 
+> Link: https://patch.msgid.link/20261019121356.2421761-3-claudiu.beznea@kernel.org
+> 
+>> diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+>> index bb2d03b75142a..4f5cdfa8211da 100644
+>> --- a/drivers/net/can/rcar/rcar_canfd.c
+>> +++ b/drivers/net/can/rcar/rcar_canfd.c
+>> @@ -2312,7 +2312,7 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+>>
+>>   	platform_set_drvdata(pdev, gpriv);
+>>   	dev_info(dev, "global operational state (%s clk, %s mode)\n",
+>> -		 gpriv->extclk ? "ext" : "canfd",
+>> +		 gpriv->extclk ? "can_clk" : (info->fcan_pclk ? "fck" : "canfd"),
+> 
+> Is the right name printed when can_clk is in use on hardware where
+> external_clk is 0?
+> 
+> gpriv->extclk does not record which DT clock was picked. In the branch
+> that uses "can_clk", it is copied from the hw_info flag that controls
+> the GCFG DCS bit:
+> 
+> drivers/net/can/rcar/rcar_canfd.c:rcar_canfd_probe() {
+>      ...
+> 	} else {
+> 		fcan_freq = clk_get_rate(gpriv->can_clk);
+> 		gpriv->extclk = gpriv->info->external_clk;
+> 	}
+>      ...
+> }
+> 
+> r9a09g047_hw_info has:
+> 
+> 	.external_clk = 0,
+> 	.fcan_pclk = 0,
+> 
+> RZ/G3E uses this hw_info, and so do RZ/V2N and RZ/V2H through the
+> r9a09g047 fallback compatible. Their device trees (r9a09g047.dtsi,
+> r9a09g056.dtsi and r9a09g057.dtsi) only list:
+> 
+> 	clock-names = "fck", "ram_clk", "can_clk";
+> 
+> On these SoCs, devm_clk_get_optional(dev, "can_clk") returns a clock
+> with a non-zero rate, so the else branch runs. extclk then ends up
+> false, and the message prints "canfd clk".
+> 
+> None of those device trees has a "canfd" clock, so a successful probe on
+> these SoCs can only have used "can_clk".
 
-Stefan Wahren (6):
-  dt-bindings: arm: fsl: support chargebyte EVAcharge SE
-  dt-bindings: phy: ti,tcan104x-can: Document Microchip MCP2562
-  dt-bindings: gpio: mxs: Allow gpio-line-names to be set
-  ARM: dts: imx28: add alternative pinmux for CAN1
-  ARM: dts: mxs: add EVAchargeSE board support
-  ARM: mxs_defconfig: Enable EVAcharge SE peripherals
+RZ/G3E, RZ/V2H, RZ/V2N have input clocks named in the HW manual as pclk, clk_ram 
+and canfd. These are described in [1] page 3365, [2] page 3286, [3] page 3160.
 
- .../devicetree/bindings/arm/fsl.yaml          |   1 +
- .../devicetree/bindings/gpio/gpio-mxs.yaml    |   4 +
- .../bindings/phy/ti,tcan104x-can.yaml         |   1 +
- arch/arm/boot/dts/nxp/mxs/Makefile            |   1 +
- .../boot/dts/nxp/mxs/imx28-evachargese.dts    | 295 ++++++++++++++++++
- arch/arm/boot/dts/nxp/mxs/imx28.dtsi          |  11 +
- arch/arm/configs/mxs_defconfig                |   2 +
- 7 files changed, 315 insertions(+)
- create mode 100644 arch/arm/boot/dts/nxp/mxs/imx28-evachargese.dts
+All these have external_clk = 0, fcan_pclk = 0 and the patch here will print 
+"canfd clk" for them, as it is actually defined in HW, and as the previous code did.
 
-=2D-=20
-2.53.0
+It is true the commit message mentions it uses DT binding clock names. Maybe 
+that should be amended.
+
+With the current binding names and various usage of it across different SoCs I'm 
+not sure we can use binding names for all the cases.
+
+Please let me know how would you like me to proceed.
+
+Thank you,
+Claudiu
+
+
+[1] 
+https://renesasweb.s3.us-west-2.amazonaws.com/prod/docs/X014/X0142913/r01uh1032ej0140-rzv2h.pdf?response-content-disposition=inline%3B%20filename%3D%22r01uh1032ej0140-rzv2h.pdf%22&response-content-type=application%2Fpdf&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA3WXFIBJWSDVTHJX3%2F20261112%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261112T131439Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86700&X-Amz-Signature=495c3e56e8d6cefcdbb3bd6703f5a14e9ad3307c07bdc43510195a230ee39e64
+
+[2] 
+https://renesasweb.s3.us-west-2.amazonaws.com/prod/docs/X014/X0148808/r01uh1071ej0130-rzv2n.pdf?response-content-disposition=inline%3B%20filename%3D%22r01uh1071ej0130-rzv2n.pdf%22&response-content-type=application%2Fpdf&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA3WXFIBJWSDVTHJX3%2F20261112%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261112T131341Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86700&X-Amz-Signature=5701c16170569ac6e6f206e3dc8644a45da7c6eb78e9d52ed2f1e7c9b08d3773
+
+[3] 
+https://renesasweb.s3.us-west-2.amazonaws.com/prod/docs/X015/X0151384/r01uh1069ej0120-rzg3e.pdf?response-content-disposition=inline%3B%20filename%3D%22r01uh1069ej0120-rzg3e.pdf%22&response-content-type=application%2Fpdf&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA3WXFIBJWSDVTHJX3%2F20261112%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20261112T131308Z&X-Amz-SignedHeaders=host&X-Amz-Expires=86700&X-Amz-Signature=644c54d7cc84b5b32cb6cbe6a678ad53305a30be6d986baf3aed5e4038f18c21
+
+> 
+> The commit message says the names "match what users see in the device
+> tree". That does not seem to hold on these platforms. The same ternary
+> is also still there at the end of the series.
+> 
+> Could each branch that gets the clock set a const char * clock name
+> instead, rather than working it out from extclk and fcan_pclk?
+> 
+>>   		 gpriv->fdmode ? (gpriv->fd_only_mode ? "fd-only" : "fd") : "classical");
+>>   	return 0;
+> 
+> --
+> Pengutronix e.K.                 | Marc Kleine-Budde          |
+> Embedded Linux                   | https://www.pengutronix.de |
+> Vertretung Nürnberg              | Phone: +49-5121-206917-129 |
+> Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
