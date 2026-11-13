@@ -1,73 +1,73 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794554011;
-	b=TDfRNrGh3pqYtqx2f9Q5W6MT25K7AoPz/zHD4A3ICnf88+FvbQCTLdy/AaTDG1Ia7jAk
-	 LD3Lt5U0iwIaCVvEPf6sv6UaDd4m8Vpcq00ps26BaznNVrdEvMWNoQW3h89kCZEGrKEM/
-	 +OEPxFGjyA1NRrncQ4Pp36OSrOhzXN74tMVGLEQOsSf/AVMB6GJEoulFYNxU5vGHRyzFy
-	 0vaj4wzhq975T4YeON2XcNTgxJ8A2aThMCwjg5WnL9ognHTvDWBvFr0R3NDISnSf3KIIN
-	 xeomdicGFiq7edVAX2WmQDBaR+Ux584v+/XsEQ5ExUiyaQBJvrsFUKuQG0G1ftx5Lew==
+	b=Yy1afBF+KrIig7I5ZXLqo8fGI9H521I0b7IcWUPcVYxvEUgmQVpZ5DwGXM1mDUQR3ZmE
+	 po6w/mdg+QMTsyunYawNoHfIH79K44Ql5XcFg3nqExRufuDBWGRXaXPmQO5XBaUlAAI2z
+	 ng8OvGv8vvknGh5kL7kDqOGu394zVDYFxnz6nFCUP3eZRZPLMSfjG8d902Jzex5k9N60g
+	 DenflpSfRssM8iQKXjFnCtgKfpueficrYHeaiS9S74HNQScicP0zQM3m/HszH+gozjBrh
+	 ljYT0xnV1UvMl3YI/80mMD3uht4KDdy8Ig8N8XrXm1cmFupcw3Q4WHuuSwrH15WAoXA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794554011;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=FoouU1yOXSOL9vJPI//qigbV6ycEtcVzzRnWUF7ZjKU=;
-	b=zE+EgZ6AHGxgeRIh4VAo00bXWB1+lQbWwedMfYDHVTQx3hTjwq7sXVtD6ia7o/zcnOzs
-	 J19MPk5R4iGI34aHAcjgAGLBX0rbrGnWm9maz7BwnWt5wV2HEA6omyZIzBPVj89xdiF6F
-	 ZMB95abS0TMiUNRbbtwpShvJ6DBoLaDnmZsm0dbqxvzFZeO7nWDfZDnYaZMrrbtWBo/IG
-	 40VzHuH+MYgkxWEy+XB/xVhlpd2TLZADoO36xnXQAh25SZtXsQYzsKhHE5yqt2OzoeZ5h
-	 4TKYOumCliljHeBRbigFt8CdAxTPGZCb0iapk8LiZuhUxhUw5aN4XaNv00ytm0ji6zw==
+	bh=ZUGr/irCljBtKt5MymL+Zhww0DeYa1tlokKKdxZvsG4=;
+	b=Mt3w51MHab6zy+tKXlmwyVmrKLZMtZ67Q91rxkVkaq+nOZwG7vnNpNlMEU8ez8JW8BWs
+	 gNaqpIFCpNxiuBLzkc582XgAxKf+UZgRES35by1dKgeHYyn5qlzNhs684uFk6DuEljNit
+	 BvgZAUp48C9DI80+7v+H55fJ5lagxuI3rHlf5Az4l6iQH9TWRhqWpRkw/Kn1k1lv6F3qf
+	 tHCAznFnj39zssqTzL3xRjWEo/5JmOQfs8/Gbs5j58TxnDUDfNwEx6Q3uti1G2599yXqR
+	 74VnPOwmIqn03JMp03ef0Aq8BkZ/69jf/z8BRGeFpqx09bSawcN+MqeVysrB4zaW4SQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=cvO1J1cg;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=fJj0pE+Z;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4690860A3810;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46872606A8A3;
 	Fri, 13 Nov 2026 07:13:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4690860A3810
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 46872606A8A3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=cvO1J1cg
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=fJj0pE+Z
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 088422023BD;
-	Fri, 13 Nov 2026 08:13:28 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id EBF06202266;
+	Fri, 13 Nov 2026 08:13:27 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794554008;
+	s=20260414; t=1794554007;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FoouU1yOXSOL9vJPI//qigbV6ycEtcVzzRnWUF7ZjKU=;
-	b=cvO1J1cgWJs5FbXPqcj1qgmMXxF+fmQ+tIzW4rRswWSuYhkWaf6Tw7Tx0ESDv8ho5Vvg+X
-	xeAHn+8v/6tTEHG9mhIKo5cSs5sp7f5MNdkXvI1JTi38tYr9g3t4BVvEbEACajdPeTgThk
-	xDM6HG5Hhn9GmLUXhB3MquHgNrDw3eIUt2xjqE+hNudWexrqsKW/hHtNE43PZwA+VtRD6R
-	XfM99h+7surisH3c7DfQvprhFWubenCiR6PoNtpWQIczsSWh+vhXQ+n5aSIOWeZUzzqADF
-	PHHX8Ygxo5FS5veGczEsun/mYbNpRj9WOsAIriEcA/upORbVdnsfWI/GCbK9mQ==
+	bh=ZUGr/irCljBtKt5MymL+Zhww0DeYa1tlokKKdxZvsG4=;
+	b=fJj0pE+Z8l+fnR4FeJzRC7SbXFYdH12P6kteEPPMEvlcAJ4O2zEAn9HjXy72AXrw3bDFZ9
+	CIoomXBqj5BF8sStCCHKWMGIfX+J5KpImTS5swN5tKr9M4e8Uv2gvYQa2lAIDmjB/pC/Fq
+	y5tWq+7Sh5+tGYFNIp4r5fA0jhtHZvUdQT+yhhzPC0lo5tBEAWeF0AFuus2h8yy2ii/koF
+	KK+ZABd0dINugv/6z4sx7kSx1Wt9drfPV7KWipSVkGOprPNR7OfRZAPGIjliQO5H02XgH3
+	eymHdNh5TmNu954KTDwDfvhyrhVil9fgj5hgZcn9guRt/rE68JBfZ2UgVoMYgw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794554008;
+	s=20260414; t=1794554007;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FoouU1yOXSOL9vJPI//qigbV6ycEtcVzzRnWUF7ZjKU=;
-	b=ZlJIv3kdgXSqGvRETCAj9Hx4HPrWenX3GQ26PMKRP7WSFeLFCbz9SsgB+PljGd7fFj0mQb
-	hqfwNwc6l4Ly3maE1ErgfWKWcumkDZVF8D/b4HF/Z2cNsxlkJi3TjXpVm2loyLccWT0Uka
-	jwKw6fNvsRTXgVMbA3UVpd8emQdC9M28hHJxId9j/7uaX3yhlO4KQC5MKAOXypZ9CalsD3
-	s6cBY2M8RUC3Wo4vVb6gYqNz+RCIE1lZx2LnN1rV5F+llbRudawvKZUZ/MFCLsXRynsx2x
-	Bz/eUBngXOJZvzQ7nwNfNMOVHM1TwEdT+94zIqNHqaDIxG6bpoQ6gd6okI7Bqg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794554008; a=rsa-sha256;
+	bh=ZUGr/irCljBtKt5MymL+Zhww0DeYa1tlokKKdxZvsG4=;
+	b=R8XgiACkCawrGpjWLlhPLgboxwSSRG4jXLaLupvJ5njIuQhaejUcMUwc9gsNmiiZLfm9S3
+	4Gc39LXzndu3vGhSOqQZNe9AITbL6QdlWgXW/q0ZUEwkulbcjLiLAc0MDcSxrvpFyOZ7l8
+	cqlCjAMl/CnDWKiqhj8/sgDJNFVv7G64PFO8bUgCYG+SGMAJGcoSxBjXZC/C2j97UKmV5c
+	H+Or5C7311q8Eh1B/qRIWztGGxmQcIEqiafmCyBtUdpCwBjcU4Sr/yGZ7mvpGf+h0XgcOy
+	5LQNhMOp0jQqfS2vickJK7jhyxCcT8Qm9yjl/C5KLUwXGAYZ/ufC8C/CovjgFA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794554007; a=rsa-sha256;
 	cv=none;
-	b=gv4QBkwZ/nP8EY8euzzYJ4bMP4zu3mWc44THau9cKupnElW294UZukHTsWWOwIlL1PiWHD
-	8uASqicKMRD/Prx+uo9PcHhmF+QoPqJ1LrFpGVZpsY3wFE0AhA56s57c99FVxoMikCWV6q
-	tP9UN1WpkBHAZtAbSux9u4SDM5JWEL+xkQoQqb5NMjoT8xKmFlNdeVNsXCh1aWiHrXNCnE
-	l/A2PrISR5x7tpiLR/tVIJ0qdNuVp4H4LqKkpiUq8RovIKtC0ReLsOTLUGCtAFqXx21liT
-	V1LBdalXPsRszWNKC7JWA0JBI3uD1G7oUm8tAerFe/Y4oUDWWHws80y/EZvmvg==
+	b=DeomQzn86wOnmlhVMtuz0jTdQMBUjk+Wqu98YK50XnEhkdV3K/fM0X2c+ZdJe/0VcnoGm8
+	yBZsLMiW2Tj78+2vZSJHGJd7juXYKR1Grw1k7CFjtZ4K51tBdij8SwpCFvE7GPtXAQosji
+	yQtdJSUJnlh6PmeKxUqMDbqG3WmmV6597gCtKiuVCW3K//+NTEEEw2TjZcTNzuKkmu+c9G
+	mpfy2X6S4yYPpismOhIRldTwn3RqxtjBGYtvPM8BK0kmpKDJUbGMCn4fJGQld7sf4DYepz
+	PE+7K/CF6DnSbzggz6z757z3GCBNpNFXnkFjQdcIeJOcuoJa9lms/tqzTg1JZg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,14 +75,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xRlTT-003xHp-2z;
+	id 1xRlTT-003xHo-2l;
 	Fri, 13 Nov 2026 08:13:27 +0100
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 9DA6E5EA577;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 914885EA576;
 	Fri, 13 Nov 2026 07:13:27 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,12 +90,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Chaosheng Qu <quchaosheng000406@163.com>,
-	Conor Dooley <conor.dooley@microchip.com>,
+	Quchaosheng <quchaosheng000406@163.com>,
+	"Rob Herring (Arm)" <robh@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 2/7] dt-bindings: net: can: bosch,cc770: Convert to DT schema
-Date: Fri, 13 Nov 2026 08:08:50 +0100
-Message-ID: <20261113071325.4092169-3-mkl@pengutronix.de>
+Subject: [PATCH net-next 1/7] dt-bindings: net: can: ifi,canfd-1.0: Convert to DT schema
+Date: Fri, 13 Nov 2026 08:08:49 +0100
+Message-ID: <20261113071325.4092169-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261113071325.4092169-1-mkl@pengutronix.de>
 References: <20261113071325.4092169-1-mkl@pengutronix.de>
@@ -110,133 +110,63 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Chaosheng Qu <quchaosheng000406@163.com>
+From: Quchaosheng <quchaosheng000406@163.com>
 
-Convert the Bosch CC770 and Intel AN82527 controller binding from
-free-form text to DT schema, and reference the common can-controller.yaml
+Convert the IFI CAN-FD controller binding from free-form text to DT
 schema.
 
-The driver reads one more property than the old text documented:
-"bosch,no-comperator-bypass", which is checked at cc770_platform.c:94.
-It is documented here so that it can be used. Its spelling is kept as
-the driver spells it.
+Reference can-controller.yaml. interrupts is required: the driver obtains
+it with platform_get_irq().
 
-The interrupt is obtained with platform_get_irq(), so interrupts is
-required. The register window is described with the chip select, the
-address offset and the size, as the original text and the existing
-device trees on the local bus use three cells. The size is usually 0x80.
+The example now uses the GIC and irq header defines instead of raw numbers.
+The values are unchanged: GIC_SPI is 0, IRQ_TYPE_NONE is 0 and 1 is
+IRQ_TYPE_EDGE_RISING. Rename the example node from canfd to can so that it
+matches the $nodename pattern in can-controller.yaml.
 
-unevaluatedProperties is used rather than additionalProperties so that
-properties provided by can-controller.yaml, such as termination-gpios,
-remain usable.
-
-Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
-Acked-by: Conor Dooley <conor.dooley@microchip.com>
-Link: https://patch.msgid.link/20261009105557.301855-2-quchaosheng000406@163.com
+Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+Link: https://patch.msgid.link/20260922102258.138753-2-quchaosheng000406@163.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ .../bindings/net/can/ifi,canfd.yaml           | 46 +++++++++++++++++++
+ .../devicetree/bindings/net/can/ifi_canfd.txt | 15 ------
+ 2 files changed, 46 insertions(+), 15 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/ifi_canfd.txt
 
-Notes:
-    FAQ:
-    
-    Q: What about the comment in drivers/net/can/cc770/cc770_platform.c?
-    A: It's changed in the next patch.
-
- .../bindings/net/can/bosch,cc770.yaml         | 109 ++++++++++++++++++
- .../devicetree/bindings/net/can/cc770.txt     |  53 ---------
- 2 files changed, 109 insertions(+), 53 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/cc770.txt
-
-diff --git a/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
+diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
 new file mode 100644
-index 000000000000..448d5b4f74b5
+index 000000000000..c8c3105c727b
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
-@@ -0,0 +1,109 @@
++++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+@@ -0,0 +1,46 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/net/can/bosch,cc770.yaml#
++$id: http://devicetree.org/schemas/net/can/ifi,canfd.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Bosch CC770 and Intel AN82527 CAN controllers
++title: IFI CAN-FD Controller
 +
 +maintainers:
 +  - Marc Kleine-Budde <mkl@pengutronix.de>
 +
 +description:
-+  The CC770 is a CAN controller from Bosch which is 100% compatible with the
-+  older AN82527 from Intel, except that some bugs have been fixed.
++  The I/F/I CAN-FD soft IP block connected to the platform bus. It is most
++  often synthesised into an FPGA or CPLD.
 +
 +allOf:
 +  - $ref: can-controller.yaml#
 +
 +properties:
 +  compatible:
-+    enum:
-+      - bosch,cc770
-+      - intc,82527
++    const: ifi,canfd-1.0
 +
 +  reg:
-+    description:
-+      Register window of the controller. On a PowerPC system the controller
-+      sits on the local bus and the property describes the chip select, the
-+      address offset and the size, the size usually being 0x80.
 +    maxItems: 1
 +
 +  interrupts:
 +    maxItems: 1
-+
-+  bosch,external-clock-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Frequency of the external oscillator clock in Hz. The internal clock
-+      frequency used by the controller is half of this value.
-+    default: 16000000
-+
-+  bosch,clock-out-frequency:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Clock frequency in Hz on the CLKOUT pin. If not specified or if the
-+      value is 0 the CLKOUT pin is disabled.
-+    default: 0
-+
-+  bosch,slew-rate:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    description:
-+      Slew rate of the CLKOUT signal. If not specified a reasonable value
-+      is calculated. Only used when bosch,clock-out-frequency is set.
-+
-+  bosch,divide-memory-clock:
-+    description: Divide the memory clock for slower memories.
-+    type: boolean
-+
-+  bosch,iso-low-speed-mux:
-+    description: Use the ISO low speed multiplexed bus configuration.
-+    type: boolean
-+
-+  bosch,no-comperator-bypass:
-+    description:
-+      Disable the comparator bypass. When this property is absent the
-+      comparator bypass is enabled.
-+    type: boolean
-+
-+  bosch,disconnect-rx0-input:
-+    description: Disconnect the RX0 input.
-+    type: boolean
-+
-+  bosch,disconnect-rx1-input:
-+    description: Disconnect the RX1 input.
-+    type: boolean
-+
-+  bosch,disconnect-tx1-output:
-+    description: Disconnect the TX1 output.
-+    type: boolean
-+
-+  bosch,polarity-dominant:
-+    description: Use dominant polarity on the bus.
-+    type: boolean
 +
 +required:
 +  - compatible
@@ -247,81 +177,38 @@ index 000000000000..448d5b4f74b5
 +
 +examples:
 +  - |
-+    localbus {
-+        #address-cells = <2>;
-+        #size-cells = <1>;
++    #include <dt-bindings/interrupt-controller/arm-gic.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
 +
-+        can@2,100 {
-+            compatible = "bosch,cc770";
-+            reg = <2 0x100 0x100>;
-+            interrupts = <4 1>;
-+            interrupt-parent = <&mpic>;
-+            bosch,external-clock-frequency = <16000000>;
-+            bosch,disconnect-rx1-input;
-+            bosch,disconnect-tx1-output;
-+            bosch,iso-low-speed-mux;
-+        };
++    can@ff220000 {
++        compatible = "ifi,canfd-1.0";
++        reg = <0xff220000 0x1000>;
++        interrupts = <GIC_SPI 43 IRQ_TYPE_NONE>;
 +    };
 +...
-diff --git a/Documentation/devicetree/bindings/net/can/cc770.txt b/Documentation/devicetree/bindings/net/can/cc770.txt
+diff --git a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt b/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
 deleted file mode 100644
-index 042200cf4419..000000000000
---- a/Documentation/devicetree/bindings/net/can/cc770.txt
+index 20ea5c70ab82..000000000000
+--- a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
 +++ /dev/null
-@@ -1,53 +0,0 @@
--Memory mapped Bosch CC770 and Intel AN82527 CAN controller
--
--Note: The CC770 is a CAN controller from Bosch, which is 100%
--compatible with the old AN82527 from Intel, but with "bugs" being fixed.
+@@ -1,15 +0,0 @@
+-IFI CANFD controller
+---------------------
 -
 -Required properties:
+-  - compatible: Should be "ifi,canfd-1.0"
+-  - reg: Should contain CAN controller registers location and length
+-  - interrupts: Should contain IRQ line for the CAN controller
 -
--- compatible : should be "bosch,cc770" for the CC770 and "intc,82527"
--	for the AN82527.
+-Example:
 -
--- reg : should specify the chip select, address offset and size required
--	to map the registers of the controller. The size is usually 0x80.
--
--- interrupts : property with a value describing the interrupt source
--	(number and sensitivity) required for the controller.
--
--Optional properties:
--
--- bosch,external-clock-frequency : frequency of the external oscillator
--	clock in Hz. Note that the internal clock frequency used by the
--	controller is half of that value. If not specified, a default
--	value of 16000000 (16 MHz) is used.
--
--- bosch,clock-out-frequency : slock frequency in Hz on the CLKOUT pin.
--	If not specified or if the specified value is 0, the CLKOUT pin
--	will be disabled.
--
--- bosch,slew-rate : slew rate of the CLKOUT signal. If not specified,
--	a reasonable value will be calculated.
--
--- bosch,disconnect-rx0-input : see data sheet.
--
--- bosch,disconnect-rx1-input : see data sheet.
--
--- bosch,disconnect-tx1-output : see data sheet.
--
--- bosch,polarity-dominant : see data sheet.
--
--- bosch,divide-memory-clock : see data sheet.
--
--- bosch,iso-low-speed-mux : see data sheet.
--
--For further information, please have a look to the CC770 or AN82527.
--
--Examples:
--
--can@3,100 {
--	compatible = "bosch,cc770";
--	reg = <3 0x100 0x80>;
--	interrupts = <2 0>;
--	interrupt-parent = <&mpic>;
--	bosch,external-clock-frequency = <16000000>;
--};
+-	canfd0: canfd@ff220000 {
+-		compatible = "ifi,canfd-1.0";
+-		reg = <0xff220000 0x00001000>;
+-		interrupts = <0 43 0>;
+-	};
+
+base-commit: 573af801552999954caa8347e4490b04cf4763f0
 -- 
 2.53.0
 
