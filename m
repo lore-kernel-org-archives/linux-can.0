@@ -1,59 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794531260;
-	b=YBuGIJ/qmzuQo6+yXDu/UoeOBwApAcTbUC49l3M0nqz5aaBtd+zUVz+pGP+XDIBXFj2d
-	 FKgijb95GYa1UFN8CFLeT9W9bIz1dxrAvGv/eD4R6PCwXkFP2yDdb5TGi/77ioxl1fH+p
-	 FJNP5ilvetZdmBxw+19pwuwTL7202u9lIXJYqRPj3ItNotDC6V+Dep7xuo7n3473rqfJ7
-	 g8jbiKI41vHloISQdXVQxN90NtZRy5vNBefkUEDM583nzeoyCgoymxS3IGByrbnxqcn1A
-	 n+ziaVktE6I7PViLUQ3zaruSpEbiQxmryZaC4/gWpnpunFfO0yezlUNLJW9ebOXiJxw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794531260;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=rhIOdnO+7z3iJ3nl14eV8COiDecmopXYxcQjfeMYOOo=;
-	b=GgLe3v/zPsLSy4q4ZNwZXbEBCTcK2xJw0fUBXu7tItqaqIbJwkQK70arlTyATAy5DjJT
-	 PkvMrjDYzrcBnYkfU05ltfJSv45Glq9c7XrGHg/C+yQJXfi5RGNBVhqOMTFBvTpOMwpss
-	 Cb+eldbP5yFS8uhZTHn0O5bQaIzzjDO0CsFd5PUW7XFbtAa449+0iTbyMnOIKpMEHzbmr
-	 3vuQTPOr/sWNPoY2yLznV9DPTnNADebE2JdGhg5vdfwCi0pYcLxsRm5CXgOKdo9zcQ1AB
-	 IE9xF/S4tQq0lzbrpGH0/6sMr59e+Eo1ERCCNzy8QsffZmNihyQzguemJFACefk/tfA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Q3dNufQB;
-	arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794537209;
+	b=HBQrQzJ/bCviJp2Sk1OYIS+9OOIgEgQQfIznp32cLFloFMtoC5oLrt7AUkoFr9fkcOOc
+	 IwOmL3Te3T5hE5JPpYtnX47iMuznt3Ect9WgzOZICLFbS+blrLWqnxcE8mOQSQ9zvyf5O
+	 EwaTAuO7LTaRpgnR7ol2KRQvP51XrR1QbcWkTiePYPn11Pj7cBDLcC9VoMO1AA/W4nIcj
+	 pnH6mSYcfKoY+Yh720GI+WkpRNLSntzbAAmuQuvEu+cjam6g1iCz2jGq4pdlcGXrkUL3J
+	 hDLGeIXIF7WWOZIv/g3cu51lcbqbQw9nOzFYwjmDSSXjMckJBWj6Iqokf7/52QrIiIQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794537209;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=wbZST1vJA+sptBoHxkIdeWy6DfjF7+YldX5KdzSx3ck=;
+	b=wFDdnbyxuLImXFJzQl8kgZGukeC8QuIGLChl680PMlQ5a3o6c7P6UwWb1fyxtZD+G8QB
+	 yeYQBIkCB49ySzOAVDDfKBxlnedQqnG1gBFYhaqm9dQcBcI5JEToWzpC7EjtD49PNhOxl
+	 6scjFtUREYh5f5j3gff/Te+GSUsjyxH8TUl+zeuzz0i/gNKtydviM0gwC4kC7gF0BubKO
+	 98QtdzPdgsZCufEey+47cqveIhtwLKUirVS+YK7u/b5xUD+6FmOwcvWyJqGwvRsGFW7r7
+	 pvG6tvZ2PyOq+2tgsMI+IHpiPZEM24eULO4S9VgpO5BKNZ32GXbGTyqE1XE2lehC6Aw==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="Bk//eMyK";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D30E606A33E;
-	Fri, 13 Nov 2026 00:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB7B5606A31C;
+	Fri, 13 Nov 2026 02:33:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Q3dNufQB
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B84141F000CE;
-	Fri, 13 Nov 2026 00:54:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Bk//eMyK
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1794537209;
+	b=UXDneyPLPnevzirqf6KFZMT3WEXEzisvg+0ywYbIko466JpF158Dnsm7ZVLeylgIhzTO
+	 0mLN/kDIKOwtKaDd0JbUZMFOvhWxBrvVsHxtyFeRqFd5Btl2p0q2610XmlHYqWDk9+4Ez
+	 7h9fceeJz6o4PP3/270u7tsMn2vqnE656syqtG2Z6hYfWdCD/2ld4IN+LiAFQOs1Oe2UE
+	 mDtmnJM+CoSjXdpRHUzeDGcS+EMC4N8hkX87VQetMGE156Uftnr2XA1n+X3KL2EqVwFBe
+	 PXLXk63EPQTbmEQQ9muCWeZvJmS89NnwhrTepmFIciIhESD+n9AaRtPuVQpPmuZZIUA==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1794537209;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=wbZST1vJA+sptBoHxkIdeWy6DfjF7+YldX5KdzSx3ck=;
+	b=1J1pfgJluYOX7JsZc87hQPCw53GEyWj6rC3c65LQdqkP4VYAVIP5f84kcm14WBHC19VK
+	 dvuJoo/85ixEwrGYLi30t7088kmIzgNPhtSyxpAC4J4sfh4aooSKzYgCcsVhuUw8tWOvb
+	 I7m3KWl9Qusu0oJkcmgE5hcwPqVOJ3ifYTk0fsN3ythdxZZL81DFPb0CdkP37Se9m/MvZ
+	 I74dLL8ANNZitIDwm0WLKMwJ9kdN5FFqQbq4/OwsxVduuobLWldlHdDeAjz7rPgxB3qD3
+	 i5ZkFnWi0y603yMpe7KJEvBvtGdDhmEuqoKxQo1JN15gcqYnVMHb9g0pNBTnRaFoDUg==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id C8E991F000C4;
+	Fri, 13 Nov 2026 02:33:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794531260;
-	bh=rhIOdnO+7z3iJ3nl14eV8COiDecmopXYxcQjfeMYOOo=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Q3dNufQBqyHmO2SuVzp6pbLRNWbaObusq7rV4156b4B43C9GJ6zfcXFcKAu2OrT/r
-	 w0o8jT2OQUm6ghc9w+ty/nP0hjrhXG7rs3NyeZMcMJEu0rnAi94olvAxZkKwqMEviO
-	 jcJdEX8eeVV9Zz15jclwPDzMDIQ7eyanAmKOGDbuYXN/ZIhaIYGIPTB5WdeT+jK0ga
-	 NQYR5A722nJ58CZSZUrivQNDSBXMnmbZ4qVxrZXiOZFhgo4ZoWh3i5nM77GWfhPQWQ
-	 i2/0Bqng/egDeYT22BpxsNIr4oD5o2igwDPduQ7XysQCiS+VtSsE0t7AZuU9VYIaIq
-	 j9nwN+P2GiSvw==
-Subject: Re: [PATCH net v9 4/4] can: j1939: reject a CTS that names more
- packets than the message has
-From: netdev-bot+sashiko@kernel.org
-To: chaosheng.qu.linux@gmail.com
-Cc: robin@protonic.nl, o.rempel@pengutronix.de, socketcan@hartkopp.net,
- mkl@pengutronix.de, kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
-Date: Fri, 13 Nov 2026 00:54:19 +0000
-Message-ID: <179453125932.488853.14502182027318562364@kernel.org>
-In-Reply-To: <20261111-j1939-edpo-v9-v9-4-e779ca334a81@163.com>
-References: <20261111-j1939-edpo-v9-v9-4-e779ca334a81@163.com>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20260515; t=1794537209;
+	bh=wbZST1vJA+sptBoHxkIdeWy6DfjF7+YldX5KdzSx3ck=;
+	h=From:Date:Subject:To:Cc:Reply-To;
+	b=Bk//eMyKXviKKSlBZK0/pOjrbmGfKGOrlxsgWGmYo/1TOuK2BrJE6RydCcmqq0/py
+	 nerXqx01/eW+6wV27/usnDCdClzruGVIbRy0BS/cuoBZ8O3GULPm0JOiATBGyFQDXA
+	 ZD2F4fLUkrVkWHYmby3CiA5tuZebznLBpKz7cTuB3wHLpM7c+2A+XGPPYb3WhDqH1h
+	 5tH0Wne+EfPskOelEKBL7XbuxTYsFRZoo1eAgWJI29r1J46GNa2w9DgXd3xOXMztv8
+	 5q5QPrDBGfyuriIcrTdwI+KWkFMqE8zYfZI5ByDPpz9O5FUodhDsjmQ7AkodnwI5sc
+	 mzwDJGzPo2OWA==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 30BDD475B4;
+	Fri, 13 Nov 2026 02:33:28 +0000 (UTC)
+From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
+Date: Fri, 13 Nov 2026 10:33:06 +0800
+Subject: [PATCH net v2] MAINTAINERS: exclude CAN documentation from general
+ networking
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -63,210 +83,87 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261113-exclude-can-docs-from-netdev-v2-1-8ae9dc553024@qq.com>
+X-B4-Tracking: v=1; b=H4sIAOF29moC/42OTQ6CMBSEr0Le2mdsFVRW3sOw6M+r1EgrLTQYw
+ t0teAGXM/nyzcwQKViKUBczBEo2Wu9y4LsCVCvcg9DqnIEfeMUY40iTeo2aUAmH2quIJvgOHQ2
+ aEpYVO1816dIIA1nxDmTstOnvkBlofmUc5ZPUsIpXrLVx8OGznUhsg//bSwwZypLkUYqToEt16
+ /u98h00y7J8AU3Z2VncAAAA
+X-Change-ID: 20261112-exclude-can-docs-from-netdev-56179ded5faf
+To: Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, edumazet@kernel.org, pabeni@redhat.com, 
+ horms@kernel.org, mkl@pengutronix.de, mailhol@kernel.org, 
+ socketcan@hartkopp.net, robin@protonic.nl, o.rempel@pengutronix.de, 
+ kernel@pengutronix.de, max@enpas.org, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Cunhao Lu <1579567540@qq.com>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794537207; l=2171;
+ i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
+ bh=6F5YqxvMaIs1hwfEFbyXKXtIGxmZw++Ht0ooa1sJl88=;
+ b=2DNpMdnz/83Syn6nW0AH1yBI48kZvv0cu5uv4pbBSxBZT83lgUHpn/v33Y0qTCpn1Mcz1CPHd
+ ojULR3hSGccDOvJWX+jBOA9x/rKs40M64/FX5tRwWQHC5CmFIX0Z7LZ
+X-Developer-Key: i=1579567540@qq.com; a=ed25519;
+ pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
+X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
+ auth_id=1177
+X-Original-From: Cunhao Lu <1579567540@qq.com>
+Reply-To: 1579567540@qq.com
+Content-Transfer-Encoding: 7bit
 
-Thank you for your contribution! Sashiko AI review found 5 potential
-issue(s) to consider.
+From: Cunhao Lu <1579567540@qq.com>
 
-Critical: 0 · High: 0 · Medium: 2 · Low: 3
+The SocketCAN, ISO-TP and J1939 documents and the CAN driver documentation
+directory match the broad Documentation/networking/ pattern in
+NETWORKING [GENERAL]. This makes get_maintainer.pl select netdev and the
+general networking maintainers for these CAN-specific documentation
+changes.
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+Exclude these paths from NETWORKING [GENERAL], as is already done for
+net/can/ and the CAN selftests. Add the driver documentation directory
+to CAN NETWORK DRIVERS to cover files without a dedicated CAN entry.
 
-- [Medium] The commit message gets the current behaviour wrong.
-- [Medium] can: j1939: j1939_xtp_rx_cts_one() rejects standard CTS(0)
-  frames
-- [Low] The commit message presents the patch as an ETP-only relocation
-  of a check that already fires ("the transmitter reports that value…
-- [Low] The comment and the role-based abort code in
-  j1939_xtp_rx_dpo_one() are stale once this patch lands.
-- [Low] The new check in j1939_xtp_rx_cts_one() covers both TP and ETP
-  sessions: pkt = dat[2] for J1939_TP_CMD_CTS and…
+Suggested-by: Jakub Kicinski <kuba@kernel.org>
+Link: https://lore.kernel.org/all/20261111161459.4879a82d@kernel.org/
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
+---
+Changes in v2:
+- Exclude the whole CAN driver documentation directory instead of only
+  can327.rst, and add it to CAN NETWORK DRIVERS.
+- Link to v1: https://patch.msgid.link/20261112-exclude-can-docs-from-netdev-v1-1-b5eb3ba4ae86@qq.com
+---
+ MAINTAINERS | 5 +++++
+ 1 file changed, 5 insertions(+)
 
---
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 222b7fc2c3aa..152771314140 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -5992,6 +5992,7 @@ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git
+ T:	git git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git
+ F:	Documentation/devicetree/bindings/net/can/
+ F:	Documentation/devicetree/bindings/phy/ti,tcan104x-can.yaml
++F:	Documentation/networking/device_drivers/can/
+ F:	drivers/net/can/
+ F:	drivers/phy/phy-can-transceiver.c
+ F:	include/linux/can/bittiming.h
+@@ -19600,6 +19601,10 @@ F:	samples/pktgen/
+ F:	tools/net/
+ F:	tools/testing/selftests/net/
+ X:	Documentation/networking/batman-adv.rst
++X:	Documentation/networking/can.rst
++X:	Documentation/networking/device_drivers/can/
++X:	Documentation/networking/iso15765-2.rst
++X:	Documentation/networking/j1939.rst
+ X:	Documentation/networking/mac80211-injection.rst
+ X:	Documentation/networking/mac80211_hwsim/
+ X:	Documentation/networking/regulatory.rst
 
-can: j1939: reject a CTS that names more packets than the message has
+---
+base-commit: 79eb6679ef6a0d5ea68da53a8321fb1dc72299b9
+change-id: 20261112-exclude-can-docs-from-netdev-56179ded5faf
 
-This patch adds a check to j1939_xtp_rx_cts_one() that rejects a CTS
-whose packet number is larger than pkt.total. The session is aborted
-with J1939_XTP_ABORT_ECTS_TOO_BIG. The commit message describes this as
-moving an existing check from the ETP.CM_DPO path to where the CTS is
-parsed.
+Best regards,
+--  
+Cunhao Lu <1579567540@qq.com>
 
-> That value is what j1939_xtp_rx_dpo_one() now bounds, so an oversized CTS
-> is currently caught one step later and reported as a bad EDPO offset.
-> Reject it where it originates instead, with the abort code that describes
-> it: J1939_XTP_ABORT_ECTS_TOO_BIG, "ECTS requested packets exceeds message
-> size".
 
-[Severity: Medium]
-Is this description of the current behaviour accurate?
-
-The transmitter handles the CTS in j1939_xtp_rx_cts_one() and builds the
-ETP.CM_DPO from pkt.tx_acked in j1939_session_tx_dpo(). It only sees that
-DPO again on the local echo. The echo has J1939_ECU_LOCAL_SRC set and
-takes this path, with session->transmission set:
-
-j1939_tp_cmd_recv()
-  j1939_xtp_rx_dpo(priv, skb, true)
-    j1939_xtp_rx_dpo_one()
-
-The bound in j1939_xtp_rx_dpo_one() already picks the ECTS code for the
-transmitter:
-
-net/can/j1939/transport.c:j1939_xtp_rx_dpo_one() {
-    ...
-		j1939_session_cancel(session,
-				     session->transmission ?
-				     J1939_XTP_ABORT_ECTS_TOO_BIG :
-				     J1939_XTP_ABORT_BAD_EDPO_OFFSET);
-    ...
-}
-
-So the local transmitter already reports J1939_XTP_ABORT_ECTS_TOO_BIG
-before this patch. The commit message of the earlier patch in this series,
-"can: j1939: validate the EDPO packet number", says the same.
-
-This patch is tagged for stable. Could the changelog describe what
-actually changes? The out-of-range DPO no longer goes out on the bus, and
-TP sessions are now covered as well.
-
-[Severity: Low]
-The changelog presents this as an ETP-only move of a check that already
-fires. However, j1939_xtp_rx_cts_one() also handles TP.CM_CTS (pkt =
-dat[2]). TP never sends a DPO, so before this patch nothing caught an
-oversized TP CTS.
-
-For a TP transmitter, pkt.block is min(j1939_tp_block ?: 255, total). A
-CTS with dat[2] > total therefore passes the old checks, and tx_acked and
-pkt.tx become pkt - 1 >= total. After that:
-
-j1939_xtp_txnext_transmiter()
-  j1939_session_tx_dat()
-    se_skb = j1939_session_skb_get_by_offset(session, session->pkt.tx * 7);
-    if (!se_skb)
-        return -ENOBUFS;
-
-j1939_tp_txtimer() retries on -ENOBUFS every 10-25 ms, up to
-J1939_XTP_TX_RETRY_LIMIT times. The 1250 ms rx timeout set in
-j1939_xtp_rx_cts_one() normally expires first, and j1939_tp_rxtimer()
-then aborts with J1939_XTP_ABORT_TIMEOUT. When the txtimer retries run
-out, the session ends with -ENETUNREACH.
-
-For ETP, before this patch the out-of-range ETP.CM_DPO was actually sent
-on the bus by j1939_tp_tx_ctl() in j1939_session_tx_dpo(). Only its local
-echo triggered the abort.
-
-Could the commit message mention both cases? They look like the
-user-visible fixes behind the Cc: stable tag.
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index fc2840f334b5b..377991d36dc6a 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1512,6 +1512,15 @@ j1939_xtp_rx_cts_one(struct j1939_session *session, struct sk_buff *skb)
->  		goto out_session_cancel;
->  	else if (dat[1] > session->pkt.block /* 0xff for etp */)
->  		goto out_session_cancel;
-> +	else if (pkt > session->pkt.total) {
-> +		/* The responder asks for more packets than the message has.
-> +		 * pkt - 1 becomes pkt.tx_acked below, and the transmitter
-> +		 * reports that value in an ETP.CM_DPO, where it would name a
-> +		 * packet past the end of the message.
-> +		 */
-
-[Severity: Medium]
-This bound is checked before dat[1] is looked at, so it also applies
-to a CTS(0). That is the hold message, with dat[1] == 0, that a
-responder sends to keep the connection open without taking more data.
-
-SAE J1939-21 and ISO 11783-6 have the responder set the next packet
-number in such a hold message to 0xff for TP.CM_CTS and to 0xffffff
-for ETP.CM_CTS. dat[2] and j1939_etp_ctl_to_packet() pass those
-values through unchanged. For any session whose pkt.total is smaller,
-pkt > session->pkt.total is then true, and the session is cancelled
-with J1939_XTP_ABORT_ECTS_TOO_BIG.
-
-Before this patch such a frame got past the checks and reached the
-CTS(0) branch at the end of j1939_xtp_rx_cts_one(), which only calls
-j1939_tp_set_rxtimeout(session, 550). Now a peer that pauses a TP or
-ETP transfer this way has the whole transfer aborted. With the
-Cc: stable tag, that interoperability regression would also land in
-stable kernels.
-
-Should the new bound only apply when dat[1] is non-zero?
-
-The comment just below, "set packet counters only when not CTS(0)",
-suggests the tx_acked, last and tx updates were meant to be skipped
-for CTS(0) as well. The code does them unconditionally, though.
-Before this patch, a 0xff or 0xffffff packet number in a hold message
-ended up in pkt.tx_acked and was used by j1939_session_skb_drop_old().
-
-Would it be cleaner to handle CTS(0) before both the new bound and
-the counter updates?
-
-[Severity: Low]
-This check covers both TP.CM_CTS and ETP.CM_CTS, but the comment only
-gives the ETP.CM_DPO reason. For TP, the consequence is that
-j1939_session_tx_dat() looks up pkt.tx * 7 past the queued skb.
-
-Could the comment describe the TP case too?
-
-On the abort code: enum j1939_xtp_abort and j1939_xtp_abort_to_str()
-document J1939_XTP_ABORT_ECTS_TOO_BIG only as "ECTS requested packets
-exceeds message size". The documentation for code 9, by contrast, gives
-separate ETP and TP meanings.
-
-The -EOVERFLOW path in j1939_tp_txtimer() already sends this code for TP,
-so the choice here matches existing practice. That TP use just isn't
-documented anywhere.
-
-> +		err = J1939_XTP_ABORT_ECTS_TOO_BIG;
-> +		goto out_session_cancel;
-> +	}
->  
->  	/* set packet counters only when not CTS(0) */
->  	session->pkt.tx_acked = pkt - 1;
-
-[Severity: Low]
-With this check in place, tx_acked = pkt - 1 is at most pkt.total - 1.
-The only other writer is j1939_xtp_rx_eoma_one(), which sets tx_acked =
-total but then completes the session.
-
-j1939_session_tx_dpo() copies tx_acked into pkt.dpo. So a DPO the
-transmitter built itself can no longer hit "dpo >= session->pkt.total" in
-j1939_xtp_rx_dpo_one().
-
-Should the comments that the earlier patch in this series added there be
-updated? Both look stale now:
-
-net/can/j1939/transport.c:j1939_xtp_rx_dpo_one() {
-    ...
-	 * This bounds the receiver-side writer only.  j1939_session_tx_dpo()
-	 * copies pkt.tx_acked, which comes from an ETP.CM_CTS packet number
-	 * that the responder controls, and 4/4 bounds it where it is parsed.
-	 */
-    ...
-		/* The transmitter only sees this on the echo of an EDPO it built
-		 * from an oversized ETP.CM_CTS packet number, so it is the
-		 * responder's CTS that is too big, not the EDPO offset.
-		 */
-    ...
-}
-
-"4/4" is a series index and means nothing once merged. Could it name
-j1939_xtp_rx_cts_one() instead?
-
-After this patch, the transmitter branch can only be reached by a DPO
-that carries a locally claimed SA but was not built by this host. main.c
-sets J1939_ECU_LOCAL_SRC for any received frame whose SA is in priv->ents
-with users, and that includes a conflicting or spoofing node. In that
-case, J1939_XTP_ABORT_ECTS_TOO_BIG blames a responder CTS that was valid.
-
-Should the session->transmission ? ... selection in j1939_xtp_rx_dpo_one()
-be revisited as well?
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-j1939-edpo-v9-v9-0-e779ca334a81%40163.com
