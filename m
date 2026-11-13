@@ -1,60 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794549725;
-	b=xpdWsHFdRn1xBt2RdStuh6nvCeJjXxvCKcKl38MUH+QiSedl4/QhFfGUnJRmVH4DP3tW
-	 m1ecKnJyQIZGA3sg4qpKfvMPyzcEmxknu/Dc8zPFt2m5k1KdgPJVroOFUoGQ+obAEamHW
-	 lSiNPqGpEDCjkSOp01uU6ihuasdYlD36e6PRQfuIe9KaioWs03owYpVsFwLvx5tCnn56b
-	 /VjFZkhnjQiWRxCy+iIMt+423IshBn3UfXwBarYFLBv6ztEs2qlcCBHhG8JWn5MkcLKip
-	 z3RE2R1G1gvMcg1qo41o8WN3QEEejn4XiKaLvQ/dYfVWV8cTqdxYs0r0FkhltCeREjg==
+	t=1794550807;
+	b=A0aJsUrN9u1H0LdZrUqwaKtYmZW1sq7ddCJuhuIpw3YbjJ9esWpDywlsUbkISqOUQy+E
+	 O2EZ1+VYM9ulFmuWUl3FmkXgQoTEYLoISPQVgxsrHQUsYX5N4lac3HwN+97hfeYLN9Zo+
+	 FM3Zw1YDEy1l+iks5MMgPHxOG3JIjZlEBb0Dm2Blb6MFL6Ug9p3dPeX5AV5Dyah/uzjNj
+	 Q8cgGl7YR6f2e6UuKRfrZN+2mAQlSxuzWjmBAW/bVypHZmNQwzOBn17v0l6yN5Ls/Ruhf
+	 dM5xoer73s9Lu6rDqeFdHBe/xHvXqb7p4EdLCM03hIDzbOR+TnIMP+OWYy5INIu+ggg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794549725;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794550807;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=f0tfoDPeXWlHqzej2oB2Yoxq7N2r8FCUr0elWdc55Ws=;
-	b=i0iNY3hxf+dw6soyw+bR0khBoai6Mz3JUIi/3G/lO85OrM1h5cRwmXBFMVeOkWniNxcO
-	 KI+GIx0Ut9ZXAc47ZYcWycw4KG5zjyA8fDmi6puZ0541kFiu6ZOsjzrvAOxREGk1jIkZ9
-	 jJt9HuSWlCRxNf9mAGyFtqrmGHxGAX/UGI4DQwQFahKU6O3Kfu7jJG2rFw5ujcGJwxtAS
-	 R06T4PJoG3lXq7bmDj/+PjgKUvSnXGaYbKr7hVQ5cPsRS19jCEBzY1woRdNp8Gny61v2W
-	 nuNRUoP1JF4JdKz2f3wYH8S74CA5zZ9n21OHXSVs1f7FRk+7nFBeLwC8+i2bgitYueQ==
+	bh=xVG5t2W2o9XoVpp1CRKBgp0/TGk3mpdhcRA/ef2Xr2Y=;
+	b=d8zSbS4dxnvOIXfzgXIbTNtWg2GfeyDJMWxkMgXEmyFZWQft8MrsToAajvmJDKfz6vEw
+	 TR6uw4g3p64tN5P23s7+2IM3LSnfI4wEhPi94wGPhx2Sii+Mg9YL/Sv5HOKUQ/X8hJ8WN
+	 cAppQAiDhOz/sSzXOZzxRpACdWa9yz56J47KPPpiz66IuK0mYBxvKklhHqLPWpVnxN4Pz
+	 c5WTz78bBBDly2va5fRB9MC9Q3psdt4P61wBPziGSTc7+6Jz/mUfd6bW/2768gnnfFp7U
+	 dyM0uLZKiaXccR6cf6pCUfWF2lrJX3yCrEnlf9jjr5LCVTa87u3dc+skMQTIYrYqbAA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z8cXUfPW;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="kCJpktZ/";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B9C4606A8A0;
-	Fri, 13 Nov 2026 06:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4544606A321;
+	Fri, 13 Nov 2026 06:20:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z8cXUfPW
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E91DB1F000D0;
-	Fri, 13 Nov 2026 06:02:03 +0000 (UTC)
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=kCJpktZ/
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10E511F000C6;
+	Fri, 13 Nov 2026 06:20:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794549724;
-	bh=f0tfoDPeXWlHqzej2oB2Yoxq7N2r8FCUr0elWdc55Ws=;
+	s=k20260515; t=1794550807;
+	bh=xVG5t2W2o9XoVpp1CRKBgp0/TGk3mpdhcRA/ef2Xr2Y=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Z8cXUfPWGtOAHMN62suecoKKASGV+mxijsNH9B6yd4g3y9XdsEquCmx+eyoN2R1iN
-	 EU9pOdggS9f51v6Dj9aFgGVLwEEqb9RyVHVCLDRYUoBwp7F9Ndo2cbeC2qcT5Hnob+
-	 oQ4DPCU5ehxemXUx5m8Nv/brm76NbVti/Q44Qy7tP57pDfWoQ0KcWg2rLAMmhcsaV2
-	 4VZ77myXE+VZwek6yOnrfgqL2TOOwUKbe0gJCo1yu7SBxsEHkNSncSkxgVa8ZAyhAc
-	 d807GNZryb8SQreJlLgEQLvSRgtx6QyIbj4EWCGprSVxIOnq92l1SejISV3tO7xCTi
-	 2J3tchq2es3Mw==
-Subject: Re: [PATCH can-next v3 7/9] selftests: can: add J1939 TP/ETP
- multi-frame tests against CAN_RAW
+	b=kCJpktZ/brLRFx365O/7CLatvdHGiQDETVGHsj14RQoZUjgnyqX6xwvT469bXm2Ol
+	 xUdhMuGdml9yggDVsXsQcHi3UKjyeh3neAO2hBdRog7oZ9s223Bf82fZmx4VKs/N/3
+	 qe2L+dYU9YX4WG0LZStX9AHeAGwYBO7eHEcj7OeY7A57bw+cxvr0w/PVQlKXdynTl8
+	 mirWBQ61oq3P4ey32NJUs4GHIe5yXx+jOA5kbhXQF/0NsL0gov4ni03k2isrC9i4Ah
+	 v30L4ArfdvlYKw+OJzRxDNpgXSIbfsXzxsWOBlLzIEQenaeIK4tVg4mBsuIR+CGfFy
+	 Jcc6i0dwv+Czw==
+Subject: Re: [PATCH v2 1/2] can: kvaser_usb: hydra: reject commands shorter
+ than a standard command
 From: netdev-bot+sashiko@kernel.org
-To: o.rempel@pengutronix.de
-Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
- shuah@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net,
- quchaosheng000406@163.com, penguin-kernel@I-love.SAKURA.ne.jp,
- kuba@kernel.org
-Date: Fri, 13 Nov 2026 06:02:03 +0000
-Message-ID: <179454972353.488853.9453703448480835098@kernel.org>
-In-Reply-To: <20261111-j1939-selftests-v3-7-5a80277ab363@pengutronix.de>
-References: <20261111-j1939-selftests-v3-7-5a80277ab363@pengutronix.de>
-X-sashiko-severity: Medium
+To: joasantonio108@gmail.com
+Cc: mkl@pengutronix.de, mailhol@kernel.org, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
+Date: Fri, 13 Nov 2026 06:20:06 +0000
+Message-ID: <179455080659.488853.16385124375169426280@kernel.org>
+In-Reply-To: <20261111-kvaser-usb-validate-v2-1-193dc10ca19b@gmail.com>
+References: <20261111-kvaser-usb-validate-v2-1-193dc10ca19b@gmail.com>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -67,10 +63,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
+Thank you for your contribution! Sashiko AI review found 3 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 0
+Critical: 0 · High: 2 · Medium: 1 · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -78,122 +74,190 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] The patch adds four TP/ETP tests (tp_rx_from_raw,
-  tp_tx_to_raw, etp_rx_from_raw, etp_tx_to_raw) that the author says can…
+- [High] The new 32-byte floor (cmd_len < sizeof(struct kvaser_cmd)) only
+  covers the fixed part of an extended command.
+- [High] The commit message says 'Treat a shorter length as a format
+  error in both parsers', but the usb_rx_leftover reassembly path in…
+- [Medium] The patch rejects every CMD_EXTENDED command whose len is
+  below 32 bytes, including extended command numbers the driver doesn't…
 
 --
 
-selftests: can: add J1939 TP/ETP multi-frame tests against CAN_RAW
+can: kvaser_usb: hydra: reject commands shorter than a standard command
 
-This adds TP and ETP round-trip selftests in both directions. A CAN_RAW
-socket acts as the transport peer, so the frames are checked as they
-appear on the wire. The TX tests also check that the TX-completion ACK
-reaches the error queue only after the peer's EOMA.
+This commit treats any command length below sizeof(struct kvaser_cmd)
+(32 bytes) as a format error. The check is added to both
+kvaser_usb_hydra_wait_cmd() and kvaser_usb_hydra_read_bulk_callback().
+The goal is to prevent an infinite loop on zero-length extended commands
+and to stop handlers from reading past short extended commands.
 
-> diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
-> index 21898e645ced7..99113184a525a 100644
-> --- a/tools/testing/selftests/net/can/Makefile
-> +++ b/tools/testing/selftests/net/can/Makefile
-> @@ -9,6 +9,7 @@ LOCAL_HDRS := j1939_helpers.h j1939_tests.h ../../clock-helpers.h
->  TEST_PROGS := \
->  	test_j1939_addr.sh \
->  	test_j1939_base.sh \
-> +	test_j1939_multi.sh \
->  	test_j1939_opts.sh \
->  	test_j1939_wire.sh \
->  	test_raw_filter.sh \
+> diff --git a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> index 687911d764ded..9adb4eb36e394 100644
+> --- a/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
+> +++ b/drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c
 
 [ ... ]
 
-> diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
-> new file mode 100644
-> index 0000000000000..aec96e83305cf
-> --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_j1939_multi.c
-> @@ -0,0 +1,682 @@
-> +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
-> +/*
-> + * J1939 multi-frame wire selftests: TP and ETP against CAN_RAW.
-> + *
+> @@ -2156,6 +2157,11 @@ static void kvaser_usb_hydra_read_bulk_callback(struct kvaser_usb *dev,
+>  
+>  		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
+>  
+> +		if (cmd_len < sizeof(struct kvaser_cmd)) {
 
-[ ... ]
+[Severity: High]
 
-> + * Known stack race: the stack updates a session from the loopback echo of
-> + * its own CTS, RTS and DT frames, and the CAN_RAW peer can read that echo
-> + * before the stack has handled it. A peer frame that follows quickly can
-> + * then cancel the session, so these tests can fail at random. The fix
-> + * belongs in the stack; this file does not work around it.
+Does a 32-byte floor cover the whole extended RX command? The fixed part
+of struct kvaser_cmd_ext_rx_can ends at byte 32. kcan_payload[64] and
+err_frame_data come after it, and kvaser_usb_hydra_rx_msg_ext() never
+checks the payload size against the command's len:
+
+kvaser_usb_hydra_rx_msg_ext() {
+    ...
+	if (flags & KVASER_USB_HYDRA_CF_FLAG_FDF) {
+		cf->len = can_fd_dlc2len(dlc);
+    ...
+		memcpy(cf->data, cmd->rx_can.kcan_payload, cf->len);
+    ...
+}
+
+Take a device that sends CMD_EXTENDED / CMD_RX_MESSAGE_FD with len == 32,
+KVASER_USB_HYDRA_CF_FLAG_FDF set and DLC 15 in kcan_header. That command
+passes the new check, and the memcpy() then reads bytes 32..95 of a
+32-byte command.
+
+An error frame reads err_frame_data at bytes 32..39. A classic frame
+reads up to 8 bytes past the end.
+
+In this function the buffer is the 3072-byte URB buffer. Suppose the
+32-byte extended command ends exactly at byte 3072, for example after 95
+standard commands. Can the memcpy() then read up to 64 bytes past the end
+of that allocation?
+
+For HCDs without DMA, such as vhci_hcd, hcd_buffer_alloc() uses
+kmalloc(). The bytes read end up in a CAN FD frame passed to netif_rx(),
+where any CAN socket can read them.
+
+The commit message says:
+
+  "so a shorter extended command makes the handlers read bytes that are
+  not part of the command."
+
+That kind of read still looks reachable here. The TX side sets len to
+include the payload:
+
+kvaser_usb_hydra_frame_to_cmd_ext() {
+    ...
+	*cmd_len = ALIGN(sizeof(struct kvaser_cmd_ext) -
+			 sizeof(cmd->tx_can.kcan_payload) + nbr_of_bytes,
+			 8);
+    ...
+}
+
+Should the handler, or the parser using cmd_len, check the offset of
+kcan_payload plus cf->len (or plus sizeof(err_frame_data)) against
+cmd_len?
+
+> +			dev_err(&dev->intf->dev, "Format error\n");
+> +			return;
 
 [Severity: Medium]
-test_j1939_multi.sh goes straight into TEST_PROGS. Will a default
-kselftest run then see random failures from this race that cannot be told
-apart from real regressions?
 
-The raw peer always gets the echo first. raw_init() sets a zero can_mask,
-which puts the raw socket on rx[RX_ALL]. j1939 registers on rx[RX_FIL].
-can_rcv_filter() walks the two lists in that order:
+Does this floor also reject well-formed extended commands that the driver
+just doesn't handle? The extended format only needs the 8-byte header.
+kvaser_usb_hydra_handle_cmd_ext() already has a default branch for
+unknown commands, and that branch only reads header bytes:
 
-net/can/af_can.c:can_rcv_filter() {
-    ...
-	/* check for unfiltered entries */
-	hlist_for_each_entry_rcu(rcv, &dev_rcv_lists->rx[RX_ALL], list) {
-		deliver(skb, rcv);
-    ...
-	/* check for can_id/mask entries */
-	hlist_for_each_entry_rcu(rcv, &dev_rcv_lists->rx[RX_FIL], list) {
-    ...
-}
-
-In the RX tests, tp_serve_cts_ok() and etp_rx_serve_cts_ok() send the DPO
-and DT frames as soon as they read the kernel's CTS. If the stack has not
-handled the echo of its own CTS yet, last_cmd still holds the RTS. The
-peer's DT then lands in the default case here:
-
-net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
-    ...
-	switch (session->last_cmd) {
-	case 0xff:
-		break;
-	case J1939_ETP_CMD_DPO:
+kvaser_usb_hydra_handle_cmd_ext() {
     ...
 	default:
-		netdev_info(priv->ndev, "%s: 0x%p: last %02x\n", __func__,
-			    session, session->last_cmd);
-		goto out_session_cancel;
-	}
+		dev_warn(&dev->intf->dev, "Unhandled extended command (%d)\n",
+			 cmd->header.cmd_no);
+		break;
     ...
 }
 
-In the TX tests, tp_tx_to_raw() and etp_tx_serve_block_ok() send a CTS
-right after they read the kernel's RTS or the last DT of a block. If the
-peer's CTS is handled before the RTS echo, last_cmd becomes CTS. The late
-echo then cancels the session:
+Before this patch, an unknown extended command of 8 to 31 bytes was
+skipped with pos += cmd_len, and the rest of the transfer was still
+parsed. The commit message only shows that the extended commands the
+driver handles or sends are at least 32 bytes.
 
-net/can/j1939/transport.c:j1939_xtp_rx_rts_session_active() {
+With the return here, everything after such a command in the URB is
+dropped, including CMD_TX_ACKNOWLEDGE / CMD_TX_ACKNOWLEDGE_FD and RX
+frames. A following command that crosses the URB boundary is not saved
+as leftover either.
+
+kvaser_usb_hydra_tx_acknowledge() is the only place that does these
+things:
+
+- releases the echo skb
+- resets context->echo_index
+- decrements active_tx_contexts
+- wakes the queue
+
+Could each lost ACK leak a TX context, until the TX queue stays stopped?
+
+It isn't clear that any shipping Kvaser firmware sends extended commands
+shorter than 32 bytes, so this may only be theoretical.
+
+Would it be safer to abort only on lengths that can't be skipped (shorter
+than the 8-byte header)? The 32-byte requirement could then apply only to
+CMD_TX_ACKNOWLEDGE_FD and CMD_RX_MESSAGE_FD.
+
+> +		}
+> +
+
+[Severity: High]
+
+The commit message says:
+
+  "Treat a shorter length as a format error in both parsers."
+
+Does that also cover the usb_rx_leftover reassembly path at the top of
+kvaser_usb_hydra_read_bulk_callback()? There, cmd_len is computed from
+usb_rx_leftover before the remaining bytes are copied in, and it is
+never compared with sizeof(struct kvaser_cmd):
+
+kvaser_usb_hydra_read_bulk_callback() {
     ...
-	if (session->last_cmd != 0) {
-		/* we received a second rts on the same connection */
-    ...
-		j1939_session_timers_cancel(session);
-		j1939_session_cancel(session, J1939_XTP_ABORT_BUSY);
+	if (usb_rx_leftover_len) {
+		...
+		cmd_len = kvaser_usb_hydra_cmd_size(cmd);
+		...
+		if (remaining_bytes + usb_rx_leftover_len == cmd_len) {
+			kvaser_usb_hydra_handle_cmd(dev, cmd);
     ...
 }
 
-A late echo of the last DT of a block can also arrive after the peer's
-next ETP.CTS. That echo hits the same default case in
-j1939_xtp_rx_dat_one().
+What happens if a transfer ends 1 to 5 bytes into a CMD_EXTENDED header,
+before the le16 len field at bytes 4-5 has fully arrived?
 
-This file comment is the only note about the race in the tree. The Q/A
-under the --- line gets dropped when the patch is applied, and the commit
-message does not mention the race. At the end of the series ("selftests:
-can: check SO_J1939_PROMISC receive effect") the comment is the same and
-test_j1939_multi.sh is still in TEST_PROGS with nothing to work around
-the race.
+In the main loop, the new check reads ext->len from bytes past len. The
+URB buffer is reused, so those bytes are stale data from an earlier
+transfer. If they give cmd_len >= 32, the partial header is saved as
+leftover.
 
-Could these tests stay out of the default run, be marked as expected
-failures, or wait for the stack to handle each echo before the peer
-replies, until the stack is fixed? Could the commit message also mention
-the race?
+On the next callback, bytes 4-5 of usb_rx_leftover are stale as well.
+For example, with 5 bytes saved, usb_rx_leftover[4] == 8 and
+usb_rx_leftover[5] == 0 give cmd_len = 8 and remaining_bytes = 3. Since
+3 + 5 == cmd_len, kvaser_usb_hydra_handle_cmd() runs on an 8-byte
+extended command.
+
+If cmd_no_ext is CMD_RX_MESSAGE_FD or CMD_TX_ACKNOWLEDGE_FD, the handlers
+read fixed fields and payload up to byte 96 of usb_rx_leftover. That
+stays inside the 128-byte array. The data is stale and not part of the
+command, though, so it can produce bogus CAN frames or bogus TX
+acknowledgements.
+
+The new main-loop check can also reject a legitimately split command,
+because it decides based on bytes that have not been received yet.
+
+Would it make sense to add the minimum length check to the leftover
+branch too? In both branches, ext->len could also be ignored until
+offsetof(struct kvaser_cmd_ext, cmd_no_ext) bytes have arrived.
+
+>  		if (pos + cmd_len > len) {
+>  			/* We got first part of a command */
+>  			int leftover_bytes;
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-j1939-selftests-v3-0-5a80277ab363%40pengutronix.de
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-kvaser-usb-validate-v2-0-193dc10ca19b%40gmail.com
