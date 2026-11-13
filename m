@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794554011;
-	b=snjE67+BLEzSzG71gKuWgCXwv4NcCigVhws04c1lyh+Sigz5aaZnLDnGalj0zVYbzSp4
-	 TS2u2wYz26AZauYpuqD9CGHsZbsCXNYrCUmVAdUc1Ou5deNhlnfv7zBqqraT5bZqeCBMp
-	 lz5wD7enIgEPdNuNnqupkT/5NdCCNlttxdf27T3PxAsZ7De9vf00/WOTYrEo64j6bjLL2
-	 UxLorn7UfxrV9rlX6iE6xOu70tO3GIuvjb5vX0MqSJ7q03WHGQ39xKc2ZAMjn6aFhcWXS
-	 gacmZrYCstAOmCI2RKj7pdyD0xuWgCQj+21q2UcohhE3cxiiIbuwMWiTMkNBI4+V3Jw==
+	b=TDfRNrGh3pqYtqx2f9Q5W6MT25K7AoPz/zHD4A3ICnf88+FvbQCTLdy/AaTDG1Ia7jAk
+	 LD3Lt5U0iwIaCVvEPf6sv6UaDd4m8Vpcq00ps26BaznNVrdEvMWNoQW3h89kCZEGrKEM/
+	 +OEPxFGjyA1NRrncQ4Pp36OSrOhzXN74tMVGLEQOsSf/AVMB6GJEoulFYNxU5vGHRyzFy
+	 0vaj4wzhq975T4YeON2XcNTgxJ8A2aThMCwjg5WnL9ognHTvDWBvFr0R3NDISnSf3KIIN
+	 xeomdicGFiq7edVAX2WmQDBaR+Ux584v+/XsEQ5ExUiyaQBJvrsFUKuQG0G1ftx5Lew==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794554011;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=/+VRHS43plOjIRbhGsfOqQ1nmhZowYRYK29KqoxHYMk=;
-	b=Np3PpOZbJQzt2Sg+DvhCzphYscn75ju0yfdDvC2iVDCol7RHt8jwQOVCeXmBHa/s9M2D
-	 hZMT9TSsLod2uWRbo0oTWiG08f8xphLl1vc58d1zb3ZyrRp74A/bkoK71UM24DGG0y2wC
-	 L50h03SuML5T8EtDAbcXNHZjDITbbU6FcZvKkaKa8E50n4jQc8uo8N4s3JQYO/Rh0AbY1
-	 rqElOVzZQoECI0lhn3EymI3NNKS4o25xixbXTsWs7MJq+HM2nWc7uvvxxoVyhBE4hrVBw
-	 K5qbE1jARpazF1HCWGMEHS86rvbsRGu8qadxgT840PTBJoRIQ1J9RxuXXUh0tL1sesQ==
+	bh=FoouU1yOXSOL9vJPI//qigbV6ycEtcVzzRnWUF7ZjKU=;
+	b=zE+EgZ6AHGxgeRIh4VAo00bXWB1+lQbWwedMfYDHVTQx3hTjwq7sXVtD6ia7o/zcnOzs
+	 J19MPk5R4iGI34aHAcjgAGLBX0rbrGnWm9maz7BwnWt5wV2HEA6omyZIzBPVj89xdiF6F
+	 ZMB95abS0TMiUNRbbtwpShvJ6DBoLaDnmZsm0dbqxvzFZeO7nWDfZDnYaZMrrbtWBo/IG
+	 40VzHuH+MYgkxWEy+XB/xVhlpd2TLZADoO36xnXQAh25SZtXsQYzsKhHE5yqt2OzoeZ5h
+	 4TKYOumCliljHeBRbigFt8CdAxTPGZCb0iapk8LiZuhUxhUw5aN4XaNv00ytm0ji6zw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="aLyOpFE/";
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=cvO1J1cg;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4693760A3811;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4690860A3810;
 	Fri, 13 Nov 2026 07:13:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4693760A3811
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4690860A3810
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aLyOpFE/
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=cvO1J1cg
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 14081202C91;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 088422023BD;
 	Fri, 13 Nov 2026 08:13:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794554008;
@@ -43,31 +43,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/+VRHS43plOjIRbhGsfOqQ1nmhZowYRYK29KqoxHYMk=;
-	b=aLyOpFE/2IJMm7cn+U8nSDPSkDdDU+nFF2MzxzB3AyGoqmTAv/YN+BH35BZ1KLGvBk01l9
-	skbsNgT9TsdL4FFXmllyR5NOLIysnIyINMDGJ0WMlppTgDcNTUBC5xOTFAlPDlDcH+ir4c
-	CK33Oo2XtWUv4sPhiwzRzvuFk6pgpeR1t7hr6LJfvddYRWDCwP7ZCtzMr614pC2q4qqXZr
-	G1A7ZjIAl/SuN3yBGue7WpkLjmfYI6SpHNB3GkZ2GfrjpQIW0wAGFSA1X0+mDacOLdlILL
-	daM4ffGlRf6NMKKvOYI/HUIfMuI1TwqJUUDR2hNZHe2u4bGmmc9seGRUbQDKPw==
+	bh=FoouU1yOXSOL9vJPI//qigbV6ycEtcVzzRnWUF7ZjKU=;
+	b=cvO1J1cgWJs5FbXPqcj1qgmMXxF+fmQ+tIzW4rRswWSuYhkWaf6Tw7Tx0ESDv8ho5Vvg+X
+	xeAHn+8v/6tTEHG9mhIKo5cSs5sp7f5MNdkXvI1JTi38tYr9g3t4BVvEbEACajdPeTgThk
+	xDM6HG5Hhn9GmLUXhB3MquHgNrDw3eIUt2xjqE+hNudWexrqsKW/hHtNE43PZwA+VtRD6R
+	XfM99h+7surisH3c7DfQvprhFWubenCiR6PoNtpWQIczsSWh+vhXQ+n5aSIOWeZUzzqADF
+	PHHX8Ygxo5FS5veGczEsun/mYbNpRj9WOsAIriEcA/upORbVdnsfWI/GCbK9mQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794554008;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/+VRHS43plOjIRbhGsfOqQ1nmhZowYRYK29KqoxHYMk=;
-	b=QKXmui41IM0LOQ/moQGdx8pszNMj5dXRJkJOGDIXYc57jg1HBdsXTYbe6lKgJNIkIDrNz0
-	TmO00dSD/SzbyIA8+ToMKs2xpB6rwUnudFaW2JCAw0e6pYPKw1X0KYkJIlEDLvMhbMNjqT
-	5WSGmuThrzCvTIb2D0w08vYdJzsVrBXyjoTIE7kB3T1ztPvR0As41L/Po6pLcA6kUw1t2i
-	uVoLe050axh680S1E6INiijBXcWuOMS0d9+IeF19iOWVu4GucvlG7vEakCN/0EPn+LIWg5
-	W4zzovPM8DKZg3U3J75BxiTa8IOCrjtWWV2csOCH6Pd3AtwEgKHCDX+QH3K8kw==
+	bh=FoouU1yOXSOL9vJPI//qigbV6ycEtcVzzRnWUF7ZjKU=;
+	b=ZlJIv3kdgXSqGvRETCAj9Hx4HPrWenX3GQ26PMKRP7WSFeLFCbz9SsgB+PljGd7fFj0mQb
+	hqfwNwc6l4Ly3maE1ErgfWKWcumkDZVF8D/b4HF/Z2cNsxlkJi3TjXpVm2loyLccWT0Uka
+	jwKw6fNvsRTXgVMbA3UVpd8emQdC9M28hHJxId9j/7uaX3yhlO4KQC5MKAOXypZ9CalsD3
+	s6cBY2M8RUC3Wo4vVb6gYqNz+RCIE1lZx2LnN1rV5F+llbRudawvKZUZ/MFCLsXRynsx2x
+	Bz/eUBngXOJZvzQ7nwNfNMOVHM1TwEdT+94zIqNHqaDIxG6bpoQ6gd6okI7Bqg==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794554008; a=rsa-sha256;
 	cv=none;
-	b=b7gqODv4iMgJToZdiKTwfDM2C8LzuN+HRbS4ID0yK4EyxAJ+YN3nUzu36oTz6k/kkjrumy
-	yLDCiw6MWHy8Q5PJVzmrcCDzC0BVqcBP0/9OO+UqaUY6P3GPJuH2uMX0KjjuhMu8iQhPzS
-	IDuLQW+AH9Z4Bb+1P+F0o+BYjbRX7D3wdIXtkmGYPdCBHtotxMsIor0t4Arjuz8mLwXXaZ
-	0ognug9XFhm/Kt2+tKvxIyLEgPFW+F1P3QiEYYuGRswk45/D1yUWj6rv83ffZtwzkC+0Bh
-	VgTe1e9qE58gm9xj0LGNAJq2JUT9q69poWOAWJvq+S32FD9NbVKMQkGg1HU+YA==
+	b=gv4QBkwZ/nP8EY8euzzYJ4bMP4zu3mWc44THau9cKupnElW294UZukHTsWWOwIlL1PiWHD
+	8uASqicKMRD/Prx+uo9PcHhmF+QoPqJ1LrFpGVZpsY3wFE0AhA56s57c99FVxoMikCWV6q
+	tP9UN1WpkBHAZtAbSux9u4SDM5JWEL+xkQoQqb5NMjoT8xKmFlNdeVNsXCh1aWiHrXNCnE
+	l/A2PrISR5x7tpiLR/tVIJ0qdNuVp4H4LqKkpiUq8RovIKtC0ReLsOTLUGCtAFqXx21liT
+	V1LBdalXPsRszWNKC7JWA0JBI3uD1G7oUm8tAerFe/Y4oUDWWHws80y/EZvmvg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,14 +75,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xRlTT-003xHq-3B;
-	Fri, 13 Nov 2026 08:13:28 +0100
+	id 1xRlTT-003xHp-2z;
+	Fri, 13 Nov 2026 08:13:27 +0100
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id AAE365EA578;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 9DA6E5EA577;
 	Fri, 13 Nov 2026 07:13:27 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,13 +90,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Quchaosheng <quchaosheng000406@163.com>,
-	Sashiko <sashiko-bot@kernel.org>,
-	"Rob Herring (Arm)" <robh@kernel.org>,
+	Chaosheng Qu <quchaosheng000406@163.com>,
+	Conor Dooley <conor.dooley@microchip.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 3/7] dt-bindings: net: can: holt,hi311x: Convert to DT schema
-Date: Fri, 13 Nov 2026 08:08:51 +0100
-Message-ID: <20261113071325.4092169-4-mkl@pengutronix.de>
+Subject: [PATCH net-next 2/7] dt-bindings: net: can: bosch,cc770: Convert to DT schema
+Date: Fri, 13 Nov 2026 08:08:50 +0100
+Message-ID: <20261113071325.4092169-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261113071325.4092169-1-mkl@pengutronix.de>
 References: <20261113071325.4092169-1-mkl@pengutronix.de>
@@ -111,137 +110,218 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Quchaosheng <quchaosheng000406@163.com>
+From: Chaosheng Qu <quchaosheng000406@163.com>
 
-Convert the Holt HI-311X binding from free-form text to DT schema.
+Convert the Bosch CC770 and Intel AN82527 controller binding from
+free-form text to DT schema, and reference the common can-controller.yaml
+schema.
 
-Reference can-controller.yaml and spi/spi-peripheral-props.yaml. The
-HI-3110 sits on an SPI bus, so its node carries the standard SPI
-properties, spi-max-frequency among them. With unevaluatedProperties:
-false and no reference to spi-peripheral-props.yaml, dtbs_check rejects
-those properties:
+The driver reads one more property than the old text documented:
+"bosch,no-comperator-bypass", which is checked at cc770_platform.c:94.
+It is documented here so that it can be used. Its spelling is kept as
+the driver spells it.
 
-  can@1 (holt,hi3110): Unevaluated properties are not allowed
-    ('spi-max-frequency' was unexpected)
+The interrupt is obtained with platform_get_irq(), so interrupts is
+required. The register window is described with the chip select, the
+address offset and the size, as the original text and the existing
+device trees on the local bus use three cells. The size is usually 0x80.
 
-Keep the properties and the example as the original text describes them,
-including clocks as a required property.
+unevaluatedProperties is used rather than additionalProperties so that
+properties provided by can-controller.yaml, such as termination-gpios,
+remain usable.
 
-Reported-by: Sashiko <sashiko-bot@kernel.org>
-Link: https://sashiko.dev/#/patchset/20260922084542.104788-1-quchaosheng000406@163.com?part=2
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
-Link: https://patch.msgid.link/20260922102258.138753-3-quchaosheng000406@163.com
+Signed-off-by: Chaosheng Qu <quchaosheng000406@163.com>
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
+Link: https://patch.msgid.link/20261009105557.301855-2-quchaosheng000406@163.com
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- .../bindings/net/can/holt,hi311x.yaml         | 67 +++++++++++++++++++
- .../bindings/net/can/holt_hi311x.txt          | 23 -------
- 2 files changed, 67 insertions(+), 23 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/holt_hi311x.txt
 
-diff --git a/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml b/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
+Notes:
+    FAQ:
+    
+    Q: What about the comment in drivers/net/can/cc770/cc770_platform.c?
+    A: It's changed in the next patch.
+
+ .../bindings/net/can/bosch,cc770.yaml         | 109 ++++++++++++++++++
+ .../devicetree/bindings/net/can/cc770.txt     |  53 ---------
+ 2 files changed, 109 insertions(+), 53 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
+ delete mode 100644 Documentation/devicetree/bindings/net/can/cc770.txt
+
+diff --git a/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
 new file mode 100644
-index 000000000000..9ec6abb1279a
+index 000000000000..448d5b4f74b5
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/holt,hi311x.yaml
-@@ -0,0 +1,67 @@
++++ b/Documentation/devicetree/bindings/net/can/bosch,cc770.yaml
+@@ -0,0 +1,109 @@
 +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
 +%YAML 1.2
 +---
-+$id: http://devicetree.org/schemas/net/can/holt,hi311x.yaml#
++$id: http://devicetree.org/schemas/net/can/bosch,cc770.yaml#
 +$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+title: Holt HI-311X stand-alone CAN controller
++title: Bosch CC770 and Intel AN82527 CAN controllers
 +
 +maintainers:
 +  - Marc Kleine-Budde <mkl@pengutronix.de>
 +
 +description:
-+  The Holt HI-3110 is a stand-alone CAN controller with an SPI interface.
++  The CC770 is a CAN controller from Bosch which is 100% compatible with the
++  older AN82527 from Intel, except that some bugs have been fixed.
 +
 +allOf:
 +  - $ref: can-controller.yaml#
-+  - $ref: /schemas/spi/spi-peripheral-props.yaml#
 +
 +properties:
 +  compatible:
-+    const: holt,hi3110
++    enum:
++      - bosch,cc770
++      - intc,82527
 +
 +  reg:
-+    description: SPI chip select.
-+    maxItems: 1
-+
-+  clocks:
-+    description: The clock feeding the CAN controller.
++    description:
++      Register window of the controller. On a PowerPC system the controller
++      sits on the local bus and the property describes the chip select, the
++      address offset and the size, the size usually being 0x80.
 +    maxItems: 1
 +
 +  interrupts:
-+    description: IRQ line for the CAN controller.
 +    maxItems: 1
 +
-+  vdd-supply:
-+    description: Regulator that powers the CAN controller.
++  bosch,external-clock-frequency:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Frequency of the external oscillator clock in Hz. The internal clock
++      frequency used by the controller is half of this value.
++    default: 16000000
 +
-+  xceiver-supply:
-+    description: Regulator that powers the CAN transceiver.
++  bosch,clock-out-frequency:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Clock frequency in Hz on the CLKOUT pin. If not specified or if the
++      value is 0 the CLKOUT pin is disabled.
++    default: 0
++
++  bosch,slew-rate:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description:
++      Slew rate of the CLKOUT signal. If not specified a reasonable value
++      is calculated. Only used when bosch,clock-out-frequency is set.
++
++  bosch,divide-memory-clock:
++    description: Divide the memory clock for slower memories.
++    type: boolean
++
++  bosch,iso-low-speed-mux:
++    description: Use the ISO low speed multiplexed bus configuration.
++    type: boolean
++
++  bosch,no-comperator-bypass:
++    description:
++      Disable the comparator bypass. When this property is absent the
++      comparator bypass is enabled.
++    type: boolean
++
++  bosch,disconnect-rx0-input:
++    description: Disconnect the RX0 input.
++    type: boolean
++
++  bosch,disconnect-rx1-input:
++    description: Disconnect the RX1 input.
++    type: boolean
++
++  bosch,disconnect-tx1-output:
++    description: Disconnect the TX1 output.
++    type: boolean
++
++  bosch,polarity-dominant:
++    description: Use dominant polarity on the bus.
++    type: boolean
 +
 +required:
 +  - compatible
 +  - reg
-+  - clocks
 +  - interrupts
 +
 +unevaluatedProperties: false
 +
 +examples:
 +  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
++    localbus {
++        #address-cells = <2>;
++        #size-cells = <1>;
 +
-+    spi {
-+        #address-cells = <1>;
-+        #size-cells = <0>;
-+
-+        can@1 {
-+            compatible = "holt,hi3110";
-+            reg = <1>;
-+            clocks = <&clk32m>;
-+            interrupt-parent = <&gpio4>;
-+            interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
-+            vdd-supply = <&reg5v0>;
-+            xceiver-supply = <&reg5v0>;
++        can@2,100 {
++            compatible = "bosch,cc770";
++            reg = <2 0x100 0x100>;
++            interrupts = <4 1>;
++            interrupt-parent = <&mpic>;
++            bosch,external-clock-frequency = <16000000>;
++            bosch,disconnect-rx1-input;
++            bosch,disconnect-tx1-output;
++            bosch,iso-low-speed-mux;
 +        };
 +    };
 +...
-diff --git a/Documentation/devicetree/bindings/net/can/holt_hi311x.txt b/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+diff --git a/Documentation/devicetree/bindings/net/can/cc770.txt b/Documentation/devicetree/bindings/net/can/cc770.txt
 deleted file mode 100644
-index 3a9926f99937..000000000000
---- a/Documentation/devicetree/bindings/net/can/holt_hi311x.txt
+index 042200cf4419..000000000000
+--- a/Documentation/devicetree/bindings/net/can/cc770.txt
 +++ /dev/null
-@@ -1,23 +0,0 @@
--* Holt HI-311X stand-alone CAN controller device tree bindings
+@@ -1,53 +0,0 @@
+-Memory mapped Bosch CC770 and Intel AN82527 CAN controller
+-
+-Note: The CC770 is a CAN controller from Bosch, which is 100%
+-compatible with the old AN82527 from Intel, but with "bugs" being fixed.
 -
 -Required properties:
-- - compatible: Should be one of the following:
--   - "holt,hi3110" for HI-3110
-- - reg: SPI chip select.
-- - clocks: The clock feeding the CAN controller.
-- - interrupts: Should contain IRQ line for the CAN controller.
+-
+-- compatible : should be "bosch,cc770" for the CC770 and "intc,82527"
+-	for the AN82527.
+-
+-- reg : should specify the chip select, address offset and size required
+-	to map the registers of the controller. The size is usually 0x80.
+-
+-- interrupts : property with a value describing the interrupt source
+-	(number and sensitivity) required for the controller.
 -
 -Optional properties:
-- - vdd-supply: Regulator that powers the CAN controller.
-- - xceiver-supply: Regulator that powers the CAN transceiver.
 -
--Example:
--	can0: can@1 {
--		compatible = "holt,hi3110";
--		reg = <1>;
--		clocks = <&clk32m>;
--		interrupt-parent = <&gpio4>;
--		interrupts = <13 IRQ_TYPE_LEVEL_HIGH>;
--		vdd-supply = <&reg5v0>;
--		xceiver-supply = <&reg5v0>;
--	};
+-- bosch,external-clock-frequency : frequency of the external oscillator
+-	clock in Hz. Note that the internal clock frequency used by the
+-	controller is half of that value. If not specified, a default
+-	value of 16000000 (16 MHz) is used.
+-
+-- bosch,clock-out-frequency : slock frequency in Hz on the CLKOUT pin.
+-	If not specified or if the specified value is 0, the CLKOUT pin
+-	will be disabled.
+-
+-- bosch,slew-rate : slew rate of the CLKOUT signal. If not specified,
+-	a reasonable value will be calculated.
+-
+-- bosch,disconnect-rx0-input : see data sheet.
+-
+-- bosch,disconnect-rx1-input : see data sheet.
+-
+-- bosch,disconnect-tx1-output : see data sheet.
+-
+-- bosch,polarity-dominant : see data sheet.
+-
+-- bosch,divide-memory-clock : see data sheet.
+-
+-- bosch,iso-low-speed-mux : see data sheet.
+-
+-For further information, please have a look to the CC770 or AN82527.
+-
+-Examples:
+-
+-can@3,100 {
+-	compatible = "bosch,cc770";
+-	reg = <3 0x100 0x80>;
+-	interrupts = <2 0>;
+-	interrupt-parent = <&mpic>;
+-	bosch,external-clock-frequency = <16000000>;
+-};
 -- 
 2.53.0
 
