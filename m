@@ -1,102 +1,46 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.66.40
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794586703;
-	b=j+DT9oylFUSxUJlNtBwFcRqJD1KcjJqqhpNq0MAzLhUo3gt/t0AXi2nPn8EGcIm39mrB
-	 fYzep5dm9y18yMjQ3rV1Fzp6Kc4hEcYih6z5sIroIPpEFzr2P2bLtCwdwjWqa4Ytqq3DQ
-	 E4SFpAIB2p1v0gyr4OfLwnfI7eHZc6rBOBv11tLVliBe46UJyEO4R9SdBs51w9yoy3NQ3
-	 P9HpeGrAz7TBcoJ7SR7P6jrnjt/nklua/gQjHVExPRWNwRQsoPYmHtruQdZtFbE4rGenL
-	 m3KlT1NSyvtHH7foFv6gzChdNo6ZYRCyGH+gxAVz8/9PQ/xAgwYXJDlbfKD7ZAIXPsQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794586703;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:Content-Type:Content-Disposition:
-	 In-Reply-To:X-ClientProxiedBy:MIME-Version:X-MS-PublicTrafficType:
-	 X-MS-TrafficTypeDiagnostic:X-MS-Office365-Filtering-Correlation-Id:
-	 X-MS-Exchange-SenderADCheck:X-MS-Exchange-AntiSpam-Relay:
-	 X-Microsoft-Antispam:X-Microsoft-Antispam-Message-Info:
-	 X-Forefront-Antispam-Report:
-	 X-MS-Exchange-AntiSpam-MessageData-ChunkCount:
-	 X-MS-Exchange-AntiSpam-MessageData-0:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-AuthSource:X-MS-Exchange-CrossTenant-AuthAs:
-	 X-MS-Exchange-CrossTenant-OriginalArrivalTime:
-	 X-MS-Exchange-CrossTenant-FromEntityHeader:
-	 X-MS-Exchange-CrossTenant-Id:X-MS-Exchange-CrossTenant-MailboxType:
-	 X-MS-Exchange-CrossTenant-UserPrincipalName:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=bTvZQ/J3zwV6a9C3C2/3Sw+smxQQBAB7hx36IzcWwnQ=;
-	b=naSBUjcE/S504dv4V3TYAZDcXr9aQZmC1TrLeUQrfy3SeMAvulR/zLH3XhKbRWlhbWIC
-	 yXgZ+d/QSuVn7icL0D3njEEpBG58ABlcusGQfPkFcD9jBy2LbN9EMJGqhPoStQGxcu/uO
-	 tifcdt7G2NWioW9vYG65IRbx7/7cDxZVGV8UC58Ds42DNFmaVSGV/Bq7VMahNprUwvaHG
-	 rHZM0Rd/RrWzpyFcGktRH/qT1ocYVxc4aEq6cNpVRl48jeVKf+3UTMU3QE1K+xWXHfsep
-	 h7AJxPkLxI4URi/J9FQvfhV1O3dMf+khm7HuJGfQCsapwY35hCuRAxXeQSUzPND52NQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=oss.nxp.com;
-	spf=pass smtp.mailfrom=oss.nxp.com;
-	dkim=pass header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=SQewAFsY;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=52.101.66.40
-Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11012040.outbound.protection.outlook.com [52.101.66.40])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794590021;
+	b=ofCOG7mjdlHdc/saiRnErRJNiHpm764Os4qkuoTSpK9LAd9TiHa3b3DEZfUPr+xhwoBo
+	 /3lRcr07olKXquuNI97lV+sslMIltgcaH8Jta1QARPEA8BjuNqfTw0repN8dy6doInzTw
+	 qjeFSnwCVHdYaj7BEUHZbl3EP6f+KFoWpLK/5/iFCo0LPimiz2yu3CSR3sLZDX0mqBvqt
+	 vLf8Q4Y58nZlJn6DIhHfbKzI0yt6cEG00E+JeGKz5tVbudUSB1ekW4Jcnbm4b53w7XWCS
+	 RNiXSpQPy3nI8O/8nSnbXwVkDDfKaEEd7wPrKq7ZxAtRny1XGDt7X0Wn/6WZ/DwD1nw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794590021;
+	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Content-Language:To:From:Subject:Content-Type:
+	 Content-Transfer-Encoding:X-Virus-Status:X-Anti-Virus-Server;
+	bh=h/tFEssfOzBG/tMjHgNR0r9qa9bqRR7TkjG4z5r0Gps=;
+	b=wDK0A6ErwMoNTNToTJezlaPrd+//mG62FH/4GgYhhnnpKMOjDnxSq489lXmcO9qC7gLD
+	 zcVo5f8TppWQ/D39f9e3XZCtgElhuOy9W9wxxXudcD7yPnx6dH6WBxC5eRjA6HEP6rO2Z
+	 RXkXNg9imgmwnPstpR1baarf41vH8BUDRRdLtMRCW+HB6h9iyJXIOvJVCECzqZQYXY6eE
+	 wBu4xNC6F5eUzuQMOWUuKw8Rr+OJYQdyW3e1OwC+abI/ZFTnukRkcefhvv9ILE8NNwyH7
+	 av+1RWCodtmfiTiVtFjGhuqpjd8ANIUNVbxk7nuZfSh2EoQ+0+A1KI60IWpBxdekbbw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=I-love.SAKURA.ne.jp;
+	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
+	arc=none smtp.remote-ip=202.181.97.72
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BE34606B2FD;
-	Fri, 13 Nov 2026 16:18:22 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1BE34606B2FD
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oss.nxp.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=NXP1.onmicrosoft.com header.i=@NXP1.onmicrosoft.com header.a=rsa-sha256 header.s=selector1-NXP1-onmicrosoft-com header.b=SQewAFsY
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=YT+Jn+sR4/Q7kwPVC0Q3usOlvY73KWzZHMtXV0lmK97fdTTWNMa52OCi2K2Q32SwrdhFlxJJbPn7pUqcgZVlpAUaaWaZYo13talCJr8Y1ogHonX5oZoSZbew167L9KAqzWIrnzEBRnbjq8qRuYWl2WqLbERZmxmUtaQefUrY+QvfPe3s483k8WQFIOXtHMvVN6nXs2m8j9RTyV+3v+BTutIWQ5XTE1xyehfYy/0Cl+iVYQdAKqbWNG9Rdc2ifmGWMAJkzhMu//6XyGvmlF1D0j7PW0KBdusIaqKXb8sQbPD0YhlTo9r91Yos0x5Kc+DDGRHCUB14uPTPylb8E2acRA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bTvZQ/J3zwV6a9C3C2/3Sw+smxQQBAB7hx36IzcWwnQ=;
- b=eJ0ubKBtwrhr0Pfq8IdCAWdf5c8U9iT661mB1AZfGDPyl/kZZ0gzvk4tSUZW6O7w5kNPlC42LRSuLTO75O8lDA15obE96z61i7IctIUWNrg1ErweyZ9ufDc6eRaFYeS/1U8X61XOSFCUHfnIyIDzJlkqUzchLV/ZcLlgHjRxVY7gXbUi7+XtWqo6Vl569OWj62hoG2L99nPvVIVK3h2uziLTBBWkjY7lXRUs8bF6HaDrA/Mg7JV0/PnDVjqW6HEMrt+vyakmPKUMEBZl0sAAdG+VsKUcZArdpfP1/J3va6LoLkaVY+SEiDhtQNEBzAzCvTQ+QLSP68l57Apj/m05lw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
- dkim=pass header.d=oss.nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
- s=selector1-NXP1-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=bTvZQ/J3zwV6a9C3C2/3Sw+smxQQBAB7hx36IzcWwnQ=;
- b=SQewAFsYFMWWbow9O0WD/Ds5FoO+t5ArvsPNWgvm5VdP4ux506TMzCWWYCbaFfopx7Q+B9/Z+ZsH0gCGHylHBFS0oz5JXmKwlEu/2ZPY5ovUzDv9IEUqyP76uyRzbj+hsa6hkvudc1OapmiqQnNSAy1QP8DNfzUHerYIMCA60B+4BgYWfrSKw2J3RgU/hZgbbwXjnGyba5rpWUsNBfKfGyZfKaSN/Dj17VImc67j8N2mp3WwfLuEyvOa0v/9zatdKsO4VInu/GARxLU+hlKiNgziv1Bx5vGRDfoQbKmd7KLBLWNRzSRB9E9E9CykDb/EeCVp9tJkdZEMXS9CIIsvYg==
-Authentication-Results: mx.microsoft.com 1; dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oss.nxp.com;
-Received: from MI3PR04MB12438.eurprd04.prod.outlook.com (2603:10a6:290:76::14)
- by AS8PR04MB9062.eurprd04.prod.outlook.com (2603:10a6:20b:445::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.615.10; Fri, 13 Nov
- 2026 16:18:15 +0000
-Received: from MI3PR04MB12438.eurprd04.prod.outlook.com
- ([fe80::c715:c32:8bb1:b70b]) by MI3PR04MB12438.eurprd04.prod.outlook.com
- ([fe80::c715:c32:8bb1:b70b%4]) with mapi id 15.21.0615.009; Fri, 13 Nov 2026
- 16:18:15 +0000
-Date: Fri, 13 Nov 2026 10:18:07 -0600
-From: Frank Li <Frank.li@oss.nxp.com>
-To: Marek Vasut <marex@nabladev.com>
-Cc: Vinod Koul <vkoul@kernel.org>, linux-arm-kernel@lists.infradead.org,
-	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
-	Aswath Govindraju <a-govindraju@ti.com>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Fabio Estevam <festevam@gmail.com>, Frank Li <Frank.Li@nxp.com>,
-	Krzysztof Kozlowski <krzk+dt@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Rob Herring <robh@kernel.org>, devicetree@vger.kernel.org,
-	imx@lists.linux.dev, linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: (subset) [PATCH v6 1/3] dt-bindings: phy: ti,tcan104x-can:
- Document Microchip ATA6563
-Message-ID: <avc4P65RjTlVnO5d@SMW015318>
-References: <20260930214729.809649-1-marex@nabladev.com>
- <179447423905.428303.6835437411622016722.b4-ty@kernel.org>
- <077477f7-3b1e-4ed5-ac53-45ebc01c47d9@nabladev.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <077477f7-3b1e-4ed5-ac53-45ebc01c47d9@nabladev.com>
-X-ClientProxiedBy: DS7P220CA0017.NAMP220.PROD.OUTLOOK.COM
- (2603:10b6:8:223::11) To MI3PR04MB12438.eurprd04.prod.outlook.com
- (2603:10a6:290:76::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97DE5606A8AE
+	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 17:13:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 97DE5606A8AE
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6ADHD6K1088800;
+	Sat, 14 Nov 2026 02:13:06 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6ADHD6Zb088797
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sat, 14 Nov 2026 02:13:06 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <8de287d7-b4e1-4062-b40e-b193f5ec68ca@I-love.SAKURA.ne.jp>
+Date: Sat, 14 Nov 2026 02:13:05 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -106,82 +50,257 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MI3PR04MB12438:EE_|AS8PR04MB9062:EE_
-X-MS-Office365-Filtering-Correlation-Id: c43c5473-0558-4154-a832-08df41a1b8ee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|23010399003|376014|1800799024|366016|19092799006|10067099003|4143699003|11063799006|56012099006|261028144727099003|261022105027099003|261026140227099003|261026121527099003|261021123027099003|261009223027099003|22082099003|18002099003;
-X-Microsoft-Antispam-Message-Info:
-	/3PXbPaDgvJtuQ6Ks/sDcy2iKToXKFCNudKckh8VVASpmE3TyGJ6evZp3WOfcAghVqkLq75/EkVIElysUA9GLe8BxfKAoVGoFtXWAq5ASKg7caofe2m8wKeTftHDsRmp7mEWpge+T97u4KEavLM90SrVoOtMNOvHS4zNc2hlIBV5cqEZgUvPTfonGdMTMuR3hyDJV+Nx2rHVjMNM5/GZ4wtInijSlZ9p2n5Jph/r7meJsI61OJa6lX1t1tdPG3aly4LL1s4U+gvLBREvIyqpAyZ1JOkhlg5BSNuzUkiETqVTsf2lX5DMVZIi6kKYAnqAp7Q96sSgGRnc3kA2k7ZXqTSb+nGyNP7Y8C1D+yFqqcd8MubXKHGlJ+J5+bR0en429DaYmMvPU4MU56OXUuD0qcBOJwqHxXhznTNoEHrMpEzrnMHfWYQNsdwevkl804sqOuynCq0KN9VNPdBVJTUFM6ibaaAsVMRTwUaTMxaEE7YOPc7UfYrd3nOcEzX13yW9lbN2q+LWYzWSb2LSK9HCK2lZRT81d8twT/kJKtxwxb1U7RaJFoQC0goMTgcoVAxMnQnGW0itrNqWXvVsHvDvIA7E+n+X/LEu48DcLBU7x8DTkFqkY3MP1tLMJ3PpZ1vuXSt3ZjN009NQmscDCQjL1GzTeVNxapHbMVXvtglolqE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MI3PR04MB12438.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(23010399003)(376014)(1800799024)(366016)(19092799006)(10067099003)(4143699003)(11063799006)(56012099006)(261028144727099003)(261022105027099003)(261026140227099003)(261026121527099003)(261021123027099003)(261009223027099003)(22082099003)(18002099003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CQ6MIWmQDDGmu/aPFzaape9TZrOAYImZieX6oDoAGfLkkeHEtIKQFlP6f3Jz?=
- =?us-ascii?Q?53gexyUav8qt7+YeVCqZ2i9brHr7cziaFGA1j+3r/GPNlWusLpAknJFxRrft?=
- =?us-ascii?Q?4Dh+TJzB6Oreqjyo6ZS4PJ6VAODs02afPdZqeeaNzacSiyMI9eN5775Poofl?=
- =?us-ascii?Q?E8CTH/KEsewTTrYwPfq0iwzfIuQ2oxaxjuZ6I23t92dLLwcrWQluURK8DdFb?=
- =?us-ascii?Q?iQklUiX3I3yb7FQ27yXgGw1cSmuf12WQvg1Z0I8YNvnjqE0CqX/d3S7tIr24?=
- =?us-ascii?Q?CfIOZ1iXfWROZSliGBOXKDOGEpMaM7wuQuOSYR0uNFWDxbnENMWHzrmJSQnJ?=
- =?us-ascii?Q?VlV4g3EnGjDRXvTucLwRmhwjZeCu3s7b9nLQ3JqHae2Lq0Y62ykdwYNPpwvf?=
- =?us-ascii?Q?Vd8oChvyI+oZtV4nqEC0mwQukTL3nYtIkU4a5Hvi3vsA3FD0mlvQD+ivVZRx?=
- =?us-ascii?Q?txl44Vc331o+jlyb69Cbb8xw9TR9d1OzmL5DANDhwI6tX6x00p6pxDtTM5lI?=
- =?us-ascii?Q?Zi8rXBAwf8pU3w8OWSgovDsCkVsAPWdX0rmNbHeiW89HLD2RgGaXUbJqf/Fn?=
- =?us-ascii?Q?2Q/d8pU6iOaGnFmint7S/jWzI8H091dxkGFQTYzLZo93FiudJRNqTC3tD+SU?=
- =?us-ascii?Q?eAFph8/k3k6eJnaKDktn1MxI0iKlyEWAtg0fuM7xIxWdS7R7xcu2diDvzGvh?=
- =?us-ascii?Q?Vgm+7jKY+OHQXYt9n5UJbZhIhkjTOf4dmRAORweExc1beiS+K7OUz8x4vPhM?=
- =?us-ascii?Q?GLusEbwvJaKMFZJDayKvRUGc4xQdj3pwUtsBhyPoA4UBFvs8cq1IB2wY+wiy?=
- =?us-ascii?Q?Hh9K8/hkY3tX+6OzCJ+W5ww/NjZ5N71WKlgZUYHTFEF2bY3FCwomqDbCegO1?=
- =?us-ascii?Q?jr/E8tuL+s/pnYQSsBwA3e6WvxaZgDHfkLMPsYxxE0a2Fhaz7+ak1BdSRdTz?=
- =?us-ascii?Q?aaQy9hc3nigxKCqzdgEEFRUnWBsre1lLGQte7dDtHhQV11QUpWM8l5N5OwW1?=
- =?us-ascii?Q?1oKwCZuz7ltym/II2Yzrsl1k5XR7NIqh7lQtwmrbrBWnbjWmE0Y3n9rX/Yi2?=
- =?us-ascii?Q?usfZH0I9gQXQc8+lkk3PUh/mXdmU1DHfMzqEkpB8N0hoF8Qdj5sQMQCpFA4w?=
- =?us-ascii?Q?pwuenogPEHxSgUtpTZOijAyuFj2QlBpRUkHIoOXUQJnPvawxKH+Qb4yw7BZj?=
- =?us-ascii?Q?hsnlryTzxdpeQf+D7dxs2Rb/QMUIA4vK/Kjwqztlavnnj8srbJxRpRPU1Kut?=
- =?us-ascii?Q?3G+NEAdM3vreaEqEWsoNaTUBdNDEEOSFdq/IPOv35EKxSx/mI0jLRjpUnpYk?=
- =?us-ascii?Q?OPgZBlw5azuE4pi4g67s1Ebn6/gm2v4TIQjoh9qe/lKPeRBcAizwhQn9J9bP?=
- =?us-ascii?Q?43v3sjGnCddRP7DBcrhYiuIHU59jE79IwcpnawpcRAySKrJHTzm5/T4YI/c9?=
- =?us-ascii?Q?IH3yaZ/5W4UEiDlHJzJVulhBMbVw+hHaMalFBIyDh0dfScrnz5LXtyhxOQah?=
- =?us-ascii?Q?WGKg4pLatLDvINXsiJyf8P8XhMpMPjckNVXMwPqLUSTY7VBmKR5G5QPQ7HN1?=
- =?us-ascii?Q?DIXsLBECwuwrejObfse5wV3CNZdqSuymUG9p4AM6F0qdqGC4nLhr5FMwOyl8?=
- =?us-ascii?Q?gyujqoshau8hRjNoSCdJeq9QlDkHvjzNhzTJmIGcuLMDMipJHI0DNlKTFDHQ?=
- =?us-ascii?Q?WoaHfFg/xfeBLbWMFmqXsvQpASKUIICm07mG7ag2jgT7LJ5ZEAlQm+BDXafu?=
- =?us-ascii?Q?RTkbHVkLkGDauf6crZNY9iIccI4ZvgNL3dPQUiSdRbUIxpM2OW5l?=
-X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c43c5473-0558-4154-a832-08df41a1b8ee
-X-MS-Exchange-CrossTenant-AuthSource: MI3PR04MB12438.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Nov 2026 16:18:15.8851
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ghaS0jxI0gFDe0vUKURxej5ZZ3GfA8+tbyu/l8zep0mEZ5T6iJvG0cXdD4/TIh3395aS2S3cBkzTXpI/WvHwENjVuS+AhlU4dFfYOuirlsOPCiBakJ5AjxSJUZvfZ58m
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB9062
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v12 1/3] can: j1939: fix possibility of UAF in
+ __j1939_ecu_release()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav311.rs.sakura.ne.jp
 
-On Thu, Nov 12, 2026 at 01:35:17PM +0100, Marek Vasut wrote:
-> On 11/12/26 10:03 AM, Vinod Koul wrote:
-> >
-> > On Wed, 30 Sep 2026 23:46:38 +0200, Marek Vasut wrote:
-> > > Microchip ATA6563 is High-Speed CAN Transceiver with Standby Mode.
-> > > It is pin-compatible with TI TCAN1042 and has a compatible programming
-> > > model, therefore use ti,tcan1042 as fallback compatible.
-> > >
-> > >
-> >
-> > Applied, thanks!
-> >
-> > [1/3] dt-bindings: phy: ti,tcan104x-can: Document Microchip ATA6563
-> >        commit: b338621a7e68bb9dc91d08e1774262deb0db50f6
-> Thank you.
->
-> Frank, I think you can now proceed with the rest ?
+Since j1939_ac_recv() and j1939_ac_fixup() are calling j1939_ecu_put()
+without priv->lock held for write, list corruption and/or UAF might happen
+if the last user called j1939_ecu_put() without priv->lock held for write.
 
-Can you rebase to imx/dt64? There are not base-commit informaiton, I can't
-apply.
+Fix this problem by deferring release steps to WQ context where we can
+unconditionally hold priv->lock for write.
 
-Frank
+By deferring to WQ context, readers might find ECUs which have already
+reached __j1939_ecu_release(). Therefore, allow using an ECU only when
+__j1939_ecu_release() is not yet called (indicated by ecu->kref > 0).
 
->
+Since pending ecu->ac_timer is not canceled during j1939_ecu_unmap_all()
+or __j1939_rx_release(), ecu->ac_timer can call j1939_ecu_timer_handler()
+after __j1939_ecu_release() or j1939_module_exit().
+
+Fix this problem by explicitly canceling ecu->ac_timer before kfree().
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Cc: stable@vger.kernel.org
+Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+---
+ net/can/j1939/bus.c        | 68 ++++++++++++++++++++++++++++----------
+ net/can/j1939/j1939-priv.h |  4 +++
+ net/can/j1939/main.c       | 13 ++++++++
+ 3 files changed, 67 insertions(+), 18 deletions(-)
+
+diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+index cdc3c0a71937..c49c96dea796 100644
+--- a/net/can/j1939/bus.c
++++ b/net/can/j1939/bus.c
+@@ -14,25 +14,54 @@
+ 
+ #include "j1939-priv.h"
+ 
+-static void __j1939_ecu_release(struct kref *kref)
++struct workqueue_struct *j1939_ecu_wq;
++
++static void __j1939_ecu_release_work(struct work_struct *work)
+ {
+-	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
++	struct j1939_ecu *ecu = container_of(work, struct j1939_ecu, release_work);
+ 	struct j1939_priv *priv = ecu->priv;
+ 
++	write_lock_bh(&priv->lock);
+ 	list_del(&ecu->list);
++	write_unlock_bh(&priv->lock);
++	/* There can't be any ref on this ECU because __j1939_ecu_release()
++	 * was already called. But we need to make sure that
++	 * j1939_ecu_timer_handler() is no longer running before kfree().
++	 */
++	WARN_ON(hrtimer_cancel(&ecu->ac_timer));
+ 	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+ 	kfree(ecu);
+ 	j1939_priv_put(priv);
+ }
+ 
++static void __j1939_ecu_release(struct kref *kref)
++{
++	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
++
++	/* Since not all callers are calling j1939_ecu_put() with priv->lock
++	 * held for write, defer actual release to WQ context. By deferring to
++	 * WQ context, readers might find ECUs with ecu->kref == 0. Therefore,
++	 * readers must validate with j1939_ecu_valid() or j1939_ecu_get().
++	 */
++	INIT_WORK(&ecu->release_work, __j1939_ecu_release_work);
++	queue_work(j1939_ecu_wq, &ecu->release_work);
++}
++
+ void j1939_ecu_put(struct j1939_ecu *ecu)
+ {
+ 	kref_put(&ecu->kref, __j1939_ecu_release);
+ }
+ 
+-static void j1939_ecu_get(struct j1939_ecu *ecu)
++static bool __must_check j1939_ecu_get(struct j1939_ecu *ecu)
++{
++	/* Don't get an ECU ref if __j1939_ecu_release() was called. */
++	return kref_get_unless_zero(&ecu->kref);
++}
++
++static bool __must_check j1939_ecu_valid(struct j1939_ecu *ecu)
+ {
+-	kref_get(&ecu->kref);
++	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
++	return kref_read(&ecu->kref);
+ }
+ 
+ static bool j1939_ecu_is_mapped_locked(struct j1939_ecu *ecu)
+@@ -56,15 +85,17 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
+ 	if (!j1939_address_is_unicast(ecu->addr))
+ 		return;
+ 
++	if (!j1939_ecu_get(ecu))
++		return;
++
+ 	ent = &priv->ents[ecu->addr];
+ 
+ 	if (ent->ecu) {
+ 		netdev_warn(priv->ndev, "Trying to map already mapped ECU, addr: 0x%02x, name: 0x%016llx. Skip it.\n",
+ 			    ecu->addr, ecu->name);
++		j1939_ecu_put(ecu);
+ 		return;
+ 	}
+-
+-	j1939_ecu_get(ecu);
+ 	ent->ecu = ecu;
+ 	ent->nusers += ecu->nusers;
+ }
+@@ -109,10 +140,11 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
+ 
+ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+ {
+-	/* The ECU is held here and released in the
++	/* The corresponding j1939_ecu_put() is in
+ 	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
+ 	 */
+-	j1939_ecu_get(ecu);
++	if (!j1939_ecu_get(ecu))
++		return;
+ 
+ 	/* Schedule timer in 250 msec to commit address change. */
+ 	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
+@@ -122,6 +154,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+ void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+ {
+ 	if (hrtimer_cancel(&ecu->ac_timer))
++		/* Drop the ref from j1939_ecu_timer_start(). */
+ 		j1939_ecu_put(ecu);
+ }
+ 
+@@ -137,9 +170,7 @@ static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
+ 	 */
+ 	j1939_ecu_map_locked(ecu);
+ 
+-	/* The corresponding j1939_ecu_get() is in
+-	 * j1939_ecu_timer_start().
+-	 */
++	/* Drop the ref from j1939_ecu_timer_start(). */
+ 	j1939_ecu_put(ecu);
+ 	write_unlock_bh(&priv->lock);
+ 
+@@ -189,8 +220,8 @@ struct j1939_ecu *j1939_ecu_get_by_addr_locked(struct j1939_priv *priv, u8 addr)
+ 		return NULL;
+ 
+ 	ecu = j1939_ecu_find_by_addr_locked(priv, addr);
+-	if (ecu)
+-		j1939_ecu_get(ecu);
++	if (ecu && !j1939_ecu_get(ecu))
++		ecu = NULL;
+ 
+ 	return ecu;
+ }
+@@ -215,7 +246,7 @@ static struct j1939_ecu *j1939_ecu_find_by_name_locked(struct j1939_priv *priv,
+ 	lockdep_assert_held(&priv->lock);
+ 
+ 	list_for_each_entry(ecu, &priv->ecus, list) {
+-		if (ecu->name == name)
++		if (ecu->name == name && j1939_ecu_valid(ecu))
+ 			return ecu;
+ 	}
+ 
+@@ -232,11 +263,12 @@ struct j1939_ecu *j1939_ecu_get_by_name_locked(struct j1939_priv *priv,
+ 	if (!name)
+ 		return NULL;
+ 
+-	ecu = j1939_ecu_find_by_name_locked(priv, name);
+-	if (ecu)
+-		j1939_ecu_get(ecu);
++	list_for_each_entry(ecu, &priv->ecus, list) {
++		if (ecu->name == name && j1939_ecu_get(ecu))
++			return ecu;
++	}
+ 
+-	return ecu;
++	return NULL;
+ }
+ 
+ struct j1939_ecu *j1939_ecu_get_by_name(struct j1939_priv *priv, name_t name)
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index cf26352d1d8c..623aeb2e54e1 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -42,6 +42,8 @@ struct j1939_ecu {
+ 
+ 	/* count users, to help transport protocol decide for interaction */
+ 	int nusers;
++
++	struct work_struct release_work;
+ };
+ 
+ struct j1939_priv {
+@@ -345,4 +347,6 @@ void j1939_session_timers_cancel(struct j1939_session *session);
+ /* CAN protocol */
+ extern const struct can_proto j1939_can_proto;
+ 
++extern struct workqueue_struct *j1939_ecu_wq;
++
+ #endif /* _J1939_PRIV_H_ */
+diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+index 5e5e6c228f22..22c272f8dfde 100644
+--- a/net/can/j1939/main.c
++++ b/net/can/j1939/main.c
+@@ -401,6 +401,12 @@ static __init int j1939_module_init(void)
+ 
+ 	pr_info("can: SAE J1939\n");
+ 
++	j1939_ecu_wq = alloc_workqueue("j1939_ecu", WQ_HIGHPRI | WQ_PERCPU, 0);
++	if (!j1939_ecu_wq) {
++		ret = -ENOMEM;
++		goto fail_wq;
++	}
++
+ 	ret = register_netdevice_notifier(&j1939_netdev_notifier);
+ 	if (ret)
+ 		goto fail_notifier;
+@@ -416,6 +422,8 @@ static __init int j1939_module_init(void)
+  fail_sk:
+ 	unregister_netdevice_notifier(&j1939_netdev_notifier);
+  fail_notifier:
++	destroy_workqueue(j1939_ecu_wq);
++ fail_wq:
+ 	return ret;
+ }
+ 
+@@ -424,6 +432,11 @@ static __exit void j1939_module_exit(void)
+ 	can_proto_unregister(&j1939_can_proto);
+ 
+ 	unregister_netdevice_notifier(&j1939_netdev_notifier);
++
++	/* We need to make sure that __j1939_ecu_release_work() is
++	 * no longer running before unmapping memory for this module.
++	 */
++	destroy_workqueue(j1939_ecu_wq);
+ }
+ 
+ module_init(j1939_module_init);
+-- 
+2.56.0
+
