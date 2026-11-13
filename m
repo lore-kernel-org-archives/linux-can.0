@@ -1,47 +1,96 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794590041;
-	b=v7gGXwnbkkr94wlgU9+PPE6U3rszuuTBLlrx9dzCtxA9cEyYHXsHNmFUKY67XdqsG0Vc
-	 7CFqXLbCyXUoX3f/Y0fvGJvNUCbN+RaWaVQPbLKWZmTqlrScNa47qDRQyrGJ6agqBodDj
-	 fYSgh+0ttyIWJkIotGziWkq7NsWQc8++OB0WjvKCuybKO1e6X0x8QUbploBzWgu4fjN6/
-	 Q59rGYQ0x1q7YxWmEXqx4dSHzfTHwG2e3EJic7K3/LUD+J+aVz1+CCWB1eptCdDlCElsQ
-	 FG+UkGLwv2o8RdJOwoG9bW8Y9J8R47e45AU7VF0SbYxOYNvbasikGrMi/76xDQnNs3g==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794590041;
-	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:From:To:References:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Virus-Status:
-	 X-Anti-Virus-Server;
-	bh=RERJ1QNk56fHeLZGCqRbnHvkmOcJetMX+rZi5LjhUuw=;
-	b=pC2h/6Np2yiVWp/R9grRp/j0wGhZjZJBBRw8SDIP9EqUYtlWHPqlWY2f+wCWu988+nTa
-	 ZgE5WFh4epA/zdcR0SBCwkD32ojJJ0cQjC+K0lmR3mgoPT6XI63GanrYiD5KCgieiLHIc
-	 Oq+2qbibRodEgCunlur6cGJKWE/5c9ozoWJRMPieZKK/2HaHnD44eQJk1oK2w6a1kqxXW
-	 8Yf8raVm1YV5y8sIYRBi1m4QOLuD7iAB/XJ432Xzbeqj7GR3vePya1W/HtupNn9SRknkJ
-	 H2F/UsGfUP/NyXtixKcl8auvT3xu/wMbMbvB/AmrkG2HhxE7HZBqPqBYavupYl+3e2w==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=I-love.SAKURA.ne.jp;
-	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
-	arc=none smtp.remote-ip=202.181.97.72
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794590502;
+	b=p7x/2l8LnVDX+bdfx80wRamU13axEE3Cerig04gSYz7A6psvcCgGx93qtPbq1vjozHsI
+	 LLtW66BfV2FRJcgqcTYTgNghIArb0PzQiYEjGRsSaj3zduAEdF0vW+eXzUPwgJz3brHGP
+	 CziUoaolLEtop4eXpDpo81UmvrzvovftuAsPBSHkOzgKf6TNZHE/xv9A8ItjGKA7MoAS7
+	 DiRnzfn9u2ixFHaHM1oF+Nrxj36f712+d9iPdKPbDHUGGyaPRc8d2m619A1mPTdDzj9K0
+	 88uVkZ1nNj0f/wWP7RxmTG8bKS3gYlDqJNQWqD/AQs3PcueDWIRTvIAup8nIMgFRR+w==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794590502;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=IYAcHmucbjNit+nwVeZq9uGapEQZWJK5/NA2Z98+w8E=;
+	b=ILzuVBV9dJxofBJnPxaacmZda5gJivArPSP7aeBlUAB6P2filyZQ5VibJH05xpyTzBd5
+	 47pUa/kTAYzyMCnd3wUBqu5r7UT52Fx1Eb0pnT2IIE1mzhhAgP5yGZOYPAfcEkbStHiWr
+	 bNilKdZHfGYeoRb6+1PJLHaZm7MaVfIC0vtbQi5zb6PJ89JccIaL10aORttABQD9E9U4p
+	 VjzYLYo2RGerRNnEZWpxBUwRKknVkc2MRlOO0LXDsHRHjkZD3WZ2EzMsxf8KozXsegNm/
+	 Z9pXoA7CyVfl4rO7COTFFXLv4G1gBJCd4IjXOhNfb10P9volCmt30dOTNyHWfY9+e4Q==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=a8YPFIja;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF2360A2618
-	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 17:14:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6FF2360A2618
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6ADHDhjZ088876;
-	Sat, 14 Nov 2026 02:13:43 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6ADHDhrp088872
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sat, 14 Nov 2026 02:13:43 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <60b30b7c-91dc-4138-bc92-be922ffd6215@I-love.SAKURA.ne.jp>
-Date: Sat, 14 Nov 2026 02:13:42 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65DF86073206
+	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 17:21:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 65DF86073206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=a8YPFIja
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6E386205A05;
+	Fri, 13 Nov 2026 18:21:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794590495;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IYAcHmucbjNit+nwVeZq9uGapEQZWJK5/NA2Z98+w8E=;
+	b=a8YPFIjad4QNmad9ri/vLbZUAD5gsi7hqELkmvarhGblzsgnMBQjbzZZT3tAl3bUEIT9Jh
+	i5zgEW/PhghB+g1nKTC5AZ/EYRqNE6OepcQqjEY8S2G6McJ8ZPR9jo1NTT1PmyGafvw37d
+	S8TwFWDQOhHODd4yTB/MfT5pqP+6irYQdnbTbhE32ihly9i46+6zEgfFHXQjKCnod9NBAD
+	7jkt75gcLOlIoldYEkV9F5vkW8OfJ/YMF58pPvqk0oo7s2zQJnN9oLFfDAZQRtqK9Hr9Wm
+	S8H0Y9PnkkT26KMg8PrrSltpTFj8MjhfMqNdAZzJXXZR/B5bfJKbvFwxI+j/vQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794590495;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IYAcHmucbjNit+nwVeZq9uGapEQZWJK5/NA2Z98+w8E=;
+	b=bll0SMbiJEYqN+Z1v3fA31wha5ts15L7qW35TelLfw7GwB9o90F5by8sEqmhFgPFIC2A0W
+	dyM0laWf/h9seOXZJPcJsS6XgJSnEktXZjn7J1uEbIqovoyhHObZYJSUjPfKixritVc1Fo
+	uu3cW4Xvs4cIyTJua0FEswaIiAAR0NTS3z/E9SOm0b4zejAfX27/i2pFRIJErDgQUuDPQF
+	rWP04wyYrKfu8X1je2xt/FNNRLKDpRFWXT7gVkzVk/dGEILRKW+ErXfBl1PSPXN9dgTA3q
+	y/bFhlxHHJnNXFOwx6Z6kwmv2wagNtkU9z4/K3wBfGOFdB1tbmcmO39fkwlo7A==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794590495; a=rsa-sha256;
+	cv=none;
+	b=M9DF5nZoTsxNbays6yhHdNbTMp9n9tkKrI6DLNjz534KlboZnoEelmY1isF8/lDpyXFHH2
+	5MDMpQy7ZfwOd5tIC/kixFiH4JWZ+tFoiPaVoEQ1SCBGFouD+SvUn3EiZ4+Cf5rLVIa5dj
+	0BRHcpy504svQvYlHUrGqr6kDesTJtTbcMcA3zwRryXEwu/aCZEiqf2oDdkSFYNjdXI4kc
+	HT0rUzK1r86YXdgBt86nn2oEDfVD0IDbYYf4dSdTGnn5IVci34mbKpyW10DojbeZpNfwhY
+	Rts5+6ktJCP7d4RU9oCrbTlXGSHytMWN5Jg26zo0PXNVXfrd3pDY0SXdMN4EKQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xRuxz-0041aH-18;
+	Fri, 13 Nov 2026 18:21:35 +0100
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 0E9425EAED1;
+	Fri, 13 Nov 2026 17:21:35 +0000 (UTC)
+Date: Fri, 13 Nov 2026 18:21:34 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>, 
+	Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>
+Subject: Re: [PATCH v12 1/3] can: j1939: fix possibility of UAF in
+ __j1939_ecu_release()
+Message-ID: <20261113-raspberry-wyvern-of-greatness-248341-mkl@pengutronix.de>
+References: <8de287d7-b4e1-4062-b40e-b193f5ec68ca@I-love.SAKURA.ne.jp>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -51,167 +100,54 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v12 3/3] can: j1939: fix "struct j1939_ecu" refcount leak
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-References: <8de287d7-b4e1-4062-b40e-b193f5ec68ca@I-love.SAKURA.ne.jp>
- <ba3e6880-6dff-4fa6-a2e4-629c3d35b8d5@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <ba3e6880-6dff-4fa6-a2e4-629c3d35b8d5@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav412.rs.sakura.ne.jp
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ns4hv32xp6bhxsf5"
+Content-Disposition: inline
+In-Reply-To: <8de287d7-b4e1-4062-b40e-b193f5ec68ca@I-love.SAKURA.ne.jp>
 
-syzbot is reporting "struct j1939_ecu" refcount leak, for
 
-  j1939_ecu_get(ecu);
-  priv->ents[ecu->addr] = ecu;
+--ns4hv32xp6bhxsf5
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v12 1/3] can: j1939: fix possibility of UAF in
+ __j1939_ecu_release()
+MIME-Version: 1.0
 
-in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
-even after
+On 14.11.2026 02:13:05, Tetsuo Handa wrote:
+> Since j1939_ac_recv() and j1939_ac_fixup() are calling j1939_ecu_put()
+> without priv->lock held for write, list corruption and/or UAF might happen
+> if the last user called j1939_ecu_put() without priv->lock held for write.
 
-  priv->ents[ecu->addr] = NULL;
-  j1939_ecu_put(ecu);
+Your series should include a cover letter. It should provide a brief,
+informative overview of the series. In addition, a brief, concise change
+log in the form of a bulleted list should be included in the cover
+letter.
 
-in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
-__j1939_rx_release() from j1939_netdev_stop() has completed.
+All patches should be a reply to the cover letter.
 
-Fix this problem by
+Consider using "b4" [1] to send the patches, there is even a web-hook to
+avoid local smtp servers.
 
-  (1) canceling ecu->ac_timer from j1939_ecu_unmap_all()
+[1] https://b4.docs.kernel.org/en/latest/
 
-unconditionally and
+Marc
 
-  (2) preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start()
-  (3) making j1939_ecu_map_locked() no-op
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-when a netdev which is associated with j1939_priv is no longer registered
-(indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
-__j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
+--ns4hv32xp6bhxsf5
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- net/can/j1939/bus.c    | 52 +++++++++++++++++++++++++++++++++++++++---
- net/can/j1939/socket.c | 10 +++++++-
- 2 files changed, 58 insertions(+), 4 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index 8cbf8716d286..a0120567bb8f 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -58,6 +58,17 @@ static bool __must_check j1939_ecu_get(struct j1939_ecu *ecu)
- 	return kref_get_unless_zero(&ecu->kref);
- }
- 
-+static bool __must_check j1939_ecu_verify_get(struct j1939_ecu *ecu)
-+{
-+	struct j1939_priv *priv = ecu->priv;
-+
-+	/* Don't get an ECU ref if netdev is no longer registered or
-+	 * __j1939_rx_release() was called or __j1939_ecu_release() was called.
-+	 */
-+	return READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED &&
-+		kref_read(&priv->rx_kref) && j1939_ecu_get(ecu);
-+}
-+
- static bool __must_check j1939_ecu_valid(struct j1939_ecu *ecu)
- {
- 	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
-@@ -85,7 +96,7 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
- 	if (!j1939_address_is_unicast(ecu->addr))
- 		return;
- 
--	if (!j1939_ecu_get(ecu))
-+	if (!j1939_ecu_verify_get(ecu))
- 		return;
- 
- 	ent = &priv->ents[ecu->addr];
-@@ -130,8 +141,43 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
- void j1939_ecu_unmap_all(struct j1939_priv *priv)
- {
- 	int i;
-+	struct j1939_ecu *ecu;
- 
-+rescan:
- 	write_lock_bh(&priv->lock);
-+	/* Need to shutdown timers now, for j1939_module_exit() might be called
-+	 * relatively shortly after returning from j1939_ecu_unmap_all() from
-+	 * __j1939_rx_release() from j1939_netdev_stop() from j1939_sk_release().
-+	 */
-+	list_for_each_entry(ecu, &priv->ecus, list) {
-+		if (!j1939_ecu_valid(ecu))
-+			continue;
-+		switch (hrtimer_try_to_cancel(&ecu->ac_timer)) {
-+		case 0:	/* Not active or already finished. */
-+			continue;
-+		case 1:	/* Successfully canceled. */
-+			/* Drop the ref from j1939_ecu_timer_start(). */
-+			j1939_ecu_put(ecu);
-+			continue;
-+		default: /* Currently executing. */
-+			/* Get a ref, in order to call hrtimer_cancel() without priv->lock.
-+			 * If we can't get a ref, __j1939_ecu_release_work() will call
-+			 * hrtimer_cancel() without priv->lock, and j1939_module_exit()
-+			 * will wait for completion of __j1939_ecu_release_work().
-+			 */
-+			if (!j1939_ecu_get(ecu))
-+				continue;
-+			break;
-+		}
-+		write_unlock_bh(&priv->lock);
-+		if (hrtimer_cancel(&ecu->ac_timer))
-+			/* Drop the ref from j1939_ecu_timer_start(). */
-+			j1939_ecu_put(ecu);
-+		/* Drop the ref from default: above. */
-+		j1939_ecu_put(ecu);
-+		goto rescan;
-+	}
-+	/* Unmap any remaining mapped ECUs */
- 	for (i = 0; i < ARRAY_SIZE(priv->ents); i++)
- 		if (priv->ents[i].ecu)
- 			j1939_ecu_unmap_locked(priv->ents[i].ecu);
-@@ -141,9 +187,9 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
- void j1939_ecu_timer_start(struct j1939_ecu *ecu)
- {
- 	/* The corresponding j1939_ecu_put() is in
--	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
-+	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel() or j1939_ecu_unmap_all().
- 	 */
--	if (!j1939_ecu_get(ecu))
-+	if (!j1939_ecu_verify_get(ecu))
- 		return;
- 
- 	/* Schedule timer in 250 msec to commit address change. */
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 50a598ef5fd4..6e22ec5e88f5 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -484,7 +484,15 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
- 			goto out_release_sock;
- 		}
- 
--		if (ndev->reg_state != NETREG_REGISTERED) {
-+		/* Do nothing and fail early if netdev is no longer registered.
-+		 * This check is racy but we don't need to recheck after j1939_jsk_add()
-+		 * is called, for either j1939_sk_netdev_event_unregister() from
-+		 * j1939_netdev_notify(NETDEV_UNREGISTER) (which is retried by
-+		 * netdev_wait_allrefs_any() as long as priv->rx_kref held by
-+		 * j1939_netdev_start() is preventing j1939_priv_set(priv->ndev, NULL)
-+		 * from being called) or j1939_sk_release() will take care of this race.
-+		 */
-+		if (READ_ONCE(ndev->reg_state) != NETREG_REGISTERED) {
- 			dev_put(ndev);
- 			ret = -ENODEV;
- 			goto out_release_sock;
--- 
-2.56.0
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavdHHAAKCRDMOmT6rpmt
+0oNkAQC4rCIYCus08KJA3EoF/q8mdnqVV58+O6KcZetfo2siZQD9FGLuQMHFUdPf
+5AuTCwiVUGJ4afAXp50bmH8xT0ncLA0=
+=WZUT
+-----END PGP SIGNATURE-----
 
+--ns4hv32xp6bhxsf5--
