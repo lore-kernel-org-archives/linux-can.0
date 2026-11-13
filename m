@@ -1,56 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794544266;
-	b=cWPIv73wKeykJepgjnB5FU0PRmGP45bg2Sy77bCJM4KyfRStKDgGdSH2754GmlO8bkUJ
-	 QBwUM/jPRlXBxzLkiftlLwkaQLkUZGaHbTCRsgzFygTf+vYkLp6gEDU5dYEBAPpBatzbf
-	 hMXfB+SjPFumoyqBacyjazJVFOwYcGtr11HzPWwAoiOStFUSt53iFuwFKDCrCx3kmdLoh
-	 d8lfHbS/8/1b5JItugtdisGdAZRVQ4X0h2pj/jdJ0jy1IWXrSBqTrDJEchdvQ+wpSAT1e
-	 ZgycqgLXTbB4a+Ckdfq5w/0JuVmKEVgnw0YpbA+PoyCovTsaZiuUOhHY1mqUw/j/NMg==
+	t=1794544267;
+	b=mO90Cr33lNGRERlHrstowd8thCKJ7wusi/YO9iRQ7f2cFH9IP4lYmPDewfAysgtubCmg
+	 GVjcla6gAg+V+RBZ4YO0uh7hBEFnBhklh3GkA4gsGqt75s+fxdYtD9ZFWu1k45cp91FTQ
+	 EVs3ILZFw8E6fPu9gXNIUldhY4t28r9Dtdw9VZC0FHswo9bxQavmoMyGhKWoA2dIjP+0B
+	 U/Ezsaw7m0I2CrzBULrndg2WW+oDskKvrDZ9gns92KjFquIYdHROgVIwl0zeZShiZ1eKy
+	 5vf8T25KppOrY+msni5VCI53Ml7MzuUFcdn/Jk0QSytV5F9u7NcOm7tscv1lP4Xb0pQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794544266;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794544267;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=uB1zoemPWKsLwfgPExjc+T+F3A0+s/oOWYcRuOobBoU=;
-	b=jZBcDaHJfuz9sOGXzgU4khFlbQVWacM+5Hw0X3B3lW6G2/ScZ39GZIXeDQ/YuWy9enS0
-	 9KvKW9YGfsNaLf8uabs8O2F5SckN+OtfmPUKPRayOhi/S+0GnLV1o/MYiDb2MAGzPd26c
-	 HswmN0elNo201bMgZdOp4eyQF8Bb5XrW8+T0Pu3g/Qdj93+aNnIp6ObXmVa7WA2tlHgc6
-	 x47zGa5l/oLPfiKxP+RGqGAFg/QSSgiZBylrQSLz3T4XjrHRoNC4RfYUGUbWHPvuD7PVo
-	 NQFz/mBhg8Hib9IBi6csYeoysv7boy0KnY6BADSQcaoUM4o+3nV9UeUf+QCXVwu0q7A==
+	bh=bUbMQkAVXe5iVFnc8xD8AtI5M7lmYV44x7jN8yV+osw=;
+	b=EdqLsWbAjqIN4edZeg3uvm13ZfQUjqXLsP0EuPYpMhtsNi1pqFloEtL9/LHp2w+xGuZN
+	 R2+uGMxsOgseW1TE12S8Dt5/pVok27WGY4Q5+/5xxQ/GOBGcWCYKOjKYnb3nxd6IgIpz4
+	 CiK+JZrfTC9D+h0lDqJpAVtpM68Mzgmkuzd+l66A3XVlDHho3rHF/hXhH/m6HqTth4mvS
+	 ziCAsV/+ycG34T/91Iz3n8IFN+m31DAGIJl12YNPbSi4X1Naq5WE8LlppLNJZiA2rGqRp
+	 iQw7uwA2XheDEO97XYaaWcf1ZeW/HT92lj6sBXq66XUyEISafvar8A/jm6r+r5h5QvA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SeDnIsAh;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UhcEMRSr;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBD4606A32E
-	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 04:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C7A1606A336
+	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 04:31:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SeDnIsAh
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D958D1F000C4;
-	Fri, 13 Nov 2026 04:31:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UhcEMRSr
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D85EC1F000C6;
+	Fri, 13 Nov 2026 04:31:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794544266;
-	bh=uB1zoemPWKsLwfgPExjc+T+F3A0+s/oOWYcRuOobBoU=;
+	s=k20260515; t=1794544267;
+	bh=bUbMQkAVXe5iVFnc8xD8AtI5M7lmYV44x7jN8yV+osw=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=SeDnIsAhKFq029Yt/GVOFd6FKJ2o4zl3d0PSB9XGPNArv/SZYYj+tXDtnti1jc71M
-	 7tPQJ8h5wNYaKnHKUEonb+6H8D4isoqMT2ToAlyB14WSm/8bxE0gDuTq8TBMZOJuco
-	 c6NZhnYAMXtfs8p+EpmTUgQHuPNrfsrTvSCKlQdk+GmYbcALmdfFOD5d8tONRH45Wy
-	 cMX8h81klymVvdv292Cv8ldJUEMRukA5a/DlT0jFtqMU3PtClb0knT42C/AtfIry6j
-	 QGoqsGSowBtFWqFKGjaGXHaDqOhAHL1+T0rQhxj1cGpy2HA7vul0HXhh8wvJUjXh/u
-	 OA0yeTRUtEvAw==
-Subject:
- Re: [PATCH v4 3/6] can: raw: use a private mutex instead of lock_sock()
+	b=UhcEMRSrAZ4jJ1WfcTKnS8CqBmGu24IsosKlE19jg6py5Bnym9Pyh9vqlb1L6Q34m
+	 GX+Nld/z3TvMw4vu+EoLWnByceGtUoydm9QP3Vo9Sd0+KprsHsQHFC1Sno4PVbanks
+	 RtKjPyzIlG7ElJxf8l2p0HMlBCoyueQWl6B9qskm/E2pAlEKSJfhEvEX6049AXxFJ9
+	 7FWmOMdMnxVRMyNfFV855PYoh8PaRrSc+JvUTg4OMAv4AoNrCsf/f6mjFM5xPNC6Lc
+	 wKkdVk24YylkNB9Jo3r2VOF18KIknEXfjH53xj//MWutCcVTnMdCAsaHfer4p2OQOf
+	 29IJokowkW2OA==
+Subject: Re: [PATCH v4 6/6] can: enable memcg accounting for user triggered
+ allocations
 From: netdev-bot+sashiko@kernel.org
 To: socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  sashiko-bot@kernel.org, zihanx@nebusec.ai, kuba@kernel.org
-Date: Fri, 13 Nov 2026 04:31:05 +0000
-Message-ID: <179454426541.488853.15379643605511531742@kernel.org>
-In-Reply-To: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
-References: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
-X-sashiko-severity: Low
+Date: Fri, 13 Nov 2026 04:31:06 +0000
+Message-ID: <179454426640.488853.6734133900556874595@kernel.org>
+In-Reply-To: <20261111-can-bcmlock-memcg-v4-6-5428607a608f@hartkopp.net>
+References: <20261111-can-bcmlock-memcg-v4-6-5428607a608f@hartkopp.net>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -63,147 +63,171 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 0 · Medium: 2 · Low: 0
 
-- [Low] The comment this patch adds to struct raw_sock, 'struct mutex
-  conf_lock; /* protects bind, filters and sockopts */'…
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Pre-existing issues:
-- [High] This problem wasn't introduced by this patch, but the bug class
-  the series is fixing is still reachable through CAN J1939 at the end…
+- [Medium] In net/can/isotp.c:isotp_rcv_ff(), the large RX buffer is
+  charged to whatever memcg mem_cgroup_from_sk(sk) returns.
+- [Medium] isotp_rcv_ff() (net/can/isotp.c:620) charges the softirq RX
+  buffer with GFP_ATOMIC | __GFP_ACCOUNT.
 
 --
 
-can: raw: use a private mutex instead of lock_sock()
+can: enable memcg accounting for user triggered allocations
 
-This commit replaces lock_sock() in CAN_RAW with a private mutex,
-conf_lock, in struct raw_sock. Generic SOL_SOCKET options copy from user
-space under sockopt_lock_sock(), and with this change they can no longer
-block raw_notify() while it runs under RTNL. The new mutex serializes
-bind, release, the filters and the CAN_RAW socket options.
+This patch charges CAN allocations that unprivileged users can trigger to
+the memory cgroup of the allocating process. That covers sockets,
+receivers, bcm ops and frames, raw/j1939 filters, isotp TX/RX buffers and
+j1939_priv. The isotp RX buffer is allocated in softirq context and is
+charged to the memcg of the socket via set_active_memcg().
 
-> diff --git a/net/can/raw.c b/net/can/raw.c
-> index f14270b56f521..641661ef4399d 100644
-> --- a/net/can/raw.c
-> +++ b/net/can/raw.c
-> @@ -103,6 +103,7 @@ struct raw_sock {
->  	struct can_filter dfilter; /* default/single filter */
->  	struct can_filter *filter; /* pointer to filter(s) */
->  	struct uniqframe __percpu *uniq;
-> +	struct mutex conf_lock; /* protects bind, filters and sockopts */
+Link: https://lore.kernel.org/linux-can/350df96b-5f69-490e-b39e-ed6e9bca4754@hartkopp.net/
 
-[Severity: Low]
-This isn't a bug, but is this comment accurate for the sockopts?
-
-raw_getsockopt() reads CAN_RAW_ERR_FILTER, CAN_RAW_LOOPBACK,
-CAN_RAW_RECV_OWN_MSGS, CAN_RAW_FD_FRAMES, CAN_RAW_XL_FRAMES and
-CAN_RAW_JOIN_FILTERS without taking conf_lock. The CAN_RAW_XL_VCID_OPTS
-case also copies the struct directly, without the lock:
-
-net/can/raw.c:raw_getsockopt() {
-    ...
-	case CAN_RAW_XL_VCID_OPTS: {
-		...
-			if (copy_to_iter(&ro->raw_vcid_opts, len,
-					 &opt->iter_out) != len)
-				err = -EFAULT;
-    ...
-}
-
-Meanwhile the writer updates the same struct while holding the mutex:
-
-net/can/raw.c:raw_setsockopt_locked() {
-    ...
-	case CAN_RAW_XL_VCID_OPTS:
-		memcpy(&ro->raw_vcid_opts, val, sizeof(ro->raw_vcid_opts));
-    ...
-}
-
-So a concurrent getsockopt(CAN_RAW_XL_VCID_OPTS) can return a mix of old
-and new values. raw_sendmsg() also reads the binding and option fields
-without the lock.
-
-These readers had no lock under lock_sock() either, so runtime behaviour
-does not change. Could the comment say instead that the mutex serializes
-the writers and the bind/notifier state? Another option is to take a
-snapshot of the VCID options under the lock, as the CAN_RAW_FILTER case
-already does.
-
->  };
->  
->  static LIST_HEAD(raw_notifier_list);
+> diff --git a/net/can/isotp.c b/net/can/isotp.c
+> index 50a3f4cd2b316..5e6940aea5ed3 100644
+> --- a/net/can/isotp.c
+> +++ b/net/can/isotp.c
 
 [ ... ]
 
-> @@ -328,9 +329,9 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
+> @@ -611,7 +612,13 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
 >  
->  	switch (msg) {
->  	case NETDEV_UNREGISTER:
-> -		lock_sock(sk);
-> +		mutex_lock(&ro->conf_lock);
+>  	/* PDU size > default => try max_pdu_size */
+>  	if (so->rx.len > so->rx.buflen && so->rx.buflen < max_pdu_size) {
+> -		u8 *newbuf = kmalloc(max_pdu_size, GFP_ATOMIC);
+> +		struct mem_cgroup *old_memcg;
+> +		u8 *newbuf;
+> +
+> +		/* charge the buffer to the memcg of the socket owner */
+> +		old_memcg = set_active_memcg(mem_cgroup_from_sk(sk));
 
-[Severity: High]
-This is a pre-existing issue and was not introduced by this patch, but
-the same RTNL stall still looks reachable through CAN J1939 after this
-series.
+[Severity: Medium]
+Does mem_cgroup_from_sk(sk) return the socket owner's memcg in every
+configuration where kmem accounting is active?
 
-Later patches in the series ("can: isotp: use a private mutex instead of
-lock_sock()" and "can: bcm: use a private mutex instead of lock_sock()")
-convert isotp_notify() and bcm_notify(). Nothing in the series touches
-net/can/j1939.
+mem_cgroup_from_sk() returns sk->sk_memcg. The only code that sets it is
+mem_cgroup_sk_alloc(), and that is gated on socket memory accounting, not
+on kmem accounting:
 
-On NETDEV_UNREGISTER, j1939_netdev_notify() calls
-j1939_sk_netdev_event_unregister() while RTNL is held, and that function
-still takes the socket lock:
-
-net/can/j1939/socket.c:j1939_sk_netdev_event_unregister() {
+mm/memcontrol.c:mem_cgroup_sk_alloc() {
+	if (!mem_cgroup_sockets_enabled)
+		return;
     ...
-		sock_hold(sk);
-		read_unlock_bh(&priv->j1939_socks_lock);
-		...
-		lock_sock(sk);
-		if (jsk->state & J1939_SOCK_BOUND) {
+	if (mem_cgroup_is_root(memcg))
+		goto out;
+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !memcg1_tcpmem_active(memcg))
+		goto out;
+	if (css_tryget(&memcg->css))
+		sk->sk_memcg = memcg;
     ...
 }
 
-sk_setsockopt() in net/core/sock.c holds sockopt_lock_sock(sk) while it
-copies from user space. Examples are copy_bpf_fprog_from_user() for
-SO_ATTACH_FILTER, copy_from_sockptr() for SO_LINGER, and SO_TXTIME. This
-works on any PF_CAN socket, and neither can_create() nor the J1939 proto
-does a capability check.
+Two configurations leave sk_memcg NULL:
 
-A possible sequence, with a vcan device created in the caller's own
-user and net namespace:
+- cgroup v1 where memory.kmem.tcp.limit_in_bytes was never written
+- cgroup v2 booted with cgroup.memory=nosocket
 
-socket(PF_CAN, SOCK_DGRAM, CAN_J1939); bind() to vcan0
+In both, the other allocations in this patch are still charged to the
+caller's cgroup: sk_alloc(GFP_KERNEL_ACCOUNT) in can_create(), the isotp
+TX buffer, the filters and the bcm ops.
 
-thread A: setsockopt(SOL_SOCKET, SO_ATTACH_FILTER), optval in a
-          stalling FUSE mapping
-  sk_setsockopt()
-    sockopt_lock_sock(sk)
-    copy_bpf_fprog_from_user()      <- stalls
+Here, though, the call becomes set_active_memcg(NULL) in softirq, and
+current_obj_cgroup() falls back to the root objcg:
 
-thread B: ip link del vcan0
-  unregister_netdevice()            (RTNL held)
-    j1939_netdev_notify(NETDEV_UNREGISTER)
-      j1939_sk_netdev_event_unregister()
-        lock_sock(sk)               <- blocks indefinitely
+mm/memcontrol.c:current_obj_cgroup() {
+    ...
+	memcg = this_cpu_read(int_active_memcg);
+	if (unlikely(memcg))
+		goto from_memcg;
 
-Moving the device to another namespace hits the same lock_sock().
+	return rcu_dereference_check(root_mem_cgroup->nodeinfo[nid]->objcg, 1);
+    ...
+}
 
-The series sets out to close this RTNL stall for the CAN protocols.
-Should J1939 also be converted to a private lock, so that an unprivileged
-user can't hold RTNL indefinitely through this path?
+Wouldn't the kmalloc(max_pdu_size, ...) below then be charged to root
+instead of the socket owner's limited cgroup?
 
->  		if (ro->dev != dev) {
-> -			release_sock(sk);
-> +			mutex_unlock(&ro->conf_lock);
->  			break;
->  		}
+This branch only runs when the max_pdu_size module parameter is raised
+above DEFAULT_MAX_PDU_SIZE (8300), because rx.buflen starts at
+ARRAY_SIZE(rx.sbuf). Once it is raised, each isotp socket can hold an RX
+buffer of up to MAX_PDU_SIZE (1025 KiB) that its cgroup is never charged
+for.
+
+The isotp_sock itself is charged to current's objcg in can_create(). Its
+RX buffer instead depends on socket memory accounting. Is that mismatch
+intended?
+
+In these configurations, the new comment and this part of the commit
+message don't seem to hold:
+
+    The isotp RX buffer for PDUs > DEFAULT_MAX_PDU_SIZE is allocated in
+    softirq context and is charged to the memory cgroup of the socket with
+    set_active_memcg().
+
+> +		newbuf = kmalloc(max_pdu_size, GFP_ATOMIC | __GFP_ACCOUNT);
+
+[Severity: Medium]
+GFP_ATOMIC contains __GFP_HIGH, so try_charge_memcg() never fails this
+charge at the limit. It takes the force path instead:
+
+mm/memcontrol.c:try_charge_memcg() {
+    ...
+nomem:
+	if (!(gfp_mask & (__GFP_NOFAIL | __GFP_HIGH))) {
+		ret = -ENOMEM;
+		goto out;
+	}
+force:
+	...
+	page_counter_charge(&memcg->memory, nr_pages);
+    ...
+}
+
+When max_pdu_size is raised, can an unprivileged process use this to push
+its cgroup far past memory.max?
+
+For example, a process still under its limit opens N isotp sockets and
+binds them all to the same rx_id. It then sends one First Frame with
+FF_DL > 8300, e.g. from a CAN_RAW socket with local loopback.
+
+Every socket then reaches this kmalloc(max_pdu_size, GFP_ATOMIC |
+__GFP_ACCOUNT), which can be up to 1025 KiB (an order-9 allocation) per
+socket, and each charge is forced past the limit.
+
+At creation each socket was only charged for the isotp_sock with its two
+8300 byte sbufs, about 32 KiB as a kmalloc-large allocation. This memory
+is unreclaimable kernel memory, and a forced charge doesn't trigger a
+memcg OOM, so the overshoot can persist while the tasks sleep.
+
+The commit message says the charge is forced. It doesn't mention that
+forcing lets the per socket footprint grow far beyond what was charged
+when the sockets were created.
+
+isotp_rcv_ff() already handles a failed allocation by replying with an
+overflow flow control frame:
+
+	if (so->rx.len > so->rx.buflen) {
+		/* send FC frame with overflow status */
+		isotp_send_fc(sk, ae, ISOTP_FC_OVFLW);
+		return 1;
+	}
+
+Given that, would a GFP combination that can fail at the limit keep the
+limit enforced here, such as GFP_NOWAIT | __GFP_ACCOUNT or
+(GFP_ATOMIC & ~__GFP_HIGH) | __GFP_ACCOUNT?
+
+> +		set_active_memcg(old_memcg);
+>  
+>  		if (newbuf) {
+>  			so->rx.buf = newbuf;
 
 [ ... ]
 
