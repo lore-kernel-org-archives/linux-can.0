@@ -1,53 +1,53 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.5
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.2
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1794539641;
-	b=ikYsQOLGFeyA6J6vMzywfq+SsfdCI5Nf45L6dEU+1JtRuYTYt0XFRLo9SlUnUix9SbxY
-	 HQmYXhHkEyJ/JjHNcJPwF9SBgBShqvehYjFVY78k8ziXXS+tvNYNXefP2xXWuF45qfCOs
-	 ZyXdt+QodF1+VbJE5QrpLHENSe68vJitquayvynR6NJ4/8fsoHYFu0nhLVqtL7p/3H2Ou
-	 gZ1MGFw/Dzcy+Cv3RCP/jkESQGUZMREw9x5lui859aLD//NB0DFP7Ei08nnAM/bBNveJD
-	 SKLDKq5+1xmlfr3F7ldo4n1fe1OhiiRlLusowuu0e8HHcqRLq8zEVyXb4Wpgtl/4/8g==
+	b=pnqkrFMgms1sPpnTgfXH8PrY+93hrQ+cL602VYTbmhOd9GcVzorwJCYcaV8/RwQAl42I
+	 XSJuC1mHGuWi4pNrRaMfn4bzJceRR+uY2jNHUNi+ikVQAvLsUzag7oseNZUMtZ66tg1av
+	 7zWlYsawZe8Hw4xfA4K8qGviwClSqL8LsjAWIdVw3jAJz9MFGXNGfOuHUzl8ehmJYBUBR
+	 2c8jvhsF04GAPxRAY1ZhELlspcYPpvJWwagXruuKGzqVaq2tDaCloVGQhC+NGdR/7nAco
+	 9BtaGLSRKaiGDM+tF+UKQqnY4v5ILGyCe+94oq3aTBWwmoPUs6aml7n+pVHHdoLpCqg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794539641;
 	h=DMARC-Filter:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
 	 In-Reply-To:References:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
 	 X-CM-SenderInfo;
-	bh=IaVog86Jm/7BPHoJKA6L79YCvmTQudSwcC4bCe/+BNI=;
-	b=UX1L4xS9FPjklQEZcoKbnmRUvyJj2MQFAEQRSn9V4jySEiiGdfZ+ONiHi2ukTC5jsT+N
-	 +KUywcvBP0TMenirufWLqdngYSFSa3g9FNFdOomC6CBmkl4WBfER2d0rC+ZaNL2YgIdJy
-	 Snr29UadPDvAiH9Cw6Aam1T+5YpqwXdIjnYOLPz0Y0oRgEFxoyIU7p89lEIc1LMKJnXti
-	 uCM2NjvhP2pODA0Bo6cE3YFKkrZmNviQZb9AOnzi7TZSCReI4/BI/vKui9N2ng7J3KQbT
-	 OR9ir8Mu0cdTpZsE649/Nr08Q9BvxuuF0SCsmN8q3L5l1bQ3TO+EzPmKM+NvdV1j9yg==
+	bh=dh/v5Vpdh5SVVpBCIpC5pVA+V35gFFXAr2nxFIOy5Hs=;
+	b=rdUl+/X2O++QAyYdIpZiuelLCyPG3wzM1LBx65T9KemJycC3Unve35gl+g+NbLBaqrd3
+	 NMo7qUuLajolvEkhuLCXq35WOx8MNG3L3Q621GtuANvXUBD2TgC3P5z7JBgbfIKejq7Hc
+	 T8tOLcAFtCBysh9I5BPySw3+HkeiqMx0+puzgF4uAiec9N7UoXSLizU7I4l9N8DUkX4VI
+	 55ZzjSTqppCJfFfj/Of5teLK4sN+0LJyNEcgCgIEjCydX/XjmG6BbFxMWRJmTBow5bYNC
+	 IyrOtc6gqutGj3r80HuzdlGfpwaGO6da8PCMY5cefs3go/ZVF+59lFkMUqqAf5mpbUA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=163.com;
 	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=J1DcfFIG;
-	arc=none smtp.remote-ip=220.197.31.5
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=GgU63VJt;
+	arc=none smtp.remote-ip=220.197.31.2
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D66606A897;
-	Fri, 13 Nov 2026 03:13:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A3D66606A897
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A317D606A33B;
+	Fri, 13 Nov 2026 03:13:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A317D606A33B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=J1DcfFIG
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=GgU63VJt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
 	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version:
-	Content-Type; bh=IaVog86Jm/7BPHoJKA6L79YCvmTQudSwcC4bCe/+BNI=;
-	b=J1DcfFIGyv6FyIl8xuWO5hvAqglRDa+C0KNa8KD0SiUEWugAqg5Mo97IKNu+xr
-	fXKl7iS+CVgV/n9andCb3C26Ca1ZjqByabCQOokCILxTw2HbCbzO3PJQLoK/sXSg
-	N9fzv8ify+0Nq70q/dg0xdghtSwadQID92kNMdogxSs88=
+	Content-Type; bh=dh/v5Vpdh5SVVpBCIpC5pVA+V35gFFXAr2nxFIOy5Hs=;
+	b=GgU63VJttngo7SGYSSQh9OgR0B9xhFNXRFJ9PA4TEaAHvUpBMvsIeJ0Z0+NYzh
+	nj+UyVqzzDGeU+7JtkuOx8zR/4qZYEKnLCXpkXA7QROptquW7zvGlatsHufFTRt6
+	LfneBrNLobQBIm41jZkX1b9wp2JfZ78knzFtc9eKx0A+Y=
 From: Chaosheng Qu <quchaosheng000406@163.com>
 To: netdev-bot+sashiko@kernel.org
 Cc: Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net v7 2/4] can: j1939: validate the EDPO packet number
+Subject: Re: [PATCH net v7 3/4] can: j1939: drop the message when the reassembled skb is gone
 Date: Fri, 13 Nov 2026 11:11:13 +0800
-Message-ID: <179453947398.30993.18128641012782298880@163.com>
-In-Reply-To: <179452018139.488853.4180903963444412204@kernel.org>
-References: <179410166345.60581.5430129940541091934@163.com> <179452018139.488853.4180903963444412204@kernel.org>
+Message-ID: <179453947398.30993.12910253526180673543@163.com>
+In-Reply-To: <179452018024.488853.2874336452045412196@kernel.org>
+References: <179410166346.60581.12668181404057434786@163.com> <179452018024.488853.2874336452045412196@kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -59,32 +59,28 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHzxNYgPZqFCfaHA--.11325S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWruFyrtF4xtr48ur1fZF1xAFb_yoWDuFg_ua
-	4vq3W8Jw18t3ZrKayUWrn8Zay7GFyjyr15tryqqa4IkryvkF47Zry0qa4fuw1jgr4YqF95
-	Crnxt3y7Kwn0qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7xR_hFx3UUUUU==
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbDABmOBGr2gFmtugAA3B
+X-CM-TRANSID:_____wDXn1BcgPZqjG20Hg--.7020S2
+X-Coremail-Antispam: 1Uf129KBjvdXoW7Jr4rGr15AF15JF48Gw1fXrb_yoWxZFX_tr
+	ykAws7Jw1vqFyIkFW7urn8Xrs7AFW7Gr4UAFsYqrWak34xAFWDur1vqryYv3s7WF1YgFnx
+	u3sIqFyjkwsYgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUUDUUUUUUUU==
+X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC-xyPBWr2gFyjqwAA3h
 
 Hi,
 
-The Medium is right. j1939_session_cancel() only touches the rxtimer, so the
-txtimer stayed armed on the aborting session. On the transmitter the
--ENOBUFS retries ran up to J1939_XTP_TX_RETRY_LIMIT and replaced session->err
-with -ENETUNREACH; on the receiver they sent a CTS or an EOMA, and each of
-those ends in j1939_tp_set_rxtimeout(session, 1250), which replaces the abort
-timeout. v8 adds j1939_session_timers_cancel() before the abort, and v9 has
-it.
+Both accepted.
 
-Fixes: 9d71dd0c7009 and Cc: stable are in since v8.
+Dropping the message silently is the weak part. session->err stays 0, so
+j1939_session_destroy() queues nothing, and the only trace is a netdev_dbg()
+that is off by default. For an RTS/CTS receive session this runs when the
+receiver's own EOMA comes back, after the originator has already been told
+the message was delivered, so the two sides end up disagreeing with nothing
+in the log. The next version uses WARN_ON_ONCE(!se_skb) and sets
+session->err = -EBADMSG before dropping.
 
-Two things I got wrong in this patch, from your review of it on v9. Once
-j1939_xtp_rx_cts_one() bounds the CTS, an out-of-range EDPO on the
-transmitter side can only come from a frame this host did not build, since
-J1939_ECU_LOCAL_SRC is set from the source address alone. ECTS_TOO_BIG blames
-a responder CTS that was valid in that case, so the next version uses
-BAD_EDPO_OFFSET for both roles. And the comment refers to "4/4", which means
-nothing after merge; it will name j1939_xtp_rx_cts_one() instead.
+The comment in j1939_xtp_rx_dpo_one() does go stale here, but it is 2/4's
+comment and gets rewritten there, in the same respin that changes the abort
+code.
 
 Thanks,
 Chaosheng
