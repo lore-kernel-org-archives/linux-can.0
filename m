@@ -1,53 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.3
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794539895;
-	b=SJLVQD0DMjwLY8BjD6kwL0wSIty0efQtVuc5/sD+DCtBh+JKslFNiy5zsW24LqSzKxVk
-	 m0P3+pnta5wxmhm7XaxB9dVKzHIHi2cu5Xgv3wYGsPJY0EuaZEwaw9H+wz2UCYN2h73eX
-	 9TCnlfV54V3epIAy4CeWYPCQOkwpfHQtQvW3OnW6JE6hHZASydCUBRhmekNIULes4i+7H
-	 CMRNixzqvVvvpfSLVeJWFhiCa4X+FN+7p6xMQhn8pyvTo/veHN2VK6ZCe5kaUyAuyGFYv
-	 L0zBugbHJuKqU7EE3NFtijYI/6L/vX7kSjfg4bWsqtygGMMSQGvE/1t0WCBasUuaq+Q==
+	t=1794544266;
+	b=cWPIv73wKeykJepgjnB5FU0PRmGP45bg2Sy77bCJM4KyfRStKDgGdSH2754GmlO8bkUJ
+	 QBwUM/jPRlXBxzLkiftlLwkaQLkUZGaHbTCRsgzFygTf+vYkLp6gEDU5dYEBAPpBatzbf
+	 hMXfB+SjPFumoyqBacyjazJVFOwYcGtr11HzPWwAoiOStFUSt53iFuwFKDCrCx3kmdLoh
+	 d8lfHbS/8/1b5JItugtdisGdAZRVQ4X0h2pj/jdJ0jy1IWXrSBqTrDJEchdvQ+wpSAT1e
+	 ZgycqgLXTbB4a+Ckdfq5w/0JuVmKEVgnw0YpbA+PoyCovTsaZiuUOhHY1mqUw/j/NMg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794539895;
-	h=DMARC-Filter:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 In-Reply-To:References:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:X-CM-TRANSID:X-Coremail-Antispam:
-	 X-CM-SenderInfo;
-	bh=nWc0P3UFTmQDnMEzGX9xP/Vkt43l2zO1TjQschvRNFw=;
-	b=QsTyYcvxKjyDht2sz2TdqEbWCAxQNBI9Oz5pdwY3dJCgpKJI0J2Mj/ApoKbg5NPDLBmk
-	 jUhL1Ujr/MeNnr0TKpVT9DQrhp2Kn05oH2KNQ+qitBIGAMGIqrJOJPeVAys6nIIingFXk
-	 Em9BeQvbk/iBH444igCelQKZVOXoWTftVhk8WjU7vacGCTfhOFXJSLyX9WLBnRyWtXdQc
-	 4FgPD5jfTEXaIP1anlf12zLy1/PMMnSvLBN3DdKkCS5/i9xVbxANW4LXAfmB5+AGE8Xi2
-	 g8SQx75QanApLSWYYnljYkhH5DcSUNxUa6fIq0igtK/eD2l605G8qTdncOWKQpePRuw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794544266;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=uB1zoemPWKsLwfgPExjc+T+F3A0+s/oOWYcRuOobBoU=;
+	b=jZBcDaHJfuz9sOGXzgU4khFlbQVWacM+5Hw0X3B3lW6G2/ScZ39GZIXeDQ/YuWy9enS0
+	 9KvKW9YGfsNaLf8uabs8O2F5SckN+OtfmPUKPRayOhi/S+0GnLV1o/MYiDb2MAGzPd26c
+	 HswmN0elNo201bMgZdOp4eyQF8Bb5XrW8+T0Pu3g/Qdj93+aNnIp6ObXmVa7WA2tlHgc6
+	 x47zGa5l/oLPfiKxP+RGqGAFg/QSSgiZBylrQSLz3T4XjrHRoNC4RfYUGUbWHPvuD7PVo
+	 NQFz/mBhg8Hib9IBi6csYeoysv7boy0KnY6BADSQcaoUM4o+3nV9UeUf+QCXVwu0q7A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=163.com;
-	spf=pass smtp.mailfrom=163.com;
-	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=SkHtkpHe;
-	arc=none smtp.remote-ip=220.197.31.3
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SeDnIsAh;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9DF2606A323;
-	Fri, 13 Nov 2026 03:18:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B9DF2606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBD4606A32E
+	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 04:31:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=SkHtkpHe
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version:
-	Content-Type; bh=nWc0P3UFTmQDnMEzGX9xP/Vkt43l2zO1TjQschvRNFw=;
-	b=SkHtkpHe9wM7wgDnQK6Qoe9I9l8fg5eO32VI8Z1bz2QqC/p1UyynDqK0mnEIhn
-	i85mUDWMKZBnnXr5UunAJ8OpoVbr3cIxsV5443gtc+PiMXz0gdEvkCCNParCD70U
-	QomXl5BziBGv/g6h/etTMqfTE/0Md0fnoxZg7kAF2awdw=
-From: Chaosheng Qu <quchaosheng000406@163.com>
-To: netdev-bot+sashiko@kernel.org
-Cc: Robin van der Gracht <robin@protonic.nl>, Oleksij Rempel <o.rempel@pengutronix.de>, Oliver Hartkopp <socketcan@hartkopp.net>, Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net v9 1/4] can: j1939: serialize cancel and rearm of the receive timer
-Date: Fri, 13 Nov 2026 11:17:24 +0800
-Message-ID: <179453984495.31919.9405526133383541519@163.com>
-In-Reply-To: <179453125694.488853.2205573161282115259@kernel.org>
-References: <20261111-j1939-edpo-v9-v9-1-e779ca334a81@163.com> <179453125694.488853.2205573161282115259@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=SeDnIsAh
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D958D1F000C4;
+	Fri, 13 Nov 2026 04:31:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794544266;
+	bh=uB1zoemPWKsLwfgPExjc+T+F3A0+s/oOWYcRuOobBoU=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=SeDnIsAhKFq029Yt/GVOFd6FKJ2o4zl3d0PSB9XGPNArv/SZYYj+tXDtnti1jc71M
+	 7tPQJ8h5wNYaKnHKUEonb+6H8D4isoqMT2ToAlyB14WSm/8bxE0gDuTq8TBMZOJuco
+	 c6NZhnYAMXtfs8p+EpmTUgQHuPNrfsrTvSCKlQdk+GmYbcALmdfFOD5d8tONRH45Wy
+	 cMX8h81klymVvdv292Cv8ldJUEMRukA5a/DlT0jFtqMU3PtClb0knT42C/AtfIry6j
+	 QGoqsGSowBtFWqFKGjaGXHaDqOhAHL1+T0rQhxj1cGpy2HA7vul0HXhh8wvJUjXh/u
+	 OA0yeTRUtEvAw==
+Subject:
+ Re: [PATCH v4 3/6] can: raw: use a private mutex instead of lock_sock()
+From: netdev-bot+sashiko@kernel.org
+To: socketcan@hartkopp.net
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ sashiko-bot@kernel.org, zihanx@nebusec.ai, kuba@kernel.org
+Date: Fri, 13 Nov 2026 04:31:05 +0000
+Message-ID: <179454426541.488853.15379643605511531742@kernel.org>
+In-Reply-To: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
+References: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
+X-sashiko-severity: Low
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -57,85 +62,150 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3P6ZYgfZq7eHFGw--.4133S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxWw47Cr13Kry8uF18Xr18Krg_yoWrJr1xpF
-	W3Kry7tr4DGr4F9w4xZF18XryS9r4fJr4fX3W7Kry3A398CF4jvFy5K3y0gFZrAr97u34a
-	9a1jg3sxWFs0ya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Uelk3UUUUU=
-X-CM-SenderInfo: xtxfxtprvkv0bjqqikiqw6il2tof0z/xtbC5BvORGr2gVs8wgAA3N
 
-Hi,
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Replying once for the series rather than per patch.
+Low priority / nit picks for your consideration:
 
-1/4
+- [Low] The comment this patch adds to struct raw_sock, 'struct mutex
+  conf_lock; /* protects bind, filters and sockopts */'…
 
-The High holds. hrtimer_try_to_cancel() returns -1 while the callback runs
-and leaves alone a timer that was requeued from inside it, so an arm that
-races the expiry still takes a second reference for a single queued timer.
-The list lock does not help, because the running callback sits on the other
-side of it.
+Pre-existing issues:
+- [High] This problem wasn't introduced by this patch, but the bug class
+  the series is fixing is still reachable through CAN J1939 at the end…
 
-The three Mediums hold as well. Deactivating on a WAITING_ABORT cancel does
-leave the abort rxtimer queued on a DONE session, and that expiry takes the
-generic else branch and queues a second RX_ABORT. j1939_tp_rxtimer() reads
-session->state before taking the lock, and with try_to_cancel() no longer
-waiting, a concurrent cancel can change state underneath it; the callback
-then calls __j1939_session_cancel() again, which puts a second abort frame on
-the bus and overwrites session->err. And the message is wrong in two places:
-before this patch j1939_session_cancel() called j1939_tp_set_rxtimeout(), it
-did not hand-roll get + hrtimer_start(), only j1939_tp_rxtimer() did; and it
-replaces the 1809c82aa073 workaround without saying so.
+--
 
-The pre-existing txtimer leak is real too: j1939_tp_schedule_txtimer() takes
-a reference per hrtimer_start() with no cancel in front, and the do_cts_eoma
-path in j1939_xtp_rx_dat_one() calls it that way, so duplicate DAT frames in
-one softirq batch leak the same reference.
+can: raw: use a private mutex instead of lock_sock()
 
-So 1/4 needs the reference pinned across the whole queued and running
-lifetime of the timer, not the queued part alone: a flag owned by
-active_session_list_lock, where the clear-to-set transition takes the
-reference and the callback drops it, and both armers and the callback test it
-under the lock. That also fixes the state check in j1939_tp_rxtimer() and
-lets the WAITING_ABORT deactivate go away. It is a rewrite, not another pass
-at this hunk, so it will not be a v10 tomorrow. Zihan Xi is working the same
-reference-lifetime problem and Oleksij has asked him to sync with Tetsuo; I
-will see where that lands before sending and say so in the cover letter.
+This commit replaces lock_sock() in CAN_RAW with a private mutex,
+conf_lock, in struct raw_sock. Generic SOL_SOCKET options copy from user
+space under sockopt_lock_sock(), and with this change they can no longer
+block raw_notify() while it runs under RTNL. The new mutex serializes
+bind, release, the filters and the CAN_RAW socket options.
 
-2/4
+> diff --git a/net/can/raw.c b/net/can/raw.c
+> index f14270b56f521..641661ef4399d 100644
+> --- a/net/can/raw.c
+> +++ b/net/can/raw.c
+> @@ -103,6 +103,7 @@ struct raw_sock {
+>  	struct can_filter dfilter; /* default/single filter */
+>  	struct can_filter *filter; /* pointer to filter(s) */
+>  	struct uniqframe __percpu *uniq;
+> +	struct mutex conf_lock; /* protects bind, filters and sockopts */
 
-The abort code rests on a false premise. J1939_ECU_LOCAL_SRC is set from the
-source address alone in j1939_can_recv(), so a second node using our address,
-or a raw frame injected on the interface, is delivered to the transmitter
-session. It sent no CTS, yet the session is aborted with ECTS_TOO_BIG and
-that reason goes out on the bus. Once j1939_xtp_rx_cts_one() bounds the
-packet number, pkt.tx_acked cannot exceed pkt.total - 1, so the next version
-uses BAD_EDPO_OFFSET for both roles and drops the split. The comment will
-name j1939_xtp_rx_cts_one() instead of "4/4", and the "bounds the
-receiver-side writer only" wording goes.
+[Severity: Low]
+This isn't a bug, but is this comment accurate for the sockopts?
 
-4/4
+raw_getsockopt() reads CAN_RAW_ERR_FILTER, CAN_RAW_LOOPBACK,
+CAN_RAW_RECV_OWN_MSGS, CAN_RAW_FD_FRAMES, CAN_RAW_XL_FRAMES and
+CAN_RAW_JOIN_FILTERS without taking conf_lock. The CAN_RAW_XL_VCID_OPTS
+case also copies the struct directly, without the lock:
 
-The changelog describes the wrong current behaviour. An oversized
-ETP.CM_CTS already ends in ECTS_TOO_BIG: j1939_xtp_rx_cts_one() stores pkt-1
-in pkt.tx_acked, j1939_session_tx_dpo() copies it into the DPO, and the local
-echo reaches the transmitter branch with session->transmission set. What
-changes is that the out-of-range DPO is no longer sent on the bus. The visible
-change is the TP case: there is no DPO, so pkt.tx >= pkt.total made
-j1939_session_tx_dat() return -ENOBUFS and the session ran until the 1250ms
-rxtimer aborted with TIMEOUT or the retry limit ended it with -ENETUNREACH.
-That leads the new changelog. The comment and the role split follow 2/4.
+net/can/raw.c:raw_getsockopt() {
+    ...
+	case CAN_RAW_XL_VCID_OPTS: {
+		...
+			if (copy_to_iter(&ro->raw_vcid_opts, len,
+					 &opt->iter_out) != len)
+				err = -EFAULT;
+    ...
+}
 
-3/4
+Meanwhile the writer updates the same struct while holding the mutex:
 
-Both nits accepted: WARN_ON_ONCE(!se_skb) and session->err = -EBADMSG instead
-of the silent drop, and the comment in j1939_xtp_rx_dpo_one() rewritten as
-part of the EDPO patch.
+net/can/raw.c:raw_setsockopt_locked() {
+    ...
+	case CAN_RAW_XL_VCID_OPTS:
+		memcpy(&ro->raw_vcid_opts, val, sizeof(ro->raw_vcid_opts));
+    ...
+}
 
-Thanks,
-Chaosheng
+So a concurrent getsockopt(CAN_RAW_XL_VCID_OPTS) can return a mix of old
+and new values. raw_sendmsg() also reads the binding and option fields
+without the lock.
 
-pw-bot: cr
+These readers had no lock under lock_sock() either, so runtime behaviour
+does not change. Could the comment say instead that the mutex serializes
+the writers and the bind/notifier state? Another option is to take a
+snapshot of the VCID options under the lock, as the CAN_RAW_FILTER case
+already does.
 
+>  };
+>  
+>  static LIST_HEAD(raw_notifier_list);
+
+[ ... ]
+
+> @@ -328,9 +329,9 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
+>  
+>  	switch (msg) {
+>  	case NETDEV_UNREGISTER:
+> -		lock_sock(sk);
+> +		mutex_lock(&ro->conf_lock);
+
+[Severity: High]
+This is a pre-existing issue and was not introduced by this patch, but
+the same RTNL stall still looks reachable through CAN J1939 after this
+series.
+
+Later patches in the series ("can: isotp: use a private mutex instead of
+lock_sock()" and "can: bcm: use a private mutex instead of lock_sock()")
+convert isotp_notify() and bcm_notify(). Nothing in the series touches
+net/can/j1939.
+
+On NETDEV_UNREGISTER, j1939_netdev_notify() calls
+j1939_sk_netdev_event_unregister() while RTNL is held, and that function
+still takes the socket lock:
+
+net/can/j1939/socket.c:j1939_sk_netdev_event_unregister() {
+    ...
+		sock_hold(sk);
+		read_unlock_bh(&priv->j1939_socks_lock);
+		...
+		lock_sock(sk);
+		if (jsk->state & J1939_SOCK_BOUND) {
+    ...
+}
+
+sk_setsockopt() in net/core/sock.c holds sockopt_lock_sock(sk) while it
+copies from user space. Examples are copy_bpf_fprog_from_user() for
+SO_ATTACH_FILTER, copy_from_sockptr() for SO_LINGER, and SO_TXTIME. This
+works on any PF_CAN socket, and neither can_create() nor the J1939 proto
+does a capability check.
+
+A possible sequence, with a vcan device created in the caller's own
+user and net namespace:
+
+socket(PF_CAN, SOCK_DGRAM, CAN_J1939); bind() to vcan0
+
+thread A: setsockopt(SOL_SOCKET, SO_ATTACH_FILTER), optval in a
+          stalling FUSE mapping
+  sk_setsockopt()
+    sockopt_lock_sock(sk)
+    copy_bpf_fprog_from_user()      <- stalls
+
+thread B: ip link del vcan0
+  unregister_netdevice()            (RTNL held)
+    j1939_netdev_notify(NETDEV_UNREGISTER)
+      j1939_sk_netdev_event_unregister()
+        lock_sock(sk)               <- blocks indefinitely
+
+Moving the device to another namespace hits the same lock_sock().
+
+The series sets out to close this RTNL stall for the CAN protocols.
+Should J1939 also be converted to a private lock, so that an unprivileged
+user can't hold RTNL indefinitely through this path?
+
+>  		if (ro->dev != dev) {
+> -			release_sock(sk);
+> +			mutex_unlock(&ro->conf_lock);
+>  			break;
+>  		}
+
+[ ... ]
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-can-bcmlock-memcg-v4-0-5428607a608f%40hartkopp.net
