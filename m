@@ -1,104 +1,61 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794554011;
-	b=Yy1afBF+KrIig7I5ZXLqo8fGI9H521I0b7IcWUPcVYxvEUgmQVpZ5DwGXM1mDUQR3ZmE
-	 po6w/mdg+QMTsyunYawNoHfIH79K44Ql5XcFg3nqExRufuDBWGRXaXPmQO5XBaUlAAI2z
-	 ng8OvGv8vvknGh5kL7kDqOGu394zVDYFxnz6nFCUP3eZRZPLMSfjG8d902Jzex5k9N60g
-	 DenflpSfRssM8iQKXjFnCtgKfpueficrYHeaiS9S74HNQScicP0zQM3m/HszH+gozjBrh
-	 ljYT0xnV1UvMl3YI/80mMD3uht4KDdy8Ig8N8XrXm1cmFupcw3Q4WHuuSwrH15WAoXA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794554011;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=ZUGr/irCljBtKt5MymL+Zhww0DeYa1tlokKKdxZvsG4=;
-	b=Mt3w51MHab6zy+tKXlmwyVmrKLZMtZ67Q91rxkVkaq+nOZwG7vnNpNlMEU8ez8JW8BWs
-	 gNaqpIFCpNxiuBLzkc582XgAxKf+UZgRES35by1dKgeHYyn5qlzNhs684uFk6DuEljNit
-	 BvgZAUp48C9DI80+7v+H55fJ5lagxuI3rHlf5Az4l6iQH9TWRhqWpRkw/Kn1k1lv6F3qf
-	 tHCAznFnj39zssqTzL3xRjWEo/5JmOQfs8/Gbs5j58TxnDUDfNwEx6Q3uti1G2599yXqR
-	 74VnPOwmIqn03JMp03ef0Aq8BkZ/69jf/z8BRGeFpqx09bSawcN+MqeVysrB4zaW4SQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=fJj0pE+Z;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=116.203.23.228
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794554273;
+	b=xWmHuAnRn60W1ag7SaRiZ3XsY7V8AOmSawVRQRwCYvhOCk17KDpEhI6YzT8EwpE8RuEx
+	 GDltmn05R/kJfh2ptJMlMZo44frr5TqB8pkSH/KEZgu0zbvVd5ttSONR8ydJsg/8lGtdF
+	 sgRPZmEgsBbT6I7lyJZmMDlavkGDu/+4zbkM93LhNjInf4HuJ2g2jhIylFDNgAe9WHBHf
+	 Rc0ytK5HZ5UtiyLWpACyuVdRfYQvIbmPIEzMzm4rI4BQp401iDXXwxu2n/fZfcJazJOiU
+	 LX33esgugyju/x5tJLdPdoFUqm8udqrRZ5GC4moutt4wSpoJSqeYnHpkSAE2j2nCdlQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794554273;
+	h=DMARC-Filter:Received:Received:Date:From:To:Cc:Subject:Message-ID:
+	 References:MIME-Version:Content-Type:Content-Disposition:In-Reply-To;
+	bh=+PvlK30IsPvyDmdVzBsctIGAzhTBquDxEsbqbTaHXwg=;
+	b=5HlGMp8Oe9uo2MQByHf/VCXLOKvYiAv1NFkG5c7HoqdNiPgg7EyBJXl1Zk+92f0lmzdS
+	 wgVs0g58lzM0lJlZUbujGq8uA4YtBVQhhGHxvnK1LcZycPK4HzYIyzdUAdRkCLSoC7/fr
+	 ZcYL+eFU6jx5lU71U3YnwBQPxsM9k0w6iBv9QZue9RrQRkTQh0IHtxfqZGzcBm8SF6wwI
+	 TJcquvOTSFw/H7WgQDXp4XFUfzQo3FPoML4qHk0n1YA159AJI7MA3TE9774P4YfEURXyd
+	 w65C0vJQARABi6a0fA5u6KtToR7TRNjzDzKueYtblPqBI2MAXXxdpDy1O+NQK1p4JQQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=none header.from=blackshift.org;
+	spf=pass smtp.mailfrom=blackshift.org;
+	arc=none smtp.remote-ip=116.203.23.228
+Received: from glittertind.blackshift.org (glittertind.blackshift.org [116.203.23.228])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46872606A8A3;
-	Fri, 13 Nov 2026 07:13:29 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 46872606A8A3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=fJj0pE+Z
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id EBF06202266;
-	Fri, 13 Nov 2026 08:13:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794554007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZUGr/irCljBtKt5MymL+Zhww0DeYa1tlokKKdxZvsG4=;
-	b=fJj0pE+Z8l+fnR4FeJzRC7SbXFYdH12P6kteEPPMEvlcAJ4O2zEAn9HjXy72AXrw3bDFZ9
-	CIoomXBqj5BF8sStCCHKWMGIfX+J5KpImTS5swN5tKr9M4e8Uv2gvYQa2lAIDmjB/pC/Fq
-	y5tWq+7Sh5+tGYFNIp4r5fA0jhtHZvUdQT+yhhzPC0lo5tBEAWeF0AFuus2h8yy2ii/koF
-	KK+ZABd0dINugv/6z4sx7kSx1Wt9drfPV7KWipSVkGOprPNR7OfRZAPGIjliQO5H02XgH3
-	eymHdNh5TmNu954KTDwDfvhyrhVil9fgj5hgZcn9guRt/rE68JBfZ2UgVoMYgw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794554007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZUGr/irCljBtKt5MymL+Zhww0DeYa1tlokKKdxZvsG4=;
-	b=R8XgiACkCawrGpjWLlhPLgboxwSSRG4jXLaLupvJ5njIuQhaejUcMUwc9gsNmiiZLfm9S3
-	4Gc39LXzndu3vGhSOqQZNe9AITbL6QdlWgXW/q0ZUEwkulbcjLiLAc0MDcSxrvpFyOZ7l8
-	cqlCjAMl/CnDWKiqhj8/sgDJNFVv7G64PFO8bUgCYG+SGMAJGcoSxBjXZC/C2j97UKmV5c
-	H+Or5C7311q8Eh1B/qRIWztGGxmQcIEqiafmCyBtUdpCwBjcU4Sr/yGZ7mvpGf+h0XgcOy
-	5LQNhMOp0jQqfS2vickJK7jhyxCcT8Qm9yjl/C5KLUwXGAYZ/ufC8C/CovjgFA==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794554007; a=rsa-sha256;
-	cv=none;
-	b=DeomQzn86wOnmlhVMtuz0jTdQMBUjk+Wqu98YK50XnEhkdV3K/fM0X2c+ZdJe/0VcnoGm8
-	yBZsLMiW2Tj78+2vZSJHGJd7juXYKR1Grw1k7CFjtZ4K51tBdij8SwpCFvE7GPtXAQosji
-	yQtdJSUJnlh6PmeKxUqMDbqG3WmmV6597gCtKiuVCW3K//+NTEEEw2TjZcTNzuKkmu+c9G
-	mpfy2X6S4yYPpismOhIRldTwn3RqxtjBGYtvPM8BK0kmpKDJUbGMCn4fJGQld7sf4DYepz
-	PE+7K/CF6DnSbzggz6z757z3GCBNpNFXnkFjQdcIeJOcuoJa9lms/tqzTg1JZg==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xRlTT-003xHo-2l;
-	Fri, 13 Nov 2026 08:13:27 +0100
-Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B1F606A32D;
+	Fri, 13 Nov 2026 07:17:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 69B1F606A32D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=blackshift.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackshift.org
+Received: from bjornoya.blackshift.org (unknown [IPv6:2003:102:af17:cb00:cf3e:e168:1a5d:8293])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange x25519 server-signature ECDSA (secp384r1) server-digest SHA384
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "bjornoya.blackshift.org", Issuer "YR2" (not verified))
+	by glittertind.blackshift.org (Postfix) with ESMTPS id 43FCB79E6C0;
+	Fri, 13 Nov 2026 07:17:48 +0000 (UTC)
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 914885EA576;
-	Fri, 13 Nov 2026 07:13:27 +0000 (UTC)
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev@vger.kernel.org
-Cc: davem@davemloft.net,
-	kuba@kernel.org,
-	linux-can@vger.kernel.org,
-	kernel@pengutronix.de,
-	Quchaosheng <quchaosheng000406@163.com>,
-	"Rob Herring (Arm)" <robh@kernel.org>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 1/7] dt-bindings: net: can: ifi,canfd-1.0: Convert to DT schema
-Date: Fri, 13 Nov 2026 08:08:49 +0100
-Message-ID: <20261113071325.4092169-2-mkl@pengutronix.de>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20261113071325.4092169-1-mkl@pengutronix.de>
-References: <20261113071325.4092169-1-mkl@pengutronix.de>
+	by smtp.blackshift.org (Postfix) with ESMTPSA id AA4D25EA5C4;
+	Fri, 13 Nov 2026 07:17:47 +0000 (UTC)
+Date: Fri, 13 Nov 2026 08:17:47 +0100
+From: Marc Kleine-Budde <mkl@blackshift.org>
+To: netdev-bot+sashiko@kernel.org
+Cc: o.rempel@pengutronix.de, robin@protonic.nl, socketcan@hartkopp.net, 
+	mkl@pengutronix.de, shuah@kernel.org, kernel@pengutronix.de, 
+	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net, 
+	quchaosheng000406@163.com, penguin-kernel@i-love.sakura.ne.jp, kuba@kernel.org
+Subject: Re: [PATCH can-next v2 2/9] selftests: can: add J1939 test helper
+ header and library
+Message-ID: <20261113-classy-evasive-mule-559cfd-mkl@blackshift.org>
+References: <20261104-j1939-selftests-v2-2-cf797c83317b@pengutronix.de>
+ <179394331774.488853.9726002978646630085@kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -108,107 +65,50 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ri4qm6tshdojjwng"
+Content-Disposition: inline
+In-Reply-To: <179394331774.488853.9726002978646630085@kernel.org>
 
-From: Quchaosheng <quchaosheng000406@163.com>
 
-Convert the IFI CAN-FD controller binding from free-form text to DT
-schema.
+--ri4qm6tshdojjwng
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH can-next v2 2/9] selftests: can: add J1939 test helper
+ header and library
+MIME-Version: 1.0
 
-Reference can-controller.yaml. interrupts is required: the driver obtains
-it with platform_get_irq().
+On 06.11.2026 05:35:17, netdev-bot+sashiko@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found more severe
+> issue(s) in other patches of this series. This mail is only an FYI, in ca=
+se
+> you want to address the nit picks below when you respin.
+>
+> Low priority / nit picks for your consideration:
+>
+> - [Low] selftests: can: silent skip in j1939_test_main() when protocol is
+>   missing
 
-The example now uses the GIC and irq header defines instead of raw numbers.
-The values are unchanged: GIC_SPI is 0, IRQ_TYPE_NONE is 0 and 1 is
-IRQ_TYPE_EDGE_RISING. Rename the example node from canfd to can so that it
-matches the $nodename pattern in can-controller.yaml.
+pr-bot: cr
 
-Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
-Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
-Link: https://patch.msgid.link/20260922102258.138753-2-quchaosheng000406@163.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
----
- .../bindings/net/can/ifi,canfd.yaml           | 46 +++++++++++++++++++
- .../devicetree/bindings/net/can/ifi_canfd.txt | 15 ------
- 2 files changed, 46 insertions(+), 15 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/ifi_canfd.txt
+Marc
 
-diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
-new file mode 100644
-index 000000000000..c8c3105c727b
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
-@@ -0,0 +1,46 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/ifi,canfd.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: IFI CAN-FD Controller
-+
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
-+
-+description:
-+  The I/F/I CAN-FD soft IP block connected to the platform bus. It is most
-+  often synthesised into an FPGA or CPLD.
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+properties:
-+  compatible:
-+    const: ifi,canfd-1.0
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+
-+    can@ff220000 {
-+        compatible = "ifi,canfd-1.0";
-+        reg = <0xff220000 0x1000>;
-+        interrupts = <GIC_SPI 43 IRQ_TYPE_NONE>;
-+    };
-+...
-diff --git a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt b/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
-deleted file mode 100644
-index 20ea5c70ab82..000000000000
---- a/Documentation/devicetree/bindings/net/can/ifi_canfd.txt
-+++ /dev/null
-@@ -1,15 +0,0 @@
--IFI CANFD controller
----------------------
--
--Required properties:
--  - compatible: Should be "ifi,canfd-1.0"
--  - reg: Should contain CAN controller registers location and length
--  - interrupts: Should contain IRQ line for the CAN controller
--
--Example:
--
--	canfd0: canfd@ff220000 {
--		compatible = "ifi,canfd-1.0";
--		reg = <0xff220000 0x00001000>;
--		interrupts = <0 43 0>;
--	};
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
-base-commit: 573af801552999954caa8347e4490b04cf4763f0
--- 
-2.53.0
+--ri4qm6tshdojjwng
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCava5mAAKCRDMOmT6rpmt
+0hvaAP9vUxyGuySMNG4POpe13CNvZdJujh4Bjs5N1ffj9YFqXQD9FAbTZ6gTgFjt
+84gHs7uZzUPaloLGa8OhmYfgCbQlzQ8=
+=Jp/F
+-----END PGP SIGNATURE-----
+
+--ri4qm6tshdojjwng--
