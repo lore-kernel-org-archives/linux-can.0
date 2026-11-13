@@ -1,99 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794554761;
-	b=hKGAmORfxwqueq5LzjtIaCnDC2/Z6sfWytPk70JwLekWy6mdtRv1/UOXSEhmx4Wq4Bxd
-	 ztI6ik8F41eUjQqGXXc5LQCeVObbDgsZyUpCEvJ/6e9hwS/dV23xgPA/Yu1Ci7R3+e+EL
-	 Oy7kJTGbYLLfcx0sIcAeByQ4f0gd3u1GHtlxymITlMJVWb9Mt9geoBlMeiWtlNrVNRNvl
-	 aWbK/kJ48SIAqZVDzAodjdg7VNqnzaS0uAV9I7IogqVs0JVdRUCtPFrIcRoWQUx7rlZUD
-	 pfQx0p7W0KShVLXtPkprZJseMSjYgAHHp76qUYj/bizoa0iBxhtJw/NcTVRiHN9a6sg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794554761;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:X-Sent-From:X-URL:X-Accept-Language:
-	 X-Accept-Content-Type;
-	bh=VLwpA9pUMgllWzK8YBIzeEAJDxdkrBAErUBA+2fd920=;
-	b=CddHQQPMXzp62vfdGMJ7pNFRWV2PQiA0lA0Gg3b5vuUSoBAVOrAdPDejQSK0csOz8CBF
-	 vMI7Fzvq4mIPXoXrH3t4oJgzmYN50xPGPK1rApdNWqDiEVjkJvd+f7XuoUo7nJTihfE7Z
-	 d9VzsSwOAQ488n5ldB/YZtsJ316eDzn3SeuCdNg32CQuxo25i8nwpCs1gv4+sVHyh/rRk
-	 3TwMD7XoOD7Lcv0RETUsXG4lqFV6CKmRHJbPW5vpQXKO6zEqSBshcVEyKbWJfM5beHjuD
-	 ejZhexDoMdaVL/cWFirLLR+PQExShBGmBjmUac6d9gBzNFLHEJOmFRXLM2zV8D9Lmmg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=AbnVnUwj;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794555486;
+	b=mJpJuCT/fuM6kKUDG5iy1DnIYEKY6UuBjuzIZ8n3RVnEB3DNtr3Tp/yAEODPH5ZeQPrd
+	 7h55tiuMHgFdjKlv5u/Uecd1hBVZVS/ULyGb6vWD7LIqMhRBDZeu2IKQu9dDoYPTowUqb
+	 MDkwi6Rl5Angj5HRHmarM6Zmp5pnvB6AWbhL2O/NWfKOzasq4i62MPeiX+ojpjXv9jUvF
+	 r/FVz15d72JAJmQCw1pnWUHayJlz8DsSVBsaTfTo5QB0Kxiq+SanLUSbpr9hGZ0iDkApd
+	 s+62UU/4j1eYvgjpK+w3dYNhQUSoCBRbz0v0VSRy+0R6KmD3TbdCF+gApAwt3lVSjEQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794555486;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=LQacofxb1i6ZWqRqLoxTy5QdWwl/l1rPUoDbmxjAF9Q=;
+	b=a9ZOurdov5n2Rhr6beSNi73kIpK0p7reHY0dwTFVa6+HFNjv9fvE2+hJUyzAYYJ37/xZ
+	 9ywzqK8uqFZtkE7LwSzyHnanhXGujrCNGgsbSD0SVlavs9hOMp81sZbsbBSLWeIMcLE8i
+	 NmqBbm88IBs0NN/oCmqFEnkng2S/AETaWkrdOFl/UbZLJ8Ju+x8w22ZhsFynN79yY23st
+	 3vYUAry39G+dS8XoPs0uwV8zOpMEySy82pKojXbvr1d7o5e4/q9Yoytx9A+CrqgAdH9Te
+	 OtvCIxrMXm04NUUN8rLeZO1U6z/o875Iet34JUFmqek0cCRGlUv31nMWhYlvdGgk3Ew==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N2y7oH7e;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49149606A31C;
-	Fri, 13 Nov 2026 07:25:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 49149606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB3D606A31C
+	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 07:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=AbnVnUwj
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E172E2020ED;
-	Fri, 13 Nov 2026 08:25:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794554757;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VLwpA9pUMgllWzK8YBIzeEAJDxdkrBAErUBA+2fd920=;
-	b=AbnVnUwjuWzNVrnUsmmvmcnt88Fd3OP/2jvL5KN/5DD8dJHsXuCTow9YzHFEwS5XwLQbwf
-	AtFBuSHHKCnQIMtfi5lRbC419QOBkv1xbG50MyC7fPOp020dzsUcwvgyjKl9jniT9pDLHq
-	PIhHUdSTobZp1foUwiCTI5hXtgSEuR+LVs56ycjUFR7wHGrAjVD+35Dz63U1Kn+PQRU31v
-	3nE2iA/+PRB/EUWia+3MEQBds860Bu0efJUEGpoEWOQgePCxbDbGJFMuVbvr3BvE/3OaMg
-	ES+U0jZquqq31NifcPunqSLwigLtASRb1DNL4xYvLUuoY52+KDWzX6qraZw5ig==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794554757;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VLwpA9pUMgllWzK8YBIzeEAJDxdkrBAErUBA+2fd920=;
-	b=glzQKUsUxCIaP9B42+Rr9uftQz8d7WqkrZ/i8Bq4CtEccQrnLNDwEVTSJ3vyYYaPc2OxAE
-	MyhRPYapu1D/4ZoVI0QClmV0Z1hPwD2MgpPHkeFaKkN/VvC/WET+FdWPTGZuRQ0YavLFxK
-	FVcWXt1K+vGP2N25Soa49+xjS6ooFY9VIEU9G3qRk7uicbWfL+O8RIjfU8K0Ddpq0Rf76b
-	8L4clxuknAqryjNVX7LKBmO6Izi5SJpVvm1DBPRY6wW/M5ykRnZkSXDA0Wp/jwAD65n6qc
-	bQsqvruu+innG/Sd74u2DBn0zYV5vFiWXib/kwMzeSBZkt5gqdDUrqpBid099g==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794554757; a=rsa-sha256;
-	cv=none;
-	b=AYY8Q2sMjhXxU8IZ4HIXyWnKVgK7+x9cvh5xGB/ZM/CmOyGIsdPhMGndrzp+Jg3Z36S1t2
-	lz9r3CKojWNhjCikYwn8iNoTEFjB5OLr9OSC5CYhJyW4dC9mKIvEUpcJquu1rZCWwogJSJ
-	qJOvXXB5kRb8r9pczh82gaXZCUOKxSp1BwOlV2vvphfJ61JgXimsFwHQRCTjUXhT1LpUvq
-	UfTDsRAN2DXOYp31e8KWj+kf5PEapLngTJoso3/VLaysj/vEQD7Uomsv6WGAXw67z2ZaVm
-	QYK5XhXLYM8F/LMk1rZVzSOYe5JLzAEGLPOzR9aA3mwlIJhqKj4YVCaH0m9tuA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
-Received: from pty.whiteo.stw.pengutronix.de ([2a0a:edc0:2:b01:1d::c5])
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xRlfZ-003xJ5-2j;
-	Fri, 13 Nov 2026 08:25:57 +0100
-Received: from ore by pty.whiteo.stw.pengutronix.de with local (Exim 4.98.2)
-	(envelope-from <ore@pengutronix.de>)
-	id 1xRlfZ-0000000FpS4-36Tn;
-	Fri, 13 Nov 2026 08:25:57 +0100
-Date: Fri, 13 Nov 2026 08:25:57 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Chaosheng Qu <quchaosheng000406@163.com>
-Cc: netdev-bot+sashiko@kernel.org, Robin van der Gracht <robin@protonic.nl>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de,
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH net v7 3/4] can: j1939: drop the message when the
- reassembled skb is gone
-Message-ID: <ava7hRQ7lxXckkPL@pengutronix.de>
-References: <179410166346.60581.12668181404057434786@163.com>
- <179452018024.488853.2874336452045412196@kernel.org>
- <179453947398.30993.12910253526180673543@163.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=N2y7oH7e
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C6D0D1F000C4;
+	Fri, 13 Nov 2026 07:38:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794555486;
+	bh=LQacofxb1i6ZWqRqLoxTy5QdWwl/l1rPUoDbmxjAF9Q=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=N2y7oH7eG+LcJxWuR8jCW3+LrqCxnWXtvzi6Ugwq6qC5pEDtwsqnw00uFQU5cl6ck
+	 mDWxA/A3ZHkv5Xc/COYjOM8oZJV0yzKsjfNGqeCqN07L0BrALXyk5MOULoG2tbPaLG
+	 XWBKwFUnCycbntxZrWmdNfZqejgHg1FbChciO0Smhyt1fvOmj31ZBnioCjyauXRE6x
+	 Ghxa6VfSzq27UWapIKkHhhIhn84f/h93sr/kjJ3/JYA9kRagc+IhaSVLWT6lynQ9LM
+	 2BQ9qp3E4ktexvqcuTUCaeDSjMk8xENfu2m23fP3NdyRD9KKm9XOow+HqWZN9xAjtD
+	 UhOHku219ohog==
+Message-ID: <sashiko-outbox-212355@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net-next 1/7] dt-bindings: net: can: ifi,canfd-1.0:
+ Convert to DT schema
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261113071325.4092169-2-mkl@pengutronix.de>
+References: <20261113071325.4092169-1-mkl@pengutronix.de>
+ <20261113071325.4092169-2-mkl@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 13 Nov 2026 07:38:05 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -102,35 +61,69 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <179453947398.30993.12910253526180673543@163.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
 
-On Fri, Nov 13, 2026 at 11:11:13AM +0800, Chaosheng Qu wrote:
-> Hi,
-> 
-> Both accepted.
-> 
-> Dropping the message silently is the weak part. session->err stays 0, so
-> j1939_session_destroy() queues nothing, and the only trace is a netdev_dbg()
-> that is off by default. For an RTS/CTS receive session this runs when the
-> receiver's own EOMA comes back, after the originator has already been told
-> the message was delivered, so the two sides end up disagreeing with nothing
-> in the log. The next version uses WARN_ON_ONCE(!se_skb) and sets
-> session->err = -EBADMSG before dropping.
+Thank you for your contribution! Sashiko AI review found 2 potential
+issues to consider:
+- [High] dt-bindings: net: can: single-word name in Author and
+  Signed-off-by
+- [Low] dt-bindings: net: can: commit message claims unused
+  IRQ_TYPE_EDGE_RISING
+--
 
-Hm... will a stack trace provide an additional value in this case? If
-not, please use netdev_err_once()
+commit 20b578f1ac5dfb3641ca1495585b6a04db880f29
+Author: Quchaosheng <quchaosheng000406@163.com>
 
- 
+> dt-bindings: net: can: ifi,canfd-1.0: Convert to DT schema
+>
+> Convert the IFI CAN-FD controller binding from free-form text to DT
+> schema.
+>
+> Reference can-controller.yaml. interrupts is required: the driver obtains
+> it with platform_get_irq().
+>
+> The example now uses the GIC and irq header defines instead of raw number=
+s.
+> The values are unchanged: GIC_SPI is 0, IRQ_TYPE_NONE is 0 and 1 is
+> IRQ_TYPE_EDGE_RISING. Rename the example node from canfd to can so that it
+> matches the $nodename pattern in can-controller.yaml.
+>
+> Signed-off-by: Quchaosheng <quchaosheng000406@163.com>
+> Reviewed-by: Rob Herring (Arm) <robh@kernel.org>
+> Link: https://patch.msgid.link/20260922102258.138753-2-quchaosheng000406@=
+163.com
+> Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+[Severity: High]
+Under Documentation/process/submitting-patches.rst, the Author header and
+Signed-off-by trailer must use a known real full name with given and family
+names separated by a space (for example, Qu Chaosheng or Chaosheng Qu)
+rather than a single concatenated word.
+
+> diff --git a/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml b/D=
+ocumentation/devicetree/bindings/net/can/ifi,canfd.yaml
+> new file mode 100644
+> index 0000000000000..c8c3105c727b5
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/can/ifi,canfd.yaml
+
+[ ... ]
+
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    can@ff220000 {
+> +        compatible =3D "ifi,canfd-1.0";
+> +        reg =3D <0xff220000 0x1000>;
+> +        interrupts =3D <GIC_SPI 43 IRQ_TYPE_NONE>;
+> +    };
+
+[Severity: Low]
+The commit message states that "1 is IRQ_TYPE_EDGE_RISING", but neither 1
+nor IRQ_TYPE_EDGE_RISING appears in the old <0 43 0> example or in this new
+example.
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261113071325.4092=
+169-1-mkl@pengutronix.de?part=3D1
