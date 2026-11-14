@@ -1,91 +1,94 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.160
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794665173;
-	b=lYL7PADJzz0W1lakoN19PMpJ4W1/0dmNjHgPTE3wSopKuHl60O4A83q2IRCySqlcNVos
-	 AzUZcajT+vbMKMp8CajFWyjbPag8Wv/fjq6+95tyHsypOivlWQ4i3GemXLmO1rTkW3g+T
-	 IaR1O9hjhheCFz2Gxg5nxYi81SOGwf3zoq+bLMlxk2So9JGJ4RRJ2H9GWQLxscI9kC5uP
-	 caZjK3I5K5jbEXzfBxgAQqRO90EsvwgpzlJCnXdNEjcXFJDhxzQQx5oCcsI/+594aN8WF
-	 A7hobmp9fuNFGOtgB8DEzpgBHru9Az04mizKDtwPcgXLt1EZztlJ6QjhNA2AfCivd+g==
+	t=1794669477;
+	b=ENiLzZtdNYebQt7iGW4lq88g79raP91pQmk+QSqmw3ibMu9ioAXkne17yf6dzMV5nbov
+	 NaRQMHoh8Xfg7xSnJyXCE6jspFqLdbdQXZBRxov+343zGcs3Ke8YmiOCn9dNDT4I96TCN
+	 UQxOf2nnVMsHbm5olFZQmzEbFtcziiVmyMP5QSLO1fJ0dgwrIuGgXFrjxfCvHLHin/jGP
+	 vXmjejOOZ5tki/41T7vNbhAUsYvpKxu4/ji6tYXUPERVKQTJHBJ6bFcyJJdvnoj5Y27wq
+	 9nQjmQyat2/BeXsDQzHkcgMsCkDgYB3QGT9NAgkVM0pVQ9ncm8xxE0Otxbr8Bp+KjPw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794665173;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=5ReYr7OoTp9pdPXQ0UtFjFzT1mH8r1Xkp4Yb3h64Evc=;
-	b=Q016ijje2qCFpEzsZ2G3ZRt8kWMTk/LMuJbikyudjOGaU4O8ZNPOWzQOfWPJF+/fjw9f
-	 CAjPlnebuZEpad+rCPeQwdvcXB8KgFdStmB5lokI4C0g/DbhpXn9sS9h1OvBkm3qJi/oF
-	 lbZott1PIbygU0Xjsr82XGDb294bZmE76BC5sjSrwQZfhrA0c3UzLL/hE/AgCR2w90xen
-	 BpjLy/pljfTGnZfKmN+ZrVN1MLi8f50kHoLiyTk+eGGh6qKQRnO+RfQfkHADo5298lOFl
-	 QAOLaJS1ZP7/8WpyzduwqfvtnUU9BS7KLSEi0lgsZ9+fuej5GX1IK3hwFAk7wql6YwA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794669477;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:Date:
+	 Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key;
+	bh=Ti0JWkIkKPgSVJO+xE5HKdSUB2nbIRtCDPD5HTD8o0Y=;
+	b=1ozRiLNVZXFE+mTGq3+RWViLqHqzPygOySflZDCQM8JuCRZTxSx762B7AQAESQH+9bjg
+	 JZmaaI8kcI7FTbicwon98zqUCTs4+TJJWSETxfwUk8feJQp0ReG7vmRz1Upp94BVDqg8p
+	 YPhlDvfV6vvbsYQDbmDKqNPPdBW1xJPg1GRx6IzDaVXuXKUROc2hxKDnhy4LHBHKaynBj
+	 JzE2CH2XcUrn21Nv8cmnMWiWgzjxeOMOh0mfA1qF09IBLLrT117z/EO8ninF/isvqGWqM
+	 uFURNemwmOAYG92/o0qF7Ju7ZnAs3mk5+zr0pXTQEvI24RbDF8qIvRo4SJuOvI8G1tg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=YMrtGEOV;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mwAlbqSL;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.160
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.160])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=dYK9kqeI;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9BE606A32D
-	for <linux-can@vger.kernel.org>; Sat, 14 Nov 2026 14:06:11 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1A9BE606A32D
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9043D606A332;
+	Sat, 14 Nov 2026 15:17:56 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9043D606A332
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=YMrtGEOV;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mwAlbqSL
-ARC-Seal: i=1; a=rsa-sha256; t=1794665164; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=WfOKxwtotLZUC6Xx8Jx5xyl6CgX5+smO2KVBUrpewbUqqIcDZULcqp+TvZHXzcCKq8
-    dEtgcnGmlLSF4AuxwIKINttmw5f6+Upt2eL0IsFDO2dF09ENijeEFfCQmxyqhPtCkDGz
-    UlsK88q3MLNa1O0x6miU5cJMiCw3nUVfIVUB9bmUA2T98Zt8TkwSMswGx4En2SvQ5FAg
-    B8/NbsZcRO/+4MXapCgJcNbFi0inZGms0XEI4k3dkIIE47NvQRT903u6OzvCnzjUUagC
-    roFyr50b0cupKXqL3+8IYYSNyR2jS2/FoWveh3Tox2XEzJlhRz8/zPNrWyqpMZGeomX6
-    DZvQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794665164;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=5ReYr7OoTp9pdPXQ0UtFjFzT1mH8r1Xkp4Yb3h64Evc=;
-    b=hklNMW+YBZsh5JnDhk0+xNgOiiQ2+LGvbpHl4c0HpfJcR/rjphP55N9CgUlZXDFYcE
-    qICojoBP6n2Op+2h2GQ7a87M7dtp1NDQbBW+nCG9ZDp4eqAh4+jEJrtk7coG5JaR4f+t
-    Y5gRo5FlND90FDKqF0X0Z/MkR5SI3hFgX5S351qUo6L+YOUddg0nfbxZcnoRzFu/teKB
-    H9i6OBu8tA0x5xxTyioC8SqhfGnftqXdcugjicjIhXhR2rDhr0FEccrR/+ssg0xfRWin
-    j3Rjsy5soIR9xJzFqtTEpsAPYLj86/qTR4ItjlZ3hzX9s2BUYV/Zm7Yu6QMFcx8CdZ25
-    7lhA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794665164;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=5ReYr7OoTp9pdPXQ0UtFjFzT1mH8r1Xkp4Yb3h64Evc=;
-    b=YMrtGEOVO7s8GaBwEtjrowxnw+ZSmQPZZirED77vJOiHRy58mYMGpRw0DGc+YRqH4d
-    gIIg/nCygHqki1r1QPKYKC0oFJkzckvnoZjFWrPnuZGY2mcrtiZgEfhdgW4VmYhRW93y
-    Bnq99fiZ2/wK4YDoxKi9C1Vm3Rc2Ybq9drIJ6fGVXGZ+WhHNu8ZirpjPI8gughcKP2vs
-    hR7BwbZqP3Sf9mYYVsDMU/q5Y1FmQpa2T5MhPk5/ZsTubv899pVX4ZL11b3NNmRftyfD
-    GDUF6ca3vUoEqsXdBPf5e3E7ON+0a9ox04hs4ZeC+yM9ZJ6Pkrh3Pr5S3fm0XLgkStiU
-    CH+g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794665164;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=5ReYr7OoTp9pdPXQ0UtFjFzT1mH8r1Xkp4Yb3h64Evc=;
-    b=mwAlbqSLHEdG+Un8kFKX/+jpdxqjPLdpOJeRv2mdNAHo0PXvwDYqVZlEQxyOwmWuou
-    v/7+yStEEoJJ0uGAqCAg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AEE63Mna
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sat, 14 Nov 2026 15:06:03 +0100 (CET)
-Message-ID: <4858e8ad-d369-42bb-bc6b-71c5eb6a4168@hartkopp.net>
-Date: Sat, 14 Nov 2026 15:05:58 +0100
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=dYK9kqeI
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 562372022EA;
+	Sat, 14 Nov 2026 16:17:54 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794669474;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ti0JWkIkKPgSVJO+xE5HKdSUB2nbIRtCDPD5HTD8o0Y=;
+	b=dYK9kqeIKuxuDeTeTWTGkHdnQE8k5tA+5aNBHYaxdiwmzeC2lupUhmgHVi0EJOklZAxwAf
+	9sIFQJFlPvDi/akUIbOF8dwLFWtI3ZovUYbk22+Hissa8T0OXQPbExlIShDvN8bjBZFHqG
+	YVwPGObtHdVw1is+cirzKw4BbdsiLd7hLtGpM9SIV7PbH1ExY1ieu5VyN8EI7xCdGZlG/j
+	U4mgGdu2weYedjl8YE4tWjNWMrbjFZO7O55Lb4LmcNhvpu0dxZR+PFa6+W8+N89afUnLEg
+	/hwEdar0HxXP4+MT0A8jynAu141Djcctbdfq/eO7JWzjFxBKv8L7kPOuuwS5FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794669474;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ti0JWkIkKPgSVJO+xE5HKdSUB2nbIRtCDPD5HTD8o0Y=;
+	b=WoMZ7ZIOwr0HoJ/JeTjlYKhlX3lG/xPhOCSsIv69dYxrfl50w5/T+YWGPQDOtmFEutwutz
+	PNnSZbloFioX4vsRb6/R72agnN/i5pOr06DSD82dffBEUzA0kfxQUE/9+W0OWSLgdBzx7f
+	EWtFXNCjf2dh7rI+GggZRQEn35FMyE+NSjbvIQn+4AdgyTadAcMhFMIlzerHh20v/hix4i
+	AmvJSy9Fpwyw6y3328LXnrleD5MVGZSJDrvj6HyblyaAAGGCkpoeFW3UAosHD7/dB4uBO2
+	rGX0W4KVUU8hMMoYGHd+YRihCBu0xSDPsd3WHEmpUvDGaUt27RAGD3O8+qraXw==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794669474; a=rsa-sha256;
+	cv=none;
+	b=G8JKzuEnsovfI/1n9N0jLYRJYpIBjl+4UjkX24o9Yl2Z3ohATtV9aQb3OYZyBApl2MHl3e
+	CowP+TdN0H0DMsqXGkteGzwa8++ypw/wPeWi1q6eyKzvjKkAVXh6gDLwrw24SZZphQCWpU
+	xqv34NnMzrM44MUchcUH8hdK/+sHBtXTud0FN19aSfbXn3L0Wh82thy55MtnY9AsivZPtB
+	6pvi6eAeGhxPpUR4c0YXtzEmJxUCpUtVMPX8MsjJH+Zmf19JQjb/TxnTVfwKSDdqERYc4a
+	SmKNRpIvKnCX1pzWLXVoeIL1nedfR/ZKdcdECf5ZC/YCYnLdVRNWokNoC4C3Hw==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xSFVq-0049oD-0l;
+	Sat, 14 Nov 2026 16:17:54 +0100
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id EBC165EBB30;
+	Sat, 14 Nov 2026 15:17:53 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Date: Sat, 14 Nov 2026 16:17:41 +0100
+Subject: [PATCH can-next v7 2/6] can: gs_usb: gs_usb_probe(): init netdev
+ completely before register_candev()
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,125 +98,161 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 0/5] can: avoid RTNL stalls in CAN_RAW, CAN_ISOTP and
- CAN_BCM
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20261113-can-bcmlock-memcg-v5-0-634c0e04bc72@hartkopp.net>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261113-can-bcmlock-memcg-v5-0-634c0e04bc72@hartkopp.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20261114-gs_usb-fixes-v7-2-58b6341b1c08@pengutronix.de>
+References: <20261114-gs_usb-fixes-v7-0-58b6341b1c08@pengutronix.de>
+In-Reply-To: <20261114-gs_usb-fixes-v7-0-58b6341b1c08@pengutronix.de>
+To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>, 
+ Eric Evenchick <eric@evenchick.com>, 
+ Maximilian Schneider <max@schneidersoft.net>, 
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.17-dev-d7211
+X-Developer-Signature: v=1; a=openpgp-sha256; l=4199; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=HP0EDW+WYKMQf1wWMtYGpxOpElxHWNwuHeeJfWjuVy8=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsj6UT37k1LSOrfCuXvb1p0TvZKrU7TU/H2d3Oyznzr0a
+ iTu3grm7ihlYRDjYpAVU2RZ+uOEokCgQ2nvy4RJMHNYmUCGMHBxCsBE7nxg+O/IYrbUZ9/mBWe/
+ ruv8XPAyR74jvrZsq/WNU42b7qx5aMrE8D/47I+rRxU3hupNaqmKeGWtoH1b+dzLHQ+83kYf/rn
+ PcDMDAA==
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-Hi Marc,
+In gs_usb_probe(), gs_make_candev() is called to allocate and set up the
+CAN channel, as well as to call register_candev(). However, gs_usb_probe()
+defers the assignment of dev->parent and parent->hf_size_rx until after
+gs_make_candev() returns. This opens a race window for the user space to
+bring up the CAN interface, while it's not completely setup.
 
-my stable patches are reviewed now and only have the missing J1939 bla 
-bla and remark for a later patch in the same series. So nothing to see 
-here ;-)
+To close the race window, initialize all CAN interfaces in a first loop and
+then register them in a second loop: Don't call register_candev() from
+gs_make_candev() but explicitly from gs_usb_probe(). Adjust
+gs_destroy_candev() likewise, move unregister_candev() to
+gs_usb_disconnect() and the error paths in gs_usb_probe(), to keep it
+inverse to symmetric to gs_make_candev().
 
-https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261113-can-bcmlock-memcg-v5-0-634c0e04bc72%40hartkopp.net
+Closes: https://sashiko.dev/#/bug/linux-be54de7d-0b75-408c-b3ee-dd90c9756857
+Closes: https://sashiko.dev/#/bug/linux-71076d59-0843-4749-a5ab-fdd98a08582f
+Fixes: d08e973a77d1 ("can: gs_usb: Added support for the GS_USB CAN devices")
+Cc: stable@vger.kernel.org
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+ drivers/net/can/usb/gs_usb.c | 64 +++++++++++++++++++++++++++-----------------
+ 1 file changed, 40 insertions(+), 24 deletions(-)
 
-I'll start the other improvements for raw/isotp_getsockopt() and memcg 
-for can-next once these patches are in mainline/net.
+diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+index cac4ce323a1d..6997cc8a6b2d 100644
+--- a/drivers/net/can/usb/gs_usb.c
++++ b/drivers/net/can/usb/gs_usb.c
+@@ -1493,18 +1493,8 @@ static struct gs_can *gs_make_candev(unsigned int channel,
+ 
+ 	SET_NETDEV_DEV(netdev, &intf->dev);
+ 
+-	rc = register_candev(dev->netdev);
+-	if (rc) {
+-		dev_err(&intf->dev,
+-			"Couldn't register candev for channel %d (%pe)\n",
+-			channel, ERR_PTR(rc));
+-		goto out_can_rx_offload_del;
+-	}
+-
+ 	return dev;
+ 
+-out_can_rx_offload_del:
+-	can_rx_offload_del(&dev->offload);
+ out_free_candev:
+ 	free_candev(dev->netdev);
+ 	return ERR_PTR(rc);
+@@ -1512,7 +1502,6 @@ static struct gs_can *gs_make_candev(unsigned int channel,
+ 
+ static void gs_destroy_candev(struct gs_can *dev)
+ {
+-	unregister_candev(dev->netdev);
+ 	can_rx_offload_del(&dev->offload);
+ 	free_candev(dev->netdev);
+ }
+@@ -1590,21 +1579,16 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 
+ 	for (i = 0; i < icount; i++) {
+ 		unsigned int hf_size_rx = 0;
++		struct gs_can *dev;
+ 
+-		parent->canch[i] = gs_make_candev(i, intf, &dconf);
+-		if (IS_ERR_OR_NULL(parent->canch[i])) {
++		dev = gs_make_candev(i, intf, &dconf);
++		if (IS_ERR_OR_NULL(dev)) {
+ 			/* save error code to return later */
+-			rc = PTR_ERR(parent->canch[i]);
++			rc = PTR_ERR(dev);
+ 
+-			/* on failure destroy previously created candevs */
+-			icount = i;
+-			for (i = 0; i < icount; i++)
+-				gs_destroy_candev(parent->canch[i]);
+-
+-			usb_kill_anchored_urbs(&parent->rx_submitted);
+-			kfree(parent);
+-			return rc;
++			goto out_gs_destroy_candev;
+ 		}
++		parent->canch[i] = dev;
+ 		parent->canch[i]->parent = parent;
+ 
+ 		/* set RX packet size based on FD and if hardware
+@@ -1624,7 +1608,37 @@ static int gs_usb_probe(struct usb_interface *intf,
+ 		parent->hf_size_rx = max(parent->hf_size_rx, hf_size_rx);
+ 	}
+ 
++	for (i = 0; i < icount; i++) {
++		struct gs_can *dev = parent->canch[i];
++
++		rc = register_candev(dev->netdev);
++		if (rc) {
++			const unsigned int cur = i;
++
++			dev_err(&intf->dev,
++				"Couldn't register candev for channel %d (%pe)\n",
++				i, ERR_PTR(rc));
++
++			for (i = 0; i < cur; i++)
++				unregister_candev(parent->canch[i]->netdev);
++
++			goto out_gs_destroy_candev;
++		}
++	}
++
+ 	return 0;
++
++out_gs_destroy_candev:
++	for (i = 0; i < parent->channel_cnt; i++) {
++		if (!parent->canch[i])
++			continue;
++
++		gs_destroy_candev(parent->canch[i]);
++	}
++
++	kfree(parent);
++
++	return rc;
+ }
+ 
+ static void gs_usb_disconnect(struct usb_interface *intf)
+@@ -1640,8 +1654,10 @@ static void gs_usb_disconnect(struct usb_interface *intf)
+ 	}
+ 
+ 	for (i = 0; i < parent->channel_cnt; i++)
+-		if (parent->canch[i])
+-			gs_destroy_candev(parent->canch[i]);
++		unregister_candev(parent->canch[i]->netdev);
++
++	for (i = 0; i < parent->channel_cnt; i++)
++		gs_destroy_candev(parent->canch[i]);
+ 
+ 	kfree(parent);
+ }
 
-Best regards,
-Oliver
-
-On 13.11.26 11:33, Oliver Hartkopp wrote:
-> This series addresses issues that allow unprivileged users to block
-> RTNL for the whole system through CAN sockets.
-> 
-> Patch 1 copies the CAN frames in bcm_sendmsg() outside of lock_sock(),
-> so that a stalled copy from user space can not block bcm_notify(),
-> which takes lock_sock() under RTNL.
-> 
-> Patch 2 keeps the procfs entry of a CAN_BCM socket until bcm_release(),
-> as remove_proc_entry() in bcm_notify() waits for stalled procfs readers
-> while holding RTNL.
-> 
-> Patches 3 to 5 replace lock_sock() with a private mutex in CAN_RAW,
-> CAN_ISOTP and CAN_BCM. The netdev notifiers of these protocols take the
-> socket lock under RTNL, while the generic SOL_SOCKET options in
-> sk_setsockopt() and sk_getsockopt() access user space under the same
-> lock, e.g. for SO_ATTACH_FILTER. As the generic socket options do not
-> take the new mutex, they can not block the notifiers anymore. The
-> patches for CAN_RAW and CAN_ISOTP depend on commit 43c973a0887d ("can:
-> raw, isotp: copy socket options outside of lock_sock()"), the patch for
-> CAN_BCM depends on patches 1 and 2.
-> 
-> All patches are fixes and marked for stable. The following changes are
-> not part of this series anymore and will be sent for can-next:
-> 
-> - "can: enable memcg accounting for user triggered allocations", which
->    has no Fixes: tag and has not been marked for stable
-> - follow-up patches for raw_getsockopt() and isotp_getsockopt(), which
->    read the socket options under the new mutex and copy them to user
->    space afterwards. The socket options have been read without a lock
->    before, so this is no fix and goes beyond the lock replacement.
-> 
-> The series has been tested on a kernel with PROVE_LOCKING and KASAN:
-> A stalled SO_ATTACH_FILTER or SO_LINGER on a bound CAN_RAW, CAN_ISOTP or
-> CAN_BCM socket blocks RTNL without patches 3 to 5 and does not block it
-> with them. Generic and CAN specific socket options have been run
-> concurrently on shared sockets while sending and while the CAN device
-> was set down, deleted and moved between network namespaces.
-> 
-> CAN_J1939 still takes lock_sock() under RTNL in its netdev notifier and
-> has the same issue with the generic socket options. This is not
-> addressed by this series and will be handled separately once the
-> currently discussed j1939 patches have been merged.
-> 
-> ---
-> Changes in v5:
-> - removed patch 6 "can: enable memcg accounting for user triggered
->    allocations" from this series, it will be sent for can-next
-> - patches 3 and 4: the comment for conf_lock names setsockopt, as most
->    options are read without the mutex in getsockopt() like before. The
->    commit messages point to the follow-up patches (Sashiko review)
-> - Link to v4: https://patch.msgid.link/20261111-can-bcmlock-memcg-v4-0-5428607a608f@hartkopp.net
-> 
-> Changes in v4:
-> - new patches 3 to 5: replace lock_sock() with a private mutex in
->    CAN_RAW, CAN_ISOTP and CAN_BCM, so that the generic SOL_SOCKET options
->    can not block the netdev notifiers under RTNL anymore
-> - patch 6 (was patch 3): charge the isotp RX buffer to the memory
->    cgroup of the socket with set_active_memcg() (Sashiko review)
-> - Link to v3: https://patch.msgid.link/20261109-can-bcmlock-memcg-v3-0-2d798ca30578@hartkopp.net
-> 
-> Changes in v3:
-> - patch 2: read bo->bound and bo->ifindex with READ_ONCE() for NETDEV_DOWN
->    and shortened the bcm_notify() comment (Sashiko review)
-> - Link to v2: https://patch.msgid.link/20261108-can-bcmlock-memcg-v2-0-19fafdfc9d12@hartkopp.net
-> 
-> Changes in v2:
-> - patch 1: fixed the description of the stack buffer and described the
->    remaining generic SOL_SOCKET paths (Sashiko review)
-> - patch 2: read and write bo->ifindex with READ_ONCE()/WRITE_ONCE() for
->    the lockless access in bcm_proc_show() (Sashiko review)
-> - patch 3: keep the GFP_USER | __GFP_NOWARN flags of memdup_sockptr()
->    for the filters and describe the local j1939 ECUs (Sashiko review)
-> - Link to v1: https://patch.msgid.link/20261107-can-bcmlock-memcg-v1-0-482d9f5be1fd@hartkopp.net
-> 
-> ---
-> Oliver Hartkopp (5):
->        can: bcm: copy the CAN frames outside of lock_sock()
->        can: bcm: do not remove the procfs entry in bcm_notify()
->        can: raw: use a private mutex instead of lock_sock()
->        can: isotp: use a private mutex instead of lock_sock()
->        can: bcm: use a private mutex instead of lock_sock()
-> 
->   net/can/bcm.c   | 114 ++++++++++++++++++++++++++++++++++++++++----------------
->   net/can/isotp.c |  28 ++++++++------
->   net/can/raw.c   |  41 ++++++++++----------
->   3 files changed, 119 insertions(+), 64 deletions(-)
-> ---
-> base-commit: 30c71476d842b094651bd7712f6c8ee8716147d0
-> change-id: 20261107-can-bcmlock-memcg-2d8ae7361838
-> 
-> Best regards,
-> --
-> Oliver Hartkopp <socketcan@hartkopp.net>
-> 
+-- 
+2.53.0
 
