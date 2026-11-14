@@ -1,99 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794661171;
-	b=ZijoyN36xxvUsENPoel0qz2YAeWavoSU318ikz0I5DhOAkufDCwRVDx9ON00eJtot8Mh
-	 7KeuYnDDBl9TKpGyzdN/hiH0o4OHNMsoLdbhIagRNoZCBRlBKQK5ded9pYSwnVBSVK2bA
-	 ExlCuVfqDZJ4/uD6rM7dvqEnWht6iA4YteQ6wuV1tHio7M1KK/38rvDChWW4jN0LNhqr/
-	 SftU4404IVU9fM8VQIk/hyQF/wbu/AUusN1LpA4x8EkNKhp4KhEfB1pIVGB/Eyq7bbXY4
-	 kTr+fWY+zZrjfkOknqR8jcbaxKmmUNxZTaMdGxNfDfMUoBYICZ+EtPjRlqA36ypZwKg==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794661171;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=YYeN3iFUmw8rED1fREi+In3DUJOYp+wNZQ/1aiIeVU8=;
-	b=eYImH4C4tVdUSnpgtoveKVux7O+xakLylxAwVG5z/MH451LHa1xhRWgHiBrF0hJg37gJ
-	 +b1CO4KJMyeOmLnbUIg7y/8bsJGtuMxG5+R3X0YYl1DJCjX0NbbyWt/iIOQnCTVt+qYNt
-	 AAIUzbWhYFahc2lH89g8QzmZtwxo5EFios0gfU55eHc+XtzBJV+eZ33fmyBNYENDmpEzj
-	 nwwrm5wt6bh7dE97qjg7siEWqJcNrB7TtgvNl9wDjDi8QAn2TidOR08xjzBvDx5CVZfEG
-	 RV6/E9F8dmn9g1D8Rmq7uBoKPHbbgj2MqsvLexTJCYlyDCZAivw93majqj0YqI+cA3A==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZwyQA4Dh;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794661400;
+	b=QMk69i9wvWhfdKo21+e/uGhc/YmDXRfzUe/5QUk/DTS7fOl8a5dB/TorQ1WW8OLCVf9b
+	 0BN1ABADu/aITTSQtDi6HPPC6tMTtyqZnmeL0NWxhup6lQ5YQJjafsFOxvvJY6y3nVIa9
+	 n3+kofp/bc0UmKo5KbDg7tm//U+D9OQ/Z0iomiG11vPUU6Gd2eS/OzLQojR1JUyj7OAbR
+	 vZf4tR8Vl3kiVMsPwDgTp5OhLwolnqaRh46G2pT5UC3xWG+IiGF+n4hFEl3W7ObTvBOGY
+	 6ZDRRLOIdvi1hc19ibc3ulDwOEBZzIpo/URF76dJnv6aaIspHCuzZaCUsJGmZig1DYA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794661400;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=v2OYNbFfkGZlDpW1DfpQlKS7xAtxiV/7es1V5MAlhTI=;
+	b=NJVOAZsjEIp1kDc8NNS7dRpPCwncKj7Ouos2vJqljyEARbjxiwK500zC7EwF6abIvF0T
+	 C7HjwEZViWWX1J0aLWtmzLexbwVrRaXs5RtieAz5eE+K0f8FUbfxM+vpemeRnWAN5uS4L
+	 qjkveloUrrnb23/dRnHt+5LnEYrtcQZcYWkA3F+Pt7m/gYZUkPWcL3KRkzxU9WjV3aXck
+	 ifRxsODrtM07hc5eveYVZpRRT2ef8e78oWwhP90bpT8zM3HZ4ggkY+aussEQrHvYd4wAA
+	 THafJxQAlZB1rf6vFwaBtoWzeZISsf772ELxAqAb+HR47g6Riiwf+OSPwsfrNUcGOEw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iW6thp87;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83790606A323;
-	Sat, 14 Nov 2026 12:59:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 83790606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC01606A32D
+	for <linux-can@vger.kernel.org>; Sat, 14 Nov 2026 13:03:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZwyQA4Dh
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id D5001201CE0;
-	Sat, 14 Nov 2026 13:59:28 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794661168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YYeN3iFUmw8rED1fREi+In3DUJOYp+wNZQ/1aiIeVU8=;
-	b=ZwyQA4Dh/n4SSKqKSrx+xld2+XyaapLMkrTIsvwcdOoGUNhrr2zmR8lajIRP9ykIgyhkWM
-	7B9348uF8HaLTULEhiIpBKbNr6Z59yeCuMA4NykXhsMDqtBgNpbmbBnqWFUEpr8ormiWx/
-	UvKmRmTwxq9WrtXTR+E8yfEHnwRRSC7zk/6V/1mI4BcJszX5uGmeyLzogs7CFMIK3uf7vl
-	0UKJpgx6szVEiDAej8LBJEpkW1k8iiIdq2xzUnelHJf6vwwCAMbyeQ6eFGBbd34xl1dveq
-	jzIqDlbsn7Kd0/Bh/nfZ1U86ciXQ/sJLnddXT6H8vVy0Ld5CiInzDGKMF3UjIw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794661168;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YYeN3iFUmw8rED1fREi+In3DUJOYp+wNZQ/1aiIeVU8=;
-	b=KpxpIWrDc5/Y2r6BfQ1GZVW+S8e8Zv3K4izWxKomT15r2mWOD1m6VR+2z0W0e/Ui6XJbgM
-	uXtTz+ZclquraUXkti5ckIHgKwuEfoqaXbIYpWpWWdG4C3t4OolDOwDkZxgGxUoOT/M6Wf
-	7ViBzxFB68OJjky0e9YY/fu/wCydMTSvZ3aKutSIoGQ55zWKaFyLKcqQ9To0svH0QJNQZV
-	TC6dgh3jToc7+g6QbGRpSf4hkfeawTGdsSGy6DbtDmXy1+yZvcUw6Sev4HUWuD0IIMQtNk
-	BZ7wW2oEPnHe9y+36mS8fkjq6AcYbJC/6HowaA+UHdfBjl3eMcRL/XKDuJFISw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794661168; a=rsa-sha256;
-	cv=none;
-	b=eud1LnddehD3r3GOdRmHsyXyGdXZr5PSbvDXE7Y66OveuEYa/qh+cTokF/Gv40mco9lgKU
-	umKNeTeHjzvbcwN5Gr95KMz99DY40F9RMBYirEqyQZrFClc+If0yyET3sdV6Oio92qOEqE
-	GMc/oGfoaG8z5KgsVcjK0QqXxOvAyXnLtToxzkqnmNQgfPw4fgoU1E1g/zO047kmKCPcpG
-	h1niUM5weRnhuseuWyk1GZL5C8CgmZ6nDBRj6M3Cl+0Mi/cNb9Z1fa6MwMyLWbjY7UtauD
-	JzHflGMRaOerv36NQ/83HAqrY4Ks7Bkqf34onhFitAGSWAiEqf+uyE1nVX7tXw==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xSDLs-0048pq-2U;
-	Sat, 14 Nov 2026 13:59:28 +0100
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 7F9E35EB9D4;
-	Sat, 14 Nov 2026 12:59:28 +0000 (UTC)
-Date: Sat, 14 Nov 2026 13:59:28 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Uwe =?utf-8?Q?Kleine-K=C3=B6nig_=28The_Capable_Hub=29?= <u.kleine-koenig@baylibre.com>
-Cc: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Subject: Re: [PATCH net] can: flexcan: Fix probing for m68k/coldfire
-Message-ID: <20261114-dramatic-ultra-newt-859254-mkl@pengutronix.de>
-References: <20260618140147.142489-2-u.kleine-koenig@baylibre.com>
- <akfoYuyHMAxIfalD@monoceros>
- <al4lxVud4_6NTZQG@monoceros>
- <avSmq-LRKgRWDfxH@monoceros>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=iW6thp87
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A15611F000C8;
+	Sat, 14 Nov 2026 13:03:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794661400;
+	bh=v2OYNbFfkGZlDpW1DfpQlKS7xAtxiV/7es1V5MAlhTI=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=iW6thp87JIsFoudGOUkLSZ7A5kdLKkv1a93eoSIoRv+LDqvql0g0P/UxuhQInqaaW
+	 n3aOshpyi9j/wmG0GhJG4b5lLjac9eNLI6ODMCNotdBPsNcjf++xjY7g3oECAbAIfF
+	 oWUBLjPi/Cggq/cHL2j5uLLSr5eAJ/qouI6/rpfsydu/n/eOrLUfEyZRlqMuUxNPlT
+	 7lHktDD+6glCozI0zEfv7flvxtvwnpNt4Qv8xSkYiINu5QQzQuknhC7Ffu7eo+FoE5
+	 fAoiKZDe+GwnREvyU8ZyCWSBkwx6gtfkf/Potex3Oc2WsA+kR4hX6XA87b0lhDfXPN
+	 jw5U2z7IpSosA==
+Message-ID: <sashiko-outbox-214519@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH can 2/4] can: flexcan: flexcan_probe(): fix probing for
+ m68k/coldfire and reject devices without match data
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Marc Kleine-Budde" <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>, wsa+renesas@sang-engineering.com
+In-Reply-To: <20261114-fix-device_get_match_data-v1-2-2d82025e9646@pengutronix.de>
+References: <20261114-fix-device_get_match_data-v1-0-2d82025e9646@pengutronix.de>
+ <20261114-fix-device_get_match_data-v1-2-2d82025e9646@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 14 Nov 2026 13:03:19 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -102,53 +61,76 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hbvxd7are3jhwubx"
-Content-Disposition: inline
-In-Reply-To: <avSmq-LRKgRWDfxH@monoceros>
 
+Thank you for your contribution! Sashiko AI review found no new issues
+in this patch, but noticed 1 related pre-existing issue it does not
+introduce:
+- [Medium] can: flexcan: PM runtime double put in flexcan_probe() [1]
+--
 
---hbvxd7are3jhwubx
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net] can: flexcan: Fix probing for m68k/coldfire
-MIME-Version: 1.0
+commit 358ff5ffd9961920463407d0074c445e652d7609
+Author: Marc Kleine-Budde <mkl@pengutronix.de>
 
-On 11.11.2026 18:33:46, Uwe Kleine-K=C3=B6nig (The Capable Hub) wrote:
-> > This still stands. Marc, do you have this patch still on your radar?
->
-> For a fix it takes quite some time to get applied. The patch now missed
-> 7.4-rc1 ...
->
-> Is someone reading this ping?
+can: flexcan: flexcan_probe(): fix probing for m68k/coldfire and reject dev=
+ices without match data
 
-Yes - I finally found time to look at the driver_override issue, too.
-This should fix both (m68k/coldfire probing and potential NULL pointer
-deref when using driver_override) problems:
+This commit restores falling back to platform_get_device_id() in
+flexcan_probe() for non-OF devices and returns -ENODEV when no match data
+is found.
 
-https://lore.kernel.org/all/20261114-fix-device_get_match_data-v1-2-2d82025=
-e9646@pengutronix.de/
+> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
+xcan/flexcan-core.c
+> index 86b40abe9e767..2bb9e4184eb57 100644
+> --- a/drivers/net/can/flexcan/flexcan-core.c
+> +++ b/drivers/net/can/flexcan/flexcan-core.c
+> @@ -2148,6 +2148,11 @@ static int flexcan_probe(struct platform_device *p=
+dev)
+>  		return PTR_ERR(regs);
+> =20
+>  	devtype_data =3D device_get_match_data(&pdev->dev);
+> +	if (!devtype_data && platform_get_device_id(pdev))
+> +		devtype_data =3D (struct flexcan_devtype_data *)
+> +			platform_get_device_id(pdev)->driver_data;
+> +	if (!devtype_data)
+> +		return -ENODEV;
+> =20
+>  	if ((devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) &&
+>  	    !((devtype_data->quirks &
 
-regards,
-Marc
+[Severity: Medium]
+This problem wasn't introduced by this patch, but does flexcan_probe() drop
+the PM runtime reference twice [1] when flexcan_setup_stop_mode()
+fails?
+
+flexcan_probe() acquires a reference with pm_runtime_get_noresume(), and
+register_flexcandev() drops it with pm_runtime_put() before returning 0.  If
+flexcan_setup_stop_mode() then fails, the error path falls through from
+failed_setup_stop_mode to failed_register and calls pm_runtime_put_noidle()
+a second time, underflowing the usage counter:
+
+drivers/net/can/flexcan/flexcan-core.c:flexcan_probe() {
+	...
+	err =3D register_flexcandev(dev);
+	if (err) {
+		dev_err(&pdev->dev, "registering netdev failed\n");
+		goto failed_register;
+	}
+
+	err =3D flexcan_setup_stop_mode(pdev);
+	if (err < 0) {
+		dev_err_probe(&pdev->dev, err, "setup stop mode failed\n");
+		goto failed_setup_stop_mode;
+	}
+	...
+ failed_setup_stop_mode:
+	unregister_flexcandev(dev);
+ failed_register:
+	pm_runtime_put_noidle(&pdev->dev);
+	pm_runtime_disable(&pdev->dev);
+}
+
+[1] https://sashiko.dev/#/bug/linux-34c83ee1-4b00-422c-b485-f3256591cdcf
 
 --=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---hbvxd7are3jhwubx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavhbLQAKCRDMOmT6rpmt
-0u4MAQDa1rctCd9OmFPoa6xZo4IKmoDZCxMAzDd85V5hms5BRgD/fQABAipnmHXf
-+vyTC8kgFwe485oSLiL4qTmk319o/AE=
-=tt10
------END PGP SIGNATURE-----
-
---hbvxd7are3jhwubx--
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261114-fix-device=
+_get_match_data-v1-0-2d82025e9646@pengutronix.de?part=3D2
