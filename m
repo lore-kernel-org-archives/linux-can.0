@@ -1,98 +1,68 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794592440;
-	b=ezWmeIkFn0TOXsMS8sU+eDEnAMpQlHAN1vZPvIRE1ATjULz0oUJBLjbBHSwaXvX45Wg2
-	 O1w2CR1S2RLfDNGZ1IBUp/XzhlULwvZSi7JP81LAiWz+VZrE/1LU2S9Wm88JanhEsDtVU
-	 1mff3T4PMFvI/hxc7CpjJKRB8vDfpI2YUf1CJHYLYFZIHJOLNQotuFSAxi5QWy8NUi7Kx
-	 mo91L0BFKoyW5zDKUNEbVsUA+4ofMSvgqbLWG6ghFP2AaUzzKz+XKOeRERu2RS1PfR2I3
-	 UwTiw4iXp4z6m8SfLzTH9cTIiM2DPS64nCa3oeg8BqzJUhBD3fA8VRSlAXp7ad9RO2g==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794592440;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
-	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=L0iNZbhv+LM/byRHU4HEqo/gMAl3qiRpr2MLn5hgSVY=;
-	b=tyl98bCFXHRLFC0UOu0hJ5LNu/fNTDikFGyfBKH11uoou6qdcGYY3NMfzS3WDZIqp9r6
-	 qzGeOqYz8/5JL2sgX/61BDO0y70+k16MHaDPrbXxbjwoFH9/agO1+eFC7kE/bPK9BiIYi
-	 khztsiV1Sjl+xKc6tTL0RiY3O7o8ZQbrPSPJrFi9ZeiIFkrGi8JbmB8yPDf145ymf4GV8
-	 hf+uLg8OXsl482IlgqcVGv0qhGFeq1mRMgHpNR0AjnnBZoEpJhbLdDMZFjG2KmJx7NauS
-	 j9WXlGpRaw0KlmYceA6v/qmR7/YkC9qElSVvBA0psHl4Iz67SLTPSYJ08bkciwjQOWg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=A6kQY4ck;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=178.251.229.89
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794615538;
+	b=kvAIksK7CFiJuj96drSB0S+KDnayeEcxGEzEKUPftbeYLRlKMYp97kWegeDX0wAI2yV8
+	 Oq76k2+eSl4VXnkrhmOa/BGqmTqU9y4AX0qSsSfyLCB3WXktRbzgAmmQ3OmgD6Zh3ei+W
+	 4q+Kn5TNeqqZwwZCJ4Rjapg3LTkmLHEuuWtA94fiI8ub+3owMFbz2pWZ5q7D1ULFNbHk0
+	 8x74lMmKhW9CwNcJ0kiy4A5pJNKdoOerCwcKjhXxlXgmyBIFDziT9HO0FEnEvC28Zb3IE
+	 UaAqvjzhioD4km0wd2/Idg4qbu1YHC7M4sisnNEEssa8whAsAXei4BhoyyJqptOFJ6w==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794615538;
+	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-Last-TLS-Session-Version;
+	bh=DbYweoBpLl4boR3F2YSCZ+f/7ZwlJREZqL4oFlSlCEs=;
+	b=P4Z7Qsp4NQ9poFV5RqOPz9f6/dBBX9QQm/fI19MSIUkHB9377wrJQKPAaWMLr1QtoxSf
+	 dlbrN/X+7kziVVnCKnFDfDhS7uZKkoPyUP2U/qY2asEqbI6SqUEN6UJwYPxpBw3dgMAHy
+	 TFuh7IMzWKSysCClyahYlaYRVwr0fw+4oeBQDVUcf7ZkgFxAa1wnby0YD0QGO9aegZnBk
+	 sUTOUcGkvEh4aAn/06BGa1VZWuagUBYPp24eqAtzYeZW3sJU7rbwWnAdLd5YQ5KeP6qGM
+	 MwRaSeoPfqOMQBv4YbUjioEDLiQY0AukazcUZOC8ERpSJuZT7kvcDGScC/7et9jrPOQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=nabladev.com;
+	spf=pass smtp.mailfrom=nabladev.com;
+	dkim=pass header.d=nabladev.com header.i=@nabladev.com header.a=rsa-sha256 header.s=dkim header.b=hNhKbdAk;
+	arc=none smtp.remote-ip=178.251.229.89
+Received: from mx.nabladev.com (mx.nabladev.com [178.251.229.89])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FF9C606A883
-	for <linux-can@vger.kernel.org>; Fri, 13 Nov 2026 17:53:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6FF9C606A883
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F120606A33D;
+	Sat, 14 Nov 2026 00:18:57 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2F120606A33D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nabladev.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nabladev.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=A6kQY4ck
-Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
-	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 76C28205A0A;
-	Fri, 13 Nov 2026 18:53:53 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794592433;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L0iNZbhv+LM/byRHU4HEqo/gMAl3qiRpr2MLn5hgSVY=;
-	b=A6kQY4ckk0p53XFefEakkFLA0AZKuVPnvkrOUMbcUBytscJMUKoG2YD0+4Pye2w8ia+kUj
-	KAM5HpblxKInj75UgsNhCV1PnEeeWCIjBcwqldCcYE0hoYbuLNIOCs3HKyotDFbmg3rzmZ
-	JhSQMBzg6Hpi9RlunhZHYRifi6oouUuheE0yp0BACU4yeKQTDrqbamGFw61mZ+r+vHtrmU
-	p2JxxXCrngXEx9o7xwPg+NUpxfybSLqFpPd7hKPXF13Mbc3TNh2mUqjcgWJTfM1e8B6WbM
-	J4sUMJpfJ4Esb9iNCpj94eC8f6nIG92+zArCaxV7JNHbF31pgsCXm71LxbRybA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794592433;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=L0iNZbhv+LM/byRHU4HEqo/gMAl3qiRpr2MLn5hgSVY=;
-	b=Kg/Xu1647arEdDWQlAz3zaeBYNGyo4OqebvP3wF9iKOk3jXyIcKuvwOcOY8JE1ls8UTeMc
-	fcoUJblJw8QtHg83Bjl7GnT8vL1UKMcHrB4wgVcUl20RO87o4s8tM7AA+5W2FDh8Fl2Krn
-	npfgne2OVTW2PZmFGSRUqha/faYe4dQ8XeCGkD2aCF1BrPtfV3MEfj77d13rSQpbPdtwhr
-	fkPHAJpwOC4d/Thb0l623CZsKh0gXlTW84+Ux/Cexrqpz7t9kW3Mo2Q3KwpNx0fqEJnldH
-	UU3dyVZ9/JjKLq5cxlPasZN/lLraf/E/3KCBf3sGCpP2FEDuo2uIHL0/HBcgww==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794592433; a=rsa-sha256;
-	cv=none;
-	b=Gqb45nATH/30taiZ12QORjbEo8tTeSooXoFaUrC8xOysyb510EcvlkCZPAKyHzQqZ0hOe5
-	tqmfPXBMiIhC8+Ck57ud4Tvrijrj6d41HGiX+XX9iGcBWwmNIuev0o4mjDr1SgAbfPacLX
-	SjzVTp5qC8r6bEXe68Mi/sUN+zsgVgb7rZr60SkaP/qapJIbSZBGgDNo+q/dYXDqU7P7it
-	lQu2TxpHlSly0aUGWwt2jPhk0w9UEpKVM0rWyXMChUlHL9vBc+X+4mobsOzdeiGduxArDW
-	MBRC7LeEUj/lItCIvXujsaS7oFr0oKuqhs0qJQk8yHKiMBKKao9VG4TfmKpyrw==
-Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1xRvTF-0041gA-18;
-	Fri, 13 Nov 2026 18:53:53 +0100
-Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 187DE5EAF79;
-	Fri, 13 Nov 2026 17:53:53 +0000 (UTC)
-Date: Fri, 13 Nov 2026 18:53:52 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Cc: linux-can@vger.kernel.org, Oleksij Rempel <o.rempel@pengutronix.de>, 
-	Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de, Oliver Hartkopp <socketcan@hartkopp.net>
-Subject: Re: [PATCH v12 1/3] can: j1939: fix possibility of UAF in
- __j1939_ecu_release()
-Message-ID: <20261113-sparkling-secret-gecko-a2aecb-mkl@pengutronix.de>
-References: <8de287d7-b4e1-4062-b40e-b193f5ec68ca@I-love.SAKURA.ne.jp>
- <20261113-raspberry-wyvern-of-greatness-248341-mkl@pengutronix.de>
- <3dec8321-5a96-42c0-91d3-d1776e974d73@I-love.SAKURA.ne.jp>
+	dkim=pass (2048-bit key) header.d=nabladev.com header.i=@nabladev.com header.a=rsa-sha256 header.s=dkim header.b=hNhKbdAk
+Received: from [127.0.0.1] (localhost [127.0.0.1]) by localhost (Mailerdaemon) with ESMTPSA id B8B7B10E90C;
+	Sat, 14 Nov 2026 01:18:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nabladev.com;
+	s=dkim; t=1794615531; h=from:subject:date:message-id:to:cc:mime-version:
+	 content-transfer-encoding; bh=DbYweoBpLl4boR3F2YSCZ+f/7ZwlJREZqL4oFlSlCEs=;
+	b=hNhKbdAk4wxqYGAkBPE3sYS0dLg5IQotUjNWcE9Sh00ctDgyUDdEVIm5MQL0O8LM//vVs1
+	fQXtjb9XvloRCwXk5p9fBjmoCXUIm++xSCCRklvizur0jX2JDaB0y2i6ZHBrvGcid+S1gc
+	y3kAfKl4KOBrP/vDWpcU+Lap+22zxN+GaHzYv/RUhq55B59+GDTRccvL+6HQ2uOODZzgHP
+	IGdYFRaOMDtXxbjQKvUkR7Mb+98WXvizsglUV0MhZKgand8xbpver7ExkXYClZ57AjpQ9d
+	BhsVR8Jdy6WmPqU+1YNDtcr1SYPUlspsvarkQSHAm+9BMu7ySdgu9YzFFnX37g==
+From: Marek Vasut <marex@nabladev.com>
+To: linux-arm-kernel@lists.infradead.org
+Cc: Marek Vasut <marex@nabladev.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>,
+	Aswath Govindraju <a-govindraju@ti.com>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Fabio Estevam <festevam@gmail.com>,
+	Frank Li <Frank.Li@nxp.com>,
+	Krzysztof Kozlowski <krzk+dt@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Rob Herring <robh@kernel.org>,
+	Vinod Koul <vkoul@kernel.org>,
+	devicetree@vger.kernel.org,
+	imx@lists.linux.dev,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v7 1/2] dt-bindings: arm: fsl: Document Data Modul i.MX95 eDM SBC
+Date: Sat, 14 Nov 2026 01:18:25 +0100
+Message-ID: <20261114001844.30606-1-marex@nabladev.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -102,57 +72,52 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="cpw33oruvvjzrlkm"
-Content-Disposition: inline
-In-Reply-To: <3dec8321-5a96-42c0-91d3-d1776e974d73@I-love.SAKURA.ne.jp>
+Content-Transfer-Encoding: 8bit
+X-Last-TLS-Session-Version: TLSv1.3
 
+Document Data Modul i.MX95 eDM SBC board. This is an evaluation
+board for various custom display units. Currently supported are
+serial console, ethernet, eMMC, SD, SPI NOR, USB host and PCIe.
 
---cpw33oruvvjzrlkm
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v12 1/3] can: j1939: fix possibility of UAF in
- __j1939_ecu_release()
-MIME-Version: 1.0
+Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
+Signed-off-by: Marek Vasut <marex@nabladev.com>
+---
+Cc: Aswath Govindraju <a-govindraju@ti.com>
+Cc: Conor Dooley <conor+dt@kernel.org>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Frank Li <Frank.Li@nxp.com>
+Cc: Krzysztof Kozlowski <krzk+dt@kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>
+Cc: devicetree@vger.kernel.org
+Cc: imx@lists.linux.dev
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+---
+V2: No change
+V3: No change
+V4: No change
+V5: Add AB from Krzysztof
+V6: No change
+V7: No change
+---
+ Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-On 14.11.2026 02:44:31, Tetsuo Handa wrote:
-> By the way, I don't plan to use b4, for my spam mail filter drops
-> mails sent from me.
+diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+index 36e7a325af5ab..d40af695bc7de 100644
+--- a/Documentation/devicetree/bindings/arm/fsl.yaml
++++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+@@ -1579,6 +1579,7 @@ properties:
+       - description: i.MX95 based Boards
+         items:
+           - enum:
++              - dmo,imx95-data-modul-edm-sbc # i.MX95 eDM SBC
+               - fsl,imx95-15x15-ab2       # i.MX95 15x15 Audio Board V2
+               - fsl,imx95-15x15-evk       # i.MX95 15x15 EVK Board
+               - fsl,imx95-15x15-frdm      # i.MX95 15x15 FRDM Board
+-- 
+2.53.0
 
-You have several options to send mail via b4 [1]:
-
-a)
-You can deliver with authenticated SMTP.
-
-b)
-If you use the web-hook, the emails will be send from:
-
-| "Tetsuo Handa via B4 Relay <devnull+penguin-kernel.I-love.SAKURA.ne.jp@ke=
-rnel.org>"
-
-not by "you".
-
-regards,
-Marc
-
-[1] https://b4.docs.kernel.org/en/latest/contributor/send.html
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---cpw33oruvvjzrlkm
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavdOqQAKCRDMOmT6rpmt
-0rHJAP4y3YrtQJQaiQtvtbQry0tnShathqDp9QWrzN9a8C273wD9EoOek9CK+/E3
-XCWbfPWNAFBYz8/RbGXax67Xdj5Z9AE=
-=7pgV
------END PGP SIGNATURE-----
-
---cpw33oruvvjzrlkm--
