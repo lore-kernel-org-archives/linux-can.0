@@ -1,91 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794639385;
-	b=pZKbkTzKqVjB17Q84SS7lUdd/7oyF3SZ09r/GsZrF2FzKOMKUEnXFCGYI4pt2nea6ngo
-	 RFqemHCDM+fI3VHlLvl6WdeSA4NSB61ViwKE6LbJBM9rRNIIhMF/R0hdxUS2hK/f/j4j2
-	 WB3efU7tLtKOoU/zrueXp/36NFAzsqmQOwaKrnB6YBPsfg1AYHvmFD8QHJyz7CCRUmQOV
-	 N+k9fpkn/jMgFyJlfWJg2AptrOCNn8WnkhaaZXUQNYduArKza9x9843DPVG1yIIguZWLd
-	 7RfZ6nU8J9zSOeBLToo9cZQASrSpYALvTugAY+B/oXjJnfezXKbosnh00eMUJZPxkVA==
+	t=1794661041;
+	b=cFkz8Lckg3I/FqdyGebJnJ7Dt4TabCLVi72qvGuTopWUBph0yFSXeoDGij2cla/XmjkZ
+	 V1OrYpJuremWOP+vsqK9uGGlxeZax41z9GeGUuj5DdqA3SQtv2Io9jvScE7sVi7Hq+UdK
+	 +EQvqTo/IX8PFzjIYGl5i1Pt6ae2vga4YFHQlj/xXExwtfQxuUpK+eyYMC70isMbhzctP
+	 33byyRlWXctOXmYqwzr5dLtyqYShnc5q5JjOyBneRvC+E3/jv++cRl9ciMgILxjWJajpN
+	 mVQzhSAZ+LpCpLIKJF8qZHSyvA0Pi1kFlDax8RZpujT6LxattgMP8If3T3LMqebuuEA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794639385;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=7siuoXm9RPkfZ85X9bBvlhA198D7LHvWIyWvSmAGXRA=;
-	b=QKDqjQ4BVL/1bHBv+M5YYa0aj0lT3ZNuEgvjVTGufgT0CndkMGnee2mD7Eg2u9VOeqoQ
-	 FnzINHCA7grG8AAW4BjPAUapEfCo4E/QhDFZR/G22bBOCOH9aFRTEWx+W3PHYt0GLIG7n
-	 wQY9X0EbqC0ZGNoFGlpIr++sGZJrJ3cIsLcbXf3AvGHsEvoUFwb6a8F9yRXQOfyQbcE47
-	 Kh6BrVH3AO007boAvmORnQwBNIaxFx5ydq7JqKVmSDjTk4/REAhzdD+M4zj9W/ymhbANR
-	 t23OaEWtSidLWtRduwcf89rJf6auSHR2aHhtFArswGa5MorbmPrFjUJcIhLV10f6K0Q==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794661041;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:Subject:
+	 Date:Message-Id:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	 X-B4-Tracking:X-Change-ID:To:Cc:X-Mailer:X-Developer-Signature:
+	 X-Developer-Key;
+	bh=vURHFJpqxdNji4XYAfQR0vnMtn7b/TNM3hv/Ptn0Qv0=;
+	b=oSOJjBC/fCWR5a3c+mp8x7Wi2wGnxRK6DWgg7xsGkvrReiHx9cSgPJwVNyYAaAytdtrr
+	 79IJeMHQXhrDEzI6hP5OjJMSfx8SOGwVHQqXprPtw7dUHvYsfj3SD5t/zaUZqhrHw887l
+	 6t+LXSEn9M4SEEQu2sYoz6Myb14TxtWgmW5B6v7bTqqnL1zks8+R+y9lh9kC5rk1q8tpn
+	 qKHY+wcXMvZZ9lyFt+1Jiu2KkgItI5uOYVLCgiQduHNNVze80/Bb3ThaVAX18dF/9BK5j
+	 b/TAkTdJmAQyMW97vevElym3bA3+Bxshssm0QMaSEtNsQeQka3LcvWfJJ8O2mO9pnCQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=mXQfchyq;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=2Sj7TJwG;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=V6pRcREO;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A0E2606A323
-	for <linux-can@vger.kernel.org>; Sat, 14 Nov 2026 06:56:23 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9A0E2606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B818E606A331;
+	Sat, 14 Nov 2026 12:57:19 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B818E606A331
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=mXQfchyq;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=2Sj7TJwG
-ARC-Seal: i=1; a=rsa-sha256; t=1794639374; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=kngZNmF9cEWVCJZp+ntAxfY1/QVlpnY3c7ZeAatWgIwXaobHtHx1O274k4VKGXHec5
-    IcfTBfqQDjAihcDd+EY2Fz9onD4DbpV/eMKZ64v6u2bI3/9aFvSGFl5TsEvzY43xjsW8
-    kK7xkO14oz1Fnv29UwA03Nv5dcvPR4u4Fe+SEsmcgotmN5PBx7fVKA46YHYs6rwE/BsI
-    LZUm2r55RcqBz7fpZijxbJ4Hye04iX54Dqu9cIdfdYUihfwxwH27YMh4XFQrHQEqFwvI
-    EmgngJNsKkhFWMSYvwiajzPfGcHEVCxucavGernbDgXt/M97MTf4rjdhYqcOuj1KB0Jl
-    bi6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794639374;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7siuoXm9RPkfZ85X9bBvlhA198D7LHvWIyWvSmAGXRA=;
-    b=XRINv9C9CwZaUiqxve8ytYFFWZxxM/V3yVY5Ikh3A7JrKLHHMJ+zWhMvYsB00teb/V
-    iifmLWSHbytY3u2ViMcDHNAweYAUaO+GuGfcOik38AI190ckbOiZwHd207/3v5NO4psK
-    ZSbuC3j3JD44HzyfscGDIv+Tek56qEI54SRDRED395nstqwVJWFiTtcQAcYsI2qgK1jW
-    VnmgNaeWS3/KN3e3IeM5luz0tmjCEngqvzdhJxs2NYaqTHgUjhNH799G8LYo4isaPtYb
-    70bSS3YzwV2oqbbM93RmlnNwwwyMsvVypBGi4yiOppC1Qx3wroTgmDMVLXUZLeX8CIwn
-    6lHQ==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794639374;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7siuoXm9RPkfZ85X9bBvlhA198D7LHvWIyWvSmAGXRA=;
-    b=mXQfchyq9r7sdosZtNtpLgh1HfbE9FRwtzmEYLiq9stQBxr59MX2M5UT1V2fSAzhaA
-    x18HZCnjENKygLwc3H+zaIWNNKiV2OTcxUySQN6yZkH9qczNq3sffORKPDV9bwd9smoi
-    pzVHoz+ERyHdVo8ufRTmGMRJyJSStQ1AZHL+JrZCeI7r4U2bjwcxySDPDLthROuZ/PwW
-    5AhXZT/u/6FEnyQs6eyrq5o659LBQPnCVzx/i4rj/frq9CArOho+JYQ5yMQKu731HP0r
-    rj6KIMRfowmcCY+mK66hV+4Rh7xfcg678MQVk7gXOu2ZylcqLWFbOV1ZQRY7BPacCB2h
-    er8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794639373;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=7siuoXm9RPkfZ85X9bBvlhA198D7LHvWIyWvSmAGXRA=;
-    b=2Sj7TJwGDctQeE1hu0ZGZqJ5gtaVePUb9VyZkNnE8Y6v1+p7/DLqAKHAhfOSL6FxgH
-    YVAdaTBJ8RI/VzERr8CQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AE6uDLwc
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sat, 14 Nov 2026 07:56:13 +0100 (CET)
-Message-ID: <1b782cac-cb24-4f9d-9a28-aa5e5cbf94db@hartkopp.net>
-Date: Sat, 14 Nov 2026 07:56:07 +0100
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=V6pRcREO
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id CC911201CE0;
+	Sat, 14 Nov 2026 13:57:17 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794661037;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vURHFJpqxdNji4XYAfQR0vnMtn7b/TNM3hv/Ptn0Qv0=;
+	b=V6pRcREOcS8DazD7+nUWOzWbx4mrJWgVIZ0rFjXcdVtBBnHMBpU+f/9vA0Q20cMGj8gNPh
+	sId6A1UrHwcN7k1SlknbyERxEkMNi9fJDsMuPG7x6rnmDLv41H6wj72XZI+AyQjGzr5oVY
+	D8cAV9/p7T4iMn9Kfk2Q05tX4LaldCaLT3YGLMZHocvDqU1jjJTxN1K20Cjf92BtWo1ZgY
+	L43OXOUcU1ofPko5/28oB2cJ/df3sAqB/F1bAPILMJRSGokcz4Y4YTww1/VO3yltl/t/NN
+	/5OldG5gHQUJYdfvvgU3iA7ctet0DeiAU7BNII1TyGzO5uAdK5Cgu9a28zhLbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794661037;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=vURHFJpqxdNji4XYAfQR0vnMtn7b/TNM3hv/Ptn0Qv0=;
+	b=OvoRCl627zMY2S/Yz1ukLl+v8T4j+L0KPaiZHAFavpv5ae8u6OejyPgE/7ndVSY1VeDarc
+	Ls5okLdNAmnHtb3akC9DJ2hqgAQ+EL0pPb9Efxn9MjnNdVTsl2WRbyt7sWJoB6pORazwHR
+	K9zyY0x5m2B92/ViGdQLXrblBm+I3mm08mra5HHZY6X9CgVJ3s0KUmLz/M+uribwnmP6CY
+	84GZ5N0gm9NSgAuHZbxluBCD1ecuBACCWMXAAcijrskHblK26Kywevjck/1zH+SQU1tUEj
+	fNV0HGaO1R1OhjdKN+EsBUCXdK5KoA7/z65SMX4WjVhHbzA0A/kcf8/l/GZ2pA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794661037; a=rsa-sha256;
+	cv=none;
+	b=YjMGpMMkkie6EmcNdoiNMsbyHeDr5iwrD5Hv2m3OLj9ZJ31BVrWF3JtuPipQI2hzAUUSzV
+	rcw5Lewt3pD1mXXhZjK8F8azBKjJ6BOe6j1PgVgv2eF/OtyKkvPOY1RWfNJKGjK6GWLYYt
+	RiUrv/RL0IiK8AnNIeZKIMu6m980RkaEMezw+HEVcqJ/P9jXvTfNAYfR9Ze/WvGeDp38M7
+	DyMbmcSBr6rPccVzws66HoUW81IFeRUZBD93fYjqZ6FFak77FFHu9DArS7rVLRMmqne/PT
+	wXoEAo6+d5idmizcWzvoaoWEcIa5q11WF/LhA9pzw7WpRSr9UmcF9NVXcZyJWg==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xSDJl-0048pS-2I;
+	Sat, 14 Nov 2026 13:57:17 +0100
+Received: from hardanger.blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5B4785EB9A7;
+	Sat, 14 Nov 2026 12:56:23 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH can 0/4] can: fix probing and use of
+ device_get_match_data()
+Date: Sat, 14 Nov 2026 13:56:13 +0100
+Message-Id: <20261114-fix-device_get_match_data-v1-0-2d82025e9646@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,99 +97,63 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/6] can: raw: use a private mutex instead of
- lock_sock()
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev-bot+sashiko@kernel.org, linux-can@vger.kernel.org,
- o.rempel@pengutronix.de, sashiko-bot@kernel.org, zihanx@nebusec.ai,
- kuba@kernel.org
-References: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
- <179454426541.488853.15379643605511531742@kernel.org>
- <5b2f1dcd-292e-42fe-91f7-fe0255e830ab@hartkopp.net>
- <20261113-cooperative-capybara-of-persistence-52ed5c-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261113-cooperative-capybara-of-persistence-52ed5c-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/yWM2wrCQAwFf6Xk2QVTWm+/IrLEJLYRXGV3LULpv
+ zfq4xzmzAxFs2mBUzND1smKPZMDbhrgkdKgwcQZ2m27Q8Qu3OwTxEXWOGiND6o8RqFKAVH4yHL
+ olffg/1dWl3/tMzAluPzH8r7eleu3CsuyApeWB7qCAAAA
+X-Change-ID: 20261114-fix-device_get_match_data-11dc9cd85ec7
+To: Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Harini T <harini.t@amd.com>, Michal Simek <michal.simek@amd.com>, 
+ Geert Uytterhoeven <geert+renesas@glider.be>, 
+ Magnus Damm <magnus.damm@gmail.com>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-renesas-soc@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>, 
+ stable@vger.kernel.org, 
+ =?utf-8?q?Uwe_Kleine-K=C3=B6nig?= <u.kleine-koenig@baylibre.com>
+X-Mailer: b4 0.17-dev-d7211
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1497; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=oxSiDfJJ5FKPdCOEbPDPir49JWXUKfRJ5chn629wb4c=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYsj6EVVw55uF9HbLnxmNq65PP8Q05W/ut9tvdIPfJZ84M
+ GnvqsBW5Y5SFgYxLgZZMUWWpT9OKAoEOpT2vkyYBDOHlQlkCAMXpwBMxNCY4X9RRWYr89G6X78v
+ WoikulRLxLBkC1xP8jZK8f/NxBL/qI3hN8uK3ov6ufHJptk7f/yadPKAgur5v2e4tG9XvuB9O/n
+ YGUYA
+X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
+ fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
+With patch 5e6c3454b405 ("net: can: Use device_get_match_data()") several
+CAN drivers were converted to device_get_match_data(). The author assumed
+that error checking for matching and match data is not necessary.
 
+This misses the fact that that drivers on the platform bus can forcefully
+bound using driver_override and device_get_match_data() will return NULL.
 
-On 13.11.26 11:57, Marc Kleine-Budde wrote:
-> On 13.11.2026 11:51:55, Oliver Hartkopp wrote:
->>
->>
->> On 13.11.26 05:31, netdev-bot+sashiko@kernel.org wrote:
->>> Thank you for your contribution! Sashiko AI review found more severe
->>> issue(s) in other patches of this series. This mail is only an FYI, in case
->>> you want to address the nit picks below when you respin.
->>>
->>> Low priority / nit picks for your consideration:
->>>
->>> - [Low] The comment this patch adds to struct raw_sock, 'struct mutex
->>>     conf_lock; /* protects bind, filters and sockopts */'…
->>
->> Changed comment and commit message in v5:
->>
->> struct mutex conf_lock; /* protects bind, filters and setsockopt */
->>
->> https://lore.kernel.org/linux-can/20261113-can-bcmlock-memcg-v5-3-634c0e04bc72@hartkopp.net/
->>
->> Especially:
->>
->> Sashiko suggested to hold not only the filter copy in raw_getsockopt()
->> under the new conf_lock mutex but to also protect ro->raw_vcid_opts.
->> This change will be addressed in a follow-up patch as it goes beyond a
->> simple lock replacement intended for stable.
->>>
->>> Pre-existing issues:
->>> - [High] This problem wasn't introduced by this patch, but the bug class
->>>     the series is fixing is still reachable through CAN J1939 at the end…
->>
->> Read the f*cking cover letter before tagging things to be [High]!
->>
->> "CAN_J1939 still takes lock_sock() under RTNL in its netdev notifier and
->> has the same issue with the generic socket options. This is not
->> addressed by this series and will be handled separately once the
->> currently discussed j1939 patches have been merged."
-> 
-> I think the bot doesn't include the cover letter. To add additional
-> information to single patch, I add them with "git notes edit".
+By using device_get_match_data(), this change broke probing for
+m68k/coldfire, which still uses platform devices.
 
-Thanks for the helpful information about git notes!
+This series adds missing NULL pointer checks and fixes probing for the
+flexcan on m68k/coldfire.
 
-But it does not solve my rant.
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+---
+Marc Kleine-Budde (4):
+      can: c_can: c_can_plat_probe(): reject devices without match data
+      can: flexcan: flexcan_probe(): fix probing for m68k/coldfire and reject devices without match data
+      can: xilinx_can: xcan_probe(): reject devices without match data
+      can: rcar_canfd: rcar_canfd_probe(): reject devices without match data
 
-The AI bots are really eager to check every single word in the commit 
-message whether the patch below fits the announced functionality.
-
-When there is a series of 5 patches that are explicitly not related to 
-J1939 it can not be the solution to place this information into the 
-notes of every single patch.
-
-That's like humans spending manual effort to satisfy the AI bot.
-I've seen that in dystopian SciFi movies and it didn't end well :-D
+ drivers/net/can/c_can/c_can_platform.c | 2 ++
+ drivers/net/can/flexcan/flexcan-core.c | 5 +++++
+ drivers/net/can/rcar/rcar_canfd.c      | 2 ++
+ drivers/net/can/xilinx_can.c           | 2 ++
+ 4 files changed, 11 insertions(+)
+---
+base-commit: ead6fa9a0ab194f02a2f36d634b193e9c5f9a1c6
+base-tree: git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git main
+change-id: 20261114-fix-device_get_match_data-11dc9cd85ec7
 
 Best regards,
-Oliver
-
-> 
-> Add this to your ~/.gitconfig:
-> 
-> [notes "rewrite"]
-> 	amend = true
-> 	rebase = true
-> 
-> [notes]
-> 	rewriteRef = refs/notes/commits
-> 
-> [format]
-> 	notes = refs/notes/commits
-> 
-> It will keep the notes during git rebase and amend and include then
-> while sending patche (even with b4) after the first "---".
-> 
-> Marc
-> 
+--  
+Marc Kleine-Budde <mkl@pengutronix.de>
 
