@@ -1,91 +1,46 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794741840;
-	b=czLEgmIhSb/MBprUOYder36qM2It+b3COZBdWCWnGBAlzRGTjgCFikBYhs2PWqrnU/dH
-	 4/MlUsgsbxGxlOVgOgdwOYOel2JZNhuWt1/LgxH1x5+CL0uUxAH5qChCBS8OrNx5oiLNb
-	 QOaOZmmNEC8Lix3Z176H2uFy/e474nOcukljTjIcFyc+ASZU3bp+HPTODkZsHlsVjp1rm
-	 8uH5MCmi8eDscwofT5ACzRrUWbEXFvN1wSmZCqtxXF+x0AhgyNxM9Z3vih80zLiEEmSQl
-	 ue8kK9sBtzRPAVi74H4oPHX6d5tu+PtXJzXn4e2fHo2ccL+AdP8LYvohr0fADvtmgPQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794741840;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
-	b=TIXamcwWmwkmMEMe2YfRmbX8t2HynxqQOlYvpAZxUiUALJFmx+Fyf/BM8o5auUrJrHAj
-	 lWNBTwiaLOSGC8Zyqfa5cIw7SVetrv/aPZrAVn2+dOWMCNLMeN+LD3iFnGSzACY4jcsOZ
-	 9M4sFri4nksBDMXTV8J7l4UvwuLjFGYjbUVfi+sDKPJiH/G2CWrnrnA9EUv4H1Fq3uvxV
-	 SoP0qjh3Nt+zEbvKJhWkUL7sHAS/ng80/9MD+WIiTADsGTswN+QIr5Ac78lE6TbRHTnVC
-	 PhvyU9epZeBOJqWcRQQowUsbA07dr6v3xrB0w2w0qazhtVVR2YoJ6V2o7NZ8SHjXVTw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=TzPgBeNt;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=lk8njFt5;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794742542;
+	b=2cehpTDeRJWLjfIOqB1WP2kpF5cHrHPlFZv72Sdc8Ot8BL2Aoj9O3QbmiXhjVDBJe9ja
+	 4C8zUKleNJFIUCVwzCpq1aP0h7yA5ERCr6r8hSFp0smww7Y3oyiQ95nKdL2Iq/o1fx3B3
+	 jCM4iu+xUTGA2BvXD8cVWYhNoNIzMt9hTWxabDtno4dsRogNEIf8CV0cG0fLlmnXizW9b
+	 wh6xPw4ARPg+h+5EgFB8DPF+TbbDTIhP9qN88OlZ05mqo1R7uEMtpoAG/M99qWW12njmo
+	 P5bhsF1QTc3sVJjJ2PkMRWF3im32JlCf9sCIVG1FfTr/o94OofxkNQPGd5UVgn6S4JA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794742542;
+	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Content-Language:To:From:Subject:Content-Type:
+	 Content-Transfer-Encoding:X-Virus-Status:X-Anti-Virus-Server;
+	bh=PbiNr82TG0uNcSBQKBPE033vWJ/s05j4HCkXNnJ1M8E=;
+	b=KkVtTVaS6EFp0FuTuR5rFS1wfhmy+uhHe/y40OxrW5ns0Zqh+aLhP/wzwwCXotk5Fhpi
+	 M+3sd11XO5grvn4yaBXvtkGCvmOqXMejSTWZ4Ub85T568yg1Du5vLssmOg1Jg5xH6ucRK
+	 Ha74wVqug6Qd3KlYyJF/hY+bWfzRf8V5FLhXsMBobmQYpn5hOqQSF/oSxEDOcwR/DHuUv
+	 OTcbn1lZU3h9bdui5EPBYyY8EgH4S/P3dw79xzJtM0evKLHGtSRAy3fkmP+/O8bXeKFMG
+	 aXEhTMjrAXcPrGQAjDBo65zVxxDeW+u1BGHlA799c44Im6Z0uqTrYLJB679d3EfUpMA==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=I-love.SAKURA.ne.jp;
+	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
+	arc=none smtp.remote-ip=202.181.97.72
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6866606A31E;
-	Sun, 15 Nov 2026 11:23:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B6866606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=TzPgBeNt;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=lk8njFt5
-ARC-Seal: i=1; a=rsa-sha256; t=1794741819; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=C/xAv43UBRAVDoMVQ+76RNWkAIzwvp7461ZOhIzSaMXxJVmjOaliNZffMlx8f3KmtG
-    CVZIqfLb5v7pZgwNySaPdesZ86mruD6ds9MK0WwQW6zsdtwAEaWi972jSk653YFJ2np4
-    BUd53fgSgGlydFLVY+nTPj9EUG1ftut/pFqlBFlmzmM47NU5glNxk3nQYc4WIUQDQm2C
-    jP6HDApdewt8QTjLzxl+RoZvm7w97yzQzs/t2d1Qb2rS5YJm1vMA5A8TCVq1GRYymz41
-    npgmZARpZRjmFd/mGrTVbabQRUJeHjs8D8fyG9KoCzqej4OBSdG2vQ70+AG1AvvQOQKm
-    KuMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741819;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
-    b=lc7abcJ0qrJUIbV1bet4xK1BkJfT7w+2QMSL38XDTC3lHAUoSiXxZrU6jMu+5fdK2c
-    7n5a7se8nRDaQxCy2zUW5wioW+KXfb8SBRkjvTHiPgUwCF/vHmDrow49EyGfOM/7H1m4
-    MoBcgFo6e0A8bX5dL4I4DhfRiYLPLVL39wy7K8daXvHUwVXFCLiydBLQZ98qLns2EX2b
-    jEWGa1fBnEplGzk8so3BP0sdWJkU4srhv31ATkcC5OHILrcQgQHvL+LFrfSY0TDavVBg
-    eyxiuuKl+7RgRY1TEj0Y9vDI65+5ZRkMMIzULc+kAVXEUq2xsihTpGAJTjipEEqkQn8I
-    q2uw==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741819;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
-    b=TzPgBeNtmBGFENW4tNs0YUqSo/QvDcj2cqhdBNrYFOMtLlhl5bH3kNlRlVEjYeROne
-    bFVbT4w6h2PjBurxhRECjgKko/pSUDiPxSgYf181vwr1i74P54lzh0rjLrDpiryMwXO0
-    mDdkJ8DWrEqCTOTacEC+gEzEYpVy35flKagwUaBxZ3WSuoZWhpYr+u/MBkR2yQF+r1Ee
-    YZElY/OgcJnYs7CS+VfGlL5wOMBumW4UQ2OU/aq3mCfdCFTTMobpYrZF+1DH144whpbw
-    E3I3DDntDIQvd7/hTfSZr47tVLL/YzXFATFfbRSt4OJWPpVDe7ihNYaIogf+kRt0yd1k
-    OxAw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794741819;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
-    b=lk8njFt5LkOw7xz2kcZTiEcJRbtGDuH9e3E7IrO2eVKGWde2QKohysR9GpafqGPKqI
-    hobFVxGJgv7Hs/Vw9pAg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AFBNdOMv
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Sun, 15 Nov 2026 12:23:39 +0100 (CET)
-Message-ID: <bb2a488f-5734-40e6-b673-84612f6173f1@hartkopp.net>
-Date: Sun, 15 Nov 2026 12:23:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B18C606A31A
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:35:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5B18C606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6AFBZKGK026653;
+	Sun, 15 Nov 2026 20:35:20 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6AFBZJxq026648
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Sun, 15 Nov 2026 20:35:20 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <1d96e742-0479-4c36-ad0a-a0aaeda0a4fc@I-love.SAKURA.ne.jp>
+Date: Sun, 15 Nov 2026 20:35:20 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,43 +51,139 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 0/9] pull-request: can 2026-11-15
-To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
-Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
- kernel@pengutronix.de
-References: <20261115095746.709371-1-mkl@pengutronix.de>
- <20261115-musical-garnet-turtle-de4539-mkl@pengutronix.de>
 Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261115-musical-garnet-turtle-de4539-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Subject: [PATCH v14 0/6] can: j1939: make module more robust
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav311.rs.sakura.ne.jp
 
+This series is intended to address the following problems.
 
+## Problem 1: Possible UAF on module unload.
 
-On 15.11.26 11:18, Marc Kleine-Budde wrote:
-> On 15.11.2026 10:54:51, Marc Kleine-Budde wrote:
->> Hello netdev-team,
->>
->> this is a pull request of 9 patches for net/main.
->>
->> this first 3 patches are by Zhu Ling and fix problems with the CAN
->> netlink handling.
->>
->> A patch by my fixes a kernel memory information leak over USB in the
->> gs_usb driver.
->>
->> The last 5 patches are by Oliver Hartkopp and avoid RTNL stalls in
->> CAN_RAW, CAN_ISOTP and CAN_BCM protocols.
-> 
-> I described patches in topological order, which is intuitive when
-> looking at the git tree. However the linearized order of patches in this
-> email patch series is chronological :/ - Sorry, I've added the missing
-> "--topo-order" to my git send-email script.
-> 
-Funny :)
+Since module refcount is currently associated with lifecycle of j1939
+sockets, we need to make sure that all resources associated with socket
+("struct j1939_priv", "struct j1939_ecu", "struct j1939_session") are
+synchronously destructed before socket is destructed. Otherwise,
+j1939_module_exit() can complete and memory for this module is unmapped
+before j1939_ecu_timer_handler() or __j1939_ecu_release() or
+j1939_session_destroy() or __j1939_priv_release() completes (i.e.
+causing UAF).
 
-Anyway the current patch order is correct to be applied.
+Calling module_put(THIS_MODULE) from a module function which is not
+possible to wait for completion of that function from that module's exit
+function is a source of UAF. But calling module_put(THIS_MODULE) from a WQ
+function which is possible to wait for completion from that module's exit
+function using flush_workqueue() etc. is fine.
 
-Best regards,
-Oliver
+Fix problem 1 by deferring release steps of "struct j1939_priv" to WQ
+context where we can call module_put(THIS_MODULE) while allowing
+j1939_module_exit() to wait for completion using destroy_workqueue().
+
+By this change, we no longer need to make sure that all resources
+associated with socket ("struct j1939_priv", "struct j1939_ecu",
+"struct j1939_session") are synchronously destructed before socket is
+destructed, simplifying further fixes.
+
+## Problem 2: Possible UAF in __j1939_priv_release().
+
+If a user calls j1939_ecu_put(ecu) with priv->lock held but without knowing
+that this "struct j1939_ecu" is the last user of a "struct j1939_priv",
+__j1939_priv_release_work() via __j1939_priv_release() from
+j1939_priv_put() from __j1939_ecu_release() might call kfree(priv)
+before priv->lock is released (i.e. causing UAF).
+
+Fix problem 2 by adding a safeguard that delays kfree() in
+__j1939_priv_release_work() until there is no priv->lock holder.
+
+## Problem 3: Possible list corruption in __j1939_ecu_release().
+
+Since j1939_ac_recv() and j1939_ac_fixup() are calling j1939_ecu_put()
+without priv->lock held for write, list corruption might happen if the
+last user called j1939_ecu_put() without priv->lock held for write.
+
+Instead of requiring all j1939_ecu_put() callers to hold priv->lock for
+write, fix problem 3 by deferring release steps of "struct j1939_ecu"
+to WQ context where we can unconditionally hold priv->lock for write.
+
+By deferring to WQ context, readers might find ECUs which have already
+reached __j1939_ecu_release(). Therefore, allow using an ECU only when
+__j1939_ecu_release() is not yet called (indicated by ecu->kref > 0).
+
+## Problem 4: Possible UAF in j1939_ecu_timer_handler().
+
+Since pending ecu->ac_timer is not canceled during j1939_ecu_unmap_all()
+or __j1939_rx_release(), ecu->ac_timer can call j1939_ecu_timer_handler()
+after __j1939_ecu_release() or j1939_module_exit() (i.e. causing UAF).
+
+Fix problem 4 by adding a safeguard that explicitly cancels ecu->ac_timer
+before kfree(). The fix for problem 3 makes it possible to call
+hrtimer_cancel() from __j1939_ecu_release_work().
+
+## Problem 5: Possible "struct j1939_ecu" refcount leak.
+
+Since
+
+  j1939_ecu_get(ecu);
+  priv->ents[ecu->addr] = ecu;
+
+in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
+even after
+
+  priv->ents[ecu->addr] = NULL;
+  j1939_ecu_put(ecu);
+
+in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
+__j1939_rx_release() from j1939_netdev_stop() has completed,
+"struct j1939_ecu" refcount leaks.
+
+Fix problem 5 by
+
+  (1) preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start()
+  (2) making j1939_ecu_map_locked() no-op
+
+when a netdev which is associated with j1939_priv is no longer registered
+(indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
+__j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
+
+## Problem 6: Possible UAF on module unload (part 2).
+
+To close a race window that j1939_module_exit() starts as soon as
+j1939_priv_put(session->priv) from j1939_session_destroy() dropped
+the module's refcount, defer actual release to WQ context which
+j1939_module_exit() can wait for completion.
+
+Also, to make sure that session->txtimer / session->rxtimer are no longer
+running when the last user called j1939_session_put(), add a safeguard
+that explicitly cancels session->txtimer / session->rxtimer before kfree().
+
+[PATCH v14 1/6] can: j1939: fix possibility of UAF on module unload
+[PATCH v14 2/6] can: j1939: add a safeguard to __j1939_priv_release_work()
+[PATCH v14 3/6] can: j1939: fix possibility of list corruption in __j1939_ecu_release()
+[PATCH v14 4/6] can: j1939: add a safeguard to __j1939_ecu_release_work()
+[PATCH v14 5/6] can: j1939: fix "struct j1939_ecu" refcount leak
+[PATCH v14 6/6] can: j1939: defer j1939_session_destroy() to WQ context
+---
+Changes since v13:
+- Dropped "can: j1939: fix possibility of hard-lockup/deadlock in j1939_ecu_timer_cancel()" for now.
+  Although sashiko will mention that this problem is not addressed, this problem is too complicated
+  to handle within this series.
+- Added "can: j1939: defer j1939_session_destroy() to WQ context", per findings by sashiko in v13.
+
+Changes since v12:
+- Added a cover letter and split the series into 6 logical patches (1 patch per problem).
+- Deferred __j1939_priv_release() to WQ context to simplify "struct j1939_ecu" refcount leak fix
+- Fixed findings by sashiko in v12.
+
+ net/can/j1939/bus.c        |   81 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++--------------------
+ net/can/j1939/j1939-priv.h |    8 ++++++++
+ net/can/j1939/main.c       |   79 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ net/can/j1939/socket.c     |   10 +++++++++-
+ net/can/j1939/transport.c  |   27 ++++++++++++++++++++++-----
+ 5 files changed, 168 insertions(+), 37 deletions(-)
