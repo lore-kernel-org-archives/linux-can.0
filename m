@@ -1,58 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794728412;
-	b=Ja9ZJi0OiOEtRQaXW6CloqXQmHgl2WT8IHLUiyRlKtnh1KPg3OtCDjIsK2tKNSvaFifn
-	 rbAUvc7CFkiGRYNYoDXXYVTJEBslvNM1L09fUiq8zXB2XdFjvoEKMNFKhYz0dVa8s9pcg
-	 mC8JGMtAI857daUojQ+kNVRI2F1+f2jkGUkVbqbvp/v5HQwxIJLBemTg+2pD0fi46GJK1
-	 xkEbPMQn0LFryOf8rIL+MCX2wzWxVg9DwpYgSZUvvHRDW4gCJNKL1Gt7FctiBZDHL18kw
-	 0qh2u0gGuLZsmeLzgfyJ055qswY/Mgo/AB6B1cdBCt7PSAQEAkXgHheLfziKANtgCEw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794728412;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=JPZT8Q9THEzPwoMv4Kuevux7biG3GWG88D0kqc4c3E4=;
-	b=RmT7mJ3eNcZdQ5wuQMmFaBGutP6+dUGeJ2N2CBauUeUDrZfGMH0+Q7rwK5LE6lMwd1N3
-	 JbbsOz5MuM8eqOo/cOe7puAwxmaVYzheBOFuYcda2mC8i6zCPOO/fVy/niijNVB5QaLKQ
-	 BO/K/aweoThxbfCSRmFwvlhdaIDKhvx09+FKlgHHlBJRTaqsMyeJG35AN3suy/H0GGSj2
-	 oVhhFl9J1bGu0Cg2KMDtP7j0oh9RYZZqsuHAUOmr2CO1Ve3cnmbsVCL/4np4RPNTtaxso
-	 1bDSTTRIsvaVyjd/jXz/qMnQpntw9a8vxTVC3J1Ogzf0v0NBjW/23Gp1Qnl7ydLQ+QA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KkC+WB5I;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.20
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794729343;
+	b=i1UJcgAM3ZvPegFz4+wbrWctMr0KK68AAbFw9vhC17luSakQbrbUUvrvct4XrN9CwCIr
+	 3Q4MOIRl9+d9EDoscegIMXRFg2BuEq+ODFgeoP5UJ6tF++bj1HbqQiVVyiJiaLM+kQstK
+	 P8KM28PQebHrT9GVoINcmn8HNOJy1nG/82yG/TNh/z/DARPOo0kaw4Kuyft1TYKIgaLwo
+	 VnOev2hXAAB6pSAGoBZOMO2oy2+qo4t8nkl/sn2EmHT0vesSbiu7ONN8qv7KB1awJGVRu
+	 YkyE1pRuDw19MVR2YrmmpMmLO2aLdYLXWGkriavuzb5mXw32dbZ70CzF8Bon4ohmbzg==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794729343;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=YbDQ8UXAkGg6W3YVqEP9Uins6K/gz8GuuzvH63Chc08=;
+	b=ug9nc8KDWCFjj50MK8cffnAZVrSqE+KMFPhWouMqw3/6tBW3bTDOk27ef9x5Y5EuG20s
+	 LCgZDA9mYzwwBATd3X0U1kEfY/hXTs1yRJ9+GKJLdQItyhCqY2DeqIEWgvP2aM9I6QbDj
+	 qT5mISrK6IW/8qQ08twSy1ulnK6zVQ5/QnKdYPSkNKC6RV3+oz+3UnEBiUyk1NZha+TNt
+	 ZQ3YwwnpkepJEFhGPzF0P7J3sTvhdobjKwC+ICfbDyDzdAo9vB/qfKVPgNLySbM3EcTFu
+	 ic2wdIrYfZqaHy1WckTXqaxBvFXw67THWBiQQ5ealOwrHhBJXl1tGdqNt+ZEmvb9nXg==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=MMvhSfqw;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=T1tbsJ7x;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.20
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.20])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1B5606A31A
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 07:40:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30308606A31A
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 07:55:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 30308606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KkC+WB5I
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A77C1F000C4;
-	Sun, 15 Nov 2026 07:40:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794728412;
-	bh=JPZT8Q9THEzPwoMv4Kuevux7biG3GWG88D0kqc4c3E4=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=KkC+WB5Ilx0wVcAfPpJ6EKm1W/hdtlFKwxkNr/S3Pfwpdjvn5xUoYL6dO7+T2xuEs
-	 duv5XTcZ17DMWpYkCbVJZ6pZg8/Wn5k1p1ikPRjhtWkEZ55rLRNmtj75Yh6lB9FS2U
-	 PwUdEXgflZoD9x3sF0EKMDJ49BhYEpt9jGO6SncwRFXckMnGhhypPLYyTBLKL9SNFb
-	 Czpzvq6gVN1UrJ1AgK+WZOB6vbRcfXIQM6Xj+8M7svyVNA6nVRKmFflHsMWETGJJih
-	 llepnF7rLIvNrqBe4SNsO48oj5A5uFVQ1B4F4HuhD0Ts+6cfFpj001qA7qari9fNlT
-	 +80t1IjXNa5gA==
-Subject: Re: [PATCH v12 3/3] can: j1939: fix "struct j1939_ecu" refcount leak
-From: netdev-bot+sashiko@kernel.org
-To: penguin-kernel@I-love.SAKURA.ne.jp
-Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
- robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
- kuba@kernel.org
-Date: Sun, 15 Nov 2026 07:40:11 +0000
-Message-ID: <179472841159.488853.10765214433306974984@kernel.org>
-In-Reply-To: <60b30b7c-91dc-4138-bc92-be922ffd6215@I-love.SAKURA.ne.jp>
-References: <60b30b7c-91dc-4138-bc92-be922ffd6215@I-love.SAKURA.ne.jp>
-X-sashiko-severity: High
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=MMvhSfqw;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=T1tbsJ7x
+ARC-Seal: i=1; a=rsa-sha256; t=1794729332; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=YipHIjC/adFbz7tQKtHg11UuCXobjlicv3salJuQsjsMdQsEe9D/zRMwyUobVM2gZa
+    UUq+fQy0mBP8YfzP5Nb73FUQjDapGmDqR3NMiK/6OTDJ1I6b+J3j+AeFjbAjft6DobmM
+    f0s36OWpoXYkHqtnv/YmNewLuW253ZABDpYaQD+rn/bYz9EJk4B2zHJSFeVeXNF3n6/6
+    I6j6kH2bE2qmYKInghte95oumQ/qCKHCf8BExM+cSIO/42dkQh2DtNFWZ0ECQziaplHs
+    EvMWAvT67PHZ5Oraj7mX8Z/pM9XhTcDKsDXrSodX8QPposb93nGw/A+1sxTR/Gd+uElS
+    SKvw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794729332;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=YbDQ8UXAkGg6W3YVqEP9Uins6K/gz8GuuzvH63Chc08=;
+    b=Svl+BEIqV2IVNdouqTKLbs3QwJb2znCRaWXBj6K36eZjtPrV4dOmWdBPRNUJ7/SIqf
+    QF6lBHHvRpRzg3dvO/0anWG3YgSNCPqfqC1qNPoCUKkTh2Y1oaeBBalGBuU9R3yXg0CC
+    rLmwoYaD29GGWTJXKDZVVVWp7wLzqv2mSAEpuLdjWVR3VzvmeypqA6s9F5UtxqfRCXDy
+    wE2EC+iaeOanHWNIm2diG/IcuLG+iFsMuBMBR8+Fn6jzN03m8h3NHA1XGrp/l637CqJ9
+    /XtBJEr5UdSnea2cNZ+7lk/jSeK2AKkEAMid9xFN5IzfMxkWXBEfjvIG+5SR78vAVB7j
+    CjWw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794729332;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=YbDQ8UXAkGg6W3YVqEP9Uins6K/gz8GuuzvH63Chc08=;
+    b=MMvhSfqwe68Gt1v4UNPG01GB9OwVIvO1F2l1s7eDWFq6TqNAiF+HGoonfZ0xNTQJTd
+    pGz7GjLlGzw7cI4zkLIq9GAk5WJpGrCOA/tpwEPYXE1ijUVwf9IUMcwkSn5zIuy/MWqc
+    S/A2QCEFlTrmzJM69CdeJ1l8I1u6VwtLD9S7rhOWSoV2Tba1VrrLdMpgR9jPEkbt3diJ
+    lcevDDh9+EELLcJRERFYN8aIR/mLaBM6KcZqfyfJ4TsgQk4GBJPQ7GBYlPH7qqHzuC4g
+    2/PaQd6UPKTf5zsGXXOQCL86xUHQ8/wC7dZDVpPJMkLZInfGbzJBGKUq+bl0AbZR6LIt
+    MiGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794729332;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=YbDQ8UXAkGg6W3YVqEP9Uins6K/gz8GuuzvH63Chc08=;
+    b=T1tbsJ7xwNsayRchqJ3mPC2DRzeKdH1eZTijySvB3AaTmDXJHN8uXiANe3b9UEFdPR
+    SHqR3GjPgBgblFvgwgDQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a2AF7tWO3A
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Sun, 15 Nov 2026 08:55:32 +0100 (CET)
+Message-ID: <25179774-bf3d-43d8-84e6-b0ce121f3eac@hartkopp.net>
+Date: Sun, 15 Nov 2026 08:55:26 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -62,333 +95,63 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/5] can: bcm: copy the CAN frames outside of
+ lock_sock()
+To: netdev-bot+sashiko@kernel.org
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ kuba@kernel.org
+References: <20261113-can-bcmlock-memcg-v5-1-634c0e04bc72@hartkopp.net>
+ <179470332579.488853.5643594273401866523@kernel.org>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <179470332579.488853.5643594273401866523@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+
+
+
+On 15.11.26 01:42, netdev-bot+sashiko@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential
+> issue(s) to consider.
+> 
+> Critical: 0 · High: 0 · Medium: 1 · Low: 0
+> 
+> If you believe none of the issues are legitimate, please reply to each
+> issue of Medium severity or higher and explain why the AI is wrong.
+> If any of them are legitimate and you plan to respin, please let patchwork
+> know by including "pw-bot: cr" as a separate line at the end of your reply
+> (one such reply per series is enough).
+> 
+> - [Medium] This patch's commit message describes the bug as 'a stalled
+>    copy on any CAN_BCM socket can block RTNL'.
+> 
+> --
+
+
+> The later patch in this series, "can: bcm: use a private mutex instead of
+> lock_sock()", appears to close this gap. At the end of the series,
+> bcm_notify() takes mutex_lock(&bo->conf_lock), and the generic SOL_SOCKET
+> options never take conf_lock.
+> 
+> This patch is tagged for stable. Should the commit message say that the
+> RTNL stall is only fully fixed together with that follow-up patch, so the
+> two get backported together?
+> 
+
+Not needed.
+
+This patch is a follow up to a bunch of recent fixes to remove the 
+dependencies to rtnl_lock()/lock_sock() like
+
+can: raw, isotp: copy socket options outside of lock_sock()
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=43c973a0887d3d7b2ee0a446603c97bf0f38c58e
+
+which had no such announcements for potential future fixes either. Doing 
+so only adds some bloat to satisfy the AI bot during the upstream process.
+
+The stable process works pretty well without adding such hints.
+
+Best regards,
+Oliver
 
-Thank you for your contribution! Sashiko AI review found 5 potential
-issue(s) to consider.
-
-Critical: 0 · High: 2 · Medium: 1 · Low: 2
-
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
-
-- [High] The patch fixes one path to the "struct j1939_ecu" refcount
-  leak, but another path to the same leak is still reachable.
-- [High] can: j1939: ecu refcount leak in j1939_ecu_timer_start() when
-  handler runs
-- [Medium] can: j1939: stale ac_want_abort in j1939_ecu_timer_handler()
-  aborts claim
-- [Low] The commit message describes the change only as fixing a "struct
-  j1939_ecu" refcount leak.
-- [Low] The patch also changes net/can/j1939/socket.c: in
-  j1939_sk_bind(), `ndev->reg_state` becomes…
-
---
-
-can: j1939: fix "struct j1939_ecu" refcount leak
-
-This patch makes j1939_ecu_unmap_all() cancel each ECU's ac_timer. It also
-adds j1939_ecu_verify_get(), which refuses new ECU references from
-j1939_ecu_timer_start() and j1939_ecu_map_locked() once the netdev is no
-longer registered or rx_kref has dropped to zero. In j1939_sk_bind(), the
-reg_state check becomes a READ_ONCE() and gains an explanatory comment.
-
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
-
-> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index 8cbf8716d286e..a0120567bb8f5 100644
-> --- a/net/can/j1939/bus.c
-> +++ b/net/can/j1939/bus.c
-
-[ ... ]
-
-> @@ -130,8 +141,43 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
->  void j1939_ecu_unmap_all(struct j1939_priv *priv)
->  {
->  	int i;
-> +	struct j1939_ecu *ecu;
->
-> +rescan:
->  	write_lock_bh(&priv->lock);
-> +	/* Need to shutdown timers now, for j1939_module_exit() might be called
-> +	 * relatively shortly after returning from j1939_ecu_unmap_all() from
-> +	 * __j1939_rx_release() from j1939_netdev_stop() from j1939_sk_release().
-> +	 */
-
-[Severity: Low]
-This isn't a bug, but should the commit message mention the module unload
-hazard that this comment describes? The changelog only talks about the
-struct j1939_ecu refcount leak.
-
-Before this patch, a pending ac_timer holds the reference taken in
-j1939_ecu_timer_start(). While that reference is held the kref can't reach
-zero, so release_work is never queued. That leaves destroy_workqueue() in
-j1939_module_exit() with nothing to wait for, and the hrtimer_cancel() in
-__j1939_ecu_release_work() never runs for that ECU.
-
-After the last j1939 socket closes and __j1939_rx_release() returns, rmmod
-can finish while the timer is still pending. j1939_ecu_timer_handler()
-would then run from freed module text.
-
-The earlier commit in this series, "can: j1939: fix possibility of UAF in
-__j1939_ecu_release()", says it fixes the timer-after-j1939_module_exit()
-case. That fix seems to depend on the cancellation added here.
-
-Would it help stable backporters if this changelog said so?
-
-> +	list_for_each_entry(ecu, &priv->ecus, list) {
-> +		if (!j1939_ecu_valid(ecu))
-> +			continue;
-> +		switch (hrtimer_try_to_cancel(&ecu->ac_timer)) {
-> +		case 0:	/* Not active or already finished. */
-> +			continue;
-> +		case 1:	/* Successfully canceled. */
-> +			/* Drop the ref from j1939_ecu_timer_start(). */
-> +			j1939_ecu_put(ecu);
-> +			continue;
-> +		default: /* Currently executing. */
-
-[ ... ]
-
-> +		write_unlock_bh(&priv->lock);
-> +		if (hrtimer_cancel(&ecu->ac_timer))
-> +			/* Drop the ref from j1939_ecu_timer_start(). */
-> +			j1939_ecu_put(ecu);
-> +		/* Drop the ref from default: above. */
-> +		j1939_ecu_put(ecu);
-> +		goto rescan;
-> +	}
-
-[ ... ]
-
-> @@ -141,9 +187,9 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
->  void j1939_ecu_timer_start(struct j1939_ecu *ecu)
->  {
->  	/* The corresponding j1939_ecu_put() is in
-> -	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
-> +	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel() or j1939_ecu_unmap_all().
->  	 */
-> -	if (!j1939_ecu_get(ecu))
-> +	if (!j1939_ecu_verify_get(ecu))
->  		return;
-
-[Severity: High]
-Beyond the reference leak above, the same hrtimer_try_to_cancel()
-behaviour can also leave a cancelled claim armed.
-
-While j1939_ecu_timer_handler() is running, hrtimer_try_to_cancel()
-returns -1 even if j1939_ecu_timer_start() has already queued ac_timer
-again. In that case j1939_ecu_timer_cancel() neither dequeues the new
-expiry nor drops the reference taken for it. It only sets
-ac_want_abort, which the running callback consumes.
-
-With two re-arms in that window, one reference is never dropped. The
-ECU then keeps its j1939_priv and the netdev reference held through
-priv_dev_tracker, so unregister_netdevice() hangs in
-netdev_wait_allrefs_any().
-
-If the second claim cancels without re-arming, nothing leaks, but the
-stale expiry survives:
-
-CPU0 (ac_timer expired, priv->lock not taken yet)
-j1939_ecu_timer_handler()
-
-CPU1
-j1939_ac_process()            /* NAME N, address sa1 */
-    j1939_ecu_timer_cancel()  /* -1, sets ac_want_abort */
-    j1939_ecu_timer_start()   /* takes ref B, timer queued */
-j1939_ac_process()            /* NAME N, idle address */
-    j1939_ecu_timer_cancel()  /* -1 again, timer stays queued */
-    j1939_ecu_unmap_locked()  /* no j1939_ecu_timer_start() */
-
-CPU0
-    write_lock_bh(&priv->lock);
-    /* sees ac_want_abort, clears it, returns */
-
-The expiry queued by the first claim is still pending, and
-ac_want_abort is now false. 250 ms later j1939_ecu_timer_handler()
-calls j1939_ecu_map_locked() and maps the ECU at sa1. Its most recent
-claim said it could not claim an address.
-
-The second claim might instead lose arbitration to prev. The late
-handler then tries to map the ECU at the address it just lost, which
-usually just trips the already-mapped warning in
-j1939_ecu_map_locked().
-
-How is j1939_ecu_timer_cancel() meant to cancel an expiry that
-j1939_ecu_timer_start() queued while the previous callback was still
-running? Should j1939_ecu_timer_start() avoid re-arming, or avoid
-taking another reference, while the callback is still active? Or does
-the abort handshake need to track each queued expiry separately?
-
-[Severity: High]
-Can the reference taken here still leak if the timer is re-armed twice
-while j1939_ecu_timer_handler() is running?
-
-When the callback is running, j1939_ecu_timer_cancel() only sets a flag:
-
-	default: /* Currently executing. */
-		/* Tell j1939_ecu_timer_handler() to abort unless committed. */
-		if (!ecu->ac_commit_done)
-			ecu->ac_want_abort = true;
-
-In that state hrtimer_try_to_cancel() returns -1 and dequeues nothing.
-j1939_ecu_timer_start() takes a new reference on every call, and then
-hrtimer_start() replaces any expiry that is already queued.
-
-Consider one ECU, with j1939_ac_process() called under priv->lock:
-
-CPU1 (ac_timer expired)
-j1939_ecu_timer_handler()
-    write_lock_bh(&priv->lock);   /* waiting */
-
-CPU0
-j1939_ac_process()                /* NAME N, address sa1 */
-    j1939_ecu_timer_cancel()      /* -1, sets ac_want_abort */
-    j1939_ecu_timer_start()       /* takes ref B, enqueues timer */
-
-CPU2
-j1939_ac_process()                /* NAME N, address sa2 */
-    j1939_ecu_timer_cancel()      /* -1 again, queued expiry stays */
-    j1939_ecu_timer_start()       /* takes ref C, hrtimer_start()
-                                     replaces CPU0's expiry */
-
-This needs CPU2 to get priv->lock before CPU1. It could already be queued
-on the lock, or CPU1 could be between the handler's write_unlock_bh() and
-its return.
-
-The running callback then aborts and drops ref A. The one remaining expiry
-drops ref C.
-
-What drops ref B?
-
-If nothing does, __j1939_ecu_release_work() never runs. The ECU's netdev
-tracker and j1939_priv references are then never released, and
-unregistering the CAN netdev would hang in netdev_wait_allrefs_any(). That
-is the same symptom as the syzbot report this patch closes.
-
-The new loop in j1939_ecu_unmap_all() drops at most one timer reference
-per ECU, so it can't get ref B back.
-
-The unlocked hrtimer_cancel() window in its default: branch looks like a
-second place where the same double re-arm can happen. On the NETDEV_DOWN
-path rx_kref is still non-zero, so j1939_ecu_verify_get() still allows
-re-arming there.
-
-The ac_want_abort/ac_commit_done handshake comes from the earlier commit
-in this series, "can: j1939: fix possibility of hard-lockup/deadlock in
-j1939_ecu_timer_cancel()". This patch relies on its assumption that each
-armed timer holds exactly one reference.
-
-> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-> index 50a598ef5fd4a..6e22ec5e88f5a 100644
-> --- a/net/can/j1939/socket.c
-> +++ b/net/can/j1939/socket.c
-> @@ -484,7 +484,15 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
->  			goto out_release_sock;
->  		}
->
-> -		if (ndev->reg_state != NETREG_REGISTERED) {
-> +		/* Do nothing and fail early if netdev is no longer registered.
-> +		 * This check is racy but we don't need to recheck after j1939_jsk_add()
-> +		 * is called, for either j1939_sk_netdev_event_unregister() from
-> +		 * j1939_netdev_notify(NETDEV_UNREGISTER) (which is retried by
-> +		 * netdev_wait_allrefs_any() as long as priv->rx_kref held by
-> +		 * j1939_netdev_start() is preventing j1939_priv_set(priv->ndev, NULL)
-> +		 * from being called) or j1939_sk_release() will take care of this race.
-> +		 */
-> +		if (READ_ONCE(ndev->reg_state) != NETREG_REGISTERED) {
-
-[Severity: Low]
-This isn't a bug, but the commit message only lists the three bus.c
-changes. Could it also mention this j1939_sk_bind() change (the READ_ONCE()
-annotation and the new comment) and say why it's needed?
-
-A smaller point: j1939_ecu_unmap_all() is also called from
-j1939_netdev_notify() on NETDEV_DOWN:
-
-	case NETDEV_DOWN:
-		j1939_cancel_active_session(priv, NULL);
-		j1939_sk_netdev_event_netdown(priv);
-		j1939_ecu_unmap_all(priv);
-
-With this patch, ifdown also cancels pending 250 ms address-claim timers,
-so they no longer fire and remap the ECU. The changelog only hints at this
-with the word "unconditionally". Could it say so explicitly?
-
->  			dev_put(ndev);
->  			ret = -ENODEV;
->  			goto out_release_sock;
-
-[ ... ]
-
-> @@ -141,9 +187,9 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
->  void j1939_ecu_timer_start(struct j1939_ecu *ecu)
->  {
->  	/* The corresponding j1939_ecu_put() is in
-> -	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
-> +	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel() or j1939_ecu_unmap_all().
->  	 */
-> -	if (!j1939_ecu_get(ecu))
-> +	if (!j1939_ecu_verify_get(ecu))
->  		return;
->  
->  	/* Schedule timer in 250 msec to commit address change. */
-
-[Severity: Medium]
-This isn't introduced here, but the new code depends on the
-ac_want_abort/ac_commit_done handshake from the earlier patch "can:
-j1939: fix possibility of hard-lockup/deadlock in
-j1939_ecu_timer_cancel()". Can a stale ac_want_abort make an
-uncontested address claim abort?
-
-When j1939_ecu_timer_handler() takes the abort path, it clears the flag
-and skips setting ac_commit_done before dropping priv->lock:
-
-	if (ecu->ac_want_abort) {
-		ecu->ac_want_abort = false;
-		goto out;
-	}
-	...
-	ecu->ac_commit_done = true;
-out:
-	write_unlock_bh(&priv->lock);
-
-The callback is still running after that unlock, until __run_hrtimer()
-clears base->running. In that window hrtimer_callback_running() is true
-and ac_commit_done is false:
-
-CPU0 (ac_timer callback, ac_want_abort already set)
-j1939_ecu_timer_handler()
-    ecu->ac_want_abort = false;
-    write_unlock_bh(&priv->lock);
-    /* still in callback: j1939_ecu_put(), return */
-
-CPU1 (one Address Claim for the same NAME, new address)
-j1939_ac_process()
-    j1939_ecu_timer_cancel()      /* -1, ac_commit_done is false,
-                                     so ac_want_abort = true */
-    j1939_ecu_timer_start()       /* ac_commit_done = false,
-                                     new 250 ms timer queued */
-
-Nothing clears ac_want_abort after that. CPU0 is already past the lock,
-and j1939_ecu_timer_start() leaves the flag alone. When the new timer
-expires, j1939_ecu_timer_handler() sees the stale flag, skips
-j1939_ecu_map_locked() and returns.
-
-The ECU then stays out of priv->ents[] even though nobody contested the
-claim. Sends using that NAME fail with -EADDRNOTAVAIL from
-j1939_ac_fixup() until something re-arms the timer.
-
-Clearing ac_want_abort in j1939_ecu_timer_start() doesn't look right on
-its own. A callback still waiting for priv->lock would then commit the
-new address early.
-
-Would it work to set ac_commit_done on the abort path as well, so that
-a cancel after the unlock no longer requests an abort? Or does the
-abort request need to be tied to a specific arming of the timer?
-
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/8de287d7-b4e1-4062-b40e-b193f5ec68ca%40I-love.SAKURA.ne.jp
