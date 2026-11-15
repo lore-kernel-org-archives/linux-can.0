@@ -1,47 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794742648;
-	b=Z4V9aEuN6NaXfqgkBNVDR9DANgh2Anmc/ZLgrSf+IVVvO0pMOCie33ylvg6vx1FVd+NC
-	 W+Dh3fGzWyPr1x4q0xECtUt1UM2/MPgwmXeP7vpMs0R+uXymhaBVnuF7d13o0pSo469ik
-	 PYUwY+hVemQ4VwnuThTuAhcJgQBlQJtSj7lOPnSfL7zJU8FhVw3g7oz2swSda4Ydzkne7
-	 OvH3MUJwup/KQGXH1ZRraMdC30Mb5JJXZZqbqo/8Q/lRM2iCLi2grwEVx1VYbiVbQRG+4
-	 3t50WEZLzAAIOJ64s29/lwwgJhhW7qqstAw+FeaXKIojQATz9X8Rz/8TSm/hVWhGHXQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794742648;
-	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
-	 User-Agent:Subject:From:To:References:Content-Language:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding:X-Virus-Status:
-	 X-Anti-Virus-Server;
-	bh=rDmLxEqbT7FUfAO4PuHjz4Se2O0Os4pccDrAaKyyto0=;
-	b=FTdC7XGUvNdAfqReZdjoEssx1fCMdzStnFnI0fbAsSNjTV/kANzXSo0IixB3hhtT5oBB
-	 Yr6XEW8xp2olQXaBbiIJgCQppywHAQjVbN4FIfJOENQfyhApUIHTl2nhFznPyEJehHuKv
-	 hvWE9mP/FVemlW4FQ97bGX+GfUhCIQhPYEdFDHszsJS1SFfwmv7onD+wh58Jqxu9SWiH3
-	 dzrzavzZaoXXpeGur0gkUX9AqU0m4b/SQaFgdsYUI9/IMw9UxxWfpanKJQydxmHqi9i43
-	 qBgO1KhN89XsbnLtFWPegJy+B9M29hlL3JrFRdK4I9VA1sGtVub1OUdrXFwLhTx01mg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=I-love.SAKURA.ne.jp;
-	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
-	arc=none smtp.remote-ip=202.181.97.72
-Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794743726;
+	b=Kq73LfL6U1kS7buiiwr/pDpjDIAmrjPOFfuY83Y7d93digKJ805HB4QO8P4pbCTOxciC
+	 v2sl9wbjN/BINwbGfvdAgtBCiasJeWq/unjUEW6sHHMc5SKCBR76s8yvsRH2tGy1gb8Cy
+	 HPQc7M/1tgj4pgpUcC9PX/isiS2mFGMCyLPgXAmG6YPoKnVumzMjAYihx3YbDvVHEIrTQ
+	 LEXxb6xY/Q/c4zXtlUcsjjWRCh09HLjiClsmxWcjSySG7wR+T2XDS2zQTN/8PQ5O0ojki
+	 noORf10f1x/SY4HW16ewQeRTUhYwn8Xw8ZagcgMo+0bX63SojKMa65ZgcWwgCmwyiWg==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794743726;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
+	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=b0eGFIX/6uoUZeRa1M1W5P5iJHYrKtJzm9/hzLAT3yM=;
+	b=WhionMePgDp0MJeIOqgjQwqyVu0NGRVU3BwFx9p73hCn1I+Pv2KC6f1bp/kCprE0tshX
+	 9dn5o2M3tJLRDXO5aDnlgeAaYk3PdMe/EkGfd/uZgrDoUCSNw2MtNBZJb+yJNbrv4b8jz
+	 Po7b88mu1GyDrXs8FKn4qrxAoZwVHrws2VO2zdRSbWGVKoKQYU/dWGSgay8Yn7xv1D4Xh
+	 Z95vF6/eqGI5so2i6al3txT9YW+AcCdJtf/QEoSW8E5x1rxsIPmTIozWpXU+qOM0lK89A
+	 rQMlcU42ONDLqo5Z28tuJJghVhUElsWmsDBEGD05V+2LCIO1eq6ml2FU4aB76qawFvA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=gSkMjB11;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA9E606A31F
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:37:28 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2EA9E606A31F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
-Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6AFBbHYe027190;
-	Sun, 15 Nov 2026 20:37:17 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
-	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6AFBbHVd027187
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 15 Nov 2026 20:37:17 +0900 (JST)
-	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <1ad7d101-4549-420f-a827-6bf21bae884e@I-love.SAKURA.ne.jp>
-Date: Sun, 15 Nov 2026 20:37:18 +0900
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC893606A31D;
+	Sun, 15 Nov 2026 11:55:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BC893606A31D
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=gSkMjB11
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id B4CF9201BC8;
+	Sun, 15 Nov 2026 12:55:23 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794743723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b0eGFIX/6uoUZeRa1M1W5P5iJHYrKtJzm9/hzLAT3yM=;
+	b=gSkMjB11VhG08Uy9HHFzb2c+cDvDtTFOsiRcH4+R7yajH3I1Qz+UB5+h0ZvLm6xdWs73vx
+	qVNv8SZfkCfQj6nUhOJq03q864DPVF2CbXms7MMjSQjv0PKTQgn0kvSerGny5X6jAwYcqu
+	/90BAvJKY7Ch4KHLSBnqbat1bfELr+5/WJz72O8l+RZIVyBWA93WdytktjhXVw8S8NI1VC
+	LEYVt5UUCAwe3nwtW76mKrK81jkE8UyOyB1CRwIIgYtHOkaLk6pBWPU9tuAcF3RnmQ3u1Z
+	DuT0esn5UDNNLzhx1pz6jTqYJwQeh4tbgChmuqCiSpswbiC8mFNoCovv6EdD4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794743723;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=b0eGFIX/6uoUZeRa1M1W5P5iJHYrKtJzm9/hzLAT3yM=;
+	b=WV9TXnZKOfrOLdKOlFysGcFNpWMvd/nBadZxYAx4sUGgeYk3Q3WRrONBY6aELeRlN7WHKZ
+	oyB0axTxTLhguEMzgdpcb1x2bL5CAFPM0RT+l2Dv4fK1fBkmupN57u3bSEYYmbOOjzxab9
+	DvPMOWQB/iBHt+EKYecK0l0JjiXpLwEKd9GiMoMDUf0ZLZvNLg9+xJs9Ba9lKsS/2oncE1
+	PNYMy33YTvd0UPe7/7eqvpEuZYwq8M8p4CnXt5baGy/CnfpMqpmVj35q/DKeKUd7NK0I/7
+	cPpwMDgvL1a3P2xJhuhlWf9ye8x/eAdChJ4tDIUbwXSp6f6e8MpvuY3rUokluQ==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794743723; a=rsa-sha256;
+	cv=none;
+	b=W/ag6xoCdxgULcI9eogkEQs4Q9Ui2XdkD6XAdHIqapkpGtAdG1/ZsfstSj5de4IYF8qP5C
+	gicmsr7517AOBxzOdnz4z3tdlKJWKPFHzwY3PCYJvcFKqUN/JsstlI+g2WiMC1mwwBrR6h
+	FQIb2HHj1US+TcMUAzP7Z2+b/+yl/7UOG8JrM5N/lMhSCzj5fdOCgdJddLtJoJ8Le4rzPe
+	jAfkyuCbk5P3umtth3XHLhwM0rl40NSj4Ak00Qt4bDcCQrqySqFUhS0QInf6xzF8dY4yQs
+	dFs3Sj0Wae03Vh3gRPqKTn5uSRoIL6VFmpz/u4kklmAZJeVVpNOItRgNxO89Ig==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xSYpP-004HEq-1y;
+	Sun, 15 Nov 2026 12:55:23 +0100
+Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 4A1165EC3DA;
+	Sun, 15 Nov 2026 11:55:23 +0000 (UTC)
+Date: Sun, 15 Nov 2026 12:55:22 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
+	linux-can@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH net 0/9] pull-request: can 2026-11-15
+Message-ID: <20261115-muscular-expert-kelpie-9706be-mkl@pengutronix.de>
+References: <20261115095746.709371-1-mkl@pengutronix.de>
+ <20261115-musical-garnet-turtle-de4539-mkl@pengutronix.de>
+ <bb2a488f-5734-40e6-b673-84612f6173f1@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -51,129 +101,66 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: [PATCH v14 6/6] can: j1939: defer j1939_session_destroy() to WQ
- context
-From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
-To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-References: <1d96e742-0479-4c36-ad0a-a0aaeda0a4fc@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-In-Reply-To: <1d96e742-0479-4c36-ad0a-a0aaeda0a4fc@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Virus-Status: clean
-X-Anti-Virus-Server: fsav415.rs.sakura.ne.jp
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="b6mukjhabdvhctf3"
+Content-Disposition: inline
+In-Reply-To: <bb2a488f-5734-40e6-b673-84612f6173f1@hartkopp.net>
 
-To close a race window that j1939_module_exit() starts as soon as
-j1939_priv_put(session->priv) from j1939_session_destroy() dropped
-the module's refcount, defer actual release to WQ context which
-j1939_module_exit() can wait for completion.
 
-Also, to make sure that session->txtimer / session->rxtimer are no longer
-running when the last user called j1939_session_put(), add a safeguard
-that explicitly cancels session->txtimer / session->rxtimer before kfree().
+--b6mukjhabdvhctf3
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net 0/9] pull-request: can 2026-11-15
+MIME-Version: 1.0
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: stable@vger.kernel.org
-Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
----
- net/can/j1939/j1939-priv.h |  2 ++
- net/can/j1939/main.c       |  4 ++--
- net/can/j1939/transport.c  | 27 ++++++++++++++++++++++-----
- 3 files changed, 26 insertions(+), 7 deletions(-)
+On 15.11.2026 12:23:39, Oliver Hartkopp wrote:
+>
+>
+> On 15.11.26 11:18, Marc Kleine-Budde wrote:
+> > On 15.11.2026 10:54:51, Marc Kleine-Budde wrote:
+> > > Hello netdev-team,
+> > >
+> > > this is a pull request of 9 patches for net/main.
+> > >
+> > > this first 3 patches are by Zhu Ling and fix problems with the CAN
+> > > netlink handling.
+> > >
+> > > A patch by my fixes a kernel memory information leak over USB in the
+> > > gs_usb driver.
+> > >
+> > > The last 5 patches are by Oliver Hartkopp and avoid RTNL stalls in
+> > > CAN_RAW, CAN_ISOTP and CAN_BCM protocols.
+> >
+> > I described patches in topological order, which is intuitive when
+> > looking at the git tree. However the linearized order of patches in this
+> > email patch series is chronological :/ - Sorry, I've added the missing
+> > "--topo-order" to my git send-email script.
+> >
+> Funny :)
+>
+> Anyway the current patch order is correct to be applied.
 
-diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
-index 55ded221cd82..af179eb44b15 100644
---- a/net/can/j1939/j1939-priv.h
-+++ b/net/can/j1939/j1939-priv.h
-@@ -294,6 +294,8 @@ struct j1939_session {
- 		unsigned int dpo;
- 	} pkt;
- 	struct hrtimer txtimer, rxtimer;
-+
-+	struct work_struct release_work;
- };
- 
- struct j1939_sock {
-diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-index 1e05383bf30f..b6adf4e047a5 100644
---- a/net/can/j1939/main.c
-+++ b/net/can/j1939/main.c
-@@ -477,8 +477,8 @@ static __exit void j1939_module_exit(void)
- 	unregister_netdevice_notifier(&j1939_netdev_notifier);
- 
- 	/* We need to make sure that __j1939_priv_release_work() and
--	 * __j1939_ecu_release_work() are no longer running before
--	 * unmapping memory for this module.
-+	 * __j1939_ecu_release_work() and j1939_session_destroy_work()
-+	 * are no longer running before unmapping memory for this module.
- 	 */
- 	destroy_workqueue(j1939_wq);
- }
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f..87a932d10ffe 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -259,8 +259,11 @@ static void __j1939_session_drop(struct j1939_session *session)
- 	sock_put(session->sk);
- }
- 
--static void j1939_session_destroy(struct j1939_session *session)
-+static void j1939_session_destroy_work(struct work_struct *work)
- {
-+	struct j1939_session *session = container_of(work, struct j1939_session,
-+						     release_work);
-+	struct j1939_priv *priv = session->priv;
- 	struct sk_buff *skb;
- 
- 	if (session->transmission) {
-@@ -272,7 +275,7 @@ static void j1939_session_destroy(struct j1939_session *session)
- 			j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
- 	}
- 
--	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
-+	netdev_dbg(priv->ndev, "%s: 0x%p\n", __func__, session);
- 
- 	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
- 	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
-@@ -283,9 +286,18 @@ static void j1939_session_destroy(struct j1939_session *session)
- 		kfree_skb(skb);
- 	}
- 	__j1939_session_drop(session);
--	netdev_put(session->priv->ndev, &session->priv_dev_tracker);
--	j1939_priv_put(session->priv);
-+
-+	/* There can't be any ref on this session because __j1939_session_release()
-+	 * was already called. But we need to make sure that j1939_tp_txtimer() and
-+	 * j1939_tp_rxtimer() are no longer running before kfree().
-+	 */
-+	WARN_ON(hrtimer_cancel(&session->txtimer));
-+	WARN_ON(hrtimer_cancel(&session->rxtimer));
-+
-+	netdev_put(priv->ndev, &session->priv_dev_tracker);
-+
- 	kfree(session);
-+	j1939_priv_put(priv);
- }
- 
- static void __j1939_session_release(struct kref *kref)
-@@ -293,7 +305,12 @@ static void __j1939_session_release(struct kref *kref)
- 	struct j1939_session *session = container_of(kref, struct j1939_session,
- 						     kref);
- 
--	j1939_session_destroy(session);
-+	/* To close a race window that j1939_module_exit() starts as soon as
-+	 * j1939_priv_put() dropped the module's refcount, defer actual release
-+	 * to WQ context where j1939_module_exit() can wait for completion.
-+	 */
-+	INIT_WORK(&session->release_work, j1939_session_destroy_work);
-+	queue_work(j1939_wq, &session->release_work);
- }
- 
- void j1939_session_put(struct j1939_session *session)
--- 
-2.56.0
+The netdev people usually merge the tag, the emails are relevant for
+review.
 
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--b6mukjhabdvhctf3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavmdpwAKCRDMOmT6rpmt
+0lyEAPwNbq0e8SB6/YoLl9pIwm0s2IiXm3IkF0c22koqunSe9QEA5yn/CjHM4KfI
+cgjKAoXyOuADKwRCfeIhNWX2Ij3dbgI=
+=t6Ne
+-----END PGP SIGNATURE-----
+
+--b6mukjhabdvhctf3--
