@@ -1,56 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794728411;
-	b=mO9BUwavIDoI+UuLeGo6gn8sKbg9hzsHVToXaf3whfi6bYpxufJJoXnCk9jrfi9DB0JQ
-	 m7pf/UEM7YTkMrJD8gALp6hssvxXGUnME/3Nm2sLdu9SBhjsh/KLje0Lcryb3/iyrvlGf
-	 3rNzxW51vvW/Lqj7RQs2w8S8qvmzEbb+iMQqt78wd2Mfky+X+XIFqkUBMo7CXoD+2XId/
-	 bdLVunUXuXairUFOTBSDhFDFb8CDPocdg2HgE0U5sP5OS0MSRMrEk8Axi7mxesEPoFEDs
-	 L56CPCqLkGHW5oKFwIcqPUyPu/6Gt+pvgbqhQrQMpCFZNO1dmgmA/AOuj9TalqmjplQ==
+	t=1794728412;
+	b=Ja9ZJi0OiOEtRQaXW6CloqXQmHgl2WT8IHLUiyRlKtnh1KPg3OtCDjIsK2tKNSvaFifn
+	 rbAUvc7CFkiGRYNYoDXXYVTJEBslvNM1L09fUiq8zXB2XdFjvoEKMNFKhYz0dVa8s9pcg
+	 mC8JGMtAI857daUojQ+kNVRI2F1+f2jkGUkVbqbvp/v5HQwxIJLBemTg+2pD0fi46GJK1
+	 xkEbPMQn0LFryOf8rIL+MCX2wzWxVg9DwpYgSZUvvHRDW4gCJNKL1Gt7FctiBZDHL18kw
+	 0qh2u0gGuLZsmeLzgfyJ055qswY/Mgo/AB6B1cdBCt7PSAQEAkXgHheLfziKANtgCEw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794728411;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794728412;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=7frlOCurkclEBwRst5i5yDue2DV6lwqFMXXwqAhqOwU=;
-	b=BIGGZcDuADBLJcYhWLmIAY6A1aRn86DRyh6iKwRO1S16aPVAzZ2Kyz9hwmb7iKfplSeN
-	 apKuHKHVXP3Tcnq2uhwx7VpoMg5svdN6tdl+qqLCm9H0xPv8TkaCMbvsbZqy9FrFiWO7b
-	 vuqgcFj4IDw/P1QY0GX+fzUis9F94Uo7GEE6s8Dw9QYSymvpvPemDcjm2QXKvolALdWIT
-	 gHBzsFZIObKikB6I4NMce4bI9Gz0SD/SHY0ID1IWGu0LIhsvHgnCEBD0vT0PVKg7yg5l+
-	 C/dzh+VNnTATi+HWP1UVFQZAIENpPDElUvOxjQx6KiRKloE7guXseetK8DGvdu2cU+Q==
+	bh=JPZT8Q9THEzPwoMv4Kuevux7biG3GWG88D0kqc4c3E4=;
+	b=RmT7mJ3eNcZdQ5wuQMmFaBGutP6+dUGeJ2N2CBauUeUDrZfGMH0+Q7rwK5LE6lMwd1N3
+	 JbbsOz5MuM8eqOo/cOe7puAwxmaVYzheBOFuYcda2mC8i6zCPOO/fVy/niijNVB5QaLKQ
+	 BO/K/aweoThxbfCSRmFwvlhdaIDKhvx09+FKlgHHlBJRTaqsMyeJG35AN3suy/H0GGSj2
+	 oVhhFl9J1bGu0Cg2KMDtP7j0oh9RYZZqsuHAUOmr2CO1Ve3cnmbsVCL/4np4RPNTtaxso
+	 1bDSTTRIsvaVyjd/jXz/qMnQpntw9a8vxTVC3J1Ogzf0v0NBjW/23Gp1Qnl7ydLQ+QA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IRhA2ktU;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KkC+WB5I;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 920F6606A31A
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 07:40:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E1B5606A31A
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 07:40:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=IRhA2ktU
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F160C1F000C4;
-	Sun, 15 Nov 2026 07:40:10 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KkC+WB5I
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0A77C1F000C4;
+	Sun, 15 Nov 2026 07:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794728411;
-	bh=7frlOCurkclEBwRst5i5yDue2DV6lwqFMXXwqAhqOwU=;
+	s=k20260515; t=1794728412;
+	bh=JPZT8Q9THEzPwoMv4Kuevux7biG3GWG88D0kqc4c3E4=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=IRhA2ktUvq0C72u28jF4eTSxNlJAp2ux9zcGZgOvZoM07INnVt4ejPjX9MwyG4yOZ
-	 k2WWkg62EprbhF+atPGIpEA4piPf6EBhwcpinA7EMadx+GX6j2YlSBYtwwHF3LoFsb
-	 /S6/tG95IMF5yN42y5oAjxVpITopg7Lm//9kLokgoR1IwIGWiSzSaiDvL/bi7a5ksP
-	 S3FwmsNu3soRUiTCOKKBhGWElZ4pGXD4BXPAls7CZVHKCL7IyLVksFW30Q6009g9XH
-	 2uE7/QHhUfR5L/odn11TXWZXUyvlOUcafgNRtBNW0kBpuP/KLve8ITkKc/7fbsOZHN
-	 sooJ2JtIP9C+A==
-Subject: Re: [PATCH v12 2/3] can: j1939: fix possibility of
- hard-lockup/deadlock in j1939_ecu_timer_cancel()
+	b=KkC+WB5Ilx0wVcAfPpJ6EKm1W/hdtlFKwxkNr/S3Pfwpdjvn5xUoYL6dO7+T2xuEs
+	 duv5XTcZ17DMWpYkCbVJZ6pZg8/Wn5k1p1ikPRjhtWkEZ55rLRNmtj75Yh6lB9FS2U
+	 PwUdEXgflZoD9x3sF0EKMDJ49BhYEpt9jGO6SncwRFXckMnGhhypPLYyTBLKL9SNFb
+	 Czpzvq6gVN1UrJ1AgK+WZOB6vbRcfXIQM6Xj+8M7svyVNA6nVRKmFflHsMWETGJJih
+	 llepnF7rLIvNrqBe4SNsO48oj5A5uFVQ1B4F4HuhD0Ts+6cfFpj001qA7qari9fNlT
+	 +80t1IjXNa5gA==
+Subject: Re: [PATCH v12 3/3] can: j1939: fix "struct j1939_ecu" refcount leak
 From: netdev-bot+sashiko@kernel.org
 To: penguin-kernel@I-love.SAKURA.ne.jp
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
  kuba@kernel.org
-Date: Sun, 15 Nov 2026 07:40:10 +0000
-Message-ID: <179472841048.488853.11794166440037989468@kernel.org>
-In-Reply-To: <ba3e6880-6dff-4fa6-a2e4-629c3d35b8d5@I-love.SAKURA.ne.jp>
-References: <ba3e6880-6dff-4fa6-a2e4-629c3d35b8d5@I-love.SAKURA.ne.jp>
+Date: Sun, 15 Nov 2026 07:40:11 +0000
+Message-ID: <179472841159.488853.10765214433306974984@kernel.org>
+In-Reply-To: <60b30b7c-91dc-4138-bc92-be922ffd6215@I-love.SAKURA.ne.jp>
+References: <60b30b7c-91dc-4138-bc92-be922ffd6215@I-love.SAKURA.ne.jp>
 X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -64,10 +63,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 4 potential
+Thank you for your contribution! Sashiko AI review found 5 potential
 issue(s) to consider.
 
-Critical: 0 · High: 2 · Medium: 1 · Low: 1
+Critical: 0 · High: 2 · Medium: 1 · Low: 2
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -75,284 +74,321 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] j1939_ecu_timer_cancel() treats -1 from hrtimer_try_to_cancel()
-  as meaning only 'the callback is executing'.
-- [High] can: j1939: ecu ref leak and uncanceled timer in
-  j1939_ecu_timer_cancel()
-- [Medium] A stale ac_want_abort flag can make a later, valid address
-  claim abort, and the claim is never retried.
-- [Low] The patch moves j1939_ecu_put() in j1939_ecu_timer_handler()
-  (net/can/j1939/bus.c:196) to after write_unlock_bh(&priv->lock).
+- [High] The patch fixes one path to the "struct j1939_ecu" refcount
+  leak, but another path to the same leak is still reachable.
+- [High] can: j1939: ecu refcount leak in j1939_ecu_timer_start() when
+  handler runs
+- [Medium] can: j1939: stale ac_want_abort in j1939_ecu_timer_handler()
+  aborts claim
+- [Low] The commit message describes the change only as fixing a "struct
+  j1939_ecu" refcount leak.
+- [Low] The patch also changes net/can/j1939/socket.c: in
+  j1939_sk_bind(), `ndev->reg_state` becomes…
 
 --
 
-can: j1939: fix possibility of hard-lockup/deadlock in j1939_ecu_timer_cancel()
+can: j1939: fix "struct j1939_ecu" refcount leak
 
-This patch replaces hrtimer_cancel() in j1939_ecu_timer_cancel() with
-hrtimer_try_to_cancel(). The old call could deadlock while waiting for
-j1939_ecu_timer_handler() with priv->lock held. If the callback is
-already running, two new bool flags (ac_want_abort and ac_commit_done)
-tell the handler to skip the address commit.
+This patch makes j1939_ecu_unmap_all() cancel each ECU's ac_timer. It also
+adds j1939_ecu_verify_get(), which refuses new ECU references from
+j1939_ecu_timer_start() and j1939_ecu_map_locked() once the netdev is no
+longer registered or rx_kref has dropped to zero. In j1939_sk_bind(), the
+reg_state check becomes a READ_ONCE() and gains an explanatory comment.
+
+Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
 
 > diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index c49c96dea7960..8cbf8716d286e 100644
+> index 8cbf8716d286e..a0120567bb8f5 100644
 > --- a/net/can/j1939/bus.c
 > +++ b/net/can/j1939/bus.c
-> @@ -147,15 +147,25 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+
+[ ... ]
+
+> @@ -130,8 +141,43 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
+>  void j1939_ecu_unmap_all(struct j1939_priv *priv)
+>  {
+>  	int i;
+> +	struct j1939_ecu *ecu;
+>
+> +rescan:
+>  	write_lock_bh(&priv->lock);
+> +	/* Need to shutdown timers now, for j1939_module_exit() might be called
+> +	 * relatively shortly after returning from j1939_ecu_unmap_all() from
+> +	 * __j1939_rx_release() from j1939_netdev_stop() from j1939_sk_release().
+> +	 */
+
+[Severity: Low]
+This isn't a bug, but should the commit message mention the module unload
+hazard that this comment describes? The changelog only talks about the
+struct j1939_ecu refcount leak.
+
+Before this patch, a pending ac_timer holds the reference taken in
+j1939_ecu_timer_start(). While that reference is held the kref can't reach
+zero, so release_work is never queued. That leaves destroy_workqueue() in
+j1939_module_exit() with nothing to wait for, and the hrtimer_cancel() in
+__j1939_ecu_release_work() never runs for that ECU.
+
+After the last j1939 socket closes and __j1939_rx_release() returns, rmmod
+can finish while the timer is still pending. j1939_ecu_timer_handler()
+would then run from freed module text.
+
+The earlier commit in this series, "can: j1939: fix possibility of UAF in
+__j1939_ecu_release()", says it fixes the timer-after-j1939_module_exit()
+case. That fix seems to depend on the cancellation added here.
+
+Would it help stable backporters if this changelog said so?
+
+> +	list_for_each_entry(ecu, &priv->ecus, list) {
+> +		if (!j1939_ecu_valid(ecu))
+> +			continue;
+> +		switch (hrtimer_try_to_cancel(&ecu->ac_timer)) {
+> +		case 0:	/* Not active or already finished. */
+> +			continue;
+> +		case 1:	/* Successfully canceled. */
+> +			/* Drop the ref from j1939_ecu_timer_start(). */
+> +			j1939_ecu_put(ecu);
+> +			continue;
+> +		default: /* Currently executing. */
+
+[ ... ]
+
+> +		write_unlock_bh(&priv->lock);
+> +		if (hrtimer_cancel(&ecu->ac_timer))
+> +			/* Drop the ref from j1939_ecu_timer_start(). */
+> +			j1939_ecu_put(ecu);
+> +		/* Drop the ref from default: above. */
+> +		j1939_ecu_put(ecu);
+> +		goto rescan;
+> +	}
+
+[ ... ]
+
+> @@ -141,9 +187,9 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
+>  void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  {
+>  	/* The corresponding j1939_ecu_put() is in
+> -	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
+> +	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel() or j1939_ecu_unmap_all().
+>  	 */
+> -	if (!j1939_ecu_get(ecu))
+> +	if (!j1939_ecu_verify_get(ecu))
+>  		return;
+
+[Severity: High]
+Beyond the reference leak above, the same hrtimer_try_to_cancel()
+behaviour can also leave a cancelled claim armed.
+
+While j1939_ecu_timer_handler() is running, hrtimer_try_to_cancel()
+returns -1 even if j1939_ecu_timer_start() has already queued ac_timer
+again. In that case j1939_ecu_timer_cancel() neither dequeues the new
+expiry nor drops the reference taken for it. It only sets
+ac_want_abort, which the running callback consumes.
+
+With two re-arms in that window, one reference is never dropped. The
+ECU then keeps its j1939_priv and the netdev reference held through
+priv_dev_tracker, so unregister_netdevice() hangs in
+netdev_wait_allrefs_any().
+
+If the second claim cancels without re-arming, nothing leaks, but the
+stale expiry survives:
+
+CPU0 (ac_timer expired, priv->lock not taken yet)
+j1939_ecu_timer_handler()
+
+CPU1
+j1939_ac_process()            /* NAME N, address sa1 */
+    j1939_ecu_timer_cancel()  /* -1, sets ac_want_abort */
+    j1939_ecu_timer_start()   /* takes ref B, timer queued */
+j1939_ac_process()            /* NAME N, idle address */
+    j1939_ecu_timer_cancel()  /* -1 again, timer stays queued */
+    j1939_ecu_unmap_locked()  /* no j1939_ecu_timer_start() */
+
+CPU0
+    write_lock_bh(&priv->lock);
+    /* sees ac_want_abort, clears it, returns */
+
+The expiry queued by the first claim is still pending, and
+ac_want_abort is now false. 250 ms later j1939_ecu_timer_handler()
+calls j1939_ecu_map_locked() and maps the ECU at sa1. Its most recent
+claim said it could not claim an address.
+
+The second claim might instead lose arbitration to prev. The late
+handler then tries to map the ECU at the address it just lost, which
+usually just trips the already-mapped warning in
+j1939_ecu_map_locked().
+
+How is j1939_ecu_timer_cancel() meant to cancel an expiry that
+j1939_ecu_timer_start() queued while the previous callback was still
+running? Should j1939_ecu_timer_start() avoid re-arming, or avoid
+taking another reference, while the callback is still active? Or does
+the abort handshake need to track each queued expiry separately?
+
+[Severity: High]
+Can the reference taken here still leak if the timer is re-armed twice
+while j1939_ecu_timer_handler() is running?
+
+When the callback is running, j1939_ecu_timer_cancel() only sets a flag:
+
+	default: /* Currently executing. */
+		/* Tell j1939_ecu_timer_handler() to abort unless committed. */
+		if (!ecu->ac_commit_done)
+			ecu->ac_want_abort = true;
+
+In that state hrtimer_try_to_cancel() returns -1 and dequeues nothing.
+j1939_ecu_timer_start() takes a new reference on every call, and then
+hrtimer_start() replaces any expiry that is already queued.
+
+Consider one ECU, with j1939_ac_process() called under priv->lock:
+
+CPU1 (ac_timer expired)
+j1939_ecu_timer_handler()
+    write_lock_bh(&priv->lock);   /* waiting */
+
+CPU0
+j1939_ac_process()                /* NAME N, address sa1 */
+    j1939_ecu_timer_cancel()      /* -1, sets ac_want_abort */
+    j1939_ecu_timer_start()       /* takes ref B, enqueues timer */
+
+CPU2
+j1939_ac_process()                /* NAME N, address sa2 */
+    j1939_ecu_timer_cancel()      /* -1 again, queued expiry stays */
+    j1939_ecu_timer_start()       /* takes ref C, hrtimer_start()
+                                     replaces CPU0's expiry */
+
+This needs CPU2 to get priv->lock before CPU1. It could already be queued
+on the lock, or CPU1 could be between the handler's write_unlock_bh() and
+its return.
+
+The running callback then aborts and drops ref A. The one remaining expiry
+drops ref C.
+
+What drops ref B?
+
+If nothing does, __j1939_ecu_release_work() never runs. The ECU's netdev
+tracker and j1939_priv references are then never released, and
+unregistering the CAN netdev would hang in netdev_wait_allrefs_any(). That
+is the same symptom as the syzbot report this patch closes.
+
+The new loop in j1939_ecu_unmap_all() drops at most one timer reference
+per ECU, so it can't get ref B back.
+
+The unlocked hrtimer_cancel() window in its default: branch looks like a
+second place where the same double re-arm can happen. On the NETDEV_DOWN
+path rx_kref is still non-zero, so j1939_ecu_verify_get() still allows
+re-arming there.
+
+The ac_want_abort/ac_commit_done handshake comes from the earlier commit
+in this series, "can: j1939: fix possibility of hard-lockup/deadlock in
+j1939_ecu_timer_cancel()". This patch relies on its assumption that each
+armed timer holds exactly one reference.
+
+> diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
+> index 50a598ef5fd4a..6e22ec5e88f5a 100644
+> --- a/net/can/j1939/socket.c
+> +++ b/net/can/j1939/socket.c
+> @@ -484,7 +484,15 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
+>  			goto out_release_sock;
+>  		}
+>
+> -		if (ndev->reg_state != NETREG_REGISTERED) {
+> +		/* Do nothing and fail early if netdev is no longer registered.
+> +		 * This check is racy but we don't need to recheck after j1939_jsk_add()
+> +		 * is called, for either j1939_sk_netdev_event_unregister() from
+> +		 * j1939_netdev_notify(NETDEV_UNREGISTER) (which is retried by
+> +		 * netdev_wait_allrefs_any() as long as priv->rx_kref held by
+> +		 * j1939_netdev_start() is preventing j1939_priv_set(priv->ndev, NULL)
+> +		 * from being called) or j1939_sk_release() will take care of this race.
+> +		 */
+> +		if (READ_ONCE(ndev->reg_state) != NETREG_REGISTERED) {
+
+[Severity: Low]
+This isn't a bug, but the commit message only lists the three bus.c
+changes. Could it also mention this j1939_sk_bind() change (the READ_ONCE()
+annotation and the new comment) and say why it's needed?
+
+A smaller point: j1939_ecu_unmap_all() is also called from
+j1939_netdev_notify() on NETDEV_DOWN:
+
+	case NETDEV_DOWN:
+		j1939_cancel_active_session(priv, NULL);
+		j1939_sk_netdev_event_netdown(priv);
+		j1939_ecu_unmap_all(priv);
+
+With this patch, ifdown also cancels pending 250 ms address-claim timers,
+so they no longer fire and remap the ECU. The changelog only hints at this
+with the word "unconditionally". Could it say so explicitly?
+
+>  			dev_put(ndev);
+>  			ret = -ENODEV;
+>  			goto out_release_sock;
+
+[ ... ]
+
+> @@ -141,9 +187,9 @@ void j1939_ecu_unmap_all(struct j1939_priv *priv)
+>  void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  {
+>  	/* The corresponding j1939_ecu_put() is in
+> -	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
+> +	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel() or j1939_ecu_unmap_all().
+>  	 */
+> -	if (!j1939_ecu_get(ecu))
+> +	if (!j1939_ecu_verify_get(ecu))
 >  		return;
 >  
 >  	/* Schedule timer in 250 msec to commit address change. */
-> +	ecu->ac_commit_done = false;
->  	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
->  		      HRTIMER_MODE_REL_SOFT);
->  }
->  
->  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
->  {
-> -	if (hrtimer_cancel(&ecu->ac_timer))
-> +	switch (hrtimer_try_to_cancel(&ecu->ac_timer)) {
-> +	case 0:	/* Not active or already finished. */
-> +		break;
-> +	case 1:	/* Successfully canceled. */
->  		/* Drop the ref from j1939_ecu_timer_start(). */
->  		j1939_ecu_put(ecu);
-> +		break;
-> +	default: /* Currently executing. */
-> +		/* Tell j1939_ecu_timer_handler() to abort unless committed. */
-> +		if (!ecu->ac_commit_done)
-> +			ecu->ac_want_abort = true;
-> +	}
->  }
-
-[Severity: High]
-Can j1939_ecu_timer_cancel() miss a timer that was already re-armed?
-
-__run_hrtimer() sets base->running before it calls
-j1939_ecu_timer_handler(). It only clears it after the handler has
-returned and cpu_base->lock is taken again. While base->running points
-at ecu->ac_timer, hrtimer_try_to_cancel() skips remove_hrtimer() and
-returns -1, even if j1939_ecu_timer_start() has queued the timer again
-in the meantime:
-
-kernel/time/hrtimer.c:hrtimer_try_to_cancel() {
-    ...
-	if (!hrtimer_callback_running(timer)) {
-		ret = remove_hrtimer(timer, base, HRTIMER_STATE_INACTIVE);
-    ...
-}
-
-That window covers the handler waiting in write_lock_bh(&priv->lock).
-It also covers the stretch between write_unlock_bh() and the return to
-__run_hrtimer(). With CONFIG_PREEMPT_RT=y the soft callback is
-preemptible, so the window can be long.
-
-j1939_ac_process() calls j1939_ecu_timer_cancel() under priv->lock.
-Unless the claim is idle or lost, it then calls
-j1939_ecu_timer_start() under the same lock. Address Claimed frames
-reach this path via j1939_can_recv() and j1939_ac_recv(). So a remote
-CAN peer, or a local user on a PF_CAN socket, controls the timing.
-
-Suppose the handler for an old expiry (holding ref R1) is in that
-window:
-
-- Frame 1 for the same NAME gets -1 from the cancel.
-  j1939_ecu_timer_start() then takes R2, clears ac_commit_done and
-  queues the timer.
-- Frame 2 arrives before base->running is cleared. Its cancel gets -1
-  again. R2 is not dropped, the queued timer is not removed, and
-  ac_want_abort is set.
-
->From there:
-
-1. Frame 2 claims another unicast address. j1939_ecu_timer_start()
-   takes R3 but only re-arms the already queued timer. The single
-   expiry puts just one of R2/R3.
-
-   The ecu kref can then never reach zero, so
-   __j1939_ecu_release_work() never runs. That leaks the struct
-   j1939_ecu, its j1939_priv reference and the netdev reference held
-   through ecu->priv_dev_tracker. Wouldn't unregister_netdevice() then
-   wait forever?
-
-   If the old handler had already passed write_unlock_bh(), nobody
-   consumes the flag from frame 2 either. The re-armed expiry then
-   aborts.
-
-2. Frame 2 is idle (J1939_IDLE_ADDR) or loses contention
-   (ecu->name > prev->name), so nothing re-arms. Say the old handler
-   was still waiting for priv->lock. It consumes ac_want_abort and
-   returns. Frame 1's timer is still queued with the flag cleared.
-   250 ms later, j1939_ecu_map_locked() maps the ECU even though
-   frame 2 withdrew or lost that claim.
-
-3. Same as 2, but the old handler had already passed
-   write_unlock_bh(). ac_want_abort stays set while the timer is
-   still queued. Now frame 3 arrives after base->running is cleared.
-   Its cancel returns 1 and drops the reference. Neither that path
-   nor j1939_ecu_timer_start() clears ac_want_abort, so frame 3's
-   timer aborts instead of committing a valid claim.
-
-The old hrtimer_cancel() waited for the callback, removed the queued
-instance and returned 1. So all three look new with this patch.
-
-Clearing ac_want_abort when hrtimer_try_to_cancel() returns 0 or 1
-looks safe, since no handler is left to consume it then. That would
-cover case 3. It doesn't help with the leaked reference or the queued
-timer that is never removed, though.
-
-A single bool can't express "callback running and timer queued
-again". Should the timer reference be tied to an armed state tracked
-under priv->lock rather than to the return value of
-hrtimer_try_to_cancel()? Or is there another way to handle the -1
-case?
-
-[Severity: High]
-Can this leak an ECU reference?
-
-hrtimer_try_to_cancel() returns -1 whenever hrtimer_callback_running() is
-true, even if the timer has been queued again in the meantime:
-
-kernel/time/hrtimer.c:hrtimer_try_to_cancel() {
-    ...
-	if (!hrtimer_callback_running(timer)) {
-		ret = remove_hrtimer(timer, base, HRTIMER_STATE_INACTIVE);
-    ...
-}
-
-j1939_ac_process() always calls j1939_ecu_timer_cancel() and then
-j1939_ecu_timer_start() under priv->lock, and each start takes a new
-reference. Here is one sequence for NAME N while a handler run is in
-flight:
-
-1. T1 holds ref R1. Its handler is running (base->running == timer) and
-   is blocked on priv->lock.
-2. AC frame A (addr Y): cancel gets -1 and sets ac_want_abort. Start
-   takes R2 and enqueues the timer.
-3. The T1 handler aborts, drops priv->lock and puts R1.
-4. AC frame B (addr Z != Y) arrives before the T1 callback has returned
-   to __run_hrtimer(). Cancel gets -1 again, so R2 is not dropped and the
-   timer is not dequeued. Start takes R3 and only re-arms the same queued
-   timer.
-5. The one remaining expiry puts only one of R2/R3.
-
-Once the kref can never reach zero, __j1939_ecu_release_work() never
-runs. That skips netdev_put(priv->ndev, &ecu->priv_dev_tracker),
-kfree(ecu) and j1939_priv_put().
-
-Wouldn't unregistering the CAN netdev then wait forever for the leaked
-device reference?
-
-j1939_ecu_unmap_all() doesn't seem to recover this either. The extra
-reference has no pending expiry, so hrtimer_try_to_cancel() returns 0
-there.
-
-There also seems to be a lost-cancel variant:
-
-1. Frame A (addr Y) re-arms the timer.
-2. Frame B (idle address) runs before the T1 handler takes priv->lock.
-   Its cancel gets -1, but ac_want_abort is already true.
-3. The T1 handler consumes the single flag.
-4. The re-armed expiry then maps the ECU at Y, even though frame B
-   revoked that claim.
-
-The previous hrtimer_cancel() would have waited for the callback,
-removed the queued instance and returned 1, so both cases look new with
-this patch. They also seem to remain after the later commit "can: j1939:
-fix "struct j1939_ecu" refcount leak", which does not change
-j1939_ecu_timer_cancel() or the handler.
-
-A single bool can't represent "callback running and timer queued again".
-Does the cancellation logic need a different design here?
-
-> @@ -165,14 +175,25 @@ static enum hrtimer_restart j1939_ecu_timer_handler(struct hrtimer *hrtimer)
->  	struct j1939_priv *priv = ecu->priv;
->  
->  	write_lock_bh(&priv->lock);
-> +
-> +	/* Abort if j1939_ecu_timer_cancel() told me to abort. */
-> +	if (ecu->ac_want_abort) {
-> +		ecu->ac_want_abort = false;
-> +		goto out;
-> +	}
 
 [Severity: Medium]
-Can a stale ac_want_abort make a later, valid address claim abort?
+This isn't introduced here, but the new code depends on the
+ac_want_abort/ac_commit_done handshake from the earlier patch "can:
+j1939: fix possibility of hard-lockup/deadlock in
+j1939_ecu_timer_cancel()". Can a stale ac_want_abort make an
+uncontested address claim abort?
 
-On this abort path ac_commit_done stays false. After write_unlock_bh(),
-the hrtimer core still treats the callback as running, because
-__run_hrtimer() only clears base->running after fn() returns.
+When j1939_ecu_timer_handler() takes the abort path, it clears the flag
+and skips setting ac_commit_done before dropping priv->lock:
 
-A j1939_ecu_timer_cancel() in that window gets -1 and sees
-!ac_commit_done. It then sets ac_want_abort = true again, even though
-this handler run has already made its decision.
-
-j1939_ecu_timer_start() resets only ac_commit_done, not ac_want_abort.
-The next armed expiry then aborts without calling
-j1939_ecu_map_locked().
-
-A possible sequence for NAME N:
-
-1. Frame 1 (addr X) arms the timer.
-2. The timer expires on CPU1 and the handler blocks on priv->lock.
-3. Frame 2 (addr 0xFE, idle) cancels, gets -1 and sets ac_want_abort.
-   The idle path doesn't re-arm the timer.
-4. The handler takes the lock, consumes the flag, aborts and unlocks.
-5. Frame 3 (addr Z != X) runs after the unlock but before the callback
-   returns. Cancel gets -1 and sets ac_want_abort again, then start
-   re-arms the timer.
-6. 250 ms later the handler aborts on the stale flag.
-
-After that, further AC frames from N with addr Z take the early exit in
-j1939_ac_process():
-
-	if (ecu && ecu->addr == skcb->addr.sa) {
-		...
-		goto out_ecu_put;
+	if (ecu->ac_want_abort) {
+		ecu->ac_want_abort = false;
+		goto out;
 	}
+	...
+	ecu->ac_commit_done = true;
+out:
+	write_unlock_bh(&priv->lock);
 
-So the timer is never re-armed, and the ECU stays unmapped at Z until it
-claims a different address.
+The callback is still running after that unlock, until __run_hrtimer()
+clears base->running. In that window hrtimer_callback_running() is true
+and ac_commit_done is false:
 
-"Handler already aborted" and "handler not yet decided" both show up as
-ac_commit_done == false. Should the code tell these two states apart?
+CPU0 (ac_timer callback, ac_want_abort already set)
+j1939_ecu_timer_handler()
+    ecu->ac_want_abort = false;
+    write_unlock_bh(&priv->lock);
+    /* still in callback: j1939_ecu_put(), return */
 
-> +
->  	/* TODO: can we test if ecu->addr is unicast before starting
->  	 * the timer?
->  	 */
->  	j1939_ecu_map_locked(ecu);
->  
-> +	/* Commit and tell j1939_ecu_timer_cancel() not to ask me to abort. */
-> +	ecu->ac_commit_done = true;
-> +out:
-> +	write_unlock_bh(&priv->lock);
-> +
->  	/* Drop the ref from j1939_ecu_timer_start(). */
->  	j1939_ecu_put(ecu);
-> -	write_unlock_bh(&priv->lock);
->  
->  	return HRTIMER_NORESTART;
->  }
+CPU1 (one Address Claim for the same NAME, new address)
+j1939_ac_process()
+    j1939_ecu_timer_cancel()      /* -1, ac_commit_done is false,
+                                     so ac_want_abort = true */
+    j1939_ecu_timer_start()       /* ac_commit_done = false,
+                                     new 250 ms timer queued */
 
-[Severity: Low]
-This isn't a bug in the series as posted. However, the commit message
-does not mention that j1939_ecu_put() now runs after write_unlock_bh().
+Nothing clears ac_want_abort after that. CPU0 is already past the lock,
+and j1939_ecu_timer_start() leaves the flag alone. When the new timer
+expires, j1939_ecu_timer_handler() sees the stale flag, skips
+j1939_ecu_map_locked() and returns.
 
-The move is only safe because of the earlier commit "can: j1939: fix
-possibility of UAF in __j1939_ecu_release()". That commit defers
-list_del() and kfree() to __j1939_ecu_release_work(), which takes
-priv->lock itself.
+The ECU then stays out of priv->ents[] even though nobody contested the
+claim. Sends using that NAME fail with -EADDRNOTAVAIL from
+j1939_ac_fixup() until something re-arms the timer.
 
-At the baseline, __j1939_ecu_release() calls list_del(&ecu->list),
-netdev_put() and kfree(ecu) synchronously. It relies on the caller
-holding priv->lock.
+Clearing ac_want_abort in j1939_ecu_timer_start() doesn't look right on
+its own. A callback still waiting for priv->lock would then commit the
+new address early.
 
-This patch carries Cc: stable and Fixes: 9d71dd0c7009. Suppose a stable
-tree picked it up without its predecessor. Wouldn't a last put from the
-timer handler then modify priv->ecus without the lock, racing with
-walkers such as j1939_ecu_get_by_name_locked()?
-
-Could the commit message note this dependency?
+Would it work to set ac_commit_done on the abort path as well, so that
+a cancel after the unlock no longer requests an abort? Or does the
+abort request need to be tied to a specific arming of the timer?
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/8de287d7-b4e1-4062-b40e-b193f5ec68ca%40I-love.SAKURA.ne.jp
