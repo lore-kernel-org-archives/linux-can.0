@@ -1,71 +1,73 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794736674;
-	b=2t6zQQQB+k7SNqtEYRAYWxMFxevkeWN0+Ctb9t3zZIl/vORveXDbbILoQevgekUu+BxB
-	 8vC5uMaF7P488XaWGU2pTLY3412MWJ8kx619Y8rEeBnfzrpJpuslR9SMrNjK+nkJ7M2I8
-	 3Wmn9f8MmPkhaAHdUx8pjEHrJ+nZ77wROxvF17vwElgDjiT1evp7hkh0CzuT3+FxYUpFF
-	 HVT4TVwScYqIX+j9d1akjdmF34mHmv/nMEJD8rjQFlpLcP4EVetcsnORrQP8BP//CvGQw
-	 cyfbX4X8vktZy/QXUXFHBAsycNFFXA+SDY1wYoe0yNeAbB/GlRxrZt4k1jJFwBgKA7g==
+	t=1794736675;
+	b=Rd19fDAr7yD5aSZOOKvVthHwAsAC9mvxcZrIzSk95in+6RxrxnfoI1o3tbA8swJ04k4c
+	 jfR3crLyr1iWmN7NHpLJOrh0evME1/jvOGtoSiREhTD/8LEA7IJbfVvnXKOFJ3UPJfUtS
+	 Q05srCnJrrQHGfusEC8euWXNrLzqENSfz5XyTP8mT/afCpFXAwFBkyt+84VzuwpMFJb0U
+	 4BX6XsZ2kVCNcNTndq6ja7KtRBtxdI/zpadTdNDBRY6WCzbbZT7V1+RtcLUHShHFjBFx6
+	 BzT6meWzK6oNQxBQYlMt3CI369EoFRRCYsi48+5SqJ6MUIzHeGblkMPHyt5f4Jul94Q==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794736674;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794736675;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=b0f7y6aJ4qU3mQm4d7rAxcNcJOa4auBZkUYDTEPNs2w=;
-	b=UakFtxki5u8tXjW0DXrBbNYCkADeIBcDOry0rZxUwlCnJf3lCAZUGBUBhFW0uGXI7W8q
-	 dOlEdQrGQ4wvy1nOgt0H8ySPPAH5NW46DLNWsPnmEAaIfqDeRou/bOOMwKA1ecoWgs9rf
-	 z0FelY0K+qZ/ljr2TSNqsPoEeELdMF+L0yzYlao2uR1yuIrJbHojgq6QYUyhIrDVZihlw
-	 z9o9tDx6wDwuZpk6615JPHj7IBECUK+p59DOI5kzDWEyG2IJilbKavB4ujc7bWfI6Am01
-	 Dk+hAdrxn1tgSPcSr6V8PToEUpMbZc3VAfbT49jeS+w7G83kV1LpHMfF0P5PkmbSVKA==
+	bh=sXVOFq7OpstFUNryPthfsCINYLwKy9AAup6V1x6fyig=;
+	b=5OptmgxeQuPM3H9mf+FIHRygcrYUg3S+3RFh9uAY1hX4Luc+Kujs4C4Iuf0fB0YY3Sz6
+	 WKapZD0kG6SrZIK2cfdkOrZogV5pBpPNK/wPMsH5hpKof1z6oDBYqdZlQzADAnPH92zCu
+	 VCl97226s+ry77Y+HR4t5ublpSJFSxRR32IoPqC80kMLh7iOf5A/cUFs3NdxTVZk2we5J
+	 T4TROEMX8NcgotGsDa2qo0vuiYhSlgK+5fxvSTWg523MzpxqkIwqOywta1oOqk8aVi3WO
+	 fRW1JIN5DKamkm7/3IQCPiEY/YB5A074GKencERQ6yHppuaQpWOxTAdqSRn6iPRZd1Q==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XR6WzWRi;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="J+1QZz/7";
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FD2606A327;
-	Sun, 15 Nov 2026 09:57:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 68FD2606A327
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 590D6606A32F;
+	Sun, 15 Nov 2026 09:57:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 590D6606A32F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=XR6WzWRi
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=J+1QZz/7
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 46035201CE0;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 7EDB7205A02;
 	Sun, 15 Nov 2026 10:57:50 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794736670;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=b0f7y6aJ4qU3mQm4d7rAxcNcJOa4auBZkUYDTEPNs2w=;
-	b=XR6WzWRi1Uf0Sl6YALGL7apiKIFvEeZM2vSlCtw/8SMPvpmY6F9klzUYWf46+JxBO39Vrl
-	m0or1v78MaB5nSkHhs3AClNMOKgsdjT+cbAug4rKZFrKYKn80+tXnoKsIFLi+V2exN6UCr
-	LcmkW6kTHejebflZmHg7vMVsMJqP8EJp/4bWl1bYLeVYCcoN+YSZXDL6pZ/vDHSdZqpEbw
-	pL2XAtBp4FktaxLnvdIMmXyNfTwiUEokor5TgHBML9+B6vPaYEvl3yxGRM1GqNTq/SCor/
-	qQmZwrXx36pAXdffL5A+nhJ/hdbXfW3WkqOr2oXzhKSe/zJjumFc7g4nSiGQPg==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXVOFq7OpstFUNryPthfsCINYLwKy9AAup6V1x6fyig=;
+	b=J+1QZz/7fPouF6Ao6NDhLpFey8WnExpdG9WK6E1FC0jU3Xz6kcTdt8hBhfSxo75FPYpl38
+	XUqzlZSgyyyzLsgQrkZEnzdVaH5ZLrH4U8WLEvI3vhmUemRp9jYHFXWOI5dvpHyl6cl8I5
+	9pn0P7WTgJUqmp6+IFxfbI7E7Psgq4T7N5k8Rm7y1GMqdbXcwcAVtZKM1x8P7g31LeNeg1
+	7GUDvtiyQ2o+w8WX0GmYnrPpUMgZxwZ4Tnw8J5WLxqaLVy/w3DTd7ZfmCUHn5owwUTKed/
+	a5mcpIUufEn3ECyxtNuVKOtHsqRkcIb590VvjfMY6EMof5hUoYPQOgo9sTHgOQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794736670;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=b0f7y6aJ4qU3mQm4d7rAxcNcJOa4auBZkUYDTEPNs2w=;
-	b=HxFk6+DOxXOkmW3cM7a+BoMyDLyTLcBbOkXujOmJoGa6IalbPosphVH/WRexeFfIHF/QNe
-	CpE/3bNESBrUTCMGroiUq62PRyVQX8bzKTrshnnyXBFkKbrpj99+99ro+oBIyrLXSoWG+Q
-	leJ2LrKi4VXC3wSbE3fmWkx3Hl5l6bELMn4+jrIXl9BFrdnJUZJ3qHJ10QbQHtACINH3/c
-	HRC982wuTG6qrhUIdExOnuswGCSFFBoaDm4V6wk+7eFFqsbK6Ns1BVZiR0mZqPTrCYNV28
-	TjVP/ejgtx7zzpzc8hGCdlrtxsyFKHzrIX7WqzQxG4N4Y6OvsRqgQegwSHH/Qg==
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXVOFq7OpstFUNryPthfsCINYLwKy9AAup6V1x6fyig=;
+	b=dmoJ7+3KbEzCzHEn1bjg4RYHanZzvc7LrXkEkWMo6aDnFsD/9i+pZwcfsWIvHs0JuaNQc2
+	96BZvZNgB6+ERZ5maRx1fPWayHMAAQop+OS3g2+j4uE8u7RS+hXfSOXwN8ekZWGO349Rfb
+	EU92Sh5lcTmK8Fu9LS0hUtG0pztWBbbA1Lg4zSNAeCMgptNUe7mI6PHKVs3EihF7rGc/Y9
+	nTbcsc1VmYMq0yVRANOtuOzljA0lZmlHmuOJP03x5NreFDxna0eahBrHtKFWwa5sX8DJWX
+	W1sRgrNDKluI8YtZlKv/5Q7M7SZ4MTg6ks5X+QvuGPXwU1VMKX8TlQwWRo8OiA==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794736670; a=rsa-sha256;
 	cv=none;
-	b=fUk1kc/tSPSYVjueSIDMAcfsegLABVN7VRrtxRSrmckuOz9e38DB23IWU/x+CovIT711dA
-	SLDj+5m57EScxoeu9TFI03ssxGU0gLFVNlShBOUVMc9mt5Ol/QWN+t35DJ6yy+s0fbU5qY
-	mIgkvfojjJGDRyhCAG8poq4nVu90nq2JC2q0wCP8G+/QNDGtgt1W0Z+lMOQAQdArbrM/h8
-	qEZ/FE8f3y7ZGVUsCD65LxJSj3qbsgueJ1cQ0u7diEqKxfN8xUyF64IKVIkGtErIXh1qh2
-	uMwIN6H3CA/47O+wN7qHwU3YNOIku8Jr2QuH3qmhcuKji/YEOxXiDDMBU15xRQ==
+	b=X8kz3ocojTp/U+BzejbmKOMpddBl04jU/kF4hgw1657hFq99am2RSPg/tHOJbwafUVCdf+
+	sGQtISkPPqCoqHsG8ZO462JP9pOA6srGyeWEAyFf0CJjwwT5YUqlyraAAWMwa+/6c+FWcJ
+	omwOEVH7LatGqZzfmtfdWHMY6xZPyU1RK3KyoOr/7AFa+u8SvhhwmTbiL288atGIkqPs48
+	YRjYRPauu8rD9v/PdlszvAh3Jesm3CSUZ2GDiomULMdJK/VcndAQk9FHdabLtljJeNfxE8
+	EklF9OZlN4FbWZ8KnT6cLYMqMTUVjAzdmaq4igQEXzWWbuflq3xb0GjBm2FCEA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -73,25 +75,31 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xSWze-004GWF-0Y;
+	id 1xSWze-004GWM-1M;
 	Sun, 15 Nov 2026 10:57:50 +0100
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id E68545EC24C;
-	Sun, 15 Nov 2026 09:57:49 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 1FA305EC251;
+	Sun, 15 Nov 2026 09:57:50 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net 0/9] pull-request: can 2026-11-15
-Date: Sun, 15 Nov 2026 10:54:51 +0100
-Message-ID: <20261115095746.709371-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Zhu Ling <zhuling0805@qq.com>,
+	stable@vger.kernel.org,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Sashiko <sashiko-bot@kernel.org>
+Subject: [PATCH net 5/9] can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
+Date: Sun, 15 Nov 2026 10:54:56 +0100
+Message-ID: <20261115095746.709371-6-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261115095746.709371-1-mkl@pengutronix.de>
+References: <20261115095746.709371-1-mkl@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -103,57 +111,50 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hello netdev-team,
+From: Zhu Ling <zhuling0805@qq.com>
 
-this is a pull request of 9 patches for net/main.
+can_fill_info() emits IFLA_CAN_BITRATE_MAX with nla_put(), which consumes
+space for both the attribute header and its aligned payload. However,
+can_get_size() accounts for the payload only. The resulting underestimate
+can make filling the netlink response fail with -EMSGSIZE when the skb has
+no remaining slack.
 
-this first 3 patches are by Zhu Ling and fix problems with the CAN
-netlink handling.
+Use nla_total_size() to account for the complete attribute.
 
-A patch by my fixes a kernel memory information leak over USB in the
-gs_usb driver.
-
-The last 5 patches are by Oliver Hartkopp and avoid RTNL stalls in
-CAN_RAW, CAN_ISOTP and CAN_BCM protocols.
-
-regards,
-Marc
-
+Fixes: 2290aefa2e90 ("can: dev: Add support for limiting configured bitrate")
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhu Ling <zhuling0805@qq.com>
+Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://patch.msgid.link/tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Closes: https://sashiko.dev/#/bug/linux-3924d490-baed-49dc-880a-6fd1163cf08d
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
 
-  tcp: fix NULL pointer dereference when restarting a Fast Open listener (2026-11-13 16:46:31 -0800)
+Notes:
+    FAQ:
+    
+    Q: What about netlink payload size underestimation in `can_pwm_get_size()`
+       when PWM capabilities exist but `CAN_CTRLMODE_XL_TMS` is disabled?
+    A: This issue will be fixed in a follow up patch, to ease backporting to
+       stable.
 
-are available in the Git repository at:
+ drivers/net/can/dev/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-7.4-20261115
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 0cd55613a616..c0367c9e65f4 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -825,7 +825,7 @@ static size_t can_get_size(const struct net_device *dev)
+ 	if (priv->bitrate_const)				/* IFLA_CAN_BITRATE_CONST */
+ 		size += nla_total_size(sizeof(*priv->bitrate_const) *
+ 				       priv->bitrate_const_cnt);
+-	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
++	size += nla_total_size(sizeof(priv->bitrate_max));	/* IFLA_CAN_BITRATE_MAX */
+ 	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
+ 
+ 	size += can_data_bittiming_get_size(dev, &priv->fd,
+-- 
+2.53.0
 
-for you to fetch changes up to 48bcad36a131fa67a29a5ac430aceedf2d6f3d0f:
-
-  Merge patch series "can: avoid RTNL stalls in CAN_RAW, CAN_ISOTP and CAN_BCM" (2026-11-15 10:46:59 +0100)
-
-----------------------------------------------------------------
-linux-can-fixes-for-7.4-20261115
-
-----------------------------------------------------------------
-Marc Kleine-Budde (2):
-      can: gs_usb: gs_can_start_xmit(): don't leak uninitialized memory over USB
-      Merge patch series "can: avoid RTNL stalls in CAN_RAW, CAN_ISOTP and CAN_BCM"
-
-Oliver Hartkopp (5):
-      can: bcm: copy the CAN frames outside of lock_sock()
-      can: bcm: do not remove the procfs entry in bcm_notify()
-      can: raw: use a private mutex instead of lock_sock()
-      can: isotp: use a private mutex instead of lock_sock()
-      can: bcm: use a private mutex instead of lock_sock()
-
-Zhu Ling (3):
-      can: netlink: fix static FD-NON-ISO mode validation
-      can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
-      can: netlink: fix CAN XL PWM attribute sizing
-
- drivers/net/can/dev/netlink.c |  18 ++++---
- drivers/net/can/usb/gs_usb.c  |   2 +-
- net/can/bcm.c                 | 114 ++++++++++++++++++++++++++++++------------
- net/can/isotp.c               |  28 ++++++-----
- net/can/raw.c                 |  41 ++++++++-------
- 5 files changed, 130 insertions(+), 73 deletions(-)
