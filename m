@@ -1,91 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.50
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794741541;
-	b=RsanBMyC1xl/smTdJkpHYOWPIyQf6BjKUG0HJkU06uj+pHrHw7kS9ZDJZ+ABVVZC65Xg
-	 50X99k/a8qH0CCCIQ+6UgZofDrpodBfCJTU+TloL5ECJ+dbsMQeDyKV6gTG8KsOPkF4+I
-	 H1yO0Enf8OeTxSySZjYLnIu1z3bzAwy9cz+I09VeYg1eHa+KPuIdMSeE+Ic7cZTtY4FVL
-	 wWnjbfBgNUSBD6cLHWKPPJkHJiw0g5ULN28Xhyo9+74+zUgtWd165jhqFddXxe7licDN5
-	 IQfvU4lqUNNAG6vS6xOo90qFD1XB92G2II9gyLdkJtq8iFjTUiqhOcTPQa5TPeWvgfg==
+	t=1794741840;
+	b=czLEgmIhSb/MBprUOYder36qM2It+b3COZBdWCWnGBAlzRGTjgCFikBYhs2PWqrnU/dH
+	 4/MlUsgsbxGxlOVgOgdwOYOel2JZNhuWt1/LgxH1x5+CL0uUxAH5qChCBS8OrNx5oiLNb
+	 QOaOZmmNEC8Lix3Z176H2uFy/e474nOcukljTjIcFyc+ASZU3bp+HPTODkZsHlsVjp1rm
+	 8uH5MCmi8eDscwofT5ACzRrUWbEXFvN1wSmZCqtxXF+x0AhgyNxM9Z3vih80zLiEEmSQl
+	 ue8kK9sBtzRPAVi74H4oPHX6d5tu+PtXJzXn4e2fHo2ccL+AdP8LYvohr0fADvtmgPQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794741541;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794741840;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
 	 References:Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
-	b=ZGbl1khS/Six7dLZMcpkR9TGkyu2qRH47ERVA+EWPLHoLnI5OtEu39NegsYXgIi0Vrfu
-	 VRtMISJb1H942F6Rv6Vx4Ed2KpXDTa0BjEgpfnxsgMSwYK6tEra/xQcnx6wGaP3gIf8Gk
-	 92uq6WQKBdxVc31S4MGEGht60wLiBb6bBd46u09YliiZH52C8aJYHNtVTCvSEkpKO111E
-	 y4N0r90vAN6xJMxINc1b0xpzVoj9VBTcHXP2ePeM/Pfb9DFRRYv4/XJrUwiALgY8pxxtR
-	 IqUtgRi/e3ZYGA/aaeSr9e+/hSgavu527b+LKZn2wgR3zmpmtvVyePHTTJzgz3tryyA==
+	bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
+	b=TIXamcwWmwkmMEMe2YfRmbX8t2HynxqQOlYvpAZxUiUALJFmx+Fyf/BM8o5auUrJrHAj
+	 lWNBTwiaLOSGC8Zyqfa5cIw7SVetrv/aPZrAVn2+dOWMCNLMeN+LD3iFnGSzACY4jcsOZ
+	 9M4sFri4nksBDMXTV8J7l4UvwuLjFGYjbUVfi+sDKPJiH/G2CWrnrnA9EUv4H1Fq3uvxV
+	 SoP0qjh3Nt+zEbvKJhWkUL7sHAS/ng80/9MD+WIiTADsGTswN+QIr5Ac78lE6TbRHTnVC
+	 PhvyU9epZeBOJqWcRQQowUsbA07dr6v3xrB0w2w0qazhtVVR2YoJ6V2o7NZ8SHjXVTw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b="p0GDn/X9";
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=6ho6TCx0;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.50
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=TzPgBeNt;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=lk8njFt5;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63009606A31E
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:19:00 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 63009606A31E
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6866606A31E;
+	Sun, 15 Nov 2026 11:23:59 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B6866606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=p0GDn/X9;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=6ho6TCx0
-ARC-Seal: i=1; a=rsa-sha256; t=1794741531; cv=none;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=TzPgBeNt;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=lk8njFt5
+ARC-Seal: i=1; a=rsa-sha256; t=1794741819; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=kAQb17EJCb+O3MhSeVmZGykFDqAX9IlWDgSv7Jg7FMixnsGTTfPph0DuAc9arGlzio
-    ScqKaoksWLmYhU+M/eW/EMmXtAJYiYz/o9Zs4IE3ms3CECHV+/OU22DXARPrCZIFvR1A
-    iA+TzLIQYp50b/jzdPyrQEnRWLEqwBAaup/qORmyaYcuQbz0wjLEiuk2ze6VGk1Rs3Cx
-    2oFgPOOTLTrFj0p2sUtydvNCgI77HCQ5ulzXPp7DOAhw5hh3bOLgdQJr4zxbSbi4n7Sn
-    xBvsnRbgnGsBt3n2ggBR5oPjkju7dz53YUHnkNBHDlXTHIiQJBFH0PbSh0mS/PcwibEt
-    FS3A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741531;
+    b=C/xAv43UBRAVDoMVQ+76RNWkAIzwvp7461ZOhIzSaMXxJVmjOaliNZffMlx8f3KmtG
+    CVZIqfLb5v7pZgwNySaPdesZ86mruD6ds9MK0WwQW6zsdtwAEaWi972jSk653YFJ2np4
+    BUd53fgSgGlydFLVY+nTPj9EUG1ftut/pFqlBFlmzmM47NU5glNxk3nQYc4WIUQDQm2C
+    jP6HDApdewt8QTjLzxl+RoZvm7w97yzQzs/t2d1Qb2rS5YJm1vMA5A8TCVq1GRYymz41
+    npgmZARpZRjmFd/mGrTVbabQRUJeHjs8D8fyG9KoCzqej4OBSdG2vQ70+AG1AvvQOQKm
+    KuMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741819;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
-    b=Kn5ik9EvpwnzvSjd5jGd9Ntz68313QNjK5DpJEEC/Q/F5VA7HKkYkQkYR+XsxB5WJk
-    zSzOVXb1ZpC5zM3F+CZoeK5YQQaqF4KbNvt9d/jNuEMsqrQB3ZEU7oj3dqpdERBvCYPM
-    OP0u5BafLpyS6zAiXBeXkBQb62fc1liUwN/PsxfM8GdJCvO8NsaNDeB+ON2THOCGFvB4
-    OrTEn46vVFCVkGnkr0fMQNq6ZkkvwGkRn48NNwfz4NB60HpFK8uS2VssQQwQ2DZbJFSV
-    f9k1i13ovvmOH9tqgyhvOVtOYb+SSU18vJuquNC6UD8dhvhOyeYtN48l+eOgKVswx/U7
-    /PFg==
+    bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
+    b=lc7abcJ0qrJUIbV1bet4xK1BkJfT7w+2QMSL38XDTC3lHAUoSiXxZrU6jMu+5fdK2c
+    7n5a7se8nRDaQxCy2zUW5wioW+KXfb8SBRkjvTHiPgUwCF/vHmDrow49EyGfOM/7H1m4
+    MoBcgFo6e0A8bX5dL4I4DhfRiYLPLVL39wy7K8daXvHUwVXFCLiydBLQZ98qLns2EX2b
+    jEWGa1fBnEplGzk8so3BP0sdWJkU4srhv31ATkcC5OHILrcQgQHvL+LFrfSY0TDavVBg
+    eyxiuuKl+7RgRY1TEj0Y9vDI65+5ZRkMMIzULc+kAVXEUq2xsihTpGAJTjipEEqkQn8I
+    q2uw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741531;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741819;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
-    b=p0GDn/X9svEjSJeu+SA3WDcUxZUSPAxHaAhZ0msLqSxBd5gJzYkubChXi4tr/9FM2V
-    O/C8HCqwAeEinMDAAv0QZKJdUc/AHfsOQv51Hw3B84ZG/YVLKWq9z8Se/qZkb6wTwF+c
-    ZSCNdMNZdkR+ptLA4zw127aGENDaBPXm+RVq928UielH20mqEAIKpd/msBC6L/eihpM4
-    xilXDtV1Jh8wFTFvZQvmlracmMNCCp3epolE0v0+eLr2fiMB15leo5ltBEpoK3syNKT2
-    uspgf5OGdt2njpBZGvVIYhn8MwNC7Z4SVnx8qAf5kltDvvAQ9Mc2xk1DasfjZE1meebW
-    ellg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794741531;
+    bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
+    b=TzPgBeNtmBGFENW4tNs0YUqSo/QvDcj2cqhdBNrYFOMtLlhl5bH3kNlRlVEjYeROne
+    bFVbT4w6h2PjBurxhRECjgKko/pSUDiPxSgYf181vwr1i74P54lzh0rjLrDpiryMwXO0
+    mDdkJ8DWrEqCTOTacEC+gEzEYpVy35flKagwUaBxZ3WSuoZWhpYr+u/MBkR2yQF+r1Ee
+    YZElY/OgcJnYs7CS+VfGlL5wOMBumW4UQ2OU/aq3mCfdCFTTMobpYrZF+1DH144whpbw
+    E3I3DDntDIQvd7/hTfSZr47tVLL/YzXFATFfbRSt4OJWPpVDe7ihNYaIogf+kRt0yd1k
+    OxAw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794741819;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
-    b=6ho6TCx0vv1NOZIJN0vhzSBOTCmpDu6s+ToOoMTJ8K67f/90LBnyHbWP/ky4qxqkcU
-    w0sUtNCUccKHNIevbqDg==
+    bh=43spPD8V5Lp3Gb+zVaNrlyT+t5qJdqG1HEhNDLN2Utc=;
+    b=lk8njFt5LkOw7xz2kcZTiEcJRbtGDuH9e3E7IrO2eVKGWde2QKohysR9GpafqGPKqI
+    hobFVxGJgv7Hs/Vw9pAg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::989]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AFBIpOMF
+    with ESMTPSA id Kfdf2a2AFBNdOMv
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sun, 15 Nov 2026 12:18:51 +0100 (CET)
-Message-ID: <b32f335c-a672-4d5c-82a2-17c784bfbefa@hartkopp.net>
-Date: Sun, 15 Nov 2026 12:18:51 +0100
+    Sun, 15 Nov 2026 12:23:39 +0100 (CET)
+Message-ID: <bb2a488f-5734-40e6-b673-84612f6173f1@hartkopp.net>
+Date: Sun, 15 Nov 2026 12:23:39 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,72 +96,43 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/6] can: raw: use a private mutex instead of
- lock_sock()
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev-bot+sashiko@kernel.org, linux-can@vger.kernel.org,
- o.rempel@pengutronix.de, sashiko-bot@kernel.org, zihanx@nebusec.ai,
- kuba@kernel.org
-References: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
- <179454426541.488853.15379643605511531742@kernel.org>
- <5b2f1dcd-292e-42fe-91f7-fe0255e830ab@hartkopp.net>
- <20261113-cooperative-capybara-of-persistence-52ed5c-mkl@pengutronix.de>
- <1b782cac-cb24-4f9d-9a28-aa5e5cbf94db@hartkopp.net>
- <20261115-wakeful-true-seal-1950b7-mkl@pengutronix.de>
+Subject: Re: [PATCH net 0/9] pull-request: can 2026-11-15
+To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev@vger.kernel.org
+Cc: davem@davemloft.net, kuba@kernel.org, linux-can@vger.kernel.org,
+ kernel@pengutronix.de
+References: <20261115095746.709371-1-mkl@pengutronix.de>
+ <20261115-musical-garnet-turtle-de4539-mkl@pengutronix.de>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261115-wakeful-true-seal-1950b7-mkl@pengutronix.de>
+In-Reply-To: <20261115-musical-garnet-turtle-de4539-mkl@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 
 
-On 15.11.26 11:27, Marc Kleine-Budde wrote:
-> On 14.11.2026 07:56:07, Oliver Hartkopp wrote:
->>> I think the bot doesn't include the cover letter. To add additional
->>> information to single patch, I add them with "git notes edit".
+On 15.11.26 11:18, Marc Kleine-Budde wrote:
+> On 15.11.2026 10:54:51, Marc Kleine-Budde wrote:
+>> Hello netdev-team,
 >>
->> Thanks for the helpful information about git notes!
+>> this is a pull request of 9 patches for net/main.
 >>
->> But it does not solve my rant.
+>> this first 3 patches are by Zhu Ling and fix problems with the CAN
+>> netlink handling.
 >>
->> The AI bots are really eager to check every single word in the commit
->> message whether the patch below fits the announced functionality.
+>> A patch by my fixes a kernel memory information leak over USB in the
+>> gs_usb driver.
 >>
->> When there is a series of 5 patches that are explicitly not related to J1939
->> it can not be the solution to place this information into the notes of every
->> single patch.
+>> The last 5 patches are by Oliver Hartkopp and avoid RTNL stalls in
+>> CAN_RAW, CAN_ISOTP and CAN_BCM protocols.
 > 
-> sashiko.dev seems to take the cover letter and later patches more into
-> account when reviewing...
+> I described patches in topological order, which is intuitive when
+> looking at the git tree. However the linearized order of patches in this
+> email patch series is chronological :/ - Sorry, I've added the missing
+> "--topo-order" to my git send-email script.
 > 
->> That's like humans spending manual effort to satisfy the AI bot.
->> I've seen that in dystopian SciFi movies and it didn't end well :-D
-> 
-> :/
-> 
->>> Add this to your ~/.gitconfig:
->>>
->>> [notes "rewrite"]
->>> 	amend = true
->>> 	rebase = true
->>>
->>> [notes]
->>> 	rewriteRef = refs/notes/commits
->>>
->>> [format]
->>> 	notes = refs/notes/commits
->>>
->>> It will keep the notes during git rebase and amend and include then
->>> while sending patche (even with b4) after the first "---".
-> 
-> FYI: notes are not working with b4, I've send a feature request to
-> Konstantin:
-> 
-> https://lore.kernel.org/all/20261114-rapid-diamond-skylark-6d6cc6-mkl@pengutronix.de/
-> 
+Funny :)
 
-A good idea!
+Anyway the current patch order is correct to be applied.
 
 Best regards,
 Oliver
