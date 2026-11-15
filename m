@@ -1,58 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794699893;
-	b=KxwYyFzMz0jcbcgx+NEaUgQK3afYTzaBe+l9JJxupUfqTZ8DOBv3Bp2xZ5fLUbXbW9dd
-	 Zw/KNDXmOiI6rSJ0ylDkhJNa6G895dmedyhw8r2vjFJq5oLxADVxK7CmI1K77qVbnKoR8
-	 wrn4mM/IUl9Sb2dmRMX5HFv69n/mvi95TrC4185rQXpVNoQm0Ej0ZBaXN/JkB8cP3nEg0
-	 8Gm44z1M0BdrFgeUqz2zgLvIGsJJlKACiYZanVev2ocZEJg8RyKcTwDqgJ62uzJVqCxdE
-	 19fmk9xVSSIR48UCz28JDdYwsKrkv1ybWEQyFV4ze4eX0HI3FKGFb7bH4MuRnWxaXjQ==
+	t=1794703327;
+	b=qoumtdVtZvDQG7MLUvfvZXqTbTRD4k/bB2puEAYmnpS8UXSHqUWuFLOz24FYrYg0K8ap
+	 9Pk5Rhii0x8GtuLDjy4Xb1xQ6bDddPRX5bnOpVVxkpLNRj1BIFE7jN0uXViM/+LHU9yVL
+	 ytnS/1iVp+fPPXUc2WaltPGPfnjeJATowLxp0ifBwYBFTFZ70YLYd2pY8e/HgI38hXjFt
+	 5Q5z0VhBj6xy9xZQiwFurVLdpIXhs/YVWe4SPo/s/DmN98DV13HEu77clQ1poCqkRDTsW
+	 sK316Muq/WpLBRtiVohjWjg/qDGmGG8OOBToT9/d03/URESqUBscKz3YB2JdX/spW6Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794699893;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794703327;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=vaNd3hjjK0RwNZ+3nKlLJJm9wJyFljAYjaDt+xbVY7A=;
-	b=ND4BpTpDPrDJ7R9kIOOXyc7WK/ONBgR2DhmFh2t7ObNS278oIZwbqN7lpX/go9wyFBUz
-	 gH3BhKwtCSZKFpKdFU9lXUSwCA5zl8PWDBSsvIjdK2m99uyDeVBDw275/MzHQzJhId0TX
-	 hRmyqkN0xU5jDAaaeA94ajgF8x+8zpSCeKcwKb5eDe0d2bup4BlDVyrqfIAentohKWZGO
-	 rCPI8IjSW+NjPSsnFd3ST2XO/MB6BmUlvcR9Rz7taLulLtNgAvRod1HLVw/1dN2eO+nPp
-	 ZGnirYxX1m/Wh+B6o5D2kA6PHSRSRsqZitFJsXJEO60MCN/JTTi95Bw7R3wauJm5V8Q==
+	bh=i+2glsOkOUlqSUeow6CGKfh2fE9QUhc4bDxETCjeRx4=;
+	b=gtDIO6VN7BjelkuhDAOKQRxwQFwYss8b4dH/Xsu+vi8LROts9UtPEx1Rf8TRwbfHnugM
+	 XkCx5yZH2x9FjyU15sySOFChUhFTLuViavXV0MrH5ullBdZGmHwtb7Yv4BACwNNrBjM3V
+	 hTHIY7Er4SNrpbyU3YLD16Kapgpwf8HJjZ/gWT5b0YVJXWrOr+AZlnI0NDb8/iOimGRct
+	 VG2aqH1PJ8dp0demQRdKEooidL3Mh5V3iknt7nLds8VDtbLfiwSafAfx4Pz5sTHAqe6q0
+	 E+6RJiJcIVeuhdD+wKaUEOlrwOG/MXKxTFcIXhgm1R9hBaAFejn1r8ZcAvlH4jNmcsg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UaByAHBJ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KAjlEXkn;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFDA0606A327;
-	Sat, 14 Nov 2026 23:44:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34FFC606A323
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 00:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=UaByAHBJ
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CED2F1F000C4;
-	Sat, 14 Nov 2026 23:44:52 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=KAjlEXkn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FED71F000C4;
+	Sun, 15 Nov 2026 00:42:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794699893;
-	bh=vaNd3hjjK0RwNZ+3nKlLJJm9wJyFljAYjaDt+xbVY7A=;
+	s=k20260515; t=1794703326;
+	bh=i+2glsOkOUlqSUeow6CGKfh2fE9QUhc4bDxETCjeRx4=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=UaByAHBJI2Xt3Qe1G/zWfClNWJiBP4cDIJ/39j7PDRxuLNmZR4xRpNOZqkqLASbBR
-	 V3u7gmgU9Yyrd4f/4tw+wBWANW2zkBWyEzWw7IH/RqlypLaGvQiPniDQeRXBr7Qc93
-	 od3cXKY/HbaoreAG6iALQgQJM39ImmJqzhMgoY39PUgFGvYMk11KE/8b8FeknQ6w6t
-	 2aNL1ouFY9MIs9vCnF02GKtYjNY+AYqL2gsAYyLz+ucTB0PB4Y1c/EJwNy4HvZZNYf
-	 fgd3CXVaaQBME090HpZo2e4oD6A0ZgI5phCDiA+HFlLXsYFomBsHS2DgSKNvulnt7i
-	 b25erJKmvLRKw==
-Subject: Re: [PATCH can-next v6 1/6] can: gs_usb: gs_make_candev(): check
- can_rx_offload_add_manual() return value
+	b=KAjlEXknZsKKcCXgDcthd3W0x4C6D+Z584XZBoSf+lBkFlQgCqYqsMx5aDLKXwnCW
+	 nHFQjltRGPriaPPM+OZTAka7NROF2/XNJYqViTbsEpribrlDfxdRckx1emWF59Lu/G
+	 rvTXveWO1pqztd+k0ejGmo3/E0hvSMNuP6UwsJ3VaL6QMS3YpHwa0R32anOCA2tKkH
+	 CYB2iljrFhjTACcj7uAmi08osdDJsvZfcaxHW6PLJltHr0QhWfrYwBNNfi+fYcKMTO
+	 P0kWtp/lFfcmBEtfIlUjQP7RTU9sJRaynxhKec0uonBIPTJLfMnvGwrzwVZiI61bWP
+	 K5i7gYb2jdRXQ==
+Subject:
+ Re: [PATCH v5 1/5] can: bcm: copy the CAN frames outside of lock_sock()
 From: netdev-bot+sashiko@kernel.org
-To: mkl@pengutronix.de
-Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
- max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
- linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org, kuba@kernel.org
-Date: Sat, 14 Nov 2026 23:44:52 +0000
-Message-ID: <179469989234.488853.8740350173705893191@kernel.org>
-In-Reply-To: <20261113-gs_usb-fixes-v6-1-0c039e1bfd74@pengutronix.de>
-References: <20261113-gs_usb-fixes-v6-1-0c039e1bfd74@pengutronix.de>
-X-sashiko-severity: Low
+To: socketcan@hartkopp.net
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ kuba@kernel.org
+Date: Sun, 15 Nov 2026 00:42:05 +0000
+Message-ID: <179470332579.488853.5643594273401866523@kernel.org>
+In-Reply-To: <20261113-can-bcmlock-memcg-v5-1-634c0e04bc72@hartkopp.net>
+References: <20261113-can-bcmlock-memcg-v5-1-634c0e04bc72@hartkopp.net>
+X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -65,72 +63,104 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
 
-- [Low] On the current tree the new error branch in gs_make_candev()
-  cannot be reached.
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [Medium] This patch's commit message describes the bug as 'a stalled
+  copy on any CAN_BCM socket can block RTNL'.
 
 --
 
-can: gs_usb: gs_make_candev(): check can_rx_offload_add_manual() return value
+can: bcm: copy the CAN frames outside of lock_sock()
 
-This patch makes gs_make_candev() check the return value of
-can_rx_offload_add_manual(). On failure it now exits through the existing
-out_free_candev path. The commit message says the change prepares for an
-upcoming can_rx_offload series in which can_rx_offload_add_manual() can
-fail.
+This patch moves the user space copy of the CAN frames for TX_SETUP,
+RX_SETUP and TX_SEND in bcm_sendmsg() so it happens before lock_sock().
+The frames go into a stack buffer or a kvmalloc() buffer, and the
+handlers read them from a kvec based msghdr. The aim is to stop a stalled
+user copy from holding lock_sock() while bcm_notify() waits for it under
+RTNL.
 
-Link: https://patch.msgid.link/20260907104942.17089-4-ciprianmarian.costea@oss.nxp.com
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 7bd2aa39777af..3f4c8d8283376 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
 
-> Fixes: 24bc41b45583 ("can: gs_usb: convert to NAPI/rx-offload to avoid OoO reception")
+[ ... ]
 
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 3b9b2f104d868..cac4ce323a1de 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -1487,7 +1487,10 @@ static struct gs_can *gs_make_candev(unsigned int channel,
->  		dev->can.fd.data_bittiming_const = &dev->data_bt_const;
->  	}
+> @@ -1663,6 +1668,47 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+>  	if ((size - MHSIZ) % cfsiz)
+>  		return -EINVAL;
 >  
-> -	can_rx_offload_add_manual(netdev, &dev->offload, GS_NAPI_WEIGHT);
-> +	rc = can_rx_offload_add_manual(netdev, &dev->offload, GS_NAPI_WEIGHT);
-> +	if (rc)
-> +		goto out_free_candev;
+> +	/* Copy the CAN frames from user space before lock_sock(), so a
+> +	 * stalled copy can not block bcm_notify() waiting for lock_sock()
+> +	 * under RTNL. Only the frames the opcode handler reads are copied.
+> +	 * The handlers keep their checks and read the frames from fmsg.
+> +	 */
+
+[ ... ]
+
+> +	iov_iter_kvec(&fmsg.msg_iter, ITER_SOURCE, &kv, 1, flen);
 > +
+>  	lock_sock(sk);
 
-[Severity: Low]
-This isn't a bug, but can the new error branch be reached on the current
-tree?
+[Severity: Medium]
+With only this patch applied, can a stalled user copy on a CAN_BCM socket
+still block RTNL?
 
-can_rx_offload_add_manual() in drivers/net/can/dev/rx-offload.c only
-fails when mailbox_read is set:
+The commit message describes the problem as:
 
-    if (offload->mailbox_read)
-        return -EINVAL;
+  So a stalled copy on any CAN_BCM socket can block RTNL on the
+  unregistration or namespace change of a CAN device in this namespace
 
-    return can_rx_offload_init_queue(dev, offload, weight);
+bcm_notify() still takes lock_sock() on every CAN_BCM socket in the
+namespace while it holds RTNL:
 
-gs_usb never sets mailbox_read. The private area returned by
-alloc_candev() is zeroed, so this check always passes.
+net/can/bcm.c:bcm_notify() {
+    ...
+	case NETDEV_UNREGISTER:
+		lock_sock(sk);
+    ...
+}
 
-can_rx_offload_init_queue() always returns 0. It also sets up
-skb_irq_queue as an embedded struct sk_buff_head, so the
-"offload->skb_irq_queue == NULL" case only appears after the upcoming
-rx-offload rework.
+On a CAN_BCM socket, SOL_SOCKET options are handled by the generic
+sk_setsockopt() and sk_getsockopt(). Both still access user memory while
+sockopt_lock_sock() is held:
 
-The commit message does say this failure comes "In an upcoming series".
-Given that, would it be clearer to present this as preparation for that
-series rather than tag it with Fixes: 24bc41b45583? Today the check
-cannot trigger, so backporters may read the Fixes: tag as pointing to a
-bug users can hit.
+sk_setsockopt(SO_ATTACH_FILTER)
+    copy_bpf_fprog_from_user()
+    sk_attach_filter()->__get_filter()
+        copy_from_user(fp->insns, fprog->filter, fsize)
 
->  	SET_NETDEV_DEV(netdev, &intf->dev);
->  
->  	rc = register_candev(dev->netdev);
+SO_ATTACH_REUSEPORT_CBPF works the same way. For SO_GET_FILTER,
+sk_getsockopt() calls sk_get_filter()->copy_to_sockptr() under the socket
+lock.
+
+Suppose the filter array sits on a FUSE or userfaultfd backed mapping in
+an unprivileged user and network namespace. The copy can then stall while
+it holds the socket lock. If a vcan device in that namespace is removed,
+bcm_notify() would wait on that lock under RTNL.
+
+The commit message says these SOL_SOCKET paths are "not specific to
+CAN_BCM and not addressed by this patch". The RTNL stall itself, however,
+comes from bcm_notify() taking lock_sock() under RTNL, and that is
+specific to CAN_BCM.
+
+The later patch in this series, "can: bcm: use a private mutex instead of
+lock_sock()", appears to close this gap. At the end of the series,
+bcm_notify() takes mutex_lock(&bo->conf_lock), and the generic SOL_SOCKET
+options never take conf_lock.
+
+This patch is tagged for stable. Should the commit message say that the
+RTNL stall is only fully fixed together with that follow-up patch, so the
+two get backported together?
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261113-gs_usb-fixes-v6-0-0c039e1bfd74%40pengutronix.de
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261113-can-bcmlock-memcg-v5-0-634c0e04bc72%40hartkopp.net
