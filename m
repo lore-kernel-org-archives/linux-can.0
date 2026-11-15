@@ -1,71 +1,71 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794738471;
-	b=lv7mbRhluG1AjiFTImQeee8L2aR/+Plb02ni0DBWg+ci5MUs0J6dJGVLjBhoKYnWkGE5
-	 1Tb9/xZ04cXE6f7kwp5+YGGFLv3BE587AStJjXHiJvCCthKaa1V6GDdMXY/d75Zx1AE5p
-	 8t1wqvtN1VwiS7QcA+keo+AzGRsjm/haZH64evMd1DruStz2a5Y/evufo50vukH4hv802
-	 IPRq4Vds9gfAwblIpcHpPX1OJ4ZVZvy9ssdT3enwmpvkrkh6TktMchjnC1pQcGo1+ifl3
-	 3CtqU9R6HRyDPcokTf+964ubdGSSzEqUO+cTCzd99ZDSx25LqF+hNTE7ShSECjD8Bxg==
+	t=1794738650;
+	b=ZXWo/tmZP2ltNEKssveqTw7OTOJm0rEJ21r1NcwHwrOnYi3C9ksT7Xt3bWrewSE+H3yJ
+	 NZxtS4p3wJ2omwN7vHK+sraCfUMrqnWrAWce/aL8YT5mK5NWMT8CuHyleTt7xyBBcNsxG
+	 aRtq93Nhh3FpilvWMF2R5GhQfnIl6wOFS2/FmE7HR09LMjd2D3NWUJCELFdwpdOviEcxC
+	 UKd6+jFX7Uyd4nEiwwFwisWItcaDDlOxRKZ4M3azKK2QrmrvZ/hwc+7FxWiWfZgc30O2H
+	 5Z5KbxrFoBAhoo1nWjjgsc6BCDO+40X7UMr82N6ifAkX37vuFAKozm96WDOG7xwFNrQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794738471;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794738650;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:Date:From:To:
 	 Cc:Subject:Message-ID:References:MIME-Version:Content-Type:
 	 Content-Disposition:In-Reply-To;
-	bh=9oeVVm+rH4jbuuo3F3H9iuFUlt2J0AfYtk5WJvihWgY=;
-	b=0NoiIvj/gBvV9TPxLfDFE3uiJH7pDqugGcnmz5xsWCWqISttWrn0EcSA4KqxMuOymGm/
-	 iZdCJ4Onlqi0lpbToStsSOjNnFjnb402cvRLaDJYY2o91JZ963+5RNOu7geZSIXtZPBvR
-	 1uLkEdtXsq30LGU0krdb0LxMRDQ71nCdyQRFVF30aJHSph4h5q1U5LY0YkBHi9pItDw09
-	 AvcrI+y+z50jYgypb5rmZUf76MhtS4yfxvJuQI9uIYM9T1/S9tiV7gJxlFoMTZAuKw2Df
-	 EnVJ4p4E3wQv/hUoQA/oRQDDuT55yt2X9uoFg4GT20Li1uv/JtEyyN2NlY9QpDApcPQ==
+	bh=pDYEvLzsSXWWpmJxAwgYYI1aR048iwwCWve2F9MMvwY=;
+	b=24fG8q4k84bv5S8WtIxcE7JNyOEqluVmAi0xWyacPDlx0esZ7k5kT+F1p6Zw4BdUQji5
+	 u9BuRNcTU8vv5fPHpRxxKSZ1bsxJLvUfyPcrOrbKZW5qMFwSL8QVUzG4r9pgcE3UStgC5
+	 rdNcqUircD/t7B7oOlpzESt2CFrvYdHsm6IfKj/T7sEjhULZPOKdP2rZsIQGAJS7Gyr5L
+	 u8b2cWl9x5TVzWW5673VF44td8WMp5dF24gXFj76VAe5KJsmHcibJirfZ6aDx3JV10uAT
+	 ayHUbQFwqteFS16OyN7UOf/t08rkN0n9t0t7Fpf/XLtaHv7/ZuTFMUu08CHuFDZgjew==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=G2KaDe6+;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZbwWLEQS;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26573606A31F
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 10:27:49 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 26573606A31F
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ADF6606A31A
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 10:30:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5ADF6606A31A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=G2KaDe6+
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=ZbwWLEQS
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 1EF5B201CE0;
-	Sun, 15 Nov 2026 11:27:48 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id ADB7C201E6E;
+	Sun, 15 Nov 2026 11:30:47 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794738468;
+	s=20260414; t=1794738647;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9oeVVm+rH4jbuuo3F3H9iuFUlt2J0AfYtk5WJvihWgY=;
-	b=G2KaDe6+fJWWNXfhJpGDWr5J8kuOFBN+LdugAnuNClIeurM29k615s4fS2Jnpjdme26RPk
-	iuMSnTa1aZi1YNKxpAmYRj5XTSCbiD4ZY5IOiYtHuJI79WilQjZZU3Oqs1rZQZPtlC8HDZ
-	0y9NQXwXC8+B2yrawMGPDZETGOJk2SrvvJhZNVe36zQm0WHnwtEGPldbiy65KvP+bb6HWX
-	8iPur+HA5nqRlvJOmOFf3Ta+cKmoUEvUlO3R5hSdsPhV2huu4MUn/jAN3lupqd5nrTlDvR
-	lO1ZASMXq7fAi1ljcuI/giil/QMaF3U93Fa0FkHTlQ+DMg77IomDqj8E8pkfeg==
+	bh=pDYEvLzsSXWWpmJxAwgYYI1aR048iwwCWve2F9MMvwY=;
+	b=ZbwWLEQSxMmDXw7Um9G6Cn3/g2O2nNm5Rz0zKdvAoc99fgv/4ZWHluUcRGxoqi40qbwNRc
+	b781mFHm4gRhRsOTlDP/14L6FSa2lV8KfUU4zz5yQTGqyWN7Ubq4u2UH8OsQlefAuxg7qn
+	Vs3zxhHPYUscc0QUbZjil09NytGOqLGlOe5WT6s9Pi3a8t/CV+RjCAYaOEFyBeIqKNU2fj
+	otYjxZsqbiybisOKCYmvERrqlKEFx+UIAnkeLNiAgr0J2/Gmd2lF03G/UqA8q75hXodwCj
+	sy43zBTsf3TOquEWsLR4vruGer68bmaUrZIt0v+fiqJZLWI0Cnih65tfC2m46w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794738468;
+	s=20260414; t=1794738647;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9oeVVm+rH4jbuuo3F3H9iuFUlt2J0AfYtk5WJvihWgY=;
-	b=T/9dQUvvqzkPNoSL00OBJln2j/ud+46pi6SzjEV7Be0wJi1ZZqvrt3XiKdAwBilh+4TkJP
-	cjzZ+bxMZ2lJ3IrMouQXZcZXm2NIUQdJqBRQ3fu3u2tlTUeV8hu8FVOCjHwtwapdKlDUAU
-	LSR0vyjjKjsPiERf5lJXMOORzPdUlk4rzkJ4ml839uhjLDM3x3SK4NeQH7UAnjiudv9Ig1
-	D8iZ3w6yehhlWn+OmVSETGmUsnxwjyHWp6awAcY28BS6okRRaYynMAOgzgYnh1hpj2f2Em
-	dGmffkcjJnfc+5t1Zus00hDUkY2QTR9tRUkbdueJUNMZBxY5fuu5krRzUICnog==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794738468; a=rsa-sha256;
+	bh=pDYEvLzsSXWWpmJxAwgYYI1aR048iwwCWve2F9MMvwY=;
+	b=RzwhsJV+Z7bdtx9hhP7YP/XLAsbOpb90RhngNWeCBeAhc0b6xHdL18H5pcj48SyGJir6Ri
+	fhHEUcrx9/txmcL1m2qN/Q0HQDgousPyn4KV4O6EKBAEGy3hn1ed3/E5ZP64ictY17+60n
+	6WD2j1Z4+HH6tPkCmVfswWw5QUKj0nWsUCU+Fw3wOnfjuE3sUuWityEH1e7McM4CKib2Ig
+	quZFVFhz7bOmYuzD5xe/AAZ6BdGmIvdCbvmJeqaXewwPEpK3Hi45MQC9lhCzh2YO+tkh00
+	TWM+1uDlnrQf8tUqbAOkFH9mm3Fv0u7Lo4ll1l3pKnYD4wA88Qs2afytX2Lqow==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794738647; a=rsa-sha256;
 	cv=none;
-	b=XD+HlmX8AeBYIwOOaVYcMz1csX8onSFrUW5x0xIg33zzSflfgzihGQCCvxCqECJfzX3cOF
-	QX0Raus42FPSux6/Fdx03phRTIOkYIEDDGPWDdkBiKFkTOpjREmw1TKCIWB3V7sNH3BcRD
-	nzyAxPa2OgRU+a+49H4+zLTBUG5fwQY9yB08XlcLw/k34LFR3wTubLZEp35omgfDfmkDLW
-	LKgYvphg/KQt56UJc9Mx66o99fGmcvO0O91/MUKrQ+eiMy7OUbMmtnYIfbRf5apEuvlKd9
-	c0SvP9G0iTzL5XWmYR4euHuecMsQnS3a+atAjMhCSYdxjUSZgzzR8Qhe2qrS/Q==
+	b=BHC9vATzbMZpl6MQwBc4th8ufT154HRLcHC7UPetcaBWnMRu3p3+FkQ80kVmyauuOYmCEU
+	gqlzc0LV4IZ+dV6f16eKHQDznpQmcm9ldFDG0zMvCzAdOwrPfDsi6QZlgqC71YSN2yCtvF
+	UW6gA/dTkx6vG4BnJZCJlT0Tlhw+GHhyV0vRSsxejoUTX2uET1lQMS+mdj6DL26VrIizBK
+	6lcx4CbRfBRJyfQagkBJ5N31KgGzeb6WvnSztmd3NIA3dOOqW1LfJzjTa5M/a+cGNTS78O
+	6g/Rq6FT4cvW3LaZFgoLfrzcLZDjEt09kglS89UHcAWEhYQZxPayokEPNreGEw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -73,28 +73,26 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xSXSe-004Gnl-01;
-	Sun, 15 Nov 2026 11:27:48 +0100
+	id 1xSXVX-004Gnz-20;
+	Sun, 15 Nov 2026 11:30:47 +0100
 Received: from pengutronix.de (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange x25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id B471B5EC302;
-	Sun, 15 Nov 2026 10:27:47 +0000 (UTC)
-Date: Sun, 15 Nov 2026 11:27:47 +0100
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 5BFAD5EC307;
+	Sun, 15 Nov 2026 10:30:47 +0000 (UTC)
+Date: Sun, 15 Nov 2026 11:30:46 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: Oliver Hartkopp <socketcan@hartkopp.net>
 Cc: netdev-bot+sashiko@kernel.org, linux-can@vger.kernel.org, 
-	o.rempel@pengutronix.de, sashiko-bot@kernel.org, zihanx@nebusec.ai, kuba@kernel.org
-Subject: Re: [PATCH v4 3/6] can: raw: use a private mutex instead of
+	o.rempel@pengutronix.de, kuba@kernel.org
+Subject: Re: [PATCH v5 1/5] can: bcm: copy the CAN frames outside of
  lock_sock()
-Message-ID: <20261115-wakeful-true-seal-1950b7-mkl@pengutronix.de>
-References: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
- <179454426541.488853.15379643605511531742@kernel.org>
- <5b2f1dcd-292e-42fe-91f7-fe0255e830ab@hartkopp.net>
- <20261113-cooperative-capybara-of-persistence-52ed5c-mkl@pengutronix.de>
- <1b782cac-cb24-4f9d-9a28-aa5e5cbf94db@hartkopp.net>
+Message-ID: <20261115-nippy-adventurous-scorpion-0a33ed-mkl@pengutronix.de>
+References: <20261113-can-bcmlock-memcg-v5-1-634c0e04bc72@hartkopp.net>
+ <179470332579.488853.5643594273401866523@kernel.org>
+ <25179774-bf3d-43d8-84e6-b0ce121f3eac@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -105,64 +103,71 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="z25otl4fxdqpml4q"
+	protocol="application/pgp-signature"; boundary="riuj77p6kbjvmsds"
 Content-Disposition: inline
-In-Reply-To: <1b782cac-cb24-4f9d-9a28-aa5e5cbf94db@hartkopp.net>
+In-Reply-To: <25179774-bf3d-43d8-84e6-b0ce121f3eac@hartkopp.net>
 
 
---z25otl4fxdqpml4q
+--riuj77p6kbjvmsds
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v4 3/6] can: raw: use a private mutex instead of
+Subject: Re: [PATCH v5 1/5] can: bcm: copy the CAN frames outside of
  lock_sock()
 MIME-Version: 1.0
 
-On 14.11.2026 07:56:07, Oliver Hartkopp wrote:
-> > I think the bot doesn't include the cover letter. To add additional
-> > information to single patch, I add them with "git notes edit".
+On 15.11.2026 08:55:26, Oliver Hartkopp wrote:
 >
-> Thanks for the helpful information about git notes!
 >
-> But it does not solve my rant.
+> On 15.11.26 01:42, netdev-bot+sashiko@kernel.org wrote:
+> > Thank you for your contribution! Sashiko AI review found 1 potential
+> > issue(s) to consider.
+> >
+> > Critical: 0 =C2=B7 High: 0 =C2=B7 Medium: 1 =C2=B7 Low: 0
+> >
+> > If you believe none of the issues are legitimate, please reply to each
+> > issue of Medium severity or higher and explain why the AI is wrong.
+> > If any of them are legitimate and you plan to respin, please let patchw=
+ork
+> > know by including "pw-bot: cr" as a separate line at the end of your re=
+ply
+> > (one such reply per series is enough).
+> >
+> > - [Medium] This patch's commit message describes the bug as 'a stalled
+> >    copy on any CAN_BCM socket can block RTNL'.
+> >
+> > --
 >
-> The AI bots are really eager to check every single word in the commit
-> message whether the patch below fits the announced functionality.
 >
-> When there is a series of 5 patches that are explicitly not related to J1=
-939
-> it can not be the solution to place this information into the notes of ev=
-ery
-> single patch.
-
-sashiko.dev seems to take the cover letter and later patches more into
-account when reviewing...
-
-> That's like humans spending manual effort to satisfy the AI bot.
-> I've seen that in dystopian SciFi movies and it didn't end well :-D
-
-:/
-
-> > Add this to your ~/.gitconfig:
+> > The later patch in this series, "can: bcm: use a private mutex instead =
+of
+> > lock_sock()", appears to close this gap. At the end of the series,
+> > bcm_notify() takes mutex_lock(&bo->conf_lock), and the generic SOL_SOCK=
+ET
+> > options never take conf_lock.
 > >
-> > [notes "rewrite"]
-> > 	amend =3D true
-> > 	rebase =3D true
+> > This patch is tagged for stable. Should the commit message say that the
+> > RTNL stall is only fully fixed together with that follow-up patch, so t=
+he
+> > two get backported together?
 > >
-> > [notes]
-> > 	rewriteRef =3D refs/notes/commits
-> >
-> > [format]
-> > 	notes =3D refs/notes/commits
-> >
-> > It will keep the notes during git rebase and amend and include then
-> > while sending patche (even with b4) after the first "---".
+>
+> Not needed.
+>
+> This patch is a follow up to a bunch of recent fixes to remove the
+> dependencies to rtnl_lock()/lock_sock() like
+>
+> can: raw, isotp: copy socket options outside of lock_sock()
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+?id=3D43c973a0887d3d7b2ee0a446603c97bf0f38c58e
+>
+> which had no such announcements for potential future fixes either. Doing =
+so
+> only adds some bloat to satisfy the AI bot during the upstream process.
+>
+> The stable process works pretty well without adding such hints.
 
-FYI: notes are not working with b4, I've send a feature request to
-Konstantin:
-
-https://lore.kernel.org/all/20261114-rapid-diamond-skylark-6d6cc6-mkl@pengu=
-tronix.de/
+I've send a PR, let's and comment on it as needed.
 
 Marc
 
@@ -172,15 +177,15 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---z25otl4fxdqpml4q
+--riuj77p6kbjvmsds
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavmJIQAKCRDMOmT6rpmt
-0oUcAP9fhIeEN/kSkd2siUAoJFe+c7C5xo8eacmdZPlGUYCmyAEAxUORy1DBICED
-/2Cl7ZuZbjSiAIg/qZFbV/1+MJMZAgI=
-=AQ8f
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCavmJ1AAKCRDMOmT6rpmt
+0lp4AP9Mw+7J/Zp9I70zJicIHRzmM87iJfTDYDhGLDmU/qLVHAEAg+XDuf2SiNlL
+sTLztZ65SHXIQ2Qs2+QbNPeN3Lp9gwM=
+=0i9E
 -----END PGP SIGNATURE-----
 
---z25otl4fxdqpml4q--
+--riuj77p6kbjvmsds--
