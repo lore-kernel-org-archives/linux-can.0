@@ -1,23 +1,23 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794742630;
-	b=aV3sRmS501+S3vVZqO5r4YGh5K+MZ5TqNbiuZaMIndvpvFj9R04e6MMRYltq2pVJuIJ9
-	 Y1/J7EUGHzdF//kOdcL0BS/S52hjkCsZjMJigdMenqXP1yEJb45wUQJH3Pj36w3Bbazt5
-	 kwazV5xYO/bFW0uOtL8uFd8IAFI/LxQCtKV2qcwgxWGTpAG2cvvuAzJfeLpQ0dhpARa4l
-	 COqtfqOF0ydO04APnRdDeQYUS7gYVRWZGG1AfQrFb3MsvxZidlFcVPqrGlf1C/ve5lt87
-	 1FJBxU4NIyqKpR8FyaoxyDN2/w3AY61l4S9mZUayvcLaEK83ogxxT0Y4wRTaNuLhEBQ==
+	t=1794742648;
+	b=Z4V9aEuN6NaXfqgkBNVDR9DANgh2Anmc/ZLgrSf+IVVvO0pMOCie33ylvg6vx1FVd+NC
+	 W+Dh3fGzWyPr1x4q0xECtUt1UM2/MPgwmXeP7vpMs0R+uXymhaBVnuF7d13o0pSo469ik
+	 PYUwY+hVemQ4VwnuThTuAhcJgQBlQJtSj7lOPnSfL7zJU8FhVw3g7oz2swSda4Ydzkne7
+	 OvH3MUJwup/KQGXH1ZRraMdC30Mb5JJXZZqbqo/8Q/lRM2iCLi2grwEVx1VYbiVbQRG+4
+	 3t50WEZLzAAIOJ64s29/lwwgJhhW7qqstAw+FeaXKIojQATz9X8Rz/8TSm/hVWhGHXQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794742630;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794742648;
 	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
 	 User-Agent:Subject:From:To:References:Content-Language:In-Reply-To:
 	 Content-Type:Content-Transfer-Encoding:X-Virus-Status:
 	 X-Anti-Virus-Server;
-	bh=UFKy8MqLEatABI8fXsga4GKi1tAdrZXKlNEt7p+5XMc=;
-	b=4vRkHMxBC1OJEFb5BHIk4Z3dYymtI+6cj6wH4OvcmOIuL1YxUkci3urFQBIuC2mlLIOi
-	 s/wbax4xdRBgVf2UWpg6KiYzrjbI0yHxunDDU1X0hgFa6ESu5dKe1GQge949zTM3wv2V/
-	 0nxbU5CDJESwDPlcvm0rXQYnLdtr/KNk7v/Qg9biksG+BubssqE4nyOUGQMUbXc6PL2hG
-	 KHMqdfCLyBbkPpNOPydNyhaKlFvT7u8oFK1rgfhhSo1uphU41/ar6PGYQHu5N8Muku0dq
-	 QgI2OIB7ZlDugdtk38fxjNxCnMock9KvQqnfdXW76xThPl+KAfjZiD7aB5ktLi0d+Ow==
+	bh=rDmLxEqbT7FUfAO4PuHjz4Se2O0Os4pccDrAaKyyto0=;
+	b=FTdC7XGUvNdAfqReZdjoEssx1fCMdzStnFnI0fbAsSNjTV/kANzXSo0IixB3hhtT5oBB
+	 Yr6XEW8xp2olQXaBbiIJgCQppywHAQjVbN4FIfJOENQfyhApUIHTl2nhFznPyEJehHuKv
+	 hvWE9mP/FVemlW4FQ97bGX+GfUhCIQhPYEdFDHszsJS1SFfwmv7onD+wh58Jqxu9SWiH3
+	 dzrzavzZaoXXpeGur0gkUX9AqU0m4b/SQaFgdsYUI9/IMw9UxxWfpanKJQydxmHqi9i43
+	 qBgO1KhN89XsbnLtFWPegJy+B9M29hlL3JrFRdK4I9VA1sGtVub1OUdrXFwLhTx01mg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=I-love.SAKURA.ne.jp;
 	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
@@ -25,23 +25,23 @@ ARC-Authentication-Results: i=1; smtp.subspace.kernel.org;
 Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3CD5606A31A
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:37:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D3CD5606A31A
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EA9E606A31F
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:37:28 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2EA9E606A31F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
 Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6AFBaw6O027092;
-	Sun, 15 Nov 2026 20:36:58 +0900 (JST)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6AFBbHYe027190;
+	Sun, 15 Nov 2026 20:37:17 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
 Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
 	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6AFBavX2027087
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6AFBbHVd027187
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Sun, 15 Nov 2026 20:36:58 +0900 (JST)
+	Sun, 15 Nov 2026 20:37:17 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <6a627b63-8d8d-4bc9-8533-3f3d8f4a8cc4@I-love.SAKURA.ne.jp>
-Date: Sun, 15 Nov 2026 20:36:59 +0900
+Message-ID: <1ad7d101-4549-420f-a827-6bf21bae884e@I-love.SAKURA.ne.jp>
+Date: Sun, 15 Nov 2026 20:37:18 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -52,7 +52,8 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH v14 5/6] can: j1939: fix "struct j1939_ecu" refcount leak
+Subject: [PATCH v14 6/6] can: j1939: defer j1939_session_destroy() to WQ
+ context
 From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
@@ -64,102 +65,115 @@ In-Reply-To: <1d96e742-0479-4c36-ad0a-a0aaeda0a4fc@I-love.SAKURA.ne.jp>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Virus-Status: clean
-X-Anti-Virus-Server: fsav311.rs.sakura.ne.jp
+X-Anti-Virus-Server: fsav415.rs.sakura.ne.jp
 
-syzbot is reporting "struct j1939_ecu" refcount leak, for
+To close a race window that j1939_module_exit() starts as soon as
+j1939_priv_put(session->priv) from j1939_session_destroy() dropped
+the module's refcount, defer actual release to WQ context which
+j1939_module_exit() can wait for completion.
 
-  j1939_ecu_get(ecu);
-  priv->ents[ecu->addr] = ecu;
+Also, to make sure that session->txtimer / session->rxtimer are no longer
+running when the last user called j1939_session_put(), add a safeguard
+that explicitly cancels session->txtimer / session->rxtimer before kfree().
 
-in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
-even after
-
-  priv->ents[ecu->addr] = NULL;
-  j1939_ecu_put(ecu);
-
-in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
-__j1939_rx_release() from j1939_netdev_stop() has completed.
-
-Fix this problem by
-
-  (1) preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start()
-  (2) making j1939_ecu_map_locked() no-op
-
-when a netdev which is associated with j1939_priv is no longer registered
-(indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
-__j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
-
-Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Cc: stable@vger.kernel.org
 Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
- net/can/j1939/bus.c    | 15 +++++++++++++--
- net/can/j1939/socket.c | 10 +++++++++-
- 2 files changed, 22 insertions(+), 3 deletions(-)
+ net/can/j1939/j1939-priv.h |  2 ++
+ net/can/j1939/main.c       |  4 ++--
+ net/can/j1939/transport.c  | 27 ++++++++++++++++++++++-----
+ 3 files changed, 26 insertions(+), 7 deletions(-)
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index 3924404152a2..9b40f3754623 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -56,6 +56,17 @@ static bool __must_check j1939_ecu_get(struct j1939_ecu *ecu)
- 	return kref_get_unless_zero(&ecu->kref);
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index 55ded221cd82..af179eb44b15 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -294,6 +294,8 @@ struct j1939_session {
+ 		unsigned int dpo;
+ 	} pkt;
+ 	struct hrtimer txtimer, rxtimer;
++
++	struct work_struct release_work;
+ };
+ 
+ struct j1939_sock {
+diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+index 1e05383bf30f..b6adf4e047a5 100644
+--- a/net/can/j1939/main.c
++++ b/net/can/j1939/main.c
+@@ -477,8 +477,8 @@ static __exit void j1939_module_exit(void)
+ 	unregister_netdevice_notifier(&j1939_netdev_notifier);
+ 
+ 	/* We need to make sure that __j1939_priv_release_work() and
+-	 * __j1939_ecu_release_work() are no longer running before
+-	 * unmapping memory for this module.
++	 * __j1939_ecu_release_work() and j1939_session_destroy_work()
++	 * are no longer running before unmapping memory for this module.
+ 	 */
+ 	destroy_workqueue(j1939_wq);
+ }
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8fcfd13e5e6f..87a932d10ffe 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -259,8 +259,11 @@ static void __j1939_session_drop(struct j1939_session *session)
+ 	sock_put(session->sk);
  }
  
-+static bool __must_check j1939_ecu_verify_get(struct j1939_ecu *ecu)
-+{
-+	struct j1939_priv *priv = ecu->priv;
-+
-+	/* Don't get an ECU ref if netdev is no longer registered or
-+	 * __j1939_rx_release() was called or __j1939_ecu_release() was called.
-+	 */
-+	return READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED &&
-+		kref_read(&priv->rx_kref) && j1939_ecu_get(ecu);
-+}
-+
- static bool __must_check j1939_ecu_valid(struct j1939_ecu *ecu)
+-static void j1939_session_destroy(struct j1939_session *session)
++static void j1939_session_destroy_work(struct work_struct *work)
  {
- 	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
-@@ -83,7 +94,7 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
- 	if (!j1939_address_is_unicast(ecu->addr))
- 		return;
++	struct j1939_session *session = container_of(work, struct j1939_session,
++						     release_work);
++	struct j1939_priv *priv = session->priv;
+ 	struct sk_buff *skb;
  
--	if (!j1939_ecu_get(ecu))
-+	if (!j1939_ecu_verify_get(ecu))
- 		return;
+ 	if (session->transmission) {
+@@ -272,7 +275,7 @@ static void j1939_session_destroy(struct j1939_session *session)
+ 			j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+ 	}
  
- 	ent = &priv->ents[ecu->addr];
-@@ -141,7 +152,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
- 	/* The corresponding j1939_ecu_put() is in
- 	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
- 	 */
--	if (!j1939_ecu_get(ecu))
-+	if (!j1939_ecu_verify_get(ecu))
- 		return;
+-	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
++	netdev_dbg(priv->ndev, "%s: 0x%p\n", __func__, session);
  
- 	/* Schedule timer in 250 msec to commit address change. */
-diff --git a/net/can/j1939/socket.c b/net/can/j1939/socket.c
-index 50a598ef5fd4..6e22ec5e88f5 100644
---- a/net/can/j1939/socket.c
-+++ b/net/can/j1939/socket.c
-@@ -484,7 +484,15 @@ static int j1939_sk_bind(struct socket *sock, struct sockaddr_unsized *uaddr, in
- 			goto out_release_sock;
- 		}
+ 	WARN_ON_ONCE(!list_empty(&session->sk_session_queue_entry));
+ 	WARN_ON_ONCE(!list_empty(&session->active_session_list_entry));
+@@ -283,9 +286,18 @@ static void j1939_session_destroy(struct j1939_session *session)
+ 		kfree_skb(skb);
+ 	}
+ 	__j1939_session_drop(session);
+-	netdev_put(session->priv->ndev, &session->priv_dev_tracker);
+-	j1939_priv_put(session->priv);
++
++	/* There can't be any ref on this session because __j1939_session_release()
++	 * was already called. But we need to make sure that j1939_tp_txtimer() and
++	 * j1939_tp_rxtimer() are no longer running before kfree().
++	 */
++	WARN_ON(hrtimer_cancel(&session->txtimer));
++	WARN_ON(hrtimer_cancel(&session->rxtimer));
++
++	netdev_put(priv->ndev, &session->priv_dev_tracker);
++
+ 	kfree(session);
++	j1939_priv_put(priv);
+ }
  
--		if (ndev->reg_state != NETREG_REGISTERED) {
-+		/* Do nothing and fail early if netdev is no longer registered.
-+		 * This check is racy but we don't need to recheck after j1939_jsk_add()
-+		 * is called, for either j1939_sk_netdev_event_unregister() from
-+		 * j1939_netdev_notify(NETDEV_UNREGISTER) (which is retried by
-+		 * netdev_wait_allrefs_any() as long as priv->rx_kref held by
-+		 * j1939_netdev_start() is preventing j1939_priv_set(priv->ndev, NULL)
-+		 * from being called) or j1939_sk_release() will take care of this race.
-+		 */
-+		if (READ_ONCE(ndev->reg_state) != NETREG_REGISTERED) {
- 			dev_put(ndev);
- 			ret = -ENODEV;
- 			goto out_release_sock;
+ static void __j1939_session_release(struct kref *kref)
+@@ -293,7 +305,12 @@ static void __j1939_session_release(struct kref *kref)
+ 	struct j1939_session *session = container_of(kref, struct j1939_session,
+ 						     kref);
+ 
+-	j1939_session_destroy(session);
++	/* To close a race window that j1939_module_exit() starts as soon as
++	 * j1939_priv_put() dropped the module's refcount, defer actual release
++	 * to WQ context where j1939_module_exit() can wait for completion.
++	 */
++	INIT_WORK(&session->release_work, j1939_session_destroy_work);
++	queue_work(j1939_wq, &session->release_work);
+ }
+ 
+ void j1939_session_put(struct j1939_session *session)
 -- 
 2.56.0
 
