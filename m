@@ -1,91 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.161
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.50
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794741412;
-	b=dn3h6X8ltOrCrNn2IPcTlY4E9hX5b5owSnjKlgjGPt813b1/uerlYhF8or5mFqhvsYtS
-	 oKbSvob9yXMNHaMj3iDM90t8zOR9M5ORsmlZoz34oNBygkykXd+lz6GhMBwRX9XXrZ5gT
-	 3HXDoBhCUKpAdN9i1uEbgfN3A6imOKXLeNfRAoCn4CbaeQHDyQ6Q+BXuYLSXZbhLOmCpy
-	 UBochJl9OYOLsYT47KH8JOhOwxiswqXk/HA2K0/CtG47FjAdw3ni+qrOEwMUadM9+o0Ik
-	 BdIiTn/8E2TE2UOEiV23X7RNt1druB9uqaiNgJhvM3IOoICfpPlkJ/xmj2mkI+tL9pw==
+	t=1794741541;
+	b=RsanBMyC1xl/smTdJkpHYOWPIyQf6BjKUG0HJkU06uj+pHrHw7kS9ZDJZ+ABVVZC65Xg
+	 50X99k/a8qH0CCCIQ+6UgZofDrpodBfCJTU+TloL5ECJ+dbsMQeDyKV6gTG8KsOPkF4+I
+	 H1yO0Enf8OeTxSySZjYLnIu1z3bzAwy9cz+I09VeYg1eHa+KPuIdMSeE+Ic7cZTtY4FVL
+	 wWnjbfBgNUSBD6cLHWKPPJkHJiw0g5ULN28Xhyo9+74+zUgtWd165jhqFddXxe7licDN5
+	 IQfvU4lqUNNAG6vS6xOo90qFD1XB92G2II9gyLdkJtq8iFjTUiqhOcTPQa5TPeWvgfg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794741412;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794741541;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
 	 References:Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=HfL1rPAuRH1BjMJIGllWAFZWX8g7//N+M0PmHq7uHKQ=;
-	b=C3rVDGA/w75NbJPVJ8XGKJvfcnQREZmaQnvPPTj5w0MKDPpnHbbIy9S1ygTJ2Ab5hXVL
-	 al9maBet8FmPB5H8htJY/KaVFbRdfJylKItVNczmUPfGEzN0a4Kch8f5I1+eTw7rthAkq
-	 tOFTLhPE1K54oH+E6AWyUQyVyjLYbs4aVuPnMJxIs2AQbp2wt7gU6P2j0rZ1+4OLPrxjg
-	 PeXoO4+lY2RAEjiyACrbFp8o3sKE6UmzP2DXrVKKyzv6kwJnesZazgoU1uhwxtBqQnSUU
-	 i9m0WfyBgFd2uUfj1CXnqtdiiIFTIG12XX3Id9PTjA6SkNXe6HAdbVCZKlnXb+3NApA==
+	bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
+	b=ZGbl1khS/Six7dLZMcpkR9TGkyu2qRH47ERVA+EWPLHoLnI5OtEu39NegsYXgIi0Vrfu
+	 VRtMISJb1H942F6Rv6Vx4Ed2KpXDTa0BjEgpfnxsgMSwYK6tEra/xQcnx6wGaP3gIf8Gk
+	 92uq6WQKBdxVc31S4MGEGht60wLiBb6bBd46u09YliiZH52C8aJYHNtVTCvSEkpKO111E
+	 y4N0r90vAN6xJMxINc1b0xpzVoj9VBTcHXP2ePeM/Pfb9DFRRYv4/XJrUwiALgY8pxxtR
+	 IqUtgRi/e3ZYGA/aaeSr9e+/hSgavu527b+LKZn2wgR3zmpmtvVyePHTTJzgz3tryyA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=sAeXJ5p3;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Ng9dmUw5;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.161
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.161])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b="p0GDn/X9";
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=6ho6TCx0;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.50
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00CCD606A31D
-	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:16:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 00CCD606A31D
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63009606A31E
+	for <linux-can@vger.kernel.org>; Sun, 15 Nov 2026 11:19:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 63009606A31E
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=sAeXJ5p3;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Ng9dmUw5
-ARC-Seal: i=1; a=rsa-sha256; t=1794741403; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=p0GDn/X9;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=6ho6TCx0
+ARC-Seal: i=1; a=rsa-sha256; t=1794741531; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=EEeL4VMTyfwX5PSr0bTrD4eNk5TixptZYdBXZJ6K859AuSOKVWgjHsW0lII/q87v+H
-    Edm19ucstshTc6cs+M/gHZE1w1kDRhoabm/XD2zyJ+TV/X+2Q8j9XelZn9bETOPDNuyA
-    KwuJCIcqCvyautXSfAT+UQzO+rGIvyoPpFuj0WwMfkZiG/RZtWF4wTrIT3TZ6sRZjwW6
-    2JDjHD/f4Zvvdj1T1qLAfcN3NCnXXbLjVG1joSa7jr//1ND1nKQJmWUznC8V3ftI3e9o
-    i1GVwGcCBdhT42WfAm/o/6qTSy6oZffM0HThtIdumytGOkpLvRbIbbb1IAWBPhZcEuzb
-    uhcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741403;
+    b=kAQb17EJCb+O3MhSeVmZGykFDqAX9IlWDgSv7Jg7FMixnsGTTfPph0DuAc9arGlzio
+    ScqKaoksWLmYhU+M/eW/EMmXtAJYiYz/o9Zs4IE3ms3CECHV+/OU22DXARPrCZIFvR1A
+    iA+TzLIQYp50b/jzdPyrQEnRWLEqwBAaup/qORmyaYcuQbz0wjLEiuk2ze6VGk1Rs3Cx
+    2oFgPOOTLTrFj0p2sUtydvNCgI77HCQ5ulzXPp7DOAhw5hh3bOLgdQJr4zxbSbi4n7Sn
+    xBvsnRbgnGsBt3n2ggBR5oPjkju7dz53YUHnkNBHDlXTHIiQJBFH0PbSh0mS/PcwibEt
+    FS3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741531;
     s=strato-dkim-0002; d=strato.com;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=HfL1rPAuRH1BjMJIGllWAFZWX8g7//N+M0PmHq7uHKQ=;
-    b=GW9vEz18w0P3R0OU3UBaYjC718lHqm0VPjuPkX7XOUU2z0F6FD91u2+C+x4Ic3ViAw
-    fpggmA1qeAv93l6AAdktXmEa2x6tq1t/tA1X0/Dmv7+mB5Zsh7UVkHbVTnO3+UWRHfER
-    OudTUwQ+YrS9TwbPEqtSVG5wiJEA1HCB6ANiXLlf5rpOHTwGZwcLCM8EYrk0ft/aWrz4
-    VEcVCjdANmG3fl4gjiA5O0H4ndtaKedva42kZFYh6l3dC3oHx4076+T+KV8I9VK1goil
-    nmnTxOLcaBN4KPaVbErbU1uDstt2F9rrd6GaudV2p2cVBTnUuOT3B/eM/y4nDN4QCBPm
-    f2OQ==
+    bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
+    b=Kn5ik9EvpwnzvSjd5jGd9Ntz68313QNjK5DpJEEC/Q/F5VA7HKkYkQkYR+XsxB5WJk
+    zSzOVXb1ZpC5zM3F+CZoeK5YQQaqF4KbNvt9d/jNuEMsqrQB3ZEU7oj3dqpdERBvCYPM
+    OP0u5BafLpyS6zAiXBeXkBQb62fc1liUwN/PsxfM8GdJCvO8NsaNDeB+ON2THOCGFvB4
+    OrTEn46vVFCVkGnkr0fMQNq6ZkkvwGkRn48NNwfz4NB60HpFK8uS2VssQQwQ2DZbJFSV
+    f9k1i13ovvmOH9tqgyhvOVtOYb+SSU18vJuquNC6UD8dhvhOyeYtN48l+eOgKVswx/U7
+    /PFg==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741403;
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794741531;
     s=strato-dkim-0002; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=HfL1rPAuRH1BjMJIGllWAFZWX8g7//N+M0PmHq7uHKQ=;
-    b=sAeXJ5p36NO4ieaHnb4A5ajc/SOgKte4N8SOe6r7HK7OBgQ1ngfuqKS2EP0vCkCeF9
-    z0tdIlRocu1QIvgJQy9chu0L5mcNbiOM2HiR/U3psPurDJyIFBAkvIL7f1ivsB45hevM
-    fsNAQb3qchjR8B7BmWMmlyavdjO6edSOUYtagxtzQq2MacXGErsIgI+Amoa5gPT32WZc
-    X9H6vKFw+0l1an5ORrEjFUr7JzihdpXZ+kj516Ij4zL8nLaN0TauUNI+4tEiWrEMcYuU
-    VqgaqU/6DGtNtNeDogO0WtVoTvymxwWPBYYsda5JIlr7X85iAmS66BZr8APrA4Pc7WZU
-    Ixlg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794741403;
+    bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
+    b=p0GDn/X9svEjSJeu+SA3WDcUxZUSPAxHaAhZ0msLqSxBd5gJzYkubChXi4tr/9FM2V
+    O/C8HCqwAeEinMDAAv0QZKJdUc/AHfsOQv51Hw3B84ZG/YVLKWq9z8Se/qZkb6wTwF+c
+    ZSCNdMNZdkR+ptLA4zw127aGENDaBPXm+RVq928UielH20mqEAIKpd/msBC6L/eihpM4
+    xilXDtV1Jh8wFTFvZQvmlracmMNCCp3epolE0v0+eLr2fiMB15leo5ltBEpoK3syNKT2
+    uspgf5OGdt2njpBZGvVIYhn8MwNC7Z4SVnx8qAf5kltDvvAQ9Mc2xk1DasfjZE1meebW
+    ellg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794741531;
     s=strato-dkim-0003; d=hartkopp.net;
     h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
     From:Subject:Sender;
-    bh=HfL1rPAuRH1BjMJIGllWAFZWX8g7//N+M0PmHq7uHKQ=;
-    b=Ng9dmUw5oYusGPUeRl1rLWVrmH4fB6bNS/P6rVdKwOr/7wiBXKr1I+ihjpNBgaUMzi
-    yKCNN/phSFq8D8lMuXAw==
+    bh=MrfX9qIkYlFfGemWYwlk1BGSJukySqFvwj+bcyOXWaY=;
+    b=6ho6TCx0vv1NOZIJN0vhzSBOTCmpDu6s+ToOoMTJ8K67f/90LBnyHbWP/ky4qxqkcU
+    w0sUtNCUccKHNIevbqDg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [IPV6:2a00:6020:4a38:6810::989]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AFBGgOLq
+    with ESMTPSA id Kfdf2a2AFBIpOMF
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Sun, 15 Nov 2026 12:16:42 +0100 (CET)
-Message-ID: <28d4a5aa-535d-4486-b913-e413a043a309@hartkopp.net>
-Date: Sun, 15 Nov 2026 12:16:37 +0100
+    Sun, 15 Nov 2026 12:18:51 +0100 (CET)
+Message-ID: <b32f335c-a672-4d5c-82a2-17c784bfbefa@hartkopp.net>
+Date: Sun, 15 Nov 2026 12:18:51 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,71 +96,72 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/5] can: bcm: copy the CAN frames outside of
+Subject: Re: [PATCH v4 3/6] can: raw: use a private mutex instead of
  lock_sock()
 To: Marc Kleine-Budde <mkl@pengutronix.de>
 Cc: netdev-bot+sashiko@kernel.org, linux-can@vger.kernel.org,
- o.rempel@pengutronix.de, kuba@kernel.org
-References: <20261113-can-bcmlock-memcg-v5-1-634c0e04bc72@hartkopp.net>
- <179470332579.488853.5643594273401866523@kernel.org>
- <25179774-bf3d-43d8-84e6-b0ce121f3eac@hartkopp.net>
- <20261115-nippy-adventurous-scorpion-0a33ed-mkl@pengutronix.de>
+ o.rempel@pengutronix.de, sashiko-bot@kernel.org, zihanx@nebusec.ai,
+ kuba@kernel.org
+References: <20261111-can-bcmlock-memcg-v4-3-5428607a608f@hartkopp.net>
+ <179454426541.488853.15379643605511531742@kernel.org>
+ <5b2f1dcd-292e-42fe-91f7-fe0255e830ab@hartkopp.net>
+ <20261113-cooperative-capybara-of-persistence-52ed5c-mkl@pengutronix.de>
+ <1b782cac-cb24-4f9d-9a28-aa5e5cbf94db@hartkopp.net>
+ <20261115-wakeful-true-seal-1950b7-mkl@pengutronix.de>
 Content-Language: en-US
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261115-nippy-adventurous-scorpion-0a33ed-mkl@pengutronix.de>
+In-Reply-To: <20261115-wakeful-true-seal-1950b7-mkl@pengutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
 
 
-On 15.11.26 11:30, Marc Kleine-Budde wrote:
-> On 15.11.2026 08:55:26, Oliver Hartkopp wrote:
+On 15.11.26 11:27, Marc Kleine-Budde wrote:
+> On 14.11.2026 07:56:07, Oliver Hartkopp wrote:
+>>> I think the bot doesn't include the cover letter. To add additional
+>>> information to single patch, I add them with "git notes edit".
 >>
+>> Thanks for the helpful information about git notes!
 >>
->> On 15.11.26 01:42, netdev-bot+sashiko@kernel.org wrote:
->>> Thank you for your contribution! Sashiko AI review found 1 potential
->>> issue(s) to consider.
->>>
->>> Critical: 0 · High: 0 · Medium: 1 · Low: 0
->>>
->>> If you believe none of the issues are legitimate, please reply to each
->>> issue of Medium severity or higher and explain why the AI is wrong.
->>> If any of them are legitimate and you plan to respin, please let patchwork
->>> know by including "pw-bot: cr" as a separate line at the end of your reply
->>> (one such reply per series is enough).
->>>
->>> - [Medium] This patch's commit message describes the bug as 'a stalled
->>>     copy on any CAN_BCM socket can block RTNL'.
->>>
->>> --
+>> But it does not solve my rant.
 >>
+>> The AI bots are really eager to check every single word in the commit
+>> message whether the patch below fits the announced functionality.
 >>
->>> The later patch in this series, "can: bcm: use a private mutex instead of
->>> lock_sock()", appears to close this gap. At the end of the series,
->>> bcm_notify() takes mutex_lock(&bo->conf_lock), and the generic SOL_SOCKET
->>> options never take conf_lock.
->>>
->>> This patch is tagged for stable. Should the commit message say that the
->>> RTNL stall is only fully fixed together with that follow-up patch, so the
->>> two get backported together?
->>>
->>
->> Not needed.
->>
->> This patch is a follow up to a bunch of recent fixes to remove the
->> dependencies to rtnl_lock()/lock_sock() like
->>
->> can: raw, isotp: copy socket options outside of lock_sock()
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=43c973a0887d3d7b2ee0a446603c97bf0f38c58e
->>
->> which had no such announcements for potential future fixes either. Doing so
->> only adds some bloat to satisfy the AI bot during the upstream process.
->>
->> The stable process works pretty well without adding such hints.
+>> When there is a series of 5 patches that are explicitly not related to J1939
+>> it can not be the solution to place this information into the notes of every
+>> single patch.
 > 
-> I've send a PR, let's and comment on it as needed.
+> sashiko.dev seems to take the cover letter and later patches more into
+> account when reviewing...
 > 
-Thanks, Marc!
+>> That's like humans spending manual effort to satisfy the AI bot.
+>> I've seen that in dystopian SciFi movies and it didn't end well :-D
+> 
+> :/
+> 
+>>> Add this to your ~/.gitconfig:
+>>>
+>>> [notes "rewrite"]
+>>> 	amend = true
+>>> 	rebase = true
+>>>
+>>> [notes]
+>>> 	rewriteRef = refs/notes/commits
+>>>
+>>> [format]
+>>> 	notes = refs/notes/commits
+>>>
+>>> It will keep the notes during git rebase and amend and include then
+>>> while sending patche (even with b4) after the first "---".
+> 
+> FYI: notes are not working with b4, I've send a feature request to
+> Konstantin:
+> 
+> https://lore.kernel.org/all/20261114-rapid-diamond-skylark-6d6cc6-mkl@pengutronix.de/
+> 
+
+A good idea!
 
 Best regards,
 Oliver
