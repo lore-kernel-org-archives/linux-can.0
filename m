@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794736673;
-	b=iP4b6EShDSoR1G5o/lvuwajDywHJPdmf5POnJ8NM0gYXN9gHVUF1rIADYh0+2dYeIN8G
-	 GdJezrxdb6RNtIs1Fgs1p/OlxFssKP7GJtk3aCUKUu16f75rjnc+gIskAe8sbZSMgn444
-	 bnPmlBg6rKc5/TEuQM4Hp+a3IzukuFnN7mZ88kuOfhfGTVoCJwBv0Jq1MaAck+nj7Oeag
-	 02UjmQe5c92PdpHTryYpKptX6oWBSQOiS5zel2rnv8b9jBhAaSskxf68r2DK+SCwyHOnZ
-	 8a1LYJO6a9ScSoVs4aclgFPMUElG8UUI4p8VL2hA/Ve199cSZsn0vMf4rwl02k0HUdQ==
+	b=bB7WC0Ldiq1MjjrdWRpm8BXdyRSZr9XKOWzkOxphplBak2DLXmXSNpHx5rJNHbZlo+Zv
+	 +fZafwEblvVCjfbqVhL3Q1EQNef2FnjNBCIC2NL2JAOMrD8ovoz9C+nFFelF+Cvl3VdJh
+	 h5judKPMyt+sxV7QcXlPaOz05ViEq80KdepDB7sOKG1VZYGjldy3wHX7q/ywV0ncbMCRF
+	 TosyIRARBLulqd5fqdEoB+oYvVSdSwjZzdmsKY674wp1nDa7L066Io5RrwJlDZN720HC0
+	 lemmv+LpMxtNyvApFEvlT9IzpdaERz7hBtBppKwq49hPBT2vMde97xCRf+j72dQ79gg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794736673;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=YFogAghw+u3F9lP/XQuAT19xwMSCcRBlcmsKI0cgtyw=;
-	b=5Y7kSOpqIK29yMfsSMOwSB70cP6Q2ChnFWMu6YR3yvxfJ9w6IXPfemnh10CliS9QUDiM
-	 HxBwscUZzWBz50aKkzkK7Pcifmn4/GSB3lXAtS82WADwC4kKIJWp4eixuX91lS/2M4JxX
-	 DJ9Jk+dssWUdc5T7D2fFN/IEWmnHAEUYK8JQP3XB7zyN1Gjr3Tv/rV3iT8okxHclCPgvA
-	 NYv/slP9I0mOJwuCxzvY/Hp1xVc2XF+tn6cn+obTqnJXiL6saP4PMacCX4TqIutuLjgJP
-	 vgTb+5U37oR7PXWsaFB8hqCUFwz4PJjs6hRESG2QzTWd8p2vXq8klaXQLi9Jiia69+w==
+	bh=Jasd+7eTfCu8M5HIID8UopD0ImkUg5IwkLLHNVAPX/U=;
+	b=tfBZ7yxm0Ii1vm0/MuslThrWIRP7+pxNxZDlqbCVFNPYRZkMUdGwuAM5RwgxV7phbyuU
+	 4fIphZC/nFUYihk37FOSX4QRtsNGHAyMN4knt7XK9ZavLhhVhX0YX6TwDp2jQk3jPDI0A
+	 larChRb1d6mPnAwGj0PciYHt/R2TjL1xFXVT+V+TN1UNXP2nxPoAB2AIx3kTUVxT1IWNJ
+	 H9VKfrK+YgtiPx1A3kcIOoAFO71hus8bBUvv/iKNAZX8qF04blRFZoURVZTTau4TiB0AF
+	 QEOT4bHucIUhkjAzaodFRDQD5AlUAatVGnTxujEugU9qyF818g3p+ZbW/aHCKtl9PWQ==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="EkOqKp7/";
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=OE7L21AX;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FBF606A323;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68EC7606A31D;
 	Sun, 15 Nov 2026 09:57:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 68FBF606A323
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 68EC7606A31D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=EkOqKp7/
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=OE7L21AX
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 6AE812059FC;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 5FA922059F2;
 	Sun, 15 Nov 2026 10:57:50 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794736670;
@@ -43,31 +43,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YFogAghw+u3F9lP/XQuAT19xwMSCcRBlcmsKI0cgtyw=;
-	b=EkOqKp7/eNzTAhlkFW8nusNwlWWg1Cvm4yOraWyivtFM4jDK+PdZ6hYM+l/dipGkoebd3A
-	TktUEe0eWeuiCm5K7zbpAVw6dNOTwMxn4NY/+SZxlYe2zyn0DbkkfLMF6f3nSRwqj9pvQ9
-	9n7LrX5EReXw1RvSLoPCMC4BXKhGZlLE2aQ8C3o+pCXmCdhn/AZZxzPnjRc///5rpPcw1l
-	GkYsvFBjy70oY+TQPQvPnMCK5qwVHM/sNso1zbv9d6gtH8IMkwl/h20nF1ELNh3hKSZOqO
-	Yqv5SdFaFWsUPRoux1Oq7ce4AGC9Xem0vgHwqoS775C5HzHVNTKYVjFghKm7ZA==
+	bh=Jasd+7eTfCu8M5HIID8UopD0ImkUg5IwkLLHNVAPX/U=;
+	b=OE7L21AXfLKapkD8TcKOm7FjJUpuRZ7PjjRmDiGYUpUt4UaJ9tSmXxwyW/oWyguoi+2VXj
+	RCEXFLt+noW4IoNOz4a3siTM3xUrXjZfmAQ8nTncmlAjEF61P44bb9IGU9eVHc12IaMEfX
+	0MN806sGQ9C37Hi1iVO+I5TmRm/fD6oQFR/SwtOpLmZtUe4C/tUYjsyqIm6Q+TTNiodjio
+	YZZLThTrXgqtSuQH2Yt7EEqnSCS3eBouPOCABNR+twUrpvE17CVg47HHSdek0zhgU35rNM
+	tr+xAdKYkB7EmvzOAZ8LoThVFy81VCX2/Dze8dTD74x7oZuJcUgC3DY6L91iNw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794736670;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=YFogAghw+u3F9lP/XQuAT19xwMSCcRBlcmsKI0cgtyw=;
-	b=HGBBxiDbalnsDc4p4PMAGZHaLfyon0vdC2GgSqQVxbgTBz0Ehv7TX/v5YlaYN6XRiWCRrM
-	VPu29pgAFz6fNlpjCUz3d2ga2BB/evpcw0mGQYph5OqLxvFSKOYN9xyBVK3IvONEaEMTwy
-	yPwKFhUJGp3LMROYV7/vNLJVdTeo1m/hkghO6jFM4HMSEmFdikCXvJY97zGMDMR1mdrMeR
-	rtKEzwOzQCJgJojLRxpL/DdzUmWhDdsSz8N4PE7FnboGZbKt4zC58F7EcGysTDJOT6xsDP
-	ignQlWvEksZtt76usbQf+VHDhUcFbQQMtqlZtC1ucdql+COrVi7hTxHrWRTFgA==
+	bh=Jasd+7eTfCu8M5HIID8UopD0ImkUg5IwkLLHNVAPX/U=;
+	b=Ur7IH2iCFIkFyhz6msxlVBDuR+jnoVFO9VSSwNhozA+ULusbnxXX0Mu9qR8D4ZodC812PY
+	mWarZR/397XDQ+JzkXEzakO1JONPuTZCA3wQVQBWwvJIbvoBXwCiBFwwSdHEuH+AuK4MIr
+	5X9UKRaO6cKPUKZjV3WL5vJ3b8RstCkQbBT541dxl4C7ONTyAhLKJqituCKWG7qZQ6dELi
+	SZgzJlTM6mDncNX2WhVHqJtMudLDX/CMcyNdxLCbfhXLtWN8B9YHLioJ6J3nITlZJtkx/s
+	uLfTtoxeQD0hsbUE0ZYhd+mmO0rp5Xq75NBm6y6Dnet7FxiQsOiaykzS9Txx5w==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794736670; a=rsa-sha256;
 	cv=none;
-	b=cKr16O9zDU0pdzloTUUXaHcfA8oSsnq+itGw+HATj0h7cn0R676XYil1kc2WKRVaglx/aH
-	xXDQ0LnnbP0qlGA4smSMHbCs1zsjWqiJvgSoDBIg4udfG4441vGfCSML2vo2jmcrzf4jEn
-	31c5C0KHwNQYSVJmtk+6CxWqEtUZPP9PrkrwI/K30VeSKdcNIhxGTSWf5M/8ZskaKTr/nA
-	toLvIVcqtEeOgPoNlKsyWF18/wGCjqpRvNwCZthF/JpXyQWBCn2WXfae0l9yMWnvAB43Gr
-	Y7Cd6JS8SgJU7frs+fYi9QPnfIIPb+d9s6L0MgV93GDkp/lFEjTDzxqzVUBovw==
+	b=JFzkMM8n3fkuLEpfoZRJMlArS107VKxywZxBRRXZO0nOUlLruzLCJVdK9nyn5aIxBvxg2S
+	QXkQbsNKbUJrviz5r6qZ2ea/9LpcfZgHEc/1Vkxgwa1xYv2x6Ct6hqxbiaYx6lClbaZRmK
+	ejo2Lf0Tik3K2Al8FNJudBtpQTtI1VqiWNBv9/G5XJVc7LprxVPZ6b7NvBnUt3W0w3m0aS
+	O2eCFlLMhQAjByWi+Kz0D6NubmhNyGnuBHwpjEucptxsxUjZ4PeEElj050Lw8ulO+UBZ9D
+	+l0Kk3fcq6o6bAOEzU2n36i+u0Y0xueN8kRrjb4DsuvuUeZ6JrHh/8Y+/FiStA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,14 +75,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xSWze-004GWI-11;
+	id 1xSWze-004GWH-0q;
 	Sun, 15 Nov 2026 10:57:50 +0100
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 0CEA45EC24F;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 03D105EC24E;
 	Sun, 15 Nov 2026 09:57:50 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,12 +90,12 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Zhu Ling <zhuling0805@qq.com>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
 	stable@vger.kernel.org,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 3/9] can: netlink: fix static FD-NON-ISO mode validation
-Date: Sun, 15 Nov 2026 10:54:54 +0100
-Message-ID: <20261115095746.709371-4-mkl@pengutronix.de>
+Subject: [PATCH net 2/9] can: bcm: do not remove the procfs entry in bcm_notify()
+Date: Sun, 15 Nov 2026 10:54:53 +0100
+Message-ID: <20261115095746.709371-3-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261115095746.709371-1-mkl@pengutronix.de>
 References: <20261115095746.709371-1-mkl@pengutronix.de>
@@ -110,68 +110,132 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Zhu Ling <zhuling0805@qq.com>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
 
-The static CAN_CTRLMODE_FD_NON_ISO mode does not have to be specified when
-CAN FD is disabled. Since commit 6742ca18cb41 ("can: netlink: add userland
-error messages"), ctrlstatic_missing is calculated before applying this
-exception. Disabling CAN FD on a controller with static FD-NON-ISO mode
-therefore fails with -EOPNOTSUPP.
+bcm_notify() removes the procfs entry of a CAN_BCM socket that is bound
+to a vanishing CAN device with remove_proc_entry() while holding RTNL.
+remove_proc_entry() waits for all running readers of this entry. A
+reader of /proc/net/can-bcm/<inode> that stalls in its copy to user
+space, e.g. on a FUSE backed mapping, therefore blocks RTNL on the
+unregistration or namespace change of the bound CAN device.
 
-Apply the exception to ctrlstatic_missing instead of modifying ctrlstatic.
-Keep the original static mode mask and restore it after applying the
-userspace mask, so a request that disables CAN FD cannot remove
-CAN_CTRLMODE_FD_NON_ISO from priv->ctrlmode.
+The entry has been removed in bcm_notify() so that a later
+bcm_connect() of the unbound socket can register it again without a
+"proc_dir_entry already registered" warning.
 
-Fixes: 6742ca18cb41 ("can: netlink: add userland error messages")
+The CAN_BCM socket itself stays usable after a NETDEV_UNREGISTER:
+bcm_notify() only unbinds it and reports ENODEV, so the application can
+connect() the socket again, e.g. to a re-created CAN device. The name
+of the procfs entry is the inode number of the socket, which does not
+change until the socket is closed.
+
+Keep the procfs entry until bcm_release() instead, which removes it
+after the socket has left the notifier list and without holding RTNL.
+bcm_connect() only creates the entry, if it does not exist yet.
+bcm_proc_show() reports an unbound socket as "unbound" instead of
+showing the cleared ifindex as "any".
+
+As bcm_proc_show() can now run while the socket is bound or unbound, it
+reads bo->ifindex locklessly with READ_ONCE() and the writers use
+WRITE_ONCE(). The NETDEV_DOWN handling in bcm_notify(), which runs
+without lock_sock(), reads bo->bound and bo->ifindex with READ_ONCE()
+as well. bo->ifindex is still only modified under lock_sock(). A
+concurrent bind or unbind may show an intermediate state in the procfs
+output, which is acceptable for this debug information.
+
+Fixes: 76fe372ccb81 ("can: bcm: Remove proc entry when dev is unregistered.")
 Cc: stable@vger.kernel.org
-Signed-off-by: Zhu Ling <zhuling0805@qq.com>
-Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
-Link: https://patch.msgid.link/tencent_3A964832542399A780E646D6A6246335C409@qq.com
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+Link: https://patch.msgid.link/20261113-can-bcmlock-memcg-v5-2-634c0e04bc72@hartkopp.net
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ net/can/bcm.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
 
-Notes:
-    FAQ:
-    
-    Q: What about netlink payload size underestimation in can_get_size() for
-       the IFLA_CAN_BITRATE_MAX attribute.
-    A: This issue will be fixed in a follow up patch, to ease backporting to
-       stable.
-    
-    Q: What about netlink payload size underestimation in `can_pwm_get_size()`
-       when PWM capabilities exist but `CAN_CTRLMODE_XL_TMS` is disabled?
-    A: This issue will be fixed in a follow up patch, to ease backporting to
-       stable.
-
- drivers/net/can/dev/netlink.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-index 081dfddda000..0cd55613a616 100644
---- a/drivers/net/can/dev/netlink.c
-+++ b/drivers/net/can/dev/netlink.c
-@@ -332,7 +332,7 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 3f4c8d828337..1595b7720c98 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -219,11 +219,16 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ 	struct net *net = m->private;
+ 	struct sock *sk = (struct sock *)pde_data(m->file->f_inode);
+ 	struct bcm_sock *bo = bcm_sk(sk);
++	int ifindex = READ_ONCE(bo->ifindex);
+ 	struct bcm_op *op;
  
- 	/* do not check for static fd-non-iso if 'fd' is disabled */
- 	if (!(maskedflags & CAN_CTRLMODE_FD))
--		ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
-+		ctrlstatic_missing &= ~CAN_CTRLMODE_FD_NON_ISO;
+ 	seq_printf(m, ">>> sock inode %s", bo->procname);
+ 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
+-	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
++	if (READ_ONCE(bo->bound))
++		seq_printf(m, " / bound %s",
++			   bcm_proc_getifname(net, ifname, ifindex));
++	else
++		seq_puts(m, " / unbound");
+ 	seq_printf(m, " <<<\n");
  
- 	if (ctrlstatic_missing) {
- 		NL_SET_ERR_MSG_FMT(extack,
-@@ -357,9 +357,9 @@ static int can_ctrlmode_changelink(struct net_device *dev,
- 		priv->ctrlmode &= ~(CAN_CTRLMODE_XL_TDC_MASK |
- 				    CAN_CTRLMODE_XL_TMS);
+ 	rcu_read_lock();
+@@ -1866,19 +1871,9 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
  
--	/* clear bits to be modified and copy the flag values */
-+	/* clear bits to be modified, copy flags and restore static modes */
- 	priv->ctrlmode &= ~cm->mask;
--	priv->ctrlmode |= maskedflags;
-+	priv->ctrlmode |= maskedflags | ctrlstatic;
+ 		/* remove device reference, if this is our bound device */
+ 		if (bo->bound && bo->ifindex == dev->ifindex) {
+-#if IS_ENABLED(CONFIG_PROC_FS)
+-			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
+-				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
+-				bo->bcm_proc_read = NULL;
+-			}
+-#endif
+-			/* Paired with the lockless fast-path check in
+-			 * bcm_sendmsg(); bo->ifindex itself is only ever
+-			 * accessed under lock_sock() so it needs no
+-			 * annotation.
+-			 */
++			/* pairs with the lockless check in bcm_sendmsg() */
+ 			WRITE_ONCE(bo->bound, 0);
+-			bo->ifindex = 0;
++			WRITE_ONCE(bo->ifindex, 0);
+ 			notify_enodev = 1;
+ 		}
  
- 	/* Wipe potential leftovers from previous CAN FD/XL config */
- 	if (!(priv->ctrlmode & CAN_CTRLMODE_FD)) {
+@@ -1892,7 +1887,8 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 		break;
+ 
+ 	case NETDEV_DOWN:
+-		if (bo->bound && bo->ifindex == dev->ifindex) {
++		if (READ_ONCE(bo->bound) &&
++		    READ_ONCE(bo->ifindex) == dev->ifindex) {
+ 			sk->sk_err = ENETDOWN;
+ 			if (!sock_flag(sk, SOCK_DEAD))
+ 				sk_error_report(sk);
+@@ -2013,7 +2009,7 @@ static int bcm_release(struct socket *sock)
+ 	/* remove device reference */
+ 	if (bo->bound) {
+ 		WRITE_ONCE(bo->bound, 0);
+-		bo->ifindex = 0;
++		WRITE_ONCE(bo->ifindex, 0);
+ 	}
+ 
+ 	sock_orphan(sk);
+@@ -2060,16 +2056,17 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 			goto fail;
+ 		}
+ 
+-		bo->ifindex = dev->ifindex;
++		WRITE_ONCE(bo->ifindex, dev->ifindex);
+ 		dev_put(dev);
+ 
+ 	} else {
+ 		/* no interface reference for ifindex = 0 ('any' CAN device) */
+-		bo->ifindex = 0;
++		WRITE_ONCE(bo->ifindex, 0);
+ 	}
+ 
+ #if IS_ENABLED(CONFIG_PROC_FS)
+-	if (net->can.bcmproc_dir) {
++	/* create the procfs entry once, it is removed in bcm_release() */
++	if (net->can.bcmproc_dir && !bo->bcm_proc_read) {
+ 		/* use unique socket inode number as filename */
+ 		snprintf(bo->procname, sizeof(bo->procname),
+ 			 "%llu", sock_i_ino(sk));
 -- 
 2.53.0
 
