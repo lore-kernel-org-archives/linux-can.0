@@ -1,91 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.217
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794848406;
-	b=1wqbeiSqki9w5qm6aCIVr16LNY+xLeFLDXA/7LwUh0EDkufDyqko7/U5AkixPQExw4vT
-	 qbkRgAssiZiZPcCY/hb9mupSnm1fe2lesUSlTkjcx9GoA+BhZkKth/NU+FMLQtO6DULso
-	 U3LHRavsKZojsmvnLeandluRoJeVjwLG0bOfWuBpQ1Lx/ldsq6ulqy8cXrBoUjHnX1VF9
-	 ut5XT1lZLYTeMq4IhZ/gcc/ExO4NT2yM3kcVaKx021u3BpTPEO76TycQTguQzCmKbcAF0
-	 xYbEPh/kxVk4dDQEC9hwuJnH/LG6N2OoQfXl4rRdzr7YUca4sXXP/o4w4iqm8wokYFA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794848406;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=ho8Pw3OzOIO6yZIwLewwoAwZMDNCLICWc3pROsaHEQM=;
-	b=R4PCoEahbpnoun15PORKXuJ0zIlAKeh4Tp9nzmKEUhsCsJaCELShcFJxEoHMVQSqd1sc
-	 GYmzUjwSmtTMj+kgyy37wlhA/JgoIAgWizq5t8wk1/sS4w1rK7ieVJvpRukZ2wPAAinH2
-	 F1ThPv7q19GcT7ecoNi355PjBkWGJTOWFdUZvsDgtL63ctcbTjQBChaHl23E61A0qjnMw
-	 1SOI2X5i+DM39rBY4faKSQe1cKBAu/jQa3MDe9vpYOEnd/LepOZAGuYfS6HtUf6oxDLJd
-	 oetxPzzVyspmW8IToB2xJx/K6QgzaTdVGWksZxycwzw7ycDxVS5X89Fz4k2qZWcUlgA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=lVu7xIPZ;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=XtU4Vvlf;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.217
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.217])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1794855067;
+	b=QCAedXtaIeAyteN9LyLGqMzu4iYPrPpfIq+SHcrRwA/vthPawl+dBxRmBovtfpfHvrmf
+	 kR7VaKDYF3FHjgPudnKxmqML5h+zN7mBDtTgkkcgA3gWEqE5iGQGybNUB28Rm1aWQrpLt
+	 ZkxwpIWQlaLyTLIz0DsKInPO/Nk+yE83MnqFEBmayIdTru4emA6BYSa8ttKD2cFykQndl
+	 mIZOqoQQ5V9O8Cg7xqyzCQhv7YQQ8KgfVH/Ieli8pnaQMvmef7JEm54ASNujFdM2wFsNF
+	 r/ps9XA9XMfIIjzIMouAicgtLQjUhz1qkKa+rOHM0CYJTUT7DGMjrCMnjHQzA8wpcsA==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794855067;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=E1ZZtPSpwBQf00Eg3khRUWeWxhFOXBKZqtxemq1RUjk=;
+	b=ziFe6AxkA70B6WWLC7q+MYKPezCh8EZYt3JIK3ucB0DNWIh62TEXvklEaCMFjfOFoQ9o
+	 t19UKWAWEHnwLQsijFUW151kGHv3Zaa8x+ZomS2RzcZTPDu1TLXEG3+q54+qJyjJRq6Vu
+	 /+5z31H/D259t2pUnz7JpK+hQ2XZEAI7euX7SNoV4K1pdS+CFSKwMuFEmZGn4LrABwboT
+	 si9BW0pwTHugFIyXrN31fDoaOLicUap266MrPj1wyfKf1EILSyV7x1jBSDdjp8Yz1Ku5V
+	 9lEHOQrg2vRZjz5772ezvkALPiCf7QKSB3Qg0utnAcBmNCoPWubs54oImq8SAs9Za4A==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=czdWOdOt;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90414606A33F
-	for <linux-can@vger.kernel.org>; Mon, 16 Nov 2026 17:00:04 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 90414606A33F
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5964606A31C
+	for <linux-can@vger.kernel.org>; Mon, 16 Nov 2026 18:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=lVu7xIPZ;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=XtU4Vvlf
-ARC-Seal: i=1; a=rsa-sha256; t=1794848393; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=fPhBdYt2L8/a/8G8mLG6pD7S4G35DfsjUI7A98FlEqI1fcr+B3WtXVgEvCPwcxH1F5
-    qxkeE0/OJreneJvRcrhWNyqsxNefWSbTD0siqsKeegZhK6EwdgyxQO3jfbkVVfSh7d22
-    yAmW06Zz5NgUHHQe+hL5Nmr2Wey9Uyz4hkgJpZLiVSTZcRCXiS5QbmJR7d44l9z5Q7p2
-    UE1A1LF6IA2U0rtUh+Hir+I2BQ+5QFKnZQYnbq8kFdtGFzu76QkQMVmiiX5gR4foLdJG
-    Q67q305LqKvj3m7jnqznzkxT8wnLLble8ZK1NFbBUpS6lPlEcgERHfs0J7YBshME7s3m
-    7KzA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794848393;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ho8Pw3OzOIO6yZIwLewwoAwZMDNCLICWc3pROsaHEQM=;
-    b=BxjH6ZjwtyybCpOUAjn8BnJSWqJuP/IRPEuVzKeXZ+j06B/YtzeLFXXz/ssd5NRHUR
-    8rPmrkYZiT5TBb46FYBJwt4Zm6y+LwhNcfthGEGsI/t5Nl0SUZ2eyuc1WS8pyMb446cn
-    qUGtBW7D8ecJu0kdeDvSQSAVhPIO4uDTnglaPC+2CK+fsSRNluVfqeSDiLnCOsbfL9OH
-    /67AtwnMA7AdleJLT3fkinZaa9SiAf8o2kRA2fQZmZx40YIu6C7PyiQOeHjn+Vld63fl
-    8zRYWJS/3Hf4TtxeKFC6ZIAq6dK5j3CezUdgfGD5YmeCTeqjzip+HaCJKrlfhLaYQHqf
-    IY5w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794848393;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ho8Pw3OzOIO6yZIwLewwoAwZMDNCLICWc3pROsaHEQM=;
-    b=lVu7xIPZWfo4MiM4xQNJdAFIENMsbvBgNJ8e+ZTWok2448iBvkCjEpLC2xZiACRg5M
-    q1YEEWJC7RDlwRhYLuY2ey9I925C5Lc36xGQm06Blre5Yk/fq8MkkNVm3SMzDE01bWBy
-    fPCNCZtHX1z1lzlX7eyf0xq6pSeZPCMpGdNEkXNzoM3tX7sjhgr2eOvYuHCAhhQikX5W
-    qW7qnk7sWGsFt4lSfQQ9OcN7G7Cr1icHNgBYjpkT/cKKAh6U+YLvD3roY94YmPWGHXSl
-    II7hn6oU13rU1QYC1oB1IDa2m2jCT19qeha5CniDVcC1GVuSxXxGA98B1W+ec7A1KvQU
-    Tv3A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794848393;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ho8Pw3OzOIO6yZIwLewwoAwZMDNCLICWc3pROsaHEQM=;
-    b=XtU4VvlfhrGWDIIM0/fqsg5l6NT2A4TuFnOqZ5jUi+WkMfcwLg5De21ZJZPTdU86T4
-    6SCJs/P0d/+kwzhqLXDg==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AGGxqIoZ
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Mon, 16 Nov 2026 17:59:52 +0100 (CET)
-Message-ID: <df95ffcf-c6e6-4dbc-bbab-7749ce93ea86@hartkopp.net>
-Date: Mon, 16 Nov 2026 17:59:47 +0100
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=czdWOdOt
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB56E1F000C4;
+	Mon, 16 Nov 2026 18:51:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1794855067;
+	bh=E1ZZtPSpwBQf00Eg3khRUWeWxhFOXBKZqtxemq1RUjk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=czdWOdOtvWE0L16OhFHeYjTP7UwWF6AVxeHihgHH203EpZneztt72qOCwjjaB0IX7
+	 U0C4s9mF9qL57rV/lmqj9RJ6QD+HHD8ghBoZ8b/GgxDD7uMoLoH4iFq0fLgIG/aXhX
+	 433aem++eGUznTL/6zHqNwjh5EdXZL+/2BFydP527TAhRlx/joNPglUiyIjk1R3cLr
+	 MeLymzRg+x1mPNjJa2VUZM8ZkgklAsGGvCMi7CcR0BEvLQkd91qsw+Ov4rNbQmFMep
+	 shLhJxjJDDCUE2MdnIZ7Z58W10ls81OtarcwRXLQLyWfdgIBmycxlY1mmiFjZhDHEs
+	 5ONuIJBqebpPQ==
+Subject: Re: [PATCH v13 2/6] can: j1939: add a safeguard to
+ __j1939_priv_release_work()
+From: netdev-bot+sashiko@kernel.org
+To: penguin-kernel@I-love.SAKURA.ne.jp
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
+ kuba@kernel.org
+Date: Mon, 16 Nov 2026 18:51:06 +0000
+Message-ID: <179485506647.3132.15248710248812614118@kernel.org>
+In-Reply-To: <3e4669b1-fbc8-4e69-8e73-6ee35cbd13e4@I-love.SAKURA.ne.jp>
+References: <3e4669b1-fbc8-4e69-8e73-6ee35cbd13e4@I-love.SAKURA.ne.jp>
+X-sashiko-severity: Low
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,65 +63,136 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 6/9] can: isotp: use a private mutex instead of
- lock_sock()
-To: sashiko-reviews@lists.linux.dev, Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, Vincent Mailhol <mailhol@kernel.org>,
- Oleksij Rempel <o.rempel@pengutronix.de>
-References: <20261115095746.709371-1-mkl@pengutronix.de>
- <20261115095746.709371-7-mkl@pengutronix.de>
- <sashiko-outbox-216678@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <sashiko-outbox-216678@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 16.11.26 10:58, sashiko-bot@kernel.org wrote:
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-> This problem wasn't introduced by this patch, but can
-> isotp_setsockopt_locked() [1] modify socket options while an ISO-TP
-> transfer is still active after NETDEV_UNREGISTER?
+Low priority / nit picks for your consideration:
 
-(..)
-> Should isotp_setsockopt_locked() also check that so->tx.state and
- > so->rx.state are ISOTP_IDLE?
+- [Low] The commit is tagged `Fixes: 9d71dd0c7009` and `Cc: stable` and
+  says it closes a use-after-free.
 
-Yes, this is a valid finding and the suggested check is the right
-approach.
+--
 
-isotp_setsockopt_locked() only checks so->bound, which is cleared by
-isotp_notify() while a transfer may still be draining. isotp_bind()
-already rejects a new binding in this state by checking so->tx.state
-and so->rx.state for ISOTP_IDLE, and isotp_setsockopt_locked() needs
-the same check as suggested:
+can: j1939: add a safeguard to __j1939_priv_release_work()
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 8229b6a69e..4644a1533a 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -1721,6 +1721,14 @@ static int isotp_setsockopt_locked(struct socket 
-*sock, int optname,
-  	if (so->bound)
-  		return -EISCONN;
+This commit adds a write_lock_bh()/write_unlock_bh() pair on priv->lock at
+the start of __j1939_priv_release_work(). That delays kfree(priv) until any
+current priv->lock holder has dropped the lock. It is meant to guard against
+a caller that drops the last j1939_priv reference through j1939_ecu_put()
+while holding priv->lock.
 
-+	/* A transmission or reception that outlived a previous binding
-+	 * (unbound by NETDEV_UNREGISTER) may still be draining and uses the
-+	 * socket options, see isotp_bind().
-+	 */
-+	if (READ_ONCE(so->tx.state) != ISOTP_IDLE ||
-+	    READ_ONCE(so->rx.state) != ISOTP_IDLE)
-+		return -EAGAIN;
-+
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index 0b8ac4fe0479d..930a95bab2120 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -164,6 +164,29 @@ static void __j1939_priv_release_work(struct work_struct *work)
+>  	struct j1939_priv *priv = container_of(work, struct j1939_priv, release_work);
+>  	struct net_device *ndev = priv->ndev;
+>  
+> +	/* Wait for priv->lock owner to release the lock.
+> +	 * This is a protection for
+> +	 *
+> +	 *   (1) Read priv from e.g. ecu->priv.
+> +	 *
+> +	 *   (2) Take priv->lock.
+> +	 *
+> +	 *   (3) A user who unexpectedly became the last user of "struct j1939_priv"
+> +	 *       indirectly calls j1939_priv_put() via e.g. j1939_ecu_put(ecu).
+> +	 *
+> +	 *   (4) j1939_priv_put() calls __j1939_priv_release() because it was the last
+> +	 *       user.
+> +	 *
+> +	 *   (5) __j1939_priv_release_work() which was scheduled via
+> +	 *       __j1939_priv_release() starts and calls kfree(priv).
+> +	 *
+> +	 *   (6) Releases priv->lock, but this is UAF if (5) already called kfree().
+> +	 *
+> +	 * pattern.
+> +	 */
+> +	write_lock_bh(&priv->lock);
+> +	write_unlock_bh(&priv->lock);
 
+[Severity: Low]
+Can any in-tree caller actually reach this sequence? The commit carries
+Fixes: and Cc: stable tags as a use-after-free fix. However, every
+j1939_ecu_put() made under priv->lock seems to run while some other priv
+reference is still held.
 
-As this is a pre-existing issue that is not related to the lock
-replacement in this patch, I will send it as a separate patch.
+The puts in j1939_ac_process() all run under j1939_can_recv(), which holds
+its own priv reference for the whole call:
 
-Best regards,
-Oliver
+  j1939_can_recv()
+    j1939_priv_get(priv);
+    ...
+    j1939_ac_recv()->j1939_ac_process()
+      j1939_ecu_unmap_locked() / j1939_ecu_timer_cancel() / j1939_ecu_put()
+    ...
+    j1939_priv_put(priv);
 
-> [1] https://sashiko.dev/#/bug/linux-d1d3ef49-c24e-4f3a-91ce-20f8fb222684
-> 
+j1939_ecu_unmap_all() has two callers:
 
+  - __j1939_rx_release(). Here j1939_netdev_stop() drops its priv
+    reference only after kref_put_mutex() returns.
+  - The NETDEV_DOWN notifier, which holds a reference from
+    j1939_priv_get_by_ndev().
+
+j1939_local_ecu_put() runs while the socket holds a priv reference. In
+j1939_sk_netdev_event_unregister(), j1939_priv_put() is called only after
+j1939_local_ecu_put() has dropped the lock.
+
+j1939_ecu_timer_handler() holds only an ecu reference:
+
+net/can/j1939/bus.c:j1939_ecu_timer_handler() {
+    ...
+	write_lock_bh(&priv->lock);
+    ...
+	j1939_ecu_map_locked(ecu);
+    ...
+	j1939_ecu_put(ecu);
+	write_unlock_bh(&priv->lock);
+    ...
+}
+
+Before that put, j1939_ecu_map_locked() takes one of two paths:
+
+  - It takes a new ecu reference for ents[], so the put is not the last one.
+  - It skips because ents[addr] already holds a different ecu, and that
+    ecu holds its own priv reference.
+
+The non-unicast early return in j1939_ecu_map_locked() should not apply
+either. j1939_ac_process() sets ecu->addr and starts the timer only for
+unicast source addresses. So priv's kref looks like it is always at least 2
+at that put.
+
+Given this, would it be more accurate to describe the change as hardening
+and drop the Fixes: and Cc: stable tags?
+
+There is also a backport problem. __j1939_priv_release_work() does not
+exist at 9d71dd0c7009; there, __j1939_priv_release() frees priv
+synchronously. The function is added by the earlier patch in this series,
+"can: j1939: fix possibility of UAF on module unload". Could the commit
+message mention that dependency for stable backports?
+
+Later in the series, "can: j1939: fix possibility of list corruption in
+__j1939_ecu_release()" moves the ecu release into
+__j1939_ecu_release_work(). That function calls j1939_priv_put() after
+write_unlock_bh(&priv->lock).
+
+Once that change is in, can the example in this comment ("indirectly calls
+j1939_priv_put() via e.g. j1939_ecu_put(ecu)") still happen? If not, the
+comment is out of date by the end of the series.
+
+The same "unexpected last user while holding a lock embedded in priv"
+pattern would also apply to priv->active_session_list_lock, for example in
+j1939_cancel_active_session(), and this safeguard does not cover it. All
+current callers there hold a priv reference too, so this is not a live bug
+either.
+
+>  	netdev_dbg(priv->ndev, "%s: 0x%p\n", __func__, priv);
+>  
+>  	WARN_ON_ONCE(!list_empty(&priv->active_session_list));
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/7cc08b0f-290e-464b-ab13-0a5ce3c57f4f%40I-love.SAKURA.ne.jp
