@@ -1,56 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794855068;
-	b=FGji3WqaFtez+6yZVxoXYhnPshODp8zBc8CT5jbXDPNYGviUBE51jCehVBaPJh8G4b2q
-	 mta1FoieEmyvEm3u3QzriUN5FQEjRgSQC6ze5NIUIIiUQ0GgjiM6/8YUgCzdIejTp66I5
-	 NwnFvOR+Qv5Pmq7uDnXir3Qmyeh7pTPelnLQD1Q2lxPjKr/fk/E7qAd4VmvoFlDAnzx5y
-	 Wv561lZcBaiagTXnlp8Hhud0g8+mUR1l8g30zPMEp/bgY3k9nD2XyqK7r1cwI6amP9cjv
-	 uHwkHhr3FuAJSpLp1kX6vJeztSl8HR2QcSTapU+704qxgA7cOwwz2/OTPeTIc61x56A==
+	t=1794855069;
+	b=QbLNZLVKw1DEl8CTsVKUiJ19rgi2JWnKm2JrYjOPgHbg59IwMKLx537dy2c9bjeYfwza
+	 JryCpldm9jMXXTo1YLRUFBDwRYc7IpABMZxqehJ7ud3vu60HXKlSEWGFtAHH0uf57EOqg
+	 CipuWk3oyhBhgde6+CwRxGaifFy3NLlfTxxHfff5PtJWn7dUKl/einsQR0xDU+eTQJZXU
+	 DmVCOzYomiZm7qBfCWhNfssdmpUpUBNp6WkDGezdRjNa/zuKk/NvlrHnVbc9PJ4rITBC0
+	 Ji3p9jaZ9/inaIOMnQ8zGKWsHDD30/7kDNm3KfcOl2JdvCRrGuDnw2TrpSLvQZCat+Q==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794855068;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794855069;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=fPjuZ95aldOCVUpvxaQe1MRfmQx8bQpbWuALkokIV1o=;
-	b=pnapjdyb1tcIOI4anrvmf0d8FWpsU7E/uOWT4dyEi5/VX7NmgA3+ahWisiYaOHyPEFR7
-	 m4xzLy51Ly0UIb7BpMOJ8n9RQpOYPprqtBFU6rGInJ8wpZ4Dk1VT7mhyfeqBc1yiXAP0T
-	 v+mMXdBeUCVIeiB0PTkvoDzees0X02bLrVqQDtQy1llBozcBlPctTrmi8alxNz0Gk1Vaj
-	 DGa226yJ51+TP5Kgzc+Ynd6z0wqJnjRjti3wU5UaGunYOFDSa33zgF2dgyYuNkY6ZQpy/
-	 S1/+mTIxUo2vLzRQXQ5mJ4OjLbj5ZCvr8ko7GJ+Jp0GmA4ItDgtGhe8isQCgXOVdi+g==
+	bh=4HPsToxqYoKMAp1DxFXDjYqZQkEUKkOsV9aa2SSVtm4=;
+	b=C2lzs3yUKstZqv7VFbTysqMf+WoZDGSYwhweM/d920HfMc75ExnwJyI1EWetXvjyAZ+p
+	 43/JkmjbnQzQOGi7/XeLU5f2pIx81Fjq88zwWKPI3Ud70xO0hoP/762IDvbznCzzVNJc2
+	 qACvq0Q1+IQD/QB1MaYhschTQw+9lGHw816Sx5wqqD0d+V3ZOr1DnRQxh4wHhhqbzIvn1
+	 SPUGtsGPN6O/cTg5mkVWaPNu2/lrq2yiHCJKWMSYppNEoCjEbmkMWv3uEcqbEMmP7z0k6
+	 lFIEleb3NhRQDnU/rbMzNqj6uVcOsIjmvaUZu3T29vBA+8tC7XZtEPy+1IopQD7ww/A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Qo8Qj7IP;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z8vuO19Q;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C1FC606A31C
-	for <linux-can@vger.kernel.org>; Mon, 16 Nov 2026 18:51:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82C36606A322
+	for <linux-can@vger.kernel.org>; Mon, 16 Nov 2026 18:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Qo8Qj7IP
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ED9EA1F000C9;
-	Mon, 16 Nov 2026 18:51:07 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Z8vuO19Q
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E60041F000C9;
+	Mon, 16 Nov 2026 18:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794855068;
-	bh=fPjuZ95aldOCVUpvxaQe1MRfmQx8bQpbWuALkokIV1o=;
+	s=k20260515; t=1794855069;
+	bh=4HPsToxqYoKMAp1DxFXDjYqZQkEUKkOsV9aa2SSVtm4=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=Qo8Qj7IP7I7CWWiwl21L+Do84OgWh3lcz5Lf01aC8wfVnIxWxI2vWLCsMHV0j6yMs
-	 n21zc/ZSyaAqCUSwE1Hl5YLCBFgIGFYFlz27QmKyZV3tbhlJlDxOI2PyUYw2JJfw4I
-	 Ipdr6GH2P8j1+EFdmu1zbQ8oVMqLOzQf7dIOvJT0cX9Mtboq6gYSM7qV/t+TJzyg74
-	 j4RJPAp4K5zL/h2n7Qzto7yUCuOZnE6E4GkKgjiPYrZ6yA2U8Erk0FFFiJlTKe/me4
-	 SYSDP5TK2HEklEDJUwMuzwznSkRr67jNxfZAyGz4tdtf3UhGF8pAtB0ivcYXruHGoZ
-	 liZf847tiE/Bw==
-Subject: Re: [PATCH v13 3/6] can: j1939: fix possibility of list corruption in
- __j1939_ecu_release()
+	b=Z8vuO19QfohqhQqKq3nfCAfUGczZ2aOqaLby3gNuvrQoSDcV/uvDOqqAGoYuTPQcR
+	 GkooGQ1NIG25IGBooNvT5s4X5NHA7TWE355OxE7iYPWlz6HTpKiuf5bgPkoRxiRZST
+	 YbgRPKp5YIAStReKT8lbmCnm+9H6GK103FC1YHZm55O4JUANMsDJZVh4JrrptOjnPs
+	 kASIaTpxhwhUiRZbe1T79YAirzhR13AJQBucmNfzmUb7cB+BIj4gwaxuYv8ZYiuw6r
+	 E+JaTpIKPxtfdmMam4KBC1RS9YP/OQOIPamGb+MYM+xPZjoy507YOhtQ86Z/bnuzn6
+	 8NS+Ac6dwjbaw==
+Subject:
+ Re: [PATCH v13 4/6] can: j1939: add a safeguard to __j1939_ecu_release_work()
 From: netdev-bot+sashiko@kernel.org
 To: penguin-kernel@I-love.SAKURA.ne.jp
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
  kuba@kernel.org
-Date: Mon, 16 Nov 2026 18:51:07 +0000
-Message-ID: <179485506755.3132.13332798408962944370@kernel.org>
-In-Reply-To: <1885f3ed-e560-4cbf-aa0e-96cb1718b394@I-love.SAKURA.ne.jp>
-References: <1885f3ed-e560-4cbf-aa0e-96cb1718b394@I-love.SAKURA.ne.jp>
+Date: Mon, 16 Nov 2026 18:51:08 +0000
+Message-ID: <179485506852.3132.632621305382559314@kernel.org>
+In-Reply-To: <37069926-e687-4062-97a9-db0643645f82@I-love.SAKURA.ne.jp>
+References: <37069926-e687-4062-97a9-db0643645f82@I-love.SAKURA.ne.jp>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,115 +70,89 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The commit message understates the bug being fixed.
-- [Low] This patch leaves a cross-file comment out of date.
+- [Low] The commit message for "can: j1939: add a safeguard to
+  __j1939_ecu_release_work()" describes a bug that cannot happen in the…
 
 --
 
-can: j1939: fix possibility of list corruption in __j1939_ecu_release()
+can: j1939: add a safeguard to __j1939_ecu_release_work()
 
-This patch moves the release of struct j1939_ecu into a work item on
-j1939_wq. The work item does list_del(&ecu->list) with priv->lock held
-for write. Readers of priv->ecus and priv->ents[] now skip ECUs whose
-kref has already dropped to zero, using kref_get_unless_zero() and
-kref_read().
-
-> Since j1939_ac_recv() and j1939_ac_fixup() are calling j1939_ecu_put()
-> without priv->lock held for write, list corruption might happen if the
-> last user called j1939_ecu_put() without priv->lock held for write.
-
-[Severity: Low]
-Does "list corruption" cover the whole bug? Before this patch,
-__j1939_ecu_release() did list_del(), netdev_put() and kfree(ecu) in
-one go, with no lock held.
-
-In steady state, the only ref on a mapped ECU is the priv->ents[]
-mapping ref. net/can/j1939/address-claim.c:j1939_ac_fixup() then does:
-
-    ecu = j1939_ecu_get_by_name(priv, skcb->addr.src_name);  /* ref 2 */
-    ...
-    if (ecu->addr != skcb->addr.sa)
-        j1939_ecu_unmap(ecu);                                 /* ref 1 */
-    j1939_ecu_put(ecu);                                       /* ref 0 */
-
-The last put frees the ECU without taking priv->lock. At the same time,
-another CPU can be walking priv->ecus under read_lock_bh(&priv->lock):
-
-net/can/j1939/bus.c:j1939_name_to_addr() {
-    ...
-	read_lock_bh(&priv->lock);
-	ecu = j1939_ecu_find_by_name_locked(priv, name);
-	if (ecu && j1939_ecu_is_mapped_locked(ecu))
-		/* ecu's SA is registered */
-		addr = ecu->addr;
-    ...
-}
-
-That walker can read ecu->name, ecu->addr or ecu->list.next of an ECU
-that was just freed. The result is a use-after-free read, or a fault on
-LIST_POISON. j1939_ecu_get_by_name() has the same exposure.
-
-The code change in this patch closes this too: the work item does
-list_del() under write_lock_bh() before kfree(), and readers check the
-kref.
-
-Could the commit message say that the race can also cause a
-use-after-free, not only list corruption? Stable backporters will use
-that description to judge the patch.
+This patch adds a hrtimer_cancel() of ecu->ac_timer, wrapped in WARN_ON(),
+to __j1939_ecu_release_work() before the ECU is freed. The commit message
+says this fixes a use-after-free where a pending ac_timer fires after
+__j1939_ecu_release() or j1939_module_exit().
 
 > diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index cdc3c0a719379..0aeeee1491e4f 100644
+> index 0aeeee1491e4f..3924404152a2f 100644
 > --- a/net/can/j1939/bus.c
 > +++ b/net/can/j1939/bus.c
-> @@ -14,25 +14,47 @@
->  
->  #include "j1939-priv.h"
->  
-> -static void __j1939_ecu_release(struct kref *kref)
-> +static void __j1939_ecu_release_work(struct work_struct *work)
->  {
-> -	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
-> +	struct j1939_ecu *ecu = container_of(work, struct j1939_ecu, release_work);
->  	struct j1939_priv *priv = ecu->priv;
->  
-> +	write_lock_bh(&priv->lock);
+> @@ -22,6 +22,11 @@ static void __j1939_ecu_release_work(struct work_struct *work)
+>  	write_lock_bh(&priv->lock);
 >  	list_del(&ecu->list);
-> +	write_unlock_bh(&priv->lock);
+>  	write_unlock_bh(&priv->lock);
+> +	/* There can't be any ref on this ECU because __j1939_ecu_release()
+> +	 * was already called. But we need to make sure that
+> +	 * j1939_ecu_timer_handler() is no longer running before kfree().
+> +	 */
+> +	WARN_ON(hrtimer_cancel(&ecu->ac_timer));
+
+[Severity: Low]
+Is the commit message accurate about what this fixes? It says:
+
+  Since pending ecu->ac_timer is not canceled during j1939_ecu_unmap_all()
+  or __j1939_rx_release(), ecu->ac_timer can call j1939_ecu_timer_handler()
+  after __j1939_ecu_release() or j1939_module_exit() (i.e. causing UAF).
+
+A pending ac_timer always holds an ECU reference. j1939_ecu_timer_start()
+takes one before it arms the timer, and does not arm the timer if that
+fails:
+
+net/can/j1939/bus.c:j1939_ecu_timer_start() {
+    ...
+	if (!j1939_ecu_get(ecu))
+		return;
+    ...
+	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
+		      HRTIMER_MODE_REL_SOFT);
+}
+
+That reference is dropped only in j1939_ecu_timer_handler(), or in
+j1939_ecu_timer_cancel() when hrtimer_cancel() actually dequeues the timer:
+
+net/can/j1939/bus.c:j1939_ecu_timer_cancel() {
+	if (hrtimer_cancel(&ecu->ac_timer))
+		/* Drop the ref from j1939_ecu_timer_start(). */
+		j1939_ecu_put(ecu);
+}
+
+So __j1939_ecu_release() can't be reached while the timer is queued. The
+ECU's reference on priv keeps priv alive. Since "can: j1939: fix
+possibility of UAF on module unload", priv also holds a try_module_get()
+reference, so the module stays loaded too.
+
+Doesn't that mean the hrtimer_cancel() here always returns 0, so the
+WARN_ON() can never fire? The comment above it says the same thing.
+
+The only effect of the added hrtimer_cancel() is a wait in
+hrtimer_cancel_wait_running(). It waits for a handler that has already
+dropped the last reference but hasn't yet returned to __run_hrtimer().
+
+For a HRTIMER_NORESTART callback, __run_hrtimer() doesn't touch timer
+memory after the callback returns. That makes this extra hardening, not a
+fix for a pending-timer UAF.
+
+The patch also doesn't change j1939_ecu_unmap_all() or __j1939_rx_release(),
+the teardown paths the message names. Not cancelling the timer there causes
+a refcount leak rather than a UAF. A later patch in this series fixes that
+leak: "can: j1939: fix "struct j1939_ecu" refcount leak".
+
+This patch carries Fixes: and Cc: stable. Could the commit message describe
+the change as a hardening wait for an in-flight handler, rather than as a
+fix for a pending-timer UAF?
+
 >  	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
 >  	kfree(ecu);
 >  	j1939_priv_put(priv);
->  }
->  
-> +static void __j1939_ecu_release(struct kref *kref)
-> +{
-> +	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
-> +
-> +	/* Since not all callers are calling j1939_ecu_put() with priv->lock
-> +	 * held for write, defer actual release to WQ context. By deferring to
-> +	 * WQ context, readers might find ECUs with ecu->kref == 0. Therefore,
-> +	 * readers must validate with j1939_ecu_valid() or j1939_ecu_get().
-> +	 */
-> +	INIT_WORK(&ecu->release_work, __j1939_ecu_release_work);
-> +	queue_work(j1939_wq, &ecu->release_work);
-> +}
-
-[Severity: Low]
-Should the comment in __j1939_priv_release_work() in
-net/can/j1939/main.c be updated as well? Its step (3) still names
-j1939_ecu_put() as the path that drops the last priv ref while
-priv->lock is held:
-
-	 *   (3) A user who unexpectedly became the last user of "struct j1939_priv"
-	 *       indirectly calls j1939_priv_put() via e.g. j1939_ecu_put(ecu).
-
-After this change, j1939_ecu_put()->__j1939_ecu_release() only queues
-the work item. The j1939_priv_put() in bus.c now runs only in
-__j1939_ecu_release_work(), after write_unlock_bh(&priv->lock).
-
-Other paths may still justify the write_lock_bh()/write_unlock_bh()
-barrier there, but the example given in that comment no longer fits.
-
-[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/7cc08b0f-290e-464b-ab13-0a5ce3c57f4f%40I-love.SAKURA.ne.jp
