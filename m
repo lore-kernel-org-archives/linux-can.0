@@ -1,65 +1,96 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.62.58.211
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.215.179
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794895967;
-	b=WBgOnHWy145GwIPMYaLK82b03OhznRKgVqNpov5ePpacfJ+snpBhYB41Bv70lSL/a6ag
-	 3yIWOt1MsBOH+YvdKJuSRvI6Sape4I63rgtHPRb198OWHjsGnYNDsnNmjSNCdGchxTBqG
-	 hMmuRqbwiE8xLg+ZSwD+Faxlm120nYtviFNgboWiClNV5BJ5ypRBJiMx0rfxe1c645Kkq
-	 cp0R06obgP+VBo+bLtsuJmEFg74+41HV/LSeslY4scfqrZmWxPrjFZaAvSL158MDS9UPg
-	 ZZeBoltW2zCZaINBwOjut3x7VFITVnlDsxcMbN9UC6ctZKeffqziSPVnJfgeck9jrug==
+	t=1794911726;
+	b=aqd+DBXxdZ3qeM4m3AZqbIApSjHAr/NgrAA7lo1mqfqJ4bmkTbHftPn+wD2WQZyDzCqt
+	 A8oNBtVbzX90y0FP8mew0JWbljEmPMNH3Csl7NjRaYi1GyQ0Ij475LtZ2v/RKp+vhaxoD
+	 2kc5bSAtqZsh77wmpHhqMm9LGasZcbGWt3b/swLHVcYi+JLJgSYbOq5g/Nvc6f4bBVAzr
+	 hYL0G4ph7KuQA/pGObet57qBig/u7zsl458Id02rmk4dNxnVIYi1UpuIrnzgOYdfmLHWZ
+	 ZMYWTkGJICGyGfCBEv8JNZHI9zeURi/pQgCd/J8JWX6g69iiNVFH1ynrJ41iiToYSLg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794895967;
-	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
-	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
-	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
-	 In-Reply-To:X-QQ-mid;
-	bh=3vsxfZ2MDOq/K41CQAgTtWIJsNxDIx0dtdlSnCViIUM=;
-	b=MpC0t+M5PpJA6djg1RLgt5/tlXEZtBxXrrYhTJRyNtE5gMRutIhApZ8+nldSid0Fnb11
-	 3dZym4wQYUc4Q6tUABYyCLN8jIyf4rd15NE20ZibAgawZTTdp6Ci/C+fQXpaDKrJMX7/p
-	 1bBoJjk9I8Deevu+aOR541vs/43IlFRjSa4dtruPiX+nRY7wwMpwJUt3YYUd163HRswOq
-	 ujAe88TkP4VG/jNDl7NvD7XJuAmJt3OUMwXc2p8qbE6/IXCI0DhEIFcFwBjL+8Ln0mOHC
-	 I7ehQTK7erRIBPltKaIgjLXWCmYtfyoMAJxIiUMR1GA1grkm9vEnX0A2qD9SQbihvnA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794911726;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=RuyZ4/NgPAofSNXbBjGZkZZB9QA0/aMDca1cWrs9WFg=;
+	b=FupvOz8rcR0w86oKpdVuBlMjkKFzr5bRd7jGsK/z0qf1ZbGEY0m5N3K0jKS7FHVQsFy2
+	 SYSTizJgdgfmb/xQjzT8UCLo+E1EtFXKlkmt5R4fMREukSp7N6AiHqGAV17Ut0YVtcg4H
+	 pYfP4DwlS/3LCeiZoDOnn6XeWI3GPHbgdUs+h7tcoYzGz/dMYZVKjCE5dNaW7QJGGyo8P
+	 me6aaBy+5oVpxshldMtDcRpFrNAqrbZ2/ZnVvBqjx6PcSzsZr4srWFtUdMHk4Z18aWPx4
+	 h9WuySZF//a97Nv8LzwflKJSHiROAdgpVGzYZXT4xZdmaRvJnvjzWOZsjjQIjWUABeg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=qq.com;
-	spf=pass smtp.mailfrom=qq.com;
-	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=LyNyvH8P;
-	arc=none smtp.remote-ip=162.62.58.211
-Received: from out162-62-58-211.mail.qq.com (out162-62-58-211.mail.qq.com [162.62.58.211])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	dmarc=pass header.from=gmail.com;
+	spf=pass smtp.mailfrom=gmail.com;
+	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RvFXG8Wj;
+	arc=none smtp.remote-ip=209.85.215.179
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92283606A323;
-	Tue, 17 Nov 2026 06:12:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 92283606A323
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9646D606A899
+	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 10:35:25 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9646D606A899
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=LyNyvH8P
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1794895961; bh=3vsxfZ2MDOq/K41CQAgTtWIJsNxDIx0dtdlSnCViIUM=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=LyNyvH8PlKSUawdsGsOJNsSYwia0oQw1KWMwpPOmWCU0doc8vKci7gimMC+Tr93Kf
-	 zLTpdNPtIIKdJysfsoVRWwf9V3vNIV07EGv3EoXVIY7v457oSOBHNXOZoYvXNgpjNB
-	 9/xOarpcfIpa0HIK16NkmE2QcmueiFTRe8GeXgf4=
-X-QQ-XMRINFO: Mp0Kj//9VHAxzExpfF+O8yhSrljjwrznVg==
-X-QQ-XMAILINFO: Nco5cZgmLIi8YM/CBblmom27fNnvM6KwZ5pAr8uzyhJr2gXKCLA0OBKW05HmXh
-	 AXEIczDfcgO27RPMZ52osd/uemxiqp+la7U99Hs1eR2eB6TLGrjjSZrUG7F1T/QVApZlePcq6Ivuw
-	 klBROncxPutQEM1KSmQxkmJkEsFcGj63zxv2sz3lZybhN7EeM6ss4wnCGf5cuHVYXf+ghDg7FaD7u
-	 7OPApDlLttlc1Lk4qkRKEgIWHy4gVoHEuRPhOUxnvtkH/oAxLItSl6s5JpFdaDFuEtPkqPSIolsuC
-	 GtpCz14ZaeZhfpXbQEt/8hTDJBNLq17E8VFnGAepn0xtCz9K3GGKBQoD6nhfv0DiemGTS74NaLZz/
-	 T5Ji8IcYELJRwLloxXOcjqlfoVRZihI5J/aI07/V9OUyD/OEO1D0RxVLe8vbLQoZnYzPXrMu//Ae1
-	 mQA1otiXE2irSF7A2X6p3Ot2LyUv64gj1CpHVA8dsn6TxWvlEq223ph4wbLVYYaQDNKfdBs3Cx2M/
-	 TVeMikPLNg4oCjwtzUWYKku5G89cLvbQGUags3MbORX57XV7KWjht/5SCW2FStCp9Hp/ic3l6Dw7H
-	 4rw7Oy1Xm4ycnL+9XOwPx+vDls0p8FRqAdMUJa3tkflKvhu387vdZJfzIp9OSd+zl5P+Vpe7Vc8TI
-	 jWd5Y9M3lMIGZ/NKsoBVkkt2hfJess3YTLDuZ3DecplJaGtYjCvxK6v3tBags20u9R1Cj33W+l8/i
-	 orcXtrhvrnHmKY6Vd0BjsbNGpoEmwBlc5j6vSKPylVUjmk8KJ+0tydh+ZYpdR2EDds7vokucHyZf/
-	 w1GTsKNlAbIBQCpV1O6vUTA8wgnji0szdmVoZDkc34D2JZhj7CDpNr90LLN4bBVDz9DY53saGt/Kh
-	 x01+S5AlyH+H4ZgwmlhSmzI/2fQplGhnlQf7fLgctpXjwQ6cv0BaPss3TStTi5qaGIjo5tsf7h0eP
-	 VGxAnCjP0DNQwVBOr1SEkmQRaN3cVFcPC/wm/Y4dkZoZ+P4UBdAttClPyHK+hEH9CPjnOzBSQ8qnC
-	 tm6BZ2jX/DUKqoeGNXJULQjojqed2tC1/tKwB2kbqY+9AcvU=
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
-Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?ZWR1bWF6ZXQ=?=" <edumazet@kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>, "=?utf-8?B?cGFiZW5p?=" <pabeni@redhat.com>, "=?utf-8?B?aG9ybXM=?=" <horms@kernel.org>, "=?utf-8?B?Y29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?c2toYW4=?=" <skhan@linuxfoundation.org>, "=?utf-8?B?cmR1bmxhcA==?=" <rdunlap@infradead.org>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, 
-	"=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re: [PATCH net v9 04/10] can: dev: check netif_running() before bus-off recovery
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=RvFXG8Wj
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-cdb2893531bso3207870a12.1
+        for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 02:35:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20260707; t=1794911725; x=1795516525; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=RuyZ4/NgPAofSNXbBjGZkZZB9QA0/aMDca1cWrs9WFg=;
+        b=RvFXG8WjjKnTMy0oENVxlESIdVeF6WKEdiNDXunqUUCkkvQvKrb1EXZV9xmGB08fS3
+         GKBazE4QO+VsYoH2bZHPTRAvxGv4vB31iiEM/JNLZ+0ti7GUimE9nOHnUyWU5J+oxavn
+         Usr7arx6vVCNPU0a0O/knm5dDC0CPAlKkRY+lI4/OwzgM+9n7B61/hvjrn9xMv/3vf41
+         MaBmT7CMkPOuR1+8iWIJEUqhi1dzJ4sKDGGwtXG7WmbGSjsvwMs5u+yaDQ6lUdy31rP6
+         SPBda7tpj6zYniwGPOHetVokVPwpScwCsEiYqFE0y6oRJCAuK3KxHcP9sXQUmXeWuTBZ
+         3neg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1794911725; x=1795516525;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=RuyZ4/NgPAofSNXbBjGZkZZB9QA0/aMDca1cWrs9WFg=;
+        b=lpv35l4He37KoU9ksM+aKEGbXRzfzkYx0NOfTo4UqMnVDRqCmvNyKGeB1yNWkuq6Bh
+         ER5zANubkT6VsIKHUTZWyTzLJd2KFBMRyxxVcWzdYgSh1a1HzVOD8cXsb+2/z16995WX
+         wMp6FGoQffKpgYiqoLMDQujb/OYhUoDOSR3OVlZRLHchFxFnof3M5VsWgn1/TKIN+Azg
+         /zZgN5amFKIE77ZnCxZ3AgIv9pZiMaYI1dU0r5aUqS7cwW9HZq/o0iTkIsvaP2KI5mid
+         BTey5WULa9UaDUyXRT5HcKQB3KVmDmFJBzV/Et00NcMuWbFrBjpoJuw7/YMhmCG4E0iE
+         WGBw==
+X-Forwarded-Encrypted: i=1; AL+hErFue2cH1RbYvcbpTOypeYdQmq2w0ywoATzECZQmt5Du7SwpoDcc6SoWBYVmPSt6z2NNNgzYvmVbrRU=@vger.kernel.org
+X-Gm-Message-State: APuU4Z8LasIlxoK78VTWUTvb1H4GAO0JshnVqEnebVegbK9sODBkUuBZ
+	KS/o4uW1emh0LLzcHVNtC/qtAk0zbPSIpfKpYga8a3ZkeMxhI36BKDci
+X-Gm-Gg: AZFdTZdxTEfnOL6HTSTSSnbU8/l4mmqsocSyxOI7fKPDPeiMkjq0X+QGD/PL84Kvt37
+	XeCZznsXUc3dyByCWOeH0b/6wKOzAKWd+Zgq008WvkjGAG6Gny9nScqEWMYljwF5ozkMMvgVr/x
+	DMzrKat2Yzhe6gZU81X0fURU4tAOUFuCjkHHZdLZj8tZDNKXkEDkt3UrHhu993iUIfbroDP9+15
+	EkOBRzecAVR8XviUkQ5L1e/FzlXAaoqlv1nVmXkB82oUbpH6ee/3UNyq/1BxCfOu/7Umkpy/m43
+	yvzuw/9kMNd6pQk/JNjJLNiyFZBVATTFSSyqSVu7s3DmbeMY/qHFwy0seT5QQK3r4hIW2dpzyQB
+	JLu7eoXnQ6GnaLrxOKnY5xcFKZRGDeNvE3rpczMDesmEYdekmsAo8lx1k2oDTHD5iXnXG6uCQlH
+	2OD4+Uw/8BLLk/fRV2kgMElQDOD39B3VJqIBJyO6n5CkUt70xeki0zqfVtwf12xLtvx3jSzhtW3
+	hleT/stRF8CPCGvnBUBQ8+wjSKsvvfigXOlN+rrsOge054SO69pvplDvFoW/hl8e/9iKRXj/FgU
+	QcTii+YzVnjWAau6v0NF/+n3sKzDVI9QwbzM4f7JmVBy
+X-Received: by 2002:a17:90b:1f86:b0:3ac:7556:8ee0 with SMTP id 98e67ed59e1d1-3b1b0b666c5mr13803607a91.19.1794911724811;
+        Tue, 17 Nov 2026 02:35:24 -0800 (PST)
+Received: from gmail.com ([116.162.234.168])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b3abeaf532sm3518806a91.14.2026.11.17.02.35.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 17 Nov 2026 02:35:24 -0800 (PST)
+From: Xue Boyang <fuchen.dust@gmail.com>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	kernel@pengutronix.de,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	netdev@vger.kernel.org,
+	stable@vger.kernel.org
+Subject: [PATCH net] can: j1939: fix null-ptr-deref in j1939_session_completed()
+Date: Tue, 17 Nov 2026 04:35:15 -0600
+Message-ID: <20261117103516.535910-1-fuchen.dust@gmail.com>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -68,38 +99,71 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Tue, 17 Nov 2026 14:12:38 +0800
-X-Priority: 3
-Message-ID: <tencent_CF62B15F445313CD974C5502DCC84F000B06@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261111-rockchip-canfd-restart-close-v9-4-6643f3825ba3@qq.com>
-	<179452272955.488853.2430789088711910750@kernel.org>
-In-Reply-To: <179452272955.488853.2430789088711910750@kernel.org>
-X-QQ-mid: xmsezb41-0t1794895958twn8o40ok
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-PiBUaGFua8KgeW91wqBmb3LCoHlvdXLCoGNvbnRyaWJ1dGlvbiHCoFNhc2hpa2/CoEFJwqBy
-ZXZpZXfCoGZvdW5kwqAzwqBwb3RlbnRpYWwKPiBpc3N1ZShzKcKgdG/CoGNvbnNpZGVyLgo+
-IAo+IENyaXRpY2FsOsKgMMKgwrfCoEhpZ2g6wqAywqDCt8KgTWVkaXVtOsKgMMKgwrfCoExv
-dzrCoDEKPiAKPiBJZsKgeW91wqBiZWxpZXZlwqBub25lwqBvZsKgdGhlwqBpc3N1ZXPCoGFy
-ZcKgbGVnaXRpbWF0ZSzCoHBsZWFzZcKgcmVwbHnCoHRvwqBlYWNoCj4gaXNzdWXCoG9mwqBN
-ZWRpdW3CoHNldmVyaXR5wqBvcsKgaGlnaGVywqBhbmTCoGV4cGxhaW7CoHdoecKgdGhlwqBB
-ScKgaXPCoHdyb25nLgo+IElmwqBhbnnCoG9mwqB0aGVtwqBhcmXCoGxlZ2l0aW1hdGXCoGFu
-ZMKgeW91wqBwbGFuwqB0b8KgcmVzcGluLMKgcGxlYXNlwqBsZXTCoHBhdGNod29yawo+IGtu
-b3fCoGJ5wqBpbmNsdWRpbmfCoCJwdy1ib3Q6wqBjciLCoGFzwqBhwqBzZXBhcmF0ZcKgbGlu
-ZcKgYXTCoHRoZcKgZW5kwqBvZsKgeW91csKgcmVwbHkKPiAob25lwqBzdWNowqByZXBsecKg
-cGVywqBzZXJpZXPCoGlzwqBlbm91Z2gpLgo+IAo+IC3CoFtIaWdoXcKgSW7CoGNhbl9idXNf
-b2ZmKCnCoChkcml2ZXJzL25ldC9jYW4vZGV2L2Rldi5jOjI3NC0yODUpLMKgdGhlwqBuZXcK
-PiDCoMKgcnVubmluZ8KgY2hlY2vCoGFuZMKgdGhlwqBzY2hlZHVsZV9kZWxheWVkX3dvcmso
-KcKgY2FsbMKgYXJlwqB0d2/CoHNlcGFyYXRl4oCmCj4gLcKgW0hpZ2hdwqBUaGXCoG5ld8Kg
-bmV0aWZfcnVubmluZygpwqBjaGVja8KgaW7CoGNhbl9yZXN0YXJ0KCkKPiDCoMKgKGRyaXZl
-cnMvbmV0L2Nhbi9kZXYvZGV2LmM6MjAxKcKgcnVuc8KgZnJvbcKgdGhlwqByZXN0YXJ0wqBk
-ZWxheWVkwqB3b3JrwqBvbuKApgo+IC3CoFtMb3ddwqBUaGXCoG5ld8KgdGV4dMKgaW7CoERv
-Y3VtZW50YXRpb24vbmV0d29ya2luZy9jYW4ucnN0wqBtYWtlc8KgYW4KPiDCoMKgdW5jb25k
-aXRpb25hbMKgcHJvbWlzZcKgYWJvdXTCoHJlc3RhcnQtbXMuCgpwdy1ib3Q6IGNy
+j1939_session_completed() looks up the receive skb using the session's
+current data packet offset and passes the result to j1939_sk_recv()
+without checking it. If no queued skb covers that offset, the lookup
+returns NULL and receive-side processing can dereference it.
 
+An inconsistent ETP session offset can leave the receive buffer lookup
+unsatisfied when the session completes. The DPO receive path does not
+validate the offset against the receive buffer, so completion cannot
+assume that the lookup always succeeds.
+
+Check the returned skb before distributing the message and releasing
+the lookup reference. Keep session deactivation and activation of the
+next queued session unconditional, so a missing receive buffer does
+not leave the completed session active. This also matches the NULL
+handling already used by j1939_simple_txnext().
+
+AI assistance was used to analyze the bug and prepare this patch.
+
+Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+Cc: stable@vger.kernel.org
+Signed-off-by: Xue Boyang <fuchen.dust@gmail.com>
+---
+
+Notes (j1939-null-submit):
+    Based on mainline commit 666539eecdf4db623f5e3c3e55cf9f2dfad24aa4.
+    The affected transport.c and socket.c are unchanged from the original
+    local report baseline daf677c2c6449011ee695d55b48b5b2977a36f88.
+    
+    Validation:
+    - Built net/can/j1939/ with W=1 on x86_64, CONFIG_CAN_J1939=m,
+      CONFIG_KASAN=y and CONFIG_WERROR=y; no build warnings or errors.
+    - A temporary userspace harness executed the extracted completion
+      function with stubbed dependencies. It checked missing-buffer receive,
+      normal receive reference balancing, and transmit completion. The old
+      function passed NULL to the delivery stub; the patched function did
+      not, while retaining the completion-helper call.
+    - This revision has not been boot-tested or run against a CAN interface.
+      The harness is not an end-to-end kernel regression test.
+    
+    AI assistance (OpenAI coding assistant) was used for source analysis,
+    commit-message preparation, and build and isolated-function checks.
+    No packet-level reproducer or triggering sequence is included.
+
+ net/can/j1939/transport.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+index 8fcfd13e5e6f8..ecf7f245f8378 100644
+--- a/net/can/j1939/transport.c
++++ b/net/can/j1939/transport.c
+@@ -1244,8 +1244,10 @@ static void j1939_session_completed(struct j1939_session *session)
+ 	if (!session->transmission) {
+ 		se_skb = j1939_session_skb_get(session);
+ 		/* distribute among j1939 receivers */
+-		j1939_sk_recv(session->priv, se_skb);
+-		consume_skb(se_skb);
++		if (se_skb) {
++			j1939_sk_recv(session->priv, se_skb);
++			consume_skb(se_skb);
++		}
+ 	}
+ 
+ 	j1939_session_deactivate_activate_next(session);
+
+base-commit: 666539eecdf4db623f5e3c3e55cf9f2dfad24aa4
