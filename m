@@ -1,73 +1,73 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794953348;
-	b=IO1kwr/QuRRUKtMrbjNHIe+Px85gZ3DvI8YnCx1PFscsvd9pR+ze4n3l0oWW1RRbGOCN
-	 wwt6Bn7baw7lVh3uGMXI/8r7qf2spw4J8d7+rrVGKfczk5cJgNnXYMAGq0h7+XFNGZYGF
-	 PIqUu+9d/0+7I1mbmWafrpAslpgaGuuteXnJ/IFjjmfUOfW+J59wAU9cERZI96P55UyTT
-	 bpLwtbDvFQxQmxf97XfLMTJ9ueh2g2zrThLbReb6JIIPb+jPHKWL7lG6vMcY8h/9LJBqv
-	 7/pFGSUvU2cwsmSF3Lp3Fra7Cz4vOOw74qDNDA2XKLF3MceVT7RY1PJa5WTnfZMErFQ==
+	t=1794953406;
+	b=3tx0IKQkVl1aTdmzrlfWIoMcB4M0+uBG/VrTakpO0hyQNoFMDWtDf55b1m0g5lFTQhr4
+	 QIBuRE4gbPnZ3xozOPSVEeqZlmdw53jTCl1SUCHv+p9mKSVm6F0hUVws93ukIhziV43F4
+	 mNJYL6th78iu+oYdnSrLA/auZZoJ1BCZIxogQoNUghpdqSfa7W9LTuQ74LkxLZ+hqTGDx
+	 wpSPHPJew++NYIVo0tV+dTLoucM2aJHjW60UxxVCESbyk0hpVqVzbfPQVSBXASn5MVyLm
+	 6TKgVTO5Pd4QvdzAtTxUCoHPoGrQL7T3Wbs1Nzy2MVTFUvQfCgoQAQ5eBlIVyGnRIPg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794953348;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794953406;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=ev5y31uxBqmh0ulOq2osZXWPzVo8MTYsJZ49voX7MqQ=;
-	b=WAEHBGJCB2CIbkc4ojwb8k8NuOrS6CF7ctUwNvkfyrK0uue70H/Xqcj+DH8KcU57shKg
-	 /dD8CSFMR9KdSGFMO0EefG9Klh7rbXibG2TbbOi9o6IQvIU7G1yrA4zo7NQHgD0wnj4yQ
-	 AyTof2FnE4RTX41L6zEq6wogPfylyKIMFtvP8QB6AielYQiA7XMZs0oOhC8Z3BahkzK1I
-	 WJDDxHW7uN2RaNwS3GkDZsHnMXS5KG9mfvvpAmxM7mA3aJohzgg3HrEJCfn9nh+Q1+MQA
-	 rLiRs3RM0gpQyEORDZLAeyGqhRxGPbFlFhKj+ZSpsOZlmBG3JgTNDxxf2xvD2yYd0IA==
+	bh=pokTu+l1vM7o6Eh7om7s7KcxHn5AkgfsRI7hSQoz1Lc=;
+	b=lkXQqzt9CpG09A4+Tf1TJnJNjTMopdAvUxrh9zz1qfCk0vMLDMXpiodwFgl4wYSHnnRc
+	 iBAjUN1FE8dk0B3EjI9cXVlNs/JmFLzqgNhqVgbczYMmY3M+7W3OPMPt37Qcz0gdLnm6I
+	 HeFSv61LRwjSMEncKt3zqGyspsZbpxG6XQrC7KTYehS2xIqfZV9T1rzCPNvaqL+pecNDD
+	 HlhpFPIhQ5D0H8RKYw36ZdqagIZU0+u0QP9rjjk0Rmw+cP8MxCCLHpyBcITK/pxquZRqJ
+	 xevpepUTPpIN/0EruEEWOUhOHHe0yUHNVc65hXKMhHa1jeVzVEIE0poMGgnFGE6AxRA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=U1v6VBQu;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NFaAhP4+;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA61C606A335;
-	Tue, 17 Nov 2026 22:09:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org EA61C606A335
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A7E5606A31C;
+	Tue, 17 Nov 2026 22:10:05 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 8A7E5606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=U1v6VBQu
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NFaAhP4+
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 4C5A0205A64;
-	Tue, 17 Nov 2026 23:09:02 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id C900E205A36;
+	Tue, 17 Nov 2026 23:09:59 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794953342;
+	s=20260414; t=1794953399;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ev5y31uxBqmh0ulOq2osZXWPzVo8MTYsJZ49voX7MqQ=;
-	b=U1v6VBQuD8S7ow0tr2u6u13c8zONNofRtd79DchIDLyUlTzuiJaIhLjURoZTmj/O6a0QA3
-	bkbtpZ3j2mXqez33tI4YUY6EmbWqlG93b/QN8OfJ2j9FDR707l2hjKMg9Zpz+HeR5m5mk1
-	+JEdEPKeIQFIwYQm510aNFyn3nuF+GIFRMhB1YWEAYgyfpDYUzQ0Ek123KqaKZz2XdrFZd
-	+zagEgLz7h9JZNgfdTRKy5lcDOfk+FAF+Pm51VXSvL7QZU7C0mp3v6ZkGd1j1uPwM0H1b6
-	Eh8RM5Dcrks3j+Sr9hxlD7WXGOqnlvEGKrHeaM9onLZbdmt8Td2chvDktuOu6g==
+	bh=pokTu+l1vM7o6Eh7om7s7KcxHn5AkgfsRI7hSQoz1Lc=;
+	b=NFaAhP4+8dQJOdtUfwiN3FQBbrN6QihGC0LF4S+rgjvrxvK8Lu5ZKh9pZDUz+nU4w+chWM
+	65ZnoTsFZOW8mlY8mdzc82yi8N2rNZdYC2hdlHd3D95+Eieo5W1MCFcqUEv9jJVKPrPlDF
+	leBr3c8+Qf2D+vjYUF4b6x342izDhJ7EhOUQVNmLTFT72c3plSKVqVnLcHEUGmPhQKOzzR
+	77c993IHJLyQ8SxlknxpbNaVodf+TJ3qPbfIVupSVsh2H5jMWwJD79luTIZ73Pj6hJqZCE
+	4TBwdVnMZJt2H52+nsbiNBuUEmsIUEI3eCjg9gT/55K0qfOy4PMUk3w0XINHbw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794953342;
+	s=20260414; t=1794953399;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ev5y31uxBqmh0ulOq2osZXWPzVo8MTYsJZ49voX7MqQ=;
-	b=RlWMuEqbk/c+fd7MPg0RtKtuClVlpFjz2t1WXoevwN1A9Ad0xSLEMhMvjSmlJOM3C55Pp8
-	araO/y4WwoSsPqQOT69J5b0ooiqpV0zGiuFIsWFnJEbG2fcXO6eJQyH78ctS7e9tn537R6
-	Y6fGXV0Gby3kwjArD671h++JGtKgUv9BLNhAYs/Ac+UVNQ9kCOIS1V0YIxxWEc4W2qWGLH
-	RDXXAYe95gFZxXHdtY9kQkDddCgaiwR18lD2uA6vjXW8apFhg6Yed4gYV928rI7LRjp9Xe
-	p8ICOkA0ll10c0/pVAoqAkOqQWTvBlpBcgJ0/CdYpoqIPqshcPMDIBW7z4ZAPQ==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794953342; a=rsa-sha256;
+	bh=pokTu+l1vM7o6Eh7om7s7KcxHn5AkgfsRI7hSQoz1Lc=;
+	b=dp2J36DVo+VCqbIfRAJ6dJLgDhM82qDJ61q0m/f3VUS6//BfBsMGYSZg0YLrv04RQNxAsC
+	JOWTk/67rjVAlqX6OqpuPbbHbbqHtYLf78DhryXpJ5DgHXsUf7JIZnP2zFvAVizPNNeuG0
+	Bsno6XrSfHqrMfhAfsfggfSyKUcBT2V0aXuUUcnYMYHNO3bVXP6R8eWDdRfClpjuF+/Tc8
+	ADLf6A7iuPdUwsnnWzIaJQ5MpF0qv5RtYSXRb5ydJe21AALbby3WqG/prfpM+xrfwtpqcG
+	1OdbS0KgMJWdqQtvckQE58L+IZZ7ugqvocSx7VAeR5zmOlGAUCqLpsQznTcRDA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794953399; a=rsa-sha256;
 	cv=none;
-	b=dguIMeu7o4Vn1N/YfNdpHPdGiABzZw/RsoBmtxBbSXRL6/arupglWPBiR1La0w9M4q7xV0
-	hfHOsrnQoqnko2dwixTaBFSPRJbQ+f62XIxA8hH+NpnnbCEw7RGaWki7EtcgAvgAga6rEe
-	Ui1xBIcRwkFnfVzsVXhOgp4cwLm22g+Ir9KUQVUdGDaRCCdj0GDFO4oYQN+CAa3f/ly0Vf
-	y+G+cl7wRPctkekCGpYpA2gxtUAtgx9I9FJTp3i1Ry4XpQ1cbbhS2zOIoDBPkSXh92tQ2D
-	xSu60AHjfbu5AfiCveTunMyZQmXSbO/8zl+H5AOzGykMF31jZpvk/25HJlXF3w==
+	b=ASW0Y/XrvEDUV9heuI+zeFjJQ+Ck7hUJ4m+OKVutqdBiaZIf6efkj+VBvd5FFLr1Ll3pi4
+	nHo18ntZJ/XYMfT8h2GzvZ65S1/x726PmILwZRC3lfo109K529u+SvAASDMg38VifsNkAe
+	T6B0ytPlyWqYKUHXE6pjC1RrIwmgmdJ3B+1zRB7Whan6vclvgI+ZBYso0vjXtbXcwrhgaR
+	1DeJrmLTbmsI1gECV42gZqumTMLvzuK3uUNTmzcpEFBhc3eWwW+jCMrcz7TJlh8vm5pwt7
+	JYHTEGGQ4K8tVJmoi178oofBm8rM29WNfPICsRz4JWLlJonP7BAYkCCdvHrqPA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,30 +75,28 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xTRML-000Fmc-2D;
-	Tue, 17 Nov 2026 23:09:02 +0100
+	id 1xTRNH-000Fmy-0g;
+	Tue, 17 Nov 2026 23:09:59 +0100
 Received: from blackshift.org (unknown [192.145.8.164])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id A83775EDA28;
-	Tue, 17 Nov 2026 22:09:01 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 506C75EDA2C;
+	Tue, 17 Nov 2026 22:09:59 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Zhu Ling <zhuling0805@qq.com>,
 	stable@vger.kernel.org,
-	Vincent Mailhol <mailhol@kernel.org>,
 	Marc Kleine-Budde <mkl@pengutronix.de>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Zhu Ling <zhuling0805@qq.com>
-Subject: [PATCH net 05/11] can: bcm: use a private mutex instead of lock_sock()
-Date: Tue, 17 Nov 2026 23:03:10 +0100
-Message-ID: <20261117220818.1142581-6-mkl@pengutronix.de>
+	Sashiko <sashiko-bot@kernel.org>
+Subject: [PATCH net 09/11] can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
+Date: Tue, 17 Nov 2026 23:03:14 +0100
+Message-ID: <20261117220818.1142581-10-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261117220818.1142581-1-mkl@pengutronix.de>
 References: <20261117220818.1142581-1-mkl@pengutronix.de>
@@ -113,170 +111,41 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Zhu Ling <zhuling0805@qq.com>
 
-bcm_notify() takes lock_sock() of every CAN_BCM socket in the namespace
-of a vanishing CAN device while holding RTNL. Any path that holds the
-socket lock while accessing user space can therefore block RTNL. With
-"can: bcm: copy the CAN frames outside of lock_sock()" the CAN frames
-of bcm_sendmsg() are copied outside of the socket lock, but the generic
-SOL_SOCKET options in sk_setsockopt() and sk_getsockopt() still access
-user space under sockopt_lock_sock(), e.g. for SO_ATTACH_FILTER,
-SO_LINGER or SO_TXTIME.
+can_fill_info() emits IFLA_CAN_BITRATE_MAX with nla_put(), which consumes
+space for both the attribute header and its aligned payload. However,
+can_get_size() accounts for the payload only. The resulting underestimate
+can make filling the netlink response fail with -EMSGSIZE when the skb has
+no remaining slack.
 
-CAN_BCM only uses lock_sock() to serialize the binding and the bcm_op
-lists. It does not use the socket backlog, as the BCM messages are
-queued directly to the socket.
+Use nla_total_size() to account for the complete attribute.
 
-Replace lock_sock() with the mutex conf_lock in struct bcm_sock. The
-generic socket options do not take this mutex, so they can not block
-bcm_notify() anymore. No user space access happens while the mutex is
-held. The memory allocations for the bcm_ops and the CAN receivers are
-still done under the mutex, as they have been under lock_sock() before.
-
-bcm_release() removes the procfs entry before taking the mutex, as
-remove_proc_entry() waits for readers that may stall in their copy to
-user space. The socket has already left the notifier list at this
-point.
-
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
-Cc: stable@vger.kernel.org # depends on "can: bcm: copy the CAN frames outside of lock_sock()"
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20261117-can-bcmlock-memcg-v6-5-6826a6227d36@hartkopp.net
-Cc: Vincent Mailhol <mailhol@kernel.org>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Zhu Ling <zhuling0805@qq.com>
-Cc: linux-can@vger.kernel.org
+Fixes: 2290aefa2e90 ("can: dev: Add support for limiting configured bitrate")
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhu Ling <zhuling0805@qq.com>
+Reviewed-by: Marc Kleine-Budde <mkl@pengutronix.de>
+Link: https://patch.msgid.link/tencent_D1C873B86B0E92011A264B0E196B911D5308@qq.com
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Closes: https://sashiko.dev/#/bug/linux-3924d490-baed-49dc-880a-6fd1163cf08d
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c | 30 ++++++++++++++++--------------
- 1 file changed, 16 insertions(+), 14 deletions(-)
+ drivers/net/can/dev/netlink.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 1595b7720c98..dc9e2890490a 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -145,6 +145,7 @@ struct bcm_sock {
- 	unsigned long dropped_usr_msgs;
- 	struct proc_dir_entry *bcm_proc_read;
- 	char procname [32]; /* inode number in decimal with \0 */
-+	struct mutex conf_lock; /* protects bind and the bcm_op lists */
- };
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 521e2496e2cc..10e7ccaf40fb 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -833,7 +833,7 @@ static size_t can_get_size(const struct net_device *dev)
+ 	if (priv->bitrate_const)				/* IFLA_CAN_BITRATE_CONST */
+ 		size += nla_total_size(sizeof(*priv->bitrate_const) *
+ 				       priv->bitrate_const_cnt);
+-	size += sizeof(priv->bitrate_max);			/* IFLA_CAN_BITRATE_MAX */
++	size += nla_total_size(sizeof(priv->bitrate_max));	/* IFLA_CAN_BITRATE_MAX */
+ 	size += can_ctrlmode_ext_get_size();			/* IFLA_CAN_CTRLMODE_EXT */
  
- static LIST_HEAD(bcm_notifier_list);
-@@ -1673,8 +1674,8 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	if ((size - MHSIZ) % cfsiz)
- 		return -EINVAL;
- 
--	/* Copy the CAN frames from user space before lock_sock(), so a
--	 * stalled copy can not block bcm_notify() waiting for lock_sock()
-+	/* Copy the CAN frames from user space before taking bo->conf_lock, so a
-+	 * stalled copy can not block bcm_notify() waiting for bo->conf_lock
- 	 * under RTNL. Only the frames the opcode handler reads are copied.
- 	 * The handlers keep their checks and read the frames from fmsg.
- 	 */
-@@ -1714,12 +1715,12 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	kv.iov_len = flen;
- 	iov_iter_kvec(&fmsg.msg_iter, ITER_SOURCE, &kv, 1, flen);
- 
--	lock_sock(sk);
-+	mutex_lock(&bo->conf_lock);
- 
--	/* Re-validate under the socket lock: a concurrent bcm_notify()
-+	/* Re-validate under bo->conf_lock: a concurrent bcm_notify()
- 	 * may have unbound this socket (device removal) after the
- 	 * lockless fast-path check above. bo->ifindex is only ever
--	 * mutated under lock_sock(), so reading it here - instead of
-+	 * mutated under bo->conf_lock, so reading it here - instead of
- 	 * before taking the lock - guarantees it can't be observed
- 	 * torn against bo->bound.
- 	 */
-@@ -1819,7 +1820,7 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	}
- 
- out_release:
--	release_sock(sk);
-+	mutex_unlock(&bo->conf_lock);
- out_free:
- 	if (frames != &sframe)
- 		kvfree(frames);
-@@ -1843,7 +1844,7 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 	switch (msg) {
- 
- 	case NETDEV_UNREGISTER:
--		lock_sock(sk);
-+		mutex_lock(&bo->conf_lock);
- 
- 		/* rx_ops: remove device specific receive entries */
- 		list_for_each_entry(op, &bo->rx_ops, list) {
-@@ -1877,7 +1878,7 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 			notify_enodev = 1;
- 		}
- 
--		release_sock(sk);
-+		mutex_unlock(&bo->conf_lock);
- 
- 		if (notify_enodev) {
- 			sk->sk_err = ENODEV;
-@@ -1930,6 +1931,7 @@ static int bcm_init(struct sock *sk)
- 	bo->ifindex          = 0;
- 	bo->dropped_usr_msgs = 0;
- 	bo->bcm_proc_read    = NULL;
-+	mutex_init(&bo->conf_lock);
- 
- 	INIT_LIST_HEAD(&bo->tx_ops);
- 	INIT_LIST_HEAD(&bo->rx_ops);
-@@ -1969,15 +1971,14 @@ static int bcm_release(struct socket *sock)
- 	list_del(&bo->notifier);
- 	spin_unlock(&bcm_notifier_lock);
- 
--	/* bcm_notify() can not access this socket anymore */
--	lock_sock(sk);
--
- #if IS_ENABLED(CONFIG_PROC_FS)
- 	/* remove procfs entry */
- 	if (net->can.bcmproc_dir && bo->bcm_proc_read)
- 		remove_proc_entry(bo->procname, net->can.bcmproc_dir);
- #endif /* CONFIG_PROC_FS */
- 
-+	mutex_lock(&bo->conf_lock);
-+
- 	list_for_each_entry_safe(op, next, &bo->tx_ops, list) {
- 		list_del_rcu(&op->list);
- 		bcm_remove_op(op);
-@@ -2012,10 +2013,11 @@ static int bcm_release(struct socket *sock)
- 		WRITE_ONCE(bo->ifindex, 0);
- 	}
- 
-+	mutex_unlock(&bo->conf_lock);
-+
- 	sock_orphan(sk);
- 	sock->sk = NULL;
- 
--	release_sock(sk);
- 	sock_prot_inuse_add(net, sk->sk_prot, -1);
- 	sock_put(sk);
- 
-@@ -2034,7 +2036,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 	if (len < BCM_MIN_NAMELEN)
- 		return -EINVAL;
- 
--	lock_sock(sk);
-+	mutex_lock(&bo->conf_lock);
- 
- 	if (bo->bound) {
- 		ret = -EISCONN;
-@@ -2086,7 +2088,7 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 	WRITE_ONCE(bo->bound, 1);
- 
- fail:
--	release_sock(sk);
-+	mutex_unlock(&bo->conf_lock);
- 
- 	return ret;
- }
+ 	size += can_data_bittiming_get_size(dev, &priv->fd,
 -- 
 2.53.0
 
