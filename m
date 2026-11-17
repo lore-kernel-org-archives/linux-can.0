@@ -1,93 +1,92 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794933358;
-	b=1ffpoBVt7QNjMi1qF1r5X8lQEI8vai0wLG8xv8abM7cm6JS/BEApHGSJk0FRNi8pWYAC
-	 +4WGWZqIw3yTT30/0jsQtfV+ZzHh9qwnoOCcOCTpymeSKCurvlJ32MsmZBOIMTzYEnMly
-	 yP+JGW8ohDs5mtAw0TY3/XQ8KUt1GSLkkj8rxPuzy3k3cL6x5e6iPbmn1jNjV+cG0Gazq
-	 rJfqfXVWt3TsV0FFsJHoaRrQOAWYWxMZcM+QDN/mj4TGWJxKxUNhUEgeoTvgVSAKg0hoJ
-	 wAHGyzw9nw1qjiep/7M5vrehdGz6nUBMcLzhmKJU+9gY85tlLloOcw71Ip2A+mxDyvQ==
+	t=1794933359;
+	b=i802EOuKoyK3EvLdAjBV/4kqu1JpqHoiqwARAr4k4C8zVFYDQYznm4cHkc0CJ8eebTyl
+	 +SNlrFyQ6HL78pKhQSVTbXalWuhNsJ+p5S35Mbxb+f8qn50sv9Y5QuQONQEWse8nkhQTK
+	 VQe6n17SJsynYKSmF2XR51qHQmOQZIus0+6dO+00xl7wlRc1PTVNUAhT8m6GsTZWvhwBW
+	 uFLIVcSs2aoSgNjseV8QFy6JXRt/XHRhYOAYWjppd+7/vH9Pf0WEsvnTvSXSB/y0VteQd
+	 F/ilWpfMxAtu0WW+3A1Ig/keXFjHi0YFToXk/GKvZtWaDjTtfV+DmQCnm6Q0FGvWlzg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794933358;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794933359;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=1FHIHpCaCEVfRZ5BmjJ7+sqJUvjdWXKzuNTsR/pzL0g=;
-	b=X4ILEhm9MkH1UGo+Ax2bR4l4/eE9d+Gt9ACs8gztvFveLkiFXR/cSl2EcSpqxp53/jBZ
-	 hNPHVfHhqyW6tgucsrJaM4opSeXcoqkw8DoZn9TPCkn3GRsQXzhdhvg1fmVN8qAmmQLJr
-	 lL2P+svZC45z3b0MXmkSrSJRqHxjO4ziBlFmprWjhSMyDLKvHIhBwwzsN+MOeELazPCkp
-	 upH6qZDpHx0boDMC9y4paliDmrp3EtFlZQem4PIcocMjGtHixYxrbmVJcLy3rebVVto95
-	 1BO/czyaGQehgqy40aGmVsCkJ7Nr1Q9+9TIasP5UXjhgpDCHrhx9M9iKkJYllwXkOHw==
+	bh=nI8Z3lBhIZ8iv540ArlzGn6Yla1bfKnN9wOLCvHtrvQ=;
+	b=tNm+ZD2dcLf0SnVYKW7NSdqmww6BlhK3wGxoBc8ciQBLNIA0JzzpqWUNhH/DCkhL9c9s
+	 Q+IGPAzoT75uRb+NEcyabRGyuCt+gh4GrFd+NdbAFDNyqoMYOYGrWYQ2s8i04+gMO+GtH
+	 zTMoQxgcivnnnzPeCkKI0LBMu+uWKzVzCl2+9tHBnF0KrnWFjjZd1mKuSlVHlyqd3ctKH
+	 ulzM+3JiPtDCP+WzytP+2GBTGKZyuGkzPWrO6HWenBY0o4SqByUHo2fEzqGfCUhykjGhU
+	 t2d+znmVuLI5I5nZaCLLt1TM3diSvYxEGhAFv8i0df63cBsQC+1rSCs9EDJbp7ueSww==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=bEnKzDkS;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=qxrawUWu;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=mlpMTzKP;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=uBgPqGiW;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
 Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA30D606A32C
-	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 16:35:57 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BA30D606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BF3C606A32A
+	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 16:35:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3BF3C606A32A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=bEnKzDkS;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=qxrawUWu
-ARC-Seal: i=1; a=rsa-sha256; t=1794933348; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=mlpMTzKP;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=uBgPqGiW
+ARC-Seal: i=1; a=rsa-sha256; t=1794933349; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=kLk7mEjQqg/XQdX+evhr/pihvwvbPf0Luof3YEJUcgG2OEIs5GDzl1EM3kGuqBAjMV
-    N/R58gEwVsInxgqVHA1x01+DaRt5OYUabac0P6v+1BuH/kUUx45aALzafB4ru1PNy7Zv
-    y+JFYW7e5OAduHeG8Ox/4IhWWYuxY5Pzw5lI9yge9lZ9dKK5RaeKVM3uhr+EDog531BZ
-    AOWmWioMfdoDeldgAtU3OKbzK2biptZkSFaa512M1fG7LRYestdY030Dqi+6SrFdwtBD
-    yIPxRLRXWbD7nYlunGHr5xe66tQ1ce0mMw0bF8Qygobz5F/6w8yvCuACiaTVmd+iAQBm
-    bBTA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794933348;
+    b=HF2iyy/0g1s8E9nDQDTy1WfMoHs8S6HxkSfKGabRhe9f6oxbnI/vO9LYM5MseEIPqo
+    FDi9u1VP+nUo8Ji3gAYGwYNHst+GzbpM9rGWbkDEWxPNaDDjpaG+VVNlyGBFgiCdi26+
+    7v/rmFF2gw6aLhh/lMr1AEMz5B/vkF57CzIqDoLyQojhQoT2uwvC4gWvCnbaNVE+GpWu
+    KmOuu6S4k6K4Gj0KOpoz5+hJA2a6FQFmV9v51XebyN3H1zB1Fe8ZUP89JtgGnyGHRrQ+
+    1j5Z8Y4wQ8GfwXYoXDVdMsTncJs/G7aPye++3o2/wqXCOzjPoPxef6fLmZKJ65ecfl84
+    BBAQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794933349;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=1FHIHpCaCEVfRZ5BmjJ7+sqJUvjdWXKzuNTsR/pzL0g=;
-    b=JtDlRukh/PWFXv9uMz5g5An43WmNIzvcx1z3ShmkMAYYQQXpb6lLftNEcrSjkh38o4
-    HEnzwvjkxKj6PIeKh3pvW5nCOBXnDkO9P7IJpfq4Bouz89fzsb4RCRCCl8ipPluC2vIZ
-    4g9PRuqowYdNlYCS6qtBBtoE2MXHi2JOL2FLPpADmX2PGCsHs8gEo6LOwmNTmnUs8zyN
-    wi2lxs42gEjSCDsTSmDZGRAk6/4UwqWdgcvVp8QRCbz6gyjaRv92GZuo7WHbL86+icQh
-    lp/AWV2dxhkkpvwnmmQq6S+aOuTYdu2jSF24aayMagupgaZR5BU5cgNkrBjUWzxI8BYx
-    57yg==
+    bh=nI8Z3lBhIZ8iv540ArlzGn6Yla1bfKnN9wOLCvHtrvQ=;
+    b=dHmcLnBMBURes+JBLrOcXtxypmA9kJD93oPZZ/V3/0jVAabnDI7pCNRnXrzvtrdJWz
+    QH+OMdT7Q5Lbb7WWGVJobH6EBFmQeX2Cia43aFVvI7FApqX5REzTouf2cnDnd94bhwXp
+    HUpUa79lgDIvXRz/Po+ePeMnxisai9Wf9zNbXvl3pE6yG2ZQoM6GMjfX5YPMUu7T6TwL
+    YYnn46IRzHizH00r+NN/MYds6s0FBO1HAv7loqDzLWqlNjqusn9179AnTraLv5+QWRlk
+    0Z07e4rznKek5ChAC5+juvvXWMD+qy69kM0rGVBdXBAht4UoniNU0DFwUIDnLbNvmZp4
+    VAMw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794933348;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794933349;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=1FHIHpCaCEVfRZ5BmjJ7+sqJUvjdWXKzuNTsR/pzL0g=;
-    b=bEnKzDkSS+4bXl0/PI6kXEcVj76780kz7roM4nEfEZZc08fs8ollyVruZqkvwM3tM5
-    rccXhUxkorLzcyuK6Y1kMYbZ6RKZPczQ9hivHFA3gcr1lInJLp3Ct10qpfuFkTG0W29L
-    yMcc8pd/GagKwLiJVXPGRRkE+TjnHBzciehAWE4HwK2I0ZkUh1RaUzP14T8jaBQw1Jvg
-    ZZxzctgQijT/jS2LW/wuLoAOZ2x+SsqwrAyJUNWk0IoqNz5rinU+jr2u/DaxlI6BiysF
-    fzrx5Hfn3Ab1e/AfWB+AfIX4sNRiEjekwC9ZJzxgL4vSWwLmMJw40S5lbSuri6TIc5qg
-    pi8w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794933348;
+    bh=nI8Z3lBhIZ8iv540ArlzGn6Yla1bfKnN9wOLCvHtrvQ=;
+    b=mlpMTzKPjAsB4S91r6rLhqGc1a3c5OXZXBG4QJK6pc6he+lnUF/O/IndrB1jMIeCpY
+    c5342jP5aRxQQqmq2bpQPs1S1ifhQoHk4FJnkFKuoUuq/WB07mUwMUpaQZbN6r7MEOyW
+    43VWaCoffSMBgPRH8uY8nakhNt5nxllTdPU3/eWeKTGl80+ycc9KFo8nW8xLKvYAqRZm
+    iwYUbf0kgAX1Bw3r0hmIMxya0IALg26WVu8H8mmd37e1p34C9jYdqBXILMmooM7uZb/V
+    qoH7+TauoVcCCCoghzEL274hIALla3II0kqCF2GHxlWlpvO+DWrB3a1/b5oHTQUekNSE
+    4VFQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794933349;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=1FHIHpCaCEVfRZ5BmjJ7+sqJUvjdWXKzuNTsR/pzL0g=;
-    b=qxrawUWuzvgzWKjh29UJqNF/lRaDX6xZg5pLKl/ZiJZzIBWFdf5S+w1/Ba7layKgrc
-    mrPXCismStAkO01p49BQ==
+    bh=nI8Z3lBhIZ8iv540ArlzGn6Yla1bfKnN9wOLCvHtrvQ=;
+    b=uBgPqGiWq/pxSJ4aq73DiPc13/rA1/2SvXvbH8IX2IpefOmDQTi4sMKUU+38vH6gth
+    HDc5Cd1ZV4AMXe+pRpCA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [127.0.1.1]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AHGZmceZ
+    with ESMTPSA id Kfdf2a2AHGZncei
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Tue, 17 Nov 2026 17:35:48 +0100 (CET)
+    Tue, 17 Nov 2026 17:35:49 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Tue, 17 Nov 2026 17:35:44 +0100
-Subject: [PATCH v6 3/8] can: raw: use a private mutex instead of
- lock_sock()
+Date: Tue, 17 Nov 2026 17:35:49 +0100
+Subject: [PATCH v6 8/8] can: netlink: fix static FD-NON-ISO mode validation
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,7 +98,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261117-can-bcmlock-memcg-v6-3-6826a6227d36@hartkopp.net>
+Message-Id: <20261117-can-bcmlock-memcg-v6-8-6826a6227d36@hartkopp.net>
 References: <20261117-can-bcmlock-memcg-v6-0-6826a6227d36@hartkopp.net>
 In-Reply-To: <20261117-can-bcmlock-memcg-v6-0-6826a6227d36@hartkopp.net>
 To: linux-can@vger.kernel.org
@@ -108,271 +107,85 @@ Cc: Marc Kleine-Budde <mkl@pengutronix.de>,
  Vincent Mailhol <mailhol@kernel.org>, Zhu Ling <zhuling0805@qq.com>, 
  Oliver Hartkopp <socketcan@hartkopp.net>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1794933347; l=8881;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1794933347; l=3310;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=7+rEmCiMAjOMxtXCQ0bFLedvifh5J+j26OvVU1tkb0c=;
- b=XPRmw4ixSMVXBpqls3J3LmbwmeXlI0/A6Zo14N88PpJC94IkPaR+30brUk3v/rUp4V+MLBWVW
- y2HG1Raw1DgBP6CDSs7FXxLlFBmLgB/vZuC1FAae7SALS3pn5ejuJKh
+ bh=Jcyp7DaVrbq4wHlDgGvCxc/oywDiIHnHVLfdhYJ/mjg=;
+ b=D/eyS/9AKvSjl40Ok+Nf4mT4px9oasfBlko0AtBTEEneLJVaCWatI3ArQcZsvFWNV+0FuVUmD
+ GDJBL3oPYMECBnHYvejWtX8RDTJH0a/kwN0RlbVV+e/6ipr7Lq6Ou3k
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-raw_notify() takes lock_sock() of the sockets that are bound to a
-vanishing CAN device while holding RTNL. Any path that holds the socket
-lock while accessing user space can therefore block RTNL. Since
-commit 43c973a0887d ("can: raw, isotp: copy socket options outside of
-lock_sock()") the CAN_RAW specific socket options copy their values
-outside of the socket lock, but the generic SOL_SOCKET options in
-sk_setsockopt() and sk_getsockopt() still access user space under
-sockopt_lock_sock(), e.g. for SO_ATTACH_FILTER, SO_LINGER or SO_TXTIME.
-A stalled copy, e.g. on a FUSE backed mapping, then blocks raw_notify()
-and RTNL on the unregistration or namespace change of the bound CAN
-device.
+From: Zhu Ling <zhuling0805@qq.com>
 
-CAN_RAW only uses lock_sock() to serialize its own state: the binding,
-the filters and the CAN_RAW socket options. It does not use the socket
-backlog, as raw_rcv() queues the frames directly to the socket.
+Controllers with a static CAN_CTRLMODE_FD_NON_ISO mode (M_CAN v3.0.x and
+v3.1.x, PEAK pcan_usb_fd with firmware < 2.x) do not require the
+'fd-non-iso' option to be provided when CAN FD is not switched on by the
+IFLA_CAN_CTRLMODE request.
 
-Replace lock_sock() with the mutex conf_lock in struct raw_sock. The
-generic socket options do not take this mutex, so they can not block
-raw_notify() anymore. No user space access happens while the mutex is
-held. The memory allocations for the CAN receivers in can_rx_register()
-are still done under the mutex, as they have been under lock_sock()
-before.
+Since commit 6742ca18cb41 ("can: netlink: add userland error messages")
+ctrlstatic_missing is calculated before this exception is applied to
+ctrlstatic, which is not evaluated afterwards. As a result every
+IFLA_CAN_CTRLMODE request on such controllers that does not contain
+'fd-non-iso on' is rejected with -EOPNOTSUPP and "missing required
+FD-NON-ISO static control mode", e.g. 'fd off', 'loopback on' or
+'one-shot on', regardless of the current CAN FD state.
 
-Sashiko suggested to hold not only the filter copy in raw_getsockopt()
-under the new conf_lock mutex but to also protect ro->raw_vcid_opts.
-This change will be addressed in a follow-up patch as it goes beyond a
-simple lock replacement intended for stable.
+Apply the exception to ctrlstatic_missing instead.
 
-Fixes: c18ce101f2e4 ("[CAN]: Add raw protocol")
-Cc: stable@vger.kernel.org # depends on "can: raw, isotp: copy socket options outside of lock_sock()"
-Tested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+The exception must only relax the requirement to *provide* the static
+FD-NON-ISO mode. It must not allow to *switch off* a static mode: before
+the above mentioned commit a request like 'fd-non-iso off' passed the
+check and removed the static CAN_CTRLMODE_FD_NON_ISO bit from
+priv->ctrlmode. As can_get_static_ctrlmode() derives the static modes
+from priv->ctrlmode, this information was lost permanently. Therefore
+reject any request that explicitly switches off a static control mode
+with a dedicated error message. With this check in place a static mode
+can never be cleared by the 'priv->ctrlmode &= ~cm->mask' operation as
+every static bit in cm->mask is also set in maskedflags.
+
+The request is rejected independent of the resulting CAN FD state, as
+accepting it while CAN FD is switched off would remove the static mode
+from priv->ctrlmode as well.
+
+Fixes: 6742ca18cb41 ("can: netlink: add userland error messages")
+Cc: stable@vger.kernel.org
+Signed-off-by: Zhu Ling <zhuling0805@qq.com>
+Link: https://lore.kernel.org/all/tencent_3A964832542399A780E646D6A6246335C409@qq.com/
+[Hartkopp: reject switching off static control modes instead of restoring
+ them, extend the commit message (Sashiko review)]
+Link: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261115095746.709371-1-mkl%40pengutronix.de
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/raw.c | 41 ++++++++++++++++++++++-------------------
- 1 file changed, 22 insertions(+), 19 deletions(-)
+ drivers/net/can/dev/netlink.c | 10 +++++++++-
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
-diff --git a/net/can/raw.c b/net/can/raw.c
-index f14270b56f52..b69eaadc5e93 100644
---- a/net/can/raw.c
-+++ b/net/can/raw.c
-@@ -101,10 +101,11 @@ struct raw_sock {
- 	can_err_mask_t err_mask;
- 	int count;                 /* number of active filters */
- 	struct can_filter dfilter; /* default/single filter */
- 	struct can_filter *filter; /* pointer to filter(s) */
- 	struct uniqframe __percpu *uniq;
-+	struct mutex conf_lock; /* protects bind, filters and setsockopt */
- };
- 
- static LIST_HEAD(raw_notifier_list);
- static DEFINE_SPINLOCK(raw_notifier_lock);
- static struct raw_sock *raw_busy_notifier;
-@@ -317,22 +318,22 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
- 	if (msg == NETDEV_DOWN)
- 		smp_mb(); /* IFF_UP is cleared before, pairs with raw_bind() */
- 
- 	/* Lockless fast path, ro->bind_dev covers a concurrent bind().
- 	 * Read it before ro->dev, pairs with smp_store_release() in
--	 * raw_bind(). A stale ro->bind_dev only costs a lock_sock().
-+	 * raw_bind(). A stale ro->bind_dev only costs a mutex_lock().
- 	 */
- 	bind_dev = smp_load_acquire(&ro->bind_dev);
- 	if (READ_ONCE(ro->dev) != dev &&
- 	    (msg != NETDEV_UNREGISTER || bind_dev != dev))
- 		return;
- 
- 	switch (msg) {
- 	case NETDEV_UNREGISTER:
--		lock_sock(sk);
-+		mutex_lock(&ro->conf_lock);
- 		if (ro->dev != dev) {
--			release_sock(sk);
-+			mutex_unlock(&ro->conf_lock);
- 			break;
- 		}
- 
- 		/* remove current filters & unregister */
- 		if (ro->bound) {
-@@ -349,11 +350,11 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
- 		ro->count = 0;
- 
- 		sk->sk_err = ENODEV;
- 		if (!sock_flag(sk, SOCK_DEAD))
- 			sk_error_report(sk);
--		release_sock(sk);
-+		mutex_unlock(&ro->conf_lock);
- 		break;
- 
- 	case NETDEV_DOWN:
- 		sk->sk_err = ENETDOWN;
- 		if (!sock_flag(sk, SOCK_DEAD))
-@@ -399,10 +400,11 @@ static int raw_init(struct sock *sk)
- 
- 	ro->bound            = 0;
- 	ro->ifindex          = 0;
- 	ro->dev              = NULL;
- 	ro->bind_dev         = NULL;
-+	mutex_init(&ro->conf_lock);
- 
- 	/* set default filter to single entry dfilter */
- 	ro->dfilter.can_id   = 0;
- 	ro->dfilter.can_mask = MASK_ALL;
- 	ro->filter           = &ro->dfilter;
-@@ -449,11 +451,11 @@ static int raw_release(struct socket *sock)
- 		spin_lock(&raw_notifier_lock);
+diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
+index 081dfddda000..521e2496e2cc 100644
+--- a/drivers/net/can/dev/netlink.c
++++ b/drivers/net/can/dev/netlink.c
+@@ -328,13 +328,21 @@ static int can_ctrlmode_changelink(struct net_device *dev,
+ 				   "requested control mode %s not supported",
+ 				   can_get_ctrlmode_str(notsupp));
+ 		return -EOPNOTSUPP;
  	}
- 	list_del(&ro->notifier);
- 	spin_unlock(&raw_notifier_lock);
  
--	lock_sock(sk);
-+	mutex_lock(&ro->conf_lock);
- 
- 	/* remove current filters & unregister
- 	 * the tracked reference ro->dev keeps the device's receive lists
- 	 * accessible, even after a namespace change
- 	 */
-@@ -472,15 +474,15 @@ static int raw_release(struct socket *sock)
- 	ro->ifindex = 0;
- 	ro->bound = 0;
- 	ro->dev = NULL;
- 	ro->count = 0;
- 
-+	mutex_unlock(&ro->conf_lock);
++	/* static control modes can not be switched off */
++	if (deactivated & ctrlstatic) {
++		NL_SET_ERR_MSG_FMT(extack,
++				   "static control mode %s can not be switched off",
++				   can_get_ctrlmode_str(deactivated & ctrlstatic));
++		return -EOPNOTSUPP;
++	}
 +
- 	sock_orphan(sk);
- 	sock->sk = NULL;
+ 	/* do not check for static fd-non-iso if 'fd' is disabled */
+ 	if (!(maskedflags & CAN_CTRLMODE_FD))
+-		ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
++		ctrlstatic_missing &= ~CAN_CTRLMODE_FD_NON_ISO;
  
--	release_sock(sk);
--
- 	sock_prot_inuse_add(net, sk->sk_prot, -1);
- 	sock_put(sk);
- 
- 	return 0;
- }
-@@ -498,12 +500,12 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
- 	if (len < RAW_MIN_NAMELEN)
- 		return -EINVAL;
- 	if (addr->can_family != AF_CAN)
- 		return -EINVAL;
- 
--	/* lock_sock() serializes the binding with raw_notify() */
--	lock_sock(sk);
-+	/* ro->conf_lock serializes the binding with raw_notify() */
-+	mutex_lock(&ro->conf_lock);
- 
- 	if (ro->bound && addr->can_ifindex == ro->ifindex)
- 		goto out;
- 
- 	if (addr->can_ifindex) {
-@@ -579,11 +581,11 @@ static int raw_bind(struct socket *sock, struct sockaddr_unsized *uaddr, int len
- 		sk->sk_err = ENETDOWN;
- 		if (!sock_flag(sk, SOCK_DEAD))
- 			sk_error_report(sk);
- 	}
- 
--	release_sock(sk);
-+	mutex_unlock(&ro->conf_lock);
- 
- 	return err;
- }
- 
- static int raw_getname(struct socket *sock, struct sockaddr *uaddr,
-@@ -619,11 +621,11 @@ static int raw_setsockopt_locked(struct socket *sock, int optname,
- 		/* @filter has been copied by raw_setsockopt(). It is linked
- 		 * to the socket on success and freed by the caller on error.
- 		 *
- 		 * The reg_state check is only a shortcut: On a concurrent
- 		 * unregistration or namespace change raw_notify() waits for
--		 * lock_sock() and removes the filters set here.
-+		 * ro->conf_lock and removes the filters set here.
- 		 */
- 		dev = ro->dev;
- 		if (ro->bound && dev &&
- 		    READ_ONCE(dev->reg_state) != NETREG_REGISTERED)
- 			return -ENODEV;
-@@ -728,10 +730,11 @@ static int raw_setsockopt_locked(struct socket *sock, int optname,
- 
- static int raw_setsockopt(struct socket *sock, int level, int optname,
- 			  sockptr_t optval, unsigned int optlen)
- {
- 	struct sock *sk = sock->sk;
-+	struct raw_sock *ro = raw_sk(sk);
- 	struct can_filter *filter = NULL;  /* dyn. alloc'ed filters */
- 	struct can_filter sfilter;         /* single filter */
- 	union {
- 		can_err_mask_t err_mask;
- 		int flag;
-@@ -742,13 +745,13 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 	int err;
- 
- 	if (level != SOL_CAN_RAW)
- 		return -EINVAL;
- 
--	/* Copy the option values from user space before lock_sock(), so a
--	 * stalled copy can not block raw_notify() waiting for lock_sock()
--	 * under RTNL.
-+	/* Copy the option values from user space before taking ro->conf_lock,
-+	 * so a stalled copy can not block raw_notify() waiting for
-+	 * ro->conf_lock under RTNL.
- 	 */
- 	switch (optname) {
- 	case CAN_RAW_FILTER:
- 		if (optlen % sizeof(struct can_filter) != 0)
- 			return -EINVAL;
-@@ -796,15 +799,15 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
- 
- 		if (copy_from_sockptr(&val, optval, size))
- 			return -EFAULT;
- 	}
- 
--	lock_sock(sk);
-+	mutex_lock(&ro->conf_lock);
- 
- 	err = raw_setsockopt_locked(sock, optname, &val, filter, count);
- 
--	release_sock(sk);
-+	mutex_unlock(&ro->conf_lock);
- 
- 	/* on error free the filters allocated for CAN_RAW_FILTER above */
- 	if (err && count > 1)
- 		kfree(filter);
- 
-@@ -829,11 +832,11 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
- 	switch (optname) {
- 	case CAN_RAW_FILTER: {
- 		struct can_filter *filter = NULL;
- 		int err = 0;
- 
--		lock_sock(sk);
-+		mutex_lock(&ro->conf_lock);
- 		if (ro->count > 0) {
- 			int fsize = ro->count * sizeof(struct can_filter);
- 
- 			/* user space buffer to small for filter list? */
- 			if (len < fsize) {
-@@ -841,19 +844,19 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
- 				err = -ERANGE;
- 				opt->optlen = fsize;
- 			} else {
- 				if (len > fsize)
- 					len = fsize;
--				/* copy to user space after release_sock() */
-+				/* copy to user space after mutex_unlock() */
- 				filter = kmemdup(ro->filter, len, GFP_KERNEL);
- 				if (!filter)
- 					err = -ENOMEM;
- 			}
- 		} else {
- 			len = 0;
- 		}
--		release_sock(sk);
-+		mutex_unlock(&ro->conf_lock);
- 
- 		if (filter) {
- 			if (copy_to_iter(filter, len, &opt->iter_out) != len)
- 				err = -EFAULT;
- 			kfree(filter);
+ 	if (ctrlstatic_missing) {
+ 		NL_SET_ERR_MSG_FMT(extack,
+ 				   "missing required %s static control mode",
+ 				   can_get_ctrlmode_str(ctrlstatic_missing));
 
 -- 
 2.53.0
