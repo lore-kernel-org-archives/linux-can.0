@@ -1,56 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794888163;
-	b=VAU/wp1cXm7+YzzlPbwRxRGauo5+Ql5jlHuhvO4txdfoqaVrmz0m+7sLdofOOZs2QdGS
-	 TrM65K8WpjvP8IbPl0Qk0FCs5vHulkyz71MX0dotKQm4yoNw676TzfPL2LMm9H7dSR6Hr
-	 otJXrUnkU1rrJ/XoN16xVlkINo533PAGD5eJiFUemutkbF9FsEiJI5+H3//JOo6ROXbV2
-	 P47k5Jz7MPzctp4RDEORo0sti+g+LZDW0X38zPrFMyXTUsoRhIxULHh3o75MY9L9wmxFo
-	 eL3PSxfFvTFi5WVrJ3UooUQftFY0zJv0vsLAH6JL2kua/4t+ziPeQBUEayRvfyLP0LA==
+	t=1794888164;
+	b=ZXNQCjOt2s/iZz+rD8pMuDKcI5fm1wjZFy1+34QvRNKWX1ptqeyI0+PfYrRu4hC1ask1
+	 VNzywo/T2O7/2GPvTPh4+jQ5W1LBYdD7AvHncZUgeJNghrl6gzeE7DITfW7ca+DofStOa
+	 9QtoUzbrvHmkTvE/Itvbwd7F8T6A+I41VpephGpoTT67NF+4WSuyRQGBQCM/Ap2+fhJiu
+	 UZ6r5yBT2wbhtm6HEaI6asxJ9qVLVw336InswS9kH46y10PRAPnrWcXyTXy+R1fN+M6RG
+	 /OU68JOKu3Z/zVSwdeIfxkRdWUPbyWCxkjQH/Pz80WEHnsU89qVQpq4miuyWbz4sXyg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794888163;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794888164;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=p736YppcMJac9L8iKnlaKOMhLhfdqxioQtFzzdE8Khk=;
-	b=WcwTdoLLX9lEhHhM0MRZrWo/kOREKRF53cJGX1RZ6bBHEFCEApylzkp+pdEOM7XlwoHQ
-	 y3V8gHeJLEz7nsumHuHp/qa/bxSu6Lu3Mze7MTkU6iyOFOgpBZHYrD5Q8nW7DgIhRLSs6
-	 CM5A5Tvgw9pE8vuUAW/j9KPWVj1/C7GJd65belU8Bguqsvq0xAI+a1x6AFp8ZHGNUdIVs
-	 xPeMcnOPuROgC4yAcphk65JP2/vOH4oRaX7o2j8CldneaEhmNyCj0h4piLr5gEgdXcqAq
-	 dcd9oMzuAGAjE5jTDKYl2WvYNf2kXFlrwogeyLTRDPuQteoQPCX7P0EL4M+QeWkUirw==
+	bh=sgw0WdWS8qwVgLSHwhQrIVRjmrocH9bUNS+/+dcLaGc=;
+	b=IOJlz3T9r77X/NBdO6BzwdjNkSKV/upHYrbjusvJ87RaxGALQE55Yjsu2tYLHK6I9663
+	 gXJw3NBaItojxBWUG0+iWsuTJnQHGGBZJrDGOOEE4Z7/YqmtFDZY71+Q2nFwREsBDHdfT
+	 TU8rfyaoCS6sPh8fQ9TCkNBC5QN9HYwAzImWSzXekNkq2dxVKnaj4/4+iTUWTErv+Qlkx
+	 0iZrEqLN5SQWFRvdvG8uE6Mw2uuarh05l17EI4I2QXNyNDqDHRo2LdGdbnHoBHo6MdrhW
+	 cI5Ubkzf01UFfEzBaQ53NrOgfDMQRFO3TpWgvA2xxDc+wdvEtjAIhGY1KecTCF317PA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OReZYP3Y;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YBMg1Gy5;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26FAF606A31C
-	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 04:02:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68FB1606A32A
+	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 04:02:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OReZYP3Y
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 836B71F000C4;
-	Tue, 17 Nov 2026 04:02:42 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=YBMg1Gy5
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 91B5B1F000C4;
+	Tue, 17 Nov 2026 04:02:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794888163;
-	bh=p736YppcMJac9L8iKnlaKOMhLhfdqxioQtFzzdE8Khk=;
+	s=k20260515; t=1794888164;
+	bh=sgw0WdWS8qwVgLSHwhQrIVRjmrocH9bUNS+/+dcLaGc=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=OReZYP3YOFkY4Blb9vZ4bZPG1p8C8XQFu9Fb+7gXPA48uZgHxqQBwtBQF4jYHN1We
-	 aL3KcpT2ML8yT2F/cVFN1uqjP4UeBAdHGVPi8Lf/Z+78qLdty67FAzIXHxVfaHE6eN
-	 njmnOD8kfNO5ocpLZWTn7C0ZOC0Kg7VFGwcXVpGE4ai9Jbo1UuIVEn/EIpl9AP4K/u
-	 rp5uuEkbl4x0xNbxkUWm7KmDovzDQAYZ22UjGfQ00Wvb47X9l4qqL5nOLth9m5FkA3
-	 esMaB3m2Nu3l5i7ah0k/RFlGEHB+DEV6lEBnBEscubQHcE15sIIWnG9c13NZtvO0n1
-	 XIAfzi+/Fna8A==
-Subject: Re: [PATCH v14 2/6] can: j1939: add a safeguard to
- __j1939_priv_release_work()
+	b=YBMg1Gy5+aComMHx5Z5JuoKTQbIqsWvHwVsVYk+jBiiIYqqbQbC8DGcaFOzy1YWQv
+	 zKqlsygO0hhXVqrAHYdP0cL31pcGsespnNiVbVxLIfPTu6LwGvM3Hxfj8d+0m4y/bO
+	 Y6lN9Qw/pY2aLgtrYGNAevMK64f4cQb2uaEEvUvByTOmVvnL0cRlt8C8k5GTS520fY
+	 g+QMDv/2vYUYyxKimCbhBeHQSJhCZCR8vSs91rBvLurJKw4TAPzXOW9f68/XPrIICR
+	 hfve7WXEnxTMlZG+0h3gMcyQ5bqMa1Mb84ncoubImMQrl9ClnpOB1LKY8P9fpKzEz3
+	 Oo67E5tFkeigw==
+Subject: Re: [PATCH v14 3/6] can: j1939: fix possibility of list corruption in
+ __j1939_ecu_release()
 From: netdev-bot+sashiko@kernel.org
 To: penguin-kernel@I-love.SAKURA.ne.jp
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  robin@protonic.nl, kernel@pengutronix.de, socketcan@hartkopp.net,
  kuba@kernel.org
-Date: Tue, 17 Nov 2026 04:02:42 +0000
-Message-ID: <179488816204.3132.12202280066452473940@kernel.org>
-In-Reply-To: <fc9af395-3578-494b-bc6d-b8481845e435@I-love.SAKURA.ne.jp>
-References: <fc9af395-3578-494b-bc6d-b8481845e435@I-love.SAKURA.ne.jp>
+Date: Tue, 17 Nov 2026 04:02:43 +0000
+Message-ID: <179488816314.3132.13214176750033848739@kernel.org>
+In-Reply-To: <c7618d34-4419-404e-9289-a8c32b065d2d@I-love.SAKURA.ne.jp>
+References: <c7618d34-4419-404e-9289-a8c32b065d2d@I-love.SAKURA.ne.jp>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,103 +70,143 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The commit is tagged `Fixes: 9d71dd0c7009` and `Cc:
-  stable@vger.kernel.org` as a fix for a use-after-free, but no caller…
+- [Low] The rationale comment in __j1939_priv_release_work()
+  (net/can/j1939/main.c, lines ~167-186) is stale after this patch.
+
+Pre-existing issues:
+- [Critical] This problem wasn't introduced by this patch, but it is a
+  remote-triggerable deadlock.
 
 --
 
-can: j1939: add a safeguard to __j1939_priv_release_work()
+can: j1939: fix possibility of list corruption in __j1939_ecu_release()
 
-This commit adds a write_lock_bh()/write_unlock_bh() pair on priv->lock
-at the start of __j1939_priv_release_work(). This delays kfree(priv)
-until any current holder of priv->lock has released it. It is meant to
-protect against a caller that drops the last j1939_priv reference
-through j1939_ecu_put() while holding priv->lock.
+This patch moves the release of struct j1939_ecu to the j1939_wq
+workqueue. The release work can then always hold priv->lock for write
+while it calls list_del(). ECUs whose kref has reached zero can now
+still be on priv->ecus, so j1939_ecu_get() switches to
+kref_get_unless_zero() and lookups skip ECUs that have started release.
 
-> If a user calls j1939_ecu_put(ecu) with priv->lock held but without knowing
-> that this "struct j1939_ecu" is the last user of a "struct j1939_priv",
-> __j1939_priv_release_work() via __j1939_priv_release() from
-> j1939_priv_put() from __j1939_ecu_release() might call kfree(priv)
-> before priv->lock is released (i.e. causing UAF).
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..0aeeee1491e4f 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -14,25 +14,47 @@
+>  
+>  #include "j1939-priv.h"
+>  
+> -static void __j1939_ecu_release(struct kref *kref)
+> +static void __j1939_ecu_release_work(struct work_struct *work)
+>  {
+> -	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
+> +	struct j1939_ecu *ecu = container_of(work, struct j1939_ecu, release_work);
+>  	struct j1939_priv *priv = ecu->priv;
+>  
+> +	write_lock_bh(&priv->lock);
+>  	list_del(&ecu->list);
+> +	write_unlock_bh(&priv->lock);
+>  	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+>  	kfree(ecu);
+>  	j1939_priv_put(priv);
+>  }
+>  
+> +static void __j1939_ecu_release(struct kref *kref)
+> +{
+> +	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
+> +
+> +	/* Since not all callers are calling j1939_ecu_put() with priv->lock
+> +	 * held for write, defer actual release to WQ context. By deferring to
+> +	 * WQ context, readers might find ECUs with ecu->kref == 0. Therefore,
+> +	 * readers must validate with j1939_ecu_valid() or j1939_ecu_get().
+> +	 */
+> +	INIT_WORK(&ecu->release_work, __j1939_ecu_release_work);
+> +	queue_work(j1939_wq, &ecu->release_work);
+> +}
+
+[Severity: Low]
+
+j1939_priv_put() is now called from __j1939_ecu_release_work(), after
+write_unlock_bh(&priv->lock). Is the comment in
+__j1939_priv_release_work() in net/can/j1939/main.c still accurate?
+
+net/can/j1939/main.c:__j1939_priv_release_work() {
+	...
+	 *   (3) A user who unexpectedly became the last user of "struct j1939_priv"
+	 *       indirectly calls j1939_priv_put() via e.g. j1939_ecu_put(ecu).
+	...
+}
+
+With this patch, j1939_ecu_put()->kref_put()->__j1939_ecu_release()
+only calls INIT_WORK() and queue_work(). Callers that hold priv->lock,
+such as j1939_ac_process() at out_ecu_put or j1939_ecu_timer_handler(),
+can no longer reach j1939_priv_put() synchronously through this path.
+
+None of the other j1939_priv_put() callers seem to call it with
+priv->lock held either.
+
+Should the example in that comment be updated? It is still unchanged
+at the end of the series.
 
 [ ... ]
 
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Cc: stable@vger.kernel.org
+> @@ -122,6 +147,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
+>  void j1939_ecu_timer_cancel(struct j1939_ecu *ecu)
+>  {
+>  	if (hrtimer_cancel(&ecu->ac_timer))
+> +		/* Drop the ref from j1939_ecu_timer_start(). */
+>  		j1939_ecu_put(ecu);
+>  }
 
-[Severity: Low]
-Is there a caller in the tree that can actually reach this? The commit
-message describes a hypothetical case ("If a user calls ..."). The
-Fixes: and Cc: stable tags present it as a use-after-free fix.
+[Severity: Critical]
 
-Each place that calls j1939_ecu_put() with priv->lock held seems to
-still hold another j1939_priv reference.
+This is a pre-existing issue that this patch did not introduce. Can
+j1939_ecu_timer_cancel() deadlock when j1939_ac_process() calls it?
 
-j1939_ac_process() runs under j1939_can_recv(), which pins priv:
+j1939_ac_process() takes priv->lock for write and still holds it when
+it cancels the timer:
 
-net/can/j1939/main.c:j1939_can_recv() {
-    ...
-	j1939_priv_get(priv);
-	can_skb_set_owner(skb, iskb->sk);
-    ...
+net/can/j1939/address-claim.c:j1939_ac_process() {
+	write_lock_bh(&priv->lock);
+	...
+	/* cancel pending (previous) address claim */
+	j1939_ecu_timer_cancel(ecu);
+	...
 }
 
-The matching j1939_priv_put() happens at the done: label, after the
-address claim processing.
-
-For j1939_ecu_unmap_all(), the NETDEV_DOWN notifier holds a reference
-from j1939_priv_get_by_ndev(). On the __j1939_rx_release() path,
-j1939_netdev_stop() drops its reference only after kref_put_mutex()
-returns:
-
-net/can/j1939/main.c:j1939_netdev_stop() {
-    ...
-	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
-	j1939_priv_put(priv);
-}
-
-j1939_ecu_unmap() is reached from j1939_ac_fixup(), which holds its own
-ECU reference around the unmap.
-
-All three callers of j1939_local_ecu_put() in socket.c hold jsk->priv
-and the j1939_netdev_start() reference. They call j1939_netdev_stop()
-only afterwards.
-
-j1939_ecu_timer_handler() is the remaining case:
+hrtimer_cancel() waits for a callback that is already running. The
+ac_timer callback takes the same lock:
 
 net/can/j1939/bus.c:j1939_ecu_timer_handler() {
-    ...
-	j1939_ecu_map_locked(ecu);
-
-	/* The corresponding j1939_ecu_get() is in
-	 * j1939_ecu_timer_start().
-	 */
-	j1939_ecu_put(ecu);
-	write_unlock_bh(&priv->lock);
-    ...
+	...
+	write_lock_bh(&priv->lock);
+	...
 }
 
-Here j1939_ecu_map_locked() does one of two things. It either takes a
-new ECU reference, or it skips because ents[addr].ecu already points to
-another mapped ECU. That other ECU holds its own priv reference from
-j1939_ecu_create_locked(). In both cases this put is not the last priv
-put.
+Here is a possible sequence for the same ECU:
 
-The later patches in this series don't add such a path either. Both
-"can: j1939: fix possibility of list corruption in __j1939_ecu_release()"
-and "can: j1939: defer j1939_session_destroy() to WQ context" move the
-releases to j1939_wq. They call j1939_priv_put() after
-write_unlock_bh(&priv->lock).
+CPU A (NET_RX softirq)              CPU B (HRTIMER softirq)
+j1939_ac_process()
+  write_lock_bh(&priv->lock)
+                                    j1939_ecu_timer_handler()
+                                      write_lock_bh(&priv->lock)
+                                        <- spins on CPU A
+  j1939_ecu_timer_cancel()
+    hrtimer_cancel()
+      <- callback running, loops waiting for CPU B
 
-If this is hardening rather than a fix for a reachable bug, should the
-Fixes: and Cc: stable tags be dropped and the change described that way?
+On !PREEMPT_RT, hrtimer_cancel_wait_running() is only cpu_relax(). On
+PREEMPT_RT it blocks on softirq_expiry_lock, and the stuck expiry
+context holds that lock. Either way, both CPUs spin with BH disabled.
 
-Also, the new lock/unlock pair only waits for holders of priv->lock. It
-does not wait for holders of priv->j1939_socks_lock or
-priv->active_session_list_lock.
+Any node on the CAN bus can trigger this once a local j1939 socket has
+registered the RX handler. It sends an Address Claimed frame for NAME N
+at SA X, which arms the 250 ms ac_timer through
+j1939_ecu_timer_start(). About 250 ms later it sends a second Address
+Claimed frame for NAME N with a different SA, while the callback is
+running. The sender can keep retrying until the timing matches. Normal
+address claim contention could also hit this window.
 
-If such a caller did appear, would the usual approach be for it to hold
-its own priv reference across the locked section?
+This ordering is still present at the end of the series.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/1d96e742-0479-4c36-ad0a-a0aaeda0a4fc%40I-love.SAKURA.ne.jp
