@@ -1,23 +1,23 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794931057;
-	b=GM/9OvJVA8WkLgQlm70Yh0g4LowEv/CVEhqZtDBS2oxGL2jOD32HPhuon9cGVOo3LlYL
-	 mfZVr9sMTetYzxQMvgdJzs6tL4wCyVufFeormQ83J0I88LXLCKw1bJNQLIXr9vBHwaZgB
-	 37MhT7I/LpT5XwbNyoYGa7GFafWsgap4/iEScEMPc925fsO8WwzqDo4dDLYcWVaCdKk2L
-	 akeZePUChLN7DrMd1mwgZ1ejTcHhzSp1fVdxz3DZPEGN7Tf61UNGEPV6FAY9k50QGrEx3
-	 MI9O9GlM8E1K5X+wi4pbMBQCtQfd6iSaDDUB4jerc8fFdWh5IU+R3lX4JLFIeefUQhw==
+	t=1794931082;
+	b=KhZJJzRyQrDBtn0jHHskaoiecKM/xJZAe9UrTAMDtLrBNA+x6ceOkoOuKz9zopiNw4sf
+	 tfblf3VlCx3CLD8VkzC2qIk5lwlJK7hLYbg4qhOgnk749gsI1xJ9u6u5myX65r0mgqlq4
+	 fVMa4C+R/m0mEwAiyz5VsgWIWRJ0fywa2RxqrJOQwONc5A5x2v+3fIMhoz7X/qFxzW+U6
+	 A2BqUoa6sKz1wy3oVAIvPg5juMeO34UsKfoVEnLG8bgMgkI8Awx67kTu2JpRVVjilpgei
+	 HnzVch8b4ZGwseh4IfA6STMtY3xgmv+fzgY7oVjzV1XvZar8OREulNOCrQd2oZyadcw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794931057;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794931082;
 	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
 	 User-Agent:Subject:From:To:References:Content-Language:In-Reply-To:
 	 Content-Type:Content-Transfer-Encoding:X-Anti-Virus-Server:
 	 X-Virus-Status;
-	bh=G4cooeaqTljR4GUGnsKhH/Bmmnsu/adBJ2ojrRQjUbU=;
-	b=OthnAvQlTJLF79GA/TU+s0PDPj06OnvNGFhKoWuQxnyMSRLhSWdO6N5ZAafUVWjAxNGB
-	 rWr4BbBT57u5v8GZY6oed+wl4/i72gDoeLfLKiFj3ikJG3578zEjZyYEwoPvBpXEziI0R
-	 8cEKrmL5t4DAi78izaC2oldzavaB8DNPiAFeBH4KdrxB+sroVHuZ1AA1+WtpKQYvD9q0M
-	 hkWH6pQ5LTmHibaH50FTgdonfY8UZPwJQjTWsB5GsWTV/p0wKvrqeSN9JoyNDTkHeD+t9
-	 CIxfUbZbv6oelv2SA8TtP936tK4t/r1YlCNHrRDCIpgYPR8WYfJy6szbQX1i4NFP6Lg==
+	bh=9sa4C5zLgOuM1G1BtYXz3JjjNxH1fJszORNn45CsmZU=;
+	b=1MoaHQmMtFUc/X70F1bUTtjEK8f0Uq+zKixfbCQjzbFG8pbFUGdebjpRpzYJo0cPZY45
+	 1R6tG+Y4vjQplSyirtRDLa1wp7du/wZohtup/DOtLiNf5J+dRLvstAxtFbOBatXAlugSt
+	 tDDEFcYEYEzyvJUC6qeu69DS80Rx3YPzyg8qwpIxyzht3PopqR39cAYbgHXAyBoNy/3Ze
+	 w1Xj320/UXrvBUIXDTF0aRk7xX/oJUOJelY1kwNfVdZQB/NVqlmU4UYYUn09T1p+Nx+BP
+	 x/maDztseAYl3nx2CeVDpkvxSVou+QrYekwY8/XNb5CVCR5HqjKZwM3z7E9Sa6okE0g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=I-love.SAKURA.ne.jp;
 	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
@@ -25,23 +25,23 @@ ARC-Authentication-Results: i=1; smtp.subspace.kernel.org;
 Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3551A606A334
-	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 15:57:36 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3551A606A334
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14DB2606A31C
+	for <linux-can@vger.kernel.org>; Tue, 17 Nov 2026 15:58:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 14DB2606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
 Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6AHFvKA8029926;
-	Wed, 18 Nov 2026 00:57:20 +0900 (JST)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6AHFvjL6029997;
+	Wed, 18 Nov 2026 00:57:45 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
 Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
 	(authenticated bits=0)
-	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6AHFvKY2029923
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6AHFvjUL029994
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-	Wed, 18 Nov 2026 00:57:20 +0900 (JST)
+	Wed, 18 Nov 2026 00:57:45 +0900 (JST)
 	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
-Message-ID: <f778db47-a217-448e-9dbd-f1860afab00b@I-love.SAKURA.ne.jp>
-Date: Wed, 18 Nov 2026 00:57:19 +0900
+Message-ID: <b0a388e4-6094-497b-9c5d-c633230a4f21@I-love.SAKURA.ne.jp>
+Date: Wed, 18 Nov 2026 00:57:44 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -52,7 +52,8 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: [PATCH v15 2/3] can: j1939: fix "struct j1939_ecu" refcount leak
+Subject: [PATCH v15 3/3] can: j1939: fix possibility of hard-lockup/deadlock
+ in j1939_ecu_timer_cancel()
 From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 To: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
@@ -66,78 +67,87 @@ Content-Transfer-Encoding: 7bit
 X-Anti-Virus-Server: fsav111.rs.sakura.ne.jp
 X-Virus-Status: clean
 
-syzbot is reporting "struct j1939_ecu" refcount leak, for
+Since j1939_ecu_timer_cancel() is calling hrtimer_cancel() with priv->lock
+held for write while j1939_ecu_timer_handler() takes priv->lock, a hard-
+lockup (if CONFIG_PREEMPT_RT=n && CONFIG_SMP=y) or a deadlock between
+priv->lock and cpu_base->softirq_expiry_lock (if CONFIG_PREEMPT_RT=y) will
+happen when hrtimer_cancel() calls hrtimer_cancel_wait_running().
 
-  j1939_ecu_get(ecu);
-  priv->ents[ecu->addr] = ecu;
+The comment for "struct j1939_priv"->lock says that priv->lock is used for
+protecting "struct list_head ecus" and "struct j1939_addr_ent ents[256]".
+But j1939_ac_process() is using priv->lock for also serializing timer
+management across multiple frames. This makes it impossible to temporarily
+drop priv->lock in order to safely call hrtimer_cancel().
 
-in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
-even after
+Therefore, fix this problem by introducing ac_process_lock that works as
+an outer lock for temporarily dropping priv->lock in order to safely call
+hrtimer_cancel().
 
-  priv->ents[ecu->addr] = NULL;
-  j1939_ecu_put(ecu);
-
-in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
-__j1939_rx_release() from j1939_netdev_stop() has completed.
-
-Fix this problem by
-
-  (1) preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start()
-  (2) making j1939_ecu_map_locked() no-op
-
-when a netdev which is associated with j1939_priv is no longer registered
-(indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
-__j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
-
-Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
 Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
 Cc: stable@vger.kernel.org
 Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 ---
- net/can/j1939/bus.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+ net/can/j1939/address-claim.c | 4 ++++
+ net/can/j1939/j1939-priv.h    | 3 +++
+ net/can/j1939/main.c          | 1 +
+ 3 files changed, 8 insertions(+)
 
-diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-index 3924404152a2..9b40f3754623 100644
---- a/net/can/j1939/bus.c
-+++ b/net/can/j1939/bus.c
-@@ -56,6 +56,17 @@ static bool __must_check j1939_ecu_get(struct j1939_ecu *ecu)
- 	return kref_get_unless_zero(&ecu->kref);
+diff --git a/net/can/j1939/address-claim.c b/net/can/j1939/address-claim.c
+index ca4ad6cdd5cb..594d2849c9f8 100644
+--- a/net/can/j1939/address-claim.c
++++ b/net/can/j1939/address-claim.c
+@@ -147,6 +147,7 @@ static void j1939_ac_process(struct j1939_priv *priv, struct sk_buff *skb)
+ 		return;
+ 	}
+ 
++	spin_lock_bh(&priv->ac_process_lock);
+ 	write_lock_bh(&priv->lock);
+ 
+ 	/* Few words on the ECU ref counting:
+@@ -212,7 +213,9 @@ static void j1939_ac_process(struct j1939_priv *priv, struct sk_buff *skb)
+ 		goto out_unlock_bh;
+ 
+ 	/* cancel pending (previous) address claim */
++	write_unlock_bh(&priv->lock);
+ 	j1939_ecu_timer_cancel(ecu);
++	write_lock_bh(&priv->lock);
+ 
+ 	if (j1939_address_is_idle(skcb->addr.sa)) {
+ 		j1939_ecu_unmap_locked(ecu);
+@@ -242,6 +245,7 @@ static void j1939_ac_process(struct j1939_priv *priv, struct sk_buff *skb)
+ 	j1939_ecu_put(ecu);
+  out_unlock_bh:
+ 	write_unlock_bh(&priv->lock);
++	spin_unlock_bh(&priv->ac_process_lock);
  }
  
-+static bool __must_check j1939_ecu_verify_get(struct j1939_ecu *ecu)
-+{
-+	struct j1939_priv *priv = ecu->priv;
+ void j1939_ac_recv(struct j1939_priv *priv, struct sk_buff *skb)
+diff --git a/net/can/j1939/j1939-priv.h b/net/can/j1939/j1939-priv.h
+index af179eb44b15..28f6fa6029ec 100644
+--- a/net/can/j1939/j1939-priv.h
++++ b/net/can/j1939/j1939-priv.h
+@@ -62,6 +62,9 @@ struct j1939_priv {
+ 	/* segments need a lock to protect the above list */
+ 	rwlock_t lock;
+ 
++	/* serializes j1939_ac_process() processing */
++	spinlock_t ac_process_lock;
 +
-+	/* Don't get an ECU ref if netdev is no longer registered or
-+	 * __j1939_rx_release() was called or __j1939_ecu_release() was called.
-+	 */
-+	return READ_ONCE(priv->ndev->reg_state) == NETREG_REGISTERED &&
-+		kref_read(&priv->rx_kref) && j1939_ecu_get(ecu);
-+}
-+
- static bool __must_check j1939_ecu_valid(struct j1939_ecu *ecu)
- {
- 	/* Treat an ECU as invalid if __j1939_ecu_release() was called. */
-@@ -83,7 +94,7 @@ static void j1939_ecu_map_locked(struct j1939_ecu *ecu)
- 	if (!j1939_address_is_unicast(ecu->addr))
- 		return;
+ 	struct net_device *ndev;
+ 	netdevice_tracker dev_tracker;
  
--	if (!j1939_ecu_get(ecu))
-+	if (!j1939_ecu_verify_get(ecu))
- 		return;
+diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+index b76037f89a80..4bae9402c4c0 100644
+--- a/net/can/j1939/main.c
++++ b/net/can/j1939/main.c
+@@ -140,6 +140,7 @@ static struct j1939_priv *j1939_priv_create(struct net_device *ndev)
+ 	}
  
- 	ent = &priv->ents[ecu->addr];
-@@ -141,7 +152,7 @@ void j1939_ecu_timer_start(struct j1939_ecu *ecu)
- 	/* The corresponding j1939_ecu_put() is in
- 	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
- 	 */
--	if (!j1939_ecu_get(ecu))
-+	if (!j1939_ecu_verify_get(ecu))
- 		return;
- 
- 	/* Schedule timer in 250 msec to commit address change. */
+ 	rwlock_init(&priv->lock);
++	spin_lock_init(&priv->ac_process_lock);
+ 	INIT_LIST_HEAD(&priv->ecus);
+ 	priv->ndev = ndev;
+ 	kref_init(&priv->kref);
 -- 
 2.56.1
 
