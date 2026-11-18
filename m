@@ -1,75 +1,97 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=54.254.200.128
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794993611;
-	b=p11ZlEsAxKLZItlgNhyXZpO9YWVMWVGcxx5UpopUrm5HNpDe5ucaMyWxDW338F23Wy09
-	 jIoh7uJo9lR23jghwHxOuc403sGLZYQ0Qr3OThxRz3Qfy9gtrE//rcXu/BiXqONnYapnj
-	 Q4V/KKXmM1s3tE9KMIdYk0jkjICDukOZw3wMMN6QFMUCFWqIKf3Cc5H2QHBjV9hXUz+VD
-	 qjbOFSI06ZndScr23BCq4hm5FziLPHNbY5+mtdb115BXQzlSaGetYiHaC8h3N++w/exDR
-	 XDBOiIK6k0nKO/1dsxa2HX0HYi721zLRI+z9fO2l7yDR2spjc+Dmvn6unwlWKl38I3A==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794993611;
-	h=DMARC-Filter:DKIM-Signature:X-QQ-mid:X-QQ-Originating-IP:Received:
-	 X-QQ-SSF:X-QQ-GoodBg:X-BIZMAIL-ID:EX-QQ-RecipientCnt:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding:X-QQ-SENDSIZE:Feedback-ID:X-QQ-XMAILINFO:
-	 X-QQ-XMRINFO:X-QQ-RECHKSPAM;
-	bh=/RT9EeL7ji2hmMv3LbgGRfUUnKv+b38QkNlxTETqKtI=;
-	b=GWeQiw7mqT/Z/Hb8VCJszLWmr0j0RHf62kGGrOpocSKebabNKEvdWv7O1BVXCrE1y1sA
-	 WtKpWR0aOqMngYmCaML0vVRa7Ri2UNLjYGy0Qnd+17u+ll/lb8NrELdwXslg9mliySJPS
-	 dlwYcVEoi2WNqcQoTl5lxj+hs2o7W4RIt2fteqPL2p5Hl261nptB6ChE7rBrMgIfd94r2
-	 /K/sCxWSKZYimRoPXv8jIJeU8HV909pHehjY3iwUlAcLRkhUhP/5smhFfOH3UfpEL9gHU
-	 R3xcTNmrhcg5owBcNNQFY+LwvkdtR3uMrpy54BupkjkjZl0+xiClnlHaKte1HYyRvIw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=uniontech.com;
-	spf=pass smtp.mailfrom=uniontech.com;
-	dkim=pass header.d=uniontech.com header.i=@uniontech.com header.a=rsa-sha256 header.s=onoh2408 header.b=GwfvFYIA;
-	arc=none smtp.remote-ip=54.254.200.128
-Received: from smtpbgsg2.qq.com (smtpbgsg2.qq.com [54.254.200.128])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794994337;
+	b=C8WVxNxpXcPHTcJOqHt2zBA9J5elCnS/14bE7E9hzQy5ekHaH6eKsR+RKHC+dZA/4vnb
+	 /Apy6FatRtSMsPaW/l7KWGexKmKQ5m6pJqo4z61ODGyCuBMbhqoCLfeqyKHKe6hn/Dgwb
+	 qHDjKucpdhf3AP2fm6zYwagrXp/eK93lTtIe9N/92g2MhX1YKKftARoYx8IpJOFavPXop
+	 qpW7j951LnPcNrbURyljw1mIVoKu5Ky869UH9T2kbZgyNPb4Gw9DdVOXshg3XhOInMyMI
+	 EEXV5IKO7zp8HprHSllH7eXdWVedXhuzU2+DEshZLs5RNGhV/Mht+rjD9rTKKHaa6wg==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794994337;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
+	 Subject:Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=dIEWDIE8C8HsxQkssvOS3FDL8HfIPsnvEYAXzhRE+uU=;
+	b=wSWJOljBbfmmBwU3t2nusHP9tBCtSfkIUfVRd9dWeyIXQncqNOEteYrw402LyTHYCoji
+	 WafYinAnx9OJ96s54jHE5Lju+qcoHvE434fxSh1Au1Un9I9tZ3VtLBPX0uBYHyQo6Ckj3
+	 8ITKyRwTiCAUs8yF7hicjV/qOUe4VmXMQZELqVb0dEUTtVO75gLt7iLrgCk0jeAHtUARG
+	 8fKUVE/bn0TI8lNL+sfh3L3SO/ifc0cerC+1oBl2XUMrFI84hoiG4K+U4UJDEGFKq/5Y7
+	 4j4GiSga4c0nkMVgkiveI+5w0JWZm1M2uMXjBhR3fcJdlRAPyH1XAHbSxW3wG2evGKA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=erEeLVt5;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 41679606A31C;
-	Wed, 18 Nov 2026 09:20:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 41679606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284CF606A320;
+	Wed, 18 Nov 2026 09:32:15 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 284CF606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key, unprotected) header.d=uniontech.com header.i=@uniontech.com header.a=rsa-sha256 header.s=onoh2408 header.b=GwfvFYIA
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
-	s=onoh2408; t=1794993599;
-	bh=/RT9EeL7ji2hmMv3LbgGRfUUnKv+b38QkNlxTETqKtI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version;
-	b=GwfvFYIA7ln/PPRp6ROhqJRgvOG/tc001EEYQFYqFlIf891ktU3EmyYe8ZuvUuiQI
-	 BMLv89ItbTiHIlmFitUGbtgZHFRjPZOylGafK6WpzUijgeafEDL+FIufyVnvV5zfg7
-	 OmONp1Mg/DjzlrsjiGTE2bk4W/Xr5hUz4/COdaDA=
-X-QQ-mid: esmtpgz15t1794993582tbf0479e5
-X-QQ-Originating-IP: 3YK9IcMNkk1Tp97SCHpvldHX7zURvlorPi+rZRCCm1A=
-Received: from PEN202512010004 ( [113.57.152.160])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 18 Nov 2026 17:19:40 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 10124214066944920201
-EX-QQ-RecipientCnt: 15
-From: raoxu <raoxu@uniontech.com>
-To: socketcan@hartkopp.net
-Cc: mkl@pengutronix.de,
-	davem@davemloft.net,
-	edumazet@kernel.org,
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=erEeLVt5
+Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
+	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 37ACA205A51;
+	Wed, 18 Nov 2026 10:32:14 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794994334;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dIEWDIE8C8HsxQkssvOS3FDL8HfIPsnvEYAXzhRE+uU=;
+	b=erEeLVt5LF7uaU4se6lXvYd/PttVy6hNVF6SskO4oyNkM7PHXyPcrygKVCT4OCFrW3j73f
+	GX8hn2BwmK22Ar4MGK++BMw0kuPC7FuK2bHz++NSDXAsA9OjFeRo61esz7SO4EOgOISyOI
+	OhXS/mrbBiIxnsrtcsKcz6xxLVTKN7cKjYMC08OdXBu6m+pb0ONH2b+qxdX/8dih6MOm0g
+	bKXmUblOho9TwydOx20DfDWreYNkAHO5tQgVH5jm0cH54NGrzpXb/7K5NcFo7LYgpgdplS
+	8qq5SiSN26ms6ekEo8rMl0+7Ok0oWQD6WXcBMOLL17u91UhZIYeYTO9EJETgbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794994334;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=dIEWDIE8C8HsxQkssvOS3FDL8HfIPsnvEYAXzhRE+uU=;
+	b=FA6WysTnnF2FaB8+nC/s1EOjymcUd2LdEPMUe/dxmrHa6ZBe96CH6YH2aPxrBwdjfDxaLg
+	JPkmPJiNobtpSN8KZOsC36DRVus3HC4egO7926XHIGlYAx4kBYdz7GqzxqwQoF+ZqhwayJ
+	wXLkovHwekgwwG1v0CgBQZWPxOM2UVrCOvOQpRdH+urfnibGjMTOKjF/q55f7TjrtUJDkN
+	KlfTJdCwRs1DVWIZIp72jWgTkq36wSHzI35kilc9wy1BvP5KsYpBJQ1N7CYcblfeknsw+v
+	zF2vwb9b4kOx1pj2XwZi+ta9psR/HnwHIwhJ6P13TecXciSYGlQ7XDec8wft0Q==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794994334; a=rsa-sha256;
+	cv=none;
+	b=KU1k3D2tOfgBY13JqSrNP8l6l+Nc1V7lBzvGOMIMc5yZmaOnzY5TkRCGK+RYAgQtX75bEW
+	50wJvgZSvcgRGJ3PKyAWiJDRH13F5179b6i+6cH6B+STBhe73oEc0Q5/hHiONrCr1iG6cn
+	p6EDAx6MB/9/cI5CQZQexPiLPqJSjZeDw42MuD2AE+cxSYAD+f29BAOuFkjHBg/YcV8pAC
+	gO5CWQaa0OlwIxcP6yQeTa55XiPmH33e0FcSDTHQFPiFnWYoTwb4RF2gruIrYEKmF8l6w2
+	RofpBZJn/uvtO2rly24//yq69TdzaJaTLQ0OvrijsWymc+LhbaTBrOCVRzmZ5g==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjornoya.blackshift.org)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <mkl@pengutronix.de>)
+	id 1xTc1V-000KHy-1k;
+	Wed, 18 Nov 2026 10:32:14 +0100
+Received: from blackshift.org (unknown [185.109.152.103])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(Client did not present a certificate)
+	(Authenticated sender: mkl-all@blackshift.org)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 454035EDC84;
+	Wed, 18 Nov 2026 09:30:02 +0000 (UTC)
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
 	kuba@kernel.org,
-	pabeni@redhat.com,
-	corbet@lwn.net,
-	horms@kernel.org,
-	skhan@linuxfoundation.org,
-	rdunlap@infradead.org,
 	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	raoxu@uniontech.com
-Subject: [PATCH can-next v2] can: bcm: Document cyclic transmission failures
-Date: Wed, 18 Nov 2026 17:19:38 +0800
-Message-ID: <75785AF83A9D9B09+20261118091938.3365557-1-raoxu@uniontech.com>
-X-Mailer: git-send-email 2.50.1
+	kernel@pengutronix.de
+Subject: [PATCH net-next 0/12] pull-request: can-next 2026-11-18
+Date: Wed, 18 Nov 2026 10:11:33 +0100
+Message-ID: <20261118092955.1283165-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -79,80 +101,119 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf8
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: esmtpgz:uniontech.com:qybglogicsvrgz:qybglogicsvrgz6b-0
-X-QQ-XMAILINFO: MxdW4jxL6NvXjZ0qWDpfrMwtPCDrN5doXGNnERIuprLdTmHByeIp05Ou
-	29YFNzrwFwbqEZcIMN2lPW9TrWOSaXI9g7Ny1Aql74YQPTuuaLFa/0qeVGUk6vUnYXOmsRq
-	qkvVVdDTp9uSrjIyp59+bSHExqN26YlbS1a4e4pyvdj23B+bCZD+pd/OGXCxhIoaCxRo97U
-	y4y7la4nLbW6raqjBw1nso02PYxPLvuasHheClIR7BAC7vM0ZMVCZjlwcgfVN+LcAMpq8I5
-	0ElHw/rFY4PSOeeNIfUWG0ouenVStXaY+VDDOaA3/3ngtwRnG9IrnYj8WGmoU8w7CIQxBEd
-	HGjoBqeIElK7usmt4+JMZy0uPUR55lpTSo5omo6KUoz4dfl8PRASePqpafK7Dm+3yNCU0r4
-	PTbqBZ2FIGJ8rFc6K5MqrmtYWbPXBUZKJZpOz7CNx0s8ImVU81vJtR3mCjQ6PsuQ1Rrft0z
-	OPVRBVhSwS6v0Bdx4DGYFPlvkJ+qPj/C3g9dKO6ijGE2KQVUxnKIO+fvwODP5bsXEdPM8YH
-	A1rElu5kWBtNxCqR86PRFuGz47o22xjZRFgE0eECb8gq/KsMnbIOOpO5fg7hdkdEprF8eon
-	2uxeaZkMHbOAqPZ1dFfUXeYSOuQGQIzEMHxIM0WKcmaGHyKGDKXPKaD5+NHBM9lVnLPpJfK
-	rspuFa4THj4IrJJXOzb29VP/b0TLVwXAfRFku9qDhzy4OAqHk+66TxDUHtgmf1aHd/oS9yR
-	6/LScF4EJ5FJXvo3w+9rG9qEcd2PfPqF41Y5IXuOMSglVwgGoqAUR/NAXJOdsr3YGR7DdQ0
-	YvY7k361gyfwSnPn59Y0dvgDN6vYsLTAjFmEfLGn5M1KIb1h47s/DBlybPb3pPa+IN+B0Cj
-	llWtB8A8khhXGGd0HBNmm+ymBRoj8Fz3mzkkevg8sBsLPyQaK2II7PCIW+io1X6lojvkpEp
-	hpH3rGKrFwxw3j+QHWfjE587WhYIiUeQFA9K6bAcggVeVNujPHjm1XYBrmL9a44wgm7J+QZ
-	SizK6dwiiMAX8I5wMv5YtrXy/2gw24ywxG+Wt/Gw==
-X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
-X-QQ-RECHKSPAM: 0
 
-From: Xu Rao <raoxu@uniontech.com>
+Hello netdev-team,
 
-The CAN broadcast manager continues its configured cyclic transmission
-schedule even when a CAN frame cannot be passed to the configured
-network interface.
+this is a pull request of 12 patches for net-next/main.
 
-Such failures are not reported to user space. The failed transmission
-is not retried by the broadcast manager, the timing remains unchanged,
-and a non-zero count is decremented.
+Stéphane Grosjean's patch adds him as a maintainer for the PEAK-System
+CAN drivers.
 
-As a result, a TX_EXPIRED notification requested with TX_COUNTEVT
-indicates that the configured transmissions at ival1 have been
-processed, not that they were successfully sent.
+A patch by Sang-Heon Jeon removes a redundant NULL check before
+netdev_hold() in the CAN RAW protocol.
 
-Document this behavior to prevent applications from treating TX_EXPIRED
-as confirmation of successful transmission.
+Magnus Aagaard Sørensen contributes a patch to remove the unused
+function safe_candev_priv().
 
-Suggested-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Signed-off-by: Xu Rao <raoxu@uniontech.com>
+Triet Hoang converts several CAN drivers to DEFINE_SIMPLE_DEV_PM_OPS().
+
+5 patches by Chaosheng Qu clean up the error handling for
+platform_get_irq() in several CAN drivers.
+
+Oliver Hartkopp's patch removes the obsolete Softing CANcard driver.
+
+A patch by Hemanth Selam removes a repeated word in a comment in the
+ucan driver.
+
+The last patch is by Maximilian Zimmermann and sets CAN FD related
+flags on received frames in the xilinx_can driver.
+
+regards,
+Marc
+
 ---
-Changes in v2:
-- Target can-next as requested by Oliver Hartkopp.
-- Adopt Oliver's suggested wording describing transmission failures
-  from the user's perspective.
-- Clarify the TX_EXPIRED notification semantics and scope the lack of
-  retries to the broadcast manager.
-- Remove implementation details and redundant descriptions.
 
-This documentation-only update follows the review of v1. The earlier
-proposal to change BCM transmission accounting was dropped.
+The following changes since commit d6816d9a93b66a12bf01e10037e377f3333ad6cc:
 
- Documentation/networking/can.rst | 8 ++++++++
- 1 file changed, 8 insertions(+)
+  Merge branch 'net-dsa-add-dsa-support-for-the-lan9645x-switch-chip-family' (2026-11-17 18:09:58 -0800)
 
-diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
-index 51bc70748f75..ae47f40bf456 100644
---- a/Documentation/networking/can.rst
-+++ b/Documentation/networking/can.rst
-@@ -892,6 +892,14 @@ only one timer is needed 'count' is set to zero and only 'ival2' is used.
- When SET_TIMER and START_TIMER flag were set the timers are activated.
- The timer values can be altered at runtime when only SET_TIMER is set.
+are available in the Git repository at:
 
-+If a CAN frame cannot be passed to the configured CAN network interface
-+(e.g. due to a full transmit queue or the interface being down), this
-+failure is not reported to user space. The transmission sequence
-+continues as configured: the frame is not retried by the broadcast
-+manager, the timing remains unchanged, and a non-zero ``count`` is
-+decremented anyway. Therefore, a ``TX_EXPIRED`` notification (requested
-+with ``TX_COUNTEVT``) only indicates that the ``count`` transmissions
-+at ``ival1`` have been processed, not that they were successfully sent.
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-7.5-20261118
 
- Broadcast Manager message sequence transmission
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
---
-2.50.1
+for you to fetch changes up to 400814a52bdb0c8e5f7c72330962830e682291ba:
+
+  can: xilinx_can: set CAN FD flags on received frames (2026-11-18 10:07:51 +0100)
+
+----------------------------------------------------------------
+linux-can-next-for-7.5-20261118
+
+----------------------------------------------------------------
+Chaosheng Qu (5):
+      can: sun4i_can: don't discard the IRQ lookup error in probe
+      can: at91_can: don't discard the IRQ lookup error in probe
+      can: janz-ican3: don't discard the IRQ lookup error in probe
+      can: ifi_canfd: don't discard the IRQ lookup error in probe
+      can: cc770: don't discard the IRQ lookup error in probe
+
+Hemanth Selam (1):
+      can: ucan: fix repeated word 'is' in comment
+
+Magnus Aagaard Sørensen (1):
+      can: dev: remove unused safe_candev_priv()
+
+Marc Kleine-Budde (1):
+      Merge patch series "can: don't discard the platform_get_irq() error in probe"
+
+Maximilian Zimmermann (1):
+      can: xilinx_can: set CAN FD flags on received frames
+
+Oliver Hartkopp (1):
+      can: remove Softing CANcard driver
+
+Sang-Heon Jeon (1):
+      can: raw: remove redundant NULL check before netdev_hold()
+
+Stéphane Grosjean (1):
+      MAINTAINERS: add entry for PEAK-System CAN drivers
+
+Triet Hoang (1):
+      can: convert to DEFINE_SIMPLE_DEV_PM_OPS()
+
+ MAINTAINERS                                  |  12 +
+ drivers/net/can/Kconfig                      |   1 -
+ drivers/net/can/Makefile                     |   1 -
+ drivers/net/can/at91_can.c                   |   9 +-
+ drivers/net/can/bxcan.c                      |   8 +-
+ drivers/net/can/cc770/cc770_platform.c       |   7 +-
+ drivers/net/can/ctucanfd/ctucanfd.h          |   4 +-
+ drivers/net/can/ctucanfd/ctucanfd_pci.c      |   4 +-
+ drivers/net/can/ctucanfd/ctucanfd_platform.c |   4 +-
+ drivers/net/can/dev/dev.c                    |  12 -
+ drivers/net/can/ifi_canfd/ifi_canfd.c        |   2 +-
+ drivers/net/can/janz-ican3.c                 |   2 +-
+ drivers/net/can/m_can/m_can_pci.c            |   8 +-
+ drivers/net/can/softing/Kconfig              |  31 -
+ drivers/net/can/softing/Makefile             |   5 -
+ drivers/net/can/softing/softing.h            | 168 ------
+ drivers/net/can/softing/softing_cs.c         | 335 -----------
+ drivers/net/can/softing/softing_fw.c         | 700 ----------------------
+ drivers/net/can/softing/softing_main.c       | 864 ---------------------------
+ drivers/net/can/softing/softing_platform.h   |  41 --
+ drivers/net/can/spi/hi311x.c                 |   8 +-
+ drivers/net/can/spi/mcp251x.c                |   8 +-
+ drivers/net/can/sun4i_can.c                  |   2 +-
+ drivers/net/can/usb/ucan.c                   |   2 +-
+ drivers/net/can/xilinx_can.c                 |   6 +
+ include/linux/can/dev.h                      |   3 -
+ net/can/raw.c                                |   3 +-
+ 27 files changed, 57 insertions(+), 2193 deletions(-)
+ delete mode 100644 drivers/net/can/softing/Kconfig
+ delete mode 100644 drivers/net/can/softing/Makefile
+ delete mode 100644 drivers/net/can/softing/softing.h
+ delete mode 100644 drivers/net/can/softing/softing_cs.c
+ delete mode 100644 drivers/net/can/softing/softing_fw.c
+ delete mode 100644 drivers/net/can/softing/softing_main.c
+ delete mode 100644 drivers/net/can/softing/softing_platform.h
