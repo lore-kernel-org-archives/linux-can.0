@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794994339;
-	b=lnRI3h3fJDi7Leu9DjfubKCh4DxXix1hx5uG1NhRNTjSuatQznCaQPX51WBRWer6kmGX
-	 +ax65e1zunZ8Lc0xN9tZuHUruXXOFs+IBRVdwD2ZJCMeQ0znjZm7G0U9e0J8XdeCGsFFj
-	 Gr2SzO9QmZNVuwqaGyi6uDdwc6EYlZ3s5GRBWd8I9lXWET+Fq6yllrdLPqTVaZsEl1UTz
-	 WtDaikSUnkjenXHzhFfpSFhblszzwV9fLYJgZUx9C9GPUvwOAtl8rr1Upa7iPUhYba0rZ
-	 zK9s3Hm2riQlDLjh8olfpy1O1cc57ES6V4dSb9yp91qDcqgNizfhnOqD56W/ZEMZQHA==
+	b=F5MUZs/Y3ePnFVMlT3aFUQwiZtXXyFFhYauU2s40xsn86j6rwhLaiPeuv0lMjs72iyVt
+	 rf1/VHlhTAS6NWZVrcxbsf30e2btroJvsn0omhb9uAoywXnjGY2enEDs/ojOc2ua4cDZD
+	 PPW5gcUGTGJ5yk4AdLjaoOgwm0x60rfDtN08s4EvHYOnsnazkDY7XRGI9lCg37UDUq3Su
+	 UY7GUorH+GUoI82cS5LgjapeZGtDrdHI0d3HxQufq1kYzfdSfeezQYZGjxPZ2z8tVrQw1
+	 yNi1RZUTeMGuAIXgjhp6edq4Oi22LTr4bCnxMCpLBKdVa2MeseEaZGrwoyR5sQLAJmg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794994339;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=3ATRx4owcSVrolEMA1XuhG833GVEwYzWRPpvq5JwrSo=;
-	b=aX9QQ809IlhsYltwV3EWgzzi7XBPrLk5E3U5S+hoKcpzVCFRgPSd1qmC+WVH9rTcRevb
-	 s9LX9p5HorXIMMKO3MP3sUwnUo5qCgkCXaOJTxOMVBJX1BD5dCpH7N5+tDfLYsJVRwWnV
-	 RUYbxuauxdO3Va0EuMCK39s6SarM2UL8p/fnoi0GmgEABe1dBiRPsEyJ1ib+4VrkxxXE2
-	 Xjjlghx7NPH3TiA6rhzUaobljrgLvD6gXxD2OKtCMUtHeuIZ2020zu/oRS6+q6JlbhC8z
-	 Y2lk8OtcVdUGxEj2O9Lm6BAdI6s2ZRyK//VZweaaYUH/q9jd07Xkljq/5jD/xbCF0jQ==
+	bh=0tLBYIk0WCP2/xC5iC2gFzcK02rf48UVepeJt5b4JfU=;
+	b=frAyl3lxjYSIgcTKo0n5SWIV4HdT67a3Uga3b7AkstJA0JN448fnU7P2HfIKwgc8on8+
+	 T7QcA07uJPuA/0RjUPSB8r8cSlIbSNwHD/6DC0SJcAtQ3t+zzMI4YYw1Wt2CxLpTr3oHl
+	 ZyJCjh0y/3KVUvxyNNU9sO8986K4GQ5GSnnPx9zNixX/rS/weZ/XgfixqGrLAtxjAv2to
+	 9yYtRUF5L7JC7IBBhWAug4zYVdlYxGN7wYPVgSIksKe+yoZBCEAFqmQ2Vg81tqsTGQTzJ
+	 uzBH++59LO8zOS6jDJPzLO1Y3PyGBXrpSF+DzML5Dp0ZMJIrvrXjMK7U1V5bFGlzw4w==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=I4PH+pa4;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=VoesevXO;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9342606A899;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED652606A32F;
 	Wed, 18 Nov 2026 09:32:18 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C9342606A899
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org ED652606A32F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=I4PH+pa4
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=VoesevXO
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 46A67205A77;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 74878205ABB;
 	Wed, 18 Nov 2026 10:32:14 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794994334;
@@ -43,31 +43,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3ATRx4owcSVrolEMA1XuhG833GVEwYzWRPpvq5JwrSo=;
-	b=I4PH+pa4PNAJ/V0nKuq0hH1DRWlu70tcj525Ge7IYv11rekMkMn2hfvZO+4YCZPLncpgmN
-	M45OeifyNk3lRpPVTi81OXb7Fwbc+daLaUPWm0PTUpGOFVex2LMBIxsuAhlPXEZ+a8tBe0
-	NgERg0UQkRNNUrOVM1cvGPkgBiO31FrP8bWIxlTSFGmQaiFBMQay9dZraPe98UJLExUFR0
-	LwjmMDp3vOmCWMDWiqyIFjn8F4GkxbgiVis7xbRtzlY5DoqiSRI6YU6eQLFj68Hpd503TM
-	XnGcaspTPO8Qyj0zb3m9UtrdQANME8UEPfUDACHbYFY4BSG7Er84aY/A32GRKw==
+	bh=0tLBYIk0WCP2/xC5iC2gFzcK02rf48UVepeJt5b4JfU=;
+	b=VoesevXOqonLxc49/vgJirUgMlbCO1CRWiL6Lx7GbSpK5pveNxR/EE+8Wt9rJF1+wEjdLd
+	Em+IkmY8Kz1vFjrum3b1/hT7kaDF9/PQIWkTRDon6AEB194D8WYXkz9pU1pL7c7PqJZayv
+	inANHNq2dg+FMH6/8e3YDsgi4iXJKdqhquqv/CIIVGiGBEUJv1zTnveHEQxtTi0T4/Fk7Q
+	AQCTQollxyBD98oMWHXFg8+XfYEDAcnigEoy1B2NbKNHVne59jxTV/CJ5+3sS28Yn8CQJC
+	p/2hnA5nw8yjsTHtfvyi3CUgnzWSBq0CIdTLT4u4jGBiObiMYxrFj66Op6cRYA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794994334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3ATRx4owcSVrolEMA1XuhG833GVEwYzWRPpvq5JwrSo=;
-	b=KUyXCh/XimdLqCnJ+8DyYCtcyMI4SWsYtQPmmLHcADwjQl7wEJ1Th91BjcqU2Ag0i5Wbmy
-	Br7G4upSeG+p3DsmDMu/xZlr7iXYGVuOcHg9jNuo9/qzXBruEp96mbwVCJtSj1WsD4mbc3
-	61Gc/ko/VS/aS8Ax7NWZSgy2FSgezRG3X0ayJG6jnck44OOdSWuYvxgKF/xUxx3BpxSc1r
-	nqfK3ogi8cLu3azKnxeg2ZlxBZB+d2t4w/rEeHj2RmNyvV5QDZcxqFH+Od6n8OlUR2/KUX
-	klBxo5MhfcurZVJ/WQie4BYzOcFpACdr5C3hfRfQZu0OOproq2J2UoYeaCn3cg==
+	bh=0tLBYIk0WCP2/xC5iC2gFzcK02rf48UVepeJt5b4JfU=;
+	b=HcYzI7vGM1H5srPBimB2RM5DRb7onTboCiwDGBU00YpMTod2MZorp05f6WZjFCAzHOVF8n
+	8rqtwHtCKVyDvjhC0SP3n9ixUCPx6UFtasGBF2T3Smgmtr2NI/R2xvXSi0/9YbSVSdYSOP
+	vhrEZdO4WRrRDKiKz2w98USlHv7QiVw3Kd7xAFxFdV0q/9v56+C3vpMacNwT7PoDYPuSDH
+	F3ljgUEvOAHj8dRhEKSx94ilCBBjxkvVy5DAx3tPHdLRm2ivw+WkbK8pDbQsO+8BN+T6mY
+	97n7cUjhJtFAH0IXR7Nqad6IvfafuUobEh+HZ21PRDKwBC4bCnpiT/bj4G/Q0g==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794994334; a=rsa-sha256;
 	cv=none;
-	b=dyeik2pg9mBdMW+81wtlVsezId49sMhy3gz4E2em38xZdOcbTxPz3TSOoobi7Usg8GqfA5
-	oXavJ2OjaNzAXf714U+ibIVP2WtNSnJj1KtmkF09POhRjW2NuFser0owvOoC3oBQq41/SM
-	jwj1h2CR/d0O+lFrA0+QX91OZY6QjT0TRDIBeT2huobxsgz/3sa+4Hn2M/kh8i6LTF5Ry3
-	BwUpodgZhxCJQPRIY1XLpg0wcAXoROHL6DKdBhnwD4AMGRiB7/s73VqMKWKPkxNEZa/ER9
-	0/ADg+y4xGEdwjtd0uPpLmMJosIU6AusFEPAqrriVIpl8J0XLz25vqf4+GXclw==
+	b=U2YF1wPLh8b4Nvmm31/T9AYE8PIc8nUuOkOaaee1UhwNdKS4oqhhVbyRRQ4J0C6EV1k6mH
+	AJtBQwLXXfnzAI6DRlI0OQBzUVD8z3iyg/ZhkCKHtZYK/c/5TDEOQDyE9n6Y1Z6ZfffThp
+	2w8FlY5+wUO+jPNqEKmcjeucUAK2v2nGfuiQade185ujtAkVtT0qLRES+lp1m8wgNsBSZo
+	jfvKzfFirzzmaK+XJ+IJ3CB7RG9JthwVvuy6GNrHu84XIJFKYMVX/WdcAprwK5y0ADC+9p
+	x7lFio+/7VbrTZ+TX5Np78g53bhLk9LWAC4k5hKRJ/QrS/K5PVWidwkilecO7g==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,14 +75,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xTc1V-000KI2-28;
+	id 1xTc1V-000KIG-2e;
 	Wed, 18 Nov 2026 10:32:14 +0100
 Received: from blackshift.org (unknown [185.109.152.103])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 621E05EDC94;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id E0F355EDC9A;
 	Wed, 18 Nov 2026 09:30:03 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,11 +90,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Chaosheng Qu <chaosheng.qu.linux@gmail.com>,
+	Hemanth Selam <hemanth.selam@gmail.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 08/12] can: janz-ican3: don't discard the IRQ lookup error in probe
-Date: Wed, 18 Nov 2026 10:11:41 +0100
-Message-ID: <20261118092955.1283165-9-mkl@pengutronix.de>
+Subject: [PATCH net-next 11/12] can: ucan: fix repeated word 'is' in comment
+Date: Wed, 18 Nov 2026 10:11:44 +0100
+Message-ID: <20261118092955.1283165-12-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261118092955.1283165-1-mkl@pengutronix.de>
 References: <20261118092955.1283165-1-mkl@pengutronix.de>
@@ -109,49 +109,34 @@ Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+From: Hemanth Selam <hemanth.selam@gmail.com>
 
-ican3_probe() collapses every failure of platform_get_irq() into
--ENODEV:
+Drop the second 'is', reported by checkpatch.pl as a possible repeated
+word. Only touches a comment, no code changes.
 
-	mod->irq = platform_get_irq(pdev, 0);
-	if (mod->irq < 0) {
-		ret = -ENODEV;
-		goto out_free_ndev;
-	}
+This patch was created with LLM assistance.
 
-Return the lookup error unchanged, as the neighbouring CAN platform drivers
-do, e.g. previous commit ("can: cc770: don't discard the IRQ lookup error
-in probe").
-
-This driver cannot see -EPROBE_DEFER and the change does not fix a
-deferred probe. The device is an MFD child of janz-cmodio, which takes
-the interrupt from the carrier board's PCI device, and the driver has
-neither an of_match_table nor an ACPI match. The probe should not invent
-an error code for a lookup that failed for another reason.
-
-Build tested on x86_64.
-
-Signed-off-by: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
-Link: https://patch.msgid.link/28add8d0570b72d35c65c19b2365007cf0aa15c3.1792118040.git.chaosheng.qu.linux@gmail.com
+Signed-off-by: Hemanth Selam <hemanth.selam@gmail.com>
+Link: https://patch.msgid.link/20260904125018.10923-1-hemanth.selam@gmail.com
+[mkl: convert Assisted-by: tag into prose]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/janz-ican3.c | 2 +-
+ drivers/net/can/usb/ucan.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/janz-ican3.c b/drivers/net/can/janz-ican3.c
-index 1efdd1fd8caa..a65326b0f11e 100644
---- a/drivers/net/can/janz-ican3.c
-+++ b/drivers/net/can/janz-ican3.c
-@@ -1944,7 +1944,7 @@ static int ican3_probe(struct platform_device *pdev)
- 	/* find our IRQ number */
- 	mod->irq = platform_get_irq(pdev, 0);
- 	if (mod->irq < 0) {
--		ret = -ENODEV;
-+		ret = mod->irq;
- 		goto out_free_ndev;
- 	}
- 
+diff --git a/drivers/net/can/usb/ucan.c b/drivers/net/can/usb/ucan.c
+index a50e2e7e48a9..744d5ee5ec40 100644
+--- a/drivers/net/can/usb/ucan.c
++++ b/drivers/net/can/usb/ucan.c
+@@ -61,7 +61,7 @@
+  *    the following way:
+  *
+  *	m[n].len <=> the length if message n(including the header in bytes)
+- *	m[n] is is aligned to a 4 byte boundary, hence
++ *	m[n] is aligned to a 4 byte boundary, hence
+  *	  offset(m[0])	 := 0;
+  *	  offset(m[n+1]) := offset(m[n]) + (m[n].len + 3) & 3
+  *
 -- 
 2.53.0
 
