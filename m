@@ -1,60 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1794994724;
-	b=ZJ04fdXZxXqktvG/i7p80dXeljG+NVDahSF6jlR70DTRyyUB0eZ2lh4j85IMLkZ7zVnX
-	 jFDREDr6Hv7yJ4vSOMq8a6y1JNwyh3vAHxiToleXoRgZ7K5NYFPgzydIgC24lJ8PhlzxP
-	 oWup3Qmc+6/wqzJUawGsEBtCRt/3WRAHzwz/KtmwIrkeoowZRLQUkx8sKdJrES7UmksFJ
-	 McinNWJka3b7bsWL4DwzFC16lh4A7Jcu+AO4psSgQi9oUrECmLkvrWjKB0xKY72LQYiix
-	 x7NnVTld3OfubtZMcQ19nLqFvsB1lrmnK1yrOLa9MkI5Qm+6b93b91BUm4R1N1KK7OA==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794994724;
-	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:
-	 In-Reply-To:References:Auto-Submitted:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=oj2zs7YpNjut+Fle9NDI2/nVbuq1xcuWOh/20pAlrQ0=;
-	b=QG0RdIGyvJFkpQhgw4XfyT/A3u03EjIUibXjBttdPzIrdUE4n/tbSyB3bDfHkHFSTGXQ
-	 SU9d/5NNZ2qpaNbNnDai62gjkpkflEnFU08h7euWXehSVW2eXz5R9MdRCr4KneCQXQ00g
-	 egibdbqO/rOifJvlWaAvyTQBJqeW7dciAINRU9CZL0WqfNhF5zGpICia80eno+bthTEzk
-	 t2LQnFIyiWY/q0Cnm/c5nz6gCmhiSDE9P2McMzkdV8qVuqEbYM73ozNbBQt8atffaCj/K
-	 yvAomeUuSGEPTy5tDKAHWXSHLFraxq5J87YRqc9G7yrlZxB+ow2e7Y3oxlJGtAIdupg==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CFGlXUuo;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1794995141;
+	b=tNmzId/ebXOj+9uixHxf9FEJBfo55fM/6mibW6ZFNEDk5yr67ZE/HajoMSuMzlo/UAmH
+	 wTLIhBBxaOk6r9oqY/HKYm6IWipahk4s4va7ehhMvBFJjjziWm9pjsZ+vChLAP8s4HQ7h
+	 3Tpng4nsqzBlmqf23A14N5iYuUNkAKdvJbJmtU/u20XaFg2amUfPoDptoLo0ecdZ4J7U8
+	 /7h3xsIV6KFqvyc7lv4HdSf6F7yw2oFLjmhS10Fbi+sp7JeaSdJIc1ahJm34oh1xygebI
+	 qHXy/XHoG0OpaHvEVV5xp5ckZK3cOgZhl53efD3dDXnZKx2MvII/a83ZYORgQCnuktw==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794995141;
+	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=uCZjzvBXpQzyiqLUiaZTYDZ3Cj7C6PIF0m4jF7KKt8Q=;
+	b=A69RnIXaO612zaruUoqlfVdKxzN/QyXvPu2qH7/NZuTg6mirYL950iQ3bCrGkn9fchpN
+	 EHDjAa6HBt7vuQXhH0vQYi7zIe3Gh9IkfN6YBt1RexbhksWG3qgioG5M4v+AZ5wGlGdMq
+	 czJOVdAK3KAOm1ihKjBpGY7Ug6JTe8lLrOW0w2/qnCN+JMpNMtqpuUqdD/Cu7MbjVJ9la
+	 YapiovCz37HV3MgSPTOh8WVedQxX/g6HCXCJATIj++yyFudv1/EnMPuEIeEHwQ6gYjaLM
+	 Zj9N5AnGL+lX8ctSezMgTj9R192q/0Hgc3/03qbLV7O0sdXbBhW/tFy4ewlwyKC67jQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KDfBQ1wF;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D1B9606A31C;
-	Wed, 18 Nov 2026 09:38:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53D606A320;
+	Wed, 18 Nov 2026 09:45:39 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0A53D606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CFGlXUuo
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6A8921F000C4;
-	Wed, 18 Nov 2026 09:38:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1794994723;
-	bh=oj2zs7YpNjut+Fle9NDI2/nVbuq1xcuWOh/20pAlrQ0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=CFGlXUuoq1F93eff3bINULM8BV0jh31Bbb75sm47g2ed0+0uWTFRNfVxliQmxTgJq
-	 qGgGc1LujFeEtAGIlfuuUbgUVcJThc93cdnvZAffW6PSM4tlSy5bojq7RyhssjXrh9
-	 xxokn9W5JbdomJBPPvxnozZuZh9WHcC+qMFkJA6bQ911yeCyuerzwvKLDSJFDa+COc
-	 lLpVa4jJIebAyeonuP7CJfxtLs9kHgnCeJ2Xemj0aEAhbHSSNJY9gP4qFgSRfd0Wj8
-	 37S7KV4bzRRlgU/3tlRWYcqvUdWdkefo+Zygjzl6Pv5FVgyX4wtmYM0S3LnjmAG84o
-	 Q1reVf4wFZ5zg==
-From: netdev-bot+sinfo@kernel.org
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de,
- =?utf-8?q?St=C3=A9phane?= Grosjean <s.grosjean@peak-system.fr>
-Subject: 
- Re: [PATCH net-next 01/12] MAINTAINERS: add entry for PEAK-System CAN drivers
-Date: Wed, 18 Nov 2026 09:38:42 +0000
-Message-ID: <179499472297.3291.1921538258116208727@kernel.org>
-In-Reply-To: <20261118092955.1283165-2-mkl@pengutronix.de>
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KDfBQ1wF
+Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
+	(Authenticated sender: mkl@pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9921220011E;
+	Wed, 18 Nov 2026 10:45:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794995138;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uCZjzvBXpQzyiqLUiaZTYDZ3Cj7C6PIF0m4jF7KKt8Q=;
+	b=KDfBQ1wFEC7a950vAnPNfxVdNolhuN65j8nK8LfJdSZLvqFcKjPcxFHrqymcXi2rC5ltfu
+	oNeOv1/x9HEfM8/8DoEwsl1lHZnkViEwPe5b3s4tRcnUjSHOO9zGXkNafoR31VJa3EG6o4
+	MB2gnYEaE2Ks9LKlBSGfTA5PYL8WYXbUO0gwpaAnzONJW3o0QRHXLTqeYKKXsy6keX7PyH
+	Gsi1qASQvqYefBlGyA3Ph6YElreXO7uqldIIPn+vjKLod5TAtg722MrvJdagS0leMDfnZv
+	/uuIAmDSfzplfSbTjfbQzTkvvQfjvq99XnMyCD15HXFmYM5SOhnNZ76kVwiokw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1794995138;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uCZjzvBXpQzyiqLUiaZTYDZ3Cj7C6PIF0m4jF7KKt8Q=;
+	b=AzfXhdXQSD6Zgpj9zVQX53Z+kVdgu0NOPZuk34EoXofb+kJaeBIxXQvzDk9FgZdEyqu8iY
+	8ELVUUgFh7B1iR6HUV/aupTtcuoAE0mVjPSLH2ktHqIOnffnE1XP55YYKATtxP4yvqzSke
+	FedZdBAy1HtudhaGnUJPehMzwW3VSaLlwDusgnNRijQFOyqwREewZp+hDsWbpjc4gJnDR2
+	jeafcaE+IIFGIGNTSQMoGkve3q0tR436lYo0omVj11l8eNZiG+HCbxTVqYeRG8C4wG7Qf5
+	vH+tA/bhHYVkF6aook4tiRvPtFKCmb+YMsat0CKTvYHiFguWMM42NcpOZ6BWww==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794995138; a=rsa-sha256;
+	cv=none;
+	b=UeSt+cFa1Qt5aq6QytD0IHBzKkH3pv2bDhZbS2ESAwVQFBlPltLk9aKGs/vRv2Ux7yGoHv
+	iGRcNMH2dSs8wcGzhN4AF37QJ4MlHgGLiYpynxSlMn2hE4a6WAz2uB3QKYTNW+miN8X76K
+	vZVVtLl0M7CwykdF4OdwMdnVqdnqGBIstUgdY9vwopxyxDSQkcMGckklRiLq0Kz2bmnl70
+	XXjcMdBWdSKrvj+TujPid5LtguSh8q7/hDPCzj7ANyU1+3vicQlxGzbfXx8c2PePN7KWe4
+	42kyp8StUAo5BlO3LxiQIXN11yC+5pJvlK3T9mXCzTHbFrCXtO9gSR8PBCxupQ==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+Date: Wed, 18 Nov 2026 10:45:37 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: netdev-bot+sinfo@kernel.org
+Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
+	linux-can@vger.kernel.org, kernel@pengutronix.de, 
+	=?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.fr>
+Subject: Re: [PATCH net-next 01/12] MAINTAINERS: add entry for PEAK-System
+ CAN drivers
+Message-ID: <20261118-vengeful-turquoise-sunfish-bd2f81-mkl@pengutronix.de>
 References: <20261118092955.1283165-1-mkl@pengutronix.de>
  <20261118092955.1283165-2-mkl@pengutronix.de>
-Auto-Submitted: auto-generated
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+ <179499472297.3291.1921538258116208727@kernel.org>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,26 +90,50 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="5ddab6moxsf2jjwx"
+Content-Disposition: inline
+In-Reply-To: <179499472297.3291.1921538258116208727@kernel.org>
 
-Hi!
 
-This is an automated message. This series looks like a fix, but its
-commit messages seem to be missing some information:
+--5ddab6moxsf2jjwx
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH net-next 01/12] MAINTAINERS: add entry for PEAK-System
+ CAN drivers
+MIME-Version: 1.0
 
- - How the issue was discovered, e.g. hit in production, hit during
-   development, syzbot report, manual code inspection, LLM or static
-   analysis tool scan.
+On 18.11.2026 09:38:42, netdev-bot+sinfo@kernel.org wrote:
+> This is an automated message. This series looks like a fix, but its
+> commit messages seem to be missing some information:
 
- - Whether the issue was actually triggered, or is only theoretical
-   (e.g. found by LLM and not proven at runtime). If it was triggered
-   please include the symptoms, like the stack trace or kernel messages.
+Patches #2...#5 fix error handling problems discovered by LLM, but have
+not been seen in real world systems.
 
-Please do not repost the series just to address the above. Instead,
-reply to this email with the missing information, so that reviewers
-can take it into account.
+Patch #13 fixes a real problem, that can be seen in production system.
+Certain CAN-FD related flags are not set.
 
-*IMPORTANT*: If you do repost (for other reasons) - please include
-the relevant info in the cover letter or commit messages.
--- 
-The evaluation is done by an LLM so it may be wrong, if you think
-that is the case please reply and explain.
+All other patches are driver removal or cleanups.
+
+regards,
+Marc
+
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--5ddab6moxsf2jjwx
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCav1zvgAKCRDMOmT6rpmt
+0kScAQCVnBh2ojLTGUXDjZWP46ZnoXgbeRVGwkAZitH4wHQR1AEAoFYJ1goHofaf
+xkgwqPSBXKo9uyCx0/3YAwnynLSIjgU=
+=IvQR
+-----END PGP SIGNATURE-----
+
+--5ddab6moxsf2jjwx--
