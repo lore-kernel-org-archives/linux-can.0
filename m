@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794991360;
-	b=nNRJAimHlDpOK6/tm2u9CcMFNRPvsUH/P0xa3+//Q4LTKYfQo3F328EUY8nlwsNyNK2Q
-	 utb5tnFZ+hrqFPYohCf3oFKn8GCB/63eRdEHIotdxPsU8aLwVsPIs6pxh8KNwnKP7IMO5
-	 SPT23a6eCRTJck6U7UEz6yIN2mVu1C2DieQ17DeX2H2E7B2lyGkEX4Ee0FdBXsY54n2PD
-	 s/xIjbxAAu6DrGMQC0YFvp6IdUAovJ1teR8TST1R+uzxaKoOBfQbXKxtvlRGS7rV7vuXg
-	 lslo2KLdv1hcnKBraHFDrQfnSIIxOE+cenYAyBgraL6csHglmt1PLQ47Eq5s2xNlHhw==
+	t=1794991361;
+	b=CDPpUvMie3fFRZUcOBHE7wpUUnKp84NPt9cTj4vH9kF7GrGFFVd4gVxiXL7Gg+leFdwP
+	 qMD16srNpszSorrQMUcEQztLBzq2bFeQjls0/0tkU0po+nARdtMN2e8mEI30h7XeVWwd1
+	 upQNu1SmeYSdEPiCzu4ELv/DoQJn//wWGMn/c+9acm6BNvEVVhrfRDNnntZuZ1bdEgVoU
+	 8ITG32sSrZG/w/cNg452IY0oHkhmPWeUyJqH0/SuNiVtTCkFrATks29+G6w96BZPcWO0Q
+	 mXh8t6Yo/Mvdtq7C/2GXQRtdtNQlk6phBNTq5UHdJ/PXKThzujrDTkEmarf9UeCw5tQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794991360;
+	a=rsa-sha256; c=relaxed/relaxed; t=1794991361;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer;
-	bh=qg8O013X4Pkly513L4tZN+o3k+Qi9CbNxXzMQQ99Hbs=;
-	b=4ZSt//kUUfk/64zLdpFu9pEVnE1XV1xMj/0EYrRHcjPiVFG9Y7EJuWdW4AZSD9KNUnkq
-	 JIQfXpN0moPCDItaGG9oZ2aFyPIgJzal8ZJiuAa7f7wRYLUzlZd9gW3EWPHlAIQBFyilt
-	 Sh6KewQEwOaTqFozmBDdTk1lE8+FFQTO+YBGlc6RMUAnX7gh/VEGqwpAq3r4IVAdYIpB/
-	 E7aYYvZ2GRTq927Koai5BlTz2eUMtjpvKg+rQYyw7h9ExmA0MFhmP1zqpDl9XLddwhasa
-	 4JbLNmyfALtL4iab9fyS2275zZ9eGFbhXHgn4+PkyKnW/Mh/4zJS3gKC3Xf9sLq5q+w==
+	bh=vxOWmVwy0kGLAXBewLrT8D7Sq1QwhlfnITWPmCVj0KY=;
+	b=YxuqN48l5pnVbGSkuVpiy2X6ico+CD221qkWBV4X8KUiWofveVzXTCWb12Z3OVpvQ5fm
+	 p5uKFJXyJnyOmXnSLl9+CdqDn0Gs4OY9j4Rok3rM8lodrXwJnFkRrNKT5Pmol9iV618Ks
+	 IaPF8nwNE/SIc0CVqmUK0ABIHLgr3/5pl7LcJq21+4xC5WAj+fOyOW4T1onwfpPtJUzKl
+	 9qApqtakV2oA0NFmaOtl6AY0MTIYM6L0muZqmLUBCCVwwBY6H6N+jGnztj59ViKtf0lBF
+	 ypEpHRzX9V79/BiaYbFCXfiO5RkNWrJn60AaR1KXc0JdcLBMDes9GSNToEWDPzvV2Yw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=FpyHBdY+;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=d5vmqokM;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC18D606A8B4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC0E9606A8B1;
 	Wed, 18 Nov 2026 08:42:38 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC18D606A8B4
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DC0E9606A8B1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=FpyHBdY+
-Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.4.pengutronix.de [10.17.1.12])
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=d5vmqokM
+Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.pengutronix.de [IPv6:2a0a:edc0:0:1101:1d::ac])
 	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id EBF3C205A98;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E37FE205A93;
 	Wed, 18 Nov 2026 09:42:27 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794991347;
@@ -43,40 +43,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qg8O013X4Pkly513L4tZN+o3k+Qi9CbNxXzMQQ99Hbs=;
-	b=FpyHBdY++DrgeOqI5wGFwPT/hldZ3+9lXjsheYS/WBirM12cFwTaPbpydwPg4jLE1J9vG8
-	DoLINmEp0nOsMcoH4kt/qTINXByvZxnswkkjqvPqk6NtnglLSqJRNh4ALMyzfNWzfvE7yy
-	6En3TtARysHAPIaI6ySH13bZKhjBxPUJScoO5ZOPfDbGc/vQ97iwSoem2YD1piC+0a1hjy
-	JPlJfVONYisquRYA5f/Azym4Lm4wp2t754N8e8RVo6j2kBQqhrx+f+UA8/W0li0ooGuQhM
-	UG7l5QV2ArPsA2NIP4fcbcaeR/yCTIccRh09PWGh6sPE965DV/5XqrKx1BaYMg==
+	bh=vxOWmVwy0kGLAXBewLrT8D7Sq1QwhlfnITWPmCVj0KY=;
+	b=d5vmqokMlEFJ6bkyRdgHuI11CjUR6KP5Mt9y85yUoHYpxf2nhswPx+Ks/OxRwTEYkabKN2
+	l2Y9Hd0Cp/NEs5qZnX7vb+4wTN+SYYZ03RwU8AE71scLfOfA07olurkGPLnnbbJzSLsJ+t
+	eckvo+q+PjM1gmn8CBi2JfaMAKs1JpgINopHjqzgxUl4hCI9cqvdKWzCrGjaB4jKK81pTe
+	2A+YjXoiaWhO3jMD4kED+XhRFPP31F91jif15HCB8ufrXtE4nRBGX0lbrshY8DFYGiKcDa
+	RiF7tZZW+rS/b9dl/1k58jaWVZiz/LnWdBF6b8wbAjrT+AG+4uvKrTAfLGxqEA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794991347;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qg8O013X4Pkly513L4tZN+o3k+Qi9CbNxXzMQQ99Hbs=;
-	b=KzQsymmDDljImQm/6lB9FQFAihV86yyTA6HnX8a7DIV1siTcmYhsgJ3/L3kzu7jZcwvMTQ
-	b1ypPBscp4tvlXPyv/9rbYiloelXr7wy+cm/l5dgIbh2A/krk7fd60TtVKdPMcUrCMejr1
-	7DEPyFBQKTGwWnflC0C+SHPYdb+3bqNDgsILMBEBAePZLLcX+0CE9wdSvxcf5+kewZuUeR
-	div6yK+9AtoMWOK2JlpAgE4xKHciQ/jqzzcnAW5mID8DlpRAr9fQAw0bw4pG5DMhA0xBcW
-	OgrnD2ysBI2+rYV8mC+reVeYjyDds/jnX8lxA8Xk/2/bVIZr4+KvEynfWCdWIg==
+	bh=vxOWmVwy0kGLAXBewLrT8D7Sq1QwhlfnITWPmCVj0KY=;
+	b=bijEHNtsqR0XztIqd6JlEN9l3+mfw1iTFKWBeHU1nQVG6ib8Sg81fakzVzqU/Cgrk+l/Sh
+	G+EFFSh2ENqKFiglREj02NDgSzmdezLoPGhRD7eYaEj7jwxZo2umBq0iasiQNAFpCOgVZh
+	/FVPCB8EseLqPfCkFSv9cwRzNQgZUF2EmwaUTSepyOyT5Q07WHZWaMCyLoM/FWvXfgmklN
+	8P6xYnRUOOuC8p7tVSzFz9wy80RIFBXlmvpuDI9y5uUzY36N3v+UZgkePh8SGQiJfWAu++
+	GCN5mmcSr9pH48WVjCXzspg8jPLX/zUn+3ITcaMLXJ4LAaZJ4vB3haLO9j5UbQ==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794991347; a=rsa-sha256;
 	cv=none;
-	b=Uy3sVFlzRMxByWmhVq4oNyp+B5ubkHikYKl226j/bxe3bfUqpOI4jhlp6WO+fEWhsCo+hb
-	CN031AZLmCH/FG+h9tqOcx1tEa1aex5XFMZSD0SzBzDa3DEzPoHw35Cwt+Hl0eLXlXs5wH
-	hNBzBep8carvkZlbBPxkiaGC3Pw88QdtzKcSENW682zQI/XfmtMjypPOHLiLPd0yVhF2KL
-	xkPcJXiy71w5wSBn4atyKh4Tri+FSR2NFk8kL7+hvqxyg9E1e2XlVmJG/KadIsEerjo9BW
-	Tres8glkSoFAxJ2nYg59+PyWeTqAfXb+WCYc4/kv8BgbKJ4UNzgSVEE+FuOeMA==
+	b=BlwmnZbhLwLM1nKhZ8qdjUGFY8iSeAdeEq9aK8dOj+5EkLoo1I2NJkhX9zLAhZoR8sDcvd
+	l1Jfj1myIKvNg3SufdOkcHt91tz2r1a24nU3nsn/FHpTpY/AO0bKjw8hQA5SwVk3WXqNF5
+	TyjP1HjFf2sMg/OJGFwVIl1tIZIdSRKFiyN2WRxMxS8ASBHWAwtv6x0zR+JvQmK6Ck2YsD
+	GxkOc60SPQLwze9MVaVUKdyylp12307OXO81VUM+Dy5/svij73LtcCwiaOq4y2JcYFc75q
+	05pXN8wSh8uWWcqTwEbRtPw2VANqhfBED2fY2QrS8Zoqg1RE46dt+YTcvQuVHQ==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
 Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
-	id BCF02381E9D; Wed, 18 Nov 2026 09:42:27 +0100 (CET)
+	id BB2B4381E92; Wed, 18 Nov 2026 09:42:27 +0100 (CET)
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Date: Wed, 18 Nov 2026 09:42:23 +0100
-Subject: [PATCH can-next v4 8/9] selftests: can: cover J1939 transport
- abort and timeout paths
+Date: Wed, 18 Nov 2026 09:42:22 +0100
+Subject: [PATCH can-next v4 7/9] selftests: can: add J1939 TP/ETP
+ multi-frame tests against CAN_RAW
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,7 +88,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261118-j1939-selftests-v4-8-756768d32ff2@pengutronix.de>
+Message-Id: <20261118-j1939-selftests-v4-7-756768d32ff2@pengutronix.de>
 References: <20261118-j1939-selftests-v4-0-756768d32ff2@pengutronix.de>
 In-Reply-To: <20261118-j1939-selftests-v4-0-756768d32ff2@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>, 
@@ -103,371 +103,855 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  Oleksij Rempel <o.rempel@pengutronix.de>
 X-Mailer: b4 0.14.2
 
-Add transport edge cases to the multi-frame tests. The round-trip tests
-only run transfers that succeed, and no TP transfer there is split into
-CTS blocks. They leave out these cases:
+Add Transport Protocol (TP) and Extended Transport Protocol (ETP)
+round-trip tests in both directions, with a CAN_RAW socket as the
+transport peer. The raw peer sees the frames as they are on the wire, so
+a framing bug in the kernel cannot cancel out against its own decoder.
 
-- a CTS that asks for fewer packets than the message has
-- the T3 timeout, when no CTS follows the RTS
-- the T2 timeout, when no DT follows the CTS
-- an Abort from the peer
+The tests use a PGN with the DP bit set and check it in each control
+frame the kernel sends. In the TX tests, the peer's EOMA must end the
+session. The kernel then queues a TX-completion ACK on the socket's
+error queue. No ACK may come before the EOMA.
 
-The timeouts must end in a Connection Abort. The Abort from the peer must
-cancel an incoming session.
+The stack updates a session from the loopback echo of its own TP and
+ETP frames. A CAN_RAW peer on the same vcan can read that echo first.
+If the peer replies quickly, the stack can cancel the session. By
+default the peer runs on its own vcan behind the CAN gateway that
+j1939_lib.sh sets up. With RPS off on that vcan, the peer then gets
+each frame only after the stack has handled its echo. J1939_SHARED_IF=1
+puts the peer back on the same vcan, with a warning.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-Q (sashiko): does tp_rx_cts_block_limit run into the echo race of
-patch 7?
-A: Only when the peer shares the vcan, or when RPS is on for the peer's
-vcan; see the echo-race Q&A in patch 7. By default the CAN_RAW peer is
-on its own vcan, linked by a CAN gateway (patch 2).
+Q (sashiko): can the echo race make test_j1939_multi fail at random in
+a default kselftest run? Should the tests stay out of the default run,
+be marked XFAIL, or wait for the stack to handle each echo?
+A: Not in our runs. By default the peer runs behind the CAN gateway
+(patch 2), which has the effect of waiting for the echo. The gateway
+forwards a frame with can_send(), and the gateway's copy for the peer
+goes through netif_rx() to the backlog of the same CPU. So the stack
+handles its echo before the peer gets the frame. RPS must be off on the
+peer's vcan. It is off by default.
+We ran the whole series on a kernel that delays its handling of the CTS
+echo in a receive session by 20 ms. test_j1939_multi failed in 14 of
+100 runs on one shared vcan; 8 of the 14 failures were in the tests
+that this patch adds. It failed in none of 100 runs behind the gateway.
+The peer shares the vcan in two cases: with J1939_SHARED_IF=1, and in a
+direct run without a separate CANIF_RAW. In both cases the test prints
+a warning. XFAIL is not used because, as Chaosheng pointed out,
+kselftest counts XFAIL as a pass and would hide a real failure. The fix
+belongs in the stack; this series changes no kernel code.
 
-Q: why is there no test for a Connection Abort received on a kernel TX
-session?
-A: The stack ignores a Connection Abort received on a TX session today,
-so such a test would fail. This series changes no kernel code.
+Q (Chaosheng Qu): why not move test_j1939_multi.sh to
+TEST_PROGS_EXTENDED?
+A: Behind the gateway the race did not show up in our runs. With RPS
+off, the gateway keeps the stack ahead of the peer (see the echo-race
+Q&A). So the tests stay in the default run, where they can catch
+regressions.
 
 Changes in v4:
-- use recv_none_ok() for the negative receive check
+- pass J1939_NEEDS_RAW to j1939_test_main()
+- describe the echo race in the commit message and reword the file
+  comment; the peer now runs behind the CAN gateway (sashiko, Chaosheng Qu)
 
 Changes in v3:
-- say in the body which cases the round-trip tests leave out
-- assert that the last TP CTS window is partial
-- check that the first CTS of the abort and T2 tests asks for all packets,
-  and check the EOMA of tp_rx_cts_block_limit
-- reword the TP_CTS_LIMIT and T2 comments
+- describe the known stack race in a comment at the top of the file
+  (sashiko)
+- assert that the addresses are two different unicast ones and that
+  PGN_DATA is a valid PDU2 PGN
+- assert that the last DT frames and the last ETP block are partial
+- pass the buffer size to the ETP helpers
+- check the RTS packets-per-CTS byte (the total or no limit), the fill
+  bytes of each DT frame and the length of the kernel's control frames
+- say in the logs which check failed: any error-queue entry before the
+  EOMA, and a malformed ETP CTS or DPO
+- use a TP size above 255 bytes, so the high byte of the size field
+  counts
+- fix comments that did not match the code
+- put errqueue_empty_ok() in j1939_helpers.c and j1939_helpers.h
 
 Changes in v2:
 - drop the Assisted-by trailer; the cover letter says how an LLM was used
 - wrap at 80 columns and fix the checkpatch warnings (Marc)
 - name all constants, add static asserts, avoid casts and return bool
   from helpers named *_ok()
-- time T2 and T3 against the bounds of the timing mode; strict mode
-  catches a doubled timer, and the header no longer claims that the
-  default mode does (sashiko)
-- tp_tx_rts_cts_timeout: check that the sender sees EHOSTUNREACH
-- tp_rx_cts_block_limit: check the exact packet count in each CTS, not
-  only an upper bound
-- time T2 and T3 from before the test opens its socket, so a delay in
-  the test cannot make an abort look early (sashiko)
+- fail at once on a CTS for 0 packets, a CTS that does not ask for the
+  next packet, or a DPO that does not match the CTS
+- check the source address of the kernel's TP/ETP frames
+- check the packet count in each CTS: all packets left, capped by the
+  RTS limit for TP and by a full block for ETP
+- check the PGN in each control frame the kernel sends, with a PGN that
+  has the DP bit set
+- check that the peer's EOMA ends a TP or ETP TX session with a
+  TX-completion ACK, and that no ACK comes before it (sashiko)
+- a reassembled message longer than the one sent now fails (sashiko)
+- check the sequence number and the length of each DT frame the kernel
+  sends (sashiko)
+- keep the Makefile and .gitignore lists sorted; the wrapper no longer
+  sets J1939_TEST_PROG
 ---
- tools/testing/selftests/net/can/test_j1939_multi.c | 267 ++++++++++++++++++++-
- 1 file changed, 266 insertions(+), 1 deletion(-)
+ tools/testing/selftests/net/can/.gitignore         |   1 +
+ tools/testing/selftests/net/can/Makefile           |   1 +
+ tools/testing/selftests/net/can/j1939_helpers.c    |   7 +
+ tools/testing/selftests/net/can/j1939_helpers.h    |   3 +
+ tools/testing/selftests/net/can/test_j1939_multi.c | 682 +++++++++++++++++++++
+ .../testing/selftests/net/can/test_j1939_multi.sh  |   4 +
+ 6 files changed, 698 insertions(+)
 
-diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
-index a97fa8b998b89079fe4b2269324c6a69ba014c5f..427726d60d49f84bb131b3f9c90211bf7b3997f6 100644
---- a/tools/testing/selftests/net/can/test_j1939_multi.c
-+++ b/tools/testing/selftests/net/can/test_j1939_multi.c
-@@ -5,7 +5,8 @@
-  * A CAN_RAW socket plays the transport peer against the kernel J1939 stack,
-  * in both directions. It takes the other side of the RTS/CTS/DT/EOMA
-  * exchange, for TP with a short message and for ETP with a payload that
-- * spans several CTS blocks (DPO windows).
-+ * spans several CTS blocks (DPO windows). The tests also cover the TP CTS
-+ * block limit and the TP abort and timeout paths.
-  *
-  * Known stack race: the stack updates a session from the loopback echo of
-  * its own TP and ETP frames. A CAN_RAW peer on the same vcan can read
-@@ -59,6 +60,7 @@ _Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
- #define TP_CMD_RTS		0x10
- #define TP_CMD_CTS		0x11
- #define TP_CMD_EOMA		0x13
-+#define TP_CMD_ABORT		0xff
- 
- #define ETP_CMD_RTS		0x14
- #define ETP_CMD_CTS		0x15
-@@ -75,6 +77,7 @@ _Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
- #define TP_CTS_NEXT_OFF		2
- #define TP_EOMA_SIZE_OFF	1	/* le16 */
- #define TP_EOMA_PKTS_OFF	3
-+#define TP_ABORT_REASON_OFF	1
- 
- #define ETP_RTS_SIZE_OFF	1	/* le32 */
- #define ETP_CTS_PKTS_OFF	1
-@@ -118,6 +121,67 @@ _Static_assert(J1939_NUM_PKTS(ETP_SIZE) % ETP_CTS_MAX_PKTS != 0,
- #define TP_CTS_ALL		J1939_NUM_PKTS(TP_SIZE)
- _Static_assert(TP_CTS_ALL <= UINT8_MAX, "the TP.CM packet counts are one byte");
- 
-+/*
-+ * arbitrary limit on packets per CTS, sent in the RTS, below the packet
-+ * count of TP_SIZE
-+ */
-+#define TP_CTS_LIMIT		3U
-+_Static_assert(J1939_NUM_PKTS(TP_SIZE) > TP_CTS_LIMIT,
-+	       "TP_SIZE must need more packets than TP_CTS_LIMIT");
-+_Static_assert(J1939_NUM_PKTS(TP_SIZE) % TP_CTS_LIMIT != 0,
-+	       "the last TP CTS window must be partial");
-+
-+/*
-+ * Connection Abort reasons (SAE J1939-21:2001 Table 6); the kernel names them
-+ * J1939_XTP_ABORT_*.
-+ */
-+#define ABORT_REASON_BUSY	1
-+#define ABORT_REASON_TIMEOUT	3
-+
-+/*
-+ * TP responder T2: wait for the next DT after CTS (SAE J1939-21:2001
-+ * section 5.10.2.4 and Figure C1).
-+ */
-+#define TP_T2_MS		1250
-+/*
-+ * TP originator T3: wait for a CTS after RTS (SAE J1939-21:2001 section
-+ * 5.10.2.4 and Figure C1).
-+ */
-+#define TP_T3_MS		1250
-+
-+/*
-+ * Bounds for the time from before the test opens its socket to the kernel's
-+ * abort.
-+ * The values below are guesses, not spec values.
-+ */
-+
-+/* relaxed (default, for slow VMs): catches a timer that fires early or never */
-+#define TP_RELAXED_EARLY_MS	450
-+#define TP_RELAXED_LATE_MS	1250
-+#define TP_RELAXED_MIN_MS(t)	((t) - TP_RELAXED_EARLY_MS)
-+#define TP_RELAXED_MAX_MS(t)	((t) + TP_RELAXED_LATE_MS)
-+
-+/* strict: also catches a doubled timer */
-+#define TP_STRICT_EARLY_MS	100
-+#define TP_STRICT_LATE_MS	200
-+#define TP_STRICT_MIN_MS(t)	((t) - TP_STRICT_EARLY_MS)
-+#define TP_STRICT_MAX_MS(t)	((t) + TP_STRICT_LATE_MS)
-+
-+/* for any timer: the relaxed bounds must contain the strict bounds */
-+_Static_assert(TP_RELAXED_EARLY_MS >= TP_STRICT_EARLY_MS,
-+	       "the relaxed minimum must not be above the strict one");
-+_Static_assert(TP_RELAXED_LATE_MS >= TP_STRICT_LATE_MS,
-+	       "the relaxed maximum must not be below the strict one");
-+_Static_assert(TP_T2_MS > TP_RELAXED_EARLY_MS,
-+	       "TP_T2_MS must exceed TP_RELAXED_EARLY_MS");
-+_Static_assert(TP_T3_MS > TP_RELAXED_EARLY_MS,
-+	       "TP_T3_MS must exceed TP_RELAXED_EARLY_MS");
-+/* so that strict mode catches a doubled T2 or T3 */
-+_Static_assert(TP_STRICT_LATE_MS < TP_T2_MS,
-+	       "TP_STRICT_LATE_MS must stay below TP_T2_MS");
-+_Static_assert(TP_STRICT_LATE_MS < TP_T3_MS,
-+	       "TP_STRICT_LATE_MS must stay below TP_T3_MS");
-+
- FIXTURE(j1939_multi)
- {
- 	int ifindex;
-@@ -558,6 +622,116 @@ TEST_F(j1939_multi, tp_tx_to_raw)
- 		TH_LOG("no TX-completion ACK after the EOMA");
+diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
+index 6c6b18a9deda7f4a7c2b4ef9fbbc980a5b36811b..c6071caef4e9050902f4e03abe3e093753a01026 100644
+--- a/tools/testing/selftests/net/can/.gitignore
++++ b/tools/testing/selftests/net/can/.gitignore
+@@ -2,6 +2,7 @@
+ j1939_gw
+ test_j1939_addr
+ test_j1939_base
++test_j1939_multi
+ test_j1939_opts
+ test_j1939_wire
+ test_raw_filter
+diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
+index e97e10e92e417bc70049e533ca7490c66c971897..8ac7f3281da152c38efeb123653c622aad68adcf 100644
+--- a/tools/testing/selftests/net/can/Makefile
++++ b/tools/testing/selftests/net/can/Makefile
+@@ -9,6 +9,7 @@ LOCAL_HDRS := j1939_helpers.h j1939_tests.h ../../clock-helpers.h
+ TEST_PROGS := \
+ 	test_j1939_addr.sh \
+ 	test_j1939_base.sh \
++	test_j1939_multi.sh \
+ 	test_j1939_opts.sh \
+ 	test_j1939_wire.sh \
+ 	test_raw_filter.sh \
+diff --git a/tools/testing/selftests/net/can/j1939_helpers.c b/tools/testing/selftests/net/can/j1939_helpers.c
+index b7490c335d8b70ca511167edcde75082ed6250b7..d60e49b3cc4e3f976ee01a3eaaf86c1a69c4fec2 100644
+--- a/tools/testing/selftests/net/can/j1939_helpers.c
++++ b/tools/testing/selftests/net/can/j1939_helpers.c
+@@ -523,6 +523,13 @@ bool errqueue_read_ack_ok(int s)
+ 	return msg_has_tstamp_ack(&msg);
  }
  
-+/*
-+ * TP RX, per-CTS block limit: the RTS asks for at most TP_CTS_LIMIT packets
-+ * per CTS, fewer than the message has. Each CTS from the kernel must ask
-+ * for TP_CTS_LIMIT packets, or for the rest.
-+ */
-+TEST_F(j1939_multi, tp_rx_cts_block_limit)
++bool errqueue_empty_ok(int s)
 +{
++	struct pollfd pfd = { .fd = s, .events = POLLERR };
++
++	return poll(&pfd, 1, J1939_NEG_RECV_TIMEOUT_MS) == 0;
++}
++
+ void fill_pattern(uint8_t *buf, size_t len)
+ {
+ 	size_t i;
+diff --git a/tools/testing/selftests/net/can/j1939_helpers.h b/tools/testing/selftests/net/can/j1939_helpers.h
+index 92d6af3214f2dcf3ed7ea2c03330b0cbaeb3bcce..bc5eef14bea2353f22a7478dc29cae70eb5d3fd4 100644
+--- a/tools/testing/selftests/net/can/j1939_helpers.h
++++ b/tools/testing/selftests/net/can/j1939_helpers.h
+@@ -372,6 +372,9 @@ bool msg_has_tstamp_ack(struct msghdr *msg);
+  */
+ bool errqueue_read_ack_ok(int s);
+ 
++/* Is the error queue of s still empty after J1939_NEG_RECV_TIMEOUT_MS? */
++bool errqueue_empty_ok(int s);
++
+ /* Arbitrary; keeps fill_pattern() from being the plain byte offset. */
+ #define J1939_PATTERN_SEED	0x3c
+ 
+diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
+new file mode 100644
+index 0000000000000000000000000000000000000000..a97fa8b998b89079fe4b2269324c6a69ba014c5f
+--- /dev/null
++++ b/tools/testing/selftests/net/can/test_j1939_multi.c
+@@ -0,0 +1,682 @@
++// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
++/*
++ * J1939 multi-frame wire selftests: TP and ETP against CAN_RAW.
++ *
++ * A CAN_RAW socket plays the transport peer against the kernel J1939 stack,
++ * in both directions. It takes the other side of the RTS/CTS/DT/EOMA
++ * exchange, for TP with a short message and for ETP with a payload that
++ * spans several CTS blocks (DPO windows).
++ *
++ * Known stack race: the stack updates a session from the loopback echo of
++ * its own TP and ETP frames. A CAN_RAW peer on the same vcan can read
++ * that echo first. If the peer replies quickly, the stack can cancel the
++ * session. See j1939_lib.sh for where the peer runs. The fix belongs in
++ * the stack; this file does not work around it.
++ *
++ * Run by test_j1939_multi.sh, see j1939_tests.h.
++ */
++#include <errno.h>
++
++#include "kselftest_harness.h"
++#include "j1939_tests.h"
++
++/* arbitrary addresses */
++#define SA_LOCAL		0x90	/* the J1939 socket under test */
++#define SA_PEER			0x20	/* the CAN_RAW transport peer */
++_Static_assert((SA_LOCAL != SA_PEER) &&
++	       (SA_LOCAL <= J1939_MAX_UNICAST_ADDR) &&
++	       (SA_PEER <= J1939_MAX_UNICAST_ADDR),
++	       "SA_LOCAL and SA_PEER must be two different unicast addresses");
++/*
++ * transported message PGN, an arbitrary PDU2 PGN with the DP bit set so a
++ * PGN cut to 16 bits fails the check
++ */
++#define PGN_DATA		(J1939_PGN_DP | 0x0feef)
++_Static_assert(PGN_DATA & J1939_PGN_DP, "PGN_DATA must have the DP bit set");
++_Static_assert(!J1939_IS_PDU1(PGN_DATA) && PGN_DATA <= J1939_PGN_MAX,
++	       "PGN_DATA must be a valid PDU2 PGN");
++
++/*
++ * Priority for the TP and ETP frames this test injects as the CAN_RAW
++ * peer. SAE J1939-21:2001 lists 7 as the TP.CM/TP.DT default and
++ * ISO 11783-6:2004 Annex K gives 6 for ETP. The stack checks neither, so
++ * one value serves both.
++ */
++#define PRIO			7
++
++/*
++ * PGNs, control bytes and field byte offsets (_OFF) of TP (SAE J1939-21:2001
++ * sections 5.10.3 and 5.10.4) and ETP (ISO 11783-6:2004 K.2.2.1 and K.2.3).
++ */
++
++/* PGNs */
++#define TP_CM			0x0ec00
++#define TP_DT			0x0eb00
++#define ETP_CM			0x0c800
++#define ETP_DT			0x0c700
++
++/* control bytes */
++#define TP_CMD_RTS		0x10
++#define TP_CMD_CTS		0x11
++#define TP_CMD_EOMA		0x13
++
++#define ETP_CMD_RTS		0x14
++#define ETP_CMD_CTS		0x15
++#define ETP_CMD_DPO		0x16
++#define ETP_CMD_EOMA		0x17
++
++/* field offsets */
++#define TP_RTS_SIZE_OFF		1	/* le16 */
++#define TP_RTS_PKTS_OFF		3
++#define TP_RTS_MAX_PKTS_OFF	4
++/* TP.CM_RTS max packets per CTS: no limit (SAE J1939-21:2001 section 5.10.3) */
++#define TP_RTS_NO_LIMIT		0xff
++#define TP_CTS_PKTS_OFF		1
++#define TP_CTS_NEXT_OFF		2
++#define TP_EOMA_SIZE_OFF	1	/* le16 */
++#define TP_EOMA_PKTS_OFF	3
++
++#define ETP_RTS_SIZE_OFF	1	/* le32 */
++#define ETP_CTS_PKTS_OFF	1
++#define ETP_CTS_NEXT_OFF	2	/* le24 */
++#define ETP_DPO_PKTS_OFF	1
++#define ETP_DPO_BASE_OFF	2	/* le24, packets before this block */
++#define ETP_EOMA_SIZE_OFF	1	/* le32 */
++
++/*
++ * largest ETP.CTS packet count: the field is one byte. It is also the
++ * kernel's ETP block (pkt.block, applied in j1939_session_tx_cts()).
++ */
++#define ETP_CTS_MAX_PKTS	UINT8_MAX
++/* TP and ETP packet numbers start at 1 */
++#define TP_FIRST_PKT		1
++/* TP counts DT sequence numbers from the start of the message */
++#define TP_BASE_PKT		0
++
++/*
++ * arbitrary message sizes, within the asserts below: TP of several
++ * packets and above 255 bytes, ETP of several ETP.CTS blocks
++ */
++#define TP_SIZE			300
++_Static_assert(TP_SIZE > J1939_SF_MAX_SIZE, "TP_SIZE must need TP");
++_Static_assert(TP_SIZE <= J1939_TP_MAX_SIZE, "TP_SIZE must fit TP");
++_Static_assert(TP_SIZE > UINT8_MAX,
++	       "TP_SIZE must use the high byte of the TP.CM size field");
++_Static_assert(TP_SIZE % J1939_DT_DATA_LEN != 0,
++	       "the last TP DT frame must be partial, so its fill is checked");
++
++#define ETP_SIZE		6000U
++_Static_assert(ETP_SIZE > J1939_TP_MAX_SIZE, "ETP_SIZE must need ETP");
++_Static_assert(J1939_NUM_PKTS(ETP_SIZE) > ETP_CTS_MAX_PKTS,
++	       "ETP_SIZE must span several ETP.CTS blocks");
++_Static_assert(ETP_SIZE % J1939_DT_DATA_LEN != 0,
++	       "the last ETP DT frame must be partial, so its fill is checked");
++_Static_assert(J1939_NUM_PKTS(ETP_SIZE) % ETP_CTS_MAX_PKTS != 0,
++	       "the last ETP block must be partial");
++
++/* an RTS per-CTS limit as large as the message: all packets in one CTS */
++#define TP_CTS_ALL		J1939_NUM_PKTS(TP_SIZE)
++_Static_assert(TP_CTS_ALL <= UINT8_MAX, "the TP.CM packet counts are one byte");
++
++FIXTURE(j1939_multi)
++{
++	int ifindex;
++	int j1939;
++	int raw;
++};
++
++FIXTURE_SETUP(j1939_multi)
++{
++	self->j1939 = -1;
++	self->raw = -1;
++
++	J1939_SETUP_IFINDEX(self);
++
++	J1939_SETUP_RAW(self, J1939_RAW_BIG_RCVBUF);
++}
++
++FIXTURE_TEARDOWN(j1939_multi)
++{
++	if (self->j1939 >= 0)
++		close(self->j1939);
++	if (self->raw >= 0)
++		close(self->raw);
++}
++
++/*
++ * Finish a TP/ETP control frame by embedding its data PGN and sending it on the
++ * control PGN. dat must already hold the command and its command-specific
++ * bytes.
++ */
++static bool send_cm_frame_ok(int raw, uint8_t prio, pgn_t cm_pgn, uint8_t da,
++			     uint8_t sa, uint8_t *dat, pgn_t data_pgn)
++{
++	put_pgn(dat, data_pgn);
++	return send_raw8_ok(raw, prio, cm_pgn, da, sa, dat);
++}
++
++/* send_cm_frame_ok() from the peer to the kernel, for PGN_DATA. */
++static bool peer_send_cm_ok(int raw, pgn_t cm_pgn, uint8_t *dat)
++{
++	return send_cm_frame_ok(raw, PRIO, cm_pgn, SA_LOCAL, SA_PEER, dat,
++				PGN_DATA);
++}
++
++/*
++ * Receive the next control frame on cm_pgn from the kernel to the peer and
++ * check that it is a full frame with the control byte cmd and PGN_DATA.
++ */
++static bool recv_kernel_cm_ok(int raw, pgn_t cm_pgn, uint8_t cmd,
++			      struct can_frame *frame, int timeout_ms)
++{
++	if (!recv_cm_cmd_ok(raw, J1939_PF(cm_pgn), SA_PEER, SA_LOCAL, frame,
++			    timeout_ms, cmd))
++		return false;
++
++	return frame->len == CAN_MAX_DLEN &&
++	       get_le24(&frame->data[J1939_CM_PGN_OFF]) == PGN_DATA;
++}
++
++/*
++ * Build and send a TP.CM_RTS: message size, total packets and max packets/CTS.
++ */
++static bool send_tp_rts_ok(int raw, uint8_t prio, pgn_t pgn, uint8_t da,
++			   uint8_t sa, uint16_t size, uint8_t total_pkts,
++			   uint8_t max_cts_pkts)
++{
++	uint8_t dat[CAN_MAX_DLEN];
++
++	cm_dat_init(dat, TP_CMD_RTS);
++	put_le16(&dat[TP_RTS_SIZE_OFF], size);
++	dat[TP_RTS_PKTS_OFF] = total_pkts;
++	dat[TP_RTS_MAX_PKTS_OFF] = max_cts_pkts;
++	return send_cm_frame_ok(raw, prio, TP_CM, da, sa, dat, pgn);
++}
++
++/*
++ * Send a burst of @count DT frames for the block starting at the 1-based packet
++ * @next, each carrying up to J1939_DT_DATA_LEN payload bytes from the matching
++ * absolute offset. The first frame has sequence number @first_seq: TP numbers
++ * packets across the whole message (@next), ETP starts again at TP_FIRST_PKT
++ * in each DPO block.
++ */
++static bool send_dt_burst_ok(int raw, uint8_t prio, pgn_t dt_pgn, uint8_t da,
++			     uint8_t sa, unsigned int next, unsigned int count,
++			     const uint8_t *payload, size_t size,
++			     unsigned int first_seq)
++{
++	unsigned int i;
++
++	for (i = 0; i < count; i++) {
++		size_t abs_pkt = (next - 1) + i;
++		uint8_t seq = first_seq + i;
++
++		if (!send_dt_ok(raw, prio, dt_pgn, da, sa, seq, payload,
++				abs_pkt * J1939_DT_DATA_LEN, size))
++			return false;
++	}
++	return true;
++}
++
++/* send_dt_burst_ok() for TP, which numbers packets across the message */
++static bool send_tp_dt_burst_ok(int raw, uint8_t da, uint8_t sa,
++				unsigned int next, unsigned int count,
++				const uint8_t *payload, size_t size)
++{
++	return send_dt_burst_ok(raw, PRIO, TP_DT, da, sa, next, count, payload,
++				size, next);
++}
++
++/*
++ * Check a CTS or ETP.CTS from the kernel that asks for cts_pkts packets from
++ * the 1-based packet next. The peer has sent `sent` of num_pkts packets, so
++ * the kernel must ask for packet sent + 1 and for
++ * min(cts_limit, num_pkts - sent) packets, see j1939_session_tx_cts(). No
++ * frame is lost here, so no resend is expected
++ * (SAE J1939-21:2001 section 5.10.3.2 allows one for TP).
++ */
++static bool cts_accept_ok(unsigned int cts_pkts, unsigned int next,
++			  unsigned int sent, unsigned int num_pkts,
++			  unsigned int cts_limit)
++{
++	unsigned int want = num_pkts - sent;
++
++	if (want > cts_limit)
++		want = cts_limit;
++	if (cts_pkts == want && next == sent + 1)
++		return true;
++
++	fprintf(stderr, "# CTS for %u packets from %u, want %u from %u\n",
++		cts_pkts, next, want, sent + 1);
++	return false;
++}
++
++/*
++ * Answer each CTS from the kernel with a DT burst from the peer, until
++ * num_pkts are delivered. Each CTS must ask for cts_limit packets, or for the
++ * rest, see cts_accept_ok().
++ */
++static bool tp_serve_cts_ok(int raw, const uint8_t *payload, size_t size,
++			    unsigned int num_pkts, unsigned int cts_limit)
++{
++	unsigned int sent = 0;
 +	struct can_frame frame;
 +
-+	ASSERT_TRUE(tp_rx_roundtrip_ok(self, TP_CTS_LIMIT, &frame))
++	while (sent < num_pkts) {
++		unsigned int cts_pkts, next;
++
++		if (!recv_kernel_cm_ok(raw, TP_CM, TP_CMD_CTS, &frame,
++				       J1939_RECV_TIMEOUT_MS))
++			return false;
++
++		cts_pkts = frame.data[TP_CTS_PKTS_OFF];
++		next = frame.data[TP_CTS_NEXT_OFF];	/* 1-based */
++		if (!cts_accept_ok(cts_pkts, next, sent, num_pkts, cts_limit))
++			return false;
++
++		if (!send_tp_dt_burst_ok(raw, SA_LOCAL, SA_PEER, next, cts_pkts,
++					 payload, size))
++			return false;
++
++		sent += cts_pkts;
++	}
++	return true;
++}
++
++/*
++ * Answer each ETP.CTS from the kernel with a DPO and the block's DT frames,
++ * until all size bytes of payload are delivered. Each ETP.CTS must ask
++ * for a full block of ETP_CTS_MAX_PKTS packets, or for the rest.
++ */
++static bool etp_rx_serve_cts_ok(int raw, const uint8_t *payload, size_t size)
++{
++	unsigned int num_pkts = J1939_NUM_PKTS(size), sent = 0;
++	uint8_t dat[CAN_MAX_DLEN];
++	struct can_frame frame;
++
++	while (sent < num_pkts) {
++		unsigned int cts_pkts, next;
++
++		if (!recv_kernel_cm_ok(raw, ETP_CM, ETP_CMD_CTS, &frame,
++				       J1939_RECV_TIMEOUT_MS)) {
++			fprintf(stderr, "# no well-formed ETP CTS after %u/%u packets\n",
++				sent, num_pkts);
++			return false;
++		}
++
++		cts_pkts = frame.data[ETP_CTS_PKTS_OFF];
++		next = get_le24(&frame.data[ETP_CTS_NEXT_OFF]);	/* 1-based */
++		if (!cts_accept_ok(cts_pkts, next, sent, num_pkts,
++				   ETP_CTS_MAX_PKTS))
++			return false;
++
++		cm_dat_init(dat, ETP_CMD_DPO);
++		dat[ETP_DPO_PKTS_OFF] = cts_pkts;
++		put_le24(&dat[ETP_DPO_BASE_OFF], next - 1);
++		if (!peer_send_cm_ok(raw, ETP_CM, dat))
++			return false;
++
++		if (!send_dt_burst_ok(raw, PRIO, ETP_DT, SA_LOCAL, SA_PEER,
++				      next, cts_pkts, payload, size,
++				      TP_FIRST_PKT))
++			return false;
++
++		sent += cts_pkts;
++	}
++	return true;
++}
++
++/* Message offset of a DT frame's payload; base_pkt as for unpack_dt_into() */
++static size_t dt_off(const struct can_frame *frame, unsigned int base_pkt)
++{
++	return (base_pkt + (frame->data[J1939_DT_SEQ_OFF] - 1)) *
++	       J1939_DT_DATA_LEN;
++}
++
++/*
++ * Scatter a received DT frame's payload into buf, a message of size bytes,
++ * at the offset implied by its sequence number. base_pkt is the number of
++ * packets before this block (TP_BASE_PKT for TP, the DPO offset for ETP);
++ * seq counts from 1 inside the block.
++ */
++static void unpack_dt_into(uint8_t *buf, size_t size, unsigned int base_pkt,
++			   const struct can_frame *frame)
++{
++	size_t off = dt_off(frame, base_pkt);
++
++	/* drop a frame with a bad sequence number instead of overrunning buf */
++	if (off >= size)
++		return;
++
++	memcpy(buf + off, &frame->data[J1939_DT_DATA_OFF],
++	       j1939_dt_chunk_len(size, off));
++}
++
++/* Are the bytes after the payload in a DT frame all J1939_FILL_BYTE? */
++static bool dt_fill_ok(const struct can_frame *frame, size_t size,
++		       unsigned int base_pkt)
++{
++	size_t off = dt_off(frame, base_pkt);
++	size_t i;
++
++	if (off >= size)
++		return true;	/* a bad sequence number fails elsewhere */
++	for (i = J1939_DT_DATA_OFF + j1939_dt_chunk_len(size, off);
++	     i < CAN_MAX_DLEN; i++)
++		if (frame->data[i] != J1939_FILL_BYTE)
++			return false;
++	return true;
++}
++
++/*
++ * Receive count DT frames on dt_pgn from the kernel and scatter them into
++ * buf, a message of size bytes; base_pkt as for unpack_dt_into(). Each frame
++ * must have CAN_MAX_DLEN bytes (the kernel pads the last one with
++ * J1939_FILL_BYTE, see j1939_tp_tx_dat(), and dt_fill_ok() checks it) and the
++ * sequence number TP_FIRST_PKT + i. That holds for an ETP block and for a TP
++ * CTS window that starts at the first packet.
++ */
++static bool recv_dt_block_ok(int raw, pgn_t dt_pgn, uint8_t *buf, size_t size,
++			     unsigned int base_pkt, unsigned int count)
++{
++	struct can_frame frame;
++	unsigned int i;
++
++	for (i = 0; i < count; i++) {
++		if (!recv_for_peer_ok(raw, J1939_PF(dt_pgn), SA_PEER, SA_LOCAL,
++				      &frame, J1939_RECV_TIMEOUT_MS)) {
++			fprintf(stderr, "# missing DT %u of %u\n",
++				i + TP_FIRST_PKT, count);
++			return false;
++		}
++		if (frame.len != CAN_MAX_DLEN ||
++		    frame.data[J1939_DT_SEQ_OFF] != TP_FIRST_PKT + i) {
++			fprintf(stderr, "# DT %u of %u: len %u, seq %u\n",
++				i + TP_FIRST_PKT, count, frame.len,
++				frame.data[J1939_DT_SEQ_OFF]);
++			return false;
++		}
++		if (!dt_fill_ok(&frame, size, base_pkt)) {
++			fprintf(stderr, "# DT %u of %u: bad fill bytes\n",
++				i + TP_FIRST_PKT, count);
++			return false;
++		}
++		unpack_dt_into(buf, size, base_pkt, &frame);
++	}
++	return true;
++}
++
++/*
++ * Open a TP RX j1939 socket and send the RTS for a TP_SIZE message that
++ * starts a receive session.
++ */
++static bool tp_rx_open_and_send_rts_ok(int *j1939, int raw, int ifindex,
++				       uint8_t cts_limit)
++{
++	*j1939 = j1939_open(ifindex, SA_LOCAL, PGN_DATA);
++	if (*j1939 < 0)
++		return false;
++
++	return send_tp_rts_ok(raw, PRIO, PGN_DATA, SA_LOCAL, SA_PEER, TP_SIZE,
++			      J1939_NUM_PKTS(TP_SIZE), cts_limit);
++}
++
++/*
++ * TP-RX round-trip: open the j1939 socket, drive a full TP receive from the
++ * raw peer advertising cts_limit packets per CTS, and verify the reassembled
++ * payload against the sent pattern. Each CTS must ask for cts_limit packets,
++ * or for the rest, see cts_accept_ok(). The kernel's EOMA frame is returned
++ * via *eoma_out.
++ */
++static bool tp_rx_roundtrip_ok(FIXTURE_DATA(j1939_multi) *self,
++			       uint8_t cts_limit,
++			       struct can_frame *eoma_out)
++{
++	uint8_t payload[TP_SIZE];
++
++	fill_pattern(payload, sizeof(payload));
++
++	if (!tp_rx_open_and_send_rts_ok(&self->j1939, self->raw, self->ifindex,
++					cts_limit))
++		return false;
++
++	if (!tp_serve_cts_ok(self->raw, payload, TP_SIZE,
++			     J1939_NUM_PKTS(TP_SIZE), cts_limit))
++		return false;
++
++	if (!recv_kernel_cm_ok(self->raw, TP_CM, TP_CMD_EOMA, eoma_out,
++			       J1939_RECV_TIMEOUT_MS))
++		return false;
++
++	return recv_verify_ok(self->j1939, payload, sizeof(payload),
++			      J1939_RECV_TIMEOUT_MS);
++}
++
++/*
++ * TP RX: the CAN_RAW peer transmits a TP message to the J1939 socket.
++ * raw sends RTS, then answers each CTS from the kernel with DT frames.
++ */
++TEST_F(j1939_multi, tp_rx_from_raw)
++{
++	unsigned int num_pkts = J1939_NUM_PKTS(TP_SIZE);
++	struct can_frame frame;
++
++	/* the RTS allows all packets in one CTS */
++	ASSERT_TRUE(tp_rx_roundtrip_ok(self, TP_CTS_ALL, &frame))
 +		TH_LOG("TP RX round-trip against the raw peer failed");
 +
 +	/* frame is the kernel's EOMA */
 +	EXPECT_EQ(get_le16(&frame.data[TP_EOMA_SIZE_OFF]), TP_SIZE);
-+	EXPECT_EQ(frame.data[TP_EOMA_PKTS_OFF], J1939_NUM_PKTS(TP_SIZE));
-+}
-+
-+/* Set *min_ms and *max_ms to the abort bounds of a TP timer of timer_ms. */
-+static void tp_abort_window(int timer_ms, int *min_ms, int *max_ms)
-+{
-+	*min_ms = j1939_timing_ms(TP_RELAXED_MIN_MS(timer_ms),
-+				  TP_STRICT_MIN_MS(timer_ms));
-+	*max_ms = j1939_timing_ms(TP_RELAXED_MAX_MS(timer_ms),
-+				  TP_STRICT_MAX_MS(timer_ms));
++	EXPECT_EQ(frame.data[TP_EOMA_PKTS_OFF], num_pkts);
 +}
 +
 +/*
-+ * Wait until max_ms after t0 for the kernel's Connection Abort to the peer
-+ * and store it in *frame; *elapsed_ms gets the time from t0 to its arrival.
++ * Start a TP/ETP transmit session from the J1939 socket: open a socket bound
++ * to SA_LOCAL with no PGN, connect to the peer, send the size bytes of
++ * payload and collect the kernel's RTS from the raw peer (cm_pgn/rts_cmd
++ * select TP or ETP). *j1939 holds the fd before connect() or send() can
++ * fail, so the fixture teardown closes it.
 + */
-+static bool recv_abort_timed_ok(int raw, const struct timespec *t0,
-+				int max_ms, struct can_frame *frame,
-+				long *elapsed_ms)
++static bool tx_start_session_ok(int *j1939, int raw, int ifindex,
++				const void *payload, size_t size,
++				pgn_t cm_pgn, uint8_t rts_cmd,
++				struct can_frame *rts)
 +{
-+	struct timespec now;
-+	bool ok;
-+
-+	clock_gettime(CLOCK_MONOTONIC, &now);
-+	*elapsed_ms = timespec_diff_ms(t0, &now);
-+	if (*elapsed_ms > max_ms)
++	*j1939 = j1939_open(ifindex, SA_LOCAL, J1939_NO_PGN);
++	if (*j1939 < 0)
 +		return false;
 +
-+	ok = recv_kernel_cm_ok(raw, TP_CM, TP_CMD_ABORT, frame,
-+			       max_ms - *elapsed_ms);
-+	clock_gettime(CLOCK_MONOTONIC, &now);
-+	*elapsed_ms = timespec_diff_ms(t0, &now);
-+	return ok;
-+}
-+
-+/*
-+ * Wait for an error on s and return it (SO_ERROR), or 0 if none came within
-+ * J1939_RECV_TIMEOUT_MS.
-+ */
-+static int sock_wait_error(int s)
-+{
-+	struct pollfd pfd = { .fd = s };
-+	socklen_t len;
-+	int err = 0;
-+
-+	if (poll(&pfd, 1, J1939_RECV_TIMEOUT_MS) <= 0 ||
-+	    !(pfd.revents & POLLERR))
-+		return 0;
-+
-+	len = sizeof(err);
-+	if (getsockopt(s, SOL_SOCKET, SO_ERROR, &err, &len))
-+		return 0;
-+	return err;
-+}
-+
-+/*
-+ * TP TX, RTS->CTS timeout: the J1939 socket starts a TP transmit; the raw peer
-+ * receives the RTS but never answers with a CTS. The kernel must give up after
-+ * T3 (TP_T3_MS), send a Connection Abort and report the error to the sender.
-+ *
-+ * The kernel starts T3 when it sends the RTS, and starts it again when it
-+ * receives its own RTS back from the CAN echo (j1939_xtp_rx_rts() in
-+ * net/can/j1939/transport.c). The wait is timed from before the socket is
-+ * opened, so a delay in this test cannot make the abort look early.
-+ */
-+TEST_F(j1939_multi, tp_tx_rts_cts_timeout)
-+{
-+	uint8_t payload[TP_SIZE];
-+	struct can_frame frame;
-+	struct timespec t0;
-+	int min_ms, max_ms;
-+	long elapsed_ms;
-+
-+	fill_pattern(payload, sizeof(payload));
-+	tp_abort_window(TP_T3_MS, &min_ms, &max_ms);
-+
-+	clock_gettime(CLOCK_MONOTONIC, &t0);
-+	ASSERT_TRUE(tp_tx_start_session_ok(self, payload, sizeof(payload),
-+					   &frame));
-+
-+	ASSERT_TRUE(recv_abort_timed_ok(self->raw, &t0, max_ms, &frame,
-+					&elapsed_ms))
-+		TH_LOG("kernel did not send a Connection Abort within %d ms",
-+		       max_ms);
-+
-+	/* the T3 timer has to run before the abort */
-+	ASSERT_GE(elapsed_ms, min_ms)
-+		TH_LOG("abort after only %ld ms, expected at least %d ms",
-+		       elapsed_ms, min_ms);
-+	EXPECT_EQ(frame.data[TP_ABORT_REASON_OFF], ABORT_REASON_TIMEOUT);
-+
-+	/* j1939_xtp_abort_to_errno() reports a timeout as EHOSTUNREACH */
-+	EXPECT_EQ(sock_wait_error(self->j1939), EHOSTUNREACH)
-+		TH_LOG("the sender did not see the aborted session");
-+}
-+
- /*
-  * ETP RX: the CAN_RAW peer transmits an ETP message to the J1939 socket.
-  * The kernel requests blocks with ETP.CTS; raw answers each with a DPO and
-@@ -676,6 +850,97 @@ TEST_F(j1939_multi, etp_tx_to_raw)
- 		TH_LOG("no TX-completion ACK after the EOMA");
- }
- 
-+/* Send a TP.CM_Abort control frame from the peer to the kernel. */
-+static bool send_abort_ok(int raw, uint8_t reason)
-+{
-+	uint8_t dat[CAN_MAX_DLEN];
-+
-+	cm_dat_init(dat, TP_CMD_ABORT);
-+	dat[TP_ABORT_REASON_OFF] = reason;
-+	return peer_send_cm_ok(raw, TP_CM, dat);
-+}
-+
-+/*
-+ * Open a TP RX j1939 socket, send an RTS that allows all packets in one CTS
-+ * and check that the first CTS asks for all of them.
-+ */
-+static bool tp_rx_start_session_ok(int *j1939, int raw, int ifindex,
-+				   struct can_frame *cts)
-+{
-+	if (!tp_rx_open_and_send_rts_ok(j1939, raw, ifindex, TP_CTS_ALL))
++	if (!j1939_connect_ok(*j1939, ifindex, SA_PEER, PGN_DATA))
 +		return false;
 +
-+	return recv_kernel_cm_ok(raw, TP_CM, TP_CMD_CTS, cts,
-+				 J1939_RECV_TIMEOUT_MS) &&
-+	       cts_accept_ok(cts->data[TP_CTS_PKTS_OFF],
-+			     cts->data[TP_CTS_NEXT_OFF], 0,
-+			     J1939_NUM_PKTS(TP_SIZE), TP_CTS_ALL);
++	if (!send_all_ok(*j1939, payload, size))
++		return false;
++
++	return recv_kernel_cm_ok(raw, cm_pgn, rts_cmd, rts,
++				 J1939_RECV_TIMEOUT_MS);
++}
++
++static bool tp_tx_start_session_ok(FIXTURE_DATA(j1939_multi) *self,
++				   const void *payload, size_t size,
++				   struct can_frame *rts)
++{
++	return tx_start_session_ok(&self->j1939, self->raw, self->ifindex,
++				   payload, size, TP_CM, TP_CMD_RTS, rts);
++}
++
++static bool etp_tx_start_session_ok(FIXTURE_DATA(j1939_multi) *self,
++				    const void *payload, size_t size,
++				    struct can_frame *rts)
++{
++	return tx_start_session_ok(&self->j1939, self->raw, self->ifindex,
++				   payload, size, ETP_CM, ETP_CMD_RTS, rts);
 +}
 +
 +/*
-+ * TP RX timeout: the CAN_RAW peer opens a session with RTS but never sends the
-+ * data; the kernel's T2 timer must abort the session and emit a TP.CM_Abort.
-+ * The kernel starts its receive timer when it gets the RTS
-+ * (j1939_xtp_rx_rts()). It starts it again as T2 when it sends the CTS
-+ * (j1939_session_tx_cts()) and on the CAN echo of that CTS
-+ * (j1939_xtp_rx_cts_one()). The wait is timed from before the socket is
-+ * opened.
++ * TP TX: the J1939 socket transmits a TP message to the CAN_RAW peer.
++ * raw answers the kernel's RTS with a CTS, collects the DT frames and
++ * acknowledges with EOMA, which completes the session. The socket then
++ * gets the TX-completion ACK.
 + */
-+TEST_F(j1939_multi, tp_rx_timeout)
++TEST_F(j1939_multi, tp_tx_to_raw)
 +{
-+	struct can_frame frame;
-+	struct timespec t0;
-+	int min_ms, max_ms;
-+	long elapsed_ms;
-+
-+	tp_abort_window(TP_T2_MS, &min_ms, &max_ms);
-+
-+	clock_gettime(CLOCK_MONOTONIC, &t0);
-+	ASSERT_TRUE(tp_rx_start_session_ok(&self->j1939, self->raw,
-+					   self->ifindex, &frame))
-+		TH_LOG("failed to open and start the TP rx session");
-+
-+	ASSERT_TRUE(recv_abort_timed_ok(self->raw, &t0, max_ms, &frame,
-+					&elapsed_ms))
-+		TH_LOG("kernel did not abort the stalled rx session");
-+
-+	/* the T2 timer has to run before the abort */
-+	ASSERT_GE(elapsed_ms, min_ms)
-+		TH_LOG("abort after only %ld ms, expected at least %d ms",
-+		       elapsed_ms, min_ms);
-+	EXPECT_EQ(frame.data[TP_ABORT_REASON_OFF], ABORT_REASON_TIMEOUT);
-+}
-+
-+/*
-+ * TP RX abort: the CAN_RAW peer aborts an open session; the kernel must cancel
-+ * it and deliver nothing to the J1939 socket.
-+ */
-+TEST_F(j1939_multi, tp_rx_abort_from_raw)
-+{
-+	uint8_t payload[TP_SIZE];
++	uint8_t payload[TP_SIZE], rx_buf[TP_SIZE];
 +	unsigned int num_pkts = J1939_NUM_PKTS(TP_SIZE);
 +	struct can_frame frame;
++	uint8_t dat[CAN_MAX_DLEN];
 +
 +	fill_pattern(payload, sizeof(payload));
++	memset(rx_buf, 0, sizeof(rx_buf));
 +
-+	ASSERT_TRUE(tp_rx_start_session_ok(&self->j1939, self->raw,
-+					   self->ifindex, &frame))
-+		TH_LOG("failed to open and start the TP rx session");
++	ASSERT_TRUE(tp_tx_start_session_ok(self, payload, sizeof(payload),
++					   &frame));
++	ASSERT_TRUE(errqueue_enable_ack_ok(self->j1939));
 +
-+	ASSERT_TRUE(send_abort_ok(self->raw, ABORT_REASON_BUSY));
++	EXPECT_EQ(get_le16(&frame.data[TP_RTS_SIZE_OFF]), TP_SIZE);
++	EXPECT_EQ(frame.data[TP_RTS_PKTS_OFF], num_pkts);
++	EXPECT_TRUE(frame.data[TP_RTS_MAX_PKTS_OFF] == num_pkts ||
++		    frame.data[TP_RTS_MAX_PKTS_OFF] == TP_RTS_NO_LIMIT);
 +
-+	/*
-+	 * Send all DT frames anyway. A kernel that ignored the abort would
-+	 * deliver the message.
-+	 */
-+	ASSERT_TRUE(send_tp_dt_burst_ok(self->raw, SA_LOCAL, SA_PEER,
-+					TP_FIRST_PKT, num_pkts, payload,
-+					TP_SIZE));
++	/* request all packets in one CTS, starting at the first */
++	cm_dat_init(dat, TP_CMD_CTS);
++	dat[TP_CTS_PKTS_OFF] = num_pkts;
++	dat[TP_CTS_NEXT_OFF] = TP_FIRST_PKT;
++	ASSERT_TRUE(peer_send_cm_ok(self->raw, TP_CM, dat));
 +
-+	EXPECT_TRUE(recv_none_ok(self->j1939))
-+		TH_LOG("socket delivered data despite the abort");
++	ASSERT_TRUE(recv_dt_block_ok(self->raw, TP_DT, rx_buf, TP_SIZE,
++				     TP_BASE_PKT, num_pkts));
++	EXPECT_TRUE(errqueue_empty_ok(self->j1939))
++		TH_LOG("error-queue entry before the EOMA");
++
++	cm_dat_init(dat, TP_CMD_EOMA);
++	put_le16(&dat[TP_EOMA_SIZE_OFF], TP_SIZE);
++	dat[TP_EOMA_PKTS_OFF] = num_pkts;
++	ASSERT_TRUE(peer_send_cm_ok(self->raw, TP_CM, dat));
++
++	EXPECT_EQ(memcmp(payload, rx_buf, sizeof(payload)), 0);
++	EXPECT_TRUE(errqueue_read_ack_ok(self->j1939))
++		TH_LOG("no TX-completion ACK after the EOMA");
 +}
 +
- int main(int argc, char **argv)
- {
- 	return j1939_test_main(argc, argv, J1939_NEEDS_RAW);
++/*
++ * ETP RX: the CAN_RAW peer transmits an ETP message to the J1939 socket.
++ * The kernel requests blocks with ETP.CTS; raw answers each with a DPO and
++ * the block's DT frames. The payload spans several ETP.CTS blocks.
++ */
++TEST_F(j1939_multi, etp_rx_from_raw)
++{
++	static uint8_t payload[ETP_SIZE];
++	uint8_t dat[CAN_MAX_DLEN];
++	struct can_frame frame;
++
++	fill_pattern(payload, ETP_SIZE);
++
++	self->j1939 = j1939_open(self->ifindex, SA_LOCAL, PGN_DATA);
++	ASSERT_GE(self->j1939, 0);
++
++	cm_dat_init(dat, ETP_CMD_RTS);
++	put_le32(&dat[ETP_RTS_SIZE_OFF], ETP_SIZE);
++	ASSERT_TRUE(peer_send_cm_ok(self->raw, ETP_CM, dat));
++
++	ASSERT_TRUE(etp_rx_serve_cts_ok(self->raw, payload, sizeof(payload)));
++
++	ASSERT_TRUE(recv_kernel_cm_ok(self->raw, ETP_CM, ETP_CMD_EOMA, &frame,
++				      J1939_RECV_TIMEOUT_MS))
++		TH_LOG("no well-formed ETP EOMA from kernel after last DT");
++	EXPECT_EQ(get_le32(&frame.data[ETP_EOMA_SIZE_OFF]), ETP_SIZE);
++
++	EXPECT_TRUE(recv_verify_ok(self->j1939, payload, ETP_SIZE,
++				   J1939_RECV_TIMEOUT_MS))
++		TH_LOG("J1939 socket did not get the exact ETP message");
++}
++
++/*
++ * Ask the kernel for the next ETP block of cts_pkts packets, after got
++ * packets are already received. Check its DPO and receive the block into
++ * rx_buf, a message of size bytes.
++ */
++static bool etp_tx_serve_block_ok(FIXTURE_DATA(j1939_multi) *self,
++				  uint8_t *rx_buf, size_t size,
++				  unsigned int got, unsigned int cts_pkts)
++{
++	unsigned int next = got + 1;		/* 1-based */
++	unsigned int dpo_num, dpo_base_pkt;
++	uint8_t dat[CAN_MAX_DLEN];
++	struct can_frame frame;
++
++	cm_dat_init(dat, ETP_CMD_CTS);
++	dat[ETP_CTS_PKTS_OFF] = cts_pkts;
++	put_le24(&dat[ETP_CTS_NEXT_OFF], next);
++	if (!peer_send_cm_ok(self->raw, ETP_CM, dat))
++		return false;
++
++	if (!recv_kernel_cm_ok(self->raw, ETP_CM, ETP_CMD_DPO, &frame,
++			       J1939_RECV_TIMEOUT_MS)) {
++		fprintf(stderr, "# no well-formed DPO after %u packets\n", got);
++		return false;
++	}
++
++	dpo_num = frame.data[ETP_DPO_PKTS_OFF];
++	dpo_base_pkt = get_le24(&frame.data[ETP_DPO_BASE_OFF]);
++	if (dpo_num != cts_pkts || dpo_base_pkt != got) {
++		fprintf(stderr,
++			"# DPO for %u packets after %u, want %u after %u\n",
++			dpo_num, dpo_base_pkt, cts_pkts, got);
++		return false;
++	}
++
++	return recv_dt_block_ok(self->raw, ETP_DT, rx_buf, size, dpo_base_pkt,
++				dpo_num);
++}
++
++/*
++ * ETP TX: the J1939 socket transmits an ETP message to the CAN_RAW peer.
++ * raw requests the data in blocks of up to ETP_CTS_MAX_PKTS packets
++ * (ETP.CTS). For each block the kernel sends a DPO and the DT frames. The
++ * EOMA from raw completes the session, and the socket then gets the
++ * TX-completion ACK.
++ */
++TEST_F(j1939_multi, etp_tx_to_raw)
++{
++	unsigned int num_pkts = J1939_NUM_PKTS(ETP_SIZE);
++	static uint8_t payload[ETP_SIZE], rx_buf[ETP_SIZE];
++	uint8_t dat[CAN_MAX_DLEN];
++	struct can_frame frame;
++	unsigned int got = 0;
++
++	fill_pattern(payload, ETP_SIZE);
++	memset(rx_buf, 0, sizeof(rx_buf));
++
++	ASSERT_TRUE(etp_tx_start_session_ok(self, payload, ETP_SIZE, &frame));
++	ASSERT_TRUE(errqueue_enable_ack_ok(self->j1939));
++
++	EXPECT_EQ(get_le32(&frame.data[ETP_RTS_SIZE_OFF]), ETP_SIZE);
++
++	while (got < num_pkts) {
++		unsigned int cts_pkts = num_pkts - got;
++
++		if (cts_pkts > ETP_CTS_MAX_PKTS)
++			cts_pkts = ETP_CTS_MAX_PKTS;
++
++		ASSERT_TRUE(etp_tx_serve_block_ok(self, rx_buf, sizeof(rx_buf),
++						  got, cts_pkts))
++			TH_LOG("ETP block after %u/%u packets failed", got,
++			       num_pkts);
++		got += cts_pkts;
++	}
++	EXPECT_TRUE(errqueue_empty_ok(self->j1939))
++		TH_LOG("error-queue entry before the EOMA");
++
++	cm_dat_init(dat, ETP_CMD_EOMA);
++	put_le32(&dat[ETP_EOMA_SIZE_OFF], ETP_SIZE);
++	ASSERT_TRUE(peer_send_cm_ok(self->raw, ETP_CM, dat));
++
++	EXPECT_EQ(memcmp(payload, rx_buf, sizeof(payload)), 0);
++	EXPECT_TRUE(errqueue_read_ack_ok(self->j1939))
++		TH_LOG("no TX-completion ACK after the EOMA");
++}
++
++int main(int argc, char **argv)
++{
++	return j1939_test_main(argc, argv, J1939_NEEDS_RAW);
++}
+diff --git a/tools/testing/selftests/net/can/test_j1939_multi.sh b/tools/testing/selftests/net/can/test_j1939_multi.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..61f65365ec568f928b58bc4f892f97e9ec887027
+--- /dev/null
++++ b/tools/testing/selftests/net/can/test_j1939_multi.sh
+@@ -0,0 +1,4 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++source "$(dirname "$0")/j1939_lib.sh"
 
 -- 
 2.47.3
