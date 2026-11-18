@@ -1,86 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.50
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1794995141;
-	b=tNmzId/ebXOj+9uixHxf9FEJBfo55fM/6mibW6ZFNEDk5yr67ZE/HajoMSuMzlo/UAmH
-	 wTLIhBBxaOk6r9oqY/HKYm6IWipahk4s4va7ehhMvBFJjjziWm9pjsZ+vChLAP8s4HQ7h
-	 3Tpng4nsqzBlmqf23A14N5iYuUNkAKdvJbJmtU/u20XaFg2amUfPoDptoLo0ecdZ4J7U8
-	 /7h3xsIV6KFqvyc7lv4HdSf6F7yw2oFLjmhS10Fbi+sp7JeaSdJIc1ahJm34oh1xygebI
-	 qHXy/XHoG0OpaHvEVV5xp5ckZK3cOgZhl53efD3dDXnZKx2MvII/a83ZYORgQCnuktw==
+	t=1794997719;
+	b=nuJzu+ml7z3kwNZTRdasYcTgLVtk5BNhjQ0iNd7vYRsAa6yps1VWV6E72QH/sFCXv2yt
+	 HojzhsKD+6nmZsFRVleSDkH76Ur8/SfSDiQMttVTZ6ObbAasPuZQspNJEcSxdbdldRjYI
+	 bISDin5kpvhLs4uH6xdW+itsOeHZOiMPvSdGCZR3Pan0lyAR26b6z1guBLyD+D64o0v98
+	 SUKaj6RssnoiZiwFGx3iceJYKnMqU4ebNOsjTWoFBhTtQFK3HCSoid3/0lSQskxLIwIQ7
+	 86QeNrlseI/y0I0wKcXQU+1VC0IvzuMwVXzTfLBy7NgECdRtks5PDYFK0SevIKLozow==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1794995141;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=uCZjzvBXpQzyiqLUiaZTYDZ3Cj7C6PIF0m4jF7KKt8Q=;
-	b=A69RnIXaO612zaruUoqlfVdKxzN/QyXvPu2qH7/NZuTg6mirYL950iQ3bCrGkn9fchpN
-	 EHDjAa6HBt7vuQXhH0vQYi7zIe3Gh9IkfN6YBt1RexbhksWG3qgioG5M4v+AZ5wGlGdMq
-	 czJOVdAK3KAOm1ihKjBpGY7Ug6JTe8lLrOW0w2/qnCN+JMpNMtqpuUqdD/Cu7MbjVJ9la
-	 YapiovCz37HV3MgSPTOh8WVedQxX/g6HCXCJATIj++yyFudv1/EnMPuEIeEHwQ6gYjaLM
-	 Zj9N5AnGL+lX8ctSezMgTj9R192q/0Hgc3/03qbLV7O0sdXbBhW/tFy4ewlwyKC67jQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1794997719;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=7g6QQxsHo/KD2ZuYZ/qNr5ltEL4M5F15oOG71dYxc3s=;
+	b=veiU6knkZGSSR/0wyLJmXhSSIcTxAbJsLRze9rr0PlXh164ItAdDA6Q5Fslz1FQnCHHu
+	 MwWznC7TNyKHPWs5icSbV2DHDan6nutxNnpvSVOp535nAJigtCvGusaAs1M8OBaP/F9hd
+	 7Qm1zsLZdXEiDoGIe7lEnvfmxNewvikyWia+MJfDhrF/eihNefkFtbE5tTqkYIeoUSNEM
+	 oJAXM6ZQqiBCbiJJ++CwNxRcK8weSFv4T72hzHMzvOqWd9Rgkyizn2j0AXyyXankd/CPg
+	 7cLhApRa/1r2D1khd6R7T0ReFCenzyNOaBGjoi95C8JGTjp2UGoFNS/3XJFJNeBZ9/g==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KDfBQ1wF;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=lDG9J8mG;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=222K0LPy;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.50
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.50])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A53D606A320;
-	Wed, 18 Nov 2026 09:45:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0A53D606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C46F2606A334;
+	Wed, 18 Nov 2026 10:28:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C46F2606A334
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=KDfBQ1wF
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9921220011E;
-	Wed, 18 Nov 2026 10:45:37 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794995138;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uCZjzvBXpQzyiqLUiaZTYDZ3Cj7C6PIF0m4jF7KKt8Q=;
-	b=KDfBQ1wFEC7a950vAnPNfxVdNolhuN65j8nK8LfJdSZLvqFcKjPcxFHrqymcXi2rC5ltfu
-	oNeOv1/x9HEfM8/8DoEwsl1lHZnkViEwPe5b3s4tRcnUjSHOO9zGXkNafoR31VJa3EG6o4
-	MB2gnYEaE2Ks9LKlBSGfTA5PYL8WYXbUO0gwpaAnzONJW3o0QRHXLTqeYKKXsy6keX7PyH
-	Gsi1qASQvqYefBlGyA3Ph6YElreXO7uqldIIPn+vjKLod5TAtg722MrvJdagS0leMDfnZv
-	/uuIAmDSfzplfSbTjfbQzTkvvQfjvq99XnMyCD15HXFmYM5SOhnNZ76kVwiokw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1794995138;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uCZjzvBXpQzyiqLUiaZTYDZ3Cj7C6PIF0m4jF7KKt8Q=;
-	b=AzfXhdXQSD6Zgpj9zVQX53Z+kVdgu0NOPZuk34EoXofb+kJaeBIxXQvzDk9FgZdEyqu8iY
-	8ELVUUgFh7B1iR6HUV/aupTtcuoAE0mVjPSLH2ktHqIOnffnE1XP55YYKATtxP4yvqzSke
-	FedZdBAy1HtudhaGnUJPehMzwW3VSaLlwDusgnNRijQFOyqwREewZp+hDsWbpjc4gJnDR2
-	jeafcaE+IIFGIGNTSQMoGkve3q0tR436lYo0omVj11l8eNZiG+HCbxTVqYeRG8C4wG7Qf5
-	vH+tA/bhHYVkF6aook4tiRvPtFKCmb+YMsat0CKTvYHiFguWMM42NcpOZ6BWww==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794995138; a=rsa-sha256;
-	cv=none;
-	b=UeSt+cFa1Qt5aq6QytD0IHBzKkH3pv2bDhZbS2ESAwVQFBlPltLk9aKGs/vRv2Ux7yGoHv
-	iGRcNMH2dSs8wcGzhN4AF37QJ4MlHgGLiYpynxSlMn2hE4a6WAz2uB3QKYTNW+miN8X76K
-	vZVVtLl0M7CwykdF4OdwMdnVqdnqGBIstUgdY9vwopxyxDSQkcMGckklRiLq0Kz2bmnl70
-	XXjcMdBWdSKrvj+TujPid5LtguSh8q7/hDPCzj7ANyU1+3vicQlxGzbfXx8c2PePN7KWe4
-	42kyp8StUAo5BlO3LxiQIXN11yC+5pJvlK3T9mXCzTHbFrCXtO9gSR8PBCxupQ==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Date: Wed, 18 Nov 2026 10:45:37 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev-bot+sinfo@kernel.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
-	linux-can@vger.kernel.org, kernel@pengutronix.de, 
-	=?utf-8?B?U3TDqXBoYW5l?= Grosjean <s.grosjean@peak-system.fr>
-Subject: Re: [PATCH net-next 01/12] MAINTAINERS: add entry for PEAK-System
- CAN drivers
-Message-ID: <20261118-vengeful-turquoise-sunfish-bd2f81-mkl@pengutronix.de>
-References: <20261118092955.1283165-1-mkl@pengutronix.de>
- <20261118092955.1283165-2-mkl@pengutronix.de>
- <179499472297.3291.1921538258116208727@kernel.org>
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=lDG9J8mG;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=222K0LPy
+ARC-Seal: i=1; a=rsa-sha256; t=1794997714; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=T0oG06Hasto73lK69x61uGBrhtqGnNFBa+C1mkaqvH11Y/vXWbEahYixMEI4R0zV45
+    To1NjurFZhBhaCc3cNM47sySnIhQykA5mOPVdaMcN+38lr+KCwKFPgU8GNtlakH7zWRe
+    +eySaMuQ4HAVW0W6iNV9TPT3cHa/2dgkhcnpQP+Pj8P9A2mZX4dzkXLG9Nh6+DdtrTmB
+    nOdU8XymawSiPh1vArtxUbltKV9/MbdbsHHGJZl9bxE5/eHT3Conn6JwvnXaHsREInHL
+    1PVnVRpmEbs0IUaPkqar3QBdUy3lXqYGWFxwQpPDZDqh/mUvZQcsGVaBqxju9NJ313ov
+    39fw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1794997714;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=7g6QQxsHo/KD2ZuYZ/qNr5ltEL4M5F15oOG71dYxc3s=;
+    b=bb2ueOovuYxjLdsBZIYMu82QszoGh6PLGKUCOa6w8/v8iPGPwgtpF5trGKtS8h8ZbN
+    qAzSGUAsdWvnWPrw9zzsYbbRI0E2HLtlGjwCKISdi1qlPWNNkyys0+A8iUtXxuncG84c
+    IA2vm3w1yDqZytqJ27E+TQ/hPastQTvY+2L/UWfoyXOnX2cTwr9WISWJfqAwfomNCJbq
+    KfPrtg5lwVMTRD2jnaIUFcsE2W16SIcJJMPkOxvVPi/HVs4sNB2llBp3A1/yMLi8qlaf
+    WzzaS32q6FFox5eAQHM1MTxk5mN778tqsLjAZLOdpC7jLQ2e5gHWoLg5hBfEOKBQfgj0
+    aXSw==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1794997714;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=7g6QQxsHo/KD2ZuYZ/qNr5ltEL4M5F15oOG71dYxc3s=;
+    b=lDG9J8mG9/fgAF3U6xqk1cDW5Fr2J9m7gOeFDbMWw/FKR1U24O/bRBdCDam5378j6+
+    O/8nJl24sjX3IkEj63oYVrFcHGlXMjjOM8iOSsHF1vxoucXUCdBPSauLUD18+7altBmb
+    zmHdvTTx+ikM4jns2lRqKg8wLleRieua7v9+7OuJ/wQyR+pdjEcQm3k9DWZZn/dpzAnG
+    SNOeLjW63zMQwKB/b+jeZ8wpVMQ4id7AlSwwwPw0+dxMx7ZwKqSQ9XLMtdW6lBciVuCR
+    NkicXY3WldO7NMWiolTUYeQSmwTi5Av34B0YsGIqAf3WjD0i5A/NDG3rB5fJqgiNTOaM
+    CKhw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1794997714;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=7g6QQxsHo/KD2ZuYZ/qNr5ltEL4M5F15oOG71dYxc3s=;
+    b=222K0LPyRcXb5rR5wPa448LSKh9eOkw8Tls2plCXCsq/hEGmR7tQre9PkcdanGWgSE
+    DusmpnyK8vbh8EdKHSCA==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a2AIASYFIt
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Wed, 18 Nov 2026 11:28:34 +0100 (CET)
+Message-ID: <5884daae-c820-4e2b-b5d1-7ac2dfb6013a@hartkopp.net>
+Date: Wed, 18 Nov 2026 11:28:29 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -90,50 +95,85 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="5ddab6moxsf2jjwx"
-Content-Disposition: inline
-In-Reply-To: <179499472297.3291.1921538258116208727@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH can-next v2] can: bcm: Document cyclic transmission
+ failures
+To: raoxu <raoxu@uniontech.com>
+Cc: mkl@pengutronix.de, davem@davemloft.net, edumazet@kernel.org,
+ kuba@kernel.org, pabeni@redhat.com, corbet@lwn.net, horms@kernel.org,
+ skhan@linuxfoundation.org, rdunlap@infradead.org, linux-can@vger.kernel.org,
+ netdev@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <75785AF83A9D9B09+20261118091938.3365557-1-raoxu@uniontech.com>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <75785AF83A9D9B09+20261118091938.3365557-1-raoxu@uniontech.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
---5ddab6moxsf2jjwx
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net-next 01/12] MAINTAINERS: add entry for PEAK-System
- CAN drivers
-MIME-Version: 1.0
 
-On 18.11.2026 09:38:42, netdev-bot+sinfo@kernel.org wrote:
-> This is an automated message. This series looks like a fix, but its
-> commit messages seem to be missing some information:
+On 18.11.26 10:19, raoxu wrote:
+> From: Xu Rao <raoxu@uniontech.com>
+> 
+> The CAN broadcast manager continues its configured cyclic transmission
+> schedule even when a CAN frame cannot be passed to the configured
+> network interface.
+> 
+> Such failures are not reported to user space. The failed transmission
+> is not retried by the broadcast manager, the timing remains unchanged,
+> and a non-zero count is decremented.
+> 
+> As a result, a TX_EXPIRED notification requested with TX_COUNTEVT
+> indicates that the configured transmissions at ival1 have been
+> processed, not that they were successfully sent.
+> 
+> Document this behavior to prevent applications from treating TX_EXPIRED
+> as confirmation of successful transmission.
+> 
+> Suggested-by: Oliver Hartkopp <socketcan@hartkopp.net>
+> Signed-off-by: Xu Rao <raoxu@uniontech.com>
 
-Patches #2...#5 fix error handling problems discovered by LLM, but have
-not been seen in real world systems.
+Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
-Patch #13 fixes a real problem, that can be seen in production system.
-Certain CAN-FD related flags are not set.
+Many thanks,
+Oliver
 
-All other patches are driver removal or cleanups.
+> ---
+> Changes in v2:
+> - Target can-next as requested by Oliver Hartkopp.
+> - Adopt Oliver's suggested wording describing transmission failures
+>    from the user's perspective.
+> - Clarify the TX_EXPIRED notification semantics and scope the lack of
+>    retries to the broadcast manager.
+> - Remove implementation details and redundant descriptions.
+> 
+> This documentation-only update follows the review of v1. The earlier
+> proposal to change BCM transmission accounting was dropped.
+> 
+>   Documentation/networking/can.rst | 8 ++++++++
+>   1 file changed, 8 insertions(+)
+> 
+> diff --git a/Documentation/networking/can.rst b/Documentation/networking/can.rst
+> index 51bc70748f75..ae47f40bf456 100644
+> --- a/Documentation/networking/can.rst
+> +++ b/Documentation/networking/can.rst
+> @@ -892,6 +892,14 @@ only one timer is needed 'count' is set to zero and only 'ival2' is used.
+>   When SET_TIMER and START_TIMER flag were set the timers are activated.
+>   The timer values can be altered at runtime when only SET_TIMER is set.
+> 
+> +If a CAN frame cannot be passed to the configured CAN network interface
+> +(e.g. due to a full transmit queue or the interface being down), this
+> +failure is not reported to user space. The transmission sequence
+> +continues as configured: the frame is not retried by the broadcast
+> +manager, the timing remains unchanged, and a non-zero ``count`` is
+> +decremented anyway. Therefore, a ``TX_EXPIRED`` notification (requested
+> +with ``TX_COUNTEVT``) only indicates that the ``count`` transmissions
+> +at ``ival1`` have been processed, not that they were successfully sent.
+> 
+>   Broadcast Manager message sequence transmission
+>   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> --
+> 2.50.1
+> 
 
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---5ddab6moxsf2jjwx
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCav1zvgAKCRDMOmT6rpmt
-0kScAQCVnBh2ojLTGUXDjZWP46ZnoXgbeRVGwkAZitH4wHQR1AEAoFYJ1goHofaf
-xkgwqPSBXKo9uyCx0/3YAwnynLSIjgU=
-=IvQR
------END PGP SIGNATURE-----
-
---5ddab6moxsf2jjwx--
