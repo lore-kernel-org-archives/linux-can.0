@@ -1,73 +1,73 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1794994337;
-	b=EgYP53JqCqttchcwm+qh+Hl1MrRh2yKB4fidCo1w/E4U456UJOS3tmDhDfnO04ksT+Yd
-	 CTj2al9Rek0MpdyQYRB/YIEzipMIksJtBXQbGY2nr1/IH9ReKB4tQm2k+rTJr7oEtLuBX
-	 ilDAXoPktPLZHJRA7ovXSXNCGhtARdqMga6ISS4WJP1Z5vCuCKCB5tZjhfMurhoULzZy2
-	 zH7703yJs9DJdhbZ5nPlLFr3xP0BiqSLE7W04mBgq/dzZNaSVEHN1RgGYPUFmrKUXPvMD
-	 nwBlGeF5ZV7Wd1uarZ/yScfOVD+FMGxQc/P/4wrvbs9S+Sg4F6qUgTYE2TkfceXbWbg==
+	b=KWAenxtJIvXRTv1V0ZMM08dG+vOwmhfHzNU6RFhiH7EKj8gSUNDDLPh7ZWxuniYFrnh7
+	 4emdH9NbFWYv2C39eDUnUZZdUX4owb4oKml3G1aC5dnijOcRQmMoV4zFReXJlvEJcEGvj
+	 cqZ1J7GEhhvB/4aTi90xlbDW7HDgel1om9v4+O3grmD8TNQqk4V5LtgmLfVy8m8D8MB+7
+	 lVCXBxLterLVd9UA8qKwhFFG3LLdcqlGszsptE7rLZalmuBRH64uJNl3mGpjVyYyesCtw
+	 18HiHsPNetcUU2axScuHbAjgfmjLYl7EU4PEd/KPI9MbSGwCH/eXohMHMmGeBwVNiqw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1794994337;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=s6ZOZeOKeQI9zuroBr1JmtOxRhVNsBt4JfM/a1Aoho4=;
-	b=cdMqw8MRw/700myH4OSRj9TPwUqhkkGXBA5iFHuqZanMm7L6O2bA5b6eN39iW2t59nND
-	 oFt+lbkvccPeY1Brih8hU2s3wwn17SCH3ru1EwZ6HVcjVZ9rXDdTfVr+sgMQfz+7UQYIZ
-	 28MM/Uw91ESHBttQxIn8ralr9MZoYWSXVWPXktrvXQUcU2ZnCg1WQ2zHBIXk+SrAbpAm4
-	 /tcR++TPXvVF5PU1+9OLZZU7hcmxJ6BEMQQajBO9EB5AUZ7eBMBzmHpJQUiQWf/KLDfUq
-	 uVSeGtxZRX1zQK/SqjmxJkJWswVFwTocL8A8EpRULmCjZnXaY9oYndJbepbfmrUnj7Q==
+	 Content-Type:Content-Transfer-Encoding;
+	bh=pfP+c1mSxiA5U3MRmanJj+B7z5cw/Er78RDU08p317U=;
+	b=vq8sLD91SQmQcZV1IbTgQUobvx/VWl/2XOAVuMZtf+ZQRdqe1qEw9XAod14HNVmC6Bq6
+	 lEyU3DjnyZOuOipsMKMBwaiCihnTWs9mBiYYd8kH8lzxmGKO2MbSADU+XHR67dlMr7e3X
+	 Tzi1zqojmkXjfn4w/Oy4fqRfpcBRSB4irXfoaHgULlST9G5W1MyU4r+ktSGx6WVu6v7pZ
+	 VbgHnLrO4eQK+VXPOHcqNV+Z0QKLcD6NyCIx6m1deek/eerW5gBoaN1D+LWfGh5buh9AL
+	 yb58WYeQC1JO9qI54Pw7fMfeTWGZ3IrLXqXDsAyFZS+K/+zzg4yqbk9tUs9IFdeqgpg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GuO+40ql;
-	arc=fail smtp.remote-ip=185.203.200.13
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=O4L6CFS3;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2850F606A32A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28393606A31C;
 	Wed, 18 Nov 2026 09:32:15 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 2850F606A32A
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 28393606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GuO+40ql
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=O4L6CFS3
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 268F9205A24;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 3D7D5205A71;
 	Wed, 18 Nov 2026 10:32:14 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794994334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s6ZOZeOKeQI9zuroBr1JmtOxRhVNsBt4JfM/a1Aoho4=;
-	b=GuO+40qlYJFej2n1xRn8H2v1GqwcEZN0017+pykhYhO1lLrDfh8IiS8vYAaETHvbFE6iHy
-	yi4LdMdcvj462sMPrx3swIBgOjU1L6Dfu+jyPvFH8NnjeNhnjBd9pfZb4MS47sDw3V30OQ
-	eZLYNdl7c+ASdzMjr+OTUgCQKktp8HQwpML14JDTZnEWpgn5pXNWp/RrR53KQEqk9YvtYx
-	DGy5GugzUqZatQhg71zDpFA6/fzDAUs2cYV+hcwZyNmus7NXQYHKvUvAcjbjDmVXjT8uFF
-	IVxMjtAr2bzZxVRi/rw78oEPjbxALYhpjgeKU5u3VtunBedJ8edI7VNYq751WA==
+	bh=pfP+c1mSxiA5U3MRmanJj+B7z5cw/Er78RDU08p317U=;
+	b=O4L6CFS3hHZIoAww0lIcgpkhV4pDy6cjI9uRaaI1X6mvERszz58vtMRfs4SejGu8AbD4kW
+	b68Y1wT1fZbU2xfw/zPCi2HEjpslRlPI8vJTV7bp5ogMSsD65Qo93A67LZCWk1k/Ry2aSY
+	2seoJDTni3Z6qsRdntjwcgZK89+a3wkGIdapJO89LMxBK1yCYv6OfQ9twU4kUYUza/uI7t
+	mDkElXOvtQqO6l7ZCQnJfUcZXRJixqZl5BJpX77B3Gz84/UU+MyyimH3wHHPTu4Xyz92gu
+	7M1Rx/XSb73OYNH7qHUhgquJEjf4aamB6FvQg+I9PmwhUi6QH5SlNpBNboKemw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1794994334;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s6ZOZeOKeQI9zuroBr1JmtOxRhVNsBt4JfM/a1Aoho4=;
-	b=GFlh6Mrm4hN6RDzkG2dMTQs4elp2bYK6L8lG+L59ym/lyZxp5uFHmIj9P5FQXL90/QV/kC
-	AXHCgxwqT7WrSwUlYfJ3lTOP9Dt93PDfn3SUz5pn4hnMOAzJi4K5bKwjuGrDOYuo7nXzIT
-	NaCwMvhdlTmO2bbGpNjepUKF/XMTV/MCKcdzSQXcPNYAXObJVcTeqwKPH8EXezeeweaO81
-	G2Im569JI14ecCrUwMQ2NVPKjRlsx0WQOntResZSdFuivmJz7FaHdDqgs8nU4J2niizHrd
-	FrWnnW4yoyuJNkAnDsOdr6l5WcJG4As34qOwvPC7Jy5O/Rl3Yo5oAMwLD7V1/g==
+	bh=pfP+c1mSxiA5U3MRmanJj+B7z5cw/Er78RDU08p317U=;
+	b=GfIT1v7PpVfuTeTpA0TSAg43hBSgmlSVy9+mL65GuVRYEH+NBxLiDpPzWLjAradTA+cDpV
+	4O1XGuL+XAIs3QF17jhWd0FYDduzy0foI74X668V6AMqxHPDjfFp2Cyhv/vkyFrTRgFWjp
+	qRryaurarXajsAVbhba+LFRWT93sB7WIOjGeVp1bPJ3UoWZL/VjJncLPf4UYuKjaNmnL+e
+	JCECMwWjifW3u05J/w3DouNJ0dpAfHvi6D9TWcv6jD2JW737gM7g1GoAi6SeExNw0/D1kx
+	S9lSCqLwikkp2JXXNzJurp/pxYFNRQUl5qYugI8WKutrtpTsm9RY4ieetewmRQ==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1794994334; a=rsa-sha256;
 	cv=none;
-	b=D2N2YjdzsCRI0xhygKxB/xRxeMGsmK88bZXz+Cu9Qk1+v98GhSXFcAvmC4VYLHynX3w2hR
-	92IGDk9EdNyGVKDhDFdaQLCo39Dnx4EVgh5DcDd70+kyNdPKSmlTS6qhachVvMDo57dKDf
-	NrNahAJCwrFcCNi5XzI++z3wwYNiVuYf9OPKbAwL8QrOC8rDo8a5ifKbw8z2gJrj4d38rD
-	kNOSbAt6+LhfZeI0Wty+5ciTou689+VpDQ3abdxasrgVx6SXr/tigxxRpcECVT1q2qoZRJ
-	/0nOIAFPta8ceEg8PEdrWIQnpBm7nOTKuf4Qv1cyrBcMMh68BxzU9oHu3GFiTw==
+	b=e5484lWjUK64vMBCIdlSzGzwUl+EXe3plNkitO/DqI5hxhOxCITcryczIT+qgYwHzW4tyF
+	6s3mTOPf0SGRv3rFG2jxd+r3U8gGkZWyEFXoPc0IQguD5+brtmz7bhI6SenSNqgKCgg87r
+	vOYzhmMIa1m6356yd82ElacWhNFymaWTxsAJcF2QSxJ8IQp5qssnzF33z2R7dlBLSBsQRH
+	Ix/B70h8eG4gwDYNr+6YDLZsQcE04xx3tAb78SXOrSaKWWKeyduXPzvQ3jY/eABqMplWkb
+	KYpWwjF6nFZpVJSYqTnKNVcebA1cJOyep/IzygVqSCnUIeJfeHKBeg+zPRH08A==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,26 +75,26 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xTc1V-000KHx-1b;
+	id 1xTc1V-000KHz-1v;
 	Wed, 18 Nov 2026 10:32:14 +0100
 Received: from blackshift.org (unknown [185.109.152.103])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 3FDB75EDC92;
-	Wed, 18 Nov 2026 09:30:03 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 613AA5EDC85;
+	Wed, 18 Nov 2026 09:30:02 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Chaosheng Qu <chaosheng.qu.linux@gmail.com>,
+	=?UTF-8?q?St=C3=A9phane=20Grosjean?= <s.grosjean@peak-system.fr>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 07/12] can: at91_can: don't discard the IRQ lookup error in probe
-Date: Wed, 18 Nov 2026 10:11:40 +0100
-Message-ID: <20261118092955.1283165-8-mkl@pengutronix.de>
+Subject: [PATCH net-next 01/12] MAINTAINERS: add entry for PEAK-System CAN drivers
+Date: Wed, 18 Nov 2026 10:11:34 +0100
+Message-ID: <20261118092955.1283165-2-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261118092955.1283165-1-mkl@pengutronix.de>
 References: <20261118092955.1283165-1-mkl@pengutronix.de>
@@ -107,70 +107,59 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+From: Stéphane Grosjean <s.grosjean@peak-system.fr>
 
-at91_can_probe() looks up the memory resource and the interrupt together
-and collapses both failures into -ENODEV:
+The PEAK-System CAN drivers (peak_canfd, peak_pci, peak_pcmcia and
+peak_usb) are only covered by the generic CAN NETWORK DRIVERS entry, so
+get_maintainer.pl doesn't Cc their author on patches and bug reports
+touching them.
 
-	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-	irq = platform_get_irq(pdev, 0);
-	if (!res || irq <= 0) {
-		err = -ENODEV;
-		goto exit_put;
-	}
+Add a dedicated entry. I wrote these drivers and maintain them as part
+of my work at PEAK-System, where I have the hardware and the firmware
+documentation needed to review and test changes. Patches keep going
+through the CAN tree, the entry only makes sure they reach me.
 
-The driver matches through an of_match_table, so of_irq_get() returns
--EPROBE_DEFER while the interrupt controller has not been probed. The
-probe overwrites it and the driver core stops retrying, leaving the
-device unbound even though the interrupt controller appears later.
+Also list the PEAK-System Linux support address as a reviewer, so that
+reports keep reaching the company if my own address ever goes stale.
 
-The irq <= 0 test also covers a 0 return, which platform_get_irq() never
-produces; it warns and returns -EINVAL instead.
+This patch has been created with LLM assistance.
 
-Split the two lookups: the memory resource keeps -ENODEV, the interrupt
-returns the lookup error unchanged, as the neighbouring CAN platform
-drivers do, e.g. previous commit ("can: cc770: don't discard the IRQ lookup
-error in probe"). This also drops an IRQ lookup that cannot succeed when
-the memory resource is missing.
-
-A device tree without an interrupt now reports -ENXIO rather than
--ENODEV; the driver core treats both as a failed probe.
-
-Build tested on x86_64.
-
-Signed-off-by: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
-Link: https://patch.msgid.link/303815792800553c34842147941cab083823c212.1792118040.git.chaosheng.qu.linux@gmail.com
+Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
+Link: https://patch.msgid.link/20261112-new_maintainers-v2-1-794b73ce8685@peak-system.fr
+[mkl: convert Assisted-by tag to prose]
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/at91_can.c | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ MAINTAINERS | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-index 58da323f14d7..3977de761636 100644
---- a/drivers/net/can/at91_can.c
-+++ b/drivers/net/can/at91_can.c
-@@ -1069,12 +1069,17 @@ static int at91_can_probe(struct platform_device *pdev)
- 	}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7d8b59ae6ea6..3e2be24e2da3 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -21932,6 +21932,18 @@ PDS DSC VIRTIO DATA PATH ACCELERATOR
+ R:	Brett Creeley <brett.creeley@amd.com>
+ F:	drivers/vdpa/pds/
  
- 	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	irq = platform_get_irq(pdev, 0);
--	if (!res || irq <= 0) {
-+	if (!res) {
- 		err = -ENODEV;
- 		goto exit_put;
- 	}
- 
-+	irq = platform_get_irq(pdev, 0);
-+	if (irq < 0) {
-+		err = irq;
-+		goto exit_put;
-+	}
++PEAK-SYSTEM CAN DRIVERS
++M:	Stéphane Grosjean <s.grosjean@peak-system.fr>
++R:	PEAK-System Linux support <socketcan@peak-system.fr>
++L:	linux-can@vger.kernel.org
++S:	Supported
++F:	Documentation/ABI/testing/sysfs-class-net-peak_usb
++F:	drivers/net/can/peak_canfd/
++F:	drivers/net/can/sja1000/peak_pci.c
++F:	drivers/net/can/sja1000/peak_pcmcia.c
++F:	drivers/net/can/usb/peak_usb/
++F:	include/linux/can/dev/peak_canfd.h
 +
- 	if (!request_mem_region(res->start,
- 				resource_size(res),
- 				pdev->name)) {
+ PECI HARDWARE MONITORING DRIVERS
+ M:	Iwona Winiarska <iwona.winiarska@intel.com>
+ L:	linux-hwmon@vger.kernel.org
+
+base-commit: d6816d9a93b66a12bf01e10037e377f3333ad6cc
 -- 
 2.53.0
 
