@@ -1,91 +1,79 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.83
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795075989;
-	b=s4aqQ/c8aZG7vSh0J6f2ZSbpY5xJouxjsxx698e/C++jlMigfO+7hj2RYiuJ/8m20kfo
-	 Xn+reLE3ISs35DwZ3K2OOuFk1w7a/qOXvGl9oUwv4gzPxHF00SaxVQuHhFLluXFjDrH9/
-	 9BOYvdNXYLYRcMRyprEDZx9UOyyhxVe7wHC7WpiVDN2S2f7je5ah8LFRNsojwlnXnoZ7W
-	 vinLQYSOi5hTqYuPxFUATuZcCanICucexgl1gn0MuZfFPZvrfiMQGQzopUC+8N1n/I2jU
-	 gFJV0aO459TdRvzih+vYV+GGrQFlUNcvjg8Mc6MwwJmlC3VpiollPXJ2toqN26oIUGg==
+	t=1795077592;
+	b=FsRqOJ7YFhfVTR6SmBkbUPdzYavHc64hzW/CJq6T0ozWNWJhqO+e/XdAr+EOceWjQw7F
+	 O44djqS8zVDo677d8nqe0xQlbxpIaiSMFCQrNtAuYEbjBwEmPgLhyKKAuuE8yXowCN7nG
+	 Ixr4HGvWNNhwZ6NejlZVVYItxr9PozxhsMPbLwBZ8W5B6XzbR8TiXGCwzWVbdVcJT/Xmr
+	 Tq00c4rlHLBB7OyopDdx1US2E4JdmYZVcH3OAgflqugobOdwzStT0Sov8uG8/+t7R7E3n
+	 AgHMCSnvO92g0KEC1vKSY7GEvfwGr1tK7YfBhyGhBp8cQTNyNtF9UNiwxjQEeqLjhkQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795075989;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=/a4blFPKZLEYxSlyx62bUldvxxADK2mtDNcfDLcAils=;
-	b=2Yq7eM5gKB5v3o53Qe75dPE6lJJuKIYNqnHsPV7jeRYf1EkeyaJ/4C7t7vNg26+sWOcM
-	 QBaoE/Zy3ilU2xIbkQjVPJo8f3pWc+DgPnWXbBQUSUzZ6MQpqjXShs+bYObJia9xskhJR
-	 fH3Rq1KOjPP7yfq5xpyMDYFf/ijfls0Ev8zHnxEc7s4TeJLtNXRTnSy1HMRHlHqRAB0ZK
-	 YAg1ErU5Ugft8JewUnMGUF6GInVOQs336iYu3x48sxis60EOPlmebYU45XmyLuOWoYjjN
-	 4N0XeOKCHzwGmE1ibpF9V9TifBgk0Hq0PwUqRukwss0PhEykWkmZuRytdHCZ3KdwyBw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795077592;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=NtttrPvs/78iNQ9sA09ImKffZUBly9ET31v9eoeUGIY=;
+	b=UH87kW193VNq5bHNLS7/tIC/j+P9sBRXGNFjdHmh7rVYjNgHoyrfFkyuMgf+4fMwUzt4
+	 almNLSVcpPkoAtTMlTcz7RB4OtOW2ZSlkycwzVgSNOQgifiHpyXzVmeW9wxnUHa6PPpQh
+	 sSz3St8R3/GmxnEwbDRpfBamsYURIq+pWPme8QUzNf8YXZp3OoJUA1Y7dTjNmH9DP8Ers
+	 ht+dEobUJ9afbCxa5mbqhaEgEmn/0YPDyvVx86krNWPFXZzCOjkdE/mZtUAlg4SOBKzN2
+	 TS+GnK7sNeuKNQTl/CwYwg9ZCphScn2cmrBx6RXgPEJsmFMrVn2nRdbxwad7FqaPaNw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oHc5nIR3;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="bcJqy/5X";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.83
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.83])
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NkphdFhp;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC2F60A380A;
+	Thu, 19 Nov 2026 08:39:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NkphdFhp
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795077592;
+	b=dNOmedvmSu3XOia2L+5UEMA7QMxF/O5s/Ff9+Y1KECaKnxgyrtFYbF/H3Hqexwq2rxar
+	 97kiA3RTWF0FjxF7quKtGmX12kQk6EnW00ayir7PKUkeQuoT9JmUfA7BF5v633KVKdQ1S
+	 nimcfhIi7p5yXZEtCLm1v5X5WcnRfXfN1t/sNMG6iBex80Gna0qZxU/70w4eZr+pMyqGS
+	 6uIFV5e2wl1vvxODstWLeyCeko5wP7sKdzWpdWaC/HS6Zl8URXDQDcS5HRwZJR0yTVUrV
+	 uS1yFoqgE/yM5HYi6CRHFGUWal2WQH/vqBl7k8YCOkxRQwTM13RL6JNtMEdk3LtkOQg==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795077592;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=NtttrPvs/78iNQ9sA09ImKffZUBly9ET31v9eoeUGIY=;
+	b=mTKUE5DzW1Gauvkyth9fCcPwWvuRQaDJpTLrAnbGzVb751zukEBuksFVxMTk+bQSpibn
+	 fPxdph7ZwUR8xSkPEZWLEadiG1xzWJoISfv6xJzTa71NOrHMwVF2zrBD46Gi/bQW2BNKS
+	 rzb6T+opcK2DlBR4h0WZTRqCJNvHyX2dZoH8cKgJWVKzIoS6Kff2h/xLTnfzxyWqNRyDP
+	 hOapemCuFAnbCpkx0qOPJyap97wpwOuz1U5V5Y0H8lOPH5NbJOMraGL4JsnqmdAURA75Y
+	 AZYHZeUiDHT3rcw/0Pb1dFki/1UPrgRPyai78/nsOcGWTJqUHObZAup5inAa8BKv0Lg==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A866606A320;
-	Thu, 19 Nov 2026 08:13:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0A866606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oHc5nIR3;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=bcJqy/5X
-ARC-Seal: i=1; a=rsa-sha256; t=1795075980; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JTZqV4aWK9hh4Ro8daSeITliXFkUT81PMK7UtdcbER5in/H+oX1ghFcDjNjv+JeINc
-    W3OdDm9SdmJrHs0BNlls8+tuSkUy86IpA+ImjzoK3q46ZBM/p0dSolh1sbbP1rqz3j7z
-    XObd2Pyyu9YsA4+APEHJK975Uqmu/QSkyNbdgPeDAZcgI1E7SBfXmyZSNV3Rrzc3F+WX
-    LAKscJBFg8Ug2FGqzAl/f+tbuL3MvxXYIvJmzMzm7PFH+Wkg/08wCsfkVGpAnWtcjeX/
-    5i9mDuHTcounD2xAMPQCwPhD1VWPFCIixr+9LwAiy3iZ8xOlsGQ7Jn6+4H8w8W8byaVi
-    l08g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795075980;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=/a4blFPKZLEYxSlyx62bUldvxxADK2mtDNcfDLcAils=;
-    b=KnMsIcDYF55krFnmd83p5nmWPBAnXDSIJk/Md0jtItbehuardoRMADg420p1vMyuIZ
-    68IbLzkX8oT4YNkTrI2uD0/Y5n6hXNUa3DzC8h4mVE4VdqtznqQDfH634BCUrpetus2Q
-    TRSV/0mSqKm0+MhTwE7fdEpw6o3YIsObGmq8T79OOTICgGcmnKM+AGS43VmhS6JezGVb
-    H8y+zyZMR/rRWyOB4DL92wXL+wAZyDJTsz+JjO3SxLHgCACHTopP/OvMtyjEXySf8Ruy
-    8mzs6iKoil0wjU0Rr3udX2yPQvLetJBafA1V49WQK2g/l1Oa1af5RuIq57XEyT8eLSSS
-    +rww==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795075980;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=/a4blFPKZLEYxSlyx62bUldvxxADK2mtDNcfDLcAils=;
-    b=oHc5nIR3JWl0KwwLiTFwvsQ8SIxID/DDz5kGSIKxjwCQOABC/eKh6Xe80QTKo3EIvJ
-    Zs8F40uu1TlysDLRXUAfnEwMG/d+1/FmUg6wMdRqskC/FxtbdnZpEZ8S0kXopWld6tjK
-    I6BpOG0jGLTiBn76zGTI66st4lWDXTySxN882DTtcfokNurCfQs0U17an0eOW+sDF9cd
-    mDVqG/8kMLGkxTH3S7OpYLNav7MInwqGwZ5TRfBCh5WEQoE5xR44RTWvlBwbQcHS8tOy
-    W4yYTgDk9bmsnvJppR5f48Xj4sA9m03h0+M0zg3SKNYQ1emNbWMH1UOMNiN0IrhJyN4V
-    YJcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795075980;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=/a4blFPKZLEYxSlyx62bUldvxxADK2mtDNcfDLcAils=;
-    b=bcJqy/5XsDOUQDdIrvEI7mPntBwDaYYdIcdktROStmI19pglAzzB+dXr2rOht8M+6W
-    +Eibsy7vtDxOxqhUkBDw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AJ8D0Jxk
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Thu, 19 Nov 2026 09:13:00 +0100 (CET)
-Message-ID: <0d784fe7-a527-46a4-9e45-37b35ce512ce@hartkopp.net>
-Date: Thu, 19 Nov 2026 09:13:00 +0100
+	by smtp.kernel.org (Postfix) with ESMTPS id E19BB1F000C4;
+	Thu, 19 Nov 2026 08:39:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795077592;
+	bh=NtttrPvs/78iNQ9sA09ImKffZUBly9ET31v9eoeUGIY=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=NkphdFhpkHaG9pYXirPgMGWpuCVf6/drMwCn5jQ3woQgRYvR+JQupap2YIX2xf+zr
+	 3vCS6xro8ZQ+P7cDVt+ZLTqIqZtIG8j4YQWY22x2tJ/pdJ9d7eXpoR7x+I9q5l8hK3
+	 0EFehPMxbX32UnuEKdYTGaQev/APQ97oJvEwpr6nZuHVLHwft3KN4KL0pGyDv1Djt2
+	 0c6AGeM3+E1sLXZrCpWnQajA1TJj7AT5SyBikcU4aWUIM7JO6r0Lpuz/hho1uIlV6Z
+	 /WigcghONGmhKovi/uO14Ig9xOrkhjrv/0GtZHNu1aiVn6hVbXk3t+a1NBqVEYv9Al
+	 tJcnuUBDit/dA==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 5B2054B1A6;
+	Thu, 19 Nov 2026 08:39:49 +0000 (UTC)
+From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
+Date: Thu, 19 Nov 2026 16:39:42 +0800
+Subject: [PATCH net v10 01/10] can: rockchip_canfd: prevent TX stall on
+ echo skb failure
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,128 +83,116 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 08/11] can: netlink: fix static FD-NON-ISO mode
- validation
-To: netdev-bot+sashiko@kernel.org, mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, zhuling0805@qq.com,
- stable@vger.kernel.org, mailhol@kernel.org, o.rempel@pengutronix.de
-References: <20261117220818.1142581-9-mkl@pengutronix.de>
- <179504036152.3136.12444797036692057668@kernel.org>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <179504036152.3136.12444797036692057668@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261119-rockchip-canfd-restart-close-v10-1-df23913aa33a@qq.com>
+References: <20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a@qq.com>
+In-Reply-To: <20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a@qq.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
+ Vincent Mailhol <mailhol@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>, 
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>, 
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+ Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
+ Shuah Khan <skhan@linuxfoundation.org>, 
+ Randy Dunlap <rdunlap@infradead.org>, 
+ Wolfgang Grandegger <wg@grandegger.com>
+Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Cunhao Lu <1579567540@qq.com>, 
+ stable@vger.kernel.org
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795077587; l=2989;
+ i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
+ bh=bHnym469T+y9JYwEnQeqSfFXdELLH4SGreNtjJc4rCU=;
+ b=n9YejEbRq+CwBhqMFLW6BKMhOFzYg97rcE83TpW3VxBi87ROCFCC47Wg3KVPbmNBY2LHOGijy
+ g6Bwq+t5shyCXofsgqECgXsXSq8I22pqzu0V8ub/cbKp8fTB96otVi+
+X-Developer-Key: i=1579567540@qq.com; a=ed25519;
+ pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
+X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
+ auth_id=1177
+X-Original-From: Cunhao Lu <1579567540@qq.com>
+Reply-To: 1579567540@qq.com
+Content-Transfer-Encoding: 7bit
 
+From: Cunhao Lu <1579567540@qq.com>
 
+rkcanfd_start_xmit() advances tx_head and requests transmission even when
+can_put_echo_skb() fails. Completion matches self-received frames against
+the echo ring, so an entry without an echo skb cannot be completed and
+can leave the TX queue stopped. While that empty entry blocks tx_tail,
+frames already read from the RX FIFO fail echo filtering with -ENOMSG.
+They are discarded before reaching sockets, including ordinary frames
+from other nodes, and the current FIFO drain ends early.
 
-On 18.11.26 23:19, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found more severe
-> issue(s) in other patches of this series. This mail is only an FYI, in case
-> you want to address the nit picks below when you respin.
-> 
-> Low priority / nit picks for your consideration:
-> 
-> - [Low] The patch fixes a second, older bug but tags only the newer one.
-> 
-> --
-> 
-> can: netlink: fix static FD-NON-ISO mode validation
-> 
-> This patch moves the "fd is disabled" exception for the static FD-NON-ISO
-> mode in can_ctrlmode_changelink() from ctrlstatic to ctrlstatic_missing.
-> That stops requests such as 'fd off' or 'loopback on' from being rejected
-> on controllers with a static FD-NON-ISO mode. It also adds a check that
-> rejects any request which explicitly switches off a static control mode.
-> 
-> Link:https://lore.kernel.org/all/ 
-> tencent_3A964832542399A780E646D6A6246335C409@qq.com/
-> Link:https://netdev-ai.bots.linux.dev/sashiko/#/ 
-> patchset/20261115095746.709371-1-mkl%40pengutronix.de
-> Link:https://patch.msgid.link/20261117-can-bcmlock-memcg- 
-> v6-8-6826a6227d36@hartkopp.net
-> 
->> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
->> index 081dfddda0008..521e2496e2cc3 100644
->> --- a/drivers/net/can/dev/netlink.c
->> +++ b/drivers/net/can/dev/netlink.c
->> @@ -330,9 +330,17 @@ static int can_ctrlmode_changelink(struct net_device *dev,
->>   		return -EOPNOTSUPP;
->>   	}
->>   
->> +	/* static control modes can not be switched off */
->> +	if (deactivated & ctrlstatic) {
->> +		NL_SET_ERR_MSG_FMT(extack,
->> +				   "static control mode %s can not be switched off",
->> +				   can_get_ctrlmode_str(deactivated & ctrlstatic));
->> +		return -EOPNOTSUPP;
->> +	}
-> [Severity: Low]
-> Should this patch also carry a Fixes: tag for commit c9e1d8ed304c ("can:
-> dev: replace can_priv::ctrlmode_static by can_get_static_ctrlmode()")?
-> 
-> The commit message says this check closes a bug that existed before
-> 6742ca18cb41:
-> 
->    "before the above mentioned commit a request like 'fd-non-iso off'
->    passed the check and removed the static CAN_CTRLMODE_FD_NON_ISO bit
->    from priv->ctrlmode. As can_get_static_ctrlmode() derives the static
->    modes from priv->ctrlmode, this information was lost permanently."
-> 
-> The permanent loss comes from can_get_static_ctrlmode() in
-> include/linux/can/dev.h, which was added by c9e1d8ed304c (v5.17):
-> 
->      return priv->ctrlmode & ~priv->ctrlmode_supported;
-> 
-> Before c9e1d8ed304c, priv->ctrlmode_static was a separate field, so this
-> path could not clear it.
-> 
-> In trees that have c9e1d8ed304c but not 6742ca18cb41, take M_CAN v3.0.x or
-> v3.1.x, or pcan_usb_fd with firmware < 2.x. A request with
-> mask=FD_NON_ISO, flags=0 and FD not switched on passes the check. Then
-> 'priv->ctrlmode &= ~cm->mask' clears the static bit. A later 'fd on' is
-> accepted and reported as ISO mode, while the hardware stays non-ISO.
-> 
-> The only tag is:
-> 
->      Fixes: 6742ca18cb41 ("can: netlink: add userland error messages")
-> 
-> With only that tag, will the stable tooling skip this fix for LTS trees
-> such as 6.1, 6.6 and 6.12? Those trees also lack ctrlstatic_missing, so
-> the patch would not apply there as is.
-> 
-> Would a second Fixes: c9e1d8ed304c tag help here? Or a note that older
-> trees need a separate backport?
+Install the echo skb first. On error or an empty echo slot, drop the
+frame before writing TX data or commands, advancing tx_head or adding
+BQL bytes.
 
-No. Trees with c9e1d8ed304c but without 6742ca18cb41 can still lose the
-static FD-NON-ISO bit, but only after an explicit (and pointless)
-'fd-non-iso off' while FD is not enabled. The common configurations
-('fd on fd-non-iso on' and 'fd off') have always worked correctly there,
-and 'fd on' without 'fd-non-iso on' is rejected as intended.
+Pass an extra reference to can_put_echo_skb() and retain the original skb
+as the frame-data source until submission finishes. This keeps the data
+alive even if echo cleanup removes the installed clone. Release the
+retained reference on both success and failure.
 
-Even in the corner case the hardware keeps running in non-ISO mode:
-M_CAN v3.0.x/v3.1.x has no NISO bit (non-ISO is fixed in the IP), and
-pcan_usb_fd with firmware < 2.x never gets an ISO mode command. Only
-the reported ctrlmode would be wrong until the driver is reloaded.
+Fixes: b6661d73290c ("can: rockchip_canfd: add TX PATH")
+Cc: stable@vger.kernel.org
+Signed-off-by: Cunhao Lu <1579567540@qq.com>
 
-So this is the only Fixes: tag needed. The regression that rejects
-valid configurations was introduced by 6742ca18cb41, and the stable
-backport follows that tag.
+---
+Changes in v8:
+- Retain the original skb as the frame-data source and release it after
+  submission or failure.
+- Reject successful echo preparation if no echo skb was installed.
+---
+ drivers/net/can/rockchip/rockchip_canfd-tx.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
 
-Best regards,
-Oliver
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+index 12200dcfd3389..420e59b41059c 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
+@@ -117,16 +117,21 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 	tx_head = rkcanfd_get_tx_head(priv);
+ 	reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
+ 
++	/* Retain the original skb as the frame-data source even if the
++	 * echo skb is removed before submission finishes.
++	 */
++	frame_len = can_skb_get_frame_len(skb);
++	err = can_put_echo_skb(skb_get(skb), ndev, tx_head, frame_len);
++	if (unlikely(err || !priv->can.echo_skb[tx_head]))
++		goto out_drop;
++
+ 	rkcanfd_write(priv, RKCANFD_REG_FD_TXFRAMEINFO, reg_frameinfo);
+ 	rkcanfd_write(priv, RKCANFD_REG_FD_TXID, reg_id);
+ 	for (i = 0; i < cfd->len; i += 4)
+ 		rkcanfd_write(priv, RKCANFD_REG_FD_TXDATA0 + i,
+ 			      *(u32 *)(cfd->data + i));
+ 
+-	frame_len = can_skb_get_frame_len(skb);
+-	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
+-	if (!err)
+-		netdev_sent_queue(priv->ndev, frame_len);
++	netdev_sent_queue(priv->ndev, frame_len);
+ 
+ 	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
+ 
+@@ -137,6 +142,14 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
+ 				  RKCANFD_TX_STOP_THRESHOLD,
+ 				  RKCANFD_TX_START_THRESHOLD);
+ 
++	dev_consume_skb_any(skb);
++
++	return NETDEV_TX_OK;
++
++out_drop:
++	ndev->stats.tx_dropped++;
++	dev_kfree_skb_any(skb);
++
+ 	return NETDEV_TX_OK;
+ }
+ 
 
+-- 
+2.34.1
 
-> 
->>   	/* do not check for static fd-non-iso if 'fd' is disabled */
->>   	if (!(maskedflags & CAN_CTRLMODE_FD))
->> -		ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
->> +		ctrlstatic_missing &= ~CAN_CTRLMODE_FD_NON_ISO;
-> [ ... ]
-> 
-> -- Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/ 
-> patchset/20261117220818.1142581-2-mkl%40pengutronix.de
-> 
 
