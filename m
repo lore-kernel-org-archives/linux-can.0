@@ -1,73 +1,73 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795126295;
-	b=Fe0BBBDUJ3vhFraexm5+4nSeFvA9cifX8ll/MznMm+958or97AbpZdwuXa+UXe/Y5l+t
-	 cQxujna632O612IHCBtNfQYf9+EF2jupS7+E+wm30BG0kmnoP4Nhv4DWaSqgtPiSoIFpM
-	 dS7n6XxPNkD933jf9r/pisEn/QkqKnoL0pjPuMSK0MDNtdyNziayiz/I6US8Yy32TItW7
-	 KfNA+2Ov4aHDVZ1YvWTD5PTHSdGiXWT97mdQpIrWebwl2z2khne9MksLUbQiLlu5Ogka8
-	 cHZfJYIxAV1mFtvU0EArDXiBI+v7c0kj71WhXktCrel277Z6zPmy32noIPbuIZtw7OA==
+	b=ubyzjxgngoc2sKLNVypIctOLZHWsEt+XU4YKJlrrdVwN9/Pd4/5WykGUUZNwIVy1OJIU
+	 4s2J6/oUgbYTB7JoEjWeOLO/hFuGHh/zolgYagycyvCBgEy50ScQFqmqzMjBUpxOmsKHb
+	 nGFkwPa+RhcZTPLsmXKL9ISS2oeB5d6x/7E50M2XsbOhNUhpidhSKE8xpeWexNZz4/s8u
+	 SnLxQCXCtlkXtQX6rCZk3s360Q9unjnPFQ3ivolG6ofePumD5oIy48Tnld6np8yLXQ/JG
+	 euTaicc59uSeYJki36dREfkrMH8yqIl+WgOdxWF90YBYUQyzLyLJdY7LM52r4AkROCw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795126295;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
 	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=Ui6zES4ZakF46pBLFIl8tQ9ISP3NVZw+yD2r11N/NRA=;
-	b=EcxXkYmXo0sUCdmjAdIkpst1iQG564Uxh4QSNCgt+5rQisQkoQO7LVZFOFG9SafEFksb
-	 bA5lFgU4wuK5aQ1tQWXGjZPX4DJU4gsNW0EEl3CoyUW7DJP4qmDPTO+c7h5pCql8ap4t8
-	 eCyoacHeJoNSBOSnmXaO062nLMUd8+PUyyGg73Ec+EjD0H7B1FB7vzTb4okWo/sBCcYZQ
-	 vrTPNChvyMxj7yjXw6jVDz0fo0jf8oYoaGOxALSJgyNOQZzMv1EMVUM803Gs9ONZ2CDwt
-	 C6WVd8QPkXtOXiaVav8jd1s0V1Zvk+S0SxvVuYL4CikPmcVRgP7wIKPbcEUu0bLI7iw==
+	 Content-Type:Content-Transfer-Encoding;
+	bh=pNq27cXcKEfdgYBBCEEM3zpAtrVhV45KuzwJebs7rvw=;
+	b=Az5/079Fp+Tude3KDYIR+E50TzMQ6mhGbp0BKANr+1hynvMhJ0WtZ6rKlKmlGd5LR7zl
+	 T6oadoQ/W6ehAPlrdZwDjqPZgv32wV74owVHGChdXW/q5LfEauvxM8PCLytAjW5QeWeA2
+	 nm+u34dJhz4iN9Fi553gyJCqiiyUfob2fSYRrXq/3lT/9kEYWd3TMyflS5/sy/EWXYF4V
+	 9FPgg0vY4GD5582o6Q9FTKmsQ3AyBTSkrY0DSAKID8Lm/NkSeaIVWOwTfToMzk0nDtiBg
+	 FEAoV5AE/bcviQgY6nY0p2gima+jkftTOUoHqpoFcvMdC3G2lJ3XUia20RiVSChkUsg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=U79OjNpc;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=R3Y83Ec1;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E4C606A326;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36E74606A32A;
 	Thu, 19 Nov 2026 22:11:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 36E4C606A326
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 36E74606A32A
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=U79OjNpc
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=R3Y83Ec1
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 35012205B35;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 324A8205B34;
 	Thu, 19 Nov 2026 23:11:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1795126288;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ui6zES4ZakF46pBLFIl8tQ9ISP3NVZw+yD2r11N/NRA=;
-	b=U79OjNpcZn26rCwlry0p0nD/0a3ewjXdkEZcSQ4vBy7OkKVWfX3ijej3/f3dJvctbUeHJn
-	o8ZDppnv9G4IEbetzR8XfdtG9D8hPkJQOVyi0W/l+/4B1VphlyKBwzkXaEXhux7C4djvZA
-	cmlmISVPdFSvXeKNwdfxSb02qZZ7du6+zH8JhZhvELoegShQq5dGUvuf8J83U0PlFcgHWU
-	slZ50toDb8w0imgIHtc9hfdAWffU0lLZY0etsJ6guAyr75WeTk/EmmG7bOeX5bi1k3kpF4
-	Okc8rm4Rl1bBkdNkoGGwiPorHbjKxpQXBsVmxI//lDtKpYs+zTvHXKpZqLNvAQ==
+	bh=pNq27cXcKEfdgYBBCEEM3zpAtrVhV45KuzwJebs7rvw=;
+	b=R3Y83Ec1Zg26qke+aKV+EGardKac3zGml4x/3G9d+28NfGY4rlWEMalx0k6bIA3kVtmSZk
+	SP5VMQ3j0iLc9uGbSraZHiQ2qlj5DHXJ6VNGPr2f4GklsUPmPDc2m3Y6Njx3mGIoR6Zonq
+	KGKpWb25vLL+tUkOovTOX1MMRNGoLf6+xHfbWZ6V9zuVYzoCuIAZB+UReiLCe9PEFIt2Z5
+	h5MD2w0O69YeWNfJ03LZgJFKTJrrLJ7HcV3bBFnVlU7Wulb8w11SkfbeQhZDrCu2l7vcdb
+	GKRxny1jXEDjJvTsFBN+U0+8ISvhkDk26oFUQnUIurAbLG3PJsQm7bCirS4VHg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1795126288;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ui6zES4ZakF46pBLFIl8tQ9ISP3NVZw+yD2r11N/NRA=;
-	b=KW0hM5VVdKtJ1VDUm9IUs13ZHHDYrQ5r6ysAwMO5r/kJDs0yEsPAaypLBT6Hbw4wvXOEYr
-	haMYPM242adOdjlpLKhHXtiGclOOpkRK+v+Hj0B3Py/wyGLZSSo3WeGmPgA/rOG2U9LZjU
-	Bb3t6PtToq1BUxIrTHSiq67Dz7IsDfNJX7JA+cegKI2cul9BmiBcTLT60rA6jQM4A51Wud
-	Xv0x0j7EqeBuooV7sa5fA4OeWKN/z3JwrnAOsP9+tLO+egAEECRjNkcxoLqYvz1epztjpm
-	XEIWc+mz0471tlyR9IDPGYG7dGkRL4y9HZm3ihWjPqE/YfjoVuiBgERf2kXfAQ==
+	bh=pNq27cXcKEfdgYBBCEEM3zpAtrVhV45KuzwJebs7rvw=;
+	b=PCh8vnI4vjXl6mwSrYa412NbsYzEHBp/nyH5/+1kO1u5vP4g1OFCwY4t4Pp9Rxk5ui8pmI
+	Yi6KsSzaHs+LWXxSU1PNFzDhLzuHUiJ+JN662DcvJPTTEykbzos5N0KJpgf/5ELASL3LbD
+	3oxvjoDHI+hqmS8P0KT0vMI+/3bMyneERyqRzR5qr66FmybDxzljnXplGh9LzBbzPhJxEZ
+	5awiFuwZnVuLXHPdHtP5deShAEjzp/VX+iOwlj2L+Adq0IFoKZZTiw2nLdoJLNMzFezmPH
+	0SbhkdkPU1LgjF75IZyhLC+6LjUKfqB+ue9I0oXbq8OzSLwRB/nJDdqiMGAt6A==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795126288; a=rsa-sha256;
 	cv=none;
-	b=f0OiLxSsmwQFmFMmgnY1TGhpuMajiw/gTsxM8Le8ImlmVOqYypuZ4M/YIJzptz+Wh+g77M
-	WsKWt5OBFCEAWWtsPhaE+I9j8dprrzn7+TpqlrZW/AV+B4ScBEQh4PU4ll0Z8ECdbVkWIa
-	oWnXN7Eq4ZxGrBSG/glZ3grcvOmWejwBRcr9+JOSJb3pqC8I+T2LdOaD+ChGrbOk+TVTKk
-	FF/nPgI8oBS0nMANUjLgI2IYqy3ENNINtxjXKZGuSpQWoG45JTt/+bjeMDa+/zfZ0vzslD
-	GLtb/hRhQ/Zb9WAxfXtn0Pa8JBFwzRWdt8GBChabHEiQNv0liWOUxlsYPtfYlg==
+	b=OxpKlDD3WnyikXULfyS/tWdBKCO/6PoTskPUUFUG2o9QXfQH43jP288phHW3L/AmAiGIre
+	tvPDeedVi6kVB6Um2/rtQdZ8Z1N1xav9fi0cd+VBrD5J0z0N4oI8k2dscBRMRQg27uAy/Q
+	GrnNRfiPG0E9NsLVShrCCOdyXpYd1PK22rh6/4BtnW8LLcaApCPqKVRN5y1BxZxNTwoHxZ
+	lgKjRehJ5HeJvu0Yu7Oy5onmB0HrtRdZTvla5+ek1rmVzvyoRy/iXsVXyAewitbVlD5RW4
+	7xbbB9lLhTicWBFKcPM5O35LhfBnDtPpGd/S9Xa9NkU048bT6DVNTUii3tcvqw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -75,14 +75,14 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xUALn-000Z68-1n;
+	id 1xUALn-000Z66-1g;
 	Thu, 19 Nov 2026 23:11:28 +0100
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id C8C795F0997;
+	by smtp.blackshift.org (Postfix) with ESMTPSA id C0E5F5F0996;
 	Thu, 19 Nov 2026 22:11:27 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
@@ -90,11 +90,11 @@ Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Triet Hoang <triet.hoang.dev@gmail.com>,
+	=?UTF-8?q?Magnus=20Aagaard=20S=C3=B8rensen?= <mas@csselectronics.com>,
 	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net-next 04/13] can: convert to DEFINE_SIMPLE_DEV_PM_OPS()
-Date: Thu, 19 Nov 2026 22:58:40 +0100
-Message-ID: <20261119220936.155728-5-mkl@pengutronix.de>
+Subject: [PATCH net-next 03/13] can: dev: remove unused safe_candev_priv()
+Date: Thu, 19 Nov 2026 22:58:39 +0100
+Message-ID: <20261119220936.155728-4-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261119220936.155728-1-mkl@pengutronix.de>
 References: <20261119220936.155728-1-mkl@pengutronix.de>
@@ -107,179 +107,61 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Triet Hoang <triet.hoang.dev@gmail.com>
+From: Magnus Aagaard Sørensen <mas@csselectronics.com>
 
-Convert the deprecated SIMPLE_DEV_PM_OPS to DEFINE_SIMPLE_DEV_PM_OPS and
-pm_sleep_ptr().
+After commit 4650ff58a1b9 ("Revert "can: raw: instantly reject unsupported
+CAN frames""), there are no other in-tree users of safe_candev_priv().
 
-This lets us drop the __maybe_unused annotations from the suspend and
-resume callbacks, also reduces kernel size in case CONFIG_PM or
-CONFIG_PM_SLEEP is disabled.
+Remove function and prototype.
 
-Signed-off-by: Triet Hoang <triet.hoang.dev@gmail.com>
-Link: https://patch.msgid.link/20260822074701.22856-1-triet.hoang.dev@gmail.com
-[mkl: remove ctucanfd]
+Signed-off-by: Magnus Aagaard Sørensen <mas@csselectronics.com>
+Link: https://patch.msgid.link/20261118-remove-safe_candev_priv-v1-1-a0083fbd5358@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/bxcan.c           | 8 ++++----
- drivers/net/can/m_can/m_can_pci.c | 8 ++++----
- drivers/net/can/spi/hi311x.c      | 8 ++++----
- drivers/net/can/spi/mcp251x.c     | 8 ++++----
- 4 files changed, 16 insertions(+), 16 deletions(-)
+ drivers/net/can/dev/dev.c | 12 ------------
+ include/linux/can/dev.h   |  3 ---
+ 2 files changed, 15 deletions(-)
 
-diff --git a/drivers/net/can/bxcan.c b/drivers/net/can/bxcan.c
-index 4bddd015775b..622c5d73e33a 100644
---- a/drivers/net/can/bxcan.c
-+++ b/drivers/net/can/bxcan.c
-@@ -1042,7 +1042,7 @@ static void bxcan_remove(struct platform_device *pdev)
- 	free_candev(ndev);
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 769745e22a3c..3207c0e08712 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -656,18 +656,6 @@ void unregister_candev(struct net_device *dev)
  }
+ EXPORT_SYMBOL_GPL(unregister_candev);
  
--static int __maybe_unused bxcan_suspend(struct device *dev)
-+static int bxcan_suspend(struct device *dev)
+-/* Test if a network device is a candev based device
+- * and return the can_priv* if so.
+- */
+-struct can_priv *safe_candev_priv(struct net_device *dev)
+-{
+-	if (dev->type != ARPHRD_CAN || dev->rtnl_link_ops != &can_link_ops)
+-		return NULL;
+-
+-	return netdev_priv(dev);
+-}
+-EXPORT_SYMBOL_GPL(safe_candev_priv);
+-
+ static __init int can_dev_init(void)
  {
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct bxcan_priv *priv = netdev_priv(ndev);
-@@ -1059,7 +1059,7 @@ static int __maybe_unused bxcan_suspend(struct device *dev)
- 	return 0;
- }
+ 	int err;
+diff --git a/include/linux/can/dev.h b/include/linux/can/dev.h
+index 346faddee02e..648abf2be478 100644
+--- a/include/linux/can/dev.h
++++ b/include/linux/can/dev.h
+@@ -110,9 +110,6 @@ struct net_device *alloc_candev_mqs(int sizeof_priv, unsigned int echo_skb_max,
+ 	alloc_candev_mqs(sizeof_priv, echo_skb_max, count, count)
+ void free_candev(struct net_device *dev);
  
--static int __maybe_unused bxcan_resume(struct device *dev)
-+static int bxcan_resume(struct device *dev)
- {
- 	struct net_device *ndev = dev_get_drvdata(dev);
- 	struct bxcan_priv *priv = netdev_priv(ndev);
-@@ -1076,7 +1076,7 @@ static int __maybe_unused bxcan_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(bxcan_pm_ops, bxcan_suspend, bxcan_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(bxcan_pm_ops, bxcan_suspend, bxcan_resume);
- 
- static const struct of_device_id bxcan_of_match[] = {
- 	{.compatible = "st,stm32f4-bxcan"},
-@@ -1087,7 +1087,7 @@ MODULE_DEVICE_TABLE(of, bxcan_of_match);
- static struct platform_driver bxcan_driver = {
- 	.driver = {
- 		.name = KBUILD_MODNAME,
--		.pm = &bxcan_pm_ops,
-+		.pm = pm_sleep_ptr(&bxcan_pm_ops),
- 		.of_match_table = bxcan_of_match,
- 	},
- 	.probe = bxcan_probe,
-diff --git a/drivers/net/can/m_can/m_can_pci.c b/drivers/net/can/m_can/m_can_pci.c
-index d11a7c88fc32..d31179312026 100644
---- a/drivers/net/can/m_can/m_can_pci.c
-+++ b/drivers/net/can/m_can/m_can_pci.c
-@@ -169,17 +169,17 @@ static void m_can_pci_remove(struct pci_dev *pci)
- 	pci_free_irq_vectors(pci);
- }
- 
--static __maybe_unused int m_can_pci_suspend(struct device *dev)
-+static int m_can_pci_suspend(struct device *dev)
- {
- 	return m_can_class_suspend(dev);
- }
- 
--static __maybe_unused int m_can_pci_resume(struct device *dev)
-+static int m_can_pci_resume(struct device *dev)
- {
- 	return m_can_class_resume(dev);
- }
- 
--static SIMPLE_DEV_PM_OPS(m_can_pci_pm_ops,
-+static DEFINE_SIMPLE_DEV_PM_OPS(m_can_pci_pm_ops,
- 			 m_can_pci_suspend, m_can_pci_resume);
- 
- static const struct pci_device_id m_can_pci_id_table[] = {
-@@ -195,7 +195,7 @@ static struct pci_driver m_can_pci_driver = {
- 	.remove = m_can_pci_remove,
- 	.id_table = m_can_pci_id_table,
- 	.driver = {
--		.pm = &m_can_pci_pm_ops,
-+		.pm = pm_sleep_ptr(&m_can_pci_pm_ops),
- 	},
- };
- 
-diff --git a/drivers/net/can/spi/hi311x.c b/drivers/net/can/spi/hi311x.c
-index ae90e6716de5..076a3efa1bff 100644
---- a/drivers/net/can/spi/hi311x.c
-+++ b/drivers/net/can/spi/hi311x.c
-@@ -972,7 +972,7 @@ static void hi3110_can_remove(struct spi_device *spi)
- 	free_candev(net);
- }
- 
--static int __maybe_unused hi3110_can_suspend(struct device *dev)
-+static int hi3110_can_suspend(struct device *dev)
- {
- 	struct spi_device *spi = to_spi_device(dev);
- 	struct hi3110_priv *priv = spi_get_drvdata(spi);
-@@ -1002,7 +1002,7 @@ static int __maybe_unused hi3110_can_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused hi3110_can_resume(struct device *dev)
-+static int hi3110_can_resume(struct device *dev)
- {
- 	struct spi_device *spi = to_spi_device(dev);
- 	struct hi3110_priv *priv = spi_get_drvdata(spi);
-@@ -1022,13 +1022,13 @@ static int __maybe_unused hi3110_can_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(hi3110_can_pm_ops, hi3110_can_suspend, hi3110_can_resume);
-+static DEFINE_SIMPLE_DEV_PM_OPS(hi3110_can_pm_ops, hi3110_can_suspend, hi3110_can_resume);
- 
- static struct spi_driver hi3110_can_driver = {
- 	.driver = {
- 		.name = DEVICE_NAME,
- 		.of_match_table = hi3110_of_match,
--		.pm = &hi3110_can_pm_ops,
-+		.pm = pm_sleep_ptr(&hi3110_can_pm_ops),
- 	},
- 	.id_table = hi3110_id_table,
- 	.probe = hi3110_can_probe,
-diff --git a/drivers/net/can/spi/mcp251x.c b/drivers/net/can/spi/mcp251x.c
-index 0d0190ae094a..d971890487b6 100644
---- a/drivers/net/can/spi/mcp251x.c
-+++ b/drivers/net/can/spi/mcp251x.c
-@@ -1490,7 +1490,7 @@ static void mcp251x_can_remove(struct spi_device *spi)
- 	free_candev(net);
- }
- 
--static int __maybe_unused mcp251x_can_suspend(struct device *dev)
-+static int mcp251x_can_suspend(struct device *dev)
- {
- 	struct spi_device *spi = to_spi_device(dev);
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-@@ -1517,7 +1517,7 @@ static int __maybe_unused mcp251x_can_suspend(struct device *dev)
- 	return 0;
- }
- 
--static int __maybe_unused mcp251x_can_resume(struct device *dev)
-+static int mcp251x_can_resume(struct device *dev)
- {
- 	struct spi_device *spi = to_spi_device(dev);
- 	struct mcp251x_priv *priv = spi_get_drvdata(spi);
-@@ -1551,14 +1551,14 @@ static int __maybe_unused mcp251x_can_resume(struct device *dev)
- 	return 0;
- }
- 
--static SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend,
-+static DEFINE_SIMPLE_DEV_PM_OPS(mcp251x_can_pm_ops, mcp251x_can_suspend,
- 	mcp251x_can_resume);
- 
- static struct spi_driver mcp251x_can_driver = {
- 	.driver = {
- 		.name = DEVICE_NAME,
- 		.of_match_table = mcp251x_of_match,
--		.pm = &mcp251x_can_pm_ops,
-+		.pm = pm_sleep_ptr(&mcp251x_can_pm_ops),
- 	},
- 	.id_table = mcp251x_id_table,
- 	.probe = mcp251x_can_probe,
+-/* a candev safe wrapper around netdev_priv */
+-struct can_priv *safe_candev_priv(struct net_device *dev);
+-
+ int open_candev(struct net_device *dev);
+ void close_candev(struct net_device *dev);
+ void can_set_default_mtu(struct net_device *dev);
 -- 
 2.53.0
 
