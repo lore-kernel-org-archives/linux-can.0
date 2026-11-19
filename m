@@ -1,60 +1,58 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=220.197.31.4
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795040362;
-	b=UcqCmkiGKcTDjIalgyvv/avtjW0bBaC7IbgNbn3gqGEy5VjYZg4xJ1xihssci6Tojjfw
-	 PjmmdXfV+jgLBmXQc6XvAaHHGfFepG13TEYrwzkDDCZwlGwzIQLitAt5Zu0vkRS8z3LAE
-	 3WvOqZLS54uZaR5eD/tFOFKkn56N3FvGdOFlthb40BxZHPb6EdrX9X8U1eJZufML13P54
-	 vT8SrdIAPJ2Qxu23w8mX/6dgrfcEPw6haJzPdivFclx27bAdHhGDzOmSSQYRmh5jshud4
-	 Ocft6nP/NrmxeGpm+aOfAEtpznnJ+GVKCwV99Xirzv8mcVgNnZnsj07XABnzO3MjuwA==
+	t=1795058066;
+	b=j/dqSVqdBHMJqrFRAwtGzH3KEdxG1di1q0NrO9NlyW5LsrVeZxVVY9Vbr8w8MCbWgydl
+	 X0WttXLhZwZrguwaENSlKl5/ykZSu+SO/xXin5aPdK+Us4VOQme5g1BLuVKGkOm2/UFWZ
+	 slOdxvMrASK4u9V6sLAPcQxIdWFIeYCTBIwxLf3xPW0DpRT3OifSEtJ2kmJtBV/R095Kq
+	 kPV+0xpWcYY+doX47YzWdPSxv1vzbVl9KDDdGLoSOnMcIIDljKAT3dcmpyRlRsaAxRF2I
+	 HTCab2cgFOmCnpg0O9Uz12z4OBIAoztX95jV3m11QadS4j0mgk+Ke4xRV9ZzHQIcd0g==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795040362;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=3B+8++5tpV3zDQLhadaZstF3q/rpXHwLZuqY72uKG7g=;
-	b=sNLBehbN1Yhs9qXR1tecuST/73NHxJ3dYZiVaMudIwOJinPjDuwyner2MDONiShdG3zx
-	 uC9Yym+bBYy0E+FhInqIKz2qazofOFBZx+YIM0Pwd2MRg+VzyhoIFkyZaGBgZSrzk/KUM
-	 7k82RxYITH8ZJ0FTixKqoNpSdpzPig2Y45ZfXjs+ixMOYkJdCg8HwbBwrItuq57E+7Am8
-	 4fWC6fN2e1fKgb0j0V96phCUlF70EcErUslgdxp3ZnykRZoOwCRpNTSmgS5JxnjBE7MCH
-	 /8wIYz5cUKW8mCFX0qLVKCZB8rnFP1i39jO5wZZEXw51iBnK1n3ZGjkd05QkqBOpWOQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795058066;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
+	bh=rTVCMUckF4OImfL/pZOEtpsAr6XvQh0ItXntMQmf5hQ=;
+	b=lEfcdJaVnTh5hs2iyH4sIuc1GWaK62y+3ZUWhDaoO2b8wmmaRWSh/dzxCZE717vDbR0q
+	 lleERlna0l7sD9cw0H2yufiI07IPssqZjEZ5um3n0FTu++PZptq0ItJ3m85jDScJL3gj5
+	 xCtEs2sfKuQMBGQs9cLlRyfKC9YtNzFg6wYT3DmSCtQn3QS4O1w7NM1o/LwYlBvINI/F2
+	 uj6MTu+3O9SoewgSzpNZraq21YMry86agdkVj4c6qfHeBWnETMvRJG4x3cRbW6a9cq993
+	 MZwV+UXZJAXFQhpl3Qee6A9UeWEP3z0vztSC/RCcmUQZHvkgeetSVFzGwk9SBEFjyzw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eK8gRSZX;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	dmarc=pass header.from=163.com;
+	spf=pass smtp.mailfrom=163.com;
+	dkim=pass header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=K0mLP1Yl;
+	arc=none smtp.remote-ip=220.197.31.4
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B135D60A2609;
-	Wed, 18 Nov 2026 22:19:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B09CB606A31C;
+	Thu, 19 Nov 2026 03:14:23 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org B09CB606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eK8gRSZX
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F167B1F000C8;
-	Wed, 18 Nov 2026 22:19:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795040362;
-	bh=3B+8++5tpV3zDQLhadaZstF3q/rpXHwLZuqY72uKG7g=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=eK8gRSZXgH6xcPpRcmVS6hygWlYjU7ahtHVUPO7lW7UnpVz6VoKtGughcg6naqa1u
-	 nIIXhik55oyQK3sbC8rSC1Hy6XRNr90cl9Sd64DAyjkU975vFZqqQ911gTOoSbcjIe
-	 h0WY0FP3SSff/KYLq/70iu2oNrxFFyuXvI4729zhsXEqQGfmmQHmn0qp7pDynxFB6G
-	 dLwd8gOMKIWVfFIzqdUimmVg93VebmSLlwF/vs2KxxtLq8W1zcIrXshRIr5L1j31br
-	 q14Hc+NMjU31Vv1RzVqiLf0zjB+dITglaKHBdg9m2IEDjXhlguI8hxjAos1VF8jC5x
-	 1wtj5KBOCtuyQ==
-Subject:
- Re: [PATCH net 08/11] can: netlink: fix static FD-NON-ISO mode validation
-From: netdev-bot+sashiko@kernel.org
-To: mkl@pengutronix.de
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, zhuling0805@qq.com,
- stable@vger.kernel.org, socketcan@hartkopp.net, mailhol@kernel.org,
- o.rempel@pengutronix.de
-Date: Wed, 18 Nov 2026 22:19:21 +0000
-Message-ID: <179504036152.3136.12444797036692057668@kernel.org>
-In-Reply-To: <20261117220818.1142581-9-mkl@pengutronix.de>
-References: <20261117220818.1142581-9-mkl@pengutronix.de>
-X-sashiko-severity: Low
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (1024-bit key, unprotected) header.d=163.com header.i=@163.com header.a=rsa-sha256 header.s=s110527 header.b=K0mLP1Yl
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=rT
+	VCMUckF4OImfL/pZOEtpsAr6XvQh0ItXntMQmf5hQ=; b=K0mLP1YlyItMdc1LF6
+	rJwUqY22/1oVGlC9RZ62Qh5B95yITrgy83bVSAPvsisBYnRvW6eoVM44U7NgEWHz
+	JPORw40zXoAy90mV5pW2LtNb5lcT4FoB+BQnQPisa31n/dCH7ft4k6HYIKsiHluG
+	DkifVjlJCjpqJ6/2Bfn9HyFms=
+Received: from localhost.localdomain (unknown [])
+	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wDnL4Bsaf5qld76Ig--.45716S2;
+	Thu, 19 Nov 2026 11:13:59 +0800 (CST)
+From: WEI Qinggang <stitchqgwei@163.com>
+To: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Shuah Khan <shuah@kernel.org>
+Cc: linux-can@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH can-next] selftests: can: cover CAN XL VCID getsockopt
+Date: Thu, 19 Nov 2026 11:13:28 +0800
+Message-ID: <20261119031328.625-1-stitchqgwei@163.com>
+X-Mailer: git-send-email 2.47.1.windows.1
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,88 +62,165 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_____wDnL4Bsaf5qld76Ig--.45716S2
+X-Coremail-Antispam: 1Uf129KBjvJXoW3WF4fAF18tFyfZrW5Zr17GFg_yoW7Xw15p3
+	WFyFyYyw4kJF13Xwn3Gr48uFWfXF4DJrW8Kr1xWryUZ3y7AF97XrsIkFWayry7ZrZYg39I
+	va4SgF15urWDJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UZzVnUUUUU=
+X-CM-SenderInfo: xvwl3u5ktj4vrl6rljoofrz/xtbC0hfR0Wr+aXcs4gAA3B
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+CAN_RAW_XL_VCID_OPTS returns the configured VCID options through
+getsockopt(). When the supplied buffer is too small, it returns ERANGE
+and updates optlen with the required size. Neither behavior is covered
+by the CAN selftests.
 
-Low priority / nit picks for your consideration:
+Add two tests to a separate test_raw_sockopt executable. Set nonzero,
+distinct VCID values and compare each returned field and the option
+length. Pass a buffer length one byte below the structure size and
+check the error and required length.
 
-- [Low] The patch fixes a second, older bug but tags only the newer one.
+Use an unbound CAN_RAW socket so the tests need neither a CAN interface
+nor vcan setup. Skip when CAN_RAW or the VCID option is unavailable.
+Register the executable with kselftest and request CONFIG_CAN_RAW.
 
---
+OpenAI Codex assisted with the implementation and commit message.
 
-can: netlink: fix static FD-NON-ISO mode validation
+Signed-off-by: WEI Qinggang <stitchqgwei@163.com>
+---
+Tested with GCC 13.3.0 (-Werror). On Ubuntu 7.0.0-43-generic in QEMU,
+both tests pass as root and as uid 65534 with only the loopback interface.
+Both tests skip with CAN modules absent and on WSL 6.6 without the VCID
+option. No vcan interface is created.
 
-This patch moves the "fd is disabled" exception for the static FD-NON-ISO
-mode in can_ctrlmode_changelink() from ctrlstatic to ctrlstatic_missing.
-That stops requests such as 'fd off' or 'loopback on' from being rejected
-on controllers with a static FD-NON-ISO mode. It also adds a check that
-rejects any request which explicitly switches off a static control mode.
+OpenAI Codex generated the implementation and commit message from a
+request for these two cases and ran the build and runtime checks.
 
-Link: https://lore.kernel.org/all/tencent_3A964832542399A780E646D6A6246335C409@qq.com/
-Link: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261115095746.709371-1-mkl%40pengutronix.de
-Link: https://patch.msgid.link/20261117-can-bcmlock-memcg-v6-8-6826a6227d36@hartkopp.net
+ tools/testing/selftests/net/can/.gitignore    |  1 +
+ tools/testing/selftests/net/can/Makefile      |  2 +
+ tools/testing/selftests/net/can/config        |  1 +
+ .../selftests/net/can/test_raw_sockopt.c      | 80 +++++++++++++++++++
+ 4 files changed, 84 insertions(+)
+ create mode 100644 tools/testing/selftests/net/can/test_raw_sockopt.c
 
-> diff --git a/drivers/net/can/dev/netlink.c b/drivers/net/can/dev/netlink.c
-> index 081dfddda0008..521e2496e2cc3 100644
-> --- a/drivers/net/can/dev/netlink.c
-> +++ b/drivers/net/can/dev/netlink.c
-> @@ -330,9 +330,17 @@ static int can_ctrlmode_changelink(struct net_device *dev,
->  		return -EOPNOTSUPP;
->  	}
->  
-> +	/* static control modes can not be switched off */
-> +	if (deactivated & ctrlstatic) {
-> +		NL_SET_ERR_MSG_FMT(extack,
-> +				   "static control mode %s can not be switched off",
-> +				   can_get_ctrlmode_str(deactivated & ctrlstatic));
-> +		return -EOPNOTSUPP;
-> +	}
+diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
+index 764a53fc8..f578c0821 100644
+--- a/tools/testing/selftests/net/can/.gitignore
++++ b/tools/testing/selftests/net/can/.gitignore
+@@ -1,2 +1,3 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ test_raw_filter
++test_raw_sockopt
+diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
+index 5b82e60a0..43ea4efac 100644
+--- a/tools/testing/selftests/net/can/Makefile
++++ b/tools/testing/selftests/net/can/Makefile
+@@ -6,6 +6,8 @@ CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INC
+ 
+ TEST_PROGS := test_raw_filter.sh
+ 
++TEST_GEN_PROGS := test_raw_sockopt
++
+ TEST_GEN_FILES := test_raw_filter
+ 
+ include ../../lib.mk
+diff --git a/tools/testing/selftests/net/can/config b/tools/testing/selftests/net/can/config
+index 188f79796..2fb0a7a18 100644
+--- a/tools/testing/selftests/net/can/config
++++ b/tools/testing/selftests/net/can/config
+@@ -1,3 +1,4 @@
+ CONFIG_CAN=m
++CONFIG_CAN_RAW=m
+ CONFIG_CAN_DEV=m
+ CONFIG_CAN_VCAN=m
+diff --git a/tools/testing/selftests/net/can/test_raw_sockopt.c b/tools/testing/selftests/net/can/test_raw_sockopt.c
+new file mode 100644
+index 000000000..e4175b8f6
+--- /dev/null
++++ b/tools/testing/selftests/net/can/test_raw_sockopt.c
+@@ -0,0 +1,80 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/* CAN_RAW socket option tests that do not require a CAN interface. */
++
++#include <errno.h>
++#include <sys/socket.h>
++#include <unistd.h>
++
++#include <linux/can.h>
++#include <linux/can/raw.h>
++
++#include "kselftest_harness.h"
++
++static const struct can_raw_vcid_options vcid_opts = {
++	.flags = CAN_RAW_XL_VCID_TX_SET | CAN_RAW_XL_VCID_TX_PASS |
++		 CAN_RAW_XL_VCID_RX_FILTER,
++	.tx_vcid = 0x5a,
++	.rx_vcid = 0xa5,
++	.rx_vcid_mask = 0xf0,
++};
++
++FIXTURE(can_raw_vcid)
++{
++	int sock;
++};
++
++FIXTURE_SETUP(can_raw_vcid)
++{
++	int ret;
++
++	self->sock = socket(PF_CAN, SOCK_RAW, CAN_RAW);
++	if (self->sock < 0 &&
++	    (errno == EAFNOSUPPORT || errno == EPROTONOSUPPORT))
++		SKIP(return, "CAN_RAW sockets are not supported");
++	ASSERT_GE(self->sock, 0);
++
++	ret = setsockopt(self->sock, SOL_CAN_RAW, CAN_RAW_XL_VCID_OPTS,
++			 &vcid_opts, sizeof(vcid_opts));
++	if (ret < 0 && errno == ENOPROTOOPT) {
++		close(self->sock);
++		SKIP(return, "CAN_RAW_XL_VCID_OPTS is not supported");
++	}
++	ASSERT_EQ(0, ret);
++}
++
++FIXTURE_TEARDOWN(can_raw_vcid)
++{
++	close(self->sock);
++}
++
++TEST_F(can_raw_vcid, getsockopt_roundtrip)
++{
++	struct can_raw_vcid_options opts = { };
++	socklen_t len = sizeof(opts);
++	int ret;
++
++	ret = getsockopt(self->sock, SOL_CAN_RAW, CAN_RAW_XL_VCID_OPTS,
++			 &opts, &len);
++	ASSERT_EQ(0, ret);
++	EXPECT_EQ(sizeof(opts), len);
++	EXPECT_EQ(vcid_opts.flags, opts.flags);
++	EXPECT_EQ(vcid_opts.tx_vcid, opts.tx_vcid);
++	EXPECT_EQ(vcid_opts.rx_vcid, opts.rx_vcid);
++	EXPECT_EQ(vcid_opts.rx_vcid_mask, opts.rx_vcid_mask);
++}
++
++TEST_F(can_raw_vcid, getsockopt_short_buffer)
++{
++	struct can_raw_vcid_options opts = { };
++	socklen_t len = sizeof(opts) - 1;
++	int ret, saved_errno;
++
++	ret = getsockopt(self->sock, SOL_CAN_RAW, CAN_RAW_XL_VCID_OPTS,
++			 &opts, &len);
++	saved_errno = errno;
++	ASSERT_EQ(-1, ret);
++	EXPECT_EQ(ERANGE, saved_errno);
++	EXPECT_EQ(sizeof(opts), len);
++}
++
++TEST_HARNESS_MAIN
 
-[Severity: Low]
-Should this patch also carry a Fixes: tag for commit c9e1d8ed304c ("can:
-dev: replace can_priv::ctrlmode_static by can_get_static_ctrlmode()")?
-
-The commit message says this check closes a bug that existed before
-6742ca18cb41:
-
-  "before the above mentioned commit a request like 'fd-non-iso off'
-  passed the check and removed the static CAN_CTRLMODE_FD_NON_ISO bit
-  from priv->ctrlmode. As can_get_static_ctrlmode() derives the static
-  modes from priv->ctrlmode, this information was lost permanently."
-
-The permanent loss comes from can_get_static_ctrlmode() in
-include/linux/can/dev.h, which was added by c9e1d8ed304c (v5.17):
-
-    return priv->ctrlmode & ~priv->ctrlmode_supported;
-
-Before c9e1d8ed304c, priv->ctrlmode_static was a separate field, so this
-path could not clear it.
-
-In trees that have c9e1d8ed304c but not 6742ca18cb41, take M_CAN v3.0.x or
-v3.1.x, or pcan_usb_fd with firmware < 2.x. A request with
-mask=FD_NON_ISO, flags=0 and FD not switched on passes the check. Then
-'priv->ctrlmode &= ~cm->mask' clears the static bit. A later 'fd on' is
-accepted and reported as ISO mode, while the hardware stays non-ISO.
-
-The only tag is:
-
-    Fixes: 6742ca18cb41 ("can: netlink: add userland error messages")
-
-With only that tag, will the stable tooling skip this fix for LTS trees
-such as 6.1, 6.6 and 6.12? Those trees also lack ctrlstatic_missing, so
-the patch would not apply there as is.
-
-Would a second Fixes: c9e1d8ed304c tag help here? Or a note that older
-trees need a separate backport?
-
->  	/* do not check for static fd-non-iso if 'fd' is disabled */
->  	if (!(maskedflags & CAN_CTRLMODE_FD))
-> -		ctrlstatic &= ~CAN_CTRLMODE_FD_NON_ISO;
-> +		ctrlstatic_missing &= ~CAN_CTRLMODE_FD_NON_ISO;
-
-[ ... ]
-
+base-commit: 573af801552999954caa8347e4490b04cf4763f0
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261117220818.1142581-2-mkl%40pengutronix.de
+2.47.1.windows.1
+
