@@ -1,84 +1,90 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795087181;
-	b=rN7rKDau5NmuLlGG0iHyvNmxXjY7oBN4I/V0tKlXFoIF1pkg7i0znTl9X651T62uZbcK
-	 ZhiZZai9/0hGV6v3L6xGMi/daML54BQMsTGE71cQte/lI8JAcl67CScFOZQ70Wfo8B53U
-	 KWCiNn3Ilv/sllk3luU9fJEcjKxarAaJvepMP4OIVgS1Jk0nxr0x+rYcy7T7IHF0iIwrJ
-	 SWhm+6l8KDbY3jnwO9hzmQzXvzcKvh8cIj+Y69yBuMvd9GmzORdRzIZMU21KYPzfCwABa
-	 K7zWW7pmybrbcNZfBj8VexFqvYOF3o+eb4S5Lx8ntJAot/OuIqc1XApF1TSYuv7G3gw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795087181;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=ovjOSxDz0rrZAUrt6MaZMN6vIlGcphoYgirIQE4EbNs=;
-	b=2hIRT+6/B8ZHnZRhkEVbJ5PImuqUa3AKqZhaq6MXH5txAIG4C4UPyX1muj/hJ8J1hNoC
-	 asDDrD6GxoBiENO2zubTnYFct0i0GaGCexkg5rBrw/1L2rXlX6m1E4io0i4Etm1ZNVNoi
-	 Uw8kNEu1/ujhrxlHS7L51v7LicAlQgCxU4GcTY74E2YFSQ6Hzf7X4owiZvmRAIemAclCv
-	 kntAcySL58M9tZ6foBku05Q5jVKiT+7WH78ZQG5nG8quQszxoJAI6L7Zy992Q0o+BmpNX
-	 YctdqEBC7IF03ZfF/iTH3LiM6cvQQkdVLrQudbUoHu1SoQ5nAexgrn2pgs1lrVBqxGw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Uua8QaHT;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=44.202.169.39
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795107113;
+	b=FKklB/zaSv1OaYxRBa88+zHgnNySb7Zz4fOXVfWPBhkd7Jy4s27qmhIjFAsVBslr1rBm
+	 sD+lAYIAFNx4M6FkdNrUKCp40N6jc4Y3EspsFYlLQwEunAMEIkYyDDTBt1o22vIfAjtW4
+	 Igdkp24L7nwceEoaoQON+rvVD9lAHcEDgHRsCbz8UORYXv2lkJpqSnjAnGo7ydz2VGrBZ
+	 A+ACPRQlRa/a09JSfUweRsBEu9ZdVakdz9FRqtkw0vgXumC4Vo9b+TIVvNe0DlqwOJsXD
+	 ID4C1LYHaKWSwTu8esw2+xjgAcvv9LBKcferEu5xgaJzD4jLYsobi1AUCWj4QXnQs/w==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795107113;
+	h=DMARC-Filter:Received:Received:X-Authority-Analysis:DKIM-Signature:
+	 Received:Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To:X-AntiAbuse:X-AntiAbuse:
+	 X-AntiAbuse:X-AntiAbuse:X-AntiAbuse:X-BWhitelist:X-Source-IP:
+	 X-Source-L:X-Exim-ID:X-Source:X-Source-Args:X-Source-Dir:
+	 X-Source-Sender:X-Source-Auth:X-Email-Count:X-Org:X-Source-Cap:
+	 X-Local-Domain:X-CMAE-Envelope;
+	bh=VyuLjUWlndm/ZBOLKhEN/lw43++AjMQwOBflJ5LOk6s=;
+	b=4tFNxnO4rfjynEpaP7GhGjPaJ5Ictxozi8w4ypYwNaR2LieTAOP2Hu75FRwynostwLk4
+	 jBsWpzT3Pm3n2EdIfuJPEdISXkuaDTDqM6iN2OlGxW+2aHNGVE9r7I0ztLfZPugaG6DdE
+	 2YZnd0CLbOEmbSMOcEEmlYLiK1ItSbXLqtKRZx+isr+4Q37aALYg7t/Lmwxkz5zwOnye0
+	 +dwFNX4rKTS7LBUZHyq31sND6JC9KKkZm/DRRot4pfQ1r0QLWqVBRfX9FMTMQwt0hS5pb
+	 WFBz4MqBEWZSYfuCZfkC5+dkjWsk24Mff5uHwAWjHodRX+QQ55A7vW9fXXBnNGAXIlQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=none header.from=roeck-us.net;
+	spf=fail smtp.mailfrom=roeck-us.net;
+	dkim=pass header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=TpqgAi2t;
+	arc=none smtp.remote-ip=44.202.169.39
+Received: from omta040.useast.a.cloudfilter.net (omta040.useast.a.cloudfilter.net [44.202.169.39])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645B3606A320;
-	Thu, 19 Nov 2026 11:19:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 645B3606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B39E606A324
+	for <linux-can@vger.kernel.org>; Thu, 19 Nov 2026 16:51:53 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6B39E606A324
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Uua8QaHT
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 909142021AD;
-	Thu, 19 Nov 2026 12:19:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795087179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ovjOSxDz0rrZAUrt6MaZMN6vIlGcphoYgirIQE4EbNs=;
-	b=Uua8QaHTggtjdIBtQPk3/qef6/e3N+9JKI+CMGRThED4CKGVmx1lMei+MjTWJA7V4PdCSr
-	A+odGnIIEla31+Sm+bX+CryaPszcQC9Tl/meyIFBIcz6R8lICfi7HPpBO6fVZrhnJnmI0V
-	LdwBFX2ZawMvgO0O/t8y518wnPpPBp6DXAvDtQvvy/qu/iyGLTbzkcYh5DYCxG3E8l53cq
-	tjZlETqja/gWUC9UVwkarHAFoiq9lACBHQCU7Uc3NDfdIV5L7pXStk5kuyJEqUIgI/2hpB
-	zTLNU33fl0fgikDr7DMSJKVp1zwSsS4zCFodJ+ECxCO6qPvDW0Jq0BsoZ2jLOg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795087179;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ovjOSxDz0rrZAUrt6MaZMN6vIlGcphoYgirIQE4EbNs=;
-	b=eehVWcB4dvt7rwTNhQOucQdt4IWjQuL6n3pB/Svc+Cm76Z1YoCPlNIFJUjilsszYIyVUO5
-	nHsqHbnb+fSDxESIK+WVJCqcma5GELR15KaNSsVSHNoCXLaWgTEb2Wfd+fzxONFE9H0OvE
-	yauIGrr6Tj5Kl66zmNBRbXIfWQ4xaq3CeLfDZz7yjqdWkpaKQ8OrKhH6vTA9x0Muod6lGr
-	j4FaRABZGaZxXFRKRfuXkzppqE2IhUWIF3tmUt+M32RDT9o7IH5XdqnaWX2KGTt/Wes4JW
-	iNN0pp8lqq7mQvSJ9HpZmN6ilZ2xxJ3LfogOhx7Pwp8z7IGCdRJudynQqhxeDw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795087179; a=rsa-sha256;
-	cv=none;
-	b=NwKNadOrBBZqUz4V0yayIaXb2JFfE5hm//Pje+5DiJYSJ8IbuLngNkLRa27CXT6X4kWonX
-	ZqANIcVNutijPC1scFI+qXig/HdtSx9EF69v8yMzCXqpEG2ooEqen8aqpciA1Yv/rr8VgJ
-	NS7UOJr5czA1jzOel7+p2A9BEVrZvTZfjsvesoD0KONIsCsw+KpwX6c8HLRXCCkk/9wwcV
-	ZNNziHQVwOx9pXKK8wkb7nyMifU7IdoGB4e9um3jh61j76+72l19E3LgZonLfnBGcT9hHZ
-	mgD5fcGFRploflle9jU9/2nHQO/+XPOoarCl2CkbrUFS1PrrooaPxMMyvK6oPg==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Date: Thu, 19 Nov 2026 12:19:39 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: netdev-bot+sashiko@kernel.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org, 
-	linux-can@vger.kernel.org, kernel@pengutronix.de, socketcan@hartkopp.net, 
-	dev.kurt@vandijck-laurijssen.be
-Subject: Re: [PATCH net-next 04/12] can: convert to DEFINE_SIMPLE_DEV_PM_OPS()
-Message-ID: <20261119-sophisticated-okapi-of-flowers-97986b-mkl@pengutronix.de>
-References: <20261118092955.1283165-5-mkl@pengutronix.de>
- <179508206819.3136.5143765579402417874@kernel.org>
+	dkim=pass (2048-bit key) header.d=roeck-us.net header.i=@roeck-us.net header.a=rsa-sha256 header.s=default header.b=TpqgAi2t
+Received: from eig-obgw-5005b.ext.cloudfilter.net ([10.0.29.189])
+	by cmsmtp with ESMTPS
+	id U3Vex0n7QOOJnU5MWxdZPR; Thu, 19 Nov 2026 16:51:52 +0000
+Received: from 162-215-252-36.unifiedlayer.com ([208.91.199.152])
+	by cmsmtp with ESMTPS
+	id U5MVxYYCtYskhU5MWxr1xU; Thu, 19 Nov 2026 16:51:52 +0000
+X-Authority-Analysis: v=2.4 cv=CKMqXQrD c=1 sm=1 tr=0 ts=6aff2928
+ a=QNED+QcLUkoL9qulTODnwA==:117 a=2cfIYNtKkjgZNaOwnGXpGw==:17
+ a=kj9zAlcOel0A:10 a=zJRp6_cAMcgA:10 a=M0FbrtG7MMAA:10 a=pGLkceISAAAA:8
+ a=VwQbUJbxAAAA:8 a=_jlGtV7tAAAA:8 a=IvRCNjoTNcy513YpXOgA:9 a=CjuIK1q_8ugA:10
+ a=nlm17XC03S6CtCLSeiRr:22 a=KPbNTLLc3YvdawN95zVk:22
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=roeck-us.net; s=default; h=In-Reply-To:Content-Type:MIME-Version:References
+	:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding
+	:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Unsubscribe-Post:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=VyuLjUWlndm/ZBOLKhEN/lw43++AjMQwOBflJ5LOk6s=; b=TpqgAi2tfvQr8FgT+aFEOK34fc
+	3BysAvJ3YX/SX8uqux912onyChgt5l0XwEoTIgfdY/1lBqm7IMEn6J/8+aGDb33+H/lB0s39d8TnS
+	B/mahwJPkIOGTLThSks0Cv7GF3nMMo6zlRDfPMzlIeFRp9S3LTTVWZufQrV0ZuSjvXLVk22NZBLiK
+	yUFAn+/tHSSCR2K7Qwjn6LLS07jB3IqxBZT+nL1igRkeT+1J9R9vZmtSKE6ONG5T/SUrA+Iy9o6GO
+	5YMPBYf8w1IaGxuiT/Nu5jdGrHh0xkEPD6ST9rtP5aNBQ4Dz6xwFiqbxswfmDbLD7C/DiRRdR6cpi
+	qSo3ZOzQ==;
+Received: from 108-223-40-66.lightspeed.sntcca.sbcglobal.net ([108.223.40.66]:56426 helo=server.roeck-us.net)
+	by bh-25.webhostbox.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.100.1)
+	(envelope-from <linux@roeck-us.net>)
+	id 1xU5MU-00000003LGz-3x54;
+	Thu, 19 Nov 2026 22:21:51 +0530
+Date: Thu, 19 Nov 2026 08:51:49 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: a0282524688@gmail.com
+Cc: lee@kernel.org, Ming Yu <tmyu0@nuvoton.com>,
+	Linus Walleij <linusw@kernel.org>,
+	Bartosz Golaszewski <brgl@kernel.org>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, linux-i2c@vger.kernel.org,
+	linux-can@vger.kernel.org, linux-rtc@vger.kernel.org,
+	linux-watchdog@vger.kernel.org, mfd@lists.linux.dev
+Subject: Re: [PATCH v10 06/13] mfd: nct6694: Move module type macros to
+ shared header
+Message-ID: <670e71a1-6f47-4d27-ae6d-10c24c66e34c@roeck-us.net>
+References: <20261118081625.2399247-1-a0282524688@gmail.com>
+ <20261118081625.2399247-7-a0282524688@gmail.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,86 +94,77 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="scsbncfo4wxaccno"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <179508206819.3136.5143765579402417874@kernel.org>
+In-Reply-To: <20261118081625.2399247-7-a0282524688@gmail.com>
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - bh-25.webhostbox.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - roeck-us.net
+X-BWhitelist: no
+X-Source-IP: 108.223.40.66
+X-Source-L: No
+X-Exim-ID: 1xU5MU-00000003LGz-3x54
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
+X-Source-Sender: 108-223-40-66.lightspeed.sntcca.sbcglobal.net (server.roeck-us.net) [108.223.40.66]:56426
+X-Source-Auth: guenter@roeck-us.net
+X-Email-Count: 9
+X-Org: HG=direseller_whb_net_legacy;ORG=directi;
+X-Source-Cap: cm9lY2s7YWN0aXZzdG07YmgtMjUud2ViaG9zdGJveC5uZXQ=
+X-Local-Domain: yes
+X-CMAE-Envelope: MS4xfHvUZE1xX6/89dkpoPhJnKx7L/eoXtSQtv22q6mgjW7Hivkh+gSaudUXOn5cPTc3KmgLZhfuVcBVfZ0OY4nl95J9reRKsew/JLsw4JrN5Oc7g/NUiy2Y
+ uK+IA6/f1tcJ9LkjJ/lOFBYByy07dHDyNdxYmhJqIx2/w4WVDX0MBDWKpH8iRncUsv3pGE12Mx6nVZq+YXsTzGNYt6Sbvw4ylDQHyOiQ2+UxZe6jiuDaRSWk
 
+On Wed, Nov 18, 2026 at 04:16:17PM +0800, a0282524688@gmail.com wrote:
+> From: Ming Yu <a0282524688@gmail.com>
+> 
+> Each sub-device driver defines the module type used by its own
+> commands. The upcoming HIF transport also needs to recognise
+> NCT6694_RPT_MOD, as report accesses are served from a separate
+> register space rather than through the command mailbox.
+> 
+> Move all module types into the shared header so that the transports
+> and the sub-device drivers use a single set of definitions.
+> 
+> No functional change.
+> 
+> Reviewed-by: Andi Shyti <andi.shyti@kernel.org>
+> Signed-off-by: Ming Yu <a0282524688@gmail.com>
+> ---
+> Changes in v10:
+> - None.
+> 
+> Changes in v9:
+> - Added Andi's Reviewed-by.
+> 
+> Changes in v8:
+> - Reworded the commit message to explain why the transport needs the
+>   module types.
+> 
+> Changes in v7:
+> - None.
+> 
+> Changes in v6:
+> - None.
+> 
+> Changes in v5:
+> - Split from the monolithic v4 patch to follow the single logical change
+>   principle.
+> 
+>  drivers/gpio/gpio-nct6694.c         |  7 -------
+>  drivers/hwmon/nct6694-hwmon.c       | 21 ---------------------
+>  drivers/i2c/busses/i2c-nct6694.c    |  7 -------
+>  drivers/net/can/usb/nct6694_canfd.c |  6 ------
+>  drivers/rtc/rtc-nct6694.c           |  7 -------
+>  drivers/watchdog/nct6694_wdt.c      |  7 -------
+>  include/linux/mfd/nct6694.h         |  9 +++++++++
+>  7 files changed, 9 insertions(+), 55 deletions(-)
 
---scsbncfo4wxaccno
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net-next 04/12] can: convert to DEFINE_SIMPLE_DEV_PM_OPS()
-MIME-Version: 1.0
+For hwmon and watchdog:
 
-On 19.11.2026 09:54:28, netdev-bot+sashiko@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found more severe
-> issue(s) in other patches of this series. This mail is only an FYI, in ca=
-se
-> you want to address the nit picks below when you respin.
->
-> Low priority / nit picks for your consideration:
->
-> - [Low] For the ctucanfd glue drivers, the commit message's claim that
->   the conversion "reduces kernel size in case CONFIG_PM or=E2=80=A6
->
-> --
->
-> can: convert to DEFINE_SIMPLE_DEV_PM_OPS()
->
-> This converts seven CAN drivers from SIMPLE_DEV_PM_OPS() to
-> DEFINE_SIMPLE_DEV_PM_OPS() and wraps the .pm pointers in pm_sleep_ptr().
-> It also drops the __maybe_unused annotations from the suspend and resume
-> callbacks.
->
-> Link: https://patch.msgid.link/20260822074701.22856-1-triet.hoang.dev@gma=
-il.com
->
-> > diff --git a/drivers/net/can/ctucanfd/ctucanfd.h b/drivers/net/can/ctuc=
-anfd/ctucanfd.h
-> > index 0e9904f6a05d6..7dcd7dc507e49 100644
-> > --- a/drivers/net/can/ctucanfd/ctucanfd.h
-> > +++ b/drivers/net/can/ctucanfd/ctucanfd.h
-> > @@ -76,7 +76,7 @@ int ctucan_probe_common(struct device *dev, void __io=
-mem *addr,
-> >  			void (*set_drvdata_fnc)(struct device *dev,
-> >  						struct net_device *ndev));
-> >
-> > -int ctucan_suspend(struct device *dev) __maybe_unused;
-> > -int ctucan_resume(struct device *dev) __maybe_unused;
-> > +int ctucan_suspend(struct device *dev);
-> > +int ctucan_resume(struct device *dev);
->
-> [Severity: Low]
-> This isn't a bug, but does the size reduction in the commit message hold
-> for the ctucanfd drivers?
->
->   "also reduces kernel size in case CONFIG_PM or CONFIG_PM_SLEEP is
->   disabled."
+Acked-by: Guenter Roeck <linux@roeck-us.net>
 
-looks valid.
-
-pw-bot: cr
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---scsbncfo4wxaccno
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCav7bSAAKCRDMOmT6rpmt
-0i57AQCSDHjg8SlfcIO7OklL7VSP/MXkLxhNll4wSXZ4b9qtDAEAq7xvQVjV2Ex/
-3NkJS8G3o+wFTAEItc2E1i8EJkRl3AU=
-=Y/YN
------END PGP SIGNATURE-----
-
---scsbncfo4wxaccno--
+Guenter
