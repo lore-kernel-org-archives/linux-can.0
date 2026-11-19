@@ -1,79 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795077597;
-	b=WbnlYlaZndw6AdLJxiQSk1yJiQFne6ma1+LaN9yDTJk3XeacGAW6Lwa9rBO0H+cQHuNq
-	 CySw+ZEtFUsOneBqHw6cRvCqdasEh7sI1fMxLCrwc7uwP8WwxqcmvxpKA51MJ+9xGqYHY
-	 3kKC1Rv1BejDYDzW6xbV6mWJknGLcH5fW28YWYLcPHR31ir3H+EZ1GgGni9cCZ/GzVIE8
-	 5coBvvyHd4aNI7/H3KH4Ht8Sbs0XZmvGS96OeQqGKLpZCcOteftz4kD04fQca7aPbKaYH
-	 oMxq1NsjXA9kl3NwlKc81Azs2YtXTNwu9sjAp3CEJrbCGkXYl76ywDfNeoSAmf7Kptw==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795077597;
-	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
-	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=ZiLoLmU3ej16vGNuZXg1NNjxseA9K6QpUjZSYUoSksI=;
-	b=OFozqkOeCfBAxNZqrIkFagkZOr88J93XR2X9nvH1hReImwJ5oKud6Fkw/jtT7y7uEhwy
-	 9xz6fE0KxazVaVwt+EpAn79b8i5GCiJo1h+EEHL7i1j3WGuw8IsUsHfoS4F7xVuX/fktX
-	 XwnYgHclAvtQHVB0sBn6eDrLFf6PqSTmrrgyRjhv5DTSHZDFYefkz5ppeo25LU7h1bHWQ
-	 MDPlEuKlcVysklME/KYqwozYiGcitahKOiBlVzkqOCxUac+IRO5dk8ZIgcVB6kmEFA4zq
-	 JQHecCjVH4tU/XIcdVRyupVkX57kpTTV6F6o8EuImlTXO+wrD3SCafeOf8wX/CoVKVA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OtuFythm;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BB9960A6F7A;
-	Thu, 19 Nov 2026 08:39:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=OtuFythm
-Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
-ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
-	t=1795077597;
-	b=YZweZSltCbxzYg3gIFFkstptEhqB5/nwNkojg1jO/zaOdEFrVr2bckQgIm5cTLJrTWUt
-	 ymOnYcKlIY5eVOsQyCxTf8htiWdzbWF/p58o9OyFZ2TBaTDFNgKdJidAVIevLldzq+rSk
-	 znRBIsGabzsqhOxNc+ltCiAdMDEawtUGHWWqSSK7TRJPw/qpxCJR59zAiMmF9H7Bkjk7a
-	 IFZx3O0yY+pOPNASa3PkRUavHEWA1FXs/6W8zjDir0ni5hhL3kXMLLDjoC5OICubO4Lfq
-	 qlM944UDqKQd0n7VRzkO5asEPFPWwqZ+vOPMONtHH2sxV4sy+O3YQ3wDeuUOGsT6wIA==
-ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
-	c=relaxed/relaxed; t=1795077597;
-	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
-	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
-	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
-	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=ZiLoLmU3ej16vGNuZXg1NNjxseA9K6QpUjZSYUoSksI=;
-	b=OJvKyrc6uftavVDVaSQD/Pmej3os4jIvqztzEqOteHTe4VBmgOEGrqMEaQwuhZw+b73A
-	 D+u6aiPUja/bZoJVHiS6f4XD9nf0VqPdDqNURtjVeOG3S4aqfeAzDF5QWL5Zb4+k4zieu
-	 rcXkGGSrRnojGr4CTAD7c8pLmvTzoWUzIRWo8kAsFI8ikPuOyGAahlHqxmz7+P50fWX4A
-	 wWbZSW/GBwo3APYS/AV+b9jXYR7SFkTBgcRRQLfyZPKGcqeKuc+Mb27IjFBXlF2fYJpOz
-	 FpMUbpu5VnpvbkCrdnoAz1ynXBohhAY0vF5S8FCnbHn/zaydn0NviXg4eQveEw7dgtA==
-ARC-Authentication-Results: i=1; smtp.kernel.org; 
-	arc=none smtp.remote-ip=100.80.115.77
-Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=79.135.106.26
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795078433;
+	b=ruDPnaAp4lHbC96Mpyhk+MI3TMn8RxNYkIqNqNSChgSLyzIy417VDw0wXDKHo0ttpUu5
+	 6kcVnoB9ZWj0qFNzmknBhUCcqVfmThCjB69AgZKGb/1ECTjnBLnV8n6pQJdic7Lg5EE69
+	 XpuntN3P4UgVRchro2EFq/C4aLeDt3pukXeMa9ys59DUy+PGlrfM6sJHW7bPjTi+BOMEq
+	 vXDFN9wVAtemlS8Vwccfze/jnwemSsH6/fcGmyMxkg7kdOrdcFDlta2EVxl2qcc4q8mCc
+	 C+zckAn3ptf7I0M41FbZDipTB0hQbcZlqxCGj6veYhjNjHrTlJH2qiLshaVR6eSD+ig==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795078433;
+	h=DMARC-Filter:DKIM-Signature:Date:To:From:Cc:Subject:Message-ID:
+	 Feedback-ID:X-Pm-Message-ID:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=QJI+KfUGVHKEr1mdTWXtz7Qv+CTEib6/inHublf4J/w=;
+	b=sCc0cB5eMrhJh0l9l/ZeUBVl8w1cS29Ow+4FZ18jYn+3Oo5VNox7JxVDyJsE7vzJkcCV
+	 HtjTYQ/yi6+f60oY+GEvTN2zsGZD6ZM6lPqKCLvFBUAR4r84WT2HiaUkZxueyfAISPzJ0
+	 hARm5kK7MpQquFA30XJ4luxTfQsrvX2Pv7CdXSf+F7dhXnTD4q8KpgIxRhUbdKBsN2R8Y
+	 +cZYvpw8pRKLYetGMHRveZbWGyvMhMcs52Dif9F4VVsP2sGR8odakl86qD3wG1GSQQ5qv
+	 Elig0lQT/ZHiM8ZpJteLUJ+mY23UvENwEp2VA5rua9l3zRsAB/ozIr36UaE9S06un0A==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=becholey.ch;
+	spf=pass smtp.mailfrom=becholey.ch;
+	dkim=pass header.d=becholey.ch header.i=@becholey.ch header.a=rsa-sha256 header.s=protonmail header.b=L7AkpQ+z;
+	arc=none smtp.remote-ip=79.135.106.26
+Received: from mail-10626.protonmail.ch (mail-10626.protonmail.ch [79.135.106.26])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id 5ED1E1F00929;
-	Thu, 19 Nov 2026 08:39:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795077597;
-	bh=ZiLoLmU3ej16vGNuZXg1NNjxseA9K6QpUjZSYUoSksI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=OtuFythmLOh0Qhhv9A178iPwCFOjLj6dDSvpvhvk8cp3q8pmjVLaqzByDP7FhOtX5
-	 tCP04nItfhUzVSb/IFFxe0wopybyQ/yPpy78Z5ALz8b3TMvFpWa6xn06BAWLXRCfmG
-	 vEtZ7xjw/pQlSMeBkivVVYH0miZ0XcmsoWneH24ai1WlPT22TI5HIxFbAkrZgRUiuD
-	 9PCkRmMMoIeIyWW/p8Rc25n+QoZ40p8ddkBt0kJtd3nZDL93zGK2SY/Xt1vxKEa3FZ
-	 Di0kd423+UpzXN/reNl02BOGJqEP0OLv+aXtvrH+9QWWhGOCTEH6dPeMjJSbFJ2IEx
-	 PnKf13sUOpbrQ==
-Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 0F9384B1C2;
-	Thu, 19 Nov 2026 08:39:50 +0000 (UTC)
-From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
-Date: Thu, 19 Nov 2026 16:39:49 +0800
-Subject: [PATCH net v10 08/10] can: rockchip_canfd: retry the outstanding
- TX buffer
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96331606A326
+	for <linux-can@vger.kernel.org>; Thu, 19 Nov 2026 08:53:51 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 96331606A326
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=becholey.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=becholey.ch
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=becholey.ch header.i=@becholey.ch header.a=rsa-sha256 header.s=protonmail header.b=L7AkpQ+z
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=becholey.ch;
+	s=protonmail; t=1795078429; x=1795337629;
+	bh=QJI+KfUGVHKEr1mdTWXtz7Qv+CTEib6/inHublf4J/w=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=L7AkpQ+z49ZYKPf42RN3NKx8zjEvogc+9fHXwRqhYG5grMjg49JLPMTl33ZCVxXeY
+	 Pvjr9hmnM5XHEo2Fy3ZdZkhslhVPpmvmhRNIdUhJYdViNcM+n6WC4xRa7LZce2U9+0
+	 swhN+guKwokonydku1OYEoVdJU4odQtRCLWWBtwqRIaffLACMXbKY5uRTB88Y2zeql
+	 9Lv40K9pbkuRUNe4KA2MZFhbkSXvEJiGU/ChLvZg5Qp7B9LbwkLJkUSKP00GJ9Dh0f
+	 ra70HAgvnoCdod5p84v+lzVtnTTTsC76b/3liwG7fptDY+wf8/wwuty0kO8GsvUYGH
+	 8C/QoUoJyshbg==
+Date: Thu, 19 Nov 2026 08:53:43 +0000
+To: Yasushi SHOJI <yashi@spacecubics.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, Pavel Skripkin <paskripkin@gmail.com>
+From: Alexandre Becholey <alex@becholey.ch>
+Cc: Alexandre Becholey <alex@becholey.ch>, stable@vger.kernel.org, linux-can@vger.kernel.org
+Subject: [PATCH] can: mcba_usb: Fix double free of RX buffers in mcba_urb_unlink()
+Message-ID: <20261119085329.539894-1-alex@becholey.ch>
+Feedback-ID: 60743817:user:proton
+X-Pm-Message-ID: b59b133948a6ecb28f8b7fabb42d555e1530c669
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -83,295 +61,54 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261119-rockchip-canfd-restart-close-v10-8-df23913aa33a@qq.com>
-References: <20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a@qq.com>
-In-Reply-To: <20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a@qq.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
- Vincent Mailhol <mailhol@kernel.org>, Heiko Stuebner <heiko@sntech.de>, 
- Oliver Hartkopp <socketcan@hartkopp.net>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@kernel.org>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
- Simon Horman <horms@kernel.org>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- Randy Dunlap <rdunlap@infradead.org>, 
- Wolfgang Grandegger <wg@grandegger.com>
-Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, Cunhao Lu <1579567540@qq.com>, 
- stable@vger.kernel.org
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795077587; l=9789;
- i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
- bh=kBKb8AmgJ6pzOGhAXdb9opycixy8N3evuqoCl84o4lQ=;
- b=zz5c2loXtLfCkdXEablUzfT0ucsZLa4P3XwhbTrxM6/kbLnFsIQfyN4e3JJYQP6hi3whgo8zz
- F8NLbln+BtCCV6SzDCnrhLuH/cZ6U3WClcyvtXXhEDEy9UnSfIsaU8d
-X-Developer-Key: i=1579567540@qq.com; a=ed25519;
- pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
-X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
- auth_id=1177
-X-Original-From: Cunhao Lu <1579567540@qq.com>
-Reply-To: 1579567540@qq.com
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Cunhao Lu <1579567540@qq.com>
+mcba_urb_unlink() frees the RX buffers but leaves the stale pointers in
+priv->rxbuf[]. It runs from both mcba_usb_close() and
+mcba_usb_disconnect(), so once the interface has been up, the buffers
+are freed twice: on unplug after "ip link set can0 down", on unplug
+while can0 is up, or on a second up/down cycle. No special device
+behaviour is needed; on a host controller without DMA the double
+usb_free_coherent() is a double kfree().
 
-rkcanfd_xmit_retry() uses tx_head to select the buffer for an erratum 6
-retransmission. With two buffers and one outstanding frame, this selects
-the next submission slot instead of the slot holding that frame.
+Clear each rxbuf[] pointer after freeing it, which makes the function
+safe to call twice again, as it was before commit 91c02557174b ("can:
+mcba_usb: fix memory leak in mcba_usb").
 
-A standard frame from another node can match the erratum 6 check while
-the original extended frame is still pending: its ID matches the low
-11 ID bits, and both have the same RTR flag and length. Data frames must
-also have matching payloads. The retry loads the extended frame from the
-shared TX registers into the other buffer. In RK3588 tests, the peer
-received the current extended frame twice and local sockets received the
-extra copy as ordinary RX. When a queued successor reused the buffer
-while the retry was active, it was lost, leaving its echo and BQL
-accounting pending and the TX queue stopped.
+The bug was found, and the reproducer and this fix were written, by AI
+agents (Claude Mythos and Claude Opus models). The analysis and the
+patch were reviewed by a human.
 
-Use tx_tail to retry the original slot. The original request may have
-completed by the time the driver processes the matching standard frame,
-with its echo still in the RX FIFO. Processing that echo can wake the
-queue while the retry is active, allowing a successor to overwrite the
-shared TX registers.
-
-Stop the queue and mark the retry pending under tx_lock before issuing
-it. Complete the original echo and BQL accounting normally, but return
-NETDEV_TX_BUSY for new submissions without consuming their skbs. A worker
-polls both TX request bits with a one-jiffy delay, so progress does not
-depend on another RX interrupt. Once both bits clear, it releases the
-guard and wakes the queue if space is available. Repeated matches do not
-postpone a pending check, but worker scheduling can delay the next TX.
-
-Disable retries before publishing BUS_OFF and at close entry so the
-retry worker cannot read TX request bits, requeue itself or wake the
-queue. Close frees the IRQ before draining the worker. Restart waits
-for in-flight IRQ handlers, then drains the worker before resetting the
-controller. Both paths wait for the worker outside tx_lock.
-
-On RK3588 with PREEMPT_RT, a higher-priority userspace task delayed the
-CAN IRQ thread. The peer had already received the original extended frame
-when the driver processed the matching standard frame. With only the
-tx_tail change, the peer received a frame with the original CAN ID and
-a payload containing bytes from a queued successor. The TX queue stalled.
-With new submissions blocked until both TX request bits cleared, the peer
-received all queued successors and no mixed frames in the same test.
-
-The guard prevents later submissions from overwriting the shared TX
-registers during a retry, but the driver can still filter out a matching
-standard frame from another node and send a second complete copy of the
-original extended frame.
-
-Fixes: a5605d61c7dd ("can: rockchip_canfd: enable full TX-FIFO depth of 2")
+Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
 Cc: stable@vger.kernel.org
-Signed-off-by: Cunhao Lu <1579567540@qq.com>
-
+Signed-off-by: Alexandre Becholey <alex@becholey.ch>
 ---
-Changes in v10:
-- Block new submissions until both TX request bits clear after a retry.
-- Move this patch after the TX/IRQ lifecycle synchronization.
+An emulated adapter on dummy_hcd: "ip link set can0 up/down", then
+unplug, gives a KASAN double-free in hcd_buffer_free() on v7.3.1 and
+master 9d66f26fefac; the two other sequences as well. All clean with
+the fix, and a second "ip link set up" still works.
+Reproducer available on request.
 
-Changes in v8:
-- Apply the retry-slot correction after TX serialization.
----
- drivers/net/can/rockchip/rockchip_canfd-core.c | 10 ++++
- drivers/net/can/rockchip/rockchip_canfd-tx.c   | 77 +++++++++++++++++++++++++-
- drivers/net/can/rockchip/rockchip_canfd.h      |  7 +++
- 3 files changed, 92 insertions(+), 2 deletions(-)
+ drivers/net/can/usb/mcba_usb.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
-index a5c6331191d1..38ffd06768a3 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-core.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
-@@ -270,6 +270,8 @@ static void rkcanfd_chip_start(struct rkcanfd_priv *priv)
- {
- 	u32 reg;
- 
-+	rkcanfd_tx_retry_stop_sync(priv);
-+
- 	rkcanfd_chip_set_reset_mode(priv);
- 
- 	/* Receiving Filter: accept all */
-@@ -329,12 +331,15 @@ static void rkcanfd_chip_start(struct rkcanfd_priv *priv)
- 
- 	netdev_dbg(priv->ndev, "%s: reg_mode=0x%08x\n", __func__,
- 		   rkcanfd_read(priv, RKCANFD_REG_MODE));
-+	rkcanfd_tx_retry_start(priv);
+diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.=
+c
+index 04170326dc7e..b40b323da9d3 100644
+--- a/drivers/net/can/usb/mcba_usb.c
++++ b/drivers/net/can/usb/mcba_usb.c
+@@ -718,9 +718,11 @@ static void mcba_urb_unlink(struct mcba_priv *priv)
+=20
+ =09usb_kill_anchored_urbs(&priv->rx_submitted);
+=20
+-=09for (i =3D 0; i < MCBA_MAX_RX_URBS; ++i)
++=09for (i =3D 0; i < MCBA_MAX_RX_URBS; ++i) {
+ =09=09usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+ =09=09=09=09  priv->rxbuf[i], priv->rxbuf_dma[i]);
++=09=09priv->rxbuf[i] =3D NULL;
++=09}
+=20
+ =09usb_kill_anchored_urbs(&priv->tx_submitted);
  }
- 
- static void rkcanfd_tx_disable(struct rkcanfd_priv *priv)
- {
- 	unsigned long flags;
- 
-+	rkcanfd_tx_retry_stop(priv);
-+
- 	spin_lock_irqsave(&priv->tx_lock, flags);
- 	priv->tx_enabled = false;
- 	netif_stop_queue(priv->ndev);
-@@ -377,6 +382,8 @@ static void rkcanfd_chip_stop(struct rkcanfd_priv *priv, const enum can_state st
- 
- static void rkcanfd_chip_stop_sync(struct rkcanfd_priv *priv, const enum can_state state)
- {
-+	rkcanfd_tx_retry_stop_sync(priv);
-+
- 	priv->can.state = state;
- 
- 	rkcanfd_timestamp_stop_sync(priv);
-@@ -811,6 +818,8 @@ static int rkcanfd_stop(struct net_device *ndev)
- {
- 	struct rkcanfd_priv *priv = netdev_priv(ndev);
- 
-+	rkcanfd_tx_retry_stop(priv);
-+
- 	close_candev_cancel_restart_sync(ndev);
- 	rkcanfd_tx_disable(priv);
- 
-@@ -976,6 +985,7 @@ static int rkcanfd_probe(struct platform_device *pdev)
- 	priv->can.do_get_berr_counter = rkcanfd_get_berr_counter;
- 	priv->ndev = ndev;
- 	spin_lock_init(&priv->tx_lock);
-+	rkcanfd_tx_retry_init(priv);
- 
- 	match = device_get_match_data(&pdev->dev);
- 	if (match) {
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-index 7e3f478422e0..745029c23645 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-@@ -39,6 +39,10 @@ unsigned int rkcanfd_get_effective_tx_free(const struct rkcanfd_priv *priv)
- {
- 	lockdep_assert_held(&priv->tx_lock);
- 
-+	/* The original echo can precede completion of a retry. */
-+	if (!priv->tx_retry_enabled || priv->tx_retry_pending)
-+		return 0;
-+
- 	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_6 &&
- 	    rkcanfd_tx_tail_is_eff(priv))
- 		return 0;
-@@ -46,6 +50,68 @@ unsigned int rkcanfd_get_effective_tx_free(const struct rkcanfd_priv *priv)
- 	return rkcanfd_get_tx_free(priv);
- }
- 
-+static void rkcanfd_tx_retry_work(struct work_struct *work)
-+{
-+	struct rkcanfd_priv *priv = container_of(to_delayed_work(work),
-+						 struct rkcanfd_priv, tx_retry_work);
-+	const u32 tx_req = RKCANFD_REG_CMD_TX0_REQ | RKCANFD_REG_CMD_TX1_REQ;
-+	unsigned long flags;
-+	u32 reg_cmd;
-+
-+	spin_lock_irqsave(&priv->tx_lock, flags);
-+	if (!priv->tx_retry_enabled || !priv->tx_retry_pending)
-+		goto out_unlock;
-+
-+	reg_cmd = rkcanfd_read(priv, RKCANFD_REG_CMD);
-+
-+	if (reg_cmd & tx_req) {
-+		schedule_delayed_work(&priv->tx_retry_work, 1);
-+		goto out_unlock;
-+	}
-+
-+	priv->tx_retry_pending = false;
-+
-+	if (rkcanfd_get_effective_tx_free(priv) >= RKCANFD_TX_START_THRESHOLD)
-+		netif_wake_queue(priv->ndev);
-+
-+out_unlock:
-+	spin_unlock_irqrestore(&priv->tx_lock, flags);
-+}
-+
-+void rkcanfd_tx_retry_init(struct rkcanfd_priv *priv)
-+{
-+	INIT_DELAYED_WORK(&priv->tx_retry_work, rkcanfd_tx_retry_work);
-+}
-+
-+void rkcanfd_tx_retry_start(struct rkcanfd_priv *priv)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&priv->tx_lock, flags);
-+	priv->tx_retry_enabled = netif_running(priv->ndev);
-+	priv->tx_retry_pending = false;
-+	spin_unlock_irqrestore(&priv->tx_lock, flags);
-+}
-+
-+void rkcanfd_tx_retry_stop(struct rkcanfd_priv *priv)
-+{
-+	unsigned long flags;
-+
-+	spin_lock_irqsave(&priv->tx_lock, flags);
-+	priv->tx_retry_enabled = false;
-+	priv->tx_retry_pending = false;
-+	netif_stop_queue(priv->ndev);
-+	spin_unlock_irqrestore(&priv->tx_lock, flags);
-+
-+	cancel_delayed_work(&priv->tx_retry_work);
-+}
-+
-+void rkcanfd_tx_retry_stop_sync(struct rkcanfd_priv *priv)
-+{
-+	rkcanfd_tx_retry_stop(priv);
-+	cancel_delayed_work_sync(&priv->tx_retry_work);
-+}
-+
- static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
- 					 const u32 reg_cmd)
- {
-@@ -63,12 +129,19 @@ static void rkcanfd_start_xmit_write_cmd(const struct rkcanfd_priv *priv,
- 
- void rkcanfd_xmit_retry(struct rkcanfd_priv *priv)
- {
--	const unsigned int tx_head = rkcanfd_get_tx_head(priv);
--	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
-+	const unsigned int tx_tail = rkcanfd_get_tx_tail(priv);
-+	const u32 reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_tail);
- 
- 	lockdep_assert_held(&priv->tx_lock);
- 
-+	if (!priv->tx_retry_enabled)
-+		return;
-+
-+	priv->tx_retry_pending = true;
-+	netif_stop_queue(priv->ndev);
-+
- 	rkcanfd_start_xmit_write_cmd(priv, reg_cmd);
-+	schedule_delayed_work(&priv->tx_retry_work, 1);
- }
- 
- netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
-diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
-index 8fdb59025bfa..07fc5bc605df 100644
---- a/drivers/net/can/rockchip/rockchip_canfd.h
-+++ b/drivers/net/can/rockchip/rockchip_canfd.h
-@@ -487,10 +487,13 @@ struct rkcanfd_priv {
- 
- 	bool tx_enabled;
- 	bool irq_suspended;
-+	bool tx_retry_enabled;
-+	bool tx_retry_pending;
- 
- 	struct cyclecounter cc;
- 	struct timecounter tc;
- 	struct delayed_work timestamp;
-+	struct delayed_work tx_retry_work;
- 	unsigned long work_delay_jiffies;
- 
- 	struct can_berr_counter bec;
-@@ -564,6 +567,10 @@ void rkcanfd_timestamp_stop(struct rkcanfd_priv *priv);
- void rkcanfd_timestamp_stop_sync(struct rkcanfd_priv *priv);
- 
- unsigned int rkcanfd_get_effective_tx_free(const struct rkcanfd_priv *priv);
-+void rkcanfd_tx_retry_init(struct rkcanfd_priv *priv);
-+void rkcanfd_tx_retry_start(struct rkcanfd_priv *priv);
-+void rkcanfd_tx_retry_stop(struct rkcanfd_priv *priv);
-+void rkcanfd_tx_retry_stop_sync(struct rkcanfd_priv *priv);
- void rkcanfd_xmit_retry(struct rkcanfd_priv *priv);
- netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev);
- void rkcanfd_handle_tx_done_one(struct rkcanfd_priv *priv, const u32 ts,
-
--- 
-2.34.1
-
 
