@@ -1,58 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1795080751;
-	b=BK9FRb4MGIGM88A3FcOyE477yi+RNDbhmqalWsZ/q/wSlttaqRZzqw+4B7pAIzQ0H+aM
-	 Q1sGq4t55Nqt09ZzQ9dtdkSMRJtie5ikOuaCxY4d8PCwn7dC4PCgqTT5nVOOYg3y0YVM5
-	 q2bz6OlqWKtSeWlhIzdVUfpOeat6y4Tn/Jb7G0D355Gf1aqWDKuIFaMdSXh3LsxfUWNcq
-	 4gSGOu9q3x7K1Dspg4I13DvL/LNYbU1lQZo4KLMtXJX9sHqy5za95HNbMIpGrFGeVP6G1
-	 czYVx1hmpwEtwjbaVr2nBmJ2DQ03iEu7tKu2xuq1PpHeHn0OEAcx0vT9VQ+UTfDXu3A==
+	b=4W1urIbOkaYOWc8txAn0uzwBFjKeGQv/J5vEu3hF8amxyabw28XCwM7wV/SE9tOVSOty
+	 Q52xjMnzs/dCjNiEmtfH+QCUkgOHzjDfmJ99KMNcKE9D4MSQfsbz2Rv2N+h17hiqQQgwY
+	 24B+HBVs2VIMesnPglnV3q4N+6oQT8Fof05G1IwhGb3n27p7w/+YTgzn93PxSe++ofc9s
+	 SbZ6NM/JBsimyrUwkGe8ujq6USBTDoTDgf30tBl5DF4ric+YL7+gwNvrUd58hW9a79h3O
+	 Y05W/Bu7w87edz6/N4Swi7LSF7lqiW+f6lYTEOlpkQS1etfVstFTLY6Qo6aCxZ709pQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795080751;
 	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
 	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=+l6ugOT49my9F60+EAuKD1hhJCIHjwr+0ltB1+cpP0c=;
-	b=bN46hZ9KKCN7Z0Y/BAErmv9yQvN19HoIqOkGZwHzVLK9C6k+kcNiIFRoty/faHR2SEng
-	 8bIXtLBvjFelD1Tl6n9I8n4veb8SSNRdUAeRgoj1Q+ppZXx5OFR1+vPKAtMX+Rotgly+T
-	 B+I1vRyJtMKeoo/SUYoDo3CKNdsjBfSgvl6RYhPpwP1bCMoIuuJAKKvF36e9ZjQ0v3RC8
-	 MsluMVe2RowpCJc+9lFBOJh67AgX2R792ZLxPNGkQpftES1jayNbLWnQ3y+E2PmkNVK79
-	 6sMoVdx4lU7rztjppnIbmiPL4iKdBZs+vUTNI2hwI2jfCaFTWKs/yCCKqKq82nnofTw==
+	bh=VLBjx/M4f/CXYHrDMbrhUZMeJtsaGrzScOG8FVHjYeg=;
+	b=OUTpJLqnAdEQtB2gh8eQeljEA9wF+AnrL3KDOejBdAQSOPQaJ2/V5wFF0nns/tj0I0rV
+	 Ufc7kyM/lGh3nwfFftjLqYbnkyTUJcxu0H5lmrltVw3vNo36qwuQyjpeYvE+a80dTlpEn
+	 EznAHkUvwQuh6lUmoOWdYT/3RJD+HdmJvfNgcRUTGauCwFcTmSk2bRNA23F0a8TQV5klc
+	 g5oHlmorKao8c3ZAZ1J7s7qd9tQwoDRxqqHAOUJ351LP1qsjf2CBzdZvuk60pdaAhPQOw
+	 1unn78NTpy37AycvadcfV6FCGso2MSrEy7+SSQrJLYwyMN9jfMtv+EmAJsFfQqo+5Jg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Icq6WYnj;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MI01AjAl;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB7D606A320
-	for <linux-can@vger.kernel.org>; Thu, 19 Nov 2026 09:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7514606A330
+	for <linux-can@vger.kernel.org>; Thu, 19 Nov 2026 09:32:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=Icq6WYnj
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F8E01F000C4;
-	Thu, 19 Nov 2026 09:32:29 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MI01AjAl
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3AAAF1F000C5;
+	Thu, 19 Nov 2026 09:32:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795080750;
-	bh=+l6ugOT49my9F60+EAuKD1hhJCIHjwr+0ltB1+cpP0c=;
+	s=k20260515; t=1795080751;
+	bh=VLBjx/M4f/CXYHrDMbrhUZMeJtsaGrzScOG8FVHjYeg=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=Icq6WYnj/mCQYVv1CBJL5z/0Pm/LL1Bi6Vl8mAEBmTDdd/uXrk1oBkBfS4crNO64v
-	 JeO2qwLJsklG/1Tq0sRIxgqIBFTkB7pEcrhqznqxIewd2NZu9ixCnoONQdisqd74SF
-	 1K5gb5u8gi+WGBkMpICMu9k7TJXlE4D1TgzwiHuI2SzYnBvjNCzUg0OwvCDVM6xsnp
-	 QSqdU3D209Kn4dWYRYcHQzi50GMhTiNggajTP1Jwe0TN58H4rjfpoKAvC5qpoTYNk0
-	 hwGuEwaq2Tq3+qBaOjzxvKqFZSp5g0G9UkYxO2Cpjsv+0vVyyR3+UWmN1TKEFbMKSy
-	 ui/XQeu8FslCA==
-Message-ID: <sashiko-outbox-222848@kernel.org>
+	b=MI01AjAlElZc8yJsLQ2yZhBsNqn+GpbzzfC+3b+4K0EiZ2y+88p8HdYDaTV48gzJj
+	 oNsLah3zEh9uAVeR0UcHFrIBScgtf5bj8oZY/KPKVJaWdtLwv1gSnll7FD4Y4IHAam
+	 VqbQKuhuAwrP97920Xg+E4PurADyblLr0R/efMqd7tfFkFw7lsn3/9x67hbzFaPVPP
+	 wSivwgOEv/RUVEUFEcGXROO/ELxTMy4rItPdBREUS2UEYgijJXaDEiDagmA+YUhXpL
+	 u1rmmHiiBaXUsUz1bkN79pg30RfWUG8vjuFQyqcAqn+C0TjLj2awbKUkTrVQDCmQ1N
+	 iK6JxT65y9Rzg==
+Message-ID: <sashiko-outbox-222854@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 06/12] can: sun4i_can: don't discard the IRQ
- lookup error in probe
+Subject: Re: [PATCH net-next 12/12] can: xilinx_can: set CAN FD flags on
+ received frames
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
  Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261118092955.1283165-7-mkl@pengutronix.de>
+In-Reply-To: <20261118092955.1283165-13-mkl@pengutronix.de>
 References: <20261118092955.1283165-1-mkl@pengutronix.de>
- <20261118092955.1283165-7-mkl@pengutronix.de>
+ <20261118092955.1283165-13-mkl@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Thu, 19 Nov 2026 09:32:27 +0000
+Date: Thu, 19 Nov 2026 09:32:30 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -62,63 +62,71 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue to consider:
-- [Medium] can: sun4i_can: clk leak in sun4ican_probe() on IRQ deferral
-  and log mismatch
+Thank you for your contribution! Sashiko AI review found no new issues
+in this patch, but noticed 1 related pre-existing issue it does not
+introduce:
+- [Critical] can: xilinx_can: uninitialized data leak in xcanfd_rx() [1]
 --
 
-commit d88cf8d3dd8506848b42acf7070c915117b36839
-Author: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+commit d0681f7cdc97d2a1c4872665c855ad2b34da35d9
+Author: Maximilian Zimmermann <maxz@spacecubics.com>
 
-can: sun4i_can: don't discard the IRQ lookup error in probe
+can: xilinx_can: set CAN FD flags on received frames
 
-This commit propagates the negative errno from platform_get_irq() in
-sun4ican_probe() instead of overwriting it with -ENODEV so that deferred
-probing can succeed once the interrupt controller is available.
+This commit adds the ESI register mask and sets the CANFD_BRS and
+CANFD_ESI flags in struct canfd_frame when receiving CAN FD frames.
 
-Link: https://patch.msgid.link/2a7cb6e4e1b494efd4da512abbf307c19d9d1467.179=
-2118040.git.chaosheng.qu.linux@gmail.com
+Link: https://patch.msgid.link/20260921-fix-xilinx-canfd-flags-v1-1-a371c90=
+b4e7c@spacecubics.com
 
-> diff --git a/drivers/net/can/sun4i_can.c b/drivers/net/can/sun4i_can.c
-> index af52285d5a4e0..80be48d0593db 100644
-> --- a/drivers/net/can/sun4i_can.c
-> +++ b/drivers/net/can/sun4i_can.c
-> @@ -853,7 +853,7 @@ static int sun4ican_probe(struct platform_device *pde=
-v)
+> diff --git a/drivers/net/can/xilinx_can.c b/drivers/net/can/xilinx_can.c
+> index 43d7f22820b88..52661e0882054 100644
+> --- a/drivers/net/can/xilinx_can.c
+> +++ b/drivers/net/can/xilinx_can.c
+
+[ ... ]
+
+> @@ -959,6 +960,11 @@ static int xcanfd_rx(struct net_device *ndev, int fr=
+ame_base)
 > =20
->  	irq =3D platform_get_irq(pdev, 0);
->  	if (irq < 0) {
-> -		err =3D -ENODEV;
-> +		err =3D irq;
->  		goto exit;
->  	}
+>  	/* Check the frame received is FD or not*/
+>  	if (dlc & XCAN_DLCR_EDL_MASK) {
+> +		if (dlc & XCAN_DLCR_BRS_MASK)
+> +			cf->flags |=3D CANFD_BRS;
+> +		if (dlc & XCAN_DLCR_ESI_MASK)
+> +			cf->flags |=3D CANFD_ESI;
+> +
+>  		for (i =3D 0; i < cf->len; i +=3D 4) {
+>  			dw_offset =3D XCANFD_FRAME_DW_OFFSET(frame_base) +
+>  					(dwindex * XCANFD_DW_BYTES);
 
-[Severity: Medium]
-Does returning -EPROBE_DEFER via goto exit leak clk on each deferred probe
-attempt?
+[Severity: Critical]
+This problem wasn't introduced by this patch, but can the payload copy
+loops in xcanfd_rx() and xcan_rx() leak residual hardware register bytes to
+userspace [1]?
 
-sun4ican_probe() acquires clk earlier via unmanaged of_clk_get(np, 0), and
-the exit label returns err without calling clk_put(clk):
+alloc_can_skb() and alloc_canfd_skb() zero-initialize cf->data, but both
+receive paths write full 32-bit words into cf->data:
 
-drivers/net/can/sun4i_can.c:sun4ican_probe() {
+drivers/net/can/xilinx_can.c:xcanfd_rx() {
 	...
-	clk =3D of_clk_get(np, 0);
-	if (IS_ERR(clk)) {
-		dev_err(&pdev->dev, "unable to request clock\n");
-		err =3D -ENODEV;
-		goto exit;
-	}
+		for (i =3D 0; i < cf->len; i +=3D 4) {
+			dw_offset =3D XCANFD_FRAME_DW_OFFSET(frame_base) +
+					(dwindex * XCANFD_DW_BYTES);
+			data[0] =3D priv->read_reg(priv, dw_offset);
+			*(__be32 *)(cf->data + i) =3D cpu_to_be32(data[0]);
+			dwindex++;
+		}
 	...
-exit_free:
-	free_candev(dev);
-exit:
-	return err;
 }
 
-Also, the commit message quotes this error path as jumping to
-exit_put_clk, which does not exist in sun4ican_probe().
+When cf->len is not a multiple of 4 bytes, the final 32-bit store
+overwrites the zeroed trailing padding with leftover bytes from the
+hardware register, which are then copied to userspace on raw CAN socket
+reads.
+
+[1] https://sashiko.dev/#/bug/linux-32f289b3-a2b0-4d94-a883-7cfaa1d3ff70
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261118092955.1283=
-165-1-mkl@pengutronix.de?part=3D6
+165-1-mkl@pengutronix.de?part=3D12
