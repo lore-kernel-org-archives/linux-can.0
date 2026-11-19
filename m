@@ -1,71 +1,73 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=fail;
-	t=1795126295;
-	b=PDvxxzRenf12NCim8jMto+WDnbzpieCGBc84uUMkyrxjFSfzsUXC1dlqBWIHWzEx9f3c
-	 DAtF49HIzoxF/yiWPdrBxMVNsHqgolTaRxMR5VUJ5qX8x7f3OBqoVd68IX3VKr6ZRS7sV
-	 aJyqsE0zpVRB8nrBV/zuBN7KPhQJ4KDaj9w2aFDT57WGBHK6LN7U+9w+8RpGM52IVtsOs
-	 O6INREdJUiTjRcU/kKdAsM+V6XcIaqUirI7l5BGXuenk5KLjHYhFTxMrieA2gZiC2MgdH
-	 /TsGtu2IwOtUXAFvXgCUm+80blRIlcN1hCGfIl+62ns7KzjhKFycQCmYXtkHOlbnLKg==
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795126297;
+	b=tlfZhPxnOaMIAFwLDt71jMzvCGFQdt2qtNHBFOWV2yCV7KQH0sMEd/Y4hpScV8hbgeIt
+	 BnhU66LVV9cdTcRWvdXiYTemDZwxA6AXL7i/rdv+j6YMnatfOnV/W+TzkdSiQaVK60xA1
+	 FPsTO+wBCiEo/bq8lintH3SHUl6UFNOpX56VJBN7pUKdy8IyZ/W6UJIkLoqbymhZlhnod
+	 KTa5u3pX53uQjd4d9xHHZjvZbnYWJvtMSPgmZrNtaUEcphJt4iOYwLUH/FH3eBtIWroN3
+	 pkw9aj9Aywbr5OBA9AK5wiz1zEXnL//BOwDjK6TS6XNmLyzDWyJnowRpGq5vTVTEhbg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795126295;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795126297;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:Received:From:To:Cc:
-	 Subject:Date:Message-ID:X-Mailer:MIME-Version:Content-Type:
+	 Subject:Date:Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
 	 Content-Transfer-Encoding;
-	bh=DmEVD8INAT6i9vwisrBLXVE3Fd+dY6OwHmJtgFvATZ8=;
-	b=2En3PRmD03rxgSBncjq3AHVoXEGViP/wfH7xuWB6v6tOYr+c78VbGngSnIOMrqRtq9MX
-	 okAjt7bIT/aI7YD0zaG3fyFEi63exnDuHYr5HZwtwpHLCq1wymadBvA5UjWt30pGTACKU
-	 dv9TLI0OIPH0tC11n0dyTWGeMEELUgliDpVVVNkyg4mWCuPftbkTtIgm4AdLyKLYJQP0/
-	 w8h07dCkZbmFkq0Cy+fdPcBkeyICyGjgTGUJvWgPATqh76fvC5q6hUBBlcKSopwjAnqKT
-	 DJ/cRzXhG0/r1Bhya3Xsedbks/S6ewfPA0rodLBz7Vz+Uqr4bk6S+TGl/mjvqG/vjUw==
+	bh=k0UDyoYgZbZInCM2UaoRCVkpmo5Qkf4N54aVJb+pY9A=;
+	b=FxnhBOzXibMqqrvXdsOUuSQfwx8+FEhEq6Qg5uede5Uf6NJfpuYsi1+DokBURi7amOrz
+	 FLbLSoqUZR6ec4AML4h91Ze3zkz6cncTuZyulhl+jGG0bOXUmEbID0YSgxoXilcXvTD4D
+	 OZ/rrFVnpn8N0ZbXypRbYKFtWKIy/NLdTwmDkSfFgUZJ6mN2/reOzKuL5YrTLKmpYBOMn
+	 RDmDVOIgm7eW0Oq0FbKfRS+uVdijhXPSRliX1yI9rnXwjKZUvk27bLNSjBITtt1yA4eqZ
+	 yz/JXpNTn5y0hxOE4+0c6+Wat3e24y8hf4xnLUzWKTxQ6DLAGQfK3cxHoTbu3ftCLtg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=MXnKkLWE;
-	arc=fail smtp.remote-ip=185.203.200.13
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=LNVVqBoo;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36C3F606A320;
-	Thu, 19 Nov 2026 22:11:33 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 36C3F606A320
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C2C6606A335;
+	Thu, 19 Nov 2026 22:11:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3C2C6606A335
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=MXnKkLWE
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=LNVVqBoo
 Received: from drehscheibe.grey.stw.pengutronix.de (drehscheibe.grey.stw.pengutronix.de [IPv6:2a0a:edc0:0:c01:1d::a2])
 	(Authenticated sender: relay-from-drehscheibe.grey.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id E5931205B30;
-	Thu, 19 Nov 2026 23:11:27 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 61189205B44;
+	Thu, 19 Nov 2026 23:11:28 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795126287;
+	s=20260414; t=1795126288;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DmEVD8INAT6i9vwisrBLXVE3Fd+dY6OwHmJtgFvATZ8=;
-	b=MXnKkLWEm/xgPCrDx2vFv4oChWglb7cBGs08SLfiKW5zAs2fF+NP4Q/cgcXGGeKneIfP6s
-	/dypFJSH4dkcMbu1Dhq/ny0YHylc8YiY7dnnSojoH6Lyek4BA8wgsYZGpaRNO42/nZdpz9
-	+I/7g7UL9rYydhLrvWBTBiN9OwCIN+FxcIOKps7tgbLU2LXTbQoFX/4QgJF+AR2pbOes5Q
-	BgNCo6vjrGILc//GRrKqPItoaJlcBTw4md3GWBvMrJfLQRNIqEv84//9slfIlfi1WSwzqn
-	0IzUlHts+I03ScnXvzwh7PqMe8lpPojbxYPSq2l8csNXm/L9k2FYuqeqK4a9tw==
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k0UDyoYgZbZInCM2UaoRCVkpmo5Qkf4N54aVJb+pY9A=;
+	b=LNVVqBooGP0jJl3iOXo7sbWKuYkO3fLHVYsA8wzCnYds3GWkFfI/SILyEKLJsYPa2MO+1b
+	OjfK/HJWf93gL5y94NmkBYuysQ0iUuMlmAc5cAWV+fSEZtQsp2eKvyzgoIGCL4ABSANV0D
+	pKNR4QQbKpAIb2AUOyjr/7Y6UADAi+v46U7tmwa41W44HT2OinSmhjIrHs1euHko8Mgzqp
+	n3r3r7KbjiTJl58vWCnxj3qfxqu87OzLTQMcjgwgfHrVBovdE3ChB9QsTgnqbhAVoAi+DY
+	66iXDbto/5zob3UcEoXhlX3689mPmp18xGicZ5fjTUnxX+1G79hmtWHxdZ/mwQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795126287;
+	s=20260414; t=1795126288;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=DmEVD8INAT6i9vwisrBLXVE3Fd+dY6OwHmJtgFvATZ8=;
-	b=PtfDmLLLNlIxZXwkuozUsvY9ix2RuF2+Dav3CKAn0ut8Xsh5ebRBhn5Udx0tuco8LmVcqi
-	WbDd/XGHN5FJEOHc9OdQJo2Pr3jV5RrNxDXUyhvomq2I+e9pcELRc5b+Hbx0GouGdA3QLX
-	ckLJ692xAN4CpBv+hV4h3M9R6trrRcJ9JjltcY+xwXxdRmZMjcG6z9UeL/7jlMcsqgGpQ+
-	7V0p5B3F/PpGik1u526OCkMAU4AKVX5OclvGGyDHdFZlKPGtD56GtCy4h6D03paB1tNekP
-	xb5QYZN/XaphrmmOT87CUObg1NiZVX4eX+uFNLHdZRMb5/NS/j8hqyEDalP/mw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795126287; a=rsa-sha256;
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=k0UDyoYgZbZInCM2UaoRCVkpmo5Qkf4N54aVJb+pY9A=;
+	b=IkKHFFXKvEjkhU8qJ/vWGbZROzDvBL/ww5lWl87itmL08gTnu5TMQGxe9hyGgifLlHI0cR
+	sSJuWOfBbf+UQtZyuZr41jJQTarlvgi+g1jBGyqN1N90BdNQo2HQ0jpDL+e7nPG43MD9dd
+	/SC3j0kXS1GfafBO0zyAtEcnbNk3RY5TYm+Oo2Oek0SlLuxx4oWVSULiI22Qnk1+PhJnL6
+	Uk37R+mCOWF3yxjYNlEzQ6PVLmbxvBXRK/xCVElQSR3S885qQTakAszazwtOtVATAoZX4g
+	sft+lqAEGhoW9QKAT4njPX19woJKIHvZmMM70+tymTm6ZSTbqE1nqfWwz78opA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795126288; a=rsa-sha256;
 	cv=none;
-	b=Px8WWG18SHqnnPAQqo1PHYIVlEkwma7FLAx3MrCkbg0bCjU8IuLbUIdc8pbJbGZu8q0vUp
-	pTF4QYp63ETxcOAGUlJZCHwfwcvySh1GH8CuLtPHHWOQd9qILyzrA9OLqb9XGqyanfqOdb
-	BfmqclzRF0VEEEoCNoZ/SKFt+G3GlUDiEnp4RWnjRjMwjceApm7st6SNY791tiQFSjBDQ8
-	SHyudwafXHPJvj/i9edEM/RLS/mjHrc2+CwdihXaZPUwfJKV7nG+2+h/oPmNRg1QdwMVGy
-	bvX1PaaeBO/T7g/CErj/cNlD4k0qTqQaOtbPls2cfnqSm44icVDiE0jNLK2luA==
+	b=duLk0OuuFRrRscNShOzBwbus94VzM2yakcV3yf8NKQ9U4Ip8Fj6jwusZbdjAynPBVxiPZ4
+	jBTXbs9rF1GzgEZ5R1lXXN8u5DVzLaBxLFiqsRn95FlGUHr4kMFOhrJeYI9w/N4SJrzY8K
+	+zGAKG55+zgyvOKQ/op8vyBLj3fCSqxSFdSoOIkPTnkyIexnrH5N/grnX45g49TsPxFEdM
+	B2qeeu9xGxEG3yzR7QLYd3dZPX9/MWfFLsyBjTxGJ+C+1TYJB55QOCHpU/hBh8VAXQNeVC
+	it2DbeIe06ux0HSAAqj2ZMHL211SbJgSgbzhS2GXSLBjh6DOsuwrh5/n5bM4rw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-drehscheibe.grey.stw.pengutronix.de smtp.mailfrom=mkl@pengutronix.de
@@ -73,25 +75,29 @@ Received: from moin.white.stw.pengutronix.de ([2a0a:edc0:0:b01:1d::7b] helo=bjor
 	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
 	(Exim 4.96)
 	(envelope-from <mkl@pengutronix.de>)
-	id 1xUALn-000Z61-11;
-	Thu, 19 Nov 2026 23:11:27 +0100
+	id 1xUALn-000Z6I-2P;
+	Thu, 19 Nov 2026 23:11:28 +0100
 Received: from blackshift.org (p4ffb23c7.dip0.t-ipconnect.de [79.251.35.199])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519MLKEM768 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(Client did not present a certificate)
 	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 911105F0993;
-	Thu, 19 Nov 2026 22:11:27 +0000 (UTC)
+	by smtp.blackshift.org (Postfix) with ESMTPSA id 090E15F099D;
+	Thu, 19 Nov 2026 22:11:28 +0000 (UTC)
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
-	kernel@pengutronix.de
-Subject: [PATCH net-next 0/13] pull-request: can-next 2026-11-19
-Date: Thu, 19 Nov 2026 22:58:36 +0100
-Message-ID: <20261119220936.155728-1-mkl@pengutronix.de>
+	kernel@pengutronix.de,
+	Chaosheng Qu <chaosheng.qu.linux@gmail.com>,
+	Marc Kleine-Budde <mkl@pengutronix.de>
+Subject: [PATCH net-next 10/13] can: ifi_canfd: don't discard the IRQ lookup error in probe
+Date: Thu, 19 Nov 2026 22:58:46 +0100
+Message-ID: <20261119220936.155728-11-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20261119220936.155728-1-mkl@pengutronix.de>
+References: <20261119220936.155728-1-mkl@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -101,125 +107,56 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf8
 Content-Transfer-Encoding: 8bit
 
-Hello netdev-team,
+From: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
 
-this is a pull request of 13 patches for net-next/main.
+This is a robustness and consistency cleanup, this issue has not been seen
+on real hardware.
 
-Stéphane Grosjean's patch adds him as a maintainer for the PEAK-System
-CAN drivers.
+ifi_canfd_plat_probe() maps every failure of platform_get_irq() to
+-EINVAL:
 
-A patch by Sang-Heon Jeon removes a redundant NULL check before
-netdev_hold() in the CAN RAW protocol.
+	irq = platform_get_irq(pdev, 0);
+	if (irq < 0)
+		return -EINVAL;
 
-Magnus Aagaard Sørensen contributes a patch to remove the unused
-function safe_candev_priv().
+The driver matches through an of_match_table ("ifi,canfd-1.0"), so
+of_irq_get() returns -EPROBE_DEFER while the interrupt controller has not
+been probed. The probe overwrites it and the driver core stops retrying,
+leaving the device unbound even though the interrupt controller appears
+later.
 
-Triet Hoang converts several CAN drivers to DEFINE_SIMPLE_DEV_PM_OPS().
+Return the lookup error unchanged, as the neighbouring CAN platform drivers
+do, e.g. commit ("can: cc770: don't discard the IRQ lookup error in
+probe").
 
-Wentao Liang's patch fixes a clock leak in the suni4_can driver.
-(fix clock leak, found by LLM)
+A device tree without an interrupt now reports -ENXIO rather than
+-EINVAL; the driver core treats both as a failed probe.
 
-5 patches by Chaosheng Qu clean up the error handling for
-platform_get_irq() in several CAN drivers.
-(fix error handling, found by LLM, but not been seen in real world
- systems)
+Build tested on x86_64.
 
-Oliver Hartkopp's patch removes the obsolete Softing CANcard driver.
-
-A patch by Hemanth Selam removes a repeated word in a comment in the
-ucan driver.
-
-The last patch is by Maximilian Zimmermann and sets CAN FD related
-flags on received frames in the xilinx_can driver.
-(fix a real problem, can be seen in production system)
-
-regards,
-Marc
-
+Signed-off-by: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+Link: https://patch.msgid.link/165f3fccb8faf1db65e8f18dbee4694c95266e31.1792118040.git.chaosheng.qu.linux@gmail.com
+[mkl: update patch description]
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
+ drivers/net/can/ifi_canfd/ifi_canfd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The following changes since commit 24630ff92eff08500ec4772728d4b1fa08c28f47:
+diff --git a/drivers/net/can/ifi_canfd/ifi_canfd.c b/drivers/net/can/ifi_canfd/ifi_canfd.c
+index 9eecfe5a87bd..e0f5abd934fa 100644
+--- a/drivers/net/can/ifi_canfd/ifi_canfd.c
++++ b/drivers/net/can/ifi_canfd/ifi_canfd.c
+@@ -965,7 +965,7 @@ static int ifi_canfd_plat_probe(struct platform_device *pdev)
+ 
+ 	irq = platform_get_irq(pdev, 0);
+ 	if (irq < 0)
+-		return -EINVAL;
++		return irq;
+ 
+ 	id = readl(addr + IFI_CANFD_IP_ID);
+ 	if (id != IFI_CANFD_IP_ID_VALUE) {
+-- 
+2.53.0
 
-  Merge git://git.kernel.org/pub/scm/linux/kernel/git/netdev/net (2026-11-19 10:02:10 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can-next.git tags/linux-can-next-for-7.5-20261119
-
-for you to fetch changes up to 1d527d7ecfaf5cdf6cc75f94d3d8e23c0d17b537:
-
-  can: xilinx_can: set CAN FD flags on received frames (2026-11-19 22:52:36 +0100)
-
-----------------------------------------------------------------
-linux-can-next-for-7.5-20261119
-
-----------------------------------------------------------------
-Chaosheng Qu (5):
-      can: cc770: don't discard the IRQ lookup error in probe
-      can: sun4i_can: don't discard the IRQ lookup error in probe
-      can: at91_can: don't discard the IRQ lookup error in probe
-      can: janz-ican3: don't discard the IRQ lookup error in probe
-      can: ifi_canfd: don't discard the IRQ lookup error in probe
-
-Hemanth Selam (1):
-      can: ucan: fix repeated word 'is' in comment
-
-Magnus Aagaard Sørensen (1):
-      can: dev: remove unused safe_candev_priv()
-
-Marc Kleine-Budde (1):
-      Merge patch series "can: don't discard the platform_get_irq() error in probe"
-
-Maximilian Zimmermann (1):
-      can: xilinx_can: set CAN FD flags on received frames
-
-Oliver Hartkopp (1):
-      can: remove Softing CANcard driver
-
-Sang-Heon Jeon (1):
-      can: raw: remove redundant NULL check before netdev_hold()
-
-Stéphane Grosjean (1):
-      MAINTAINERS: add entry for PEAK-System CAN drivers
-
-Triet Hoang (1):
-      can: convert to DEFINE_SIMPLE_DEV_PM_OPS()
-
-Wentao Liang (1):
-      can: sun4i_can: sun4ican_probe(): fix clk leak on unbound
-
- MAINTAINERS                                |  12 +
- drivers/net/can/Kconfig                    |   1 -
- drivers/net/can/Makefile                   |   1 -
- drivers/net/can/at91_can.c                 |   9 +-
- drivers/net/can/bxcan.c                    |   8 +-
- drivers/net/can/cc770/cc770_platform.c     |   7 +-
- drivers/net/can/dev/dev.c                  |  12 -
- drivers/net/can/ifi_canfd/ifi_canfd.c      |   2 +-
- drivers/net/can/janz-ican3.c               |   2 +-
- drivers/net/can/m_can/m_can_pci.c          |   8 +-
- drivers/net/can/softing/Kconfig            |  31 --
- drivers/net/can/softing/Makefile           |   5 -
- drivers/net/can/softing/softing.h          | 168 ------
- drivers/net/can/softing/softing_cs.c       | 335 -----------
- drivers/net/can/softing/softing_fw.c       | 700 -----------------------
- drivers/net/can/softing/softing_main.c     | 864 -----------------------------
- drivers/net/can/softing/softing_platform.h |  41 --
- drivers/net/can/spi/hi311x.c               |   8 +-
- drivers/net/can/spi/mcp251x.c              |   8 +-
- drivers/net/can/sun4i_can.c                |   9 +-
- drivers/net/can/usb/ucan.c                 |   2 +-
- drivers/net/can/xilinx_can.c               |   6 +
- include/linux/can/dev.h                    |   3 -
- net/can/raw.c                              |   3 +-
- 24 files changed, 54 insertions(+), 2191 deletions(-)
- delete mode 100644 drivers/net/can/softing/Kconfig
- delete mode 100644 drivers/net/can/softing/Makefile
- delete mode 100644 drivers/net/can/softing/softing.h
- delete mode 100644 drivers/net/can/softing/softing_cs.c
- delete mode 100644 drivers/net/can/softing/softing_fw.c
- delete mode 100644 drivers/net/can/softing/softing_main.c
- delete mode 100644 drivers/net/can/softing/softing_platform.h
