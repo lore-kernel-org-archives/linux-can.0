@@ -1,79 +1,79 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795077592;
-	b=FsRqOJ7YFhfVTR6SmBkbUPdzYavHc64hzW/CJq6T0ozWNWJhqO+e/XdAr+EOceWjQw7F
-	 O44djqS8zVDo677d8nqe0xQlbxpIaiSMFCQrNtAuYEbjBwEmPgLhyKKAuuE8yXowCN7nG
-	 Ixr4HGvWNNhwZ6NejlZVVYItxr9PozxhsMPbLwBZ8W5B6XzbR8TiXGCwzWVbdVcJT/Xmr
-	 Tq00c4rlHLBB7OyopDdx1US2E4JdmYZVcH3OAgflqugobOdwzStT0Sov8uG8/+t7R7E3n
-	 AgHMCSnvO92g0KEC1vKSY7GEvfwGr1tK7YfBhyGhBp8cQTNyNtF9UNiwxjQEeqLjhkQ==
+	b=z4AoQCXhZOMGSpW6W06SpNJ2NbUFBtcG2omREzaQ1bp/lfogfN8D6PXYQsUYlne3PYg4
+	 r7vaT4VE+HcKF5qTHrMBCK6/lKKY7Ku52IRU5nuHhEh4JzIzdHRdf2IsAaq7HX/WRTDuJ
+	 2YhsV3WO8yxoSmyYclFf2JiXMoHUBw0aTnVdyQ8Y0324GwG8lRLpiSGFWAFdW9GuOe28w
+	 6GuBfErOi6+54nuwjlCm2eGDcxC9cLpNegUN9y0nobXXZ3ml0Gt2yulEsXiNvdGeP2eYq
+	 KGb566+pnfaY4+6Po+EgQVPyiLYFx7dmOalTPj40CH23FY4KOgd+vr++E/arOIY5MYw==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795077592;
 	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
 	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=NtttrPvs/78iNQ9sA09ImKffZUBly9ET31v9eoeUGIY=;
-	b=UH87kW193VNq5bHNLS7/tIC/j+P9sBRXGNFjdHmh7rVYjNgHoyrfFkyuMgf+4fMwUzt4
-	 almNLSVcpPkoAtTMlTcz7RB4OtOW2ZSlkycwzVgSNOQgifiHpyXzVmeW9wxnUHa6PPpQh
-	 sSz3St8R3/GmxnEwbDRpfBamsYURIq+pWPme8QUzNf8YXZp3OoJUA1Y7dTjNmH9DP8Ers
-	 ht+dEobUJ9afbCxa5mbqhaEgEmn/0YPDyvVx86krNWPFXZzCOjkdE/mZtUAlg4SOBKzN2
-	 TS+GnK7sNeuKNQTl/CwYwg9ZCphScn2cmrBx6RXgPEJsmFMrVn2nRdbxwad7FqaPaNw==
+	bh=hoOu0Vyn1UsqFVigZaJGQ7Rr3+ALT0LUzsBJsVYCYy4=;
+	b=QOGzxZZyylCdzEr5RyBecTOuvHY2C2qGnOvleFHs5DkKDMkg6Zt8wJy3w7CKoYNB+GBl
+	 DP6l7VaGExu2YHZ5bJCUicZ4f25OD5DJPbfeybrNVj6Sp3JnMNq5F/ecR7nGou87oNB3v
+	 t9ZqftdihhX6qVrpU8fjsvbFjA0P6LKAXx9vFpmM3SccS1yV0hHwNThiAhhP41Q4YXzO/
+	 oK/KiBYTQMYm5+6xiAO7ccXbDRBDHcsL9k/aOFrnXkr+S4AH3C4zNkd3+wknLkiJWvrGh
+	 ZCCG3LL3AnS0IQxr/yXh8OCIl9fth9N0O0kG/xk7kUtxBJfXBO7EHxzJVdaSw3Qsylg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NkphdFhp;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EI9Gqbdy;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DC2F60A380A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8FA60A3820;
 	Thu, 19 Nov 2026 08:39:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=NkphdFhp
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EI9Gqbdy
 Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
 ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
 	t=1795077592;
-	b=dNOmedvmSu3XOia2L+5UEMA7QMxF/O5s/Ff9+Y1KECaKnxgyrtFYbF/H3Hqexwq2rxar
-	 97kiA3RTWF0FjxF7quKtGmX12kQk6EnW00ayir7PKUkeQuoT9JmUfA7BF5v633KVKdQ1S
-	 nimcfhIi7p5yXZEtCLm1v5X5WcnRfXfN1t/sNMG6iBex80Gna0qZxU/70w4eZr+pMyqGS
-	 6uIFV5e2wl1vvxODstWLeyCeko5wP7sKdzWpdWaC/HS6Zl8URXDQDcS5HRwZJR0yTVUrV
-	 uS1yFoqgE/yM5HYi6CRHFGUWal2WQH/vqBl7k8YCOkxRQwTM13RL6JNtMEdk3LtkOQg==
+	b=cZU8HJQ/c26s6I++r2VtvR/JxhG7b9w/gfJZQVUZf8DDeUkmA4j+k6kdJI5hT5g1B0wv
+	 aBIMdWUIe7OUrULmDYVgHMk+W2KxIi4HRkt1zElwwz6GGJ1u/uLTkoOuNdnX3eNmM69Fg
+	 ZMllygMN/hYG8LNuV66Hy3Gnq2xj2eujc5wNLCri0QFCIfVT+J75SbgFGsnCr4frrl95b
+	 UqvEKGRcVSS4H6+VcHZrhUEarTtV1YIavVBlZuXt/ermvlU2a9LfAD1zbpIR5ybYtJ2Jc
+	 Q9WaDr5PG8TCJma3jHkYAcnhz62ICWIeQ7r1LJspj1PLHyOxiyY6+2CaCzpm4Np1Edg==
 ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
 	c=relaxed/relaxed; t=1795077592;
 	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
 	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
 	 X-Original-From:Reply-To:Content-Transfer-Encoding;
-	bh=NtttrPvs/78iNQ9sA09ImKffZUBly9ET31v9eoeUGIY=;
-	b=mTKUE5DzW1Gauvkyth9fCcPwWvuRQaDJpTLrAnbGzVb751zukEBuksFVxMTk+bQSpibn
-	 fPxdph7ZwUR8xSkPEZWLEadiG1xzWJoISfv6xJzTa71NOrHMwVF2zrBD46Gi/bQW2BNKS
-	 rzb6T+opcK2DlBR4h0WZTRqCJNvHyX2dZoH8cKgJWVKzIoS6Kff2h/xLTnfzxyWqNRyDP
-	 hOapemCuFAnbCpkx0qOPJyap97wpwOuz1U5V5Y0H8lOPH5NbJOMraGL4JsnqmdAURA75Y
-	 AZYHZeUiDHT3rcw/0Pb1dFki/1UPrgRPyai78/nsOcGWTJqUHObZAup5inAa8BKv0Lg==
+	bh=hoOu0Vyn1UsqFVigZaJGQ7Rr3+ALT0LUzsBJsVYCYy4=;
+	b=ZN5LrSWwSljUlKJGnRkERWtcy30UuFEaY9elTPSNLt35HW/miRTCweOzAsvUdvBnGOk/
+	 1yJRLsLtge9B9N33SM447B+hOSQNfX9Nk79ikh34X9cVQFqdF/M1lhljooKlXi4jyEZvJ
+	 YwqXeFVGLd+EJ8t1/G6cgM8jLW2hRnw/qxWpW+MvYQO4jRdlbgmPFzduBgx6PLpFN5mvX
+	 xwrx9ZscwlyHgF8z4JT65c9DOEScHUyWpCzt4mBT61xKmi9JvujYiMXsEywl9GHidaiIu
+	 8JPd3j+g+oy7kQOij8IWA8fQzpLkS0XBCG8mN6DxpG2Y4eHn1pQQ86Rf2LcVN7FIpRg==
 ARC-Authentication-Results: i=1; smtp.kernel.org; 
 	arc=none smtp.remote-ip=100.80.115.77
 Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.kernel.org (Postfix) with ESMTPS id E19BB1F000C4;
-	Thu, 19 Nov 2026 08:39:49 +0000 (UTC)
+	by smtp.kernel.org (Postfix) with ESMTPS id 744C41F00925;
+	Thu, 19 Nov 2026 08:39:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
 	s=k20260515; t=1795077592;
-	bh=NtttrPvs/78iNQ9sA09ImKffZUBly9ET31v9eoeUGIY=;
+	bh=hoOu0Vyn1UsqFVigZaJGQ7Rr3+ALT0LUzsBJsVYCYy4=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
-	b=NkphdFhpkHaG9pYXirPgMGWpuCVf6/drMwCn5jQ3woQgRYvR+JQupap2YIX2xf+zr
-	 3vCS6xro8ZQ+P7cDVt+ZLTqIqZtIG8j4YQWY22x2tJ/pdJ9d7eXpoR7x+I9q5l8hK3
-	 0EFehPMxbX32UnuEKdYTGaQev/APQ97oJvEwpr6nZuHVLHwft3KN4KL0pGyDv1Djt2
-	 0c6AGeM3+E1sLXZrCpWnQajA1TJj7AT5SyBikcU4aWUIM7JO6r0Lpuz/hho1uIlV6Z
-	 /WigcghONGmhKovi/uO14Ig9xOrkhjrv/0GtZHNu1aiVn6hVbXk3t+a1NBqVEYv9Al
-	 tJcnuUBDit/dA==
+	b=EI9GqbdywzJOt9vLA8fWcc5ykYG1HcvslHycTeHAh44iV2SNafSSDK94P9DfupspN
+	 WuIyg4Ycw5XFLnnmE8jFem5aHPJsMhD6tpEgYXWO+XNoZxvAOTmw6hnLAZKh9R6msi
+	 UkX5tvDsTPbfyBSeuvBTs7bLDPo0O8Hzj0CaK4S+/sJv+wxPSxBKaRy7OZdEi9CnTA
+	 IsU/6EKld7pUftJY9tXUbcHmQOeKYz3lcd0kfprT/8JjUzb7tN/l/DmwrMOU2O0Ury
+	 8zrDHuKSLi3aHTbZvymZNwlYQk56oyYMnfgO31Vo3lNb2o1Rg4j6blIQ/DGuc6S6gU
+	 REzRsB3dZTOsg==
 Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
-	by lkml.kernel.org (Postfix) with ESMTP id 5B2054B1A6;
+	by lkml.kernel.org (Postfix) with ESMTP id D50774B1BA;
 	Thu, 19 Nov 2026 08:39:49 +0000 (UTC)
 From: Cunhao Lu via B4 Relay <devnull+1579567540.qq.com@kernel.org>
-Date: Thu, 19 Nov 2026 16:39:42 +0800
-Subject: [PATCH net v10 01/10] can: rockchip_canfd: prevent TX stall on
- echo skb failure
+Date: Thu, 19 Nov 2026 16:39:47 +0800
+Subject: [PATCH net v10 06/10] can: rockchip_canfd: disable RX offload on
+ open failure
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -84,7 +84,7 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Message-Id: <20261119-rockchip-canfd-restart-close-v10-1-df23913aa33a@qq.com>
+Message-Id: <20261119-rockchip-canfd-restart-close-v10-6-df23913aa33a@qq.com>
 References: <20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a@qq.com>
 In-Reply-To: <20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a@qq.com>
 To: Marc Kleine-Budde <mkl@pengutronix.de>, kernel@pengutronix.de, 
@@ -101,11 +101,11 @@ Cc: linux-can@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-doc@vger.kernel.org, Cunhao Lu <1579567540@qq.com>, 
  stable@vger.kernel.org
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795077587; l=2989;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795077587; l=1266;
  i=1579567540@qq.com; s=20261015; h=from:subject:message-id;
- bh=bHnym469T+y9JYwEnQeqSfFXdELLH4SGreNtjJc4rCU=;
- b=n9YejEbRq+CwBhqMFLW6BKMhOFzYg97rcE83TpW3VxBi87ROCFCC47Wg3KVPbmNBY2LHOGijy
- g6Bwq+t5shyCXofsgqECgXsXSq8I22pqzu0V8ub/cbKp8fTB96otVi+
+ bh=cT3cBscQt29TWUgsPQ2sU0B4DpllcnyjvFZowBvWmU4=;
+ b=vEHsYfkz94acrhPXzORPXYuoevt0zK5JcYslhBE6bVxjYVj21Yx9OWfShGTzboi9T+TCHBwBl
+ x+re7aFXhenCHSUrwPskCrO4kLMSEDvM8Vpel56d4iK1vsSBBAEOKCb
 X-Developer-Key: i=1579567540@qq.com; a=ed25519;
  pk=sUTWrzlIwT4C7ctjNfVZAzzg0G7QUn2XxRGpYsw4RtM=
 X-Endpoint-Received: by B4 Relay for 1579567540@qq.com/20261015 with
@@ -116,81 +116,39 @@ Content-Transfer-Encoding: 7bit
 
 From: Cunhao Lu <1579567540@qq.com>
 
-rkcanfd_start_xmit() advances tx_head and requests transmission even when
-can_put_echo_skb() fails. Completion matches self-received frames against
-the echo ring, so an entry without an echo skb cannot be completed and
-can leave the TX queue stopped. While that empty entry blocks tx_tail,
-frames already read from the RX FIFO fail echo filtering with -ENOMSG.
-They are discarded before reaching sockets, including ordinary frames
-from other nodes, and the current FIFO drain ends early.
+rkcanfd_open() enables RX offload before requesting the IRQ. If
+request_irq() fails, the error path leaves the offload enabled. A later
+open calls napi_enable() on an already enabled NAPI instance.
 
-Install the echo skb first. On error or an empty echo slot, drop the
-frame before writing TX data or commands, advancing tx_head or adding
-BQL bytes.
+Disable RX offload on that error path before stopping the controller and
+releasing the runtime PM reference.
 
-Pass an extra reference to can_put_echo_skb() and retain the original skb
-as the frame-data source until submission finishes. This keeps the data
-alive even if echo cleanup removes the installed clone. Release the
-retained reference on both success and failure.
-
-Fixes: b6661d73290c ("can: rockchip_canfd: add TX PATH")
+Fixes: ff60bfbaf67f ("can: rockchip_canfd: add driver for Rockchip CAN-FD controller")
 Cc: stable@vger.kernel.org
 Signed-off-by: Cunhao Lu <1579567540@qq.com>
 
 ---
-Changes in v8:
-- Retain the original skb as the frame-data source and release it after
-  submission or failure.
-- Reject successful echo preparation if no echo skb was installed.
----
- drivers/net/can/rockchip/rockchip_canfd-tx.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+Changes in v7:
+- Split the open error cleanup into a separate patch.
 
-diff --git a/drivers/net/can/rockchip/rockchip_canfd-tx.c b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-index 12200dcfd3389..420e59b41059c 100644
---- a/drivers/net/can/rockchip/rockchip_canfd-tx.c
-+++ b/drivers/net/can/rockchip/rockchip_canfd-tx.c
-@@ -117,16 +117,21 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 	tx_head = rkcanfd_get_tx_head(priv);
- 	reg_cmd = RKCANFD_REG_CMD_TX_REQ(tx_head);
+Changes in v3:
+- Disable RX offload when request_irq() fails during open.
+---
+ drivers/net/can/rockchip/rockchip_canfd-core.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
+index 59a79fe057e6..d05264605efc 100644
+--- a/drivers/net/can/rockchip/rockchip_canfd-core.c
++++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+@@ -747,6 +747,7 @@ static int rkcanfd_open(struct net_device *ndev)
+ 	return 0;
  
-+	/* Retain the original skb as the frame-data source even if the
-+	 * echo skb is removed before submission finishes.
-+	 */
-+	frame_len = can_skb_get_frame_len(skb);
-+	err = can_put_echo_skb(skb_get(skb), ndev, tx_head, frame_len);
-+	if (unlikely(err || !priv->can.echo_skb[tx_head]))
-+		goto out_drop;
-+
- 	rkcanfd_write(priv, RKCANFD_REG_FD_TXFRAMEINFO, reg_frameinfo);
- 	rkcanfd_write(priv, RKCANFD_REG_FD_TXID, reg_id);
- 	for (i = 0; i < cfd->len; i += 4)
- 		rkcanfd_write(priv, RKCANFD_REG_FD_TXDATA0 + i,
- 			      *(u32 *)(cfd->data + i));
- 
--	frame_len = can_skb_get_frame_len(skb);
--	err = can_put_echo_skb(skb, ndev, tx_head, frame_len);
--	if (!err)
--		netdev_sent_queue(priv->ndev, frame_len);
-+	netdev_sent_queue(priv->ndev, frame_len);
- 
- 	WRITE_ONCE(priv->tx_head, priv->tx_head + 1);
- 
-@@ -137,6 +142,14 @@ netdev_tx_t rkcanfd_start_xmit(struct sk_buff *skb, struct net_device *ndev)
- 				  RKCANFD_TX_STOP_THRESHOLD,
- 				  RKCANFD_TX_START_THRESHOLD);
- 
-+	dev_consume_skb_any(skb);
-+
-+	return NETDEV_TX_OK;
-+
-+out_drop:
-+	ndev->stats.tx_dropped++;
-+	dev_kfree_skb_any(skb);
-+
- 	return NETDEV_TX_OK;
- }
- 
+ out_rkcanfd_chip_stop:
++	can_rx_offload_disable(&priv->offload);
+ 	rkcanfd_chip_stop_sync(priv, CAN_STATE_STOPPED);
+ 	pm_runtime_put(ndev->dev.parent);
+ out_close_candev:
 
 -- 
 2.34.1
