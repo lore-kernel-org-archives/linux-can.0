@@ -1,56 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795071562;
-	b=nV/MbdmfmcM7QxAcGKhdJ/XEJPAO54qFRfnUyzvnpEkd0rUlYUsPAB8SsoJEPU0y0zYm
-	 HISqvmnqkMQLhcHxgrxG75AJoN9obRWP0rtr3HKMTaCxdo4BKLAQ6t327RvFzCuAOyOhH
-	 n5NPiTy7vLTjpdEEdUquzLanHo7pKkaTlG5DIeGUBa47BqIDw1ku90EGhF9BaoEFY9BLr
-	 m1Q8s3ZGUmATs0kt9sllKquLHPY36j+LwFffmJn0zm+5HjEX/4aa07Sm1M8MTbvmBHEzf
-	 A3SyKBX4ACU3EoJM7ACa+YRB5yXRRAcf1+Ocz1xYEJqLiVeSpBmjRem+HYhdye5iOTg==
+	t=1795071563;
+	b=SMVhJ5QNRK1k0XZZvk9DQspNKRbOIAdbzdD+iI9WldCO2OheiJnTIgmUtt5jSGlQyyAs
+	 NIl3Mvtd0ezkFyKxANIx7U+XYS7OcNlh8GLX11n1Bv+bMLXLyE3c3NYdb3IquNz7Q0wbI
+	 5nIEJ2DLZajabDYci75wibaJe+GVPHc1ZGZIiJnJLzHoAnc24qsNHUealgXBDyq6OXh86
+	 nZvRR8dP4Q32U2D7UJ8VhI0mQU5eViuqn9WUIv9GUHWRjhDhulVqq/nHgA+xx3EpyhYCQ
+	 4wKBo3BZtJmbvz+3dhj+GK8gTmCxMLJtv2jhXth+++drqHYZJBddhuA5iXPo7F3LILg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795071562;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795071563;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=Pckw9P1gnkf426p77cYnZKHlzm3P4KPT/8KkXyeJx84=;
-	b=iX+iLTtF+TppnjwXijUDMYBfjKY0B9YZSZ3E+D67WfExBR11tCkF7ZAh5ov8y7TChLhV
-	 mE2VkcTV77FiyOR+Z26d+w2C4G/xo4xVV4Ld1OdunArWl+dnQ/+LSb2GThg9Q1PFD6dXO
-	 oci8kIzkz5us+DMlOGsbOYO/zaBLCMEx+mUU8U8U051KEpwDczWcufmjgRCeyI+azbnF0
-	 noJo6lvO5BTe3I4S3wU0VxzyDEgvzmA+qV/D6hd9HEMn6s9nzMtg7NjXgzfHPxjhUEOrn
-	 AnmtggqFVFcnaBmmvmXiUh5UVcvwD60qMKXUqFPPUfZmDJvtf0qQb98nOPtuuVDlHgQ==
+	bh=phnBu4XvbVAIGJqNbUWargoD4yqKUX6fsdtYoFEsmsA=;
+	b=QvHxm5sx74gTf+2vTXgIqPr8dYbfcv4HEX6sZqTmE2UIY+h0PR23ySoj0pUZRBH9bh3a
+	 mULGwYFg8o3M6mIsdo2OPmUbfL3zEjFdi0+Yj/iI1G2bc0fbiQRYWO3r/K6azVlbfteqM
+	 g45+qe3luv6NduWsZDsZseoTUaV6V5/R6NB/sjIE0ZaaU2O198tWQ7nqAucvCnNY/RIcr
+	 JgrGHDTVVZyp+E9FsxH1KpgA08kBb+cVyokAZexs0PHk8rdC6CQAEiKd/xRaZmRRKuttJ
+	 M53NA9AvaT1f+r7iV2kLJoSY17AvAK9W58Q1P+pl6szzOaAfZ2WwQDW/bMFJwetnXow==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HgghTX3n;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FgxHtC4j;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D57606A32C
-	for <linux-can@vger.kernel.org>; Thu, 19 Nov 2026 06:59:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406B5606A325
+	for <linux-can@vger.kernel.org>; Thu, 19 Nov 2026 06:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HgghTX3n
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7C391F000CD;
-	Thu, 19 Nov 2026 06:59:21 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=FgxHtC4j
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A68611F000CB;
+	Thu, 19 Nov 2026 06:59:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795071562;
-	bh=Pckw9P1gnkf426p77cYnZKHlzm3P4KPT/8KkXyeJx84=;
+	s=k20260515; t=1795071563;
+	bh=phnBu4XvbVAIGJqNbUWargoD4yqKUX6fsdtYoFEsmsA=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=HgghTX3n8/rHFYIPqJ7bUw65vufYjTIs+fqwTu9fYwKXE3vEH2gm4XpMQmbG6cmPJ
-	 xMxpxGn8epeigfvn5SHPVw93kR2LFz0eyIAC/H30Bi2j7wWw3tbRKIs2L0YoKmnIsg
-	 ySHfz8DZ7I7jOm/oB3IUnxhhjuFE6AL02OsKykp/Ek61lMUfnH7rPktrDlA7m9q9nm
-	 fHE7SmkIwSe7htMJm3oCoK624wbZolRHoQUkYnE8iduTfO6CXjddepziFnePzGE64q
-	 aKCb0tzTunB5WT5lca3UKS+SH9qcgMfAafOr/1UBRhc4QOFcaoDpuh8YWTwg9T9t/B
-	 OnU+mK9MLF4mA==
-Subject:
- Re: [PATCH v6 3/8] can: raw: use a private mutex instead of lock_sock()
+	b=FgxHtC4jwKIIBjJG+2hdfT7Y0wwybRzMFHbyuW1j7WkUNdBnw4dg40NHBY/GgmRDc
+	 88lavtLKmTmRNaHYm5FfbbSMfeQskDQsBuIRaD+0zdcycWEvriz9XXygr4F33//dR2
+	 FAbLN1l09cP210j2dxeUE4znLFa+o3KiyZ8JxPVU5O5GU6iz1zF/fxlwtbk6dYpvbf
+	 /P6IKju+sEz1dKa7DwS3n9yAM9uOkPvnLDtZ2Flf9zd60+LZoAlecsq2NiAaYK9jn4
+	 B5ptrqlLnrtjbu4pYwaI2UgEf65kn1xjZdNXoIgESjLSovSHsq9lF5F3rUn5ersnsd
+	 sWv1l/6f0eb5Q==
+Subject: Re: [PATCH v6 6/8] can: isotp: always start the rx timeout in
+ ISOTP_WAIT_DATA state
 From: netdev-bot+sashiko@kernel.org
 To: socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
  mailhol@kernel.org, zhuling0805@qq.com, kuba@kernel.org
-Date: Thu, 19 Nov 2026 06:59:21 +0000
-Message-ID: <179507156133.3132.786917973363273055@kernel.org>
-In-Reply-To: <20261117-can-bcmlock-memcg-v6-3-6826a6227d36@hartkopp.net>
-References: <20261117-can-bcmlock-memcg-v6-3-6826a6227d36@hartkopp.net>
-X-sashiko-severity: Low
+Date: Thu, 19 Nov 2026 06:59:22 +0000
+Message-ID: <179507156226.3132.18273836206289416422@kernel.org>
+In-Reply-To: <20261117-can-bcmlock-memcg-v6-6-6826a6227d36@hartkopp.net>
+References: <20261117-can-bcmlock-memcg-v6-6-6826a6227d36@hartkopp.net>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -63,184 +63,116 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 1 · Medium: 0 · Low: 0
 
-- [Low] The comment this patch adds to struct raw_sock, `struct mutex
-  conf_lock; /* protects bind, filters and setsockopt */`, says more…
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-Pre-existing issues:
-- [High] This patch did not introduce this problem, and it is outside
-  what the patch claims to fix, but the same RTNL stall is still…
-- [Low] This patch did not introduce this problem.
+- [High] This fix is incomplete: isotp_rcv_cf() (net/can/isotp.c) can
+  still leave so->rx.state at ISOTP_WAIT_DATA with no rx timer running.
 
 --
 
-can: raw: use a private mutex instead of lock_sock()
+can: isotp: always start the rx timeout in ISOTP_WAIT_DATA state
 
-This patch replaces lock_sock() in CAN_RAW with a new conf_lock mutex in
-struct raw_sock. Generic SOL_SOCKET options that touch user space while
-holding the socket lock can then no longer stall raw_notify() while it
-holds RTNL. The mutex serializes bind, release, the notifier, the filters
-and the CAN_RAW socket options.
+This patch starts the rx timeout in isotp_rcv_ff() and isotp_rcv_cf()
+whenever reception continues in ISOTP_WAIT_DATA state, before a flow
+control frame is sent. Without it, so->rx.state can stay in
+ISOTP_WAIT_DATA with no rx timer running, and isotp_bind() then returns
+-EAGAIN after the CAN device has been removed.
 
-> diff --git a/net/can/raw.c b/net/can/raw.c
-> index f14270b56f521..b69eaadc5e93a 100644
-> --- a/net/can/raw.c
-> +++ b/net/can/raw.c
-> @@ -103,6 +103,7 @@ struct raw_sock {
->  	struct can_filter dfilter; /* default/single filter */
->  	struct can_filter *filter; /* pointer to filter(s) */
->  	struct uniqframe __percpu *uniq;
-> +	struct mutex conf_lock; /* protects bind, filters and setsockopt */
-
-[Severity: Low]
-Does this comment promise more than the code provides?
-
-Only the CAN_RAW_FILTER branch of raw_getsockopt() takes conf_lock. Other
-read-backs of state owned by setsockopt still run without it:
-
-net/can/raw.c:raw_getsockopt() {
-    ...
-	case CAN_RAW_ERR_FILTER:
-		if (len > sizeof(can_err_mask_t))
-			len = sizeof(can_err_mask_t);
-		val = &ro->err_mask;
-		break;
-    ...
-			if (copy_to_iter(&ro->raw_vcid_opts, len,
-					 &opt->iter_out) != len)
-    ...
-}
-
-The loopback, recv_own_msgs, fd_frames, xl_frames and join_filters bits
-are in the same situation. raw_setsockopt_locked() writes all of them
-under the mutex, but these readers don't take it.
-
-The error mask is a filter too. Could the comment list the paths that
-actually take the lock (bind, release, the notifier, setsockopt and the
-CAN_RAW_FILTER read-back)?
-
-The commit message says ro->raw_vcid_opts will be handled in a
-follow-up, but no later patch in this series seems to make that change.
-
->  };
->  
->  static LIST_HEAD(raw_notifier_list);
+> diff --git a/net/can/isotp.c b/net/can/isotp.c
+> index 8229b6a69ecd0..0293d590186c4 100644
+> --- a/net/can/isotp.c
+> +++ b/net/can/isotp.c
 
 [ ... ]
 
-> @@ -328,9 +329,9 @@ static void raw_notify(struct raw_sock *ro, unsigned long msg,
+> @@ -726,13 +730,13 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+>  		return 0;
+>  	}
 >  
->  	switch (msg) {
->  	case NETDEV_UNREGISTER:
-> -		lock_sock(sk);
-> +		mutex_lock(&ro->conf_lock);
->  		if (ro->dev != dev) {
-> -			release_sock(sk);
-> +			mutex_unlock(&ro->conf_lock);
->  			break;
->  		}
+> +	/* start rx timeout, isotp_send_fc() restarts it */
+> +	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
+> +		      HRTIMER_MODE_REL_SOFT);
+> +
 
 [Severity: High]
-This isn't a bug introduced by this patch, but can CAN_J1939 sockets
-still trigger the same RTNL stall?
+Can isotp_rcv_cf() still leave so->rx.state at ISOTP_WAIT_DATA with no rx
+timer running?
 
-The series converts raw, isotp ("can: isotp: use a private mutex instead
-of lock_sock()") and bcm ("can: bcm: use a private mutex instead of
-lock_sock()"). j1939 still calls lock_sock() from its netdevice notifier
-while RTNL is held:
+Earlier in isotp_rcv_cf() the timer is cancelled unconditionally, and two
+length checks after that return without resetting rx.state or restarting
+the timer:
 
-j1939_netdev_notify()   /* NETDEV_UNREGISTER, RTNL held */
-  j1939_sk_netdev_event_unregister()
-    lock_sock(sk)
-
-net/can/j1939/socket.c:j1939_sk_netdev_event_unregister() {
+net/can/isotp.c:isotp_rcv_cf() {
     ...
-		sock_hold(sk);
-		read_unlock_bh(&priv->j1939_socks_lock);
-		...
-		lock_sock(sk);
-		if (jsk->state & J1939_SOCK_BOUND) {
+	hrtimer_cancel(&so->rxtimer);
     ...
-}
+	/* CFs are never longer than the FF */
+	if (cf->len > so->rx.ll_dl)
+		return 1;
 
-sk_setsockopt() still reads user memory while it holds
-sockopt_lock_sock(sk). Examples are copy_from_sockptr(&ling, ...) for
-SO_LINGER and copy_bpf_fprog_from_user() for SO_ATTACH_FILTER.
-
-can_create() has no capability check for CAN_J1939. With user namespaces
-and unprivileged FUSE enabled, an unprivileged user could:
-
-  1. create a CAN_J1939 socket and bind it to a vcan device in their own
-     network namespace
-  2. call setsockopt(SOL_SOCKET, SO_LINGER) with optval in a FUSE backed
-     mapping whose daemon never answers, so sk_setsockopt() sleeps in
-     copy_from_sockptr() while holding the socket lock
-  3. delete the vcan device
-
-j1939_sk_netdev_event_unregister() would then block in lock_sock() with
-RTNL held for as long as the copy stays stalled.
-
-Does j1939 need the same conversion as raw, isotp and bcm?
-
-[ ... ]
-
-> @@ -831,7 +834,7 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
->  		struct can_filter *filter = NULL;
->  		int err = 0;
->  
-> -		lock_sock(sk);
-> +		mutex_lock(&ro->conf_lock);
->  		if (ro->count > 0) {
->  			int fsize = ro->count * sizeof(struct can_filter);
->  
-
-[ ... ]
-
-> @@ -851,7 +854,7 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
->  		} else {
->  			len = 0;
->  		}
-> -		release_sock(sk);
-> +		mutex_unlock(&ro->conf_lock);
->  
->  		if (filter) {
->  			if (copy_to_iter(filter, len, &opt->iter_out) != len)
-
-[Severity: Low]
-This is a pre-existing issue, but can lockless readers of the VCID state
-see a concurrent setsockopt(CAN_RAW_XL_VCID_OPTS) only partly applied?
-
-The writer updates several fields under conf_lock:
-
-net/can/raw.c:raw_setsockopt_locked() {
-    ...
-	case CAN_RAW_XL_VCID_OPTS:
-		memcpy(&ro->raw_vcid_opts, val, sizeof(ro->raw_vcid_opts));
-
-		/* prepare 32 bit values for handling in hot path */
-		ro->tx_vcid_shifted = ro->raw_vcid_opts.tx_vcid << CANXL_VCID_OFFSET;
-		ro->rx_vcid_shifted = ro->raw_vcid_opts.rx_vcid << CANXL_VCID_OFFSET;
-		ro->rx_vcid_mask_shifted = ro->raw_vcid_opts.rx_vcid_mask << CANXL_VCID_OFFSET;
+	/* CFs have usually the LL_DL length */
+	if (cf->len < so->rx.ll_dl) {
+		/* this is only allowed for the last CF */
+		if (so->rx.len - so->rx.idx > so->rx.ll_dl - ae - N_PCI_SZ)
+			return 1;
+	}
     ...
 }
 
-raw_getsockopt(CAN_RAW_XL_VCID_OPTS) copies ro->raw_vcid_opts to user
-space without the lock.
+The first check is hit on a CANFD_MTU socket when an 8-byte FF is followed
+by a CF longer than 8 bytes. The second check is hit on classic CAN by a CF
+with DLC < 8 in the middle of a PDU. A remote CAN node can send either
+frame.
 
-raw_rcv() reads ro->raw_vcid_opts.flags, rx_vcid_shifted and
-rx_vcid_mask_shifted in softirq context. raw_put_canxl_vcid() reads the
-flags and tx_vcid_shifted. Neither takes the lock.
+The new hrtimer_start() comes after both checks, so neither path reaches
+it. That means isotp_rx_timer_handler() cannot fire, and it is the only
+asynchronous path from ISOTP_WAIT_DATA back to ISOTP_IDLE.
 
-Could a frame then be filtered or tagged with the new flags but the old
-VCID values, or could getsockopt return a torn copy?
+If the CAN device is then unregistered, the NETDEV_UNREGISTER branch of
+isotp_notify() clears so->bound, so->dev and so->ifindex but leaves
+so->rx.state alone. No further FF or SF arrives to reset the state, so
+isotp_bind() keeps returning -EAGAIN until the socket is closed:
 
-The commit message defers this to a follow-up, and no later patch in the
-series appears to change it.
+	if (READ_ONCE(so->tx.state) != ISOTP_IDLE ||
+	    READ_ONCE(so->rx.state) != ISOTP_IDLE) {
+		err = -EAGAIN;
+		goto out;
+	}
+
+This is the symptom the commit message says is fixed. The subject also
+says the timeout is "always" started.
+
+The next patch in the series, "can: isotp: reject socket options while a
+transfer is active", adds the same rx.state != ISOTP_IDLE check to
+isotp_setsockopt_locked(). With that patch, setsockopt() would also return
+-EAGAIN permanently in this case. That patch's statement that receptions
+always end by their timeouts at the latest also would not hold for these
+paths. No later patch in the series appears to address this.
+
+Would it make sense to reset so->rx.state to ISOTP_IDLE on these two early
+returns, or to restart the timer there? Another option is to reset
+so->rx.state in the NETDEV_UNREGISTER handler of isotp_notify(), which
+would cover every such path at once.
+
+>  	/* perform blocksize handling, if enabled */
+> -	if (!so->rxfc.bs || ++so->rx.bs < so->rxfc.bs) {
+> -		/* start rx timeout watchdog */
+> -		hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
+> -			      HRTIMER_MODE_REL_SOFT);
+> +	if (!so->rxfc.bs || ++so->rx.bs < so->rxfc.bs)
+>  		return 0;
+> -	}
+
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261117-can-bcmlock-memcg-v6-0-6826a6227d36%40hartkopp.net
