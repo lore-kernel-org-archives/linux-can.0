@@ -1,76 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.221.172
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795172735;
-	b=RN1cW+t9JR7Mx7Mfl6RkulZpjDSBDajjpWGj8fagofA6W9zsHMwsVO+UUfAqDscoQPBP
-	 79bu94FAsAQa9eoDRuglvQk1eHcMiom+pDqP8PR2KqzMW64im3kd5NtawF7ryTMK1b195
-	 aibBoj35ttwd7zPo3p841wVoYIHqjIorzG340bFqU9o3qFnKcJCvZsRGQhtCb0YHcKvm6
-	 6FMopznsshjqGH3i805rObpc55VUndf2BvUVxW/s5Q1gX2OHc1XX0hZLL2m2KcVW/cpeo
-	 BuP/1Es7VhyZpUN9IXISdJgHGS2ZZoqgTQroMrORW4gQo1YiamC31SksjbOXibz9pgQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795172735;
-	h=DMARC-Filter:Received:X-Google-DKIM-Signature:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Gm-Gg:X-Received:Received:Received:
-	 X-Forwarded-Encrypted:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type;
-	bh=7Fsqs1iX5umt9C6HSg0iQYMwk7igmLmbTGhkL3PvPnc=;
-	b=mmPL8h4rAaBJ2U9twZgx5mqw9QLDFHPZTOcxmDMmR4TeSx1WI3C9MSxfGT+wZx+jvZZI
-	 65W3wfwUx27X8c4BBYHMC+eMhFXdwJylEH1eq1A2DHNL0s29hPWcZTLPs9DnyYiCHMWIH
-	 WdcAQumX81z3LerJ9e+zJlu1z3eWfgm2fhNBnVB/jCdfQYNfUoFMzVYImXBefG9hohkQV
-	 IWW+a/okGjvxocw+du6ajXyfppAL2/tKJAIlvC7anREa91L4lwiwfkiEeLK6uCwVMhfpO
-	 svkfBAlmX7RDKhsKPDffXsSNbqRC2y/I7lHDavl5OJB6y0tUvSlaOvVwakx5nv++Pfw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=fail header.from=linux-m68k.org;
-	spf=pass smtp.mailfrom=gmail.com;
-	arc=none smtp.remote-ip=209.85.221.172
-Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.167
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795174148;
+	b=KRvK1obcNSkCoBDujvmjf4i6qt27vGxDRkw4eE7pXXo4pLW7aJTM6rYu0BJHlA8cL1KF
+	 utcClfB+cAfYMbNBwfAYBjanmmCaLYzVVbpQif5ge4VcMnvQGJMuprmODuG0io+AXU5BJ
+	 dA+AE4XZAzItsF5/3gyAggSSp8kGugMrC3JVSX8KWapRhtyrr3mwUU0Cc91vlnRld4IvS
+	 vnvBLoVs8flXsfdwZNXJC97vv545ah1ntt8beBlTdBHnT7UOobl+6kUnYh9zXTIPl6PbH
+	 5lzefsYRSPFiIDppcqGi2XZtEvqERLErnBWIb0E1IvlupG57jktUsso0linQcj5Tfww==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795174148;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
+	 X-Mailer:X-Developer-Signature:X-Developer-Key;
+	bh=dyfeK/GUPie55ziz2SjorD4OfwLrUe0NHuQHCGK1cTQ=;
+	b=uz9m4aAySIZYx3KXrmeCHicgdB5t1yELnXRbuPk3VONSi9v8V0wW26BYhxrMGDv+l/hc
+	 6Do0VLd/NHqBbG1dd0qO5ekAOC41C73nyyQVPAJMGh+soYcyRhY8yaIKlAWjcmg0MqorX
+	 Y8022L3604NMhp2U7h67nIBkjCNRjr7s3+hpfXwW6KtRr2atQdOr08XACjSgk4NVJWb36
+	 62zSpbmiMELbrwZX1yvS9lkDRT/2RTd0y5TB5eU4cQY8E7iYAjW+STr6Pyf7a1FMZfwOT
+	 XrwB55Ovd1aU+yMGhy+JW1mCKrlDyaS6ZT2ud/bFIxXZYqyMGEAaud9zXMqGf/htXRQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ISbaUp3X;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b="dGyO/b7w";
+	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.167
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.167])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF951606A325
-	for <linux-can@vger.kernel.org>; Fri, 20 Nov 2026 11:05:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BF951606A325
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-5eaf169fe3dso230220e0c.3
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2026 03:05:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795172734; x=1795777534;
-        h=content-type:cc:to:subject:message-id:date:from:in-reply-to
-         :references:mime-version:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to:content-type;
-        bh=7Fsqs1iX5umt9C6HSg0iQYMwk7igmLmbTGhkL3PvPnc=;
-        b=KTF+2oiQB1S7jLQ4D7aG+nvrWpCoz+TihlHUxRnghJ1+0UbpixT/qJXByz2i3jLKOa
-         U36lBLBDy32b0CfEEeghhZiwmSKXoq1/MlWaIi1tCPkLGcP9Khb9jFk0K3jpVuLbS2cF
-         qWvDmzALevfSsUXNkvS5MVtjziHTGq2tS8NUK/5H33CD2KVBHEUZNGo6clD+nQWGtsU1
-         OH0B7SJ7HK+H+SZGTPikqho3CzbzEf7v5qRT/UXW3UQM4b5uzgWmfQ4mLnqLPo3yrpUh
-         IH8Se0pDb0P7vfeoxXAX7tY4ngC5dFdd+hjVsNOQNKXhrOsUJz+CBB/u6D5HB+BGZdEl
-         G1sQ==
-X-Forwarded-Encrypted: i=1; AL+hErGm8nlkj2opD6LDS95hgmFwq6EUa0hP3WHbcAmgPq7Ms7kj/dBNjZYcBlsAKrzFd2YF9YHp/iE1Pr4=@vger.kernel.org
-X-Gm-Message-State: APuU4Z8RWJvN3pAR+tYNxrTHBIMBE0M4UocdRzU827qW0B9JuKFkqv0t
-	fyECCAvvxfQeqMKoXQGFu+mFVwQKsU6SqeP6FKv/BPRF62hQjOd3qyYi6KouOHre
-X-Gm-Gg: AZFdTZcbCwDkKkHj+wv40xyh2LCsP4bNPgBkJWjDb6uph0sNYeHuACUwJCzs0vB9aDx
-	0QwOXWhzWHEaF49cBjzYFah6km8+piIkOHzhNaRE8lSyLUxjSpxyNqm3zioe2e+cP7W0EKtxKJY
-	+w1eQhBn7heF7+MMzLql0dEPQDqTamAF/gfr+AG7Bzztyip8lMw++mVAPqo9reVwY+4yW7sly3H
-	WF0GMVVmHxS2fn5vw7VrpT/GTnZilG58f56PN/NZSF7KgUdcm3VizjDrr8TeYyJWGUVSKbNePdN
-	0CKMvQgB2CfR0XqI62SvMT8PfP7INr+DZMGuXuK7XdZ6i1F0x/6Q9IOhYI8atDNzH/GcPnYIoCs
-	CbA5LsxeS07MMRPl+isXfhrNf8hV4k5A/WjFAbXStq3XRl3GANwMbK2Hoh8RdiA9HVTOvDg94Pn
-	JqhNMTFCmYLxJU7xHJDAm23+wnE7JTHVdne/98UUixMEsFeh2Ebo4uzpko58d/4eyJWZc6M6JQY
-	CbY2rObkfQvQEiurwVr6vEzuw3ShRtKcGpbUV/CxtDUn9WUeKH0SfuUPf8ZnSUvHuhzgbe5/pne
-	Jglhw54PAqTN2XcEN/4YeCysLMb8Q2SHRGRDZje8SB8HAdM3gLG+jxEcBxE5DPXQjyw7
-X-Received: by 2002:a05:6122:552:b0:5ce:d56f:efac with SMTP id 71dfb90a1353d-5ee8af6ef4bmr1298742e0c.21.1795172733718;
-        Fri, 20 Nov 2026 03:05:33 -0800 (PST)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5ee8b635d0fsm2161798e0c.15.2026.11.20.03.05.33
-        for <linux-can@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Nov 2026 03:05:33 -0800 (PST)
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-7777fa8f1ccso269359137.3
-        for <linux-can@vger.kernel.org>; Fri, 20 Nov 2026 03:05:33 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErGkGj4ZBPqPyQt/oJIrSClZM4JyoJnDg2cx+ZOuEXS4rAoVsdcxuoTKbItP/cCYP0glMNnJ2+JiDSI=@vger.kernel.org
-X-Received: by 2002:a05:6102:2926:b0:7cc:9d47:9c9 with SMTP id
- ada2fe7eead31-7d73963f00dmr849125137.35.1795172732962; Fri, 20 Nov 2026
- 03:05:32 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AB4160A2605
+	for <linux-can@vger.kernel.org>; Fri, 20 Nov 2026 11:29:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 4AB4160A2605
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=ISbaUp3X;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=dGyO/b7w
+ARC-Seal: i=1; a=rsa-sha256; t=1795174142; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=oRyYnRcdn1+zFfYcFBTd+a4OQPQWKm5OoeTeOTijUbDJuU5F+LHKKxMr6nc83AaTe+
+    rT+nLsmGvyJXe1eATbGeKvMc2hISm2zmr0cZ6O2bvm75KEGIQwx65v/nOpKkMhcxzaNr
+    8rbj4ncgUcRQF6Qtnv3ekQn6L3XLXSfqWWpr9g8GewHpXq5fQWqyR+1BKOn9kzXkcOb4
+    q+9/jpnHwLdnE9hcV+kpJetZmEXmvjmJBI25RLsjemTY8qcdnDHaJAtgFT1Zi/eb6Q9S
+    4VbAp4qWLWN7Oj2uyvNLzJC8LdU5wbPr2M9sMIodTq7AU4g1YjtjE19RjTthQEz2Mjz5
+    6Ikg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795174142;
+    s=strato-dkim-0002; d=strato.com;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dyfeK/GUPie55ziz2SjorD4OfwLrUe0NHuQHCGK1cTQ=;
+    b=VntYZ8/uhhIZKIYm8iwJBi3vZqP+fM3bA4r5xk3/S2qZcbdEkVGJYQ6+mUUBLKYh7f
+    34ihlnzh6AUfgOYe/ZOQ9ppKDCNHvV5JI9NCnr7zKEvyP7QzF8OIulodedgy8D8EOaxr
+    JLIX2qQwMjbWNM9NDCohM2qf1Y/DTmMSus6nTlU0WJdF2kHGQb+vpVJjNvq71mM4dvUk
+    xkhTgPNqcNCVhobL2QLAB4OYkY7Cwtp+5/3EFvk7YUvDKMfJTG0TcAOuCFKrsdC8tyQe
+    KOECX12FT9XcUQsUIohQFrruAVH9LaKTWXpfhxMv7TzyoFBUA7r+L3yIcHLwmFM3mYv+
+    dqAQ==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795174142;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dyfeK/GUPie55ziz2SjorD4OfwLrUe0NHuQHCGK1cTQ=;
+    b=ISbaUp3XBL8vDPFYjvjBZumPEZ8f/QR64Ddb6zOY2j6/8akQs8XpK+Ngdll3s3X0do
+    BTU3VLXWcMTze7B1pVyyzqfj1WPkCYjVvBBCzfGIvBT2HpZMkvW569FA9bmdVhFMJ/F4
+    6ssfzxTlsNxHxsqtj0O2uH5clWs5IZeAd9MFN7Yd/vqM38p7VjF24o1sM/hvbPgUt/oQ
+    K++prqQA5kaVI0m++8YZo/eqA9vsmFbMLaSJEGTa8zFzjnuoA562yCk/pO+NKMEKsg3e
+    IWJ3x9vSkPECVyvwbXEmMF3UyaM81h6vZhqTgf7aa2wBVQbhO23RiExIzbzGkWT4FcCh
+    PViw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795174142;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
+    From:Subject:Sender;
+    bh=dyfeK/GUPie55ziz2SjorD4OfwLrUe0NHuQHCGK1cTQ=;
+    b=dGyO/b7wcaRdP+4Thphm67ZibKrbkCCM1b4Ggez3sq6r+J540RnZdMWPGzPGN3ooQc
+    LNdKPO6XDniKRijA3TAw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [127.0.1.1]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a2AKBT1QM7
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Fri, 20 Nov 2026 12:29:01 +0100 (CET)
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+Date: Fri, 20 Nov 2026 12:28:56 +0100
+Subject: [PATCH v7 2/8] can: bcm: do not remove the procfs entry in
+ bcm_notify()
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -80,58 +97,178 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-References: <20260902141544.565763-1-claudiu.beznea+renesas@tuxon.dev> <20260902141544.565763-8-claudiu.beznea+renesas@tuxon.dev>
-In-Reply-To: <20260902141544.565763-8-claudiu.beznea+renesas@tuxon.dev>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Fri, 20 Nov 2026 12:05:21 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdXhBKV8zoi_95WsB3qSC2tm-nX9opurqFPO8n3mn3L=UA@mail.gmail.com>
-X-Gm-Features: Aa3M54qJy6m08CrK20MF4Bh-SEahYYaIemU7d5t_ENxV4MsT0OIrWbFwbx-tam8
-Message-ID: <CAMuHMdXhBKV8zoi_95WsB3qSC2tm-nX9opurqFPO8n3mn3L=UA@mail.gmail.com>
-Subject: Re: [PATCH v4 7/7] arm64: dts: renesas: rzg3s-smarc: Enable CAN-FD
-To: Claudiu Beznea <claudiu.beznea+renesas@tuxon.dev>
-Cc: mkl@pengutronix.de, mailhol@kernel.org, robh@kernel.org, 
-	krzk+dt@kernel.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	biju.das.jz@bp.renesas.com, fabrizio.castro.jz@renesas.com, 
-	claudiu.beznea@tuxon.dev, linux-can@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261120-can-bcmlock-memcg-v7-2-f6b84f5257b1@hartkopp.net>
+References: <20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1@hartkopp.net>
+In-Reply-To: <20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1@hartkopp.net>
+To: linux-can@vger.kernel.org
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, Zhu Ling <zhuling0805@qq.com>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>
+X-Mailer: b4 0.15.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795174141; l=5744;
+ i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
+ bh=5ZVj9zJbo3hpX3s/iiPgBkIURgOaGpGZNd2t5brt1xk=;
+ b=awrKP+gqwZywFQtkEMBWmapfUFv0cBVfnG9iy/Wy50GUUb2kZsoRqKaT4pw0EAQrog4cXWVeQ
+ a8gZOE2FPrRBZMVDoAnrvn4TFdhmcwwwCrPKHpvze7pf8HGdg/68oZX
+X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
+ pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-On Wed, 2 Sept 2026 at 16:16, Claudiu Beznea
-<claudiu.beznea+renesas@tuxon.dev> wrote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> The two CAN FD channels available on the Renesas RZ/G3S SoC are routed
-> through the Renesas SMARC Carrier II board when used with the Renesas
-> RZ/G3S SMARC Module.
->
-> The CAN transceiver on the Carrier II board has its standby pins connected
-> to GPIOs that are selected through the SW_GPIO_CAN_PMOD switches. By
-> default, these switches route the GPIOs to the PMOD interfaces.
->
-> Enable the CAN FD controller and its two available channels.
->
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v4:
-> - collected tags
-> - used ti,tcan1046 compatible
-> - adjusted the standby-gpio property along with CAN PHY node name and label
-> - adjusted the CAN channels phy phandles
+bcm_notify() removes the procfs entry of a CAN_BCM socket that is bound
+to a vanishing CAN device with remove_proc_entry() while holding RTNL.
+remove_proc_entry() waits for all running readers of this entry. A
+reader of /proc/net/can-bcm/<inode> that stalls in its copy to user
+space, e.g. on a FUSE backed mapping, therefore blocks RTNL on the
+unregistration or namespace change of the bound CAN device.
 
-Thanks, will queue in renesas-devel for v7.5.
+The entry has been removed in bcm_notify() so that a later
+bcm_connect() of the unbound socket can register it again without a
+"proc_dir_entry already registered" warning.
 
-Gr{oetje,eeting}s,
+The CAN_BCM socket itself stays usable after a NETDEV_UNREGISTER:
+bcm_notify() only unbinds it and reports ENODEV, so the application can
+connect() the socket again, e.g. to a re-created CAN device. The name
+of the procfs entry is the inode number of the socket, which does not
+change until the socket is closed.
 
-                        Geert
+Keep the procfs entry until bcm_release() instead, which removes it
+after the socket has left the notifier list and without holding RTNL.
+bcm_connect() only creates the entry, if it does not exist yet.
+bcm_proc_show() reports an unbound socket as "unbound" instead of
+showing the cleared ifindex as "any".
+
+As bcm_proc_show() can now run while the socket is bound or unbound, it
+reads bo->ifindex locklessly with READ_ONCE() and the writers use
+WRITE_ONCE(). The NETDEV_DOWN handling in bcm_notify(), which runs
+without lock_sock(), reads bo->bound and bo->ifindex with READ_ONCE()
+as well. bo->ifindex is still only modified under lock_sock(). A
+concurrent bind or unbind may show an intermediate state in the procfs
+output, which is acceptable for this debug information.
+
+Fixes: 76fe372ccb81 ("can: bcm: Remove proc entry when dev is unregistered.")
+Cc: stable@vger.kernel.org
+Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
+---
+Changes in v3:
+- read bo->bound and bo->ifindex with READ_ONCE() for NETDEV_DOWN and
+  shortened the bcm_notify() comment (Sashiko review)
+- v2: https://lore.kernel.org/linux-can/20261108-can-bcmlock-memcg-v2-2-19fafdfc9d12@hartkopp.net/
+
+Changes in v2:
+- read bo->ifindex with READ_ONCE() in bcm_proc_show() and write it
+  with WRITE_ONCE(), updated the bcm_notify() comment (Sashiko review)
+- v1: https://lore.kernel.org/linux-can/20261107-can-bcmlock-memcg-v1-2-482d9f5be1fd@hartkopp.net/
+---
+ net/can/bcm.c | 33 +++++++++++++++------------------
+ 1 file changed, 15 insertions(+), 18 deletions(-)
+
+diff --git a/net/can/bcm.c b/net/can/bcm.c
+index 3f4c8d828337..1595b7720c98 100644
+--- a/net/can/bcm.c
++++ b/net/can/bcm.c
+@@ -217,15 +217,20 @@ static int bcm_proc_show(struct seq_file *m, void *v)
+ {
+ 	char ifname[IFNAMSIZ];
+ 	struct net *net = m->private;
+ 	struct sock *sk = (struct sock *)pde_data(m->file->f_inode);
+ 	struct bcm_sock *bo = bcm_sk(sk);
++	int ifindex = READ_ONCE(bo->ifindex);
+ 	struct bcm_op *op;
+ 
+ 	seq_printf(m, ">>> sock inode %s", bo->procname);
+ 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
+-	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
++	if (READ_ONCE(bo->bound))
++		seq_printf(m, " / bound %s",
++			   bcm_proc_getifname(net, ifname, ifindex));
++	else
++		seq_puts(m, " / unbound");
+ 	seq_printf(m, " <<<\n");
+ 
+ 	rcu_read_lock();
+ 
+ 	list_for_each_entry_rcu(op, &bo->rx_ops, list) {
+@@ -1864,23 +1869,13 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 			if (op->ifindex == dev->ifindex)
+ 				hrtimer_cancel(&op->timer);
+ 
+ 		/* remove device reference, if this is our bound device */
+ 		if (bo->bound && bo->ifindex == dev->ifindex) {
+-#if IS_ENABLED(CONFIG_PROC_FS)
+-			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
+-				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
+-				bo->bcm_proc_read = NULL;
+-			}
+-#endif
+-			/* Paired with the lockless fast-path check in
+-			 * bcm_sendmsg(); bo->ifindex itself is only ever
+-			 * accessed under lock_sock() so it needs no
+-			 * annotation.
+-			 */
++			/* pairs with the lockless check in bcm_sendmsg() */
+ 			WRITE_ONCE(bo->bound, 0);
+-			bo->ifindex = 0;
++			WRITE_ONCE(bo->ifindex, 0);
+ 			notify_enodev = 1;
+ 		}
+ 
+ 		release_sock(sk);
+ 
+@@ -1890,11 +1885,12 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 				sk_error_report(sk);
+ 		}
+ 		break;
+ 
+ 	case NETDEV_DOWN:
+-		if (bo->bound && bo->ifindex == dev->ifindex) {
++		if (READ_ONCE(bo->bound) &&
++		    READ_ONCE(bo->ifindex) == dev->ifindex) {
+ 			sk->sk_err = ENETDOWN;
+ 			if (!sock_flag(sk, SOCK_DEAD))
+ 				sk_error_report(sk);
+ 		}
+ 	}
+@@ -2011,11 +2007,11 @@ static int bcm_release(struct socket *sock)
+ 	}
+ 
+ 	/* remove device reference */
+ 	if (bo->bound) {
+ 		WRITE_ONCE(bo->bound, 0);
+-		bo->ifindex = 0;
++		WRITE_ONCE(bo->ifindex, 0);
+ 	}
+ 
+ 	sock_orphan(sk);
+ 	sock->sk = NULL;
+ 
+@@ -2058,20 +2054,21 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
+ 			dev_put(dev);
+ 			ret = -ENODEV;
+ 			goto fail;
+ 		}
+ 
+-		bo->ifindex = dev->ifindex;
++		WRITE_ONCE(bo->ifindex, dev->ifindex);
+ 		dev_put(dev);
+ 
+ 	} else {
+ 		/* no interface reference for ifindex = 0 ('any' CAN device) */
+-		bo->ifindex = 0;
++		WRITE_ONCE(bo->ifindex, 0);
+ 	}
+ 
+ #if IS_ENABLED(CONFIG_PROC_FS)
+-	if (net->can.bcmproc_dir) {
++	/* create the procfs entry once, it is removed in bcm_release() */
++	if (net->can.bcmproc_dir && !bo->bcm_proc_read) {
+ 		/* use unique socket inode number as filename */
+ 		snprintf(bo->procname, sizeof(bo->procname),
+ 			 "%llu", sock_i_ino(sk));
+ 		bo->bcm_proc_read = proc_create_net_single(bo->procname, 0644,
+ 						     net->can.bcmproc_dir,
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.53.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
