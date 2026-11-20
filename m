@@ -1,86 +1,82 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795164046;
-	b=YqpYCoGLab8jFRyaacG4/xRw2koeAa3HTo1g+QaJHySoM2o4vLwpuzwBmbA5VEHtapkc
-	 +NJY2uag/N5YxAmBWZpxMKXjugtpLyOMjB+TwxfY1JIH3kde1K3Dttp9fKnurmuMvEokI
-	 o/ZAGV/+EW+ZCQRK64CbdB+srv0NTrFW0l839lJXHbmC/f9WQt53s77jon5pPj9Rl7PdY
-	 YhLr04vnaWIJv5fsKaS2bDDWc+L+ks400G7+KqbMISdH5nPFkqu66JjSEZjzdHkB0RBuB
-	 TJHjzGTFvrjLYR4U8qdf7iDOd7jnvUGGKtOKoTCezAHoo+JLZ4XSK69aA9NJbFI9/ng==
+	t=1795167970;
+	b=boSTvaBgiY9kr5VCZ/lgE8v7fsNP8rNupndmUABH6MV4rkXvBzdGtb8YPcbGQmMNVRdh
+	 k/aSDSBEslfM+6E2+eQG4Z5qHcV2S22rQn5boW1dlbkjwJ+4a+VmEKfG/n2TieuwgdCwO
+	 rKGJxPI7RWLYWwr0ny7t6oI3YhCxLwJk69iwKjWg4NXLNC6Gu5JQl8mzJOQvRlJEbX6VL
+	 usZtFlow+yIK/p/bLFVg2HLUjs/NR7APOpeH0sISJEtYi1Xn6ZSjvwqzM4Bb0hqKUDfy0
+	 V2p6gLjbD0BOU1a7RW4E6FbcB0aMvU9VNc7QKTVobHNzXk4zfPCPGvTe/waJEP69J6g==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795164046;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=G7/+dGXKwxvm7pBwkPBiroDwyoNH1aExmeBxownU6dw=;
-	b=Rxs/yJ8NfKfl1iSfogSevatudiKFpJiX5MXD/cDYvrLxh4wtTJTjpqs75NB+Iv2LuPzu
-	 BgAJTec0Dhv0UhDOmHIERUapZaqxg4hMft24H9Sry1MBc7qkeNBQZgl60fEPJbx+If26+
-	 tdXyyUnB81Fw5+vHIh5FB3zP2UFc6xpiedwYH+jYkzlARmtRK7qvQDxvXn6LuksdQyka7
-	 ao24QfiMAc70GPNnHtnApzvrUkkv+o/7xuERoJtFW42X6VUaflPtddi6sxB6jYVuhFxf/
-	 K6vrL2EeG2td7JTjIQr74Tn/pgUq7fHY2TDOUVG5URhZK29l2sV7p9Wt9eZsS+hOPmQ==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795167970;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:From:Date:Subject:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
+	 References:In-Reply-To:To:Cc:X-Mailer;
+	bh=LyMGAaInYYZKD2EbDC92SHBmRPfFEzQvFWfFO59Ilto=;
+	b=pdqt+WF99b9Zl77hAtR+akWtjePgYd2qxgnmaVZE3IICgsWk5uvd6LAlO4xtS/MI68o9
+	 wsAGKb8sJD36Vmk6rnpdJIoDeugu3F+lz7VU3NKcavpqDgPRZKUaIJrRPnLKzvhoupt32
+	 PlYyzEFEW7KXv/ZlLCBGNI0P+bzdL8tQpyS6Uuts2j47nNOgt5CujCQmWiIzi1pXlTzV8
+	 PNOVmDNkSdJzQn+FwgxrfPOsQ2/2O/XCY0TvvsEgYwM6JDvNDmlI6HgchM4jRYl2BHQxt
+	 Pup3FYEDGkAD6mTyWLwyZG/B5d5E0SCpIVC4XO8JgnbKrpKRg4SO/C7yWcsPtx1lUVg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=M2IAcv3I;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=DPbguDKv;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B82C606A320;
-	Fri, 20 Nov 2026 08:40:45 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6B82C606A320
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5453A606A330;
+	Fri, 20 Nov 2026 09:46:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5453A606A330
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=M2IAcv3I
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 51464200EDB;
-	Fri, 20 Nov 2026 09:40:43 +0100 (CET)
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=DPbguDKv
+Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.pengutronix.de [IPv6:2a0a:edc0:0:1101:1d::ac])
+	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 61101202284;
+	Fri, 20 Nov 2026 10:46:02 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795164043;
+	s=20260414; t=1795167962;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=G7/+dGXKwxvm7pBwkPBiroDwyoNH1aExmeBxownU6dw=;
-	b=M2IAcv3IpuDfrtikPy85aXva05WT/WH2l4cmpvqo773VNtLObicj2+no9WFrOOqRFTu9Hu
-	ne/uqyFj0oYO7GH3wgpz7ekNcWa6p5aZR1s27/CxhYrOTITEcNnIFV5PEEY96xPaVTfzEo
-	n/XkHJqw86s6wO3M7MVtaMDaQAOwOlu/W+F5NqXG29WR/2+eWNFlBzUBSrJzYXptMpLOIY
-	H9FVeASwGsGWfOXJtSM89ZSePf+9BRKGvA59So4sCHXR+z/Rf6LfYHfRXofRGEWnh+LcA7
-	/0G2Y52rXpGi7lpMxNDLhgXGzMcPzqJXkUV9uv1oZH0S1XyZODiRLRKaUJTE4Q==
+	bh=LyMGAaInYYZKD2EbDC92SHBmRPfFEzQvFWfFO59Ilto=;
+	b=DPbguDKvunMEOfZLgYieA/RNCoNt15TZ6y9DxFv9Lxa9RaXor9ZMLHgXAKJfy+PV+Sg4XT
+	m6zsYDsa1WWYMxOqUVHOkD07fkEpr4KoqfsjAhkQPCEzR20G1YMwhNtR8/dMFtlV5Gfrr7
+	+HIDO2yTxS1OFLbi7ixCBAKdNKewaUIgHbNNbVLOigjzE7bVsDJilo4uUkb9f0ykHSYJx+
+	PHyUExqB5JwUM88HS5WV7P3cXzCtiE33JuRCfhnG/JGMWZdfvNacZmB7XlJ5o5G4Ww4IXf
+	wfXvW1mf8ezE38rGAmekBMfcqOy2p4XPQvLhPsj0aTFKN3FzaHtq25HW9Eur6A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795164043;
+	s=20260414; t=1795167962;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=G7/+dGXKwxvm7pBwkPBiroDwyoNH1aExmeBxownU6dw=;
-	b=BbAeXrs/KuMdUGU1d4FDIY08+wqouL0AbfAPie3JfzGkD9lpRY6epTg98KYpbce3N4dzRf
-	+BV3Lk32Mu/JDEZsu2Tqo0C+4d0Tu1EqHyK34ml8Sx04N29Hy6ej/CtB+7ydUDyZI9t1po
-	RfqTG7GgfMLXTbljqTtZqvcSITM0DENXZV79zPYh4ommnXro0CRKFNN8U266XmhPKidYzH
-	y0DhyWm6dD55a/OQvQwDQzw+2+LGZ4nkQAastY6Pm3f7cJOr70EMWAAyfpPSrRTKFO97dt
-	9bfjVVu4ErU8WN2TRDZ21UjjspBh89T2np3BpckTtZnypeqz4oMVArw3oJusHQ==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795164043; a=rsa-sha256;
+	bh=LyMGAaInYYZKD2EbDC92SHBmRPfFEzQvFWfFO59Ilto=;
+	b=ScOOTdKlO/bWMfUaFIv6rfmPPwMuGuDoCQ3sXxyhhLjqSohAJNpbJQKxL7l6Bcc1Ai3Uax
+	YoiZo1F6gqQaw5kuQGyq/VMGBScb9HTAWwzvBbtu8JN8xUEQz7USi03lrY94c9p+A88Frp
+	FrIbgA4o1t5QCj8Df6DJOf6VZw7L9jwfBrLp52XqRPbQt97ZRkmqbTZht5/V1jk6gi1lBn
+	Q8ppfNF81nzdtNuAjN5t3UhNJXeyIU+ukQ9BO0CaUhBxGSZURqis3ueAlWbM/elYbFz8eH
+	ERh9EctbYvB4yp2MujvDgfIUU+43Ps8E3AjQcBHL2vcNibXqou1ToCNWo5Ohyg==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795167962; a=rsa-sha256;
 	cv=none;
-	b=K6jKO5GhZrnSpLLluIb2ZGgb1vR5o050DKauUlziUFm7+q+HsL84pOstb564awBMmx8q9J
-	4s329jeeTGlifXizLE5MaTcdjOhg2GuqdJ5INm0EJbXzML3JSuDtOf3Kwrc5Bo5lH281eL
-	TW7tfr3ITkxeMBj6KIKOzwOdGDJiY4r7A+PTbANlaM+yYnl8b7zXS3M/I0FFl+kgVDy562
-	iFPXJQVacKOnkIIb8RtHzkzYddM/NFGSqqSjf7d06nuSZ80Hptu5eRM+J7D1bwTS0XQv/e
-	WGcqmxy52bnlX25Rokh2UQesEGD9bOY2yx7GAzZ+lKTK0nz6ZYX9GKBpUfukVQ==
+	b=U3uOlUuz3ZVQ0Ivbut6n8G2vt72m++XIGBY4D+kspf3aD0HXiENHTIWzJD6+M+XhLunlT+
+	lySMhRQSH0agOdRE1Gi5yPeKQzdFqSTNJz7rasGBRFXWRy883M7N4oO7fnXNqERADArsnv
+	DOxmLcGBJBlxJg0EdoaG9UTQm4L1fp/3Jbc89RgMuFAy/8Qu0JVw7KboEDJz4ZyvMgR88Y
+	AImpa9/dnedeuba3T5Ex62yWL1nlSfoSY48wKAXpV93nGYF5cJFYT4WI7ufeTypiSq9bLC
+	abaEm95EzibTxTQrBfQ+9ff3rp0XBxrEgaCVN5MF79iTp3/q7ZnEjwKCZSiqAg==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Date: Fri, 20 Nov 2026 09:40:43 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: zelong dong <zelong.dong@amlogic.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Vincent Mailhol <mailhol@kernel.org>, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org
-Subject: Re: [PATCH 0/3] can: amlogic: add support for Amlogic A9 CAN-FD
- controller
-Message-ID: <20261120-axiomatic-foamy-bull-1684b6-mkl@pengutronix.de>
-References: <20261120080820.3340646-1-zelong.dong@amlogic.com>
+	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
+Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
+	id 4692E380A04; Fri, 20 Nov 2026 10:46:02 +0100 (CET)
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+Date: Fri, 20 Nov 2026 10:45:56 +0100
+Subject: [PATCH can-next v5 1/9] selftests: can: install net/lib.sh with
+ the CAN tests
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -90,51 +86,67 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ykqib6zwogi4cpur"
-Content-Disposition: inline
-In-Reply-To: <20261120080820.3340646-1-zelong.dong@amlogic.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20261120-j1939-selftests-v5-1-fdf4c242a37e@pengutronix.de>
+References: <20261120-j1939-selftests-v5-0-fdf4c242a37e@pengutronix.de>
+In-Reply-To: <20261120-j1939-selftests-v5-0-fdf4c242a37e@pengutronix.de>
+To: Robin van der Gracht <robin@protonic.nl>, 
+ Oliver Hartkopp <socketcan@hartkopp.net>, 
+ Marc Kleine-Budde <mkl@pengutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+ Felix Maurer <fmaurer@redhat.com>, Vincent Mailhol <mailhol@kernel.org>, 
+ =?utf-8?q?Alexander_H=C3=B6lzl?= <alexander.hoelzl@gmx.net>, 
+ Chaosheng Qu <quchaosheng000406@163.com>, 
+ Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, 
+ Oleksij Rempel <o.rempel@pengutronix.de>
+X-Mailer: b4 0.14.2
 
+Add ../lib.sh and ../lib/sh/*.sh to TEST_INCLUDES. net/lib.sh sources
+lib/sh/defer.sh. The install needs lib.sh and the lib/sh scripts.
 
---ykqib6zwogi4cpur
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 0/3] can: amlogic: add support for Amlogic A9 CAN-FD
- controller
-MIME-Version: 1.0
+test_raw_filter.sh sources ../lib.sh, but the Makefile does not install
+lib.sh. A full selftest install works, because the net tests install
+lib.sh. An install of only net/can does not work. The installed
+test_raw_filter.sh cannot find lib.sh.
 
-On 20.11.2026 16:08:17, zelong dong wrote:
-> From: Zelong Dong <zelong.dong@amlogic.com>
->
-> This series adds support for the CAN-FD controller found on the
-> Amlogic A9 SoC family.
->
-> The controller supports classic CAN and CAN-FD. The
-> driver uses the generic RX offload infrastructure with hardware
-> timestamps, reports bus errors through the CAN berr counter, and
-> implements suspend/resume support.
+Found by installing the tests with "make TARGETS=net/can install". With
+this change the installed test_raw_filter.sh runs.
 
-Please base your driver on current net-next/main.
+Fixes: 77442ffa83e8 ("selftests: can: Import tst-filter from can-tests")
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+Changes in v5:
+- No changes.
 
-regards,
-Marc
+Changes in v4:
+- No changes.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+Changes in v3:
+- No changes.
 
---ykqib6zwogi4cpur
-Content-Type: application/pgp-signature; name="signature.asc"
+Changes in v2:
+- New in v2. An install of net/can on its own left out net/lib.sh
+  (sashiko).
+---
+ tools/testing/selftests/net/can/Makefile | 2 ++
+ 1 file changed, 2 insertions(+)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
+index 5b82e60a03e75ace2cae949ceeab09a497c96074..3adaa13dcbfa303c4be2bb6a9b5dbdac76d68260 100644
+--- a/tools/testing/selftests/net/can/Makefile
++++ b/tools/testing/selftests/net/can/Makefile
+@@ -6,6 +6,8 @@ CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INC
+ 
+ TEST_PROGS := test_raw_filter.sh
+ 
++TEST_INCLUDES := ../lib.sh $(wildcard ../lib/sh/*.sh)
++
+ TEST_GEN_FILES := test_raw_filter
+ 
+ include ../../lib.mk
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawAHiAAKCRDMOmT6rpmt
-0hXwAP4zJqk4wGxBgVH4cMhr3pYMTQuYMY2xDeJZLBZfXu1yAAD9GPkpGaY5WQTS
-IB5FYNdxEh/e3sY5WcLMgvSFudZ62gE=
-=yGhO
------END PGP SIGNATURE-----
+-- 
+2.47.3
 
---ykqib6zwogi4cpur--
