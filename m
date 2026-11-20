@@ -1,22 +1,22 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=64.106.246.77
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795162121;
-	b=dZ3geCs83970Q3yZdMT3m0VCyHXN2lj1Y0ny6wVuP+OynIP2FRIteDGnaUn424jWZ2FZ
-	 PWRtXOtKoVLDxNCodf7/dqqd4HgTt3yBUXboawpOS6ICpTBUCn90BjR1TBb4SfY4vxafd
-	 rNeLzzzLhyC49dLZ0EI9Bycij8kAjTRtxOgabADjolp3XkLEFW1DpvChKvDAu25QpLZsD
-	 LuKoO2BEDYmkBtppBKI4JFpnzuT0znyhrd0agxFqOzQYVEdh/DMdLFA5OWXCQinvUdyH9
-	 /U38VFG1FnObL9C5nRYmv3BilDW5yLjCkX7JG/2NlyMQhVrAnPQ0WnkmrgwxTFFclpg==
+	t=1795162129;
+	b=hijqwKNdCRSo8qqBBIShLntOMhj+s2lcSexxawoCki9BWftB+95uwXSPbH3NnIP2uFc5
+	 jIacjCX2ufNsnBo8P/1pkeoCbquu33M7vVb2+Yh0U37d6bCNoOie/SvIxUuZ36vJHc7tz
+	 ctUIiUoQxcYRUt3aTR+VgbEj9CpCl+7xCp6YK+sQgDCtcTe1MFY0Bpt58x6ZJdd+65NUG
+	 SRYIOgc2nDvQRsCiSSFmuS97lczHfUDp+H4jXBrHpRhAOQzkoLbYw6ApSLo6zpg1SQmgp
+	 VZEJngOaVvQZ3jShwhM64VU+IO2PgA+qyFIXSAvqXNzK2pl74uUpoxdgj+mR6z3b5Xw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795162121;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795162129;
 	h=DMARC-Filter:Received:From:To:CC:Subject:Date:Message-ID:X-Mailer:
 	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding:
 	 Content-Type:X-Originating-IP:X-ClientProxiedBy;
-	bh=CHvIhMz508UDncotGFKOHG7RFcnM9BHq2q6TuXQUD6w=;
-	b=Vuv/ZpiMVhBrkcuXiklxSYS4n4PqygTFRgxGYsTTcqcU6lgT/emhWjvy1cL/vhVr0o47
-	 StOSIizvdVFkmna1oLeoLZB9GfjE85o8OwtjQzOEPcy8xH5Pi5tnOSgSj7UQ9byYWDb2F
-	 xH5jLF+CBvGVZZGlr1Jtk6UKlMUtBEmSL+FenA/Z1XSV9d6B9FPa0VzNSTk/P5fPiOj+f
-	 KIgJoBGLawjpZcTJPgF7zbXxli5lD+amXBfSKa4i5QPPLHT1pWg5KUTJl+nfrU2ndvSWO
-	 MokvBX96WN6YKYBIdU7qp8sBlIPFVec2PJ+/vbc3T2rPnBwM651oU5KR4ApDlsF2bYQ==
+	bh=cYchM3oZ++2Ujm+8cyxvkhBnotq5TY4DS45oyevJ/6I=;
+	b=MlzOjoTyELfuFocFgBDsrDDxoPw1rzDPIkJKaEmePqnLTIS4m5JYMVQmuWt/907ja3DE
+	 Iq6CRDG8l73F8hVXdsWyfHmQ69Csj8/IjZa8PKDKOMbwR1peAEHX6pJlWG9V1s75aZuhY
+	 yBcSvAJmVWrkkVoREOdQFyEf33jFlWgDk+OX7tkXGcJg+2XBHiu9BeFgC4SwDVMi0bsat
+	 I1z57ieUa0F+oYQFiqWg5nsoCHd9HUKdmyAz4d2+lRQbgEkUFz9QMH21nwy8vz1nTiix0
+	 AbPM/SM0BTVUCdnka0uvT8/oTawX7aFh6TSVWLWQEoIW4IS1l/4vvQsVQr3BSHsw0NA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=amlogic.com;
 	spf=pass smtp.mailfrom=amlogic.com;
@@ -24,15 +24,15 @@ ARC-Authentication-Results: i=1; smtp.subspace.kernel.org;
 Received: from mailsc.amlogic.com (unknown [64.106.246.77])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE48606A336;
-	Fri, 20 Nov 2026 08:08:41 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7BE48606A336
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E55A606A334;
+	Fri, 20 Nov 2026 08:08:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7E55A606A334
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amlogic.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amlogic.com
 Received: from rd03-sz.software.amlogic (10.28.11.121) by mailsc.amlogic.com
  (10.8.11.35) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.56; Fri, 20 Nov
- 2026 00:08:35 -0800
+ 2026 00:08:46 -0800
 From: zelong dong <zelong.dong@amlogic.com>
 To: Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
 	<khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Martin Blumenstingl
@@ -41,9 +41,9 @@ To: Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
 CC: <linux-kernel@vger.kernel.org>, <linux-amlogic@lists.infradead.org>,
 	<linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
 	<linux-can@vger.kernel.org>, Zelong Dong <zelong.dong@amlogic.com>
-Subject: [PATCH 1/3] dt-bindings: net: can: add Amlogic A9 CAN controller
-Date: Fri, 20 Nov 2026 16:08:18 +0800
-Message-ID: <20261120080820.3340646-2-zelong.dong@amlogic.com>
+Subject: [PATCH 3/3] arm64: dts: amlogic: a9: add CAN controller node
+Date: Fri, 20 Nov 2026 16:08:20 +0800
+Message-ID: <20261120080820.3340646-4-zelong.dong@amlogic.com>
 X-Mailer: git-send-email 2.47.1
 In-Reply-To: <20261120080820.3340646-1-zelong.dong@amlogic.com>
 References: <20261120080820.3340646-1-zelong.dong@amlogic.com>
@@ -63,86 +63,73 @@ X-ClientProxiedBy: mailsh.amlogic.com (10.18.11.5) To mailsc.amlogic.com
 
 From: Zelong Dong <zelong.dong@amlogic.com>
 
-Add device tree bindings for the CAN-FD controller found on the
-Amlogic A9 SoC family.
+Add the CAN controller node and its pinmux states to the Amlogic A9
+SoC device tree. Enable the controller on the A311Y3 BY401 board.
 
 Signed-off-by: Zelong Dong <zelong.dong@amlogic.com>
 ---
- .../bindings/net/can/amlogic,a9-can.yaml      | 65 +++++++++++++++++++
- 1 file changed, 65 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/net/can/amlogic,a9-can.yaml
+ .../dts/amlogic/amlogic-a9-a311y3-by401.dts   |  7 ++++++
+ arch/arm64/boot/dts/amlogic/amlogic-a9.dtsi   | 25 +++++++++++++++++++
+ 2 files changed, 32 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/net/can/amlogic,a9-can.yaml b/Documentation/devicetree/bindings/net/can/amlogic,a9-can.yaml
-new file mode 100644
-index 000000000000..dd4ad6147f2e
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/amlogic,a9-can.yaml
-@@ -0,0 +1,65 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+# # Copyright (C) 2026 Amlogic, Inc. All rights reserved
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/amlogic,a9-can.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+diff --git a/arch/arm64/boot/dts/amlogic/amlogic-a9-a311y3-by401.dts b/arch/arm64/boot/dts/amlogic/amlogic-a9-a311y3-by401.dts
+index 503e38a29ce6..dffcdd4c35d0 100644
+--- a/arch/arm64/boot/dts/amlogic/amlogic-a9-a311y3-by401.dts
++++ b/arch/arm64/boot/dts/amlogic/amlogic-a9-a311y3-by401.dts
+@@ -136,3 +136,10 @@ &spisg_e {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&spisg_e_pins_z>;
+ };
 +
-+title: Amlogic A9 SoC CANBus Controller
++&canbus {
++	pinctrl-0 = <&can0_pins>;
++	pinctrl-1 = <&can0_pins_sleep>;
++	pinctrl-names = "default", "sleep";
++	status = "okay";
++};
+diff --git a/arch/arm64/boot/dts/amlogic/amlogic-a9.dtsi b/arch/arm64/boot/dts/amlogic/amlogic-a9.dtsi
+index 509dd1c37a5d..7c3734c4d23f 100644
+--- a/arch/arm64/boot/dts/amlogic/amlogic-a9.dtsi
++++ b/arch/arm64/boot/dts/amlogic/amlogic-a9.dtsi
+@@ -605,6 +605,20 @@ spisg_e_pins_z: group-spisg-e-pins {
+ 						drive-strength-microamp = <3000>;
+ 					};
+ 				};
 +
-+maintainers:
-+  - Zelong Dong <zelong.dong@amlogic.com>
++				func-can0 {
++					can0_pins: group-can0-pins {
++						pinmux = <AML_PINMUX(AMLOGIC_GPIO_A, 18, 3)>,
++							 <AML_PINMUX(AMLOGIC_GPIO_A, 19, 3)>;
++						bias-disable;
++					};
 +
-+properties:
-+  compatible:
-+    const: amlogic,a9-can
++					can0_pins_sleep: group-can0-pins-sleep {
++						pinmux = <AML_PINMUX(AMLOGIC_GPIO_A, 18, 0)>,
++							 <AML_PINMUX(AMLOGIC_GPIO_A, 19, 0)>;
++						input-enable;
++					};
++				};
+ 			};
+ 
+ 			spisg_e: spi@50100 {
+@@ -677,6 +691,17 @@ i2c8: i2c@3a4800 {
+ 				clocks = <&clkc_periphs CLKID_SYS_I2C_M_I>;
+ 				status = "disabled";
+ 			};
 +
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  clocks:
-+    items:
-+      - description: CAN protocol engine clock
-+      - description: CAN filter clock
-+
-+  clock-names:
-+    items:
-+      - const: can_pe
-+      - const: can_filter
-+
-+  power-domains:
-+    maxItems: 1
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+  - clocks
-+  - clock-names
-+
-+allOf:
-+  - $ref: can-controller.yaml#
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+    bus {
-+        #address-cells = <2>;
-+        #size-cells = <2>;
-+
-+        can@3a8000 {
-+            compatible = "amlogic,a9-can";
-+            reg = <0x0 0x3a8000 0x0 0x383c>;
-+            interrupts = <GIC_SPI 82 IRQ_TYPE_EDGE_RISING>;
-+            clocks = <&clkc_periphs 0>,
-+                     <&clkc_periphs 1>;
-+            clock-names = "can_pe", "can_filter";
-+            power-domains = <&pwrc 2>;
-+        };
-+    };
++			canbus: can@3a8000 {
++				compatible = "amlogic,a9-can";
++				reg = <0x0 0x3a8000 0x0 0x383c>;
++				interrupts = <GIC_SPI 82 IRQ_TYPE_EDGE_RISING>;
++				clocks = <&clkc_periphs CLKID_CAN0_PE>,
++					 <&clkc_periphs CLKID_CAN0_FILTER>;
++				clock-names = "can_pe", "can_filter";
++				power-domains = <&pwrc PWRC_A9_CAN0_ID>;
++				status = "disabled";
++			};
+ 		};
+ 
+ 		gic: interrupt-controller@ff800000 {
 -- 
 2.47.1
 
