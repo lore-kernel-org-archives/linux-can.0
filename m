@@ -1,86 +1,83 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795162956;
-	b=aWkbOAl9fCL1xp6wdTDVYpMN7m1ykIc3bbVmKZKweQxnLlofuZXSKRcn0lj9CZh3JBMq
-	 7Un34IFtwngSmDNRlnNDXA8w4LxvmrVlPRyHFsRngOnwrGaayV9xWA3epYzhxwduUkGLW
-	 FVqxTfuunl9/jhJOhwvOPfegsvzs+BOh0nRooXpjFF9sYBqsq8ce0Q69cih0ZEcVlbm6W
-	 9St+pObq3jpCHUX4zTezOBYAteMj4jyXj0WuEwWJAyzaGA9+TDCjuRKnmghyU22h/U+U6
-	 TTbKEPrWQTgURv86ro7kTD6212yJtvQEybGuITI7miOo+LEsyhtLLzwMFGVU8GSXLZQ==
+	t=1795163895;
+	b=tYFJctMBhAz8UEK//kRz7ZblDUXmC4xeRpP4qBDViXMfIRdmRNdzjzvRs3l/pnVOQOW2
+	 Vf/kk2sHHgv+/FsTO5t8tZTYroAKrCJVUf+CjjxX50a9hJO+0DBGhu2C5CrPg2y2kZKFf
+	 ZQr8bF+/DbtRZDn4IXDjzalAp7ZzJR6cDDejhVNpCGfdmnd0JXl8NmsiGLb2g5nh5HMEg
+	 cobk6ttBPaG+ObcPFY3w9FbLRQ7aTsul18ACwE5unIQjWuZer59z35TTNeJ0F3WxzB9tm
+	 d8FrKHelFpIy8lRIZoyJh6/QPSpJTB3u/z0YCR7XE4eUTekjECwombqN1sm7dJkYlzg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795162956;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795163895;
 	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
 	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
 	 In-Reply-To;
-	bh=Y/5uQGxEblP1QNa5FQUl4azsIJFSa7HqVTp4kxYVMp8=;
-	b=EtcqrDgE//gsJfzQuLTbH+L3czx8l7fqKnaRUAkTpokBuX0KYC8IOT4qNLWmnsUrNDcG
-	 O4gqTtaIDO/O/KbQV1XX+GmpN1Av7q2YYyzaM8VcMfAmwusAuF205BjWfquBQj0qYzDkW
-	 SDEtl7S5APvnZ5iPOSX3BwW4L7vJ0k2x6XC5j8AlMRo2X6OVJ1ZD2xQAdggIZFkEJqrWV
-	 EAocYH+JtTtA9AjlTNr4wssqIrkScjF9PCUCYRG/Y0su4mvkClTE8aTPTAEE7UB2ypVqn
-	 0oo+OGk2JOH13IZK3A+o5t0DgNK38R5mG2HEdt7dp5jzyGmkfE9AtJzxEOOrFjQwurQ==
+	bh=lQZJFrgz4LJW3+scm1GHR1HbjyBytA747cFcqEnvq0s=;
+	b=2rVLLs916WdgPX84W+zzpzZglBZmsPD3IB5a9xlw7TE5eykkIm+Z1ZJhcx45SGDO6lyM
+	 Nsi8oRd9PoJ8DHrk4ej2BlqvWzzyUXmKJz6AG7VBT105SwtiKgjxR7TrO97641mdiRK7d
+	 fJaxnw2k1LcltonPk0vQbas0HSN86PTwBVo6boSHbGJS5FwYIJrn3PiGNP/pgDnt6qqt/
+	 7Gu6i3JjJlSPUD0yoD/xxs/gp8XACwBt9UxkN6fRb2O2T/dXBe1p62hETfeRapPedzd41
+	 em950OK8lIDfDCZok30laWUNMXZFyy96tqur3ENewd+AqCbamf73yUtpzqfqcyIpm6Q==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GE5c121U;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=UyX2LcLD;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01A8606A320;
-	Fri, 20 Nov 2026 08:22:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D01A8606A320
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31311606A320;
+	Fri, 20 Nov 2026 08:38:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 31311606A320
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GE5c121U
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=UyX2LcLD
 Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
 	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 78CB92017E5;
-	Fri, 20 Nov 2026 09:22:32 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 882D3200EDB;
+	Fri, 20 Nov 2026 09:38:10 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795162952;
+	s=20260414; t=1795163890;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y/5uQGxEblP1QNa5FQUl4azsIJFSa7HqVTp4kxYVMp8=;
-	b=GE5c121UHs2n5BSAgKfgB4UAg22dahNMv8gtW8T2J12eMm8NWP4QfMcsA4Z/dd7JIX3c3w
-	kAsaRzKHrTRRyriliRNGceNDflXU6FxTsmig1p3unObLiIix1YolCi3LEBKkhOnzLyyHYH
-	fmvF0zXqTs6c4OGjtL706Si1AUHqRBhIPDXUVc2X6JRUDRnUIb2u69t+ei2OvFKt6ZLn+0
-	UI8EoqDujX0CvFY+2jiLswSoIq4/Ckb+zmSU8svWN7mRAF4lsrzKLpl65XHzbDNruPffnC
-	MJ/w+kRsCwOvGlOzJF9j1caHNV7/qNG+HT4LPB6g+YPhzgPzD3HnA05tuJd8VA==
+	bh=lQZJFrgz4LJW3+scm1GHR1HbjyBytA747cFcqEnvq0s=;
+	b=UyX2LcLD81H0r1kdh8BxE1xKXI0q99uYpPJsFJA72n7Ytn+IAFLVEKgnGS5SOsYIjOWQhL
+	oZ9Itbm9E74v1rOTnprJPdUJJ+HYL0TVkDSH3Qsxzt6o/Mf8SUPuytbyr3s0rQXJt38a3J
+	KwNd78dcSlruNQQMfu40Qj/MYjxLdwzjM+fficbzobR9I87SHle7sFMztHj/b+IydArkHG
+	A0LoMcaIgx8TKWWwWXt6LL53oqPv75UnIKG1R9jWSgPBXmJxO05pOyuRlEEqsdY2RBirjp
+	R8w0y9RDPe4mvefZqEeBEpvnVFA4VLqEC3T8HYoZOjLsl50qn4WmHRcF3YJoWw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795162952;
+	s=20260414; t=1795163890;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Y/5uQGxEblP1QNa5FQUl4azsIJFSa7HqVTp4kxYVMp8=;
-	b=WtWg6lZX1FCqjke3jm7mml4iR6FqFYZP0OoLInJvvasFfuJD/5Lvq9ITSg3OK3zEmmkI8i
-	cbYBmRgMEuL43mJdx7pczD05NrkJK0oXtOnTjE+xcqMtgD0FsXCXOWp86u582KjoKeXD2t
-	fsnNuOz2Mu4dORhQPpIV4HcRaJuGmHyT5cgk3Dr2/ajUrGdFEpzBkbEg9ZDhRNXKwld/qi
-	Dj5P4TTudFfmm3uw2YRxmbIxqO79ZtQH5k975bkmLVU/VphxHSeuJ9yyfvNu2lk26wAYNY
-	O7QqNtbBlvXlP+GWqieo4J4VYabJ/hh55Wc4SfGkS+H6DGG0+rz/41DIOat4HQ==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795162952; a=rsa-sha256;
+	bh=lQZJFrgz4LJW3+scm1GHR1HbjyBytA747cFcqEnvq0s=;
+	b=L0MqIBvz5Jm6is+N91dHh9/HDzITK2DElfpafx53VxQx82tRTSwcSPgMn7eGtOeSe1ikNf
+	l6n/KRR7I/OG25q8M4qVR5ifs3b9VlhaK/E3hbGt/7SEmeONW8RNcxRdBqC5KGUtq7q1rS
+	S0PhrUrHFuWJZ0WUIxOd2hF+DnnHHvnE7TYxv4nAXcWFZ95a39UYD+Sh1qazJgI46MLQjq
+	bbnuz9O37md0RRmMwaLMy3J8jceT2GtYCb4r8Dw7vn+7wIRkccEDMI9Ol2FmjNgNbXALOi
+	KI75xCdYQdw4QIx2t2VMO6Q/som8MbD5NIGtzEilsEuRvtVR/8+MThL4dgEQ3w==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795163890; a=rsa-sha256;
 	cv=none;
-	b=bzTC6V8bGxwSBtKuK9w/OJX7PmSMssI45hU9zRkWP7aFfLVIP0rKU06oktbxd9al9fxcAf
-	qzM+4R9BjYHj2majw+Dq8JXxNyACL8Q3XCU09KSlbfpbCLWs1XUqRdctZMO7bDBszK9kTR
-	tdYAl4aE9ogR62rkZA6/2FNN9jY58ONd3UyS9+1YcB+Yk+AAVyoElD6aBOsJiQjuempAAh
-	/bxSM8KdzTAfNwRVL+GpfwxWJQqyb4G02dFMwu3lQKCrnk3xZPb8N/zvZgA2qOnKZ04o8G
-	+rv5uGFhR4c3tkzKF45T0rGDD0KWOgF90CaSvUvfq9DvwuEz/Xw7iBKG43Gytw==
+	b=DotYhhqgGhiWXuTIk+yUe05GZzAA+M4YOf9BEmOQwNqXl7k9UNX/QVuCvBcimWV2u8II40
+	0GQcJ47Nje/qkdjUv5+PfXD2qVjTuTKm5s5fTSPS9i0Y00LIncQrM5KB9t/shvOpl6PFUu
+	WvL08dn4KCLXKwy4tTx1lOEBuAxKl8R6GUeNRIResTIs/kxSGID4F/TQsd1EsFfp4PJWXl
+	94XT+sLKHFUbSp5+kDE8m80cHz6PVZi0csxoxCQNt/tsU4GZCy+ntTW5CxDR99DWR2qvnF
+	yJ6aEDOk6ixVbM4IFkXcPV/Oyez75+k06iOZcYWgDYTqhSlhzl5tcQgynAAkUw==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Date: Fri, 20 Nov 2026 09:22:32 +0100
+Date: Fri, 20 Nov 2026 09:38:10 +0100
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: zelong dong <zelong.dong@amlogic.com>
-Cc: Neil Armstrong <neil.armstrong@linaro.org>, 
-	Kevin Hilman <khilman@baylibre.com>, Rob Herring <robh@kernel.org>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Jerome Brunet <jbrunet@baylibre.com>, 
-	Vincent Mailhol <mailhol@kernel.org>, linux-kernel@vger.kernel.org, linux-amlogic@lists.infradead.org, 
-	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org, linux-can@vger.kernel.org
-Subject: Re: [PATCH 0/3] can: amlogic: add support for Amlogic A9 CAN-FD
- controller
-Message-ID: <20261120-positive-strong-rooster-bb80bf-mkl@pengutronix.de>
-References: <20261120080820.3340646-1-zelong.dong@amlogic.com>
+To: Joas Antonio dos Santos via B4 Relay <devnull+joasantonio108.gmail.com@kernel.org>
+Cc: mailhol@kernel.org, joasantonio108@gmail.com, 
+	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] can: kvaser_usb: validate values received from
+ the device
+Message-ID: <20261120-translucent-unbiased-pug-c03696-mkl@pengutronix.de>
+References: <20261112-kvaser-usb-validate-v3-0-61587f639508@gmail.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -91,38 +88,98 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ufvdvwkayadg7w25"
+	protocol="application/pgp-signature"; boundary="3hxw3wbltvwmpqrd"
 Content-Disposition: inline
-In-Reply-To: <20261120080820.3340646-1-zelong.dong@amlogic.com>
+In-Reply-To: <20261112-kvaser-usb-validate-v3-0-61587f639508@gmail.com>
 
 
---ufvdvwkayadg7w25
+--3hxw3wbltvwmpqrd
 Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 0/3] can: amlogic: add support for Amlogic A9 CAN-FD
- controller
+Subject: Re: [PATCH v3 0/4] can: kvaser_usb: validate values received from
+ the device
 MIME-Version: 1.0
 
-On 20.11.2026 16:08:17, zelong dong wrote:
-> From: Zelong Dong <zelong.dong@amlogic.com>
+On 12.11.2026 17:27:54, Joas Antonio dos Santos via B4 Relay wrote:
+> Four fixes for values that kvaser_usb takes from the USB device without
+> checking them.
 >
-> This series adds support for the CAN-FD controller found on the
-> Amlogic A9 SoC family.
+> Patch 1 rejects hydra commands whose length is shorter than a standard
+> command.  A length of zero otherwise stalls the command loops, and a
+> short extended command makes the handlers read past the command.
 >
-> The controller supports classic CAN and CAN-FD. The
-> driver uses the generic RX offload infrastructure with hardware
-> timestamps, reports bus errors through the CAN berr counter, and
-> implements suspend/resume support.
+> Patch 2 rejects devices that report zero max outstanding tx, which
+> otherwise leads to a division by zero.
+>
+> Patch 3 stops the hydra command parsers from reading the length of an
+> extended command before it has been received.
+>
+> Patch 4 checks the error frame data and the payload of extended rx
+> commands against the command length.
+>
+> These issues were found with the help of an LLM-based code review tool
+> (Claude); patches 3 and 4 address the points of the Sashiko review of
+> v2.  I checked the code paths by hand against v7.4-rc3 and reviewed the
+> fixes myself.  They are build-tested only (W=3D1, arm64); I do not have
+> the hardware to test them at runtime.  In particular patch 4 assumes
+> that the firmware includes the error frame data and the payload in the
+> command length, which follows from how the parsers advance through the
+> buffer but which I could not confirm on a device.
 
-Have you had a look at the flexcan driver? The register layout of the IP
-core (and parts of your driver) looks like they were heavily inspired by
-it.
+Please evaluate the patch by Cen Zhang, fixing a similar issue:
 
-Can you summarize why you require a separate driver?
+| https://lore.kernel.org/all/20261015015336.816543-33-mkl@pengutronix.de/
+
+Explain which solution is better and why.
 
 regards,
 Marc
+
+> ---
+> Changes in v3:
+> - New patch 3: do not read the extended command length before bytes 4
+>   and 5 are received, in kvaser_usb_hydra_wait_cmd() and
+>   kvaser_usb_hydra_read_bulk_callback() (sashiko review of v2).
+> - New patch 4: check err_frame_data and kcan_payload against the command
+>   length in kvaser_usb_hydra_rx_msg_ext() (sashiko review of v2).
+> - Patches 1 and 2: unchanged.
+> - Link to v2: https://lore.kernel.org/r/20261111-kvaser-usb-validate-v2-0=
+-193dc10ca19b@gmail.com
+>
+> Changes in v2:
+> - Patch 1: require at least sizeof(struct kvaser_cmd) instead of the
+>   4-byte header, so that the extended command handlers do not read past
+>   a short command (sashiko review of v1).  Subject changed, it was
+>   "can: kvaser_usb: hydra: reject commands shorter than the header".
+> - Patch 2: unchanged.
+> - Link to v1: https://lore.kernel.org/r/20261110-kvaser-usb-validate-v1-0=
+-f266b85aa908@gmail.com
+>
+> ---
+> Joas Antonio dos Santos (4):
+>       can: kvaser_usb: hydra: reject commands shorter than a standard com=
+mand
+>       can: kvaser_usb: reject devices reporting zero max outstanding tx
+>       can: kvaser_usb: hydra: do not read the command length before it is=
+ received
+>       can: kvaser_usb: hydra: check the payload of extended rx commands
+>
+>  drivers/net/can/usb/kvaser_usb/kvaser_usb_core.c  |  6 ++
+>  drivers/net/can/usb/kvaser_usb/kvaser_usb_hydra.c | 67 +++++++++++++++++=
+++++--
+>  2 files changed, 68 insertions(+), 5 deletions(-)
+> ---
+> base-commit: b3dfbde62cf1981c4638939c159dfd087b7a72e9
+> change-id: 20261110-kvaser-usb-validate-33c2e34b63bf
+>
+> Best regards,
+> --
+> Joas Antonio dos Santos <joasantonio108@gmail.com>
+>
+>
+>
+>
 
 --=20
 Pengutronix e.K.                 | Marc Kleine-Budde          |
@@ -130,15 +187,15 @@ Embedded Linux                   | https://www.pengutronix.de |
 Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
 Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
 
---ufvdvwkayadg7w25
+--3hxw3wbltvwmpqrd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawADRQAKCRDMOmT6rpmt
-0owUAP4yQwL4nDipSaSrhs+obdRM1fx21ITtqamlnevbzqV9ygEAx8vF0wxa8/dG
-vO+cu0wayf87TVvPzR8g6YzWU8+KGAY=
-=gxBT
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawAG7wAKCRDMOmT6rpmt
+0pgYAQCpKRwKBpm2/MuyH8wv7gjfnJpU0l3pQsXKd7Li2Sh/UAD/ZEnSUXGmEvX5
+iFnlj9gLoqTeTDBiNMDkXFK20jpzYAE=
+=ze8Q
 -----END PGP SIGNATURE-----
 
---ufvdvwkayadg7w25--
+--3hxw3wbltvwmpqrd--
