@@ -1,93 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.53
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.80
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795174153;
-	b=EsJ+BBVD7AWmaOoYdEak4ggiSvDv27SgP9HmKeyh9XOyM8/y2T0aVu9S1JOwGExRenNJ
-	 dL80KzxP3aFMr+ayoihHLUC9qrtyF2x2klXhPGJagIv3KF+CoSUi09LX+R0BVsVSqJ+mO
-	 I21ZNoXICsa6U+9Edgz4/ANe2+9W2KVWWnQ0WOAfZ4ukFre/QWOHwNn7D1iBMJCS1swVN
-	 TQAmY+C0sPpera56l1IpqE+6zZHXeCr11Xm3YvbhUU9H3VlVtQAB1BVmj0GFO3hwZMSiv
-	 PbNQ7kLRDutjTYIZhDrJPIX3RyyH4KPjPrW6KpLo2ecfkYjIJBI8I7fZCZqSO0j+Row==
+	b=WmLaRKHYvK7grnWJRhTp6WlX5Le3BXP8aj9eOVP5NiBpEGZgIncwPDNHAB/ult8RogEo
+	 pTSRF2GPO7deMSwcUNWe0EiIsuTS0jvet4+8RpxYX6aQvLxDVWKmvee3Fg1d+aVTuL8/r
+	 Uh/hNsYDPIrIV7RvOjqFgeyvspFjytlNme+DuJBykumZ+qPqKwE97ELq9egJsURU4GJ/N
+	 bI4cUL0ZyPcvd/85Za5WKEJrxl5vKVPzSQGFbzRPXFSImlwAdiEHJvVI6mrnU55VJc7AU
+	 l6VXXVYCwO67/2ZKxd4cWoas1yh+DGOdtfl1We/fIFyCLDZl2zBhd7be2Th2gBxv0KQ==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795174153;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=rjjQMZbdYZ/slq5hfEPjHY7mJMjmEAL3WdVnFMAQpCM=;
-	b=EJ2Ylt4JTrVTVGHaWHqMIyHUA6QotYYqqOHUzXKy2+lPaax4VlKwHSjUXca6RFUYlgKl
-	 zhaKc/EJ0MUUg/Gazb9u9VDqk9Ea/Z/Z0Xf+yBV5+pmGZenXFIDvM3DKqm44YBCvorKIL
-	 sll3ThD4De4JkfwFIKQLXv+F3Do1f4jKwdkhCWqxofrA51cpYLcG7s+/PjCi/uNdT4Kqp
-	 0IRu+rxipdOr+2Lpmr5A0nX83czzdayJ8DjMkm1wvJPkA3tWF3y+easN8fHPTJ80hkjoU
-	 6bhi2LelefT4j0YCewK1o/cKl8YYzFEVYVO7vBH4XoxH3m2UgZ7EuJj/w43JJTqcasg==
+	bh=RJAxXG/ixXbf7AQs4zJg8l/sxqeicEDTK12+TfNEr6g=;
+	b=sZFCfXQpGp33VYEAtwSYzBgIy19iHilxvbrI65DMSQIR/YaptK3y2zKIeOphk5dpcAVp
+	 7ZPbk5CA+LEUW57hre9uloRltdv1dlbe4roJaWASeJ47s1RM+YS3g+G0JpDhrjjb5g3+s
+	 yn8f0IPv5NjegIfqvoojVcxvcelkvErmBIK8hEDK7/G/UgmZ7f12jVuXKCxQGrnfFWKmq
+	 vX+XspxnkVZ35cypXRzDpwaWV0ipmXhxmMLn73s/3VgkE0FDis3LMF8PQVpKy2VhHbuLR
+	 XmeawdRj0/QE/HMqweXrYKuHjxP55VCOcu/aRCRjbvJXbd8kdDCUu2ue5nsO9rfT4gg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b="I/FdaS9x";
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=DIjGE9eX;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.53
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b="C/mXkExV";
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=zNdiQFQm;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.80
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.80])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F5DB606A338
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5AE1606A320
 	for <linux-can@vger.kernel.org>; Fri, 20 Nov 2026 11:29:12 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7F5DB606A338
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A5AE1606A320
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=I/FdaS9x;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=DIjGE9eX
-ARC-Seal: i=1; a=rsa-sha256; t=1795174141; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=C/mXkExV;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=zNdiQFQm
+ARC-Seal: i=1; a=rsa-sha256; t=1795174142; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=SFsVcfArcan53M2DsFzDJ9i4p3/E5s1uykpWWJ1bDa9AlN3OWYB6NlB3ZsPkbI8SJT
-    oL4BjylZLIwaXeBpx70VtiK9AdmY9OyGklXaNsVnwKU9af/Am+w0QoAEIxCoy6Ozreil
-    q+Mrmse93tIWK1sz0f8e59HOJnNxpporfZGI0HKg9fJN+hviY+8mzW4ew/q3Grsd4Afw
-    y5RnAbWFP6PA3dl0JJw6J8Bj2GH7E91/eOebGvItshOYLY68ZxWzKBbrFu+l5G8H2kSu
-    KxkeeDPC/y6cv1Pf3Iw8iqo+fSFSq3ymHNr37mIcTYi54HsQmVmtRvE7sopC/DII6LJp
-    49aA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795174141;
+    b=Z3AGuu424ieA4JJzQ0fD2RvgGrXr3I4Xdk9PhnCUjLTO6Uc39HdsfyUvzkdX9045vU
+    uSsiknWAf172GSG4z0eB0Nfr9FFjf/PHNM28u4wAz/mQsxJFRuWKxw78je0orsJx7CtV
+    w7c9PgqzGn95GYS4REb5Fr7PFU57+XZulV8gHsEdGp9bgF0/bOXcfemJYFvaCQuuCCTP
+    VRmsupqrbSG4n715aQGVZ3iKgBtbv3jAzN0Am1UBQ72WSxuqXiBwsGwAMD29VqEKJBOd
+    Ydb3Y3fEkK3qG/UfjTh9NqKPU+0i8MhI7b+51nNNJQWfl7Op0hJZ95ZVVWuPUTe1LBqd
+    evdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795174142;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=rjjQMZbdYZ/slq5hfEPjHY7mJMjmEAL3WdVnFMAQpCM=;
-    b=qbPBzgIBV1oi3c8xFMWVhq5bwdTIqMmsAdWNcdKSr7CniqVplbDLppFVMH1VmwK1ix
-    h0e4swTHb3VUXsWxV97w7yh1dAKoS7cTZa2t9a8PstzWQDjrWltozoRWUzTqWqUlFwpN
-    YzqJyBI4G0LlUytgpK0iZxu97FR79XF4YNnewJWE+40fYAfDSnMaefTZtA3h6QSntm+f
-    EN7yKa6ScoIbYEfbqqHIGO7tLzZqRp73ZV1WfPKmnGRoRO5ZmTUtjHUXANjAl5eRYqdj
-    6ICNF82hfzoPBhHzi1AIUIlRi+n3LxpO+/XXMPHPWhJZsrLgauECoi1uX2dtghJobnSX
-    J0jg==
+    bh=RJAxXG/ixXbf7AQs4zJg8l/sxqeicEDTK12+TfNEr6g=;
+    b=NEy7DmKef3TuI6J2HLQ4Q7sH65eE6Ec27gGFcL7769RfjzORD6JzKLVGdY1xZFCG2Z
+    qjf78s1Rc7+DnhypY2ew5D0UjTaaSSAKi+umPvD13KpGbZ9XE+kBsZ/mPb/66HJynVdd
+    Jvq9cLoZ99fF2geKvRZQbX4xI7uF4y/SahuZUR8t9cuXihS0rDgir2YYcizfY5onXaqB
+    6SHP5Wrr7wMr62IpaiuDmvHb4hvC9WNPQc53wJ3jhc0pbVkWRb9MbvqpcxpjKbHhp0MM
+    e9go2O7rc1VOxbhfnh5Ww3GyQypg2S/bOVt43GfPTw/dHLlLGXDK38wLWAol9o/yX4s2
+    83kw==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795174141;
+X-RZG-CLASS-ID: mo02
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795174142;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=rjjQMZbdYZ/slq5hfEPjHY7mJMjmEAL3WdVnFMAQpCM=;
-    b=I/FdaS9x4gqRMiguUdfRlkwzHuN3LqNR52+xtEmXtDRUXyffUHfb7eZE4CdTg8Bsip
-    DGenb3X/BsfRXQZm1O8weH2Kucmqk0rSwI/bzRqYpY1HC2ltQOup+h53M90H/MYXdJe7
-    QTE52Z4pKtC+qjxfTJrrzwzP56GUBNaKuP30Pr5Ss18bN2+FCuDXoqPkKlxajMz6HgSf
-    diMD93hmrpr65IAK2xwHyBCj6qxRRDWNAID9YEL2hbfoaDjd1Ee/85I+wkRS6s9uG+gR
-    3vpW90PkMJaCXnrSzIfDPVgsbgGBbLexA4M1Nvy969ci9zUWI4yK1kHDGLr1X+T5R7Ts
-    +Gdg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795174141;
+    bh=RJAxXG/ixXbf7AQs4zJg8l/sxqeicEDTK12+TfNEr6g=;
+    b=C/mXkExViAT6mBBD+1GNLLOQrVnp74EDyGfhvJ4tImhluAbBFEech8z1at+DUA3bw5
+    PT7Zpji1nq/WO0MS7JAptqNxS2AVJZLn0e9tseI+wL7I9rDbtd1B1PmUNu28o3zqMGNe
+    8hCgGSa+VFNOqL5dZmF4IcVdJ1UlS/WK+zAVvHqHf0c/xXIc2LPM80oRYGzAmyfDPjX8
+    fsKjhNXUvI4pOFqCsLGCyToCPR5KpBH9LGyuL9w+u5RefqfZbXFHMH32Ft0jcd7qa3e/
+    aSE4CgYgJWRDfc2Zw8/Eu4h/v58AbQ0rvRLB4LcnlN3UClcrOcS0ErfnEvGFvc8r5UNx
+    QFGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795174142;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=rjjQMZbdYZ/slq5hfEPjHY7mJMjmEAL3WdVnFMAQpCM=;
-    b=DIjGE9eXJGoF/TMZmufdoaWMy/vsv/Fdk+xCfvqKWl7HDFhNARxiv/Gx6CJAbXhSOd
-    Na0ooGG3aVZW3nw2b1Cw==
+    bh=RJAxXG/ixXbf7AQs4zJg8l/sxqeicEDTK12+TfNEr6g=;
+    b=zNdiQFQm90hzC0o/cs3JVoEAFmCiQWoFmfyTkcnbKtL1GOxmgMgagd8mK95lP2Dmax
+    TcQcAf5XuQ2MJgv3X6Cw==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [127.0.1.1]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AKBT1QM6
+    with ESMTPSA id Kfdf2a2AKBT2QMC
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Fri, 20 Nov 2026 12:29:01 +0100 (CET)
+    Fri, 20 Nov 2026 12:29:02 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Fri, 20 Nov 2026 12:28:55 +0100
-Subject: [PATCH v7 1/8] can: bcm: copy the CAN frames outside of
- lock_sock()
+Date: Fri, 20 Nov 2026 12:29:00 +0100
+Subject: [PATCH v7 6/8] can: isotp: always start the rx timeout in
+ ISOTP_WAIT_DATA state
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,181 +99,165 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261120-can-bcmlock-memcg-v7-1-f6b84f5257b1@hartkopp.net>
+Message-Id: <20261120-can-bcmlock-memcg-v7-6-f6b84f5257b1@hartkopp.net>
 References: <20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1@hartkopp.net>
 In-Reply-To: <20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
  Oleksij Rempel <o.rempel@pengutronix.de>, 
  Vincent Mailhol <mailhol@kernel.org>, Zhu Ling <zhuling0805@qq.com>, 
- Oliver Hartkopp <socketcan@hartkopp.net>
+ Sashiko <sashiko-bot@kernel.org>, Oliver Hartkopp <socketcan@hartkopp.net>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795174141; l=5572;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795174141; l=5327;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=QGLUrnhSG67q2r2nuf1IxIWSOFNyrnyjacMQfSBZTNs=;
- b=7xAAtnbPwsF8HcRKlSRXharWGMe50OOkekx/+hgn4hJMCZZZ0VWMB5G/R7DnNncIktErVR8UQ
- 8Qct4+KxoNKCpd66KLgEXXdICAqUGBJ4gFH3ZonGD4okIbgp+sK67d9
+ bh=9t/hXjwQ04Aj37vbadUyjP1bscL31TCcCP+d+c7tieo=;
+ b=dLbc0p3Os2KovlRP1iws9zz/E0cnZkEF+Fru23aBmEe5JgbZZuok51atEDc0pvfQo5aRGtXDb
+ lNF1od3H5oYAhLiOh3yXjfOpMAVbKcZEAaSh2Q917KVHEty228h0z4t
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-bcm_sendmsg() copies the CAN frames of TX_SETUP, RX_SETUP and TX_SEND
-from user space while holding lock_sock(). A copy that faults or
-stalls, e.g. on a FUSE backed mapping, holds lock_sock() for its whole
-duration.
+The rx timeout is only started at the end of isotp_send_fc() and for
+consecutive frames inside a block in isotp_rcv_cf(). So so->rx.state
+can stay in ISOTP_WAIT_DATA without a running rx timeout:
 
-bcm_notify() takes lock_sock() of every CAN_BCM socket in the namespace
-of a vanishing CAN device while holding RTNL, independent of the
-binding of the socket. So a stalled copy on any CAN_BCM socket can
-block RTNL on the unregistration or namespace change of a CAN device in
-this namespace, e.g. of a vcan device in an unprivileged user and
-network namespace.
+- isotp_send_fc() returns early, when it can not allocate the skb or
+  does not find the CAN device anymore
+- isotp_rcv_ff() does not send a flow control frame in listen mode
+- isotp_rcv_cf() has stopped the rx timeout and does not restart it at
+  the end of a block, when the flow control frame is not sent
+- isotp_rcv_cf() has stopped the rx timeout before it drops a
+  consecutive frame with an invalid length (reported by Sashiko)
 
-Copy the CAN frames that the opcode handler reads to kernel memory
-before lock_sock() and hand them to the handlers with a kvec based
-msghdr. bcm_tx_setup(), bcm_rx_setup() and bcm_tx_send() keep their
-checks and read the frames with memcpy_from_msg() as before. Up to
-sizeof(struct canfd_frame) bytes, i.e. a single CAN FD frame or up to
-four CAN CC frames, are copied to a buffer on the stack, more frames to
-a kvmalloc() buffer of up to MAX_NFRAMES + 1 CAN FD frames.
+On a bound socket the next first frame or single frame resets the
+state. But when the CAN device has been removed, no further CAN frame
+is received and so->rx.state remains in ISOTP_WAIT_DATA. isotp_bind()
+then rejects a new binding with -EAGAIN until the socket is closed.
 
-As the frames are copied before lock_sock() now, a failing copy is
-reported before the error conditions that are checked under
-lock_sock(). This is in line with POSIX, which does not define an
-order in which multiple error conditions are detected and reported.
+Start the rx timeout in isotp_rcv_ff() and isotp_rcv_cf() whenever the
+reception continues in ISOTP_WAIT_DATA state, before a flow control
+frame is sent. isotp_send_fc() restarts the rx timeout as before. All
+this runs under so->rx_lock, so the order of the rx timeout start and
+the transmission of the flow control frame does not matter.
 
-The generic SOL_SOCKET options in sk_setsockopt() and sk_getsockopt(),
-e.g. SO_ATTACH_FILTER, still access user space under the socket lock.
-This is not specific to CAN_BCM and not addressed by this patch.
+In listen mode a first frame that is not followed by consecutive
+frames now leads to ETIMEDOUT, like a missing consecutive frame inside
+a block already does. So a listening socket reports a missing
+consecutive frame consistently, independent of its position in the
+PDU.
 
-Fixes: ffd980f976e7 ("[CAN]: Add broadcast manager (bcm) protocol")
+Check the length of a consecutive frame first in isotp_rcv_cf(), so
+that an invalid frame is dropped without stopping the rx timeout. An
+invalid frame also no longer updates the timestamp for
+CAN_ISOTP_FORCE_RXSTMIN.
+
+Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
 Cc: stable@vger.kernel.org
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Closes: https://lore.kernel.org/linux-can/179504035916.3136.12986898667697830880@kernel.org/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
-Changes in v2:
-- the stack buffer holds up to sizeof(struct canfd_frame) bytes and not
-  a single CAN frame: fixed comment and commit message (Sashiko review)
-- commit message: describe the remaining generic SOL_SOCKET paths
+Changes in v7:
+- isotp_rcv_cf(): check the CF length before stopping the rx timeout
   (Sashiko review)
-- v1: https://lore.kernel.org/linux-can/20261107-can-bcmlock-memcg-v1-1-482d9f5be1fd@hartkopp.net/
 ---
- net/can/bcm.c | 55 ++++++++++++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 52 insertions(+), 3 deletions(-)
+ net/can/isotp.c | 37 +++++++++++++++++++++----------------
+ 1 file changed, 21 insertions(+), 16 deletions(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 7bd2aa39777a..3f4c8d828337 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -1641,10 +1641,15 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+diff --git a/net/can/isotp.c b/net/can/isotp.c
+index 8229b6a69ecd..0b7db1ead7a9 100644
+--- a/net/can/isotp.c
++++ b/net/can/isotp.c
+@@ -632,10 +632,14 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
+ 
+ 	/* initial setup for this pdu reception */
+ 	so->rx.sn = 1;
+ 	WRITE_ONCE(so->rx.state, ISOTP_WAIT_DATA);
+ 
++	/* start rx timeout, isotp_send_fc() restarts it */
++	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
++		      HRTIMER_MODE_REL_SOFT);
++
+ 	/* no creation of flow control frames */
+ 	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
+ 		return 0;
+ 
+ 	/* send our first FC frame */
+@@ -648,10 +652,21 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
  {
- 	struct sock *sk = sock->sk;
- 	struct bcm_sock *bo = bcm_sk(sk);
- 	int ifindex;
- 	struct bcm_msg_head msg_head;
-+	struct msghdr fmsg = {};	/* CAN frames copied to kernel memory */
-+	struct kvec kv;
-+	struct canfd_frame sframe;	/* stack buffer for up to CANFD_MTU bytes */
-+	void *frames = &sframe;
-+	size_t flen = 0;
- 	int cfsiz;
- 	int ret; /* read bytes or error codes as return value */
+ 	struct isotp_sock *so = isotp_sk(sk);
+ 	struct sk_buff *nskb;
+ 	int i;
  
- 	/* Lockless fast-path check for bound socket */
- 	if (!READ_ONCE(bo->bound))
-@@ -1661,10 +1666,51 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 
- 	cfsiz = CFSIZ(msg_head.flags);
- 	if ((size - MHSIZ) % cfsiz)
- 		return -EINVAL;
- 
-+	/* Copy the CAN frames from user space before lock_sock(), so a
-+	 * stalled copy can not block bcm_notify() waiting for lock_sock()
-+	 * under RTNL. Only the frames the opcode handler reads are copied.
-+	 * The handlers keep their checks and read the frames from fmsg.
-+	 */
-+	switch (msg_head.opcode) {
-+	case TX_SETUP:
-+		if (msg_head.nframes >= 1 && msg_head.nframes <= MAX_NFRAMES)
-+			flen = msg_head.nframes * cfsiz;
-+		break;
++	/* CFs are never longer than the FF */
++	if (cf->len > so->rx.ll_dl)
++		return 1;
 +
-+	case RX_SETUP:
-+		if (!(msg_head.flags & RX_FILTER_ID) &&
-+		    msg_head.nframes <= MAX_NFRAMES + 1)
-+			flen = msg_head.nframes * cfsiz;
-+		break;
-+
-+	case TX_SEND:
-+		if (msg_head.nframes == 1 && size == cfsiz + MHSIZ)
-+			flen = cfsiz;
-+		break;
++	/* CFs have usually the LL_DL length */
++	if (cf->len < so->rx.ll_dl) {
++		/* this is only allowed for the last CF */
++		if (so->rx.len - so->rx.idx > so->rx.ll_dl - ae - N_PCI_SZ)
++			return 1;
 +	}
 +
-+	/* a message with missing frames still fails in the handler */
-+	flen = min(flen, msg_data_left(msg));
-+
-+	if (flen > sizeof(sframe)) {
-+		frames = kvmalloc(flen, GFP_KERNEL);
-+		if (!frames)
-+			return -ENOMEM;
-+	}
-+
-+	if (!copy_from_iter_full(frames, flen, &msg->msg_iter)) {
-+		ret = -EFAULT;
-+		goto out_free;
-+	}
-+
-+	kv.iov_base = frames;
-+	kv.iov_len = flen;
-+	iov_iter_kvec(&fmsg.msg_iter, ITER_SOURCE, &kv, 1, flen);
-+
- 	lock_sock(sk);
+ 	if (READ_ONCE(so->rx.state) != ISOTP_WAIT_DATA)
+ 		return 0;
  
- 	/* Re-validate under the socket lock: a concurrent bcm_notify()
- 	 * may have unbound this socket (device removal) after the
- 	 * lockless fast-path check above. bo->ifindex is only ever
-@@ -1719,15 +1765,15 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
+ 	/* drop if timestamp gap is less than force_rx_stmin nano secs */
+ 	if (so->opt.flags & CAN_ISOTP_FORCE_RXSTMIN) {
+@@ -660,29 +675,19 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 			return 0;
+ 
+ 		so->lastrxcf_tstamp = skb->tstamp;
  	}
  
- 	switch (msg_head.opcode) {
++	/* stop the rx timeout only for valid CFs (checked above) */
+ 	hrtimer_cancel(&so->rxtimer);
  
- 	case TX_SETUP:
--		ret = bcm_tx_setup(&msg_head, msg, ifindex, sk);
-+		ret = bcm_tx_setup(&msg_head, &fmsg, ifindex, sk);
- 		break;
+ 	/* isotp_rx_timer_handler() may have raced us for so->rx.state
+ 	 * while hrtimer_cancel() above waited for it to finish => recheck
+ 	 */
+ 	if (READ_ONCE(so->rx.state) != ISOTP_WAIT_DATA)
+ 		return 1;
  
- 	case RX_SETUP:
--		ret = bcm_rx_setup(&msg_head, msg, ifindex, sk);
-+		ret = bcm_rx_setup(&msg_head, &fmsg, ifindex, sk);
- 		break;
- 
- 	case TX_DELETE:
- 		if (bcm_delete_tx_op(&bo->tx_ops, &msg_head, ifindex))
- 			ret = MHSIZ;
-@@ -1757,20 +1803,23 @@ static int bcm_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 	case TX_SEND:
- 		/* we need exactly one CAN frame behind the msg head */
- 		if ((msg_head.nframes != 1) || (size != cfsiz + MHSIZ))
- 			ret = -EINVAL;
- 		else
--			ret = bcm_tx_send(msg, ifindex, sk, cfsiz);
-+			ret = bcm_tx_send(&fmsg, ifindex, sk, cfsiz);
- 		break;
- 
- 	default:
- 		ret = -EINVAL;
- 		break;
+-	/* CFs are never longer than the FF */
+-	if (cf->len > so->rx.ll_dl)
+-		return 1;
+-
+-	/* CFs have usually the LL_DL length */
+-	if (cf->len < so->rx.ll_dl) {
+-		/* this is only allowed for the last CF */
+-		if (so->rx.len - so->rx.idx > so->rx.ll_dl - ae - N_PCI_SZ)
+-			return 1;
+-	}
+-
+ 	if ((cf->data[ae] & 0x0F) != so->rx.sn) {
+ 		/* wrong sn detected - report 'illegal byte sequence' */
+ 		sk->sk_err = EILSEQ;
+ 		if (!sock_flag(sk, SOCK_DEAD))
+ 			sk_error_report(sk);
+@@ -724,17 +729,17 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
+ 		nskb->dev = skb->dev;
+ 		isotp_rcv_skb(nskb, sk);
+ 		return 0;
  	}
  
- out_release:
- 	release_sock(sk);
-+out_free:
-+	if (frames != &sframe)
-+		kvfree(frames);
++	/* start rx timeout, isotp_send_fc() restarts it */
++	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
++		      HRTIMER_MODE_REL_SOFT);
++
+ 	/* perform blocksize handling, if enabled */
+-	if (!so->rxfc.bs || ++so->rx.bs < so->rxfc.bs) {
+-		/* start rx timeout watchdog */
+-		hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
+-			      HRTIMER_MODE_REL_SOFT);
++	if (!so->rxfc.bs || ++so->rx.bs < so->rxfc.bs)
+ 		return 0;
+-	}
  
- 	return ret;
- }
+ 	/* no creation of flow control frames */
+ 	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
+ 		return 0;
  
- /*
 
 -- 
 2.53.0
