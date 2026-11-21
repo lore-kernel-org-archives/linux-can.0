@@ -1,66 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=203.205.221.202
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.243.164.118
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795248441;
-	b=Du+Yh3MYsglvlgHEI1kNJ7KUgnkGtqa1KtwmpNaBoEEDgNh+Mji6ua3BUnvDazLRUPPn
-	 QXk/WEJrtBklt+FDOa6jio50r8uGGigyGzupjjUmsyXIZdgz6fh7p0iZ/XaYOquekMf+Z
-	 Lb1KEyT0Rm/ImZL2SNSIjfUHnoz7DWCPF+tUYzMVYhrASvp3C8LDXYLQWEr0/MW/bv94S
-	 sOcnNYfuMmEcoC07TdbN16kbAe483vQopscdgy4ebhzduzDVoTru5s02Vv/pXxUtvBdX6
-	 wxV8TSu+y4q6bMiYvd9EP3AQuqxD8GzdHgDn1c7x3JEboeKpURhGZZHypWOIZqEs6RQ==
+	t=1795254352;
+	b=XKwF3kDa1YuyoxT1vmzHvgX2Qw6/jCfxZMOuRtf1JfgufWY7RLkDUsZFj4baUaoyvSIi
+	 kAkPpnMLaRGJgk7fJwyzeNIwkayT5Kb3V/kgXwUkvijYMfVqLBQTUQpb9/iSqFQanpXsb
+	 C/7WmE6LvqJeUSvFyLC4oa+nsevKFub+H+HzSAa66NaRIHwc7K5YY5/cdwu/T2uKh1QLQ
+	 nnbtIfnaneiISJJ/+uP54RmUxt1UfslDHlBUkYXJeWRMvcwRdoDwCek/LGxz6IJBVz0iI
+	 O44pHImPTASbe/rsF/3ruI2BC54eOyOr6Nl+ibPXjZAViDukFbuKSc+lFe+V+VetklA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795248441;
-	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
-	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
-	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
-	 In-Reply-To:X-QQ-mid;
-	bh=ydGqG2X9vPHlg2dNKkqZZA+txMkiHMzrAcf5VIowiK8=;
-	b=cvN5k0S/PcnJ/EBxcQnckZWh0+glpS1OAG68oL9CtGLkFVJeq+q83fMiKPm2kuZrMzSH
-	 70x+JEVmEcykhYw9WJdfGmIKrfS0ClJFWpZh61RoVxYx9Ox19CD3kb60z7AFzW9oqWwlV
-	 t0bd8xwo+xeO3Ci/VfEbe9dwHTYtOt1HzCi43rREfXbF/8tr7yVUrSuwh003DkjfZ3Ol7
-	 bVMUY4dr7D/Iw7eeyMN9gCCv9Tad6/zBoKfBE/uDkTq1kQB4yCdmzGozmbqgJZlW9UYzx
-	 aCgxqvM2Fpr4QDQ+4VR9yKSaM6ONZSfkxlLr4/6Jy+8Cjz1yYst09sCvmTXE0jSzPSw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795254352;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
+	bh=CHj6ANP9LzC53BHT4QiDAxfHHlrC+wp5JFq9rYP4O7c=;
+	b=3R+yevYGPw7uS0RPVBcQwq0lyZm66+CPKGhtZ7ABh9EinyPUlD5pbJojuz+6gaMraK92
+	 AbpDh4G6F/yPjFK4kjErGbniKpY6Whp3xDiBvNYhb9SK2baDdlakO5EoGJj7PBWxDLES4
+	 rakawq7yI031I7FLDl+CdOIb/d0AwlBXmqcHmwbirffp5pJItbuPaKEtc4sIE/kH/NOWD
+	 swWiXDUcV2ytOhus7J8DEyIgTFAVROsKux2BFpPnCiPzG/DXhQTj9qr/AJZM2F2VQG7Xj
+	 CwlXvCfQ22PWKWqBGQboO/TUurL6WaNHnp/Td7sqtpMczrUfLwpAipJO7nj6QnMdX1g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=qq.com;
-	spf=pass smtp.mailfrom=qq.com;
-	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=vacehtI1;
-	arc=none smtp.remote-ip=203.205.221.202
-Received: from out203-205-221-202.mail.qq.com (out203-205-221-202.mail.qq.com [203.205.221.202])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5098606A320;
-	Sat, 21 Nov 2026 08:07:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E5098606A320
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=vacehtI1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1795248438; bh=ydGqG2X9vPHlg2dNKkqZZA+txMkiHMzrAcf5VIowiK8=;
-	h=From:To:Cc:Subject:Date:References:In-Reply-To;
-	b=vacehtI1nuzuFJtDKjVsaj3sffn9TdWY1yTNu2pktLYHnvVMrToqkae9TNUwL3FBw
-	 UuFHrGrIV1E0DWSOJ3IAIS2BBQ8zK4L1rs94oCmxtwad3Pz8g2nJJ67wMLlggiaWpJ
-	 m3ZETnOkfqgNBj2a0X+Ajdq7z+Dv42XVh4CX50XU=
-X-QQ-XMRINFO: NI4Ajvh11aEjEMj13RCX7UuhPEoou2bs1g==
-X-QQ-XMAILINFO: Ng02GeT6VExI3uUWFD3xnavVNU+V6Hm34+BPzOlcKVIXJ8PwdC12xW5pVAVxDm
-	 P5ASM+U//uKLiyt2kZs4uKnzfS2C5x6/kj/TbAiXKQo5WfUJCyAxzOxsR2U/4q63xnyaDtXH6mvX7
-	 mz/xQuO3v3L0oN5gtCTshBBG+EHaSN6Eb19boRq2w9lMxXcHVXqP6N96WqLJhQnvJwKArYz+zPhNm
-	 yYzbeFY7usepMHk5mhUxlhvYa6xgQg+siZKB3C1P545doU6P64+Z840PpDjDrmitzxF7DTpSSVMMF
-	 cb5ItOgFkrvOxP6oIcIzK/FOCxiaCutyYdaIL2ldhawQuWanl0wc5a5pfGvKzQjdxTye89UhqXxtJ
-	 U+SpvAhsmA01LcQIr4qKDUWd24QiQa0dAhH9GbfjzKKkiQpVtnVD/rggGP/22JN8adh4nbjiPaPgy
-	 VT0dvuV6B6+d5WoM+s9WzM5AZUlhD17xOYpgmdr170Qs76N85kbf7WawIdq/fzODMcc130ioc0un0
-	 Ku/w7BVA6voTfXTcxZf3vlOmtGL6TodhGvze/fJCgq300fHQcBcf2EzlqYz5ZvWjkvZ2/XINV0d+n
-	 G1T5KekFl2kSt44zoLJgKOlM5oJa1myTDkqLYcyVaZHagMgpXq2I5beKfrrlIiVMCftwgxlh9aEHC
-	 rmbh0pTaF6ZHLr1L13QtUZd8hRRreqrjvCFpdr0gdAPx8+PCAmeoRwRBPSdR3H0ntdPS+CNYuDiIe
-	 DZbcF6FdicEYDCvgqmi6v/O2FGzivn8QazlBEJgM9DZPyDq+Ud2/WI8bJoE5ez2tXljZBCIPezinW
-	 6KyM/DTKlpxtUav8uLdgeZ5kc+/YgAi3pNSqRhhhHnJviImavB0a/J4T+nhWwaZMGRMVdvfy47c9N
-	 r24FSuLSFUdr+JUWuqlJW6mHAsxyl9MqxXeYVSeWRZ3/I01TNuid8+FspMqmzTYmfoDl6J+WhSFoo
-	 +afmmkF4kiWHcNfwEk4CwoUMupd/hzQevXPIkdzu+cuQdZz+I+VzvvQPGO3wLvU0asT0lB+0wW01d
-	 EN31KfoYyOkNqRC9Uy9GrZgU6bkXAZ5nZ9B6iCSU4EZENm0z7laLm20Cmiz29AMlQ7EdwUmRws7GO
-	 vJvDssJ3w5A+381UmZnmv9K1
-From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
-To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
-Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?ZWR1bWF6ZXQ=?=" <edumazet@kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>, "=?utf-8?B?cGFiZW5p?=" <pabeni@redhat.com>, "=?utf-8?B?aG9ybXM=?=" <horms@kernel.org>, "=?utf-8?B?Y29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?c2toYW4=?=" <skhan@linuxfoundation.org>, "=?utf-8?B?cmR1bmxhcA==?=" <rdunlap@infradead.org>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, 
-	"=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
-Subject: Re: [PATCH net v10 10/10] can: rockchip_canfd: serialize timecounter timestamp conversion
+	dmarc=pass header.from=stu.xidian.edu.cn;
+	spf=pass smtp.mailfrom=stu.xidian.edu.cn;
+	arc=none smtp.remote-ip=162.243.164.118
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBD0606A325;
+	Sat, 21 Nov 2026 09:45:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 1DBD0606A325
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stu.xidian.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stu.xidian.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=stu.xidian.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=CHj6ANP9Lz
+	C53BHT4QiDAxfHHlrC+wp5JFq9rYP4O7c=; b=ejbABg0AbfXNwxNkcWAChSAq5u
+	OA5waN2STaDK4eLCG4FX/xqgxkgWhCNgliyotJ+ihm2EmZ4wJ0mNJgww4y/nD6mZ
+	tX8gT2x02lcIcmcYdq4CpAIEPlW6cmFLdHgVz+0F1TGzz0TrRqrW1Otpa992qWfT
+	4HqBjYWFofD0zGwyg=
+Received: from user-virtual-machine.localdomain (unknown [113.200.174.70])
+	by hzbj-edu-front-4.icoremail.net (Coremail) with UTF8SMTPA id BrQMCkD2GwI_aAFr1F0AAg--.63532S2;
+	Sat, 21 Nov 2026 17:45:35 +0800 (CST)
+From: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Bin Yu <byu@xidian.edu.cn>,
+	Cheng Wen <wencheng@xidian.edu.cn>
+Subject: [PATCH net v2] can: dev: reject unusable bit-timing constants
+Date: Sat, 21 Nov 2026 17:45:34 +0800
+Message-Id: <20261121094534.5221-1-25031212351@stu.xidian.edu.cn>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -69,32 +58,139 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-Mime-Version: 1.0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: base64
-Date: Sat, 21 Nov 2026 16:07:15 +0800
-X-Priority: 3
-Message-ID: <tencent_7CC03EE28E1F4753374DA10C4FC2E1086C06@qq.com>
-X-QQ-MIME: TCMime 1.0 by Tencent
-X-Mailer: QQMail 2.x
-X-QQ-Mailer: QQMail 2.x
-References: <20261119-rockchip-canfd-restart-close-v10-10-df23913aa33a@qq.com>
-	<179521934595.3131.13988876249908602124@kernel.org>
-In-Reply-To: <179521934595.3131.13988876249908602124@kernel.org>
-X-QQ-mid: xmsezb41-0t1795248435tv16k8jeu
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:BrQMCkD2GwI_aAFr1F0AAg--.63532S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw1fKw4rCrW3KF15KFyDWrg_yoWrZry7pF
+	s3JF98Ka4qvw4jvw4ftwn7AayrG3ZaqrySkr97t3sakwn8X3WFkrWUGw45u3W7Gr47AFy2
+	qFWqgr43Gw45C3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9vb7Iv0xC_KF4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+	0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+	A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+	jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+	C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq
+	07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r
+	18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vI
+	r41lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r4fMxAIw28IcxkI7VAKI48JMxC20s
+	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+	JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
+	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+	W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU8RbyJUUUUU==
+X-CM-SenderInfo: ysvqjiysrsjkur6v33wo0lvxldqovvfxof0/1tbiAgUED2sAZMnEuAAAs2
 
-CkhpLAoKPiBbU2V2ZXJpdHk6IExvd10KPiBTaG91bGQgdGhlIHN0YWJsZSB0YWcgbWVudGlv
-biB0aGF0IHRoaXMgZGVwZW5kcyBvbiB0aGUgZWFybGllciBwYXRjaCBpbgo+IHRoZSBzZXJp
-ZXMsICJjYW46IHJvY2tjaGlwX2NhbmZkOiBwcmV2ZW50IHRpbWVzdGFtcCB3b3JrIGZyb20g
-cmVhcm1pbmcKPiBhZnRlciBidXMtb2ZmIj8KClRoZSBkZXBlbmRlbmN5IGlzIHJlYWwuIEEg
-YmFja3BvcnQgbmVlZHMgMDkvMTAgYmVmb3JlIDEwLzEwOiAwOS8xMAppbnRyb2R1Y2VzIHRp
-bWVzdGFtcF9sb2NrIGFuZCB0YWtlcyBpdCBhcm91bmQgdGltZWNvdW50ZXJfcmVhZCgpIGFu
-ZAp0aW1lY291bnRlcl9pbml0KCkuIEFkZGluZyBqdXN0IHRoZSBsb2NrIGZpZWxkIHRvIG1h
-a2UgMTAvMTAgYnVpbGQKd291bGQgc3RpbGwgbGVhdmUgdGltZWNvdW50ZXJfY3ljMnRpbWUo
-KSByYWNpbmcgd2l0aCB0aGUgd29ya2VyLgoKUGF0Y2ggMDkvMTAgaXMgYWxyZWFkeSBtYXJr
-ZWQgZm9yIHN0YWJsZS4gVGhlIHN0YWJsZSBydWxlcyBkbyBub3QKcmVxdWlyZSBsaXN0aW5n
-IGEgcHJlcmVxdWlzaXRlIGFnYWluIHdoZW4gaXQgaXMgaW4gdGhlIHNhbWUgc2VyaWVzCmFu
-ZCBpcyBpdHNlbGYgbWFya2VkIGZvciBzdGFibGUuCgpCZXN0IHJlZ2FyZHMsCkN1bmhhbyBM
-dQo=
+can_bittiming_const_valid() is the hook register_candev() uses to verify
+the bit-timing constants a driver registers, but it only looks at
+sjw_max.  The values can_calc_bittiming() actually depends on are not
+checked.
+
+gs_usb builds its struct can_bittiming_const from the response of the
+GS_USB_BREQ_BT_CONST control request, so the constants come from the USB
+device.  A device that reports brp_inc = 0 crashes the kernel with a
+division by zero as soon as a user with CAP_NET_ADMIN configures a
+bitrate:
+
+  Oops: divide error: 0000 [#1] SMP KASAN
+  RIP: 0010:can_calc_bittiming+0x3dd/0xcd0
+  Call Trace:
+   can_get_bittiming (drivers/net/can/dev/bittiming.c:146)
+   can_changelink (drivers/net/can/dev/netlink.c:594)
+   rtnetlink_rcv_msg (net/core/rtnetlink.c:7137)
+
+brp_min and the time segment minima are just as fatal: with brp_min = 0
+the prescaler can stay zero and is then used as a divisor in the same
+loop, and with tseg1_min + tseg2_min = 0 the unsigned loop counter wraps
+around instead of terminating.
+
+The maxima need bounds as well.  can_calc_bittiming() doubles the sum of
+the maxima for its loop bounds and walks the time segments from the
+maxima down to the minima, and both it and can_fixup_bittiming()
+multiply the prescaler by the bit time.  Values close to U32_MAX wrap
+those computations around, which ends in a division by zero or in
+billions of loop iterations with RTNL held.  Reject constants whose bit
+time exceeds what CAN controllers use and whose prescaler range does not
+fit into 32 bits.
+
+The 32 bit overflow of tsegall * bt->bitrate is not caused by the
+constants but by the bitrate supplied from user space, it is a separate
+problem.
+
+Reject unusable constants during registration, so that a device or driver
+handing out such values fails to probe instead of taking the kernel down
+later.
+
+Fixes: d58ac89d0d38 ("can: dev: register_candev(): ensure that bittiming const are valid")
+Cc: stable@vger.kernel.org
+Co-developed-by: Bin Yu <byu@xidian.edu.cn>
+Signed-off-by: Bin Yu <byu@xidian.edu.cn>
+Co-developed-by: Cheng Wen <wencheng@xidian.edu.cn>
+Signed-off-by: Cheng Wen <wencheng@xidian.edu.cn>
+Signed-off-by: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
+---
+v2: https://lore.kernel.org/all/20261121064449.9706-1-25031212351@stu.xidian.edu.cn/
+- reject constants with an inconsistent minimum/maximum range
+- bound the maximum bit time and the brp_max * bit time product, so that
+  large but non-zero constants cannot overflow the loop bounds or the
+  prescaler arithmetic
+---
+ drivers/net/can/dev/dev.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 769745e22a3c..db541f935d10 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -595,15 +595,50 @@ static int can_get_termination(struct net_device *ndev)
+ 	return 0;
+ }
+ 
++/* Upper bound for the bit time in time quanta. The bit times of the
++ * currently supported CAN controllers are well below it, the limit keeps the
++ * time segment scan in can_calc_bittiming() bounded.
++ */
++#define CAN_MAX_BIT_TIME_TQ 1024
++
+ static bool
+ can_bittiming_const_valid(const struct can_bittiming_const *btc)
+ {
++	u64 bit_time;
++
+ 	if (!btc)
+ 		return true;
+ 
+ 	if (!btc->sjw_max)
+ 		return false;
+ 
++	/* can_calc_bittiming() rounds the bit-rate prescaler to a multiple of
++	 * brp_inc and divides priv->clock.freq by brp. A zero brp_inc divides
++	 * by zero directly, a zero brp_min lets brp become zero.
++	 */
++	if (!btc->brp_min || btc->brp_min > btc->brp_max || !btc->brp_inc)
++		return false;
++
++	/* The time segment loop counts down from the maxima to the minima.
++	 * Zero minima make the unsigned loop counter wrap around, a minimum
++	 * above its maximum makes the loop bounds inconsistent.
++	 */
++	if (!btc->tseg1_min || btc->tseg1_min > btc->tseg1_max)
++		return false;
++
++	if (!btc->tseg2_min || btc->tseg2_min > btc->tseg2_max)
++		return false;
++
++	bit_time = (u64)btc->tseg1_max + btc->tseg2_max + CAN_SYNC_SEG;
++	if (bit_time > CAN_MAX_BIT_TIME_TQ)
++		return false;
++
++	/* can_calc_bittiming() and can_fixup_bittiming() multiply the prescaler
++	 * by the bit time, keep the product inside 32 bits.
++	 */
++	if (bit_time * btc->brp_max > UINT_MAX)
++		return false;
++
+ 	return true;
+ }
+ 
+-- 
+2.34.1
 
