@@ -1,57 +1,66 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=203.205.221.240
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795244221;
-	b=1qF8UbDvTLPjZOmnB+AK9gHXzTxhKQFsA45hrfGQ/fiuVqYgx3W0+DdnNR31URzlf/MM
-	 dGuPrDpm8YGmhvtet7SdTaeSf29YwWESTenVaAWc1fa132LleQf45XSZMtulcWVSEwymO
-	 hf3Mfazo3Cmxbj6hj5mTvp0yvXuTk1oSDEvxsk6xFkcs9Gp93Zr32eD4JjA/4jVdTmoz4
-	 quZEsGdZESnDwl66lFnj5UlryaOiP0ejgx/zr81T8OyRupm5LDkxItXZ/uGjvCP50UxAf
-	 1KbmvzC6ZQXGJN7Rp8tgz6grVHBNKFsMW0+k+MeSD076/+vX1oBm6LON7fZuC2kdUog==
+	t=1795247378;
+	b=H9SpKjKug39ZPWQRjCbONtLY/UY31Ea0RkWFQBv7f74ZKldvPWCwX71M4UyV4n1KU3OL
+	 ijYuXpVTz/mEjEltjgS0C+xiAmrYjsc+nZ0oZz+DaOqcaoMJ6nEXzDaDtALBC4idAgmv4
+	 IWn1cryhkv3SquDe/ButfWqyoCOF5an6WI5RLxiDsTFKRgeKx9o4cuxeeYq1ba2ehzIAK
+	 CWDmaCEGRUqcxQBe77D7dZIw7bGrJQ+vj6CDe2OGseqKOMEwe8/RKFZpupFO8gLyesdru
+	 TWRPtpmgZoox+ddhIZGwGLQMBFDqaLkfulf2lOLjyrzqTuvpUTvZBkNEC6Ra/l0kqVA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795244221;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=5onwHSb6zZ1UoUUg7nvwkRb+Yqcp27hS0pI9Bpyqxwg=;
-	b=uEwI+dlQ8Ci908HXz0MJ94wJRppjicU8MoOO01nGxlSfTlO3IHhxncvLdFh69Slt/4Uy
-	 08qF++urq3dMlaLCLWZ8y+HoT1dxfb2mRvQnEUu7S0002mc6D0c2vTQS0uC2blk9pPPnA
-	 CA07zzn1b7XgkuC+n4YQGgh1OUj7RuR1SPva/RGRSLZYwPXU5f7w00LOEsxftmzQE/4BQ
-	 1M9PT9nqMgMuZvz8+IIuk7N9c3LdARu6o5brRp6SNHFWA+3aFSq+g/wiyF50TVywDCmQp
-	 HpY7kJ+W/zC0EFkPByE4vQ77hyCXmfoRBh8AbZN3V8hUtXqOwgP9FXEeU4LlyoNJP7A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795247378;
+	h=DMARC-Filter:DKIM-Signature:X-QQ-XMRINFO:X-QQ-XMAILINFO:From:To:Cc:
+	 Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Date:
+	 X-Priority:Message-ID:X-QQ-MIME:X-Mailer:X-QQ-Mailer:References:
+	 In-Reply-To:X-QQ-mid;
+	bh=iLcinoRHQQpGqpB7RbYpvqsBws/0VYTm7Rl5LRYYZVQ=;
+	b=ONub8JgL4esMLLRfrDHDE6MtJb3kpyt/nLpIjs++RTUhz368CnePScNXdCMDRSbBvjyd
+	 svjgAtUiGNXg4FmKMVzGvf2YA6B2Mg9FHnKGoPR9Yj6Z0Fyjs/tGNpwvWzebLpz/KF3LZ
+	 5dEsOEQSqNnoN6Spsj70Xxxe1S50F4KeOy9gslrhsfOLIo3f0F+yNgt3F2F/6rsgB+p3g
+	 ffQYiSU4uYnR1mZWn+bJKQ1YPdBnEbkl18zkPuBeZHOSxTotqkupIXG/uaeNGF2gNuKfp
+	 14Si1Ks11Js9uxPHw6w4GjxRvY869jV2N1nj5+6XW/cUVfYA6FZbE/1Ktzn8wpXp48g==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S3WG52kD;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=qq.com;
+	spf=pass smtp.mailfrom=qq.com;
+	dkim=pass header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fbbvA+FR;
+	arc=none smtp.remote-ip=203.205.221.240
+Received: from out203-205-221-240.mail.qq.com (out203-205-221-240.mail.qq.com [203.205.221.240])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED36606A320
-	for <linux-can@vger.kernel.org>; Sat, 21 Nov 2026 06:57:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A907C606A325;
+	Sat, 21 Nov 2026 07:49:37 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A907C606A325
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S3WG52kD
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3CA1F000C4;
-	Sat, 21 Nov 2026 06:57:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795244220;
-	bh=5onwHSb6zZ1UoUUg7nvwkRb+Yqcp27hS0pI9Bpyqxwg=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=S3WG52kDvt2D+/pk80YfZTyBVn8JA+CfqFx2BMbIU5XKil3tYrgDzPEo+AsNFVJ9r
-	 dLx+5u1C8vsm4hIi0UCL2w1dK0vXwpe4jp/3iZJPjivoOJSUxZd0eAtSk+/dEE+nuH
-	 vKrT/Khq8Lb4XWtDdUbNrpZ/zVg9qZVIC+jaFw52lN5rGa8btXaDSvhIGSwDFhiQgF
-	 mDHZNQy8szKKdI01IMSe9Uo2T3Bvd1eg6tAMGXT6SJZBd4QMXqFMoZwdQefHNjFomj
-	 TJ53Z/gq+4S0/yzsIR7ZAKDVvpwyF4JfZB7dI0hyjdy3YtC9JVkRHaaM0/snSbJpXl
-	 hj73GBZh1KgUg==
-Message-ID: <sashiko-outbox-226709@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net] can: dev: reject unusable bit-timing constants
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "YuanZhe Liu" <25031212351@stu.xidian.edu.cn>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261121064449.9706-1-25031212351@stu.xidian.edu.cn>
-References: <20261121064449.9706-1-25031212351@stu.xidian.edu.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Sat, 21 Nov 2026 06:57:00 +0000
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.a=rsa-sha256 header.s=s201512 header.b=fbbvA+FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1795247375; bh=iLcinoRHQQpGqpB7RbYpvqsBws/0VYTm7Rl5LRYYZVQ=;
+	h=From:To:Cc:Subject:Date:References:In-Reply-To;
+	b=fbbvA+FRNXczTapsO3RJdGTVycvvhiEsNQO3CDNr0I9GyRwaFRBimhWHFTFSb4Qjl
+	 c6wHnNaEY3mEI1njqjdpC9pzh4kXve3B9W+9uc0GTIvesh942rT45U84CykkMsXEiC
+	 jwInIqL8yMT76YcwAB+6H2TCn5c33Hemj9FfTgQE=
+X-QQ-XMRINFO: NyFYKkN4Ny6FuXrnB5Ye7Aabb3ujjtK+gg==
+X-QQ-XMAILINFO: NMF8M2bwIxE1fM67/ApOI8rE5vkr2L5vHqFC/04+JAPMM4YLpcaV8NR3cl1J1S
+	 HfGJ+fYkalur0uwkQ2/TRQTrLI6S2Z/YK8Vo5B9LQHC1Qjvfr5fwQ7JWuh2ksqPKPczWGQAY+einR
+	 Qcjnksa48T1U1h9meYFjeB0cyCdEP4FsfB15Qa/gldIGhYLnnMXqQOIWiBT49wvVRiFAn3ts9WYT7
+	 q6y7SWmTisRBcRkbGsXc3Z1yz5i1cx5B8SqFYeFGDiTGboZ5IC3PvJw2zIj6IZ80XUdHnK3vkh5cs
+	 9gel50hfITLldq9sqzhPog574DrLaC45ry+B7GU+50lVSWsKM2eawS3uW3OY09KP0u4c7Q9b+Yhbr
+	 yJrOULAbiIxy3Tnj/pDGfUAB1k6Q/TfK6WDFkT4/u2Veicab/hT4amFf0/+BWrdpKV2SzeqNfJJZB
+	 mDFbGN/GLRhJ38fWbeV8FqCaLTdezHVVr/8JXrqgEef8IisOiMmgmtNK/UhkXK5VmQiOFAs7Hdg62
+	 QW2alhgpCgWnjA8HR3GmgJ7oWNM6kUn3cRSOHbtKVKbaWx+fVTSe0z2IdDG5ldgSeL5SIekSQVkoo
+	 NvWQKRsHc+fDqOCmIUkYlzNYxAJQJhC/wYrvRoYI+WIH1KGEUqMvm0OYZ5GlQylComEpM0oe7nVY0
+	 emJ/36OhQeKv7GesVWDdss+7m7/h7qx9HjSBz2NaJxnasWvL1bCRBvmCVXElGOD1iueNVSqN6FCpe
+	 SPbHwTHj9mwsr6om+/K3cPCum93zLiX2Zpl+m9v0g1MBBD42aWk7u5RCVg483prFuvrD+WC78c7rp
+	 vO4WQjoaL2MXLxdH6UXs32EpgC35wHCyY2B2Pe9EJL8eIuIuvNkheHtlMMr1619GqVTeKbp0LPrm1
+	 XEcYMK+SQXuFZI1/Us7NMfUsG1EGapRMUpuHRCrWSXHUEjCyH92yKtJpGK9MA0md9xaHpXKqfUg7u
+	 3OmWxI1dhRvAN+CRENAj4i4rG0uEDgr9xCd/APX6jNpwV5lF1eCjl2kn/wUQnohGfKUV4UaZwSAz6
+	 bxuMp/fQQXA4kZLkDztpQvgrSa68tjuzupvgT+yqmBaBgK5dQdy8NZx0osqk76DEwKsM6harlYSDw
+	 dOvxZQXHPYO+Ow==
+From: "=?utf-8?B?Q3VuaGFvIEx1?=" <1579567540@qq.com>
+To: "=?utf-8?B?bmV0ZGV2LWJvdCtzYXNoaWtv?=" <netdev-bot+sashiko@kernel.org>
+Cc: "=?utf-8?B?bWts?=" <mkl@pengutronix.de>, "=?utf-8?B?a2VybmVs?=" <kernel@pengutronix.de>, "=?utf-8?B?bWFpbGhvbA==?=" <mailhol@kernel.org>, "=?utf-8?B?aGVpa28=?=" <heiko@sntech.de>, "=?utf-8?B?c29ja2V0Y2Fu?=" <socketcan@hartkopp.net>, "=?utf-8?B?ZGF2ZW0=?=" <davem@davemloft.net>, "=?utf-8?B?ZWR1bWF6ZXQ=?=" <edumazet@kernel.org>, "=?utf-8?B?a3ViYQ==?=" <kuba@kernel.org>, "=?utf-8?B?cGFiZW5p?=" <pabeni@redhat.com>, "=?utf-8?B?aG9ybXM=?=" <horms@kernel.org>, "=?utf-8?B?Y29yYmV0?=" <corbet@lwn.net>, "=?utf-8?B?c2toYW4=?=" <skhan@linuxfoundation.org>, "=?utf-8?B?cmR1bmxhcA==?=" <rdunlap@infradead.org>, "=?utf-8?B?d2c=?=" <wg@grandegger.com>, "=?utf-8?B?bGludXgtY2Fu?=" <linux-can@vger.kernel.org>, "=?utf-8?B?bGludXgtYXJtLWtlcm5lbA==?=" <linux-arm-kernel@lists.infradead.org>, 
+	"=?utf-8?B?bGludXgtcm9ja2NoaXA=?=" <linux-rockchip@lists.infradead.org>, "=?utf-8?B?bGludXgta2VybmVs?=" <linux-kernel@vger.kernel.org>, "=?utf-8?B?bGludXgtZG9j?=" <linux-doc@vger.kernel.org>, "=?utf-8?B?c3RhYmxl?=" <stable@vger.kernel.org>
+Subject: Re: [PATCH net v10 08/10] can: rockchip_canfd: retry the outstanding TX buffer
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -60,77 +69,76 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+Mime-Version: 1.0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: base64
+Date: Sat, 21 Nov 2026 15:49:32 +0800
+X-Priority: 3
+Message-ID: <tencent_C2353675D108CA2C26008C5405302266F80A@qq.com>
+X-QQ-MIME: TCMime 1.0 by Tencent
+X-Mailer: QQMail 2.x
+X-QQ-Mailer: QQMail 2.x
+References: <20261119-rockchip-canfd-restart-close-v10-8-df23913aa33a@qq.com>
+	<179521934391.3131.16575184154447420964@kernel.org>
+In-Reply-To: <179521934391.3131.16575184154447420964@kernel.org>
+X-QQ-mid: xmsezb41-0t1795247372t59iwxlbh
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue to consider:
-- [Medium] can: dev: missing bounds and overflow checks in
-  can_bittiming_const_valid()
---
+SGksCgo+IFtTZXZlcml0eTogTG93XQo+IElzIHRoZXJlIGEgbGltaXQgb24gaG93IG1hbnkg
+dGltZXMgdGhpcyByZS1hcm1zPwo+IAo+IHJrY2FuZmRfY2hpcF9zdGFydCgpIGVuYWJsZXMg
+UktDQU5GRF9SRUdfTU9ERV9BVVRPX1JFVFhfTU9ERS4gSWYgdGhlCj4gcmV0cmllZCBmcmFt
+ZSBuZXZlciBnZXRzIGFuIEFDSyAoZm9yIGV4YW1wbGUgdGhlIGJ1cyBpcyB1bnBsdWdnZWQg
+b3IgdGhlCj4gb25seSBvdGhlciBub2RlIGdvZXMgc2lsZW50KSwgdGhlIGNvbnRyb2xsZXIg
+a2VlcHMgcmV0cmFuc21pdHRpbmcgYW5kCj4gVFhfUkVRIHN0YXlzIHNldC4KPiAKPiBVbmRl
+ciB0aGUgSVNPIDExODk4LTEgZmF1bHQgY29uZmluZW1lbnQgZXhjZXB0aW9uLCBhbiBlcnJv
+ci1wYXNzaXZlCj4gdHJhbnNtaXR0ZXIgdGhhdCBzZWVzIG9ubHkgQUNLIGVycm9ycyBkb2Vz
+IG5vdCBpbmNyZWFzZSBURUMuIEJ1cy1vZmYgaXMKPiBuZXZlciByZWFjaGVkLCBzbyBya2Nh
+bmZkX3R4X2Rpc2FibGUoKS0+cmtjYW5mZF90eF9yZXRyeV9zdG9wKCkgbmV2ZXIKPiBydW5z
+Lgo+IAo+IFdvdWxkbid0IHRoaXMgd29ya2VyIHRoZW4gdGFrZSB0eF9sb2NrIGFuZCByZWFk
+IFJLQ0FORkRfUkVHX0NNRCBvbmNlIHBlcgo+IGppZmZ5IHVudGlsIHRoZSBpbnRlcmZhY2Ug
+aXMgY2xvc2VkIG9yIHJlc3RhcnRlZD8gQW4gdW4tQUNLZWQgZnJhbWUgYWxzbwo+IHN0YWxs
+ZWQgVFggYmVmb3JlIHRoaXMgcGF0Y2gsIGJ1dCB0aGUgcGVyLWppZmZ5IHBvbGxpbmcgd2l0
+aCBubyBsaW1pdCBpcwo+IG5ldy4KPiAKPiBJbiB0aGUgc3B1cmlvdXMgbWF0Y2ggY2FzZSB0
+aGUgc3R1Y2sgcmVxdWVzdCBpcyB0aGUgdW50cmFja2VkIGR1cGxpY2F0ZS4KPiBUaGUgcXVl
+dWUgdGhlbiBzdGF5cyBzdG9wcGVkIGV2ZW4gdGhvdWdoIHR4X3BlbmRpbmcgaXMgMC4KCk5v
+LiBBIG1pc3NpbmcgQUNLIGFsb25lIGRvZXMgbm90IHN0YXJ0IHRoZSB3b3JrZXIuIFRoZSBk
+cml2ZXIgbXVzdCBmaXJzdAppc3N1ZSBhIHNvZnR3YXJlIHJldHJ5IGZvciBlcnJhdHVtIDYu
+IEVpdGhlciBUWDBfUkVRIG9yIFRYMV9SRVEgbXVzdAp0aGVuIHN0YXkgc2V0LCBhbmQgdGhl
+IGludGVyZmFjZSBtdXN0IHJlbWFpbiB1cCB3aXRob3V0IHRoZSBjb250cm9sbGVyCmdvaW5n
+IGJ1cy1vZmYuIFByb2xvbmdlZCBwb2xsaW5nIHJlcXVpcmVzIGFsbCBvZiB0aG9zZSBjb25k
+aXRpb25zLgoKSSB0ZXN0ZWQgdGhpcyBvbiBSSzM1ODguIFRoZSBmaXJzdCB0aW1lIHRoZSB3
+b3JrZXIgdG9vayB0aGUgYnVzeSBwYXRoLApUWDBfUkVRIHdhcyBzdGlsbCBzZXQsIHNvIGl0
+IHNjaGVkdWxlZCBhbm90aGVyIHBvbGwuIEJ5IHRoZSBuZXh0IHBvbGwsCmJvdGggVFgwX1JF
+USBhbmQgVFgxX1JFUSB3ZXJlIGNsZWFyLiBJIHN1c3BlY3QgdGhlCnByb2xvbmdlZCBwb2xs
+aW5nIHlvdSBkZXNjcmliZSBtYXkgbmV2ZXIgb2NjdXIgaW4gcHJhY3RpY2UsIGFsdGhvdWdo
+CnRoaXMgdGVzdCBhbG9uZSBjYW5ub3QgZXN0YWJsaXNoIHRoYXQuCgo+IFtTZXZlcml0eTog
+TWVkaXVtXQo+IAo+IElzIGl0IHNhZmUgdG8gcmVsZWFzZSB0aGUgZ3VhcmQgYXMgc29vbiBh
+cyBib3RoIFRYX1JFUSBiaXRzIHJlYWQgY2xlYXI/Cj4gCj4gcmtjYW5mZF94bWl0X3JldHJ5
+KCkgc3RhcnRzIGEgc2Vjb25kIGhhcmR3YXJlIHRyYW5zbWlzc2lvbiBvZiB0aGUgZnJhbWUg
+YXQKPiB0eF90YWlsLCBidXQgaXQgY3JlYXRlcyBubyBlY2hvX3NrYiBzbG90IG9yIHBlbmRp
+bmcgY291bnQgZm9yIGl0LiBDbGVhcgo+IFRYX1JFUSBiaXRzIG9ubHkgbWVhbiB0aGUgaGFy
+ZHdhcmUgZmluaXNoZWQgc2VuZGluZy4gVGhlIFJYU1RYCj4gc2VsZi1yZWNlcHRpb24gb2Yg
+dGhlIHJldHJpZWQgY29weSBtYXkgc3RpbGwgYmUgaW4gdGhlIFJYIEZJRk8uCj4gCj4gVGFr
+ZSB0aGUgb3JkZXJpbmcgdGhlIGNvbW1pdCBtZXNzYWdlIGRlc2NyaWJlcywgd2hlcmUgdGhl
+IG9yaWdpbmFsIHJlcXVlc3QKPiBoYXMgYWxyZWFkeSBjb21wbGV0ZWQgd2hlbiB0aGUgbWF0
+Y2hpbmcgc3RhbmRhcmQgZnJhbWUgaXMgcHJvY2Vzc2VkOgo+IAo+IDEuIFN0YW5kYXJkIGZy
+YW1lIFMgbWF0Y2hlcyBwZW5kaW5nIEVGRiBmcmFtZSBCIGF0IHR4X3RhaWwuCj4gICAgcmtj
+YW5mZF9yeHN0eF9maWx0ZXIoKSBjYWxscyBya2NhbmZkX3htaXRfcmV0cnkoKSwgYW5kIEIg
+aXMgc2VudCBhZ2Fpbi4KPiAKPiAyLiBCJ3Mgb3JpZ2luYWwgZWNobywgc3RpbGwgaW4gdGhl
+IFJYIEZJRk8sIG1hdGNoZXMgZWNob19za2JbdHhfdGFpbF0uCj4gICAgdHhfdGFpbCBhZHZh
+bmNlcyBhbmQgdHhfcGVuZGluZyBiZWNvbWVzIDAuCj4gCj4gMy4gVGhlIHJldHJ5IGZpbmlz
+aGVzLiBUaGlzIHdvcmtlciBzZWVzIFRYX1JFUSBjbGVhciwKPiAgICBya2NhbmZkX2dldF9l
+ZmZlY3RpdmVfdHhfZnJlZSgpIHJldHVybnMgMiwgYW5kIHRoZSBxdWV1ZSBpcyB3b2tlbi4K
+PiAKPiBbLi4uXQo+IAo+IFNob3VsZCB0aGUgZWNobyBvZiB0aGUgcmV0cnkgYmUgYWNjb3Vu
+dGVkIGZvcj8gSWYgbm90LCBjb3VsZCB0aGUgY29tbWl0Cj4gbWVzc2FnZSBhbHNvIG1lbnRp
+b24gdGhlIGxvY2FsIHBoYW50b20gUlggYW5kIHRoZSBtaXNhdHRyaWJ1dGVkCj4gY29tcGxl
+dGlvbj8KClRoZSBkcml2ZXIgYWxyZWFkeSByZXRyaWVzIHRoZSBmcmFtZSB3aXRob3V0IGFs
+bG9jYXRpbmcgYSBzZWNvbmQgZWNobwpzbG90LiBPbmNlIHRoZSBvcmlnaW5hbCBlY2hvIGhh
+cyBiZWVuIGNvbnN1bWVkLCB0aGUgcmV0cnkgZWNobyBjYW4gYmUKZGVsaXZlcmVkIGFzIG9y
+ZGluYXJ5IFJYIG9yIG1pc3Rha2VuIGZvciB0aGUgY29tcGxldGlvbiBvZiBhbiBpZGVudGlj
+YWwKc3VjY2Vzc29yLiBUaGlzIHByZWRhdGVzIHRoZSBwYXRjaC4gVGhlIGd1YXJkIGtlZXBz
+IG5ldyBzdWJtaXNzaW9ucyBmcm9tCm92ZXJ3cml0aW5nIHRoZSBUWCByZWdpc3RlcnMgd2hp
+bGUgdGhlIHJldHJ5IGlzIGFjdGl2ZS4gSXQgZG9lcyBub3QKaWRlbnRpZnkgdGhlIHJldHJ5
+IGVjaG8sIGFuZCBJIGRvIG5vdCBjdXJyZW50bHkgcGxhbiB0byBmaXggdGhpcyBpc3N1ZQpp
+biB0aGlzIHBhdGNoLgoKQmVzdCByZWdhcmRzLApDdW5oYW8gTHUK
 
-commit f158049438435e605692c8782ad6a1d7e1d750b7
-Author: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
-
-can: dev: reject unusable bit-timing constants
-
-This commit adds checks to can_bittiming_const_valid() to reject bit-timing
-constants with zero brp_min, brp_inc, tseg1_min, or tseg2_min during
-register_candev().
-
-> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-> index 769745e22a3c7..749da996331a4 100644
-> --- a/drivers/net/can/dev/dev.c
-> +++ b/drivers/net/can/dev/dev.c
-> @@ -601,6 +601,20 @@ can_bittiming_const_valid(const struct can_bittiming=
-_const *btc)
->  	if (!btc)
->  		return true;
-> =20
-> +	/* can_calc_bittiming() rounds the bit-rate prescaler to a multiple of
-> +	 * brp_inc and divides priv->clock.freq by brp. A zero brp_inc divides
-> +	 * by zero directly, a zero brp_min lets brp become zero.
-> +	 */
-> +	if (!btc->brp_min || !btc->brp_inc)
-> +		return false;
-> +
-> +	/* The time segment loop counts down to tseg1_min + tseg2_min. If both
-> +	 * are zero the unsigned loop counter wraps around and the loop does
-> +	 * not terminate.
-> +	 */
-> +	if (!btc->tseg1_min || !btc->tseg2_min)
-> +		return false;
-
-[Severity: Medium]
-Can large non-zero 32-bit bit-timing constants from a USB device still over=
-flow
-unsigned arithmetic in can_calc_bittiming() and wrap the loop counter or di=
-vide
-by zero?
-
-drivers/net/can/dev/calc_bittiming.c:can_calc_bittiming() {
-	...
-	for (tseg =3D (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
-	     tseg >=3D (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
-		tsegall =3D CAN_SYNC_SEG + tseg / 2;
-
-		/* Compute all possible tseg choices (tseg=3Dtseg1+tseg2) */
-		brp =3D priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
-	...
-}
-
-If a gs_usb device reports tseg1_min =3D 0x40000000 and tseg2_min =3D 0x400=
-00000,
-both are non-zero, but (btc->tseg1_min + btc->tseg2_min) * 2 still overflows
-32-bit unsigned int to 0, so tseg >=3D 0 never terminates.
-
-Likewise, because tseg1_max, tseg2_max, and brp_max are not bounded or chec=
-ked
-against the minima, large maxima allow tsegall * bt->bitrate in
-can_calc_bittiming() (or bt->brp * can_bit_time(bt) in can_fixup_bittiming(=
-))
-to overflow 32-bit unsigned int to 0 and divide by zero, or stall the CPU f=
-or
-billions of loop iterations under rtnl_lock.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261121064449.9706=
--1-25031212351@stu.xidian.edu.cn?part=3D1
