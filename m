@@ -1,59 +1,58 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795300940;
-	b=zwIAbW4b7MxmcZwyZ/gFUMma9PrBoYkqD40Slx9BI7ngkwiuRcvnbLN13n/2FIU43oJV
-	 +rFALmzzREL9FXB6H+YhnCV/Uw6V/MIxCj+kC//LOZQ2LuwPaqbG3zEKrEZ9nzr7sWPo2
-	 BkgvyxmdnN8r+SMI0ox7mcqto0AVqwuQKtMRJn0/tG7NKYBWQnJuAznNrZIz+oMULf8+o
-	 lDVi6Cw+DWh1An+EQi+xeVy7VUzTGiQomLdZPKcYaCQU46EX08qvqfiPQXE66e37veM+m
-	 syYvNbuM3ZjWOrms2k1IPEg+H1pNmlfHAuLOO/YMrR8jkBFdA43ATgn+zSt85dk9JjA==
+	t=1795300956;
+	b=ZgMYWHa3fIsycde61rQwS0sos48uBfmMIsA8FqyIZEzYNO51GTpKrgmv1Fpj3tm2pit0
+	 AKULEkD8QWCHdDTDYA0vCi49Al1SgAHtTSmW/8VtOTe9ENcpaNzglRd8MHpFJ1SiSSSaX
+	 Mzkb5v6Wh7ZVKT23nLp2x6bQe6gdYID2Xbc8OyEpdCfR2sACkAjmy4ukdQ+a41rk9lcLF
+	 /6AYZg+HkTqF9T8QC8WGrz87y/Av6k6Vd+rNkqIaBRSEuoe9q9ZZ9/1oDls7fyu5tLWg9
+	 036OuTep1Ypt58eNV1ro/dBsePZHADkS7iTgCNyCs+vs19v2ihSEfkoltXyrsi3wV2A==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795300940;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795300956;
 	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
 	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=RZoSDjYGaXgpnaXMw1hGkzk9j5Iy3B+9aSIYFv9Zg5c=;
-	b=PtxAQvBwbSqJNaeF63hfow1Ha9Ek2CbPh39cp5J57W6mvsBeOa6GV+qscaFthuyWOgQe
-	 0D2K077Wfud7aD/+m59S3w1UWS6NVaYJIbHylc10tNyh+lj8W1Ab7B6gQTVQfBmub0Q+W
-	 mnwuwJmhX/l5YRgTb3fIei60YbcGidcnvj5nnSfsq+jD2lNqkCpa4f2SsQY9eT0gZF5xQ
-	 gambXLZKbEvvR2yZLcDlnHcNbmMwWdqg5z7SK18n40Ij+YuO8Z2Vot+9hOKfjaSjI8wuZ
-	 T9EvSUIwd7qYVOotU0s5lrLp+I7SqLALml4UAKYdEzgGzzzYPp3LGaxS33aA/gMTkeA==
+	bh=+XcWK2WPTcrwmCkl52YVXNEy9rTd0cxvO1hYB8t3qs0=;
+	b=fKm28RS5dFS631O8FJeing0LKEeasu+eENp8J7rnIkdUJTte6E6RMEJ9UdbfuxapP0Aq
+	 giQS5MhmpiO1KGFR36l6Iw953Lfk66Pbx0KXgXeFd93ivrF2cPR62wlKJnIhHj5CFExbr
+	 ItX9yDzv6ykCCBV9tTd474qHkDg28NjwrXnI+PZRhdLPrJd39dqEyabBSmlJOgPHDQ0GP
+	 s8CeFOtTCZ+OgGPK4PAEK4DonI9+QxRBEzvxRR5vUdAL4IQXPoY7hg/DCDWg/DiZ5wJeQ
+	 GUMSxPYr/OIsMCGX43VgwnACsaGCik1fCZ8N2f5JeKkDzWRxyZbh553zFJ1SmcmsyHg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ENogarfQ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ezDu4lMn;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 817B1606A32A
-	for <linux-can@vger.kernel.org>; Sat, 21 Nov 2026 22:42:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABBF606A320
+	for <linux-can@vger.kernel.org>; Sat, 21 Nov 2026 22:42:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ENogarfQ
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D479D1F000C0;
-	Sat, 21 Nov 2026 22:42:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=ezDu4lMn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DA8F1F000C6;
+	Sat, 21 Nov 2026 22:42:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795300940;
-	bh=RZoSDjYGaXgpnaXMw1hGkzk9j5Iy3B+9aSIYFv9Zg5c=;
+	s=k20260515; t=1795300955;
+	bh=+XcWK2WPTcrwmCkl52YVXNEy9rTd0cxvO1hYB8t3qs0=;
 	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=ENogarfQw+n+lj/Ida5iuXXthEp4gVd7nM0PJSeh8iLkhw82Y9N6Y+LMg/xungO15
-	 82a3l8GrwP5k+5BWJAvhZl79oNifP5nqh0rDPZIusub5Ke2t155tYS4XgZ8NS9BF9j
-	 JUpKWwb+DcMnDLs9kRplqpmT4a6b1Qr9ol/tX7cGSSwR2MjrmrHbmiowrAPMkVzMQX
-	 ekTDhY4b9uSdVIZ+fqfRfXXCkupgl4EwPfBsLDwbx6Q8erB7+nVjDb1u/pVYBZegA6
-	 soWvUI6j98vO/BvkkN3C5ujIZtB4ltzP0sz+8OwgKjBjjI0BiLHlrxf95GJYiAoxjV
-	 atKXfnY1CDmXA==
-Message-ID: <sashiko-outbox-227457@kernel.org>
+	b=ezDu4lMnuGkOCCAOoU88B8NErgo18CYDVvLe7lZpBjzNl2Er3k38tIwbzPjtR2tRX
+	 typ8frCUTq8kdUaMTlA2iuB3K5az6nQzOXT6aukrPf35pIHLNJgv1m7dJE8eEZDMZR
+	 AtdbsmaU/jw6U6vRa8A5NyHgpHrOPVjPcIeI9J7/yEX3RWnu4mkeNCBgUBRnrpxxRj
+	 bUgrsh+NbYLBMixIa52FBAigmCzHF/64lcsPCJq9cEqsyG6jbUW5ovYAyiSIW9PZFA
+	 gDk+revw/5Pzv+2qy2pLp96RxIBnPbkgUi9CyKRBtZ3WDXySdcmbyj+SZpevXKbvQL
+	 pz9ByHIb9QQPg==
+Message-ID: <sashiko-outbox-227460@kernel.org>
 From: sashiko-bot@kernel.org
-Subject: Re: [PATCH can-next v9 08/13] can: gs_usb:
- gs_usb_receive_bulk_callback(): use dev_info() to print re-submit info
- messages
+Subject: Re: [PATCH can-next v9 06/13] can: gs_usb: add support for context
+ analysis
 Reply-To: sashiko-reviews@lists.linux.dev
 To: "Marc Kleine-Budde" <mkl@pengutronix.de>
 Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
  Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261121-gs_usb-fixes-v9-8-db121d488945@pengutronix.de>
+In-Reply-To: <20261121-gs_usb-fixes-v9-6-db121d488945@pengutronix.de>
 References: <20261121-gs_usb-fixes-v9-0-db121d488945@pengutronix.de>
- <20261121-gs_usb-fixes-v9-8-db121d488945@pengutronix.de>
+ <20261121-gs_usb-fixes-v9-6-db121d488945@pengutronix.de>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-Date: Sat, 21 Nov 2026 22:42:19 +0000
+Date: Sat, 21 Nov 2026 22:42:35 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -65,44 +64,41 @@ Precedence: list
 
 Thank you for your contribution! Sashiko AI review found 1 potential
 issue to consider:
-- [Low] can: gs_usb: redundant double rate limiting in
-  gs_usb_receive_bulk_callback()
+- [Medium] can: gs_usb: misplaced brace fixup in gs_can_open() breaks
+  bisection
 --
 
-commit 6963c253f83fff9fd057f286e4568b102a31d71f
+commit c9d422d27a7b8018d144a3f7d0351ca265fd88bd
 Author: Marc Kleine-Budde <mkl@pengutronix.de>
 
-can: gs_usb: gs_usb_receive_bulk_callback(): use dev_info() to print re-sub=
-mit info messages
+can: gs_usb: add support for context analysis
 
-This commit replaces netdev_info() with dev_info_ratelimited() when
-logging IN URB resubmission failures in gs_usb_receive_bulk_callback() so
-that the affected USB device is reported even when netdev has not been
-identified yet.
+This commit enables context analysis for the gs_usb driver and annotates
+the hardware timestamp counter fields and helpers with tc_lock locking
+requirements.
 
 > diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 308daa2645ada..f49179cbd7876 100644
+> index 30bcb734c5df8..ab82dc07f3f50 100644
 > --- a/drivers/net/can/usb/gs_usb.c
 > +++ b/drivers/net/can/usb/gs_usb.c
 [ ... ]
-> @@ -820,8 +820,9 @@ static void gs_usb_receive_bulk_callback(struct urb *=
-urb)
->  				netif_device_detach(parent->canch[rc]->netdev);
->  		}
->  	} else if (rc !=3D -ESHUTDOWN && net_ratelimit()) {
-> -		netdev_info(netdev, "failed to re-submit IN URB: %pe\n",
-> -			    ERR_PTR(rc));
-> +		dev_info_ratelimited(&parent->udev->dev,
-> +				     "failed to re-submit IN URB: %pe\n",
-> +				     ERR_PTR(rc));
->  	}
->  }
+> @@ -1037,7 +1040,7 @@ static int gs_can_open(struct net_device *netdev)
+>  		if (parent->flags & GS_USB_PARENT_FLAGS_HW_TIMESTAMP) {
+>  			rc =3D gs_usb_timestamp_start(parent);
+>  			if (rc) {
+> -				if (rc =3D=3D -ENODEV) {
+> +				if (rc =3D=3D -ENODEV)
+>  					netif_device_detach(netdev);
+> =20
+>  				goto out_can_rx_offload_disable;
 
-[Severity: Low]
-Should net_ratelimit() be dropped from the condition now that
-dev_info_ratelimited() is used?  Keeping both applies two independent
-rate limiters and consumes tokens from the global net_ratelimit_state.
+[Severity: Medium]
+Should this stray opening brace removal be squashed into the preceding
+commit "can: gs_usb: fix hardware timestamp state for mixed channels"?
+Leaving the unmatched brace in the earlier commit prevents gs_usb.c from
+compiling there, which breaks bisection and standalone stable backports of
+that fix.
 
 --=20
 Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261121-gs_usb-fix=
-es-v9-0-db121d488945@pengutronix.de?part=3D8
+es-v9-0-db121d488945@pengutronix.de?part=3D6
