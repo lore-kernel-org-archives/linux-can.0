@@ -1,58 +1,64 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795212712;
-	b=U412S3QhWd+hgQZ9z9SOKlJ2urEl0OE+YWMumDhn/mNVqnqI8H8enIiYE9XBU6RunMAA
-	 U1voLj2U4VOqtK5H1UvkF+axeNcWfoF5BNTp2USNGzVvm42N2v9Rl1+jE6crQhWuhFJfH
-	 7qaYf3S39twXutwPOxyHyIz8UZoWcUjN217HnB9NCdShxLsYR+2kSzzIX4biucDLjb4et
-	 uwigxrsIrC+P2HASlcL2MzySZOekqzrs0qtcg2VfLSa9pkEJG0HasiavwsxqNTxavSZ94
-	 QbeeyzH5STrVTp6reBQiyV08xr1udIoxGsyD205sYIW3L/743Xk6YV+n1mZ996UkRVA==
+	t=1795219342;
+	b=piIxPLfOJusTrvztTpWSLOWDhd+bygqg8ZkUI84AVqgq1qIuU+LAqkeDOf0UzFsJ0Q6f
+	 MKORU5Ft6qWXFHCOR3upAbEHtfr6W3q0f9u4oCUknW0+Z1ql2LzDDid60BcdqfTDaNBAF
+	 WoRavN+iOKtYdFiU5hLgJ/0OtRmviNbZnNbr1rEMkT1YCehyUF2TGUG916Yxura3m4AA4
+	 8+HOQ6T3zr9j9ut2SjayMvAYqgqcmU5J2V1A1g8Zlfh2PTOE9vY2Rux8Raz/Qgls6LQod
+	 g1SP1oOILznOi37swLtdvfW9/NBQrrUjPJ0ZdzNU/GlLlrp5CSBhhJh+K4EsFK2BRSw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795212712;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=126On3iZK4KMKJJHocGj/sq0KmAG91RtgLz2wyKIiyI=;
-	b=ZGzbpRh6FAOfYPt13IpkvjBYbKvlZOkgin3c5hGiWcuCr8fAQYHvWsSS/c8UZdfKHeuK
-	 1HVhjb5apn2jB3IP/Td8iOGe3rbMtoIhApmp8dHM5jfnWP32wle//nDvQpyCREcYbA1Zi
-	 uBOgwhYMXcu/3Vptna8HeWDhYm1J71SR1xrllXrxviUoDc2kRXbJjnt1AIe6Y1t0XmwT8
-	 uRIm/Vxn500qv31gdE41x1BnYbfreuwVWUcB9IpxFv6FYZnwLCqtlNtHuQ26FSlyeZVw/
-	 gJHXX5+Dx3k+oNly/H1gAxnvuzBqosiYpyi1rSWcwQwHgQjO+mgls0Qhis0MonsSrbw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795219342;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=5oT62WpkqvQG1bllCQZAHu6BEqx9AIMOrpuD6eCPtoI=;
+	b=SFuk0m/tSBVornvOTDr0b7ma42hXsdntmgxoZMqJkAgzyv4MPXiaxXSMIkdOX+PlzoMZ
+	 MUIqL13Vx0DW82L48QXkAWUtn0Y0ySm2vQFCFdptLPf0T3cWV63XGUJ/nmELVCCjStL5I
+	 RjmAt6j4ftzQyIG0JvB5RKDBBncQjV3UAW4jX1PKunCZIGDqXR3l6+Wih3LdqVnbNx9jm
+	 hmUBSP8sOjSZwNsvsnO2gjpc/IeHScFfn4qrygAaFfbxEgPOxDwPB8TK0sDWkxrAyp0jD
+	 1PRNLetKRH9kibTMBYWQnVkzB4bug/FHU2MeLDfhe6fafleHsZZ7zsc9yJbwggpcZ9Q==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LdrqhXSN;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=n5GJRzs9;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6FA606A698
-	for <linux-can@vger.kernel.org>; Fri, 20 Nov 2026 22:11:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7DAB606A69B;
+	Sat, 21 Nov 2026 00:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=LdrqhXSN
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 019C11F000C0;
-	Fri, 20 Nov 2026 22:11:51 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=n5GJRzs9
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43AD71F000CF;
+	Sat, 21 Nov 2026 00:02:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795212712;
-	bh=126On3iZK4KMKJJHocGj/sq0KmAG91RtgLz2wyKIiyI=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=LdrqhXSN0IOqo4mVPsnkDgipkAil0vmvGedkPNgfpUlMDf3DvsnenAEaBy+mX0ISz
-	 N2wCz/pZ7guIcKeBmnWb/By+TxI17h79xWNla5y3b9sovcCDV/9xVzgIeK7WF8MnpW
-	 dX1tPrOKdian677YZkhQHGNxKodOxcZibQcO/u35+6pS4Z9Ur2QMIWhi9Op0KUMZz0
-	 +b3xoAbdZLKPJpP1IAQ3Ve4APNJ6aq29+dAPn/NI2tzNAERZ9mJx6DiktNUCGJWJ6i
-	 Sy+7stdiY03FrFZzwXvkwzc0O+N/ZHybcamCPSQOKTVac6fYgdNm0gCq+UVzmY9kNP
-	 /clk4hm1VhQtQ==
-Message-ID: <sashiko-outbox-226231@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH net-next 08/13] can: at91_can: don't discard the IRQ
- lookup error in probe
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Marc Kleine-Budde" <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
- Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261119220936.155728-9-mkl@pengutronix.de>
-References: <20261119220936.155728-1-mkl@pengutronix.de>
- <20261119220936.155728-9-mkl@pengutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Fri, 20 Nov 2026 22:11:51 +0000
+	s=k20260515; t=1795219341;
+	bh=5oT62WpkqvQG1bllCQZAHu6BEqx9AIMOrpuD6eCPtoI=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=n5GJRzs9Z485qqcpHhRULwoD0w+4HXDdouFYqJZvFqbNqEtIj/LoieLf/eEa3yf3H
+	 IgFe1HRN4ugJ4jQ2Fxoluy9faWOfAEL432IbD7XmvVvrCJTalonTnP16yaHnPltW+Z
+	 TKQsRpxOvB/MgkzcbF8OfQommkTl0Mqfl2x3WxXgzjinZLPBhVwBjWhdGdJLFh6a8B
+	 qMvHyV0kRA1rW4xKu38/XMpAxjQn4F0yxEWOdmm1euPxzUdY6f0crUEYRU28hhhe9k
+	 PiG7uM5vQ3ornX44PSWB7MZ2+uwiPsmSa0wvqoq3AWYrNDUkWmCcDDbq9cQF90rnAr
+	 qPFCd3H+10CaA==
+Subject: Re: [PATCH net v10 05/10] can: rockchip_canfd: cancel bus-off restart
+ before closing the device
+From: netdev-bot+sashiko@kernel.org
+To: 1579567540@qq.com
+Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
+ heiko@sntech.de, socketcan@hartkopp.net, davem@davemloft.net,
+ edumazet@kernel.org, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
+ corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
+ wg@grandegger.com, linux-can@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
+ linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ stable@vger.kernel.org
+Date: Sat, 21 Nov 2026 00:02:19 +0000
+Message-ID: <179521933978.3131.189047644390163242@kernel.org>
+In-Reply-To: <20261119-rockchip-canfd-restart-close-v10-5-df23913aa33a@qq.com>
+References: <20261119-rockchip-canfd-restart-close-v10-5-df23913aa33a@qq.com>
+X-sashiko-severity: Low
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -61,75 +67,85 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found no new issues
-in this patch, but noticed 1 related pre-existing issue it does not
-introduce:
-- [High] can: at91_can: missing priv->transceiver assignment in
-  at91_can_probe() [1]
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
+
+Low priority / nit picks for your consideration:
+
+- [Low] The commit message says late restart work (queued by a bus-off
+  IRQ after the early close_candev_cancel_restart_sync() in…
+
 --
 
-commit fb6d34ef2c907ec33aacc966536e1987c18e5222
-Author: Chaosheng Qu <chaosheng.qu.linux@gmail.com>
+can: rockchip_canfd: cancel bus-off restart before closing the device
 
-can: at91_can: don't discard the IRQ lookup error in probe
+This patch adds a call to close_candev_cancel_restart_sync() at the start
+of rkcanfd_stop(), so that a running bus-off restart is cancelled while
+the IRQ, RX offload and controller are still available. Echo cleanup and
+the final restart cancellation stay in close_candev().
 
-This commit splits the memory resource and interrupt lookups in
-at91_can_probe() and propagates the error returned by platform_get_irq().
+> A bus-off IRQ can pass the scheduling check before close, then queue
+> restart work after the early cancellation. The final cancellation after
+> free_irq() drains that late work so it cannot survive close.
 
-Link: https://patch.msgid.link/303815792800553c34842147941cab083823c212.179=
-2118040.git.chaosheng.qu.linux@gmail.com
+[Severity: Low]
+Is this explanation complete? Late-queued restart work does not have to
+wait for the final cancel. With a short restart_ms it can run anywhere
+between the early cancel and close_candev().
 
-> diff --git a/drivers/net/can/at91_can.c b/drivers/net/can/at91_can.c
-> index 58da323f14d7c..3977de7616361 100644
-> --- a/drivers/net/can/at91_can.c
-> +++ b/drivers/net/can/at91_can.c
-> @@ -1069,12 +1069,17 @@ static int at91_can_probe(struct platform_device =
-*pdev)
->  	}
-> =20
->  	res =3D platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> -	irq =3D platform_get_irq(pdev, 0);
-> -	if (!res || irq <=3D 0) {
-> +	if (!res) {
->  		err =3D -ENODEV;
->  		goto exit_put;
->  	}
-> =20
-> +	irq =3D platform_get_irq(pdev, 0);
-> +	if (irq < 0) {
-> +		err =3D irq;
-> +		goto exit_put;
-> +	}
-> +
->  	if (!request_mem_region(res->start,
->  				resource_size(res),
->  				pdev->name)) {
+That window covers rkcanfd_chip_interrupts_disable(), free_irq(),
+can_rx_offload_disable() and rkcanfd_chip_stop_sync(). The final
+cancel_delayed_work_sync() in close_candev() can't undo a restart that
+has already run there.
 
-[Severity: High]
-This problem wasn't introduced by this patch, but should at91_can_probe()
-also assign transceiver to priv->transceiver [1]?
+In that window, only this check in can_restart() stops the restart:
 
-Later in at91_can_probe(), devm_phy_optional_get() stores the PHY in the
-local transceiver variable and uses it to populate priv->can.bitrate_max,
-but priv->transceiver is left NULL:
-
-drivers/net/can/at91_can.c:at91_can_probe() {
+drivers/net/can/dev/dev.c:can_restart() {
     ...
-	transceiver =3D devm_phy_optional_get(&pdev->dev, NULL);
-    ...
-	if (transceiver)
-		priv->can.bitrate_max =3D transceiver->attrs.max_link_rate;
+	if (!netif_running(dev))
+		return -ENETDOWN;
     ...
 }
 
-Because priv->transceiver is never set, phy_power_on() in at91_open() and
-phy_power_off() in at91_close() are no-ops, leaving the CAN transceiver
-unpowered when the interface is brought up on boards that manage it via
-the PHY framework.
+Without that check, the work would reach rkcanfd_set_mode():
 
-[1] https://sashiko.dev/#/bug/linux-940d736c-5531-4ec5-97e9-70c51890e25e
+	case CAN_MODE_START:
+		rkcanfd_chip_start(priv);
+		rkcanfd_chip_interrupts_enable(priv);
+		netif_wake_queue(ndev);
 
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261119220936.1557=
-28-1-mkl@pengutronix.de?part=3D8
+That check, and the "scheduling check" in can_bus_off():
+
+	restart = priv->restart_ms && netif_running(dev);
+
+both come from the earlier patch in this series, "can: dev: check
+netif_running() before bus-off recovery".
+
+Neither the commit message nor the Cc: stable tag names that dependency.
+The patch only needs "can: dev: add close_candev_cancel_restart_sync()"
+to build. So a backport that takes this patch and the helper, but not
+the netif_running() patch, would build cleanly and still have the
+restart-after-teardown race.
+
+Could the commit message say that late work which runs before the final
+cancel is stopped by the netif_running() check in can_restart()? Could
+the netif_running() patch also be listed as a stable prerequisite?
+
+> diff --git a/drivers/net/can/rockchip/rockchip_canfd-core.c b/drivers/net/can/rockchip/rockchip_canfd-core.c
+> index 1cae86973da5a..59a79fe057e66 100644
+> --- a/drivers/net/can/rockchip/rockchip_canfd-core.c
+> +++ b/drivers/net/can/rockchip/rockchip_canfd-core.c
+> @@ -758,6 +758,7 @@ static int rkcanfd_stop(struct net_device *ndev)
+>  {
+>  	struct rkcanfd_priv *priv = netdev_priv(ndev);
+>  
+> +	close_candev_cancel_restart_sync(ndev);
+>  	netif_stop_queue(ndev);
+>  
+>  	rkcanfd_chip_interrupts_disable(priv);
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a%40qq.com
