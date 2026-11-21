@@ -1,55 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.243.164.118
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795243515;
-	b=o8MCj6Ga2FM0hl5gECWFDwKK9XiX9vAvN2GOVWe/PDRPOsAdfVceQLrw0RlKQCuy1wmC
-	 TFyGc2bZ6L6zrw+yqC+dQrNne0+S1Gza5r92HDbVvCciPpNjA7XLOQg3mCTIJWW4f6i7C
-	 UHwOGuyh4iNBeP8hW4C28lDqGVQPo7geY1NPB+5q7ofNaxdgYAtyXvhuQZpgG3J9ObmFU
-	 nhJj+lBM4cgaSnMMaKsvWlE8TaCiPHN2Po8Va7p3Kl3+bV1D60pKeLQjZUnU1AlC6sSs3
-	 pd9yY13GtwDy/cb6sAueSgWdr3s99ho1BlPSKiFEUBH9twSrG9QloJ5VNxgqXB+4hnw==
+	t=1795244221;
+	b=1qF8UbDvTLPjZOmnB+AK9gHXzTxhKQFsA45hrfGQ/fiuVqYgx3W0+DdnNR31URzlf/MM
+	 dGuPrDpm8YGmhvtet7SdTaeSf29YwWESTenVaAWc1fa132LleQf45XSZMtulcWVSEwymO
+	 hf3Mfazo3Cmxbj6hj5mTvp0yvXuTk1oSDEvxsk6xFkcs9Gp93Zr32eD4JjA/4jVdTmoz4
+	 quZEsGdZESnDwl66lFnj5UlryaOiP0ejgx/zr81T8OyRupm5LDkxItXZ/uGjvCP50UxAf
+	 1KbmvzC6ZQXGJN7Rp8tgz6grVHBNKFsMW0+k+MeSD076/+vX1oBm6LON7fZuC2kdUog==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795243515;
-	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
-	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
-	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
-	bh=FbE77umev5juPy7Fs4gx65Zwxt75bhSJ44VTn9JcJ4Y=;
-	b=twCzlpDxHGcXdHiN/hS2TAzwpGik86VweA7TswpF7pOW1EG9TqlcgOU0nwheT1aBnyXC
-	 vUSK9ZNebg4Xw9mFRJu7pzC/rPaTEr9gv9hVe60SLBtuNpojxc0++LbrHa/cvi8mLE8m7
-	 LWxfrMCTeYKNa0Fq97BoGN/44RiDwt4+DaT69XRnJTC1snhpWgE1mlrSDRNpoe59gkHxO
-	 BbUwYCq7MBpWxPZWn1Y9XT6l+n6+JO9S+CLebvQwfviAdNinqvP4jA6oQo8SjM6/5NhL4
-	 7w3Mi2xBLbHXKOEWdSpdNVAkj+Mg9IO90xKOFw/FoiOlsr3zRcVoJFnfPw9MGzdpaOA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795244221;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=5onwHSb6zZ1UoUUg7nvwkRb+Yqcp27hS0pI9Bpyqxwg=;
+	b=uEwI+dlQ8Ci908HXz0MJ94wJRppjicU8MoOO01nGxlSfTlO3IHhxncvLdFh69Slt/4Uy
+	 08qF++urq3dMlaLCLWZ8y+HoT1dxfb2mRvQnEUu7S0002mc6D0c2vTQS0uC2blk9pPPnA
+	 CA07zzn1b7XgkuC+n4YQGgh1OUj7RuR1SPva/RGRSLZYwPXU5f7w00LOEsxftmzQE/4BQ
+	 1M9PT9nqMgMuZvz8+IIuk7N9c3LdARu6o5brRp6SNHFWA+3aFSq+g/wiyF50TVywDCmQp
+	 HpY7kJ+W/zC0EFkPByE4vQ77hyCXmfoRBh8AbZN3V8hUtXqOwgP9FXEeU4LlyoNJP7A==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=stu.xidian.edu.cn;
-	spf=pass smtp.mailfrom=stu.xidian.edu.cn;
-	arc=none smtp.remote-ip=162.243.164.118
-Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18214606A680;
-	Sat, 21 Nov 2026 06:45:10 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 18214606A680
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stu.xidian.edu.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stu.xidian.edu.cn
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=stu.xidian.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
-	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=FbE77umev5
-	juPy7Fs4gx65Zwxt75bhSJ44VTn9JcJ4Y=; b=Y4CIKsr3x7Cm9O6HIuAXbBOH5r
-	u1dqMLZ1mFyfz7ROoDbId3LZO1aJdOw0A8xVXJUq1L/gcOVvbClp25ytDlbJMyWc
-	KV1xZQsDAmTMcr8xG5ScAkGu3noDx6tWiKuc+N3dk5KzBo1CzY5YOHaaL78ziuR3
-	f9vqCVuWHRJqoYThU=
-Received: from user-virtual-machine.localdomain (unknown [113.200.174.70])
-	by hzbj-edu-front-2.icoremail.net (Coremail) with UTF8SMTPA id BLQMCkDGCP7hPQFrhz3+AQ--.18087S2;
-	Sat, 21 Nov 2026 14:44:50 +0800 (CST)
-From: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
-To: Marc Kleine-Budde <mkl@pengutronix.de>,
-	Vincent Mailhol <mailhol@kernel.org>
-Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	linux-can@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Bin Yu <byu@xidian.edu.cn>,
-	Cheng Wen <wencheng@xidian.edu.cn>
-Subject: [PATCH net] can: dev: reject unusable bit-timing constants
-Date: Sat, 21 Nov 2026 14:44:49 +0800
-Message-Id: <20261121064449.9706-1-25031212351@stu.xidian.edu.cn>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S3WG52kD;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED36606A320
+	for <linux-can@vger.kernel.org>; Sat, 21 Nov 2026 06:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key, unprotected) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=S3WG52kD
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C3CA1F000C4;
+	Sat, 21 Nov 2026 06:57:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795244220;
+	bh=5onwHSb6zZ1UoUUg7nvwkRb+Yqcp27hS0pI9Bpyqxwg=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=S3WG52kDvt2D+/pk80YfZTyBVn8JA+CfqFx2BMbIU5XKil3tYrgDzPEo+AsNFVJ9r
+	 dLx+5u1C8vsm4hIi0UCL2w1dK0vXwpe4jp/3iZJPjivoOJSUxZd0eAtSk+/dEE+nuH
+	 vKrT/Khq8Lb4XWtDdUbNrpZ/zVg9qZVIC+jaFw52lN5rGa8btXaDSvhIGSwDFhiQgF
+	 mDHZNQy8szKKdI01IMSe9Uo2T3Bvd1eg6tAMGXT6SJZBd4QMXqFMoZwdQefHNjFomj
+	 TJ53Z/gq+4S0/yzsIR7ZAKDVvpwyF4JfZB7dI0hyjdy3YtC9JVkRHaaM0/snSbJpXl
+	 hj73GBZh1KgUg==
+Message-ID: <sashiko-outbox-226709@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net] can: dev: reject unusable bit-timing constants
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "YuanZhe Liu" <25031212351@stu.xidian.edu.cn>
+Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
+ Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
+ Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261121064449.9706-1-25031212351@stu.xidian.edu.cn>
+References: <20261121064449.9706-1-25031212351@stu.xidian.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Sat, 21 Nov 2026 06:57:00 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -58,90 +60,77 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:BLQMCkDGCP7hPQFrhz3+AQ--.18087S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw1fKw4rCrW3KF15KFyDWrg_yoW5Jw1kpF
-	Z5JFyYkFyqyw4j9w48trs2y3yrG3ZaqryFkryYywnYkrn8Z3WFkrW5GF45ur43tr47AFy2
-	vFWjg3yUWr45CFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9vb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
-	0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
-	A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
-	jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
-	C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq
-	07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r
-	18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vI
-	r41lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s
-	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
-	JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
-	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
-	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
-	W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU00oGPUUUUU==
-X-CM-SenderInfo: ysvqjiysrsjkur6v33wo0lvxldqovvfxof0/1tbiAgUDD2sAZMkq1QACsw
 
-can_bittiming_const_valid() is the hook register_candev() uses to verify
-the bit-timing constants a driver registers, but it only looks at
-sjw_max.  The values can_calc_bittiming() actually depends on are not
-checked.
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue to consider:
+- [Medium] can: dev: missing bounds and overflow checks in
+  can_bittiming_const_valid()
+--
 
-gs_usb builds its struct can_bittiming_const from the response of the
-GS_USB_BREQ_BT_CONST control request, so the constants come from the USB
-device.  A device that reports brp_inc = 0 crashes the kernel with a
-division by zero as soon as a user with CAP_NET_ADMIN configures a
-bitrate:
+commit f158049438435e605692c8782ad6a1d7e1d750b7
+Author: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
 
-  Oops: divide error: 0000 [#1] SMP KASAN
-  RIP: 0010:can_calc_bittiming+0x3dd/0xcd0
-  Call Trace:
-   can_get_bittiming (drivers/net/can/dev/bittiming.c:146)
-   can_changelink (drivers/net/can/dev/netlink.c:594)
-   rtnetlink_rcv_msg (net/core/rtnetlink.c:7137)
+can: dev: reject unusable bit-timing constants
 
-brp_min and the time segment minima are just as fatal: with brp_min = 0
-the prescaler can stay zero and is then used as a divisor in the same
-loop, and with tseg1_min + tseg2_min = 0 the unsigned loop counter wraps
-around instead of terminating.
+This commit adds checks to can_bittiming_const_valid() to reject bit-timing
+constants with zero brp_min, brp_inc, tseg1_min, or tseg2_min during
+register_candev().
 
-Reject such constants during registration, so that a device or driver
-handing out unusable values fails to probe instead of taking the kernel
-down later.
+> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+> index 769745e22a3c7..749da996331a4 100644
+> --- a/drivers/net/can/dev/dev.c
+> +++ b/drivers/net/can/dev/dev.c
+> @@ -601,6 +601,20 @@ can_bittiming_const_valid(const struct can_bittiming=
+_const *btc)
+>  	if (!btc)
+>  		return true;
+> =20
+> +	/* can_calc_bittiming() rounds the bit-rate prescaler to a multiple of
+> +	 * brp_inc and divides priv->clock.freq by brp. A zero brp_inc divides
+> +	 * by zero directly, a zero brp_min lets brp become zero.
+> +	 */
+> +	if (!btc->brp_min || !btc->brp_inc)
+> +		return false;
+> +
+> +	/* The time segment loop counts down to tseg1_min + tseg2_min. If both
+> +	 * are zero the unsigned loop counter wraps around and the loop does
+> +	 * not terminate.
+> +	 */
+> +	if (!btc->tseg1_min || !btc->tseg2_min)
+> +		return false;
 
-Fixes: d58ac89d0d38 ("can: dev: register_candev(): ensure that bittiming const are valid")
-Cc: stable@vger.kernel.org
-Co-developed-by: Bin Yu <byu@xidian.edu.cn>
-Signed-off-by: Bin Yu <byu@xidian.edu.cn>
-Co-developed-by: Cheng Wen <wencheng@xidian.edu.cn>
-Signed-off-by: Cheng Wen <wencheng@xidian.edu.cn>
-Signed-off-by: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
----
- drivers/net/can/dev/dev.c | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
+[Severity: Medium]
+Can large non-zero 32-bit bit-timing constants from a USB device still over=
+flow
+unsigned arithmetic in can_calc_bittiming() and wrap the loop counter or di=
+vide
+by zero?
 
-diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
-index 769745e22a3c..749da996331a 100644
---- a/drivers/net/can/dev/dev.c
-+++ b/drivers/net/can/dev/dev.c
-@@ -601,6 +601,20 @@ can_bittiming_const_valid(const struct can_bittiming_const *btc)
- 	if (!btc)
- 		return true;
- 
-+	/* can_calc_bittiming() rounds the bit-rate prescaler to a multiple of
-+	 * brp_inc and divides priv->clock.freq by brp. A zero brp_inc divides
-+	 * by zero directly, a zero brp_min lets brp become zero.
-+	 */
-+	if (!btc->brp_min || !btc->brp_inc)
-+		return false;
-+
-+	/* The time segment loop counts down to tseg1_min + tseg2_min. If both
-+	 * are zero the unsigned loop counter wraps around and the loop does
-+	 * not terminate.
-+	 */
-+	if (!btc->tseg1_min || !btc->tseg2_min)
-+		return false;
-+
- 	if (!btc->sjw_max)
- 		return false;
- 
--- 
-2.34.1
+drivers/net/can/dev/calc_bittiming.c:can_calc_bittiming() {
+	...
+	for (tseg =3D (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
+	     tseg >=3D (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
+		tsegall =3D CAN_SYNC_SEG + tseg / 2;
 
+		/* Compute all possible tseg choices (tseg=3Dtseg1+tseg2) */
+		brp =3D priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
+	...
+}
+
+If a gs_usb device reports tseg1_min =3D 0x40000000 and tseg2_min =3D 0x400=
+00000,
+both are non-zero, but (btc->tseg1_min + btc->tseg2_min) * 2 still overflows
+32-bit unsigned int to 0, so tseg >=3D 0 never terminates.
+
+Likewise, because tseg1_max, tseg2_max, and brp_max are not bounded or chec=
+ked
+against the minima, large maxima allow tsegall * bt->bitrate in
+can_calc_bittiming() (or bt->brp * can_bit_time(bt) in can_fixup_bittiming(=
+))
+to overflow 32-bit unsigned int to 0 and divide by zero, or stall the CPU f=
+or
+billions of loop iterations under rtnl_lock.
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261121064449.9706=
+-1-25031212351@stu.xidian.edu.cn?part=3D1
