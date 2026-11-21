@@ -1,64 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.243.164.118
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795219343;
-	b=PLQvxyHv8/mUQFjD3Auhst/w0P3R+Xg/ENaqVpUYy87Bdg+qoObZIWEY3biw4xT6imwQ
-	 n1/NqsRxbHg1Fc2pQuOpvPB+YCmDz+QIRP630gOPW+iEvHTk8+9H6pagyVCDBQwNvsNaW
-	 AXYa2CMkTb6nc+LDTUj7Y2RAUZML+4a88L3PeIuAUPVP3Ellm7G1sXzWIHxBar1Fa0TH/
-	 JA3JAQY80wbVLKxZluoh1h9b4A9ViLtaABzqOlgLRRMUQWyWKQ+NBU3j8v7W3+iyifk0X
-	 qLbr9W0kACkUAThjBjzhWe8SwBQycM3NnRIXoLhT4HgdIDUvgE3fyZ31vLDeHVYwUQg==
+	t=1795243515;
+	b=o8MCj6Ga2FM0hl5gECWFDwKK9XiX9vAvN2GOVWe/PDRPOsAdfVceQLrw0RlKQCuy1wmC
+	 TFyGc2bZ6L6zrw+yqC+dQrNne0+S1Gza5r92HDbVvCciPpNjA7XLOQg3mCTIJWW4f6i7C
+	 UHwOGuyh4iNBeP8hW4C28lDqGVQPo7geY1NPB+5q7ofNaxdgYAtyXvhuQZpgG3J9ObmFU
+	 nhJj+lBM4cgaSnMMaKsvWlE8TaCiPHN2Po8Va7p3Kl3+bV1D60pKeLQjZUnU1AlC6sSs3
+	 pd9yY13GtwDy/cb6sAueSgWdr3s99ho1BlPSKiFEUBH9twSrG9QloJ5VNxgqXB+4hnw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795219343;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=0y+Rk4QZ5e2oU+BGAt7OZ0CEJL8UV9kLFYC2q1exmHc=;
-	b=YJ+xG9faq5Z5q10oIy2ome++Sh3nSqdsd1mynooZg+LI0pZjWyGrW+TALMdUkoUHBD0f
-	 MGGQodB2SfY8BjIptjKi53txflgHCe/Uf3jYLz+YhBejM3pzRLSe1WPTwYjB5LjirOmBO
-	 fB3nPNyPlQ/m0pswS+luf6F6G/Vpb2RcMSVrY2A87+k3BVE0+ZFXFk9e80gNOF9KOE0J0
-	 VukEh68MBw6GAkSRc5UMQyu2+ycaOC/18szvzjdIc8RrlWQeIqsfmWfdeZTua7xp1SiIs
-	 0V0qro5m+LHAyOGL5OSJrHhUqc2vPtvQHnC6UDios0VREG06qZr1sfVqcfnyOkdtHUw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795243515;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
+	bh=FbE77umev5juPy7Fs4gx65Zwxt75bhSJ44VTn9JcJ4Y=;
+	b=twCzlpDxHGcXdHiN/hS2TAzwpGik86VweA7TswpF7pOW1EG9TqlcgOU0nwheT1aBnyXC
+	 vUSK9ZNebg4Xw9mFRJu7pzC/rPaTEr9gv9hVe60SLBtuNpojxc0++LbrHa/cvi8mLE8m7
+	 LWxfrMCTeYKNa0Fq97BoGN/44RiDwt4+DaT69XRnJTC1snhpWgE1mlrSDRNpoe59gkHxO
+	 BbUwYCq7MBpWxPZWn1Y9XT6l+n6+JO9S+CLebvQwfviAdNinqvP4jA6oQo8SjM6/5NhL4
+	 7w3Mi2xBLbHXKOEWdSpdNVAkj+Mg9IO90xKOFw/FoiOlsr3zRcVoJFnfPw9MGzdpaOA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AKnihBNY;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FEE3606A69E;
-	Sat, 21 Nov 2026 00:02:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AKnihBNY
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 228B11F000C6;
-	Sat, 21 Nov 2026 00:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795219343;
-	bh=0y+Rk4QZ5e2oU+BGAt7OZ0CEJL8UV9kLFYC2q1exmHc=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=AKnihBNYdu9yh7d470oL2RjLqPx/DHRyy+z955BkgmlOBVb7JYUtqNZeG2ZXlO30m
-	 TDnS6Qv+3Dw/OKZw0uFT237BQjql17DRC4Nf3uPmouzdXNQpjk5ZiwYUTd+dUMJ+Q8
-	 6zWfuOumf2VMvUppu8ZKAsnxrhjxtC0jYG8dcGwDcvgGEoUAoDpIQfRtMJVb6PVOnR
-	 ZDsU1+6B/ne44sQNVPOHLfmGSgmlhz8LgqYXycIsqA7nF+jYmk0MkhCIoj8DE+ceuu
-	 f3AswRHZ9cK3ENEe9oSn/VeGZIUFLpBLpZWRqoP1gyecVfzrz4ya+tLURYDRJ3pN9s
-	 9wujozKqWS6Jw==
-Subject: Re: [PATCH net v10 07/10] can: rockchip_canfd: serialize TX with
- bus-off and restart
-From: netdev-bot+sashiko@kernel.org
-To: 1579567540@qq.com
-Cc: mkl@pengutronix.de, kernel@pengutronix.de, mailhol@kernel.org,
- heiko@sntech.de, socketcan@hartkopp.net, davem@davemloft.net,
- edumazet@kernel.org, kuba@kernel.org, pabeni@redhat.com, horms@kernel.org,
- corbet@lwn.net, skhan@linuxfoundation.org, rdunlap@infradead.org,
- wg@grandegger.com, linux-can@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org,
- linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
- stable@vger.kernel.org
-Date: Sat, 21 Nov 2026 00:02:21 +0000
-Message-ID: <179521934168.3131.3588718854244956629@kernel.org>
-In-Reply-To: <20261119-rockchip-canfd-restart-close-v10-7-df23913aa33a@qq.com>
-References: <20261119-rockchip-canfd-restart-close-v10-7-df23913aa33a@qq.com>
-X-sashiko-severity: Low
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dmarc=pass header.from=stu.xidian.edu.cn;
+	spf=pass smtp.mailfrom=stu.xidian.edu.cn;
+	arc=none smtp.remote-ip=162.243.164.118
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18214606A680;
+	Sat, 21 Nov 2026 06:45:10 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 18214606A680
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stu.xidian.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stu.xidian.edu.cn
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=stu.xidian.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=FbE77umev5
+	juPy7Fs4gx65Zwxt75bhSJ44VTn9JcJ4Y=; b=Y4CIKsr3x7Cm9O6HIuAXbBOH5r
+	u1dqMLZ1mFyfz7ROoDbId3LZO1aJdOw0A8xVXJUq1L/gcOVvbClp25ytDlbJMyWc
+	KV1xZQsDAmTMcr8xG5ScAkGu3noDx6tWiKuc+N3dk5KzBo1CzY5YOHaaL78ziuR3
+	f9vqCVuWHRJqoYThU=
+Received: from user-virtual-machine.localdomain (unknown [113.200.174.70])
+	by hzbj-edu-front-2.icoremail.net (Coremail) with UTF8SMTPA id BLQMCkDGCP7hPQFrhz3+AQ--.18087S2;
+	Sat, 21 Nov 2026 14:44:50 +0800 (CST)
+From: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	linux-can@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	Bin Yu <byu@xidian.edu.cn>,
+	Cheng Wen <wencheng@xidian.edu.cn>
+Subject: [PATCH net] can: dev: reject unusable bit-timing constants
+Date: Sat, 21 Nov 2026 14:44:49 +0800
+Message-Id: <20261121064449.9706-1-25031212351@stu.xidian.edu.cn>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -68,144 +59,89 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:BLQMCkDGCP7hPQFrhz3+AQ--.18087S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw1fKw4rCrW3KF15KFyDWrg_yoW5Jw1kpF
+	Z5JFyYkFyqyw4j9w48trs2y3yrG3ZaqryFkryYywnYkrn8Z3WFkrW5GF45ur43tr47AFy2
+	vFWjg3yUWr45CFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9vb7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+	0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+	A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xII
+	jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+	C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq
+	07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r
+	18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vI
+	r41lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s
+	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+	JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
+	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JV
+	W8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU00oGPUUUUU==
+X-CM-SenderInfo: ysvqjiysrsjkur6v33wo0lvxldqovvfxof0/1tbiAgUDD2sAZMkq1QACsw
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+can_bittiming_const_valid() is the hook register_candev() uses to verify
+the bit-timing constants a driver registers, but it only looks at
+sjw_max.  The values can_calc_bittiming() actually depends on are not
+checked.
 
-Low priority / nit picks for your consideration:
+gs_usb builds its struct can_bittiming_const from the response of the
+GS_USB_BREQ_BT_CONST control request, so the constants come from the USB
+device.  A device that reports brp_inc = 0 crashes the kernel with a
+division by zero as soon as a user with CAP_NET_ADMIN configures a
+bitrate:
 
-- [Low] In struct rkcanfd_priv
-  (drivers/net/can/rockchip/rockchip_canfd.h), the patch replaces the…
+  Oops: divide error: 0000 [#1] SMP KASAN
+  RIP: 0010:can_calc_bittiming+0x3dd/0xcd0
+  Call Trace:
+   can_get_bittiming (drivers/net/can/dev/bittiming.c:146)
+   can_changelink (drivers/net/can/dev/netlink.c:594)
+   rtnetlink_rcv_msg (net/core/rtnetlink.c:7137)
 
-Pre-existing issues:
-- [Low] At this commit, priv->tc is read with no lock from the hardirq
-  handler, via rkcanfd_skb_set_timestamp() -> timecounter_cyc2time(), on…
+brp_min and the time segment minima are just as fatal: with brp_min = 0
+the prescaler can stay zero and is then used as a divisor in the same
+loop, and with tseg1_min + tseg2_min = 0 the unsigned loop counter wraps
+around instead of terminating.
 
---
+Reject such constants during registration, so that a device or driver
+handing out unusable values fails to probe instead of taking the kernel
+down later.
 
-can: rockchip_canfd: serialize TX with bus-off and restart
+Fixes: d58ac89d0d38 ("can: dev: register_candev(): ensure that bittiming const are valid")
+Cc: stable@vger.kernel.org
+Co-developed-by: Bin Yu <byu@xidian.edu.cn>
+Signed-off-by: Bin Yu <byu@xidian.edu.cn>
+Co-developed-by: Cheng Wen <wencheng@xidian.edu.cn>
+Signed-off-by: Cheng Wen <wencheng@xidian.edu.cn>
+Signed-off-by: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
+---
+ drivers/net/can/dev/dev.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
-This patch uses tx_lock and a new tx_enabled flag to drain TX and RX-side
-echo users before CAN_STATE_BUS_OFF is published, and it drops consumed RX
-FIFO entries while TX is disabled. Before reinitializing the controller,
-restart masks device interrupts, suspends the shared IRQ handler through
-irq_suspended and synchronize_irq(), and drains the timestamp work.
-
-Link: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261111-rockchip-canfd-restart-close-v9-0-6643f3825ba3%40qq.com
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd-timestamp.c b/drivers/net/can/rockchip/rockchip_canfd-timestamp.c
-> index 72774cd2f94b7..ad582afbbd682 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd-timestamp.c
-> +++ b/drivers/net/can/rockchip/rockchip_canfd-timestamp.c
-> @@ -37,6 +37,11 @@ static void rkcanfd_timestamp_work(struct work_struct *work)
->  	schedule_delayed_work(&priv->timestamp, priv->work_delay_jiffies);
->  }
->  
-> +void rkcanfd_timestamp_work_init(struct rkcanfd_priv *priv)
-> +{
-> +	INIT_DELAYED_WORK(&priv->timestamp, rkcanfd_timestamp_work);
-> +}
-> +
-
-[Severity: Low]
-This isn't a bug introduced by this patch, but can priv->tc be updated
-here while the IRQ handler is reading it?
-
-rkcanfd_timestamp_work() updates the timecounter without taking a lock:
-
-rkcanfd_timestamp_work() {
-	priv = container_of(delayed_work, struct rkcanfd_priv, timestamp);
-	timecounter_read(&priv->tc);
-
-	schedule_delayed_work(&priv->timestamp, priv->work_delay_jiffies);
-}
-
-The hardirq handler reads the same timecounter, also without a lock. It
-does this on the RX, TX-done and error-skb paths through
-rkcanfd_skb_set_timestamp():
-
-	ns = timecounter_cyc2time(&priv->tc, timestamp);
-
-timecounter_read() writes cycle_last, frac and nsec as separate stores.
-Suppose the worker runs on one CPU while the CAN IRQ converts a timestamp
-on another. Can the conversion then combine a new cycle_last with an old
-nsec and produce a wrong hardware timestamp?
-
-Separately, the bus-off path in rkcanfd_chip_stop() only does a non-sync
-cancel:
-
-	rkcanfd_timestamp_stop(priv);
-	__rkcanfd_chip_stop(priv, state);
-
-Here rkcanfd_timestamp_stop() is cancel_delayed_work(). If the worker is
-already running, it can re-arm itself and keep reading the counter while
-the controller is in reset.
-
-This patch adds rkcanfd_timestamp_stop_sync() only on the restart path.
-That covers timecounter_init(), but not these two cases.
-
-Both appear to be fixed later in this series:
-
-  "can: rockchip_canfd: serialize timecounter timestamp conversion" holds
-  timestamp_lock around timecounter_cyc2time(), timecounter_read() and
-  timecounter_init().
-
-  "can: rockchip_canfd: prevent timestamp work from rearming after
-  bus-off" uses disable_delayed_work() and a timestamp_active flag.
-
-> diff --git a/drivers/net/can/rockchip/rockchip_canfd.h b/drivers/net/can/rockchip/rockchip_canfd.h
-> index 077dd57d42de9..8fdb59025bfaf 100644
-> --- a/drivers/net/can/rockchip/rockchip_canfd.h
-> +++ b/drivers/net/can/rockchip/rockchip_canfd.h
-> @@ -475,7 +475,7 @@ struct rkcanfd_priv {
->  	struct can_rx_offload offload;
->  	struct net_device *ndev;
->  
-> -	/* Protect running TX/RX echo state, queue updates and TX commands. */
-> +	/* Serialize TX submission/completion with bus-off and restart. */
->  	spinlock_t tx_lock;
-
-[ ... ]
-
-> @@ -485,6 +485,9 @@ struct rkcanfd_priv {
->  	u32 reg_int_mask_default;
->  	struct rkcanfd_devtype_data devtype_data;
->  
-> +	bool tx_enabled;
-> +	bool irq_suspended;
-> +
-
-[Severity: Low]
-This isn't a bug, but the new tx_lock comment covers less than the lock
-actually protects.
-
-tx_lock still serializes TX command writes. rkcanfd_start_xmit_write_cmd()
-asserts it because rkcanfd_start_xmit() and the RX-side
-rkcanfd_xmit_retry() share the erratum-12 MODE/CMD/MODE sequence:
-
-rkcanfd_start_xmit_write_cmd() {
-	lockdep_assert_held(&priv->tx_lock);
-
-	if (priv->devtype_data.quirks & RKCANFD_QUIRK_RK3568_ERRATUM_12)
-		rkcanfd_write(priv, RKCANFD_REG_MODE, priv->reg_mode_default |
-	...
-}
-
-The lock also still covers the echo ring and the queue/BQL updates in
-rkcanfd_tx_tail_is_eff(), rkcanfd_get_effective_tx_free(),
-rkcanfd_rxstx_filter() and rkcanfd_handle_tx_done_one().
-
-Could the comment keep listing the TX command and echo ring duties?
-
-Also, nothing says how the two new fields are synchronized. tx_enabled is
-only accessed under tx_lock. irq_suspended takes no lock and relies on the
-WRITE_ONCE()/smp_store_release() and smp_load_acquire() pairing plus
-synchronize_irq().
-
-Would a short note on each field help? At the end of the series the
-tx_lock comment is still narrow, and the later tx_retry_enabled and
-tx_retry_pending fields have no comment either.
-
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 769745e22a3c..749da996331a 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -601,6 +601,20 @@ can_bittiming_const_valid(const struct can_bittiming_const *btc)
+ 	if (!btc)
+ 		return true;
+ 
++	/* can_calc_bittiming() rounds the bit-rate prescaler to a multiple of
++	 * brp_inc and divides priv->clock.freq by brp. A zero brp_inc divides
++	 * by zero directly, a zero brp_min lets brp become zero.
++	 */
++	if (!btc->brp_min || !btc->brp_inc)
++		return false;
++
++	/* The time segment loop counts down to tseg1_min + tseg2_min. If both
++	 * are zero the unsigned loop counter wraps around and the loop does
++	 * not terminate.
++	 */
++	if (!btc->tseg1_min || !btc->tseg2_min)
++		return false;
++
+ 	if (!btc->sjw_max)
+ 		return false;
+ 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261119-rockchip-canfd-restart-close-v10-0-df23913aa33a%40qq.com
+2.34.1
+
