@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795373340;
-	b=0lvrf6mWXGES+4mZJKsuT0dGEdSFaLpfCrsx1w4wbhv33q0Yygnx4/KD4KXcUclwzR/S
-	 TqI76HAkEDgT/sQ3xppu6M7lFbT6cEnUZBp6036+jmnO0DeIpQwip/9oBeYuy6HdBOOrY
-	 BpsJyz+3K2xtD4dYqB4+PK2kv7GuHp8N017GFmQ7PoYu+yR6H5KJ/Jel/OqYR5sVXypzV
-	 heiMfxgPjPg1Pj0BY/ORdLUvofQ61aYTlVj23cFMMqOC1a/G+8nrzN5kcJx03iPuxRIxu
-	 gPlAtLEC9Q9UIq+p/8Rf6n2xwOikzDpC17q4rELH5AvQ61wuZQejdiTkLjtbZGBDR9w==
+	b=aZZBf1HBlUaZ5lMlNFmq8KGR5PFBzzdQ41+i68GfHvkDzUlnQuz8i0tzZ6TI5PnRNuG4
+	 NchoRBx+8pHuUcIb8/F1VqPinU2EACEKRgZOkOd287cd86qGat3Hi0kLQij6ZEXXF4xkX
+	 9CV/qeKzgJgvGXHn5czcr97L06+tqE4MFQbxxQ2mSxBJn2ieKnmYdJH2FuJ349/C3Lr5u
+	 jzmfbWV4Ry3Fy/W8jFer2DcYmaAIyGDV8eL0/ytCp1rhkziKP/EFGK6QvRRZSGqY+cFe8
+	 cEUMCR+qUagUomf0zCJSe024iuozBpjN7jPsXRL52DLYaEdxJGW1r7m4hpNJNOF2h6Q==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795373340;
 	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=4unrm/Me6Sg+z0cNCryN+M0dekPe5EQ7kCaCl9mZDMI=;
-	b=zAIRHmx37LX/lkhekUCBOlEMI2XiQIi76QaDXmLVqNeW/fCajMGiaYjJ0vOHJwEy2P1g
-	 UR0i+u6TPwkjcy49BpkGrh0j8CwVquJpEar9Dhg+BgXIX6rupyy7JvMJzfzjhSHCrIN1C
-	 YmzF47JqUQjEom/OrnaRbDb2vIysJjojreAwfBqUj4fLQmwPYrjrSfedrmaoLaaPkleEY
-	 WXGcQjgaPVYfkwEZ6rLiHLVtJZUFRch0ganGjTWO624RS/De2RaeknYASniMPjcX9zj19
-	 W3Cwpt5tVb0YDMdrOr2aIFXnHrbT98PGWKr6liUPYdLgTM+aB+rzgy8xjflOlV5M2KA==
+	bh=y+uLnV5NBOug/An70r9Mzj2OQyga6lymM3wHnbHy/Xk=;
+	b=fsa4Hc4A5gs7s/20+ci3CtoufK9USwpQcBdQLGfY2cyxtE/W9+LzgBRGiGtAZBs1e4EI
+	 MCmtCiH52VsIJkK4zSBcLYZGGMwmGIIfmnQlFNSxkH3cvtJqZEWdtyxGoHWQOu2mpVvKd
+	 I/r2rqxHbNQn4iRASjwE6pmZ3AJNlT1GibPbBcPmZZEdobw31NVFfHokTgZnXKCGlP45r
+	 J5N8hSG1NhstQL29iUnc7toNCzRqw5UZflVy6eRx/GwvrrCHs2sYRMvSHTZrDa3l5lE2u
+	 6RyOTeVQJBZLPw0XSqNXJ6aCrWoT1nZSqJitb5Ywvdsy+Y/eJ/IBUxaFfDIrGWxmbLg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Casrfs6c;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=RRoxhJfo;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCFB606A68B
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7208606A68C
 	for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 18:48:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DBCFB606A68B
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E7208606A68C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Casrfs6c
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=RRoxhJfo
 Received: from hardanger.blackshift.org (p20030102af17cb0015d71b554e0d6387.dip0.t-ipconnect.de [IPv6:2003:102:af17:cb00:15d7:1b55:4e0d:6387])
 	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 51838205B4C;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 81EA7205B4D;
 	Sun, 22 Nov 2026 19:48:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1795373331;
@@ -43,38 +43,38 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4unrm/Me6Sg+z0cNCryN+M0dekPe5EQ7kCaCl9mZDMI=;
-	b=Casrfs6cWRoA8JEOg5BmxnOyKehsZTo/4KgoS3L/FQLCsR2DFp9ueSS90CraSfmV6abI76
-	B41K4tqzpRSfviqZDpGQf7hcpZbIWX/d/+lwegDYFpWSLEcGolM9XJbDR+++EQb9b+uJDY
-	FGgRDf78HMo8CNTl+OJoAL0nZvCDIexDZi8rpm6xpLqD4jYL51pNF0nchTyh9Jo5UbGN6Y
-	yBPWNdpfY/eIs2fmkPnpxMBTbbVJ0L6RaW+j9YGd2JYsXfmf2Ny6zbNky3niDqwaIgiZR3
-	vqMAMusSuCELYur5v8X9t69vdClIXX3SEQxK0IGnN3Wrd+6jeSbSVXhT6EoqmQ==
+	bh=y+uLnV5NBOug/An70r9Mzj2OQyga6lymM3wHnbHy/Xk=;
+	b=RRoxhJfoyeIT0zF0/4zffjoUU7Mviok3wBnVAoCKJ9WZLY3TzRzePuGobzvCZ650j7E/3S
+	m8EDFMp8rUsDSkYpG9Vepp6V7OKUX0yn4MgdyGzYV5T3OnW9giGrSRabBMbKExd+rIQJxc
+	g9yp1Am4Rn2MnVRa+5Q4Qiu4gkVv9aAledqIM6FqrAST1fkkR88yUFKmY3qNLRhuMqI4p7
+	CB0nBskOa+sO0BaDHj/CGaxv7FQPp+eVj8NqpeIkjmJh5Le/3rF9uc67eKboKPP2RG6Yok
+	qhH3zYu4/7eWo53J9MKoD/qYthE9juExg9fnt2gK29KONzxbeDWdJHrvQ4QK6w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1795373331;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=4unrm/Me6Sg+z0cNCryN+M0dekPe5EQ7kCaCl9mZDMI=;
-	b=BpbGNgFWgZtsNgtiFzTGkMQpPORP8WIxRy0LgXEvOero1ofIruoaa1DCdRTwfXlNOdYdi6
-	mkwR7Vk4aj87+qOmZAZz+iF8UWnoI9NA6QVJqP+wZSxUlCOlAAUliqkZcC2PZEnkdidPxq
-	4cQtR53DCTNneZfL2O/H1ejTQQ49cNGU0QiG4qc70KIHNJOnvCpSeZhpTRLUHzh3FB9t7Z
-	fEivk17tVmzi8Au30jZc3S3vopCZzkz0IupgeapZ/7aZLkfnLpTHNoiFTCYzjem6M+cu6z
-	IOZIcbk5e38xqG5p5xvSvNJ96OU+02cPMDLzUUPmkpZc3252tfaWIQkAjQhSzA==
+	bh=y+uLnV5NBOug/An70r9Mzj2OQyga6lymM3wHnbHy/Xk=;
+	b=aDVAsmiWtWXvKVPGiNUOCpFIjsKX96/a94HLQjtWvqHuP4GD0uRt+Bhkqx6PxHt/7wXMxx
+	YRK34Dll9MgLdpfJqGQ7dYdlf8EAkEyQEHQauTC1y59burHqlVy8TZELNmIxrZzNUjtXAE
+	YXzhIy7vVzGGX4iGrVQifH5IkLJSTElq/23AxkJwhLw01WMQ08ffaB8XZ/aMAk+u6wtuVf
+	hzHvs8zVgTIID+wdpkcZ0bwYaCc8TYgabPZqFmeQSv3ixsUa0BlTO6peP2zavYDRw82DB1
+	FPpIr6lVxH6vwGgjFmh7wpZsk7Zdp2bPKEzyz5jWp+MH2SE1LEuy9MmaBu/c4g==
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795373331; a=rsa-sha256;
 	cv=none;
-	b=bzlLqAkBzp2NFN1OxE+XSLiTu2fRgPdhVUL8Iwk6CN2TAFvQ7X9+7RkT5vkAPGnm1agDDy
-	LGgu5f8is08baoBHwE5sZxV7peiUgUM9NNSQQh+LSVFUEQjj5cqjdeudArLIDHapmZ6uFY
-	Em/QBG+RMGtNHLZ1K26u2FSOYoM3qK1wTBSK93f9qaEXOGApowWiCj7ApsC1c1JgNAAzCz
-	AuuHdVZXQrQyd4qi2kBpbrap0f7G/eUsFwpD8s+OoZZtsEBGUG273xC3EMFJ8mUN8/5r9O
-	AEw6KPJ1LSbSbF3Xkp/CogDDQfwWzcdNgCqiUMFssPw0Pfe9kJF6v7l1b+9Y+g==
+	b=UI8bmb5TOUDlUMFL5uzZRBqediL3tuzxl94yDizL1GBc+PgMYDVcEohIeoM4o04YgPey6f
+	j294cz/gM4otBKSji+5PTRGBiLYfiemO+qDJFygQbgeBj9bbjR1yYOjlSIeyw1n4VnlBrz
+	IUZDYKY/MGGUIIItkWEYRAUw+uUAsj0gZICBKoj3qE4RTSAxe59hAILrAGuvMgTfLKkYaa
+	/yZWTG7FzWrS4AIwm2SKoNdCrg0f/FeEn/OnlkqmdWpBRhtrOHaCQgCFHHIfENJKNS1qqy
+	s3d3sMTsA2XZi1Ehzld3vx0hC9vVbU6MYhfbrWk/iV+jfdpp0NvOY2wAVGG7QA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Sun, 22 Nov 2026 19:48:37 +0100
-Subject: [PATCH can-next v10 13/14] can: gs_usb:
- gs_usb_host_frame_header_valid(): drop invalid CAN error frames
+Date: Sun, 22 Nov 2026 19:48:38 +0100
+Subject: [PATCH can-next v10 14/14] can: gs_usb:
+ gs_usb_host_frame_header_valid(): drop CAN frames with invalid DLC
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -86,7 +86,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261122-gs_usb-fixes-v10-13-7c165c35d04a@pengutronix.de>
+Message-Id: <20261122-gs_usb-fixes-v10-14-7c165c35d04a@pengutronix.de>
 References: <20261122-gs_usb-fixes-v10-0-7c165c35d04a@pengutronix.de>
 In-Reply-To: <20261122-gs_usb-fixes-v10-0-7c165c35d04a@pengutronix.de>
 To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>, 
@@ -96,66 +96,48 @@ To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>,
 Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
  Marc Kleine-Budde <mkl@pengutronix.de>, Sashiko <sashiko-bot@kernel.org>
 X-Mailer: b4 0.17-dev-1b309
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1852; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=cSvsi4SVOI38PZsAST68UzBCSc5tgKE5sWBpm8KfOFo=;
- b=owGbwMvMwCV2xirl17qZay8xnlZLYshmtuRNlQg99nGq22MmQemv5tGf5P8qZl+XaW8QzXvwY
- WH19/VuHaUsDGJcDLJiiixLf5xQFAh0KO19mTAJZg4rE8gQBi5OAZiIvBrD//qJmzdPU1lsvlbi
- o4nV7/SQVsuzAdcl1WfF/vRx4XhwL5mRoSfA90Kn+YVFn6rusbudipj2td1xP49MxEKFs1tvTWn
- I4AEA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1328; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=oAGzbCJ31WlXU3PQUBLfgAGGcbMUIEwRRQLZuUxgprc=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYshmtuRb/WjlpU11Fz6f/n3rsNTHXTuCTZ+q7t7Rvo1RR
+ nL/1+6s1R2lLAxiXAyyYoosS3+cUBQIdCjtfZkwCWYOKxPIEAYuTgGYyHczRoZDfuuudmwNrPKf
+ sWG3erVpK1eX/K8XQW/Fig91b71mcnoBw1/R5YYy6UZ25Zaxe9v3HBESPaLeo9J69/KE6ot7Tzj
+ 8vsUKAA==
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-By definition, CAN error frames have a length of CAN_ERR_DLC (= 8) bytes
-and the RTR flag is not set. The user space expects the frames to have this
-length, and the function gs_update_state() accesses the data from the CAN
-error frames.
+According to the respective CAN standards, the maximum DLC length for
+CAN-CC and CAN-FD frames is 0xf. The code in driver assumes that this limit
+has been verified.
 
-In gs_usb_host_frame_header_valid(), ensure that CAN error frames have a
-length of CAN_ERR_DLC bytes and ensure that the RTR flag is not sent. If
-this is not the case, output an error message and resubmit the URB.
+Drop CAN frames with DLC > 0xf, print a error message and resubmit the URB.
 
 Reported-by: Sashiko <sashiko-bot@kernel.org>
 Closes: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ drivers/net/can/usb/gs_usb.c | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index b345ab34a200..7229d002b938 100644
+index 7229d002b938..5e8ea308fabf 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -639,6 +639,35 @@ static bool gs_usb_host_frame_header_valid(const struct gs_can *dev,
- 		valid = false;
+@@ -668,6 +668,20 @@ static bool gs_usb_host_frame_header_valid(const struct gs_can *dev,
+ 		}
  	}
  
-+	if (!(header->echo_id == GS_HOST_FRAME_ECHO_ID_RX))
-+		return valid;
++	/* we can check for max CAN-CC and CAN-FD DLC at the same time, they are both 0xf */
++	BUILD_BUG_ON(CAN_MAX_RAW_DLC != CANFD_MAX_DLC);
++	if (header->can_dlc > CAN_MAX_RAW_DLC) {
++		stats->rx_errors++;
++		stats->rx_length_errors++;
 +
-+	/* checks for RX'ed (non-echo) CAN frames */
++		if (net_ratelimit())
++			netdev_err(netdev,
++				   "out of range DLC (can_dlc=%u, max_can_dlc=%u)\n",
++				   header->can_dlc, CAN_MAX_RAW_DLC);
 +
-+	if (header->can_id & cpu_to_le32(CAN_ERR_FLAG)) {
-+		if (header->can_dlc != CAN_ERR_DLC) {
-+			stats->rx_errors++;
-+			stats->rx_length_errors++;
-+
-+			if (net_ratelimit())
-+				netdev_err(netdev,
-+					   "invalid DLC in CAN error frame (can_dlc=%u, exptect_can_dlc=%u)\n",
-+					   header->can_dlc, CAN_ERR_DLC);
-+
-+			valid = false;
-+		}
-+
-+		if (header->can_id & cpu_to_le32(CAN_RTR_FLAG)) {
-+			stats->rx_errors++;
-+
-+			if (net_ratelimit())
-+				netdev_err(netdev,
-+					   "invalid RTR flag in CAN error frame\n");
-+
-+			valid = false;
-+		}
++		valid = false;
 +	}
 +
  	return valid;
