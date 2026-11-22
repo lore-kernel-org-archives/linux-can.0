@@ -1,89 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.51
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795341062;
-	b=drQ0MTCB2+0nstpN7XKZdXSCZfnD8KBHhyo2QbKUME4Lf+z4ytRMW6vMlLZ3+LcryOrO
-	 RM0xHb+Wi9ZKpDGjJX380D/wBo+6u4tKCxj3nHOXzlgrXGFb6fukcXOiFwbqsfgQsKiNK
-	 4NRb/gHd2EB+ejMpsiPU4+zx0OEgFc0jwIAWTVb2po2R4x67y9gcjQN7HjPapR9OCwpZM
-	 thUzzWc8cOVCd+XvJau2cq3U2cjUFFpu+aDfvb8GhocHZ5htG0w9+yvWlmiyXz8O4ZJh1
-	 LtoTqohg53RTVgLzNvqN8CuKVM2uiUUaS3NaB77xE7POJzIW1v3L0j9DKAVyOZ7c2XQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795341062;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795363082;
+	b=Ls0I1M7KxZ4KbKAIYtq1/nW63b0Za/eKrAZHCFjXZ6zZbHjmRoOGtXLriZvknm4XpRm/
+	 kUK9jJmfpOqFT7VmuXeCes5QC9fe0Yn07UfjA2ziMYozIS1twUxJQt3k/DdbgJ4c5n8rz
+	 1cFfE2Uc+mVX0NuvzqpH7XgOYrAH3qHugKr3OQ38l7IpR7POuDt0ILV3ey6oYaKy9BVfC
+	 a9Pj2UWjXKBTL2dXWkOZ5+qKh53h3XuUzXGDBMPrAiZttJ2l7H/8ihFdKE/sSwaqdQs3I
+	 xnc8zfYY5MaowWfySJ4LMJC+DYK87wjx5mH2IK34HL9yP8DilvJg53CTPU+cYD4srvA==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795363082;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=C/QI1b4vyHy9NWvjW7A46WXm9Va+yX7XVlOagVghD9E=;
-	b=QzhHxvR5v/Bq5zWj+rX9YFn8CT8kgcJKjfFwCXR836Bk8E+g6sfN6TIe/UNBdWkY0SdI
-	 bB1br/3GH0QAG2n9nHRB3Gsp9uUHjo44BlL5KtjDKS1fOjJ6TIo8oo9FH1iCkmT0pMcAe
-	 9NyIWt9No1RdDqqP2N9BZan0BIbDTqbhaZ9imI2hxyJtll4HFIEJPRULWALLpAiFkwFhM
-	 zHSk632DcGJJ5/2UArEkcjix4JC2ayE3ppu0yGCzWTfYzj6BAKeZYiPXUXJ/9BbyqBkH+
-	 wgBIouDdB6H7snwaNm8AST4ifBwTtulWv/1Z5lcRublexyQZDyuyZ5UFxGYijTaNg9Q==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=C4mHGkdM;
-	arc=none smtp.remote-ip=209.85.128.51
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	bh=+wmVmi3iBpaBiezjxFHHG2qC79tQSzWe6ZblYWHggJo=;
+	b=T10Em7Rti3Inzpg8B0FyOU+TQAIZ522HM/tCqI+5NS3vEn/n60TOiPDjCGliHJmO7vur
+	 vzb4NchUVWao2ph81N0jUUy0DwLbIamVapkKW82faJTBLcTgFwuB4fEX4pU4rwXSOuzDH
+	 BN65fx49x70ISzqVx+uNNizzP7EZZtjtavYykIwq9TWNosZs+95sdxB+L87m7FTtIuIsi
+	 igrJ/xiP5CpwXSnitfcqns6qRFBHCGONhGOag0hRMGnQXYbfcrnNeBcrkLFlng+OB1Yek
+	 ToaaKdyZww0EHFqlw/EcTYHH2pvTq5Kk+Y+GtrkRq1grIPKWG3EWULRJ+MlftJ0K0BQ==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=PuTnlujY;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=pYjqM+Gy;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.54
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.54])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 24245606A331
-	for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 09:51:01 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 24245606A331
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E95A606A320
+	for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 15:58:00 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 3E95A606A320
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=C4mHGkdM
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4bb64ef5a14so24319085e9.1
-        for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 01:51:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795341060; x=1795945860; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to
-         :content-type;
-        bh=C/QI1b4vyHy9NWvjW7A46WXm9Va+yX7XVlOagVghD9E=;
-        b=C4mHGkdM4E2iWACQdBEJRZrhywFUbEG5XgkzEXbPOc/EPsXt9DyUwaaA4ndxn5lndr
-         qanHAuBkJjRyD1bY2WQH/WCbYveCu3obaaJ9evHDtrM7RSYLuJ47jteycziXvjaHJi1m
-         s4pQuXS1cwzM8pC5/pcMg33U7iKYf60baafFbb6Y2A30XgUHX1IAkm54G1JU4utSpnPn
-         MfRnQmUukKjo1IA5+3jiI7J89J1CtWpApmsCleLS1X2E0b7Wiu9kI7sMfQKtx6DH4OAb
-         bBOs81043/e8PmjN4j6JsLk9vXgEC5D+m/PdGK5tHrzmI7s0Fo1AK2r7R4JAGwUuFF6B
-         olOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795341060; x=1795945860;
-        h=content-transfer-encoding:content-type:in-reply-to:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=C/QI1b4vyHy9NWvjW7A46WXm9Va+yX7XVlOagVghD9E=;
-        b=Z0sGgRbDwGo3r1AYhO/HHlcSKTKzWcthy+0T32zR1gIfoKO7QVRy01njkW7qUUIZrt
-         aJ8qn2dK9qjPdtPR45MMeM/Pnk+okHNpNbl8QFg/6tTJ3qZSCLys9sAgwwGnO457qaMW
-         JVBtZFD3Q4WqNyA1LdNJ9MHm94GTDCR5ZYvU5JwvDondseT9M0y5ZzCT26oacy6TDJOs
-         M1jQiRUvHwhZuDftZesorsWWnuGlHWpnKjyk7H7n2MP2uYusFnAWPDA1UfzxHpHzSncv
-         YZeOUdc8ZNsdWBQNgFWn4BUXQa0fLE2u/oX7SFzcuAfLWV2fWp/5t0hOm3CUjk0NlXKd
-         T9rw==
-X-Forwarded-Encrypted: i=1; AL+hErH73GhCSD+s8XxLmHeJrd/R1lTVxXoS5zMBJzBscxDtTQ+EnByYhydQu5p9K6w0+Q8StGbfVP8mCoE=@vger.kernel.org
-X-Gm-Message-State: APuU4Z+IA0vSzwnUduipscpITeQXw18uC7KwhrafhZPnamsEXzKQYj3O
-	am7WHLUeOm1+OdJeWCgSDUjl2kArYmY73kzfSL+lSOEaOvJ50vtpeLtk
-X-Gm-Gg: AZFdTZdcbJK2pBaq4b/MlX8mmHP9RSnDkQDoCKc2+eERTjYfKzfn1uAuGVFDp8FYRjt
-	GWtpJby4O6yf9KIe2Z0k0nK8IUJPSr+fuLIF5dKmL0syOAUQSr45DuEqWqmgNSMRcA3BoAXireb
-	0ScDX/oxKiqSPhQkZ3vSbq6PVun7EwwGu32kOwYg8Z0SkBcx/VsM2oL7hvNaFv4KXAObPS3xFHY
-	19WKMAxeeeZutn8QQ7in9TvDL0pqNcxtLYNEc9csqdFGC7cH1eS1x4QpTm1OKTv2y+64G0+JXkK
-	0ec7qDrOQRwMV6cH38OyBQDl3W0E1mqACoFxNDxJrnysdO17WGoX9U+2cc9f+ZOp0M8VjzgugIt
-	8BOlimEUE9jz2LCXexQzpkPp+rU4sJOAKcX70kQriR4jdPZBrY6yL+5jp3JgQngNG6fyXmQ1UBO
-	NDJxBMGeVN7+lqPo7ZfeHS21Q7U03JFafNqIZs+/mdKNKKWMdj0vUVFMzCZ9GCyzgX6tJYhU7rg
-	cQ7TEAxD6GP7jHd++AGd6HBb5U5oPgJsUs6xv0F1jdauZzvb+JWAR0G+3I8hYfgF/ueG6hEHfOy
-	333wWl6zQa+IfUQFCL90y3eTC6Af5HY73+/ToTxc/WeVUtsxYOXHZV98IBFNqK2+Xf4zpujaCK4
-	t2mrqLZow/wVj7JX5v0gxWA==
-X-Received: by 2002:a05:600c:6290:b0:4bb:741d:eba with SMTP id 5b1f17b1804b1-4bb88824a5bmr179848445e9.13.1795341060240;
-        Sun, 22 Nov 2026 01:51:00 -0800 (PST)
-Received: from [10.138.96.21] (62-101-160-142.telecomgroupservice.com. [62.101.160.142])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4bb8849e598sm218208355e9.8.2026.11.22.01.50.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 22 Nov 2026 01:50:59 -0800 (PST)
-Message-ID: <5205f6b8-66a7-4869-bc94-1c8831b1ec24@gmail.com>
-Date: Sun, 22 Nov 2026 12:50:56 +0300
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=PuTnlujY;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=pYjqM+Gy
+ARC-Seal: i=1; a=rsa-sha256; t=1795363068; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=B8SxibQtxKhIWxKQcPFksQycPs++6q528NLgNjsfE7ryRXZTlzl2fayXogHRvdx6cw
+    axN8bUzmGSauaJvcjTk4Nk1EvkSy1woxB5oMkUTCv2Hrga8gHT7pPAvu3JOSlFdL52ZG
+    0N7O6BC59KzCQfa4UNQT5RoIvuvBMYR5hqGrzEQ/MmKKQLEjm2nWTunYr+SKZf0y/T4J
+    x2tihodQKs2ySJ+Eu4C0im9FXR7iGGkf5hEdZV+nB7DdwMjUvva7kj3hjtceSpLR4yVp
+    EiB/QhQZw5NgTjKQyAbJ0PVEB7UzhPMXc1B/ylqD1/vueC1B40BivSrUgrFpqrh/9x9W
+    8rig==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795363068;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=+wmVmi3iBpaBiezjxFHHG2qC79tQSzWe6ZblYWHggJo=;
+    b=lv32F06ZfrsAHkRWpmR17+pWUGKioO3/78+4A/6UeszseelNUnXS5cACloMe7Dt23x
+    n17AdFhB/PYBYfnUSHSVLbt32hiBNK1e5giwTuBa69qlux4l6+5W9JmMIBp6pCbaER89
+    y4S+D3fsQ8vupfC3iPIEHIrdulSMQsT8fVpgJDJeyANbHi0zYWt8/xaVeoJspSBll5B+
+    yufv963fbPEz/c5gsZT+d7k4kiQVIuBty44Fo/KpRzcJfVOmvRofYcYNzIqBamyuOg6C
+    80pONqMiip1hRPFUwMoGFYBvZwYBUxAFmNZkhmHtzaVrmVBEVppPp4hdTTbY3tFS7Bj/
+    tLbA==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo01
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795363068;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=+wmVmi3iBpaBiezjxFHHG2qC79tQSzWe6ZblYWHggJo=;
+    b=PuTnlujYEmEfTn3w4h5nXfu07vyyx0I72gF9BRdzIxHyTmeXCQQBM+szwLsnhuJmOY
+    Pu/oLvb9va1bsOAukVJXOtoIi5Ux1UfDqAWYkcmznE6Rrr+S5Gq38eixioxMOLcT2FJj
+    11xkkvuaEN9Gh8pNOtz3PRfeeSibNiMMtvg4NR+xd7Esb9nn6XbuS8duTqI8NgC8sxzW
+    rD3bjMizb7dWWysT4NhXCSovdw8krDBYG1iSUTvry7zTmJeO1PUArEcrw9bujKvXttTy
+    KdEfhf+76Lh+rSjW2oV16JGcOsuMWyrYcIApr3WF3g/hPa/FmVU8EoUnLc6z5Z0ubPAT
+    xS4g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795363068;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=+wmVmi3iBpaBiezjxFHHG2qC79tQSzWe6ZblYWHggJo=;
+    b=pYjqM+Gy9Xf90y08UWVGdpuvu9Sefp2FV/2cjR3BL+pQOpNFN+Qa23TiVoYMzr87CM
+    2BWFi6ZBa3Bw/SpabMBQ==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a2AMFvmYI9
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Sun, 22 Nov 2026 16:57:48 +0100 (CET)
+Message-ID: <06097b4b-fec4-4423-a18b-dba817faf608@hartkopp.net>
+Date: Sun, 22 Nov 2026 16:57:43 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -94,81 +96,155 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] can: mcba_usb: Fix double free of RX buffers in
- mcba_urb_unlink()
-To: Alexandre Becholey <alex@becholey.ch>,
- Yasushi SHOJI <yashi@spacecubics.com>, Marc Kleine-Budde
- <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>
-Cc: stable@vger.kernel.org, linux-can@vger.kernel.org
-References: <20261119085329.539894-1-alex@becholey.ch>
+Subject: Re: [PATCH v7 6/8] can: isotp: always start the rx timeout in
+ ISOTP_WAIT_DATA state
+To: netdev-bot+sashiko@kernel.org
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ mailhol@kernel.org, zhuling0805@qq.com, kuba@kernel.org
+References: <20261120-can-bcmlock-memcg-v7-6-f6b84f5257b1@hartkopp.net>
+ <179531304900.3131.6873205153419606406@kernel.org>
 Content-Language: en-US
-From: Pavel Skripkin <paskripkin@gmail.com>
-In-Reply-To: <20261119085329.539894-1-alex@becholey.ch>
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <179531304900.3131.6873205153419606406@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi Alexandre,
 
-Alexandre Becholey <alex@becholey.ch> says:
-> mcba_urb_unlink() frees the RX buffers but leaves the stale pointers in
-> priv->rxbuf[]. It runs from both mcba_usb_close() and
-> mcba_usb_disconnect(), so once the interface has been up, the buffers
-> are freed twice: on unplug after "ip link set can0 down", on unplug
-> while can0 is up, or on a second up/down cycle. No special device
-> behaviour is needed; on a host controller without DMA the double
-> usb_free_coherent() is a double kfree().
+
+On 22.11.26 03:04, netdev-bot+sashiko@kernel.org wrote:
+> Thank you for your contribution! Sashiko AI review found 1 potential
+> issue(s) to consider.
+> 
+> Critical: 0 · High: 0 · Medium: 1 · Low: 0
+> 
+> If you believe none of the issues are legitimate, please reply to each
+> issue of Medium severity or higher and explain why the AI is wrong.
+> If any of them are legitimate and you plan to respin, please let patchwork
+> know by including "pw-bot: cr" as a separate line at the end of your reply
+> (one such reply per series is enough).
+> 
+> - [Medium] In net/can/isotp.c, isotp_rcv_ff() now arms so->rxtimer for
+>    ISOTP_FC_TIMEOUT (1 s) as soon as a First Frame is received, and it…
+> 
+> --
+> 
+> can: isotp: always start the rx timeout in ISOTP_WAIT_DATA state
+> 
+> This patch starts the rx timeout in isotp_rcv_ff() and isotp_rcv_cf()
+> whenever reception continues in ISOTP_WAIT_DATA, so the socket no longer
+> stays in that state indefinitely when no flow control frame is sent. It
+> also moves the consecutive frame length checks ahead of hrtimer_cancel(),
+> so an invalid CF is dropped without stopping the rx timeout.
+> 
+> Closes: https://lore.kernel.org/linux-can/179504035916.3136.12986898667697830880@kernel.org/
+> 
+>> diff --git a/net/can/isotp.c b/net/can/isotp.c
+>> index 8229b6a69ecd0..0b7db1ead7a90 100644
+>> --- a/net/can/isotp.c
+>> +++ b/net/can/isotp.c
+>> @@ -634,6 +634,10 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
+>>   	so->rx.sn = 1;
+>>   	WRITE_ONCE(so->rx.state, ISOTP_WAIT_DATA);
+>>   
+>> +	/* start rx timeout, isotp_send_fc() restarts it */
+>> +	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
+>> +		      HRTIMER_MODE_REL_SOFT);
+>> +
+>>   	/* no creation of flow control frames */
+>>   	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
+>>   		return 0;
+> 
+> [Severity: Medium]
+> Could this abort valid transfers on a CAN_ISOTP_LISTEN_MODE socket?
+
+A listen mode socket does not take part in the ISO-TP protocol. It only
+tries to reassemble the data PDUs from the observed CAN frames on a
+best effort basis. Its rx timeout ensures that a reception does not
+remain in ISOTP_WAIT_DATA forever when a PDU is not completed.
+
+Listen mode already uses the 1 second rx timeout after every consecutive
+frame. This patch applies the same timeout after the first frame, which
+was the only case without a running timeout.
+
+The timeout is needed in listen mode as well: without it the rx state
+can get stuck after the CAN device has been removed, and an incomplete
+PDU is reported with ETIMEDOUT like before.
+
+Best regards,
+Oliver
+
+> 
+> In listen mode isotp_send_fc() is never called, so nothing restarts this
+> timer before the first CF. That means the listener's window for the
+> first CF is 1 s counted from the FF, not from the real receiver's FC.
+> 
+> The listener also never sees the real receiver's FC frames. isotp_bind()
+> sends only rx_id to isotp_rcv(). tx_id goes to isotp_rcv_echo(), which
+> drops anything that is not its own echo:
+> 
+> net/can/isotp.c:isotp_rcv_echo() {
+>      ...
+> 	/* only handle my own local echo CF/SF skb's (no FF!) */
+> 	if (skb->sk != sk)
+> 		return;
+>      ...
+> }
+> 
+> The real peers can legitimately use a longer FF to first CF gap. The
+> Linux sender re-arms its timer for each FC.WT:
+> 
+> net/can/isotp.c:isotp_rcv_fc() {
+>      ...
+> 	case ISOTP_FC_WT:
+> 		/* start timer to wait for next FC frame */
+> 		hrtimer_start(&so->txtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
+> 			      HRTIMER_MODE_REL_SOFT);
+>      ...
+> }
+> 
+> The receiver's N_Cr window also starts when it sends its FC, not when
+> the FF arrived. So a transfer with one or more FC.WT frames, or with a
+> slow FC followed by a slow first CF, can have a gap of more than 1 s
+> and still be compliant.
+> 
+> In that case the sequence would be:
+> 
+> isotp_rcv_ff()
+>      WRITE_ONCE(so->rx.state, ISOTP_WAIT_DATA);
+>      hrtimer_start(&so->rxtimer, 1 s)
+>      return 0 (listen mode, no FC)
+> 
+>    real receiver sends FC.WT (not visible to the listener)
+> 
+> isotp_rx_timer_handler()
+>      sk->sk_err = ETIMEDOUT;
+>      WRITE_ONCE(so->rx.state, ISOTP_IDLE);
+> 
+> isotp_rcv_cf()
+>      if (READ_ONCE(so->rx.state) != ISOTP_WAIT_DATA)
+>          return 0;
+> 
+> Each CF of that PDU is then dropped, so the listener reports ETIMEDOUT
+> and loses a PDU that both real peers completed. Before this patch, the
+> listen-mode socket stayed in WAIT_DATA without a timer between the FF
+> and the first CF, so such a PDU was still reassembled.
+> 
+> The commit message says:
+> 
+>    In listen mode a first frame that is not followed by consecutive
+>    frames now leads to ETIMEDOUT, like a missing consecutive frame inside
+>    a block already does.
+> 
+> A gap inside a block does not include the FC round trip, but the FF to
+> first CF gap always does. The message does not mention that slow but
+> compliant transfers are now aborted for listen-mode users, and the
+> patch is tagged for stable.
+> 
+> Would it make sense to use a longer timeout for the listen-mode FF case,
+> or at least to describe this trade-off in the commit message? The later
+> patch in the series ("can: isotp: reject socket options while a transfer
+> is active") does not change this behaviour.
+> 
+> [ ... ]
 > 
 
-Sounds reasonable.
-
-I wonder, tho, did you test on real HW or used emulated one via usb gadgets?
-
-What caught my eye is that mcba_usb_open() never reallocates URBs closed 
-in mcba_usb_close(). So I'd expect device to not work properly after 
-second "ip link set can0 up".
-
-Maybe it shouldn't close them at the first place?
-
- > Clear each rxbuf[] pointer after freeing it, which makes the 
-function> safe to call twice again, as it was before commit 91c02557174b 
-("can:
-> mcba_usb: fix memory leak in mcba_usb").
-> 
-> The bug was found, and the reproducer and this fix were written, by AI
-> agents (Claude Mythos and Claude Opus models). The analysis and the
-> patch were reviewed by a human.
-> 
-> Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Alexandre Becholey <alex@becholey.ch>
-> ---
-> An emulated adapter on dummy_hcd: "ip link set can0 up/down", then
-> unplug, gives a KASAN double-free in hcd_buffer_free() on v7.3.1 and
-> master 9d66f26fefac; the two other sequences as well. All clean with
-> the fix, and a second "ip link set up" still works.
-> Reproducer available on request.
-> 
->   drivers/net/can/usb/mcba_usb.c | 4 +++-
->   1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_usb.c
-> index 04170326dc7e..b40b323da9d3 100644
-> --- a/drivers/net/can/usb/mcba_usb.c
-> +++ b/drivers/net/can/usb/mcba_usb.c
-> @@ -718,9 +718,11 @@ static void mcba_urb_unlink(struct mcba_priv *priv)
->   
->   	usb_kill_anchored_urbs(&priv->rx_submitted);
->   
-> -	for (i = 0; i < MCBA_MAX_RX_URBS; ++i)
-> +	for (i = 0; i < MCBA_MAX_RX_URBS; ++i) {
->   		usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
->   				  priv->rxbuf[i], priv->rxbuf_dma[i]);
-> +		priv->rxbuf[i] = NULL;
-> +	}
->   
->   	usb_kill_anchored_urbs(&priv->tx_submitted);
->   }
-
-
-With regards,
-Pavel Skripkin
