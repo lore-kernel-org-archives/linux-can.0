@@ -1,85 +1,62 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795302131;
-	b=Iv5h3zeFZ+0XPw8dEE4itpBo9bbsQ1jAOS1jnhWepuipMLiKZN6lP69zkA5humHdNh4H
-	 u4ghTwlQQOCclmHLI8nIPj9knhhUPhxhFVy34VuYabj3cpiDO6yrN2PT7BVzpyJFD/CN1
-	 YvyEE4w52daEKPkAKBMp0QHr5H8PD5b8p+Op0XAvpc4VSAu8wYuaHMxQDfM5LcOiRLPRX
-	 zU1BQCr/pEjPB/k22ckbscFcvTIW1TeKZ+XxCEZls4gEpvHo59h+C51Vf3hDjeE7Kwlc6
-	 TsFVo+8IET/wc9ABivWLrAoMIqrCNuBuJEb4vrKhrg1k2YM6lMoCK+udbn2CZuv0JlA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795302131;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=2CIJfHyWl5VHYsDIYiEy/+3hUwP2HvnNLQy8v9q2CE8=;
-	b=bmRHlw3dnPzEXjAo1g2fHuI5h7b2dbVzpEmuUzF/7UGpdLCyX25HsODQSP4zNX/aLEvX
-	 Yjwp8cFLd+QM4566UXrPBg/EkkJXqX5hxLvo+JBdKoXVVdqbHSuxhT0l0iEKTSIzWGPlv
-	 KL82DxhvqoEOH5/pyHcaGXJf+o++YBZLD4nDZ17NJqBV9iyV+aV5MeZ+y619kSN2XW+yC
-	 ZD6YvurVjEBBhZBA3c93eCDA144NBokklOykTE+6ZxDy26rQkxWY8UMV1tGNlJiu7u8uC
-	 gSeZ13hpLe5WNZNn2LSB1bYGq7dE94xJGekHnNdw7rKFte4aLfySLDfnN74f9SfeqHQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="gcn/3w6I";
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795309438;
+	b=OVTu+RYXfeIHcGoRCKoEZs1bxgbcp+t+gv/snA4MC7AqH4mgCNcwSYxrsJp8m+CLjsIx
+	 hCVqnoQZw1Up2a0HQnnXZ7zFghH5YhG9On3OU9dCe0fdJGnS4tXaKylzV9AHrxqV14H7p
+	 c7uPfLNa45YBw9C95yHwnbTOuXV+AqwUwazwPGK7HC36PK60pMGE31HvsuFEPGWTzVhoT
+	 kpZ+oCKwYevaEHXzz0dVHanrzqvOgr77hjfWqqnDVWGIm2Ka76iJOgVXBUZK/3SIVKPc0
+	 s6oonEjHx9aeSQorXi3VW3rQ7n+qtfXFOPE/GyVQgCAHurZuIYbUdTkJ0SHFHQXjHmw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795309438;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=PILEnaDBNzPkill2qm3jj+/BKJ1Q7LUkoPvGO+IJ4aY=;
+	b=BNoLZQBRhA2FTtR+YH2gr7IJkY8kflyXGmO8VNTsK8Vyk2MZC4CTEWCUSy0dm5Q+ubHt
+	 HE5/gZb+EVm3otcNPL+7zxwidRsgQAEYQ7wFJIH7fYXMmM3Zx6wv5OnLi5G4JmPeH/0q3
+	 4XxP4qpZ/qjEkqLvlwFVIKmVnOSf7i2LQm4zUWAmmdLdXGWn93AYxSo16BcqPdIeM/drv
+	 TKg/kbkrZhPXWF+qLk/UChzY6XvZOezx6QHkNKnYjdZ7/rfK2EgGRTZYotUGX22xnYe0l
+	 0pHRjif45jhmTqvIfCxZ/DPVMVO9HtFOg4N6jNpxKLACdBtdqgUdlfVWmnT1gBt1xqQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cYM5lkLf;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C73606A332
-	for <linux-can@vger.kernel.org>; Sat, 21 Nov 2026 23:02:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 27C73606A332
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BD5606A320;
+	Sun, 22 Nov 2026 01:03:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=gcn/3w6I
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 164C9201CE1;
-	Sun, 22 Nov 2026 00:02:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795302128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2CIJfHyWl5VHYsDIYiEy/+3hUwP2HvnNLQy8v9q2CE8=;
-	b=gcn/3w6IBFsTYe9u8+qkQPQ7qYiacd8GByD6D7YCMXGp7giqaTXZ9napM69YcFsbQsVmBM
-	+kTMeRD3zcFPToqxEh56UYAK5y/Ed3oNooxPGEv7Gs8IlrAfrzkTwwfFyq0Aq76lV8ggxQ
-	KBp44vfV/xa0t7gb8D/1RqkFFWjo5JgnvJpnqA6YzSRGD45Ilx/zwbWimCi/87FqgMnwip
-	lxwTShYSbZvadqbvShzcToQnakYqPfiI/0ntUNKMrlGTLoFCimPMboIr5rLZQhk6H6EIls
-	JM7N7PhUspj/kZ5H4DKfi0XrmxhpgWu+l1yW0KFJUKWa5bkZYWWC75Iu3a2aXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795302128;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=2CIJfHyWl5VHYsDIYiEy/+3hUwP2HvnNLQy8v9q2CE8=;
-	b=HzzK8AIgzeHajZ9VBFwShAmsZrKTW8if0eY1xbVfEyVdnv+1MQ3iV7eDwFL41SuKKg+OFk
-	KhDqQGbTjUymSz8XHPmQsdOB9W+UQurfrAxFdUrfXzy0MR6Rzp0LQerd2QQSmwHv9mivmP
-	6/rmDFGw/v2yf63cQj20Vsl2gHs3o3kDFasRf6exvJee+EcC72+k2cJWPPDukrhf4z2aYB
-	L26tvfAzXJ7OTdPRuywVD2idMcXDB21tKvopLG03X3TXz830/BzEqs+okexnrhaXXODrvH
-	+FzerMnn4nY/TAkn9yFgIlPAMub8uFZ2tayqo4Bbavw8GpAcRryYlkD81DgFSg==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795302128; a=rsa-sha256;
-	cv=none;
-	b=Vf1Fv6tfhUBqsh1699VQ5l0rLqPgrU2KxDYwD1pRAOMltrIa1L79CiEOR6sMd+veAF/U1R
-	64gFBlL1vIZQm5BnsWJct8CY2ZjPHJl9U0vAerJ3K8PPWo5QMKM8QE5TjIKxYJXUpSAGq7
-	MoPLFRkYHnDwCy2iSzWw8ND3oGUrpK7DtMM1t7SMoYYAzYWGYwRjWO3znfCwXU1QVDc/Iq
-	BRvPqZadpoLZ3aTJkpwU0H8SShatMtIXFi9k70lNkdsDa9ZRQR5Hx1jaFzlReCtU/7hk55
-	srGgpgPrXHBOuGVxBWQeLQQm4i9PHuny6RHK7ofZBSVFoTw6PvvFh10kpj6fOA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-Date: Sun, 22 Nov 2026 00:02:07 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: sashiko-bot@kernel.org
-Cc: linux-can@vger.kernel.org, Oliver Hartkopp <socketcan@hartkopp.net>, 
-	Vincent Mailhol <mailhol@kernel.org>, Oleksij Rempel <o.rempel@pengutronix.de>
-Subject: Re: [PATCH can-next v9 12/13] can: gs_usb:
- gs_usb_host_frame_header_valid(): drop invalid CAN error frames
-Message-ID: <20261121-imposing-practical-slug-597199-mkl@pengutronix.de>
-References: <20261121-gs_usb-fixes-v9-0-db121d488945@pengutronix.de>
- <20261121-gs_usb-fixes-v9-12-db121d488945@pengutronix.de>
- <sashiko-outbox-227474@kernel.org>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cYM5lkLf
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEB21F000C0;
+	Sun, 22 Nov 2026 01:03:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795309438;
+	bh=PILEnaDBNzPkill2qm3jj+/BKJ1Q7LUkoPvGO+IJ4aY=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=cYM5lkLfxZQj+lCVglPjc4pVh+jXGBy8Yupym6eqWm7JkiWwD+JeqVrZgEcJYZUs4
+	 zhnVYL6UC9NBzYPEQ7nxTSzf7PttwEl3tlgejUDd9jKIfozed+xsmXmO8N6Bc6yuKA
+	 wdQJuWmpvkjs+69zRxKSnKUkOxvu+GeYn3A6Ui3UwNz3NmDGD2ScTzCmOy1UuzatTQ
+	 3tqKlRcQvEfvAswH9yoJWESHNqX221fBWGWYCCwlksZeZCAJAECEJYMikOOjhxfBR0
+	 e8JOlnmTp6S8nkVuIhaaR7jsVr5ytumHcDc89M8JvtZJveEM5nw22m+rl5Mc3C2SFb
+	 SeWgXuAKIlyxw==
+Subject: Re: [PATCH can-next v5 7/9] selftests: can: add J1939 TP/ETP
+ multi-frame tests against CAN_RAW
+From: netdev-bot+sashiko@kernel.org
+To: o.rempel@pengutronix.de
+Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
+ shuah@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net,
+ quchaosheng000406@163.com, penguin-kernel@I-love.SAKURA.ne.jp,
+ kuba@kernel.org
+Date: Sun, 22 Nov 2026 01:03:57 +0000
+Message-ID: <179530943723.3131.3874073778043295050@kernel.org>
+In-Reply-To: <20261120-j1939-selftests-v5-7-fdf4c242a37e@pengutronix.de>
+References: <20261120-j1939-selftests-v5-7-fdf4c242a37e@pengutronix.de>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -89,99 +66,142 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="h2ua7p7txyn5bpk2"
-Content-Disposition: inline
-In-Reply-To: <sashiko-outbox-227474@kernel.org>
 
+Thank you for your contribution! Sashiko AI review found 1 potential
+issue(s) to consider.
 
---h2ua7p7txyn5bpk2
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH can-next v9 12/13] can: gs_usb:
- gs_usb_host_frame_header_valid(): drop invalid CAN error frames
-MIME-Version: 1.0
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
 
-On 21.11.2026 22:53:55, sashiko-bot@kernel.org wrote:
-> Thank you for your contribution! Sashiko AI review found 1 potential
-> issue to consider:
-> - [Medium] can: gs_usb: TX context and echo skb leak on echoed
->   CAN_ERR_FLAG frames
-> --
->
-> commit b1d99b2dbb5c984106e59cf632bd8f01d76e1bcf
-> Author: Marc Kleine-Budde <mkl@pengutronix.de>
->
-> can: gs_usb: gs_usb_host_frame_header_valid(): drop invalid CAN error fra=
-mes
->
-> This commit validates incoming CAN error frame headers in
-> gs_usb_host_frame_header_valid(), rejecting frames with CAN_ERR_FLAG set
-> if can_dlc is not CAN_ERR_DLC or if CAN_RTR_FLAG is set.
->
-> > diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> > index e4e177aee48b0..a1192867e49b8 100644
-> > --- a/drivers/net/can/usb/gs_usb.c
-> > +++ b/drivers/net/can/usb/gs_usb.c
-> > @@ -639,6 +639,30 @@ static bool gs_usb_host_frame_header_valid(const s=
-truct gs_can *dev,
-> >  		valid =3D false;
-> >  	}
-> >
-> > +	if (header->can_id & cpu_to_le32(CAN_ERR_FLAG)) {
-> > +		if (header->can_dlc !=3D CAN_ERR_DLC) {
-> > +			stats->rx_errors++;
-> > +			stats->rx_length_errors++;
-> > +
-> > +			if (net_ratelimit())
-> > +				netdev_err(netdev,
-> > +					   "invalid DLC in CAN error frame (can_dlc=3D%u, exptect_can_dlc=
-=3D%u)\n",
-> > +					   header->can_dlc, CAN_ERR_DLC);
-> > +
-> > +			valid =3D false;
-> > +		}
-> > +
-> > +		if (header->can_id & cpu_to_le32(CAN_RTR_FLAG)) {
-> > +			stats->rx_errors++;
-> > +
-> > +			if (net_ratelimit())
-> > +				netdev_err(netdev,
-> > +					   "invalid RTR flag in CAN error frame\n");
-> > +
-> > +			valid =3D false;
-> > +		}
-> > +	}
-> > +
-> >  	return valid;
-> >  }
->
-> [Severity: Medium]
-> Can this leak txc and dev->can.echo_skb[hf->echo_id] when a transmitted
-> frame with CAN_ERR_FLAG set is echoed back by the device?
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-valid finding.
+- [Medium] The new RX tests in
+  tools/testing/selftests/net/can/test_j1939_multi.c assume that…
 
-pw-bot: cr
+--
 
-Marc
+selftests: can: add J1939 TP/ETP multi-frame tests against CAN_RAW
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+This adds TP and ETP round-trip selftests in both directions. A CAN_RAW
+socket acts as the transport peer and by default sits on its own vcan
+behind the CAN gateway that j1939_lib.sh sets up. The tests check the
+control and DT frames the kernel sends and the order of the TX-completion
+ACK, and test_j1939_multi.sh is added to TEST_PROGS.
 
---h2ua7p7txyn5bpk2
-Content-Type: application/pgp-signature; name="signature.asc"
+> diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
+> new file mode 100644
+> index 0000000000000..6edce7493892b
+> --- /dev/null
+> +++ b/tools/testing/selftests/net/can/test_j1939_multi.c
+> @@ -0,0 +1,682 @@
 
------BEGIN PGP SIGNATURE-----
+[ ... ]
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawIi7QAKCRDMOmT6rpmt
-0l1sAP9Ft9akJLU6UeQJLY7YEOn5enlHcDMzfiCGv+zRaDDezAD7Br83IhBn31TI
-C8/fw60S/uI9oTZfonAbw1oCeX21TQ8=
-=svIc
------END PGP SIGNATURE-----
+> +static bool send_dt_burst_ok(int raw, uint8_t prio, pgn_t dt_pgn, uint8_t da,
+> +			     uint8_t sa, unsigned int next, unsigned int count,
+> +			     const uint8_t *payload, size_t size,
+> +			     unsigned int first_seq)
+> +{
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < count; i++) {
+> +		size_t abs_pkt = (next - 1) + i;
+> +		uint8_t seq = first_seq + i;
+> +
+> +		if (!send_dt_ok(raw, prio, dt_pgn, da, sa, seq, payload,
+> +				abs_pkt * J1939_DT_DATA_LEN, size))
+> +			return false;
+> +	}
+> +	return true;
+> +}
 
---h2ua7p7txyn5bpk2--
+[ ... ]
+
+> +static bool etp_rx_serve_cts_ok(int raw, const uint8_t *payload, size_t size)
+> +{
+
+[ ... ]
+
+> +		cm_dat_init(dat, ETP_CMD_DPO);
+> +		dat[ETP_DPO_PKTS_OFF] = cts_pkts;
+> +		put_le24(&dat[ETP_DPO_BASE_OFF], next - 1);
+> +		if (!peer_send_cm_ok(raw, ETP_CM, dat))
+> +			return false;
+> +
+> +		if (!send_dt_burst_ok(raw, PRIO, ETP_DT, SA_LOCAL, SA_PEER,
+> +				      next, cts_pkts, payload, size,
+> +				      TP_FIRST_PKT))
+> +			return false;
+
+[Severity: Medium]
+Can the DPO and the up to 255 DT frames after it reach the J1939 stack
+in a different order than they were sent?
+
+Each raw send() goes through can_send()->netif_rx()->netif_rx_internal().
+With RPS off, that queues the frame on the current CPU's backlog:
+
+net/core/dev.c:netif_rx_internal() {
+    ...
+	ret = enqueue_to_backlog(skb, smp_processor_id(), &qtail);
+    ...
+}
+
+The gateway then queues its copy for CANIF while that CPU processes its
+backlog. Frames stay in order only inside a single CPU's backlog.
+
+On PREEMPT_RT, use_backlog_threads() always returns true. So netif_rx()
+only wakes the per-CPU backlog_napi thread, and send() returns before
+the frame has been handled. On non-RT kernels the same thing happens
+with thread_backlog_napi, or when softirq work goes to ksoftirqd.
+
+The test thread has no CPU affinity. Suppose it moves to another CPU
+between two send() calls, for example after the backlog thread it just
+woke preempts it. Then the new CPU can process a later frame before the
+earlier frames still queued on the old CPU.
+
+An ETP DT that arrives before the DPO has been handled hits the default
+case in j1939_xtp_rx_dat_one() and cancels the session:
+
+net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
+    ...
+	case J1939_TP_CMD_CTS:
+		if (skcb->addr.type != J1939_ETP)
+			break;
+		fallthrough;
+	default:
+		...
+		goto out_session_cancel;
+    ...
+}
+
+The send_tp_dt_burst_ok() call in tp_serve_cts_ok() has the same
+pattern. A TP DT that arrives early fails this check:
+
+	if (packet == session->pkt.rx)
+		session->pkt.rx++;
+
+Then pkt.rx never reaches pkt.last, no EOMA is sent, and the session
+times out.
+
+The commit message says:
+
+    j1939_lib.sh also turns RPS off on that vcan, so
+    the peer gets each frame only after the stack has handled its echo
+
+That covers the order between the stack's echo and the peer. It doesn't
+cover the order of the peer's own consecutive frames. Nothing in
+j1939_lib.sh or in this directory uses taskset or sched_setaffinity, and
+that is still true at the end of the series.
+
+Could tp_rx_from_raw and etp_rx_from_raw then fail at random in the
+default kselftest run, especially on RT kernels or loaded VMs?
+
+Would pinning the test process to one CPU fix this? That could be
+sched_setaffinity() in j1939_test_main() or taskset in j1939_lib.sh.
+The per-CPU backlog FIFO would then keep the order.
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261120-j1939-selftests-v5-0-fdf4c242a37e%40pengutronix.de
