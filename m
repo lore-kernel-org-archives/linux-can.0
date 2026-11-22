@@ -1,60 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795309438;
-	b=OVTu+RYXfeIHcGoRCKoEZs1bxgbcp+t+gv/snA4MC7AqH4mgCNcwSYxrsJp8m+CLjsIx
-	 hCVqnoQZw1Up2a0HQnnXZ7zFghH5YhG9On3OU9dCe0fdJGnS4tXaKylzV9AHrxqV14H7p
-	 c7uPfLNa45YBw9C95yHwnbTOuXV+AqwUwazwPGK7HC36PK60pMGE31HvsuFEPGWTzVhoT
-	 kpZ+oCKwYevaEHXzz0dVHanrzqvOgr77hjfWqqnDVWGIm2Ka76iJOgVXBUZK/3SIVKPc0
-	 s6oonEjHx9aeSQorXi3VW3rQ7n+qtfXFOPE/GyVQgCAHurZuIYbUdTkJ0SHFHQXjHmw==
+	t=1795313049;
+	b=KYf8Ie5O9JQdTxYv79vkSs2D1bh+MD/RChqfm7ngSGHY1QxrGoMOvt5ZPFcZw3BZmOP7
+	 bfJrjWKZs1aFPSVZ37GQPxOhBDn095wfv2pKomF3A3V+5I70c96XmA7AtiymZJbQTVp7+
+	 2NkeaF/51/ifvwiDQSX9ZZ9N8787Tc87sBLpGBt4aMNDbqky2PoOVPzM65RebrlBBJ7Az
+	 UfOv8OfHf+rnPe+h1LEe9uR5kqBYofxkNPfCv3H0DBZ3K8X8b+3VORI2HBndVDzH0aVHI
+	 +jWqjs3YgfOVNOQzBqb37BR2HGiKBHwy99Q59uCgAcPXF3x7X7/8mOzJl60GSaTdZoQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795309438;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795313049;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=PILEnaDBNzPkill2qm3jj+/BKJ1Q7LUkoPvGO+IJ4aY=;
-	b=BNoLZQBRhA2FTtR+YH2gr7IJkY8kflyXGmO8VNTsK8Vyk2MZC4CTEWCUSy0dm5Q+ubHt
-	 HE5/gZb+EVm3otcNPL+7zxwidRsgQAEYQ7wFJIH7fYXMmM3Zx6wv5OnLi5G4JmPeH/0q3
-	 4XxP4qpZ/qjEkqLvlwFVIKmVnOSf7i2LQm4zUWAmmdLdXGWn93AYxSo16BcqPdIeM/drv
-	 TKg/kbkrZhPXWF+qLk/UChzY6XvZOezx6QHkNKnYjdZ7/rfK2EgGRTZYotUGX22xnYe0l
-	 0pHRjif45jhmTqvIfCxZ/DPVMVO9HtFOg4N6jNpxKLACdBtdqgUdlfVWmnT1gBt1xqQ==
+	bh=ZaN7fca6cH9OhbXHXdLScj2C9zqD16yeLDqeq22GBJg=;
+	b=yTXvJYz46/JwBrQvrCjAz+PZF0kdt/CDQ0W0qqv5+25GNH7psoMCc1Jc3Ad4w+GFhXSk
+	 WyC5a1BVUVcxQC694H57ygwyAdWbHi5NojCveiIINbU9EQiLgyjeaprT/HZMdl1XGZr9k
+	 kMYuxjTMYa5km/cn3ActsjnxeP1O48+ryIAun5L3ZVzdodu/+oUOWIeqUyoDkXqsHQRxz
+	 yvTZsLAg2gaVTRB5ExU1abVO0o2TCEPLPpIsEPpBAR2M2SocVGRCG0XvyR4fnjgXGC8YD
+	 cnKb1UqzxfJH/VjjqirvaLcZ4QIRCZLEiNc/mM4wGIKdCyU2x+/vKU0LQoNihKsEUuQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cYM5lkLf;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DOlIRKHn;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1BD5606A320;
-	Sun, 22 Nov 2026 01:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CB5606A320
+	for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 02:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=cYM5lkLf
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AAEB21F000C0;
-	Sun, 22 Nov 2026 01:03:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=DOlIRKHn
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79BC61F000C6;
+	Sun, 22 Nov 2026 02:04:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795309438;
-	bh=PILEnaDBNzPkill2qm3jj+/BKJ1Q7LUkoPvGO+IJ4aY=;
+	s=k20260515; t=1795313048;
+	bh=ZaN7fca6cH9OhbXHXdLScj2C9zqD16yeLDqeq22GBJg=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=cYM5lkLfxZQj+lCVglPjc4pVh+jXGBy8Yupym6eqWm7JkiWwD+JeqVrZgEcJYZUs4
-	 zhnVYL6UC9NBzYPEQ7nxTSzf7PttwEl3tlgejUDd9jKIfozed+xsmXmO8N6Bc6yuKA
-	 wdQJuWmpvkjs+69zRxKSnKUkOxvu+GeYn3A6Ui3UwNz3NmDGD2ScTzCmOy1UuzatTQ
-	 3tqKlRcQvEfvAswH9yoJWESHNqX221fBWGWYCCwlksZeZCAJAECEJYMikOOjhxfBR0
-	 e8JOlnmTp6S8nkVuIhaaR7jsVr5ytumHcDc89M8JvtZJveEM5nw22m+rl5Mc3C2SFb
-	 SeWgXuAKIlyxw==
-Subject: Re: [PATCH can-next v5 7/9] selftests: can: add J1939 TP/ETP
- multi-frame tests against CAN_RAW
+	b=DOlIRKHnwqvkZwypuOMh7SveeqHfv0hctA1HAgJGBIsNECjFG4rKSYTcDfJzk6dXN
+	 azFsPODpRPNHmgRhyCepZIqT6wKzyNqNsRsVuJr6hSkgaNQJem6Sb1ycuPy22Lhw3C
+	 JgjpuyJyLmwI8vqFKc05CUfKXr/Lm+vCjD6WC7FSN5153Jycs1Ptj1i0YfrgatAH7Q
+	 IUzvYufsNfdk2oYSg1aQKtWpjOEH7fhGO39liEbgeCzv4k3mjC1OJrYJPmqy+BFf1H
+	 PyiCA4PdIB9CIjFRS2nsTg59bVBDBGCZpsN26V+mggYmkwec0veBUIPzuoEOkuDFtU
+	 dvW91jBrcv7ew==
+Subject:
+ Re: [PATCH v7 5/8] can: bcm: use a private mutex instead of lock_sock()
 From: netdev-bot+sashiko@kernel.org
-To: o.rempel@pengutronix.de
-Cc: robin@protonic.nl, socketcan@hartkopp.net, mkl@pengutronix.de,
- shuah@kernel.org, kernel@pengutronix.de, linux-can@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- fmaurer@redhat.com, mailhol@kernel.org, alexander.hoelzl@gmx.net,
- quchaosheng000406@163.com, penguin-kernel@I-love.SAKURA.ne.jp,
- kuba@kernel.org
-Date: Sun, 22 Nov 2026 01:03:57 +0000
-Message-ID: <179530943723.3131.3874073778043295050@kernel.org>
-In-Reply-To: <20261120-j1939-selftests-v5-7-fdf4c242a37e@pengutronix.de>
-References: <20261120-j1939-selftests-v5-7-fdf4c242a37e@pengutronix.de>
-X-sashiko-severity: Medium
+To: socketcan@hartkopp.net
+Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, o.rempel@pengutronix.de,
+ mailhol@kernel.org, zhuling0805@qq.com, kuba@kernel.org
+Date: Sun, 22 Nov 2026 02:04:08 +0000
+Message-ID: <179531304802.3131.12745921065969332467@kernel.org>
+In-Reply-To: <20261120-can-bcmlock-memcg-v7-5-f6b84f5257b1@hartkopp.net>
+References: <20261120-can-bcmlock-memcg-v7-5-f6b84f5257b1@hartkopp.net>
+X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -67,141 +63,136 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 1 potential
-issue(s) to consider.
+Thank you for your contribution! Sashiko AI review found more severe
+issue(s) in other patches of this series. This mail is only an FYI, in case
+you want to address the nit picks below when you respin.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 0
+Low priority / nit picks for your consideration:
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+- [Low] The stable dependency note "Cc: stable@vger.kernel.org # depends
+  on \"can: bcm: copy the CAN frames outside of lock_sock()\"" is…
 
-- [Medium] The new RX tests in
-  tools/testing/selftests/net/can/test_j1939_multi.c assume that…
+Pre-existing issues:
+- [High] This problem wasn't introduced by this patch, but CAN_J1939 has
+  the same RTNL-stall pattern that this series removes from CAN_RAW,…
 
 --
 
-selftests: can: add J1939 TP/ETP multi-frame tests against CAN_RAW
+can: bcm: use a private mutex instead of lock_sock()
 
-This adds TP and ETP round-trip selftests in both directions. A CAN_RAW
-socket acts as the transport peer and by default sits on its own vcan
-behind the CAN gateway that j1939_lib.sh sets up. The tests check the
-control and DT frames the kernel sends and the order of the TX-completion
-ACK, and test_j1939_multi.sh is added to TEST_PROGS.
+This patch replaces lock_sock() in CAN_BCM with a private conf_lock mutex
+in struct bcm_sock. The generic SOL_SOCKET options access user space under
+the socket lock, and with this change they can no longer stall bcm_notify()
+while it holds RTNL. bcm_release() now removes the procfs entry before it
+takes the new mutex.
 
-> diff --git a/tools/testing/selftests/net/can/test_j1939_multi.c b/tools/testing/selftests/net/can/test_j1939_multi.c
-> new file mode 100644
-> index 0000000000000..6edce7493892b
-> --- /dev/null
-> +++ b/tools/testing/selftests/net/can/test_j1939_multi.c
-> @@ -0,0 +1,682 @@
+> Cc: stable@vger.kernel.org # depends on "can: bcm: copy the CAN frames outside of lock_sock()"
+
+[Severity: Low]
+Is this dependency note complete? The patch also seems to depend on "can:
+bcm: do not remove the procfs entry in bcm_notify()", which comes earlier
+in the same series.
+
+That commit turned the plain bo->ifindex = 0 assignments into WRITE_ONCE().
+This patch uses the new lines as context, for example in bcm_release():
+
+		WRITE_ONCE(bo->ifindex, 0);
+	}
+
++	mutex_unlock(&bo->conf_lock);
+
+If only the listed prerequisite is applied, this patch will not apply
+cleanly.
+
+The dependency is also functional. The commit message says bcm_release()
+removes the procfs entry before taking the mutex. That assumes the entry
+is only ever removed in release.
+
+Without the prerequisite, bcm_notify() still calls remove_proc_entry()
+inside the NETDEV_UNREGISTER section. With this patch, that call would run
+under conf_lock with RTNL held. If a backport is resolved by hand, the
+RTNL stall would remain through a procfs reader stuck in copy_to_user().
+
+The prerequisite has its own Cc: stable tag and comes first in the series,
+so applying the series in order works. Could the "# depends on" note list
+it too?
+
+> diff --git a/net/can/bcm.c b/net/can/bcm.c
+> index 1595b7720c981..dc9e2890490ac 100644
+> --- a/net/can/bcm.c
+> +++ b/net/can/bcm.c
 
 [ ... ]
 
-> +static bool send_dt_burst_ok(int raw, uint8_t prio, pgn_t dt_pgn, uint8_t da,
-> +			     uint8_t sa, unsigned int next, unsigned int count,
-> +			     const uint8_t *payload, size_t size,
-> +			     unsigned int first_seq)
-> +{
-> +	unsigned int i;
-> +
-> +	for (i = 0; i < count; i++) {
-> +		size_t abs_pkt = (next - 1) + i;
-> +		uint8_t seq = first_seq + i;
-> +
-> +		if (!send_dt_ok(raw, prio, dt_pgn, da, sa, seq, payload,
-> +				abs_pkt * J1939_DT_DATA_LEN, size))
-> +			return false;
-> +	}
-> +	return true;
-> +}
+> @@ -1843,7 +1844,7 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+>  	switch (msg) {
+>  
+>  	case NETDEV_UNREGISTER:
+> -		lock_sock(sk);
+> +		mutex_lock(&bo->conf_lock);
+>  
+>  		/* rx_ops: remove device specific receive entries */
+>  		list_for_each_entry(op, &bo->rx_ops, list) {
 
-[ ... ]
+[Severity: High]
+This isn't a bug introduced by this patch, but CAN_J1939 seems to have the
+same RTNL stall that this series removes from CAN_RAW, CAN_ISOTP and
+CAN_BCM.
 
-> +static bool etp_rx_serve_cts_ok(int raw, const uint8_t *payload, size_t size)
-> +{
+On NETDEV_UNREGISTER, the j1939 notifier runs with RTNL held and takes the
+socket lock of every bound socket:
 
-[ ... ]
+j1939_netdev_notify()
+  j1939_sk_netdev_event_unregister()
 
-> +		cm_dat_init(dat, ETP_CMD_DPO);
-> +		dat[ETP_DPO_PKTS_OFF] = cts_pkts;
-> +		put_le24(&dat[ETP_DPO_BASE_OFF], next - 1);
-> +		if (!peer_send_cm_ok(raw, ETP_CM, dat))
-> +			return false;
-> +
-> +		if (!send_dt_burst_ok(raw, PRIO, ETP_DT, SA_LOCAL, SA_PEER,
-> +				      next, cts_pkts, payload, size,
-> +				      TP_FIRST_PKT))
-> +			return false;
-
-[Severity: Medium]
-Can the DPO and the up to 255 DT frames after it reach the J1939 stack
-in a different order than they were sent?
-
-Each raw send() goes through can_send()->netif_rx()->netif_rx_internal().
-With RPS off, that queues the frame on the current CPU's backlog:
-
-net/core/dev.c:netif_rx_internal() {
+net/can/j1939/socket.c:j1939_sk_netdev_event_unregister() {
     ...
-	ret = enqueue_to_backlog(skb, smp_processor_id(), &qtail);
+		lock_sock(sk);
+		if (jsk->state & J1939_SOCK_BOUND) {
     ...
 }
 
-The gateway then queues its copy for CANIF while that CPU processes its
-backlog. Frames stay in order only inside a single CPU's backlog.
+So if a task holds the socket lock of a bound j1939 socket while it
+accesses user memory, it can block RTNL. There appear to be two such
+paths.
 
-On PREEMPT_RT, use_backlog_threads() always returns true. So netif_rx()
-only wakes the per-CPU backlog_napi thread, and send() returns before
-the frame has been handled. On non-RT kernels the same thing happens
-with thread_backlog_napi, or when softirq work goes to ksoftirqd.
+The first is the generic SOL_SOCKET options. For example, SO_ATTACH_FILTER
+in sk_setsockopt() copies the filter from user space under
+sockopt_lock_sock():
 
-The test thread has no CPU affinity. Suppose it moves to another CPU
-between two send() calls, for example after the backlog thread it just
-woke preempts it. Then the new CPU can process a later frame before the
-earlier frames still queued on the old CPU.
-
-An ETP DT that arrives before the DPO has been handled hits the default
-case in j1939_xtp_rx_dat_one() and cancels the session:
-
-net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
+net/core/sock.c:sk_setsockopt() {
     ...
-	case J1939_TP_CMD_CTS:
-		if (skcb->addr.type != J1939_ETP)
-			break;
-		fallthrough;
-	default:
-		...
-		goto out_session_cancel;
+		ret = copy_bpf_fprog_from_user(&fprog, optval, optlen);
+		if (!ret)
+			ret = sk_attach_filter(&fprog, sk);
     ...
 }
 
-The send_tp_dt_burst_ok() call in tp_serve_cts_ok() has the same
-pattern. A TP DT that arrives early fails this check:
+The second is j1939_sk_sendmsg(). It holds lock_sock() across
+j1939_sk_send_loop(), which copies the payload from user space:
 
-	if (packet == session->pkt.rx)
-		session->pkt.rx++;
+net/can/j1939/socket.c:j1939_sk_sendmsg() {
+	lock_sock(sock->sk);
+    ...
+	ret = j1939_sk_send_loop(priv, sk, msg, size);
 
-Then pkt.rx never reaches pkt.last, no EOMA is sent, and the session
-times out.
+sendmsg_done:
+	release_sock(sock->sk);
+}
 
-The commit message says:
+If the user buffer is on a FUSE backed mapping, either copy can stall for
+as long as the user wants.
 
-    j1939_lib.sh also turns RPS off on that vcan, so
-    the peer gets each frame only after the stack has handled its echo
+can_create() has no capability check. A user can create a vcan device in
+their own user and network namespace, bind a j1939 socket to it, stall one
+of these copies, and then delete the vcan device. RTNL would then be held
+until the copy finishes.
 
-That covers the order between the stack's echo and the peer. It doesn't
-cover the order of the peer's own consecutive frames. Nothing in
-j1939_lib.sh or in this directory uses taskset or sched_setaffinity, and
-that is still true at the end of the series.
+None of the commit messages in the series mention j1939. Should CAN_J1939
+get the same conversion, or should the series say that it is still
+affected?
 
-Could tp_rx_from_raw and etp_rx_from_raw then fail at random in the
-default kselftest run, especially on RT kernels or loaded VMs?
-
-Would pinning the test process to one CPU fix this? That could be
-sched_setaffinity() in j1939_test_main() or taskset in j1939_lib.sh.
-The per-CPU backlog FIFO would then keep the order.
+[ ... ]
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261120-j1939-selftests-v5-0-fdf4c242a37e%40pengutronix.de
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1%40hartkopp.net
