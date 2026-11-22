@@ -1,80 +1,80 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795373340;
-	b=uyZvBF0Kakd0GB8d6AqunCsGHMctBs7JF4TgCgIjRFqbrZ2liMiTDUmo3sSvCnBwvpPT
-	 B/9EOGXBxSGywguBKs0cbKBTobndlNxULX5tVXE7MF/Vuw4VrMSuRxsVmbfM5eUzOeRxm
-	 E7y6IVggw9geCKA13DAHS7r7iEhZsdncVGtEsfUsDJDZOTlntgfjOOU9rccp5GAbUnUHg
-	 k4r5+8Yn5GoOFJvx8FzHwDE4UUeVV8Rg9JRg6jR2z4gV5Qb1PUwWke/izKgHXGinuEvqC
-	 7acC4GvNtQiLYLKwRO6QcqC0pfmFftS2wVnR/R3BFSUYY6TZ6PGWPUurN7cjNfaNpiw==
+	b=0lvrf6mWXGES+4mZJKsuT0dGEdSFaLpfCrsx1w4wbhv33q0Yygnx4/KD4KXcUclwzR/S
+	 TqI76HAkEDgT/sQ3xppu6M7lFbT6cEnUZBp6036+jmnO0DeIpQwip/9oBeYuy6HdBOOrY
+	 BpsJyz+3K2xtD4dYqB4+PK2kv7GuHp8N017GFmQ7PoYu+yR6H5KJ/Jel/OqYR5sVXypzV
+	 heiMfxgPjPg1Pj0BY/ORdLUvofQ61aYTlVj23cFMMqOC1a/G+8nrzN5kcJx03iPuxRIxu
+	 gPlAtLEC9Q9UIq+p/8Rf6n2xwOikzDpC17q4rELH5AvQ61wuZQejdiTkLjtbZGBDR9w==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795373340;
 	h=DMARC-Filter:Received:DKIM-Signature:From:Date:Subject:MIME-Version:
 	 Content-Type:Content-Transfer-Encoding:Message-Id:References:
 	 In-Reply-To:To:Cc:X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=+CECho7LDOBk17ITDm3WBfm3ZviyJPvPc+sPtqztvos=;
-	b=iBPvsIAWYpQYv8CvcIAE8e5O05hGhdCPqJC8ZtZtQRH4uRGfzneu6jC669/6ZJuqGjxd
-	 YCa+zXKw/Cxb2iFfKyiradzjZ+kMcnMxXDG8izQ5GHmGukpJqUT5WlrM4cX4M7gKewHIQ
-	 VVU567IwiG+R0Sxml01JHMDaIN98KBZfdMuhHHjQbGofPExpWeMXkZ40/6KdWFc719VqA
-	 8kud+9XTT6fzr89XQ1bt3OgmBOHxeBg1Bry9FwRn/NahaaE9TRA+SV8UKt6My4iMUBm06
-	 j9Lov1vIuMtVNiK+XvYCa+u2XpyBUwljMM8rUCPXCeX24U762PgPilmWprpSQnU7Xmw==
+	bh=4unrm/Me6Sg+z0cNCryN+M0dekPe5EQ7kCaCl9mZDMI=;
+	b=zAIRHmx37LX/lkhekUCBOlEMI2XiQIi76QaDXmLVqNeW/fCajMGiaYjJ0vOHJwEy2P1g
+	 UR0i+u6TPwkjcy49BpkGrh0j8CwVquJpEar9Dhg+BgXIX6rupyy7JvMJzfzjhSHCrIN1C
+	 YmzF47JqUQjEom/OrnaRbDb2vIysJjojreAwfBqUj4fLQmwPYrjrSfedrmaoLaaPkleEY
+	 WXGcQjgaPVYfkwEZ6rLiHLVtJZUFRch0ganGjTWO624RS/De2RaeknYASniMPjcX9zj19
+	 W3Cwpt5tVb0YDMdrOr2aIFXnHrbT98PGWKr6liUPYdLgTM+aB+rzgy8xjflOlV5M2KA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aPdqJVvu;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Casrfs6c;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7513606A686
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBCFB606A68B
 	for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 18:48:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org C7513606A686
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org DBCFB606A68B
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=aPdqJVvu
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Casrfs6c
 Received: from hardanger.blackshift.org (p20030102af17cb0015d71b554e0d6387.dip0.t-ipconnect.de [IPv6:2003:102:af17:cb00:15d7:1b55:4e0d:6387])
 	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9160D205B37;
-	Sun, 22 Nov 2026 19:48:50 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 51838205B4C;
+	Sun, 22 Nov 2026 19:48:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795373330;
+	s=20260414; t=1795373331;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+CECho7LDOBk17ITDm3WBfm3ZviyJPvPc+sPtqztvos=;
-	b=aPdqJVvuM262gqHIRKcWOnuQvYCSOLie5MUvPeYy26eZzkJrXE8ECEqZHd8QUwbuMkXKK4
-	flcz0Q+ot8MSq1LkWw1SlVagXIvXeRemGt9yuHHr+YfmE+DriLpPU5OXqsew+jMBXcP8sc
-	POiMGdbPkyzvbJs+sSXPer0CSPyeRMi/MyVZnaIGIwo1voJ4ll8yWLhQUO53lT9LKLWshT
-	yv0vVYGBEgXJwVqF3vsFp45DgJk3igKIPmE6qZa76/iIvx7C1a7QSBnHrVBaQz3MjZjCsQ
-	5abQscc3XqxxifmzELBrifpVrNpCAu2mE+28itllJLMehNxY3RMYiVaXKYbulQ==
+	bh=4unrm/Me6Sg+z0cNCryN+M0dekPe5EQ7kCaCl9mZDMI=;
+	b=Casrfs6cWRoA8JEOg5BmxnOyKehsZTo/4KgoS3L/FQLCsR2DFp9ueSS90CraSfmV6abI76
+	B41K4tqzpRSfviqZDpGQf7hcpZbIWX/d/+lwegDYFpWSLEcGolM9XJbDR+++EQb9b+uJDY
+	FGgRDf78HMo8CNTl+OJoAL0nZvCDIexDZi8rpm6xpLqD4jYL51pNF0nchTyh9Jo5UbGN6Y
+	yBPWNdpfY/eIs2fmkPnpxMBTbbVJ0L6RaW+j9YGd2JYsXfmf2Ny6zbNky3niDqwaIgiZR3
+	vqMAMusSuCELYur5v8X9t69vdClIXX3SEQxK0IGnN3Wrd+6jeSbSVXhT6EoqmQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795373330;
+	s=20260414; t=1795373331;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=+CECho7LDOBk17ITDm3WBfm3ZviyJPvPc+sPtqztvos=;
-	b=SR03gaFxFXiPpw6eOpg4Ey64/cevoaSADoqMtvBBWJp2J4M9yxr/CrZU9qfm3tHgEKbi8c
-	xrTqjNxiIWpWIP/b0wUZQSotwuTgzl6giARu0V5xVMPbwY5Ypp/5MteaydsjRfOvnj0hmk
-	F25ptodYhVEnV4L1becxtftuyW3499lwdlcnY/lNV4wfGnkQiGtLzjzLsHLtQ9gyoMVr43
-	C9K3Rz38Bf9mvOy7gdEJKpCUQU8YE6v7e1nPVX5+T/WA6UiboqZDK6LADBp5gBcVkWD6Dh
-	UU34pILWVnE1aqd2zAerxyDrnuC3sih5X20lq9/0RfPnyuv0TxJ/pMaa9NJJLw==
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795373330; a=rsa-sha256;
+	bh=4unrm/Me6Sg+z0cNCryN+M0dekPe5EQ7kCaCl9mZDMI=;
+	b=BpbGNgFWgZtsNgtiFzTGkMQpPORP8WIxRy0LgXEvOero1ofIruoaa1DCdRTwfXlNOdYdi6
+	mkwR7Vk4aj87+qOmZAZz+iF8UWnoI9NA6QVJqP+wZSxUlCOlAAUliqkZcC2PZEnkdidPxq
+	4cQtR53DCTNneZfL2O/H1ejTQQ49cNGU0QiG4qc70KIHNJOnvCpSeZhpTRLUHzh3FB9t7Z
+	fEivk17tVmzi8Au30jZc3S3vopCZzkz0IupgeapZ/7aZLkfnLpTHNoiFTCYzjem6M+cu6z
+	IOZIcbk5e38xqG5p5xvSvNJ96OU+02cPMDLzUUPmkpZc3252tfaWIQkAjQhSzA==
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795373331; a=rsa-sha256;
 	cv=none;
-	b=ShqXKl+8fyG8SRuNyCGaMskJ0PrEZIiGCBc1EG5hKMVaa0hk4Ow/QcRYihnLUufsXorw+c
-	sub/WxdUVYGb8/lKsViHpX571BOAnlReLUS/0UWRaF/6EAOIZkAiLCPron+F0O28YekvPS
-	1IC7vM5/MH/dnspAYFPjfusKNjs5oE1pGx8OL/3yOZ4SZzs+3Je300ngCv1BI5nHCI13T1
-	G0t2WR0BiYhQU7WWDx2ZXqNVVneshSUHmOjOJfH+buVMcJDP796noUuw3hCCfUgwbghEWc
-	zajauRC80hO1A3vCp8Py7bOSEfD1rrVa+UF33mBJKxBnxbGHu5/uJ9ejxIfDmQ==
+	b=bzlLqAkBzp2NFN1OxE+XSLiTu2fRgPdhVUL8Iwk6CN2TAFvQ7X9+7RkT5vkAPGnm1agDDy
+	LGgu5f8is08baoBHwE5sZxV7peiUgUM9NNSQQh+LSVFUEQjj5cqjdeudArLIDHapmZ6uFY
+	Em/QBG+RMGtNHLZ1K26u2FSOYoM3qK1wTBSK93f9qaEXOGApowWiCj7ApsC1c1JgNAAzCz
+	AuuHdVZXQrQyd4qi2kBpbrap0f7G/eUsFwpD8s+OoZZtsEBGUG273xC3EMFJ8mUN8/5r9O
+	AEw6KPJ1LSbSbF3Xkp/CogDDQfwWzcdNgCqiUMFssPw0Pfe9kJF6v7l1b+9Y+g==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-Date: Sun, 22 Nov 2026 19:48:33 +0100
-Subject: [PATCH can-next v10 09/14] can: gs_usb: gs_usb_get_gs_can():
- introduce new function to consolidate validation of struct gs_can
+Date: Sun, 22 Nov 2026 19:48:37 +0100
+Subject: [PATCH can-next v10 13/14] can: gs_usb:
+ gs_usb_host_frame_header_valid(): drop invalid CAN error frames
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -86,7 +86,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261122-gs_usb-fixes-v10-9-7c165c35d04a@pengutronix.de>
+Message-Id: <20261122-gs_usb-fixes-v10-13-7c165c35d04a@pengutronix.de>
 References: <20261122-gs_usb-fixes-v10-0-7c165c35d04a@pengutronix.de>
 In-Reply-To: <20261122-gs_usb-fixes-v10-0-7c165c35d04a@pengutronix.de>
 To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>, 
@@ -94,130 +94,73 @@ To: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>,
  Maximilian Schneider <max@schneidersoft.net>, 
  Wolfgang Grandegger <wg@grandegger.com>
 Cc: kernel@pengutronix.de, linux-can@vger.kernel.org, 
- Marc Kleine-Budde <mkl@pengutronix.de>
+ Marc Kleine-Budde <mkl@pengutronix.de>, Sashiko <sashiko-bot@kernel.org>
 X-Mailer: b4 0.17-dev-1b309
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3275; i=mkl@pengutronix.de;
- h=from:subject:message-id; bh=TtIxwgIcjHHiNN/3zQDrRn17TjkL3z3OEEnXJVtDHYg=;
- b=owGbwMvMwCV2xirl17qZay8xnlZLYshmtuQ80yYgmSx7enotR67c7oJuyeeVFjzFUsHJn6f7C
- TPprKzvKGVhEONikBVTZFn644SiQKBDae/LhEkwc1iZQIYwcHEKwET+32T4n+XZ3cs5/fJDyUu3
- N/y85lvMyfrj5vU3dzZu6diw8MLU4DyGfwpcPh3FSuz3TvNdXzdjUjxbXN/KDUaztlwsbRfSE+x
- dyAMA
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1852; i=mkl@pengutronix.de;
+ h=from:subject:message-id; bh=cSvsi4SVOI38PZsAST68UzBCSc5tgKE5sWBpm8KfOFo=;
+ b=owGbwMvMwCV2xirl17qZay8xnlZLYshmtuRNlQg99nGq22MmQemv5tGf5P8qZl+XaW8QzXvwY
+ WH19/VuHaUsDGJcDLJiiixLf5xQFAh0KO19mTAJZg4rE8gQBi5OAZiIvBrD//qJmzdPU1lsvlbi
+ o4nV7/SQVsuzAdcl1WfF/vRx4XhwL5mRoSfA90Kn+YVFn6rusbudipj2td1xP49MxEKFs1tvTWn
+ I4AEA
 X-Developer-Key: i=mkl@pengutronix.de; a=openpgp;
  fpr=C1400BA0B3989E6FBC7D5B5C2B5EE211C58AEA54
 
-To improve code readability and structure consolidate the decoding and
-validation of the struct gs_can from the host frame into a the new
-function gs_usb_get_gs_can().
+By definition, CAN error frames have a length of CAN_ERR_DLC (= 8) bytes
+and the RTR flag is not set. The user space expects the frames to have this
+length, and the function gs_update_state() accesses the data from the CAN
+error frames.
 
-Let gs_usb_get_gs_can() only work on the actual header of the host frame,
-return a struct gs_can pointer on success, or NULL on error. If fatal is
-true, detach the device, otherwise re-submit the URB.
+In gs_usb_host_frame_header_valid(), ensure that CAN error frames have a
+length of CAN_ERR_DLC bytes and ensure that the RTR flag is not sent. If
+this is not the case, output an error message and resubmit the URB.
 
+Reported-by: Sashiko <sashiko-bot@kernel.org>
+Closes: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77@pengutronix.de
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- drivers/net/can/usb/gs_usb.c | 61 +++++++++++++++++++++++++++++++-------------
- 1 file changed, 43 insertions(+), 18 deletions(-)
+ drivers/net/can/usb/gs_usb.c | 29 +++++++++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
 diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-index 75adec495e65..9078460aebca 100644
+index b345ab34a200..7229d002b938 100644
 --- a/drivers/net/can/usb/gs_usb.c
 +++ b/drivers/net/can/usb/gs_usb.c
-@@ -267,7 +267,7 @@ struct canfd_quirk {
- #define GS_HOST_FRAME_ECHO_ID_RX 0xffffffff
+@@ -639,6 +639,35 @@ static bool gs_usb_host_frame_header_valid(const struct gs_can *dev,
+ 		valid = false;
+ 	}
  
- struct gs_host_frame {
--	struct_group(header,
-+	struct_group_tagged(gs_host_frame_header, header,
- 		u32 echo_id;
- 		__le32 can_id;
- 
-@@ -651,6 +651,43 @@ gs_usb_get_minimum_rx_length(const struct gs_can *dev, const struct gs_host_fram
- 	return minimum_length;
++	if (!(header->echo_id == GS_HOST_FRAME_ECHO_ID_RX))
++		return valid;
++
++	/* checks for RX'ed (non-echo) CAN frames */
++
++	if (header->can_id & cpu_to_le32(CAN_ERR_FLAG)) {
++		if (header->can_dlc != CAN_ERR_DLC) {
++			stats->rx_errors++;
++			stats->rx_length_errors++;
++
++			if (net_ratelimit())
++				netdev_err(netdev,
++					   "invalid DLC in CAN error frame (can_dlc=%u, exptect_can_dlc=%u)\n",
++					   header->can_dlc, CAN_ERR_DLC);
++
++			valid = false;
++		}
++
++		if (header->can_id & cpu_to_le32(CAN_RTR_FLAG)) {
++			stats->rx_errors++;
++
++			if (net_ratelimit())
++				netdev_err(netdev,
++					   "invalid RTR flag in CAN error frame\n");
++
++			valid = false;
++		}
++	}
++
+ 	return valid;
  }
  
-+static struct gs_can *
-+gs_usb_get_gs_can(const struct gs_usb *parent,
-+		  const struct gs_host_frame_header *header, u32 actual_length,
-+		  bool *fatal)
-+{
-+	const u32 minimum_length = sizeof(*header);
-+
-+	if (actual_length < minimum_length) {
-+		dev_err_ratelimited(&parent->udev->dev,
-+				    "short read (actual_length=%u, minimum_length=%u)\n",
-+				    actual_length, minimum_length);
-+
-+		return NULL;
-+	}
-+
-+	/* device reports out of range channel id */
-+	if (header->channel >= parent->channel_cnt) {
-+		*fatal = true;
-+
-+		return NULL;
-+	}
-+
-+	struct gs_can *dev = parent->canch[header->channel];
-+	const struct net_device *netdev = dev->netdev;
-+
-+	if (!netif_device_present(netdev)) {
-+		*fatal = true;
-+
-+		return NULL;
-+	}
-+
-+	if (!netif_running(netdev))
-+		return NULL;
-+
-+	return dev;
-+}
-+
- static void gs_usb_receive_bulk_callback(struct urb *urb)
- {
- 	struct gs_usb *parent = urb->context;
-@@ -664,6 +701,7 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 	struct can_frame *cf;
- 	struct canfd_frame *cfd;
- 	struct sk_buff *skb;
-+	bool fatal = false;
- 
- 	BUG_ON(!parent);
- 
-@@ -678,30 +716,17 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
- 		return;
- 	}
- 
--	minimum_length = sizeof(hf->header);
--	if (urb->actual_length < minimum_length) {
--		dev_err_ratelimited(&parent->udev->dev,
--				    "short read (actual_length=%u, minimum_length=%u)\n",
--				    urb->actual_length, minimum_length);
-+	dev = gs_usb_get_gs_can(parent, &hf->header, urb->actual_length, &fatal);
-+	if (!dev) {
-+		if (fatal)
-+			goto device_detach;
- 
- 		goto resubmit_urb;
- 	}
- 
--	/* device reports out of range channel id */
--	if (hf->channel >= parent->channel_cnt)
--		goto device_detach;
--
--	dev = parent->canch[hf->channel];
--
- 	netdev = dev->netdev;
- 	stats = &netdev->stats;
- 
--	if (!netif_device_present(netdev))
--		return;
--
--	if (!netif_running(netdev))
--		goto resubmit_urb;
--
- 	minimum_length = gs_usb_get_minimum_rx_length(dev, hf, &data_length);
- 	if (urb->actual_length < minimum_length) {
- 		stats->rx_errors++;
 
 -- 
 2.53.0
