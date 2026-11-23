@@ -1,96 +1,55 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=162.243.164.118
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795392566;
-	b=tGXNabLgru/zoxuSa49IW1kwNtIZMZk8ye4YMnphj/wXdBsVFJxuXWa4bzO5cj18vB9T
-	 3LdaiLS5BvTPYX7UjzYk/V7/AP6PGgHu9k/WlqrlhvUVekE/t3VVYDQFbUw0ub/JGRf3x
-	 gcZMewE+uJXokaZ3mwqOsXwm3zcUVXJnoMNbdTN9rlvZ3eyUz8ma8XdcmFLq0T5GNxH/5
-	 8RYRAiIQsjGCKRPDixyZMucuQiXbCUxbg1BzqvgKSK+nEbQOBs4dcmFKyVRlPuWlW9wD7
-	 QF4ov/f0p3b2G1C0+Xy9wkuOCeJO3Z0zklonr5Ci82U06eKawJp3670uohDPQGCvizA==
+	t=1795415197;
+	b=KJtU5g4/O/i4A27trLjDvZGu8exskqUJhaw9G6ANKmU914k/89G+nizCKi9kRNhgvLMm
+	 Jbh05wIVaRr82mFztLm5uX6XHul6gu0AO0NhznnF5prLuN25r528gjgdpxKsdffeWBS44
+	 rN2oVQWnJmsBD6mJcEJKONIGet1VM1inAvsLsydc2YxqyaWDT2MJmvlcT3qTxCF88Xuvr
+	 smFg+GuVb9y6uXnJoNM1+Kpv0gHb4NrvjBUbvAdxhKqcy54zKMy+tOLgN1+4zHH12sy0j
+	 9OYDwqQNLIHobiW2L7rmQ6MAXB5D6uWBiWk3+OuTKlzJZ954zep9e5S+OovYc1yiytA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795392566;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=5oZfxZDZESOt7JOg36JOb5NoJDTCRqffJz0J5sNJMMI=;
-	b=bBUREPQKkn5BFPp9AIqS4YvIVTkR8Ghkz6UyxxH+l/3Gwj0Tq9PLCV4GNQcZ8tMSFBL1
-	 MRFnmP/7yN2KWvPayL3WhrrotHWp43kPfsslgAPRIYRxLrj8SlZVC/7n9VhbF+l3yGVp8
-	 n7V3ADAk7Oca2Ygt39bdLLQUNii5BEMMrUktppYIBHsufscHYmnf3HPZ82YGzqqQPtL2k
-	 OE3y0TNoYEBuGq62HKKB6C9H6Xuou7WnxqUShLo/zEquBFNd/xnlbpCpj4h0unxU+O4aG
-	 fjdAFRYfcn7/UooKsabiKhweh+qK2Y8IWaTQ3/qa65J/oHEvRMJnqByk3fAOyXoPhSg==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795415197;
+	h=DMARC-Filter:DKIM-Signature:Received:From:To:Cc:Subject:Date:
+	 Message-Id:X-Mailer:MIME-Version:Content-Transfer-Encoding:
+	 X-CM-TRANSID:X-Coremail-Antispam:X-CM-SenderInfo;
+	bh=exnUoKpvpmJ2B/BUEzqP6hBJWWRaHpKYrl2DpcgiPBQ=;
+	b=eDiNv0Fua2RIfcnS/7/WBTzeMj8d3Sw35LWCpY7+r/7xOmiHsPpv0UTbinZqGbjkAgyx
+	 lw0ocoBvxjhaPjddYyxeAjZyGRqpc1xf0aKYO6dRVV0vY62+QtCD/ZOl4NKftZJiARmbh
+	 E2TJTWYFbakqscOb0sIiOqxdqTGgatP1SnSgdLPCfbtzDF6lwiE3WOa8VEEoCT0qpiRXS
+	 qZN1VhjMFBy3S5E58yCBbvOucoE90YKuIzG0FH2/v0j/ATkHUJUwq6ODAKNlwRIJk2SFp
+	 NDqtw4L+nHHKR5NEjPqZBA1+lOMPPVcvgWgLkRiI5zoc523o3iqUpimCZo52E/AuHMg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=gmail.com;
-	spf=pass smtp.mailfrom=gmail.com;
-	dkim=pass header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b="bO3Xvg/G";
-	arc=none smtp.remote-ip=209.85.216.43
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4A3F606A31E
-	for <linux-can@vger.kernel.org>; Mon, 23 Nov 2026 00:09:25 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A4A3F606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.a=rsa-sha256 header.s=20260707 header.b=bO3Xvg/G
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-3b413997581so2279315a91.2
-        for <linux-can@vger.kernel.org>; Sun, 22 Nov 2026 16:09:25 -0800 (PST)
+	dmarc=pass header.from=stu.xidian.edu.cn;
+	spf=pass smtp.mailfrom=stu.xidian.edu.cn;
+	arc=none smtp.remote-ip=162.243.164.118
+Received: from zg8tmtyylji0my4xnjqumte4.icoremail.net (zg8tmtyylji0my4xnjqumte4.icoremail.net [162.243.164.118])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE6C4606A31F;
+	Mon, 23 Nov 2026 06:26:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org BE6C4606A31F
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=stu.xidian.edu.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=stu.xidian.edu.cn
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20260707; t=1795392565; x=1795997365; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=5oZfxZDZESOt7JOg36JOb5NoJDTCRqffJz0J5sNJMMI=;
-        b=bO3Xvg/GvXSBMOwAZWCHZ1tEYldoTL/n5xhnbPHDS3uQE7Sv8OQh4LJ6JYItRZAiXq
-         XvMWlzkSxtPGXkZ9l71qN1dHqUb3fc+VqST8GHnFtZZqiOCeFNhbyoKkCxAJnNE67ZYL
-         yCTXW4qcyGBGrntGyiasEEr077JUQQZnBLh9AE/QBfYhitZGWz2MHpNL4CQALeWsvyJE
-         fZK2dxbkB8oPVUn7tbLVgYB+dkQ5E5AIFcS1pMibV5hpo5QyjEQtqL2bh/UYXkzA1wU2
-         5HZvTnuuMHEnb9rsuwBO6rT0+e/EuKC2+iRhfKdWpSMXnCl/zBSp5z+vWqW91x44iKNP
-         SKEA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795392565; x=1795997365;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=5oZfxZDZESOt7JOg36JOb5NoJDTCRqffJz0J5sNJMMI=;
-        b=GMgI1THfhyZpxOt1cQfY6tW89SLFCqpyY6OX2H9MWi+SPvso0JyGXfi2ISzHmPCa3u
-         9oPoFri+wh1GU07VbYpNh1Y4SnL7vgFH3FB87YVKJ55ip3oXnF///ObmJdLUSOXna80t
-         Dq37lZCateujBGARASUccYMK6rq+1apg1UnckfCMxRr+V8u4JXriM/aQhs6YfjszJfx1
-         VITgFvb7iafAB5XGA0k/evBci2rra3D6DdKDzfAWhdbOpdF4Eyx9CsT649gdxusX33a3
-         y3BPbOaTvRVjJ1e0CehQYhtfRE92B6d5ltmtVeVz+l6JtzMmwebmpzdbgZ59r3wBE1z/
-         e5vQ==
-X-Forwarded-Encrypted: i=1; AL+hErEw1CwiRm2acEGmF1XV2Vi7SThAmePE7yJWKj3660IU8LI10d3r/tbsU78rOb5XCAQq4AgJKbAIlCE=@vger.kernel.org
-X-Gm-Message-State: APuU4Z8NW+f3CK8acQ7jb8c/7uPucrXqE0tpEQ6nfqPAZRtJ46V0tBRN
-	Js+uZoJPrO6yH+gfoyzh5mITo2ig6oh+Bx4Appsdz3tptSOhkQiytN+Zrr8lwdUx
-X-Gm-Gg: AZFdTZeROy3opFjV1vJTFqCOKS/T005thRw9XY88t11jrXX8Amdd5F8kT0NRwk808gb
-	T6LVgj36sYDIF3z7A/gf5RPEguLh3Al4Bnv5LgWwlgXkRsj1sSw9+eAKj/Fh6GbQGAkI/qXy4y8
-	z0lcQ2UHCirpi6rEae6Vk84Z12igA+5IUTqe2vNifz3dSDzalxwiW82gdQgOwoBMxcexjijX+y6
-	K3/slgsm7F/miG6llt31Vx1MfYlbaiDc0r9p1u42H+3Lavwi64GJADEuuZ3VUOumQiRTpFA4Cq+
-	AvnK8GSWEqlS/469bv29kuAx1WUYrMJQIhiHMTxqdQhOAn1ALoxomv4VcK8QYUqw0V5yu0w8K5V
-	S6SP4ZdG/D7JFPMgi+HrkLxJwznY7YXnC5Z6FhHW/+pL4pbaIWXvTRPfEANPGPOA5x3Pnh2OoHS
-	2Vp36vX0E/gy03hbyjLWcWzW980/lY4O2MOwgaC+uLN3SToitDR2AW9OWiqyt6OgVwFRoMISukH
-	Wdp2GF5ANO9jqJb9nLsQhG98x/Pq/qfnRIheN6IWPjo5FqNVxTbWyfYoYwe7+wrN1ONRYAQ5qcJ
-	Oe+zC3r0JFve8bxdVDVcq3dp/jd9EtHgx2KAEYxl3Yfz0thsHp1P2v0fCSj1vixu
-X-Received: by 2002:a17:90b:2cce:b0:3a4:967c:6947 with SMTP id 98e67ed59e1d1-3b41c909001mr9327128a91.21.1795392564569;
-        Sun, 22 Nov 2026 16:09:24 -0800 (PST)
-Received: from gmail.com ([116.162.234.40])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-3b40f4312dfsm16532573a91.3.2026.11.22.16.09.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Nov 2026 16:09:24 -0800 (PST)
-From: Xue Boyang <fuchen.dust@gmail.com>
-To: Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Marc Kleine-Budde <mkl@pengutronix.de>
+	d=stu.xidian.edu.cn; s=dkim; h=Received:From:To:Cc:Subject:Date:
+	Message-Id:MIME-Version:Content-Transfer-Encoding; bh=exnUoKpvpm
+	J2B/BUEzqP6hBJWWRaHpKYrl2DpcgiPBQ=; b=MGmUGL9HWrNtQxwfpdEfX+Ux+W
+	Hzu/i6U9hyPjmmzZoK4UsCGFQskFPjEn5RM2VHKAjsYHABw2hIQusvDszxQnsPHw
+	3S615AOXADx1bRLSOs+MDEdSJrIfnLC7W176m2QV6KNr4XnW1fLl49kMnFWzas35
+	W2JKOhI8GMXw53azs=
+Received: from user-virtual-machine.localdomain (unknown [113.200.174.70])
+	by hzbj-edu-front-4.icoremail.net (Coremail) with UTF8SMTPA id BrQMCkA2XAKG3ANriPwZAg--.25402S2;
+	Mon, 23 Nov 2026 14:26:15 +0800 (CST)
+From: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
+To: Marc Kleine-Budde <mkl@pengutronix.de>,
+	Vincent Mailhol <mailhol@kernel.org>
 Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
-	kernel@pengutronix.de,
 	linux-can@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	stable@vger.kernel.org
-Subject: [PATCH net v2] can: j1939: fix null-ptr-deref in j1939_session_completed()
-Date: Sun, 22 Nov 2026 18:09:16 -0600
-Message-ID: <20261123000916.181439-1-fuchen.dust@gmail.com>
-X-Mailer: git-send-email 2.53.0
+	stable@vger.kernel.org,
+	Bin Yu <byu@xidian.edu.cn>,
+	Cheng Wen <wencheng@xidian.edu.cn>
+Subject: [PATCH net v3] can: dev: reject unusable bit-timing constants
+Date: Mon, 23 Nov 2026 14:26:14 +0800
+Message-Id: <20261123062614.7811-1-25031212351@stu.xidian.edu.cn>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -101,124 +60,204 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:BrQMCkA2XAKG3ANriPwZAg--.25402S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtryUJr48Kw45Jr1fArWkWFg_yoWxZrW8pr
+	s5JFy5KFyqqr4Fvayxtwn7AFyrWwnIqFWS9ryDJ3sayws8X3WFyrW7GFWY93W3Grs7ZFy2
+	q3909F4UGrs8AaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9qb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I2
+	0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+	A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_JFI_Gr1l84ACjcxK6xII
+	jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+	C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2vYz4IE04k24VAvwVAKI4IrM2AIxVAIcxkEcVAq
+	07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r
+	18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vI
+	r41lc7CjxVAaw2AFwI0_JF0_Jw1lc2xSY4AK67AK6r47MxAIw28IcxkI7VAKI48JMxC20s
+	026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_
+	JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14
+	v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xva
+	j40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJV
+	W8JbIYCTnIWIevJa73UjIFyTuYvjxUkwvKDUUUU
+X-CM-SenderInfo: ysvqjiysrsjkur6v33wo0lvxldqovvfxof0/1tbiAQUFD2sDBVgdigADsv
 
-j1939_session_completed() distributes the reassembled message of a
-receive session. It looks the message up at the offset named by the
-last ETP.CM_DPO of the peer, session->pkt.dpo * 7, and passes the
-result to j1939_sk_recv() without checking it.
+can_bittiming_const_valid() is the hook register_candev() uses to verify
+the constants a driver registers, but it only looks at sjw_max.  The
+values can_calc_bittiming() and can_calc_pwm() depend on are not
+checked.
 
-j1939_xtp_rx_dpo_one() stores that DPO without any check. A receive
-session keeps the whole message in a single skb, so a DPO with a
-packet number >= session->pkt.total makes the lookup return NULL.
-When the transfer then completes, j1939_sk_recv() dereferences the
-NULL pointer and the kernel crashes in the receive path.
+gs_usb builds its struct can_bittiming_const and its clock frequency from
+the response of the GS_USB_BREQ_BT_CONST control request, so both come
+from the USB device.  A device that reports brp_inc = 0 crashes the
+kernel with a division by zero as soon as a user with CAP_NET_ADMIN
+configures a bitrate:
 
-Any node on the CAN bus can send such a DPO, for example right before
-the last data packet of an otherwise valid transfer, so this is
-remotely triggerable. On a system with the vcan and J1939 modules
-available, an unprivileged local user can reach it from inside a user
-namespace as well.
+  Oops: divide error: 0000 [#1] SMP KASAN
+  RIP: 0010:can_calc_bittiming+0x3dd/0xcd0
+  Call Trace:
+   can_get_bittiming (drivers/net/can/dev/bittiming.c:146)
+   can_changelink (drivers/net/can/dev/netlink.c:594)
+   rtnetlink_rcv_msg (net/core/rtnetlink.c:7137)
 
-Reject the DPO when it is received, and keep a backstop for the
-lookup:
+Reject constants that cannot describe a working controller:
 
-- Cancel a receive session with J1939_XTP_ABORT_BAD_EDPO_OFFSET when
-  the DPO has a packet number >= session->pkt.total. That abort code
-  existed but was never sent. Transmitter sessions are not affected,
-  they only see the echo of their own DPO.
-- Keep the NULL check in j1939_session_completed() and set
-  session->err on that path, so that an unexpected lookup failure is
-  reported as J1939_EE_INFO_RX_ABORT instead of ending as a success.
+- a zero brp_inc is used as a divisor, a zero brp_min lets the
+  prescaler become zero, and a prescaler range with the minimum above
+  the maximum has no valid value at all;
 
-AI assistance was used to analyze the bug, and to prepare and test
-this patch.
+- a time segment is at least one time quantum wide, so a zero minimum
+  does not describe working timing, and a zero sum of the minima makes
+  the unsigned loop bounds of can_calc_bittiming() wrap around;
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+- the loop walks from the maxima down to the minima and the prescaler is
+  multiplied by the bit time, so bound the bit time and the prescaler
+  range to keep these computations inside 32 bits.  Unbounded values
+  wrap around and end in a division by zero or in billions of loop
+  iterations with RTNL held;
+
+- apply the same checks to the XL data bit timing and to the XL PWM
+  constants, whose shortest symbol is a divisor in can_calc_pwm().
+
+can_calc_bittiming() also divides by the clock frequency, and gs_usb and
+ucan take it from the device as well, so reject a zero frequency at the
+point of use.
+
+The 32 bit overflow of tsegall * bt->bitrate is not caused by the
+constants but by the bitrate supplied from user space, it is a separate
+problem.
+
+Reject unusable values during registration, so that a device or driver
+handing out such values fails to probe instead of taking the kernel down
+later.
+
+Fixes: d58ac89d0d38 ("can: dev: register_candev(): ensure that bittiming const are valid")
 Cc: stable@vger.kernel.org
-Signed-off-by: Xue Boyang <fuchen.dust@gmail.com>
+Co-developed-by: Bin Yu <byu@xidian.edu.cn>
+Signed-off-by: Bin Yu <byu@xidian.edu.cn>
+Co-developed-by: Cheng Wen <wencheng@xidian.edu.cn>
+Signed-off-by: Cheng Wen <wencheng@xidian.edu.cn>
+Signed-off-by: YuanZhe Liu <25031212351@stu.xidian.edu.cn>
 ---
+v3: https://lore.kernel.org/all/20261121094534.5221-1-25031212351@stu.xidian.edu.cn/
+- validate the XL data bit-timing and the XL PWM constants, too
+- reject a zero clock frequency at the point of use
+- describe the checks as rejecting unusable values instead of
+  predicting crashes
+v2: https://lore.kernel.org/all/20261121064449.9706-1-25031212351@stu.xidian.edu.cn/
+- reject constants with an inconsistent minimum/maximum range
+- bound the maximum bit time and the brp_max * bit time product
+---
+ drivers/net/can/dev/calc_bittiming.c |  8 ++++
+ drivers/net/can/dev/dev.c            | 63 +++++++++++++++++++++++++++-
+ 2 files changed, 70 insertions(+), 1 deletion(-)
 
-Notes (j1939-v2-submit):
-    Based on mainline commit 4843f6873f7c4835e62f2c73ba0fd538e57a2f22.
-    
-    Changes since v1, following the Sashiko review:
-    v1: https://lore.kernel.org/linux-can/20261117103516.535910-1-fuchen.dust@gmail.com
-    review: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261117103516.535910-1-fuchen.dust%40gmail.com
-    
-    - v1 only added the NULL check. v2 also rejects the DPO in
-      j1939_xtp_rx_dpo_one() and reports a failed lookup via
-      session->err.
-    - The commit message now states the impact and the reachability.
-    - This patch supersedes my 2-patch series from September, which had
-      the same NULL check and a DPO check limited to dpo > pkt.total:
-      https://lore.kernel.org/linux-can/20260918025622.192582-1-m18335910246@163.com
-    
-    Testing, on v7.4-rc3 based kernels with CONFIG_KASAN=y, with raw CAN
-    frames injected on a vcan interface:
-    
-    - Unpatched: an ETP receive session given a DPO with packet number 256
-      for a 256 packet transfer, followed by the last data packet, causes
-      "KASAN: null-ptr-deref in range [0x18-0x1f]" in j1939_sk_recv() and
-      a panic. The same happens when an unprivileged user triggers it from
-      inside a user namespace, with the modules auto-loaded on demand.
-    - Patched: the kernel answers with ETP.CM_ABORT (reason 12), the
-      socket gets J1939_EE_INFO_RX_ABORT, nothing is delivered and the
-      kernel keeps running. Same for packet numbers 257 and 65535.
-    - A valid transfer whose last DPO has packet number 255 completes on
-      both kernels, the 1786 byte message arrives intact.
-    - net/can/j1939/ builds without warnings with W=1.
-    
-    The reproducer is not included. It is available on request.
-
- net/can/j1939/transport.c | 22 +++++++++++++++++++---
- 1 file changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f8..d3644c8239a4b 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1244,8 +1244,13 @@ static void j1939_session_completed(struct j1939_session *session)
- 	if (!session->transmission) {
- 		se_skb = j1939_session_skb_get(session);
- 		/* distribute among j1939 receivers */
--		j1939_sk_recv(session->priv, se_skb);
--		consume_skb(se_skb);
-+		if (se_skb) {
-+			j1939_sk_recv(session->priv, se_skb);
-+			consume_skb(se_skb);
-+		} else {
-+			/* should not happen, report it instead of a success */
-+			session->err = EPROTO;
-+		}
- 	}
+diff --git a/drivers/net/can/dev/calc_bittiming.c b/drivers/net/can/dev/calc_bittiming.c
+index 42498e9d3f38..7cd64e1f4c8b 100644
+--- a/drivers/net/can/dev/calc_bittiming.c
++++ b/drivers/net/can/dev/calc_bittiming.c
+@@ -106,6 +106,14 @@ int can_calc_bittiming(const struct net_device *dev, struct can_bittiming *bt,
+ 	u64 v64;
+ 	int err;
  
- 	j1939_session_deactivate_activate_next(session);
-@@ -1823,14 +1828,25 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
- 				 struct sk_buff *skb)
- {
- 	const u8 *dat = skb->data;
-+	unsigned int dpo;
- 
- 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
- 		return;
- 
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
- 
-+	dpo = j1939_etp_ctl_to_packet(skb->data);
-+	/* a receive session keeps the whole message in a single skb,
-+	 * reject a DPO which does not point into it
++	/* gs_usb and ucan take the clock frequency from the device as well, a
++	 * zero frequency would divide by zero at the end of this function.
 +	 */
-+	if (!session->transmission && dpo >= session->pkt.total) {
-+		j1939_session_timers_cancel(session);
-+		j1939_session_cancel(session, J1939_XTP_ABORT_BAD_EDPO_OFFSET);
-+		return;
++	if (!priv->clock.freq) {
++		NL_SET_ERR_MSG(extack, "CAN clock frequency is not set");
++		return -EINVAL;
 +	}
 +
- 	/* transmitted without problems */
--	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
-+	session->pkt.dpo = dpo;
- 	session->last_cmd = dat[0];
- 	j1939_tp_set_rxtimeout(session, 750);
+ 	if (bt->sample_point)
+ 		sample_point_reference = bt->sample_point;
+ 	else if (btc == priv->xl.data_bittiming_const &&
+diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+index 769745e22a3c..32b0e0c5a274 100644
+--- a/drivers/net/can/dev/dev.c
++++ b/drivers/net/can/dev/dev.c
+@@ -595,15 +595,74 @@ static int can_get_termination(struct net_device *ndev)
+ 	return 0;
+ }
  
++/* Upper bound for the bit time in time quanta. The bit times of the
++ * currently supported CAN controllers are well below it, the limit keeps the
++ * time segment scan in can_calc_bittiming() bounded.
++ */
++#define CAN_MAX_BIT_TIME_TQ 1024
++
+ static bool
+ can_bittiming_const_valid(const struct can_bittiming_const *btc)
+ {
++	u64 bit_time;
++
+ 	if (!btc)
+ 		return true;
+ 
+ 	if (!btc->sjw_max)
+ 		return false;
+ 
++	/* can_calc_bittiming() rounds the bit-rate prescaler to a multiple of
++	 * brp_inc and divides priv->clock.freq by the result. A zero brp_inc
++	 * divides by zero directly, a zero brp_min lets the prescaler become
++	 * zero, and a prescaler range with the minimum above the maximum has
++	 * no valid value at all.
++	 */
++	if (!btc->brp_min || btc->brp_min > btc->brp_max || !btc->brp_inc)
++		return false;
++
++	/* A time segment is at least one time quantum wide, so a zero minimum
++	 * does not describe a working controller. A zero sum of the minima
++	 * would additionally make the unsigned loop bounds of
++	 * can_calc_bittiming() wrap around.
++	 */
++	if (!btc->tseg1_min || btc->tseg1_min > btc->tseg1_max)
++		return false;
++
++	if (!btc->tseg2_min || btc->tseg2_min > btc->tseg2_max)
++		return false;
++
++	bit_time = (u64)btc->tseg1_max + btc->tseg2_max + CAN_SYNC_SEG;
++	if (bit_time > CAN_MAX_BIT_TIME_TQ)
++		return false;
++
++	/* can_calc_bittiming() and can_fixup_bittiming() multiply the prescaler
++	 * by the bit time, keep the product inside 32 bits.
++	 */
++	if (bit_time * btc->brp_max > UINT_MAX)
++		return false;
++
++	return true;
++}
++
++static bool
++can_pwm_const_valid(const struct can_pwm_const *pwm_const)
++{
++	u64 shortest_symbol;
++
++	if (!pwm_const)
++		return true;
++
++	if (pwm_const->pwms_min > pwm_const->pwms_max ||
++	    pwm_const->pwml_min > pwm_const->pwml_max ||
++	    pwm_const->pwmo_min > pwm_const->pwmo_max)
++		return false;
++
++	/* can_calc_pwm() divides by the shortest PWM symbol. */
++	shortest_symbol = (u64)pwm_const->pwms_min + pwm_const->pwml_min;
++	if (!shortest_symbol || shortest_symbol > UINT_MAX)
++		return false;
++
+ 	return true;
+ }
+ 
+@@ -633,7 +692,9 @@ int register_candev(struct net_device *dev)
+ 		return -EINVAL;
+ 
+ 	if (!can_bittiming_const_valid(priv->bittiming_const) ||
+-	    !can_bittiming_const_valid(priv->fd.data_bittiming_const))
++	    !can_bittiming_const_valid(priv->fd.data_bittiming_const) ||
++	    !can_bittiming_const_valid(priv->xl.data_bittiming_const) ||
++	    !can_pwm_const_valid(priv->xl.pwm_const))
+ 		return -EINVAL;
+ 
+ 	if (!priv->termination_const) {
+-- 
+2.34.1
 
-base-commit: 4843f6873f7c4835e62f2c73ba0fd538e57a2f22
