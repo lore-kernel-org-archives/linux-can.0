@@ -1,60 +1,95 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.214.181
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795435234;
-	b=w16OynmoBVyB+7QNiIik9nkyKP3MHYjiPRazhGKlPNIlYCXn1mNjSsgORY3WMU++wQkV
-	 eUAH4/2/IyA44rzIDZ/o8affh+ZIALAqRJ4wy+899cO6RYUHuKwVzSj0xcxCR8pJVrijT
-	 EFPtALhHXBVWHUs0sbN0gqI87Cy8EIA5FYWa5S3lADCYR+hmx0rodv7eorv8wyGxZT55h
-	 WEuoxMMVttgHbPLloq6e3U/fwBV9gR0KAcus0jZanVrp6x0C9214WLIbRDcTS2BaKAu3n
-	 I/iIAw9eOszzhWH2HM6el4KFnboGUjEGKF60B8s9EPgJu55avqwYBdq1aAEEz2cA0pw==
+	t=1795444595;
+	b=jI9gXnqKwq/VJ+54NW4u6nbbZhPe/QHSzRbOR/2eldv0N2SHK/LFLNDlmgoCjklxkRkv
+	 h4zL0zS7V4jqE7eNIUAa21vm+iwjV9xGWpeYuP0rlFA2uHpYM0qnIY8eEUXiKx+i9RdeE
+	 MYSGyxuU3qaaYVxK+z6CTkPx/ZtCoeshJxFke00n1E/Hfud589SJqba60vddd62iIk34z
+	 guxgyY2U2lKv4WUpp5nyMakh6Lwl+8mVY5bQsVlezorcoIFJkfX7dt9GFGelkD2NqcrR3
+	 xN9lpnyO7ydOOAo9LbB7njZiTUX52iXSa+syKy7flkCENQozthlpvy0TWRem5F+PmsQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795435234;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=58dnyHmcGYM5K/noXPXYN5UJ12SWVEjcuBJMitDAktY=;
-	b=n+TQJ1FEoOBHF2H34sJeHclTdaiPKOYomaLOrm8aaW7korIw9BKtr4PxeGFvRf2ol8Jr
-	 WGA240qOTesXbOpOHIsgkSmOosLS0EmR6JRF3pjHM7gINpK/ksRQq+394L4gSg0h7qPva
-	 H8EtUXmalBRwVgQSv8wWGAuBkEim0p/Hzp4DF+7rgohUBBqeckTY1L5tL7GtOtk5pfYGd
-	 P6q5q8guUScDdKsmV6cdnUSf6CQKJOC7OvFF4PpSthbnJ358f8Y5MAsI8DcUEmnmkH+v1
-	 UdeiSCHy1H/sG7bzpDM4EK4lfFxgDQ6pidh3h6uwOvbOC4tE5QKxgUDik4G6swYK50A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795444595;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
+	 Content-Transfer-Encoding;
+	bh=ehRimsJYB3Ch55Y8eVy07JQEbqg0JrRGoOw4sSOHi78=;
+	b=dOD9bWZprtIMdscOup1WHtlEqsVU7bly7xipjZAd/MwNYD1U/ky6NB3YrVkiXR29CYX2
+	 lmGXHNqUUuHbfoB5qkk9LAc/++o0ytHPiWntmxBkvd1/B923xfYu+ahzJIerBO/XkGyj8
+	 Dm8IjDD02muGQv5id7+SMEoWfvLechrCndO7AkrBrqTofSBbWjg63lq8RMKptaFlq98QI
+	 DeMuTPiUBJZFU4obnz4LfwGIRrGU3JHqncuKcHcWr1Qf0+6P+DGSL/SnOju1gufU1bb9P
+	 cg7GRJWFwYdJUU4vd/mCj4iXMT66sQ7069HMO5hoonmJQ+fMjvl+r2kEGXpW+x4SwpA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I2VrxARw;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=none header.from=iiitd.ac.in;
+	spf=pass smtp.mailfrom=iiitd.ac.in;
+	dkim=pass header.d=iiitd.ac.in header.i=@iiitd.ac.in header.a=rsa-sha256 header.s=google header.b=AnccZPWW;
+	arc=none smtp.remote-ip=209.85.214.181
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8361606A32A;
-	Mon, 23 Nov 2026 12:00:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07012606A31A
+	for <linux-can@vger.kernel.org>; Mon, 23 Nov 2026 14:36:33 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 07012606A31A
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iiitd.ac.in
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iiitd.ac.in
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=I2VrxARw
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1E731F000CF;
-	Mon, 23 Nov 2026 12:00:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795435234;
-	bh=58dnyHmcGYM5K/noXPXYN5UJ12SWVEjcuBJMitDAktY=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=I2VrxARwlNQzNhupuGPSVkr2zfOt6vIXI0i03VUfNDROroNsYb97TXMgVwcuKDpwz
-	 Y5u6/G9+t8PYd+W/lRMKBnFX1+/qKKV0Z/CQ4HD5BdstFy4oxChMiQm9t4UMYKygMd
-	 UsZPz35/IX7F0/+DUXiE198AFHBP2Hnc7HY1wYxX5IdrrYwG6j6dI4wLJaR2I8NmK3
-	 V9ynzJRq8VyqMHudIBOQcUL7SxoxSroErlgPya1CprcUZmFoN3d0oaG5ofYXW5qDxs
-	 tSxiO1d6nFk3zd7E1sdpJZlqAUq2CkGGbCguywWuQtSoiq0wkxEjfZN9My5BDIX7xC
-	 IltUcGbPvC00Q==
-Subject: Re: [PATCH can-next v9 13/13] can: gs_usb:
- gs_usb_host_frame_header_valid(): drop CAN frames with invalid DLC
-From: netdev-bot+sashiko@kernel.org
-To: mkl@pengutronix.de
-Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
- max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
- linux-can@vger.kernel.org, shuangpeng.kernel@gmail.com,
- stable@vger.kernel.org, vadim.fedorenko@linux.dev, kuba@kernel.org
-Date: Mon, 23 Nov 2026 12:00:33 +0000
-Message-ID: <179543523333.3131.16865758831688588605@kernel.org>
-In-Reply-To: <20261121-gs_usb-fixes-v9-13-db121d488945@pengutronix.de>
-References: <20261121-gs_usb-fixes-v9-13-db121d488945@pengutronix.de>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (1024-bit key) header.d=iiitd.ac.in header.i=@iiitd.ac.in header.a=rsa-sha256 header.s=google header.b=AnccZPWW
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2f04bea9a93so28311185ad.3
+        for <linux-can@vger.kernel.org>; Mon, 23 Nov 2026 06:36:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=iiitd.ac.in; s=google; t=1795444593; x=1796049393; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
+        bh=ehRimsJYB3Ch55Y8eVy07JQEbqg0JrRGoOw4sSOHi78=;
+        b=AnccZPWWxApE8C7F8ef8F1nyqmuie0g7OtihE5H0iGKBFsVGEZAv1U0L195NboFEG8
+         nBggwRfvjhv39Myhzm9UjQvOLBbo6J1mCXRKDhYbxS+xrK6hiE6iaBNkLq1kgjU4Yy49
+         SFEmfPFmXPENCyBbY5HsY9ddOzwthwbrruy6s=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795444593; x=1796049393;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to:content-type;
+        bh=ehRimsJYB3Ch55Y8eVy07JQEbqg0JrRGoOw4sSOHi78=;
+        b=gGEQHZTJ64J4PJN9T3Q0fkqWOJAGYpNO19Ang8o7hPiyofXExDYWRpzGAPbo71cY8y
+         54Q7C/uyTzM8iz7FClgfyZzc+Lp9g2atcoxwmqg0XpP3N5eapTdvx6EnCRVUxE7MhnhW
+         p5mOOhQjbXYyd+dIXX8No/cg3fYVX44IcHh4TmWt6/3kuUSLGd02JPAW2pUL79YHAVpR
+         VqHVTUtSpS1JwV0go09DZDJGGayLZxGLOOJ113vqv7zI384hN8EFCRZo+f123j9k7iaz
+         kpY9gcHFJ5RcHYQNfHe11KlZL10CYSTOWAG6OVOHgFMdQcnKpBS5vd5v2uafqnMX5M5U
+         Q76g==
+X-Forwarded-Encrypted: i=1; AL+hErGQZaaxGTc1O/3Vc4GDnTmHbLznIuVpmXfmhCaDe/IJGwpN+t6wkRSlaELrsCd+O8mtPBo2oNbRIOY=@vger.kernel.org
+X-Gm-Message-State: APuU4Z+HZaFVPVeg+44kIr0wJzU89lMibTHDKVartrgvdt8j58Jz2Uuy
+	saHlP3J5t1YCamZb3k2qV7Cbp10hmXxN1j/8HE3WBdR8ivyNuvjfOcGH1hf5bB6cey04fN3nkQE
+	FOAsEuBVy1g==
+X-Gm-Gg: AZFdTZenB7DMQDE2AFdvnNh5wij+SxKZnGqpLZNJoEhUjioMoc7zZTD6K+wJm/9u1QZ
+	M8yysz8Lk6jLJT7AsqF6tybbYDB4obiw4/wZGPOJ9TFuDcAFTK7MonVKFaumZN2w8M2xnKROg7g
+	Hr1sKFecmpXjuTqq9lxmnFqbX1uobThboPwdw/7J6sNjebsxKe78Q3R1ClXSNtc1Jf6jqpsxGLb
+	LXn6pGwfPAiTaTIZxLiNvpBSBxphjGobcIidtyUsPVHDoShA6rjMnVSVCRoH5F57DaqZZNdsQ81
+	LECCqq1Y6hkz8cq+xekzDF3gpwTUNLLnhlfGIukngZ5+UodrW8EeItBPkPsLN5alwRy+eWj//xT
+	HmbGQhzWeczvfNhEoj8N/6KDVnxoK/lcgnRzxUpqS1wMjtku1wr+R5x9Wdy7n1JYPxOmh+4UHAt
+	++9plRX+H5ROe941kn7/+APYYraC3tflarDlhAixYRdAAUOzb6MUpgX6c5zdPpbL+dcpEO1GjZO
+	UOLiwVEeBucMdhiyQBZIAaffq51wJrNdYHOWDSSj4OLp+TFVF9u5sZQNIlzmPRLKFcUUGv2Mrhj
+	0SVIj5lpGHMXFRpgXlezwsqET5OPJrdN7L8lGM4F6pJUIqHsCsQEJfENhOpU6OadXDwKf3QfJqj
+	HuT2CRyqtOhxu5zsgJjq5GNoZ3vw7PXaUeZS9TYaD+EQ7b0QpVp644DFMAjI/V+RW/w==
+X-Received: by 2002:a17:902:e847:b0:2ef:cf8a:622f with SMTP id d9443c01a7336-2f03f1cf5d7mr114757805ad.17.1795444593265;
+        Mon, 23 Nov 2026 06:36:33 -0800 (PST)
+Received: from iiitd-S2600STB.iiitd.edu.in ([103.25.231.160])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2f03ee85466sm54062085ad.4.2026.11.23.06.36.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Nov 2026 06:36:32 -0800 (PST)
+From: Piyus Kedia <piyus@iiitd.ac.in>
+To: Robin van der Gracht <robin@protonic.nl>,
+	Oleksij Rempel <o.rempel@pengutronix.de>,
+	Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	linux-can@vger.kernel.org,
+	netdev@vger.kernel.org
+Cc: kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org,
+	Kapil Vaswani <kapil@presceralabs.ai>
+Subject: [BUG] can: j1939: NULL dereference when a peer completes a session with no data queued
+Date: Mon, 23 Nov 2026 20:06:24 +0530
+Message-Id: <20261123143625.4021586-1-piyus@iiitd.ac.in>
+X-Mailer: git-send-email 2.34.1
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -64,157 +99,158 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issue(s) to consider.
+Hello,
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 2
+j1939_session_completed() passes the session's skb to the socket layer
+without checking that there is one.  A peer that completes a transport
+session whose data packets never arrived makes j1939_sk_recv_one()
+dereference NULL.
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+Reproduced on net.git main at af6737b90668 ("net: af_key: fix use-after-free
+in dump_sp()"), 7.4.0-rc3-01164, with KASAN.  A patch follows in this thread.
 
-- [Medium] The new DLC check in gs_usb_host_frame_header_valid()
-  (drivers/net/can/usb/gs_usb.c:666-678) ignores echo_id.
-- [Low] The commit fixes a real contract violation that userspace can
-  see, but it has no Fixes: tag and the message does not state the…
-- [Low] In gs_usb_host_frame_header_valid()
-  (drivers/net/can/usb/gs_usb.c), the new out-of-range DLC check (lines…
 
---
+1. Root cause
 
-can: gs_usb: gs_usb_host_frame_header_valid(): drop CAN frames with invalid DLC
+net/can/j1939/transport.c, j1939_session_completed():
 
-This patch adds a check to gs_usb_host_frame_header_valid() that rejects
-any host frame with a DLC above 0xf. A rejected frame increments
-rx_errors and rx_length_errors, logs a rate limited error and causes the
-URB to be resubmitted.
-
-Closes: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77@pengutronix.de
-
-> According to the respective CAN standards, the maximum DLC length for
-> CAN-CC and CAN-FD frames is 0xf. The code in driver assumes that this limit
-> has been verified.
-
-[Severity: Low]
-Should this have a Fixes: tag, and could the message state what goes
-wrong without the check?
-
-Before this patch, gs_usb_receive_bulk_callback() passed the
-device-supplied hf->can_dlc directly to can_frame_set_cc_len(). That
-call came in with commit 26949ac935e3 ("can: gs_usb: add CAN-FD
-support"):
-
-    can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
-
-The helper expects the caller to have checked the value already:
-
-include/linux/can/length.h:can_frame_set_cc_len() {
-	/* the caller already ensured that dlc is a value from 0 .. 15 */
-	if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
-		cf->len8_dlc = dlc;
-}
-
-With CAN_CTRLMODE_CC_LEN8_DLC enabled, a len8_dlc above 15 could
-therefore reach raw CAN socket users.
-
-On the FD path, can_fd_dlc2len() does dlc2len[dlc & 0x0F]. A DLC such as
-0x1f was silently turned into a valid 64 byte frame instead of being
-rejected.
-
-Other fixes in this series carry Fixes: and Cc: stable tags, for example
-"can: gs_usb: gs_usb_receive_bulk_callback(): check for overflow flag if
-SKB allocation fails". Would the same tags make sense here, so stable
-backporters have something to go on?
-
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index a1192867e49b8..2da2f8843e5d5 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -663,6 +663,20 @@ static bool gs_usb_host_frame_header_valid(const struct gs_can *dev,
->  		}
->  	}
->  
-> +	/* we can check for max CAN-CC and CAN-FD DLC at the same time, they are both 0xf */
-> +	BUILD_BUG_ON(CAN_MAX_RAW_DLC != CANFD_MAX_DLC);
-> +	if (header->can_dlc > CAN_MAX_RAW_DLC) {
-
-[Severity: Medium]
-This check runs whatever header->echo_id is, so TX echo frames
-(echo_id < GS_MAX_TX_URBS) with can_dlc > 15 are now rejected as well.
-What happens to the pending TX context in that case?
-
-gs_usb_get_rx_data_length() returns -EINVAL, and
-gs_usb_receive_bulk_callback() then skips the echo completion branch:
-
-gs_usb_receive_bulk_callback() {
-	...
-	data_length = gs_usb_get_rx_data_length(dev, hf, urb->actual_length);
-	if (data_length < 0)
-		goto resubmit_urb;
-	...
-	} else { /* echo_id == hf->echo_id */
-		txc = gs_get_tx_context(dev, hf->echo_id);
-		...
-		gs_free_tx_context(txc);
-
-		atomic_dec(&dev->active_tx_urbs);
-
-		netif_wake_queue(netdev);
+	if (!session->transmission) {
+		se_skb = j1939_session_skb_get(session);
+		/* distribute among j1939 receivers */
+		j1939_sk_recv(session->priv, se_skb);
+		consume_skb(se_skb);
 	}
+
+j1939_session_skb_get() resolves the session's current offset through
+j1939_session_skb_get_by_offset(), which returns NULL when no queued skb
+covers it:
+
+	struct sk_buff *skb = NULL;
 	...
-}
+	if (!skb)
+		netdev_dbg(...);
+	return skb;
 
-The TX context slot and the echo skb that gs_can_start_xmit() stored
-with can_put_echo_skb() then stay held until gs_can_close(). The
-active_tx_urbs count is never decremented either. The driver has no
-ndo_tx_timeout or other recovery path.
+j1939_sk_recv() then walks the bound sockets and j1939_sk_recv_one()
+dereferences the skb on its first statement:
 
-After GS_MAX_TX_URBS such echoes, gs_alloc_tx_context() fails and
-gs_can_start_xmit() returns NETDEV_TX_BUSY. Once the leaked
-active_tx_urbs count reaches GS_MAX_TX_URBS, gs_can_start_xmit() stops
-the queue and nothing wakes it. TX then stalls until the interface is
-taken down and brought back up.
+	static void j1939_sk_recv_one(struct j1939_sock *jsk, struct sk_buff *oskb)
+	{
+		const struct j1939_sk_buff_cb *oskcb = j1939_skb_to_cb(oskb);
+		...
+		if (oskb->sk == &jsk->sk)
 
-Echo frames never use can_dlc. gs_usb_get_minimum_rx_length() only
-converts the DLC to a length for echo_id == GS_HOST_FRAME_ECHO_ID_RX,
-and the echo path takes its data from dev->can.echo_skb[]. Before this
-patch, an echo with a bogus can_dlc completed normally.
+sk_buff::sk is at offset 0x18 on x86_64, which is the faulting address in
+the report below.  consume_skb() tolerates NULL, so the dereference is the
+only fault on this path.
 
-Could the DLC check be limited to echo_id == GS_HOST_FRAME_ECHO_ID_RX?
+The same getter is checked by both of its other callers in this file -
+j1939_session_tx_dat() returns -ENOBUFS, and j1939_xtp_rx_dat_one() warns and
+cancels the session - so this looks like an omission rather than an
+invariant.
 
-> +		stats->rx_errors++;
-> +		stats->rx_length_errors++;
 
-[Severity: Low]
-Can error frames be counted twice here? Take a frame with CAN_ERR_FLAG
-set and can_dlc > 15, for example 0x20. The existing check earlier in
-gs_usb_host_frame_header_valid() already fires for it:
+2. How a peer reaches it
 
-	if (header->can_id & cpu_to_le32(CAN_ERR_FLAG)) {
-		if (header->can_dlc != CAN_ERR_DLC) {
-			stats->rx_errors++;
-			stats->rx_length_errors++;
+By sending an End Of Message Acknowledgement for a session with nothing
+queued, so that the session is completed before any data packet arrives:
 
-Nothing skips the new check once valid is false, so both counters are
-incremented again. That one dropped frame adds 2 to rx_length_errors
-and at least 2 to rx_errors.
+  j1939_can_recv()            net/can/j1939/main.c:108
+    j1939_tp_recv()           net/can/j1939/transport.c:2201
+      j1939_tp_cmd_recv()     net/can/j1939/transport.c:2153
+        j1939_xtp_rx_eoma()   net/can/j1939/transport.c:1439
+          j1939_xtp_rx_eoma_one()       :1424
+            j1939_session_completed()   :1247
 
-struct rtnl_link_stats64 in include/uapi/linux/if_link.h documents both
-counters as counting packets, not individual validation failures.
+Everything on that path is driven by received CAN frames, so on a shared bus
+this is reachable by any node; locally it needs only the ability to send on a
+CAN interface (the reproducer uses vcan).
 
-> +
-> +		if (net_ratelimit())
-> +			netdev_err(netdev,
-> +				   "out of range DLC (can_dlc=%u, max_can_dlc=%u)\n",
-> +				   header->can_dlc, CAN_MAX_RAW_DLC);
-> +
-> +		valid = false;
-> +	}
 
-[ ... ]
+3. KASAN report
 
--- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261121-gs_usb-fixes-v9-0-db121d488945%40pengutronix.de
+net.git main, 7.4.0-rc3-01164-gaf6737b90668, KASAN (full log attached as
+kasan-j1939-null-session-skb-mainline-7.4-rc3.txt):
+
+  BUG: KASAN: null-ptr-deref in j1939_sk_recv+0xd4/0x3c0
+  Read of size 8 at addr 0000000000000018 by task x/9440
+   j1939_sk_recv
+   j1939_xtp_rx_eoma
+   j1939_tp_recv
+   j1939_can_recv
+
+j1939_sk_recv_one() and j1939_session_completed() are inlined in that build.
+On 7.3.1, where net/ is built without inlining, the same reproducer names
+every frame separately (kasan-j1939-null-session-skb-7.3.1.txt):
+
+  BUG: KASAN: null-ptr-deref in j1939_sk_recv_one+0x34/0x170
+          net/can/j1939/socket.c:318
+   j1939_sk_recv_one          net/can/j1939/socket.c:318
+   j1939_sk_recv              net/can/j1939/socket.c:363
+   j1939_session_completed    net/can/j1939/transport.c:1247
+   j1939_xtp_rx_eoma_one      net/can/j1939/transport.c:1424
+
+
+4. Impact
+
+A NULL dereference in softirq context, from the CAN receive path: an oops
+that kills the receiving context and, with panic_on_oops, the machine.  It is
+a denial of service, not a corruption - address 0x18 is not mappable on any
+supported configuration.
+
+net/can/j1939/socket.c and transport.c are byte-identical between 7.3.1 and
+af6737b90668, so nothing in between changes this path.
+
+
+5. Reproducer
+
+j1939_eoma_null_session_skb.c in this directory (sent off-list on request;
+see the note at the end).  It brings up vcan, binds a J1939 socket, and
+sends the connection-management frames that complete a session with no data.
+It faults within a second on both trees.  CONFIG_CAN, CONFIG_CAN_J1939,
+CONFIG_CAN_VCAN and KASAN are required.
+
+
+6. Suggested fix
+
+Test the skb before using it, in the shape the file's other callers already
+use:
+
+	+		if (se_skb) {
+			/* distribute among j1939 receivers */
+	-		j1939_sk_recv(session->priv, se_skb);
+	-		consume_skb(se_skb);
+	+			j1939_sk_recv(session->priv, se_skb);
+	+			consume_skb(se_skb);
+	+		}
+
+Deliberately without a netdev_warn(): a session completed with no data
+queued is the peer's protocol error, not a kernel one, and a warning on this
+path would let a peer flood the log.
+
+Cancelling the session rather than dropping the completion may be the more
+correct protocol response.  We left that alone so the patch stays a fix for
+the dereference; say the word if you would rather have the session cancelled.
+
+The patch follows in this thread.  Checkpatch is clean.
+
+
+7. What was and was not checked
+
+Checked: the fault reproduces on net.git main under KASAN; the patched kernel
+is clean on the same reproducer; ordinary J1939 transport sessions (a
+multi-packet transfer over vcan, RTS/CTS/DT/EOMA) still complete and deliver
+with the patch applied; both j1939 files are byte-identical between 7.3.1 and
+af6737b90668.
+
+Not checked: real CAN hardware - all of this is vcan under QEMU.  We have not
+tried this from a second node on a physical bus.
+
+This was found by AI-driven fuzzing built on top of syzkaller; its analysis
+was then checked by hand against the code and every claim above was
+reproduced.
+
+Kapil Vaswani
+Piyus Kedia
