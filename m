@@ -1,88 +1,92 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795510687;
-	b=ebD39gwHQE0zM3x1ql5bL/h49qXl3HpAdTQOJ+0FgAim+dltUedDZElnT5zkfHy1DteK
-	 nduM1I52ER0jnxBMFypivDv48Iw0bRUuPpBJj5h6YhLAzEToDrJIDfNVEV/wi0vwhUjAg
-	 juAgUMu4ThIxyXbj8u624Vo56LClmnENUUh0O4VDA4G7GZjfZTnM7/1ogGOEP4vkLJSno
-	 tuOrXp/KF1rqymiqRrnwQ96TdldN65A8/T3Xcp1LkQr3Ynod+UuOAXJEmzAoxymOJ6o+q
-	 YoFANN3Y6+VIWcR/J8cVr0qav5C+1CydbADGkp0fchOYLdVNvXWvtSyosGkLGKWK0vg==
+	t=1795510692;
+	b=ZxiEZGWLChv9rkqYibWvA5G+VIGDbuETA0OSkST43rkrCk1B6g1y14WOgkQqOFmQ0XHi
+	 DAVjgW4+7V12RqYp96eUET06jnxXfOP8wZjncskASAG8v0lRbSVaBbnpJJW+KX1goKxE7
+	 9GGkfY2A7G1D09lJC0KMyac5PjW7sLBbfbcvCZo35XtSTb3urxwNWIm/txX83tWnW8Ldm
+	 VNzlsD+cwjO5XfxwcDZmFcjSPydcXcu4ii7GoF++VqabykxHkyKW5/4D95IxzhM6BEZ0v
+	 qaoS3VbHdAOx/da9MAh8JPU0sSAMsI+ldE3B8CcX+MgtSuKhdqIPFObNRsUs+PFmI5A==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795510687;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795510692;
 	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
-	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:
+	 Message-ID:X-Mailer:In-Reply-To:References:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding;
-	bh=76uqXxjlsjHRjkNzBtvYUvH+0OqjU/qj/joPKtF1TNo=;
-	b=sI774QVXdDqafB8XhnPsmkxc2PZ9ukELxcnnObqeJd0is4A4L264i4tT7kMuOR9ZyeHm
-	 CnY6fopYtsRwW0J+lPhrmuxxtz2cnc8B6A1+gMkE9S8c0yv7i2JitKZbQanbQA6GTJbTX
-	 Q14lwIHBGX1VCyxqKa/jJfB9TfPydtmUXDHcd2F9i0aadUvfYYOEtL76rNLvfzBt9L8AV
-	 KKGjzM69cC0qcM6gqSs+KyQzqUlvxZLfYocFkZ83kF+fmv2QoEWp5KjaIbV5GSSd1xBQw
-	 WEe7dMV5qWGf2FZCj/H7Vb9yeGwnRpYYKidUn6SIvP/rU5+11TDR9H52k4eZMyjiErg==
+	bh=sfW2tbmWaZxyyxEoA1wluudOlezM1GvW473v8XzFwrY=;
+	b=5e7aqs3fCredezDQ+Br2DMglu5ZRgkzuQMmiec6pSSghh57zT1lkOOO13wEyRWp02DfQ
+	 wHatazOyAECRfiA5VM7afA3d8TxZZ3Bwb3DSIzuJ10A1n2CYnckjy7Lt4w0/3Aj/CTiTY
+	 aGMGCK1+lPae0CqRLMVh6VNSYsp4Ha6mueN7o8kFdrkL4s9iD9ltZrhRODaRLUqTfjvC5
+	 1dZvkcT1p/d2gl6mbWL2n/bJrVNnTsk6H/by7ODP0yVFBwR8apsp3Ma75GBcEF1TgCTZD
+	 2iKMQo7SxjlG2wzPE1WDwaamg2+tSr7Ddhqv69slJVCsOlp4t+m1rapMwBOJEPFfbaw==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Mz3zak1W;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=gxUwHuuI;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4257606A336;
-	Tue, 24 Nov 2026 08:58:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org D4257606A336
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7640060A260F;
+	Tue, 24 Nov 2026 08:58:11 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 7640060A260F
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=Mz3zak1W
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=gxUwHuuI
 Received: from pengutronix.de (p20030102af17cb00d2e697ee776c6466.dip0.t-ipconnect.de [IPv6:2003:102:af17:cb00:d2e6:97ee:776c:6466])
 	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 474742024BE;
-	Tue, 24 Nov 2026 09:58:05 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id EE949205A2F;
+	Tue, 24 Nov 2026 09:58:07 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795510685;
+	s=20260414; t=1795510688;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=76uqXxjlsjHRjkNzBtvYUvH+0OqjU/qj/joPKtF1TNo=;
-	b=Mz3zak1WmUOJNiDzAQzo7oZHpYFQyFse3oZ+X035R6aX394itf+tbxF7G7NKLmYUI2FVqe
-	S/xZvDszRbBOHd2+M0qbUdZ26oAXFEkz28d8aI0omZSGYcux83Gx68ss6//ZPKku/I1ySj
-	b8fgtHuzlw0xskgxjLYOkaqjXZZDTpr+DZPSx/SmjCtJAyI3uJp1yiBBQ4RAbQVijEKKw2
-	6GIPEzHxCI4SbxZ2VjqnTycrVJhuFWpRLvTW/uAhpyaLJ0040AY1sJddqfPW2oWm03EnnW
-	1VSFwgy9DlB5UoxPheNpma6w4sdeqBG/cf6aD3hNmJ2wsMuoFJhEMqH1ocTdrw==
+	bh=sfW2tbmWaZxyyxEoA1wluudOlezM1GvW473v8XzFwrY=;
+	b=gxUwHuuIQjXpzBbnK7dEC4y9ET/0t264+tkISBXjGvhmDQS3ha69GganwgZ9q4QE7DMkav
+	fJHB/bmzE4nMqlxdHiLi3RZgaImWQEk+MdpDoArdHmLMBxESixXK/iqFAnS1ju0+MEA9lp
+	+H7Saa6VAX2xCuRenDFneKgg/wXNWsasSkDfj/0OEAvyazU0j5/QWl/OVnxCmQMYerqyXK
+	vIQ3IpKDMOVExOj/guAy+ouaLBmGzAEScmJ7HGn45AAAFMhwZ/+rizu8ovUw21eg8wh7SA
+	ByJowxES5qZNaoEy5GvmDtzG4GrB3FNJ24IRL3PqP4P/0Wp4ivN5T0G9WT6YAg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795510685;
+	s=20260414; t=1795510688;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=76uqXxjlsjHRjkNzBtvYUvH+0OqjU/qj/joPKtF1TNo=;
-	b=V2MTHbbnk08tabwbyd1ZUyNsfmtpLRdjPSfGO1vgr7PzN1IQqSuVpDPNIVal1IegHEq8Jx
-	EPd9kUggF5X8cnEri2qFknHdp5/X3Ftyic7O4lYDIijjLKA6hBU/VGNjY6KCcYap+2+/vg
-	oAWhnV987at1W4ZoUU0ID0MDsZsTpdVCEU7Er/XSlm6VZYwp9RaEvo22FfT7N6rRIkIYuS
-	Jarc7sKNhQ+UzHZwOFYtb+hXwDlkfsAx3esK/Gm5J1HMkZDZFzEmgMQ6tzFnR30+6FqGvi
-	dLIEqUDELxRscfCzC7uSrBt7Yjjk1b5fSQ0SD1DoFwzXIjYZRcUDuYuM/Ttj0Q==
+	bh=sfW2tbmWaZxyyxEoA1wluudOlezM1GvW473v8XzFwrY=;
+	b=LLV+lGfc0qFGaK89XW4KRoFqjUAnFAUxSgwGD5GCWENHxBDPOvk3fsxAsK4ZjIWuegimgl
+	slOev00Z8czo/2FTesp8p8GtaXj1IjBMdGhSgmdrRAnmyLOZF+MiqGMk5SyjzIufxxJu71
+	hoIDd9y+2ahad2LYIs449FM9tvyzt1LEV/lGhSzHHUh6bb++tOYjk6m4ebBmLJUDkWeAUw
+	5wZ+GHgvHzQn7byrnoslk0FgoA2ybDW+6icfdaL4ShOzViao4T87OEeIvxdVzzj7HUsy+8
+	gwmX7QY19qWNFGXfKKwufRMc80P8ErC2cud9M+AJxdodXjOGPXBvY/tERvpKww==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795510685; a=rsa-sha256;
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795510688; a=rsa-sha256;
 	cv=none;
-	b=B7gxxw21EyH9/4UPh0tfSXRoPZ58xOwRxD7vsUJ/TQ0AKs/ihP4z9wkFKtU6ipg6Vr5S+O
-	9OYtim7xIGFx+xoQAkGNDrsEkdanIQhAfxoJdaf8rWPDrQ3IjWVyxbj+z9G84wdfVK8S1D
-	2JZgLrdRD6mgFgRcKqecQkry4api1yWqTOtyiDRXKqBZ5qb1nrSZIeH4Hha4Gn0mQzJFO8
-	dLmj0vLyaIanB1rgaedWF1C7wiVODkjdv5piYfuUH5A++2swavRUYgUQfnPDtA/iz1C3LE
-	A6FPe8AQAzgZ92LTm94UXnMXG0cVSdVHnk4n7yTl/my31iSlLzh59XYXk+W5rw==
+	b=IYunNs0FVJugs65FXGx52CsvWwaFdHi5IYxnu3qtZc87s8P0eEZNbC5Luc8pyFrUMkAgOz
+	qAVQL9BSNlUtAX46cm1F/IgbdbiuFfJR4gLqBhccRtt2snBo2F5G6eAoGZowc1sh41REyp
+	j3xvjwqRBfKipFEgj2+n0YsZOu2MvcjH7EFg1FHENJ54LQr54xptod04bhZVzbmR/yNo/V
+	1dMTgykNYhU/dFKl4Znwe5nxfifm+23yNi/YnD7jl6GoICD2/Jc87bANIhtuMKkaBP57qv
+	nBORz3Q9pBKfkFM/+umdHMXX9mck2vzRliQVtYC9kZKbnLqM25p6Ujoe/oah9Q==
 From: Marc Kleine-Budde <mkl@pengutronix.de>
 To: netdev@vger.kernel.org
 Cc: davem@davemloft.net,
 	kuba@kernel.org,
 	linux-can@vger.kernel.org,
 	kernel@pengutronix.de,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
+	=?UTF-8?q?Uwe=20Kleine-K=C3=B6nig=20=28The=20Capable=20Hub=29?= <u.kleine-koenig@baylibre.com>,
 	stable@vger.kernel.org,
-	Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: [PATCH net 02/12] can: bcm: do not remove the procfs entry in bcm_notify()
-Date: Tue, 24 Nov 2026 09:51:29 +0100
-Message-ID: <20261124085757.1093632-3-mkl@pengutronix.de>
+	Vincent Mailhol <mailhol@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	linux-kernel@vger.kernel.org,
+	Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
+Subject: [PATCH net 12/12] can: flexcan: Fix probing for m68k/coldfire
+Date: Tue, 24 Nov 2026 09:51:39 +0100
+Message-ID: <20261124085757.1093632-13-mkl@pengutronix.de>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20261124085757.1093632-1-mkl@pengutronix.de>
 References: <20261124085757.1093632-1-mkl@pengutronix.de>
@@ -95,134 +99,71 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Oliver Hartkopp <socketcan@hartkopp.net>
+From: Uwe Kleine-König (The Capable Hub) <u.kleine-koenig@baylibre.com>
 
-bcm_notify() removes the procfs entry of a CAN_BCM socket that is bound
-to a vanishing CAN device with remove_proc_entry() while holding RTNL.
-remove_proc_entry() waits for all running readers of this entry. A
-reader of /proc/net/can-bcm/<inode> that stalls in its copy to user
-space, e.g. on a FUSE backed mapping, therefore blocks RTNL on the
-unregistration or namespace change of the bound CAN device.
+When determining the device details was reworked in commit 5e6c3454b405
+("net: can: Use device_get_match_data()") there was no replacement for
+the previous handling of non-of instantiated devices via the device's
+id_entry which then results in a NULL pointer exception. The only
+in-tree provider of such a device is arch/m68k/coldfire/device.c.
 
-The entry has been removed in bcm_notify() so that a later
-bcm_connect() of the unbound socket can register it again without a
-"proc_dir_entry already registered" warning.
+Given the id_table only contains a single entry just hardcode the result
+of `platform_get_device_id(pdev)->driver_data` and drop the unused
+assignment to .driver_data from the table.
 
-The CAN_BCM socket itself stays usable after a NETDEV_UNREGISTER:
-bcm_notify() only unbinds it and reports ENODEV, so the application can
-connect() the socket again, e.g. to a re-created CAN device. The name
-of the procfs entry is the inode number of the socket, which does not
-change until the socket is closed.
+While touching the id table, drop the unusual comma after the terminator
+entry.
 
-Keep the procfs entry until bcm_release() instead, which removes it
-after the socket has left the notifier list and without holding RTNL.
-bcm_connect() only creates the entry, if it does not exist yet.
-bcm_proc_show() reports an unbound socket as "unbound" instead of
-showing the cleared ifindex as "any".
-
-As bcm_proc_show() can now run while the socket is bound or unbound, it
-reads bo->ifindex locklessly with READ_ONCE() and the writers use
-WRITE_ONCE(). The NETDEV_DOWN handling in bcm_notify(), which runs
-without lock_sock(), reads bo->bound and bo->ifindex with READ_ONCE()
-as well. bo->ifindex is still only modified under lock_sock(). A
-concurrent bind or unbind may show an intermediate state in the procfs
-output, which is acceptable for this debug information.
-
-Fixes: 76fe372ccb81 ("can: bcm: Remove proc entry when dev is unregistered.")
+Fixes: 5e6c3454b405 ("net: can: Use device_get_match_data()")
 Cc: stable@vger.kernel.org
-Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
-Link: https://patch.msgid.link/20261120-can-bcmlock-memcg-v7-2-f6b84f5257b1@hartkopp.net
+Signed-off-by: Uwe Kleine-König (The Capable Hub) <u.kleine-koenig@baylibre.com>
+Link: https://patch.msgid.link/20260618140147.142489-2-u.kleine-koenig@baylibre.com
+Cc: Vincent Mailhol <mailhol@kernel.org>
+Cc: Rob Herring <robh@kernel.org>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: Jean-Michel Hautbois <jeanmichel.hautbois@yoseli.org>
 Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 ---
- net/can/bcm.c | 33 +++++++++++++++------------------
- 1 file changed, 15 insertions(+), 18 deletions(-)
+ drivers/net/can/flexcan/flexcan-core.c | 12 ++++++++++--
+ 1 file changed, 10 insertions(+), 2 deletions(-)
 
-diff --git a/net/can/bcm.c b/net/can/bcm.c
-index 3f4c8d828337..1595b7720c98 100644
---- a/net/can/bcm.c
-+++ b/net/can/bcm.c
-@@ -219,11 +219,16 @@ static int bcm_proc_show(struct seq_file *m, void *v)
- 	struct net *net = m->private;
- 	struct sock *sk = (struct sock *)pde_data(m->file->f_inode);
- 	struct bcm_sock *bo = bcm_sk(sk);
-+	int ifindex = READ_ONCE(bo->ifindex);
- 	struct bcm_op *op;
+diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/flexcan/flexcan-core.c
+index 86b40abe9e76..e9b822678213 100644
+--- a/drivers/net/can/flexcan/flexcan-core.c
++++ b/drivers/net/can/flexcan/flexcan-core.c
+@@ -2077,10 +2077,9 @@ MODULE_DEVICE_TABLE(of, flexcan_of_match);
+ static const struct platform_device_id flexcan_id_table[] = {
+ 	{
+ 		.name = "flexcan-mcf5441x",
+-		.driver_data = (kernel_ulong_t)&fsl_mcf5441x_devtype_data,
+ 	}, {
+ 		/* sentinel */
+-	},
++	}
+ };
+ MODULE_DEVICE_TABLE(platform, flexcan_id_table);
  
- 	seq_printf(m, ">>> sock inode %s", bo->procname);
- 	seq_printf(m, " / dropped %lu", bo->dropped_usr_msgs);
--	seq_printf(m, " / bound %s", bcm_proc_getifname(net, ifname, bo->ifindex));
-+	if (READ_ONCE(bo->bound))
-+		seq_printf(m, " / bound %s",
-+			   bcm_proc_getifname(net, ifname, ifindex));
-+	else
-+		seq_puts(m, " / unbound");
- 	seq_printf(m, " <<<\n");
+@@ -2148,6 +2147,15 @@ static int flexcan_probe(struct platform_device *pdev)
+ 		return PTR_ERR(regs);
  
- 	rcu_read_lock();
-@@ -1866,19 +1871,9 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
+ 	devtype_data = device_get_match_data(&pdev->dev);
++	if (!devtype_data)
++		/*
++		 * If the device was instantiated via the traditional platform
++		 * mechanisms (i.e. not by device tree), device_get_match_data()
++		 * returns NULL. The only remaining such device is mcf_flexcan0
++		 * (defined in arch/m68k/coldfire/device.c). Pick the right
++		 * device type for that.
++		 */
++		devtype_data = &fsl_mcf5441x_devtype_data;
  
- 		/* remove device reference, if this is our bound device */
- 		if (bo->bound && bo->ifindex == dev->ifindex) {
--#if IS_ENABLED(CONFIG_PROC_FS)
--			if (sock_net(sk)->can.bcmproc_dir && bo->bcm_proc_read) {
--				remove_proc_entry(bo->procname, sock_net(sk)->can.bcmproc_dir);
--				bo->bcm_proc_read = NULL;
--			}
--#endif
--			/* Paired with the lockless fast-path check in
--			 * bcm_sendmsg(); bo->ifindex itself is only ever
--			 * accessed under lock_sock() so it needs no
--			 * annotation.
--			 */
-+			/* pairs with the lockless check in bcm_sendmsg() */
- 			WRITE_ONCE(bo->bound, 0);
--			bo->ifindex = 0;
-+			WRITE_ONCE(bo->ifindex, 0);
- 			notify_enodev = 1;
- 		}
- 
-@@ -1892,7 +1887,8 @@ static void bcm_notify(struct bcm_sock *bo, unsigned long msg,
- 		break;
- 
- 	case NETDEV_DOWN:
--		if (bo->bound && bo->ifindex == dev->ifindex) {
-+		if (READ_ONCE(bo->bound) &&
-+		    READ_ONCE(bo->ifindex) == dev->ifindex) {
- 			sk->sk_err = ENETDOWN;
- 			if (!sock_flag(sk, SOCK_DEAD))
- 				sk_error_report(sk);
-@@ -2013,7 +2009,7 @@ static int bcm_release(struct socket *sock)
- 	/* remove device reference */
- 	if (bo->bound) {
- 		WRITE_ONCE(bo->bound, 0);
--		bo->ifindex = 0;
-+		WRITE_ONCE(bo->ifindex, 0);
- 	}
- 
- 	sock_orphan(sk);
-@@ -2060,16 +2056,17 @@ static int bcm_connect(struct socket *sock, struct sockaddr_unsized *uaddr, int
- 			goto fail;
- 		}
- 
--		bo->ifindex = dev->ifindex;
-+		WRITE_ONCE(bo->ifindex, dev->ifindex);
- 		dev_put(dev);
- 
- 	} else {
- 		/* no interface reference for ifindex = 0 ('any' CAN device) */
--		bo->ifindex = 0;
-+		WRITE_ONCE(bo->ifindex, 0);
- 	}
- 
- #if IS_ENABLED(CONFIG_PROC_FS)
--	if (net->can.bcmproc_dir) {
-+	/* create the procfs entry once, it is removed in bcm_release() */
-+	if (net->can.bcmproc_dir && !bo->bcm_proc_read) {
- 		/* use unique socket inode number as filename */
- 		snprintf(bo->procname, sizeof(bo->procname),
- 			 "%llu", sock_i_ino(sk));
+ 	if ((devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) &&
+ 	    !((devtype_data->quirks &
 -- 
 2.53.0
 
