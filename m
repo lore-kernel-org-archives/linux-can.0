@@ -1,84 +1,91 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.25
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795510046;
-	b=dDLXt6uCJt424PTbA3o6kM90mXyg3uhrlqBlUefqi+8SSeANmgeV8kxucs83rSW6TwaL
-	 o66g4SqvClsCCuPAA0h04xEHC42DwXZme0p4y2maXLPFqlt9AoIrTYz/hcYj4ODLQUKgn
-	 0LkzYlb3PoVzJzQDDpD7uD1+cqcwucIh6d7krNXF+PRNsDt0cDdN5wIFBsGMXPND8phb9
-	 4G8uyiVx6g7e8MkePU76kvbC1JIR1LGN5gyGOi5hwxvjBANa51GwVVnP9hWIXexy8G5oA
-	 FFugC5xF3+UyDFxqjrPjZswxneHqW4ELgsbcSKZN+zR5/mreatS8J9hFAUCw4tAtUsg==
+	t=1795510457;
+	b=wyFMH0wlJ/tAZW++tPqaiTJXcmZOoH7DdvsZkzXPPSc6WPEuN8vifDdx5B2K3xcnXmqz
+	 km46LTl3V1MPgUyLYLuS2dRDIEDkCjHO3aiIxtKbd7ACmyr9HJ/1SQL4dJ0jopOeybHEa
+	 gJKgPyYlo1jRtbLp4icEwiMecx/ThMlnWXYF07xDGdqEZskjQa6fIJQwhuvP/zUIhxOOS
+	 ExJmLyu1jb1U4dx8vK3Xrp+07fKFQ5I/VPs7bN14dzaiEToWAxIM6r2Ttngf0fe5kBt+0
+	 sRK2U04q21LIYp5uZCgla18y/UNoZJOVrY0OiJud4IoisGbc2eF+PuV4pka/C4as0cA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795510046;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=DYPXkbyVo7I6I6nELw212corw/FRZ2v9BlNSxZlJef8=;
-	b=2dWK+mAwONPgFCwFnnD2Fz5KT1PJ0ea6l5DZnOJXW7YS49IsyhZFjfG4klCn2+sJmFVR
-	 4TbQGHyCZgmhIXE0rzyTK1vH6J34RfWMquFHYMPIFtZzT9jyzO56s1oAYCwlBLToLhfut
-	 y1QJd1wmkESUuQh3b2rY8/da5S/Dy2wsnCGejJz97RDoZPjb7vjnAj13kjBwRo6PhQJgn
-	 90+KU3Jl2v6s4FdEMeYvqHapY/3/hwfAiP7l4uH9+eMWJAZvWv9zJm4uH38gpKeOTRQE+
-	 OcsOu+gR27HA2GqrDe4/GxcRbniDNxFavz3DMnHoiXUe86wxDTl9V8bdDtEIKLZIMWw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795510457;
+	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
+	 References:Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
+	b=OEPDaqkr/l5ZaCT/SNk2Xtlt9VsAaX+sHRGqUS/qAsc+s+iJX3T1+iN5OuErYr3uUQEO
+	 txlP04/4gcR7I4TyNeya89qx4AN97pcLb/vELqn1vkkbEMupP7y+ttJN4QGv/8mARou4P
+	 Gws2s/Tm4RFTdPuIFmsa7buoPezNZarMWzX7NipJ2JP4HXCNZesm5nKd/2M0eu/c4CvSr
+	 t0WboMPNDmGyocBcdxR1sw5CleLqSSb+9Ut1x52bjmQgclUqkT7FEzRDJtOyWOP2YSk3b
+	 K/4BTPuzSKM5DgFEFV8u/VaVJgs5lXOCC09vCsnDx/lb2cFmkI06Oo8F7dt0g+iqzFA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=I8ghgZjH;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+	dmarc=pass header.from=hartkopp.net;
+	spf=fail smtp.mailfrom=hartkopp.net;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=HLbucOis;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=+VxbI9WM;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.25
+Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02CD3606A322;
-	Tue, 24 Nov 2026 08:47:24 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 02CD3606A322
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB666606A321
+	for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 08:54:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CB666606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=I8ghgZjH
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 0200520041D;
-	Tue, 24 Nov 2026 09:47:16 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795510037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DYPXkbyVo7I6I6nELw212corw/FRZ2v9BlNSxZlJef8=;
-	b=I8ghgZjHda3I6UwJei9788PmS1iSVMuvOyyTXaDO3XqhMMmxX470AyrvozCVqyyf0Bu0Po
-	37piT1VWL4/TNqZbfz/EXJ30txwturdGcCL2iBOiim4gaKXdkQmcWRvdq5znUCQor2OZ1r
-	NvYegUHaU/Fp8YoYm110YMNfOb4O3oe6kmuLjQuRf+BexFV0gXQlbWEKQL8UchP4Z2Rje+
-	JR22hO0WRgAc7yyQN0bvA775wUvTnMKJ4HCoIUhYvARCPSg7VlZ2stwucC2TlHReZCrJHA
-	QlF1QWzLM4HY5FVXYw7LTnKGjNq8VcKpJfqUlRARGSDOXez0fekJw3ugWWeDkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795510037;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DYPXkbyVo7I6I6nELw212corw/FRZ2v9BlNSxZlJef8=;
-	b=IASNyQ6ykbuBzpTURWdZL+P9Ed8cVn48Y3qmTqU/KaOHa0XhuPEAq6SskO+AyB1onSHPVu
-	gKu1fkWgrs37sWtszMeL41EDN2edrO18vrOMOyDwOKVfCFf1Mk5Y5k5s/Kf9N0KLZVzXMo
-	QUzDaxzRSRgSrt9tPlrlI/yzkCSL8zmpH66BGIBYu+65b7ZuUk1rLno64ghLUqx6aE6GBD
-	mvwaYwdMtMBwY2JeO11X5zjTZbyVLz/mkOSK990z8ZXVfMvYO+nbjuLh9C2SBg/fieIfTB
-	z6dpVOH+ijREZRMhDf7+laSt6cIb6KetW1Hdip+JKuCfxgVoOCX+0BWL59syJg==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795510037; a=rsa-sha256;
-	cv=none;
-	b=WujyuN0c+YiPfodubhSl4OlPlxsNW5As5HBWCSRj0TLc4sviDInRXRwWBxf4QZ42RNWNHk
-	zQorX5b02SelyIzxq814nKugDMQCu4KHKV2T9+GryYGfsXcTTcTN4sGua1EdVPANSOKI0D
-	TaHyMX7oh8ySbawQe3+t+NvM3uySSpbc09PcBr3OHVRCGSWxgi1quN9v+Nvu8Rg8osGLM/
-	c7Dq0guwkqmKl3rIc203Bh89TmQ3L7+bM55IR0Fg4aJco4/hLLpvzjtO1t1zECqWANsAyX
-	9LfONUA+21Y0VZaZbQaRXJpV4MOcOJP/8XX4aXkCFc0v1wW5+yanpRfEtGlxrw==
-Date: Tue, 24 Nov 2026 09:47:16 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Guangshuo Li <lgs201920130244@gmail.com>
-Cc: Vincent Mailhol <mailhol@kernel.org>, 
-	Joakim Zhang <qiangqing.zhang@nxp.com>, linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	stable@vger.kernel.org
-Subject: Re: [PATCH] can: flexcan: fix runtime PM reference imbalance on
- probe failure
-Message-ID: <20261124-purring-kraken-from-uranus-549346-mkl@pengutronix.de>
-References: <20260915170327.2503156-1-lgs201920130244@gmail.com>
+	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=HLbucOis;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=+VxbI9WM
+ARC-Seal: i=1; a=rsa-sha256; t=1795510448; cv=none;
+    d=strato.com; s=strato-dkim-0002;
+    b=JyLXk7ewwNfeTSPIRFks2R/donXw3uWpnDraflQQYMa7yFPDKDNNNLg8OPW2Me1Oyq
+    Ajt0aAaQaafKMwZqE9Amn+5BsV4cJPvTBhg1pmhij3sQkJECSq0+ZOsYsCZMPzPBt9QA
+    uOIByQ5LDDOR8eieVqVfuQC7MzDWUDQhuITp42mF+vwNSGAVUH4pNohUdtaxHIfKSUFu
+    /w1IIKZy6jPs4MX987bpkU12XlIuLRYqb4ZU/4Y5NSnp2Cc7ji5tyY7dgNlJhpSbfUsq
+    k7ebbIAKJsbgfSvxRBq4mUJcjANCeXOFb+oyPWvAsiJKpGs/HblXTFGr4i8ChOqXDW6J
+    ikxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795510448;
+    s=strato-dkim-0002; d=strato.com;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
+    b=UfmwOkVWCMpugdz+4/WeQ8+p+Tl8cRBF8Z53P0jh7KA9Etps32IOQx7cT5exNZxwo7
+    d7Qms3qGs8C+vp/3Hiv1YxKOdahabt+axwdM43zGLL9/fdkSBc2ppxeTtVpEjI10tDDh
+    H5/VnsZXrFoay80XLNPp7KX0u+bj7IEVeMREIBzOYswVGAcWhzmmdIXP2oI/vt1AA+bh
+    v7dMlljRB8DptH1Bmp9aChdK8mEP4OsndG5r0Y/vaceLBsUziYQmCbWfEyUjMfORgUcQ
+    tKnvcll5IeLXrjI9bfbRlmIB7Z844QYzVKLDTzCI+SFMmREzBvT8QUXE4D4LOJSo8W/n
+    381w==
+ARC-Authentication-Results: i=1; strato.com;
+    arc=none;
+    dkim=none
+X-RZG-CLASS-ID: mo00
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795510448;
+    s=strato-dkim-0002; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
+    b=HLbucOisrvFcpXJR9QepNOn0sdBFeiemsXn0BEHp2YjA2DN6e1pJdjrMenfxNk97Ix
+    6m+XLFV8FuvlEGFt5tFFGMuweIdlqsrcIv62SACKCZOVzOi1Jgsm1PZHp7ZN/IZWi2HZ
+    HxxYPrdvK0+YJrvSL2Umr5IC2FFxWKK0GEUz1OIM2326QuDVEAROt6sAMDLpVTE7G6FW
+    XDepVut+U4hKmrwHPZzGxMuya/Dr9ZsVwpAXoNTB/PoCtuB1Z3Wh53Z+3J/fjgGDM+PE
+    0uMP6hptEIaGHaAIY3vud5B2Pjz4AQSTDoN63qjVgauTmaHJfO+hkj/Idk6SU9bc5uor
+    T5pA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795510448;
+    s=strato-dkim-0003; d=hartkopp.net;
+    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
+    From:Subject:Sender;
+    bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
+    b=+VxbI9WM8bCUwC4rb/uV43r+IxZG4S/3McJ/3kDWuWa5FZR5ZsPZjibD7H4JtQkttB
+    jHJblAKirT14cLTAxMAw==
+X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
+Received: from [IPV6:2a00:6020:4a38:6810::989]
+    by smtp.strato.de (RZmta 55.6.3 AUTH)
+    with ESMTPSA id Kfdf2a2AO8s8gS1
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+	(Client did not present a certificate);
+    Tue, 24 Nov 2026 09:54:08 +0100 (CET)
+Message-ID: <f0270895-8e97-4d6a-b5cb-6da6ab5c1ac5@hartkopp.net>
+Date: Tue, 24 Nov 2026 09:54:08 +0100
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,88 +95,39 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="36gkf2k7v4wktzl6"
-Content-Disposition: inline
-In-Reply-To: <20260915170327.2503156-1-lgs201920130244@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net 0/11] pull-request: can 2026-11-17
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
+References: <20261117220818.1142581-1-mkl@pengutronix.de>
+ <f29308ea-4493-4146-bb28-506522040ce8@hartkopp.net>
+ <20261119-gifted-tapir-of-courtesy-408880-mkl@pengutronix.de>
+Content-Language: en-US
+From: Oliver Hartkopp <socketcan@hartkopp.net>
+In-Reply-To: <20261119-gifted-tapir-of-courtesy-408880-mkl@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Hi Marc,
 
---36gkf2k7v4wktzl6
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] can: flexcan: fix runtime PM reference imbalance on
- probe failure
-MIME-Version: 1.0
+On 19.11.26 18:32, Marc Kleine-Budde wrote:
+> On 19.11.2026 17:53:14, Oliver Hartkopp wrote:
+>> unfortunately we did not make it into the net-PR for -rc4.
+>>
+>> Do you want me to re-spin my series to address the Sashiko remarks and
+>> commit rewordings for this PR?
+>>
+>> If so I would answer one of the reviews with a pw bot cr tag.
+> 
+> make it so
+> 
+If it works for you, I would appreciate it if you could send the updated 
+pull request today, so that I can address the feedback expected from the 
+sashiko-bot.
 
-On 16.09.2026 01:03:27, Guangshuo Li wrote:
-> flexcan_probe() increments the runtime PM usage counter with
-> pm_runtime_get_noresume() before registering the CAN device.
->
-> On successful registration, register_flexcandev() drops this reference
-> with pm_runtime_put(). However, if flexcan_setup_stop_mode() subsequently
-> fails, the error path unregisters the CAN device and falls through to
-> failed_register, where pm_runtime_put_noidle() drops the same reference
-> again.
->
-> This results in an unbalanced runtime PM usage counter on the stop mode
-> setup failure path.
->
-> Skip pm_runtime_put_noidle() after a successful register_flexcandev()
-> and only disable runtime PM before freeing the CAN device.
->
-> This issue was found by manual code inspection.
->
-> Fixes: 812f0116c66a ("can: flexcan: add CAN wakeup function for i.MX8QM")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Guangshuo Li <lgs201920130244@gmail.com>
-> ---
->  drivers/net/can/flexcan/flexcan-core.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/drivers/net/can/flexcan/flexcan-core.c b/drivers/net/can/fle=
-xcan/flexcan-core.c
-> index f5d22c61503f..7d675696797f 100644
-> --- a/drivers/net/can/flexcan/flexcan-core.c
-> +++ b/drivers/net/can/flexcan/flexcan-core.c
-> @@ -2266,8 +2266,10 @@ static int flexcan_probe(struct platform_device *p=
-dev)
->
->   failed_setup_stop_mode:
->  	unregister_flexcandev(dev);
-> +	goto failed_pm_runtime_disable;
->   failed_register:
->  	pm_runtime_put_noidle(&pdev->dev);
-> +failed_pm_runtime_disable:
->  	pm_runtime_disable(&pdev->dev);
->   failed_platform_get_irq:
->  	free_candev(dev);
+My updated patches have been already reviewed and answered here:
 
-Better fix the underlying problem: Call flexcan_setup_stop_mode() and
-of_can_transceiver() before register_flexcandev(). Also see this sashiko
-finding:
+https://lore.kernel.org/linux-can/20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1@hartkopp.net/
 
-| https://sashiko.dev/#/patchset/20260618140147.142489-2-u.kleine-koenig@ba=
-ylibre.com
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---36gkf2k7v4wktzl6
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawVPEgAKCRDMOmT6rpmt
-0oNNAP9B98Fql06W1PzsSOR3rDyhuytNMi7v3e0UXGo0qd2b8gEA1trf3KlVnmKL
-896WuKbMzWVd6ylyKjg88dNRSjHhIQg=
-=eMdo
------END PGP SIGNATURE-----
-
---36gkf2k7v4wktzl6--
+Best regards,
+Oliver
