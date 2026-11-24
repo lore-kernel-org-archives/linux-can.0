@@ -1,84 +1,84 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795510571;
-	b=q5vYzi+TFho2Gh6ffYXxFW/Iy+7+HiIMqqEydQeHjqj4Fr2QDrs6vFhjWGmeNYVYTdTl
-	 bV0ZZvoZ+Bpfjm983iIWWj8XvP0ZwY9Trm7+Xje9P4jHgW6WFZRvpJhSxvhVfUhkxByAy
-	 xJGajtSzzB5rRhSOX/pGJWSqW5GO/mBuoePL7Yw8OAzgmiSt3h8kpnjwCbDV8jskYoVyw
-	 VmW1eUahYxzUYQnLNj960KoLQoeAjv4EJOd4QNTKty4qjEIseycDG5+BoLtfXtP2fnV78
-	 oDuWVLdhBNylW+2zu5nB8mD4NHjsaae7wf0FrIkQvPI3C7r9KxXVPo1OdV2ymZAq1Yg==
+	t=1795510687;
+	b=eV5U4Yo/jj+NqGjK3LyOz/c1Wn5K9B58xd2yX27Fp/Lt/7RNkPjf9qGYxXtiGDTcg8ht
+	 mbkCnT5VEQj1S/9bz3nr97LrRFWU0GSxCNFeTMz0+kOD1nOE2qVsScDSXWZBnqVKs6uTj
+	 jg2v2GlJWVyxpMSxO8bCa859lNkwPAwl9qKbhy4ivhhDO31HZZlIK5/DrI/cyRSqAO7QD
+	 Qaizj5SiWTRNhUfxEpoeqC3qfZL3WzDXGLjF6mk6lFD+f+KQmecKeDOhRImOH+uIoB4jj
+	 9ff2WES3tM3Ra3OMxnhjJSc/jFM4zleoetGvDFvUidMgozSOhjwflXs8sAU2qwX8O3w==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795510571;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=SxlfCHNWvAAq7S9xZKu6jqg0lSAcBds85hY+rySU/rw=;
-	b=cvtB0E9oCjskoHkIvUXs30aTu/ayrhxVpyAwffwFGEpDx9vNLIu9WsomjrXXzEH0orX/
-	 0BZR8yk6LWimp42uymOGGb3IMGNDA0UzQ712rvve31+Xq0PK8AW9mtzX9kepwxWktiaNj
-	 uAtasVxMW0ma1vK8ZzXWFtEFSzszQy4+qKqICDZld1norCOg2Bg3Ep9m15UHet84HopXp
-	 OmrTzbqb0dY2ok1wf1VjNadhfRB123+l6AaMXvC+ZZzgf7dvODFrMf2DgL3Vlf0ximUIN
-	 dheqrzSlGddGSWfnissY5bmkUrqWzZSfrYXhh1HK6w038GBDzNlB1lFO3j77My0jkUA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795510687;
+	h=DMARC-Filter:Received:DKIM-Signature:From:To:Cc:Subject:Date:
+	 Message-ID:X-Mailer:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=2gtqNlx/WsnInoEEg5ohVEynPC/Kc7s2Lw7tPAfJGqM=;
+	b=dUUq2je866qy8nBIXoz6YS1ShkTQxYtcTZGIppyedxe7+gWf/IC7oVcgSJcHSMOKkrAu
+	 +p1RhfVfhXVfZFUQgfmD6YvffH2Z+f9bEeqZljJoQqxJDBTFHw5OyWxOFPDePfl8Gghox
+	 C+9uGv9vrmdugYIMUVvx+Phjg0M13PBIyAoNxmjRugVT5phJys+nNfDkfWJIfdANM2ViS
+	 RG68vme0pPuvEY9+6Pr1cw5z1ct1pNCGh/a8i1fXf6IsqkrBMUmXU5Vi2iLRilWC2VL4C
+	 iT5hNWpk6IT+adQ8Rg7csg/TdeTeue8oN2q/NWZhNlgQ2fBBhOAnhyjg+d6gsBB+C/A==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=diK5UnCw;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=EnDJtaGT;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A6B606A327
-	for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 08:56:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 59A6B606A327
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FE4606A33D;
+	Tue, 24 Nov 2026 08:58:06 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org A4FE4606A33D
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=diK5UnCw
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=EnDJtaGT
+Received: from pengutronix.de (p20030102af17cb00d2e697ee776c6466.dip0.t-ipconnect.de [IPv6:2003:102:af17:cb00:d2e6:97ee:776c:6466])
 	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 207CE200037;
-	Tue, 24 Nov 2026 09:56:08 +0100 (CET)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id D9A79200037;
+	Tue, 24 Nov 2026 09:58:04 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795510568;
+	s=20260414; t=1795510684;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SxlfCHNWvAAq7S9xZKu6jqg0lSAcBds85hY+rySU/rw=;
-	b=diK5UnCw7BsdwiAPWRx7muv03cHfxcw968kNLW8ZX8ft8ROEUHw3UpBclr2OSD+6LK1v5i
-	5rD9B9rF94MDTuJKVMJgkQ5nBH92mCnpcOy2qHeenVNKnLQOpr8kbNSAoknXDzGHAE66OT
-	vvqJhnQJu69d0z8D1vcp3x0xYVXjqFzQafQxN6p9MU1AS0GfrBQpn1/kr5NB48xihpVXtw
-	XT3ex3zhYbIXOdPFTGo0r4+sFusK52BjxaSvozzMvvTb5yqXcEoV3GoxiJyeKwwtVY6k52
-	BKyU7kvdNuuifxEddaPMy7kyCGGQzEGcGCWYfK1jMItsz1dD3wZ08JuyP2ceNw==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2gtqNlx/WsnInoEEg5ohVEynPC/Kc7s2Lw7tPAfJGqM=;
+	b=EnDJtaGTznNTbrMebVOv3MlV/HmaOGP1VJ25yTW2u37fMX3Z/p4sRt5YbCGakFSrwBrKzc
+	iYzj8ZGIQm9pmpptTztQGYBlT4aNTNhQ0fNIjXxUJ8RCxyYSH7EISFhuVFg9TRvJvg5XB/
+	As8ka9vEuInhRyuQ1ErobYtHs4SNt5y7ug5WfM8R9DJE+RkGzxrrEDFouRXyNNtzKbJnYV
+	mBHdYwQqYGN7/NgRtCYk8E7U4xIM44FVlXdnOw/ugKgBXT/Zpm5DivAWOFe4cF+8zK5NsH
+	C/OG3rU5Qge9atDb36AoL7jJ6QOJB+Fc9F8nWy2p7UDXGjXN3FR4vLfGAe90Ow==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795510568;
+	s=20260414; t=1795510684;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SxlfCHNWvAAq7S9xZKu6jqg0lSAcBds85hY+rySU/rw=;
-	b=EjJ7MsCFk+rS43yYSmcYx6yO6Yc1ebyrNcTDrkuqg5oW6TFH5thRLV7qZjmNqo62uf7icJ
-	BSSwPwIEoKHYJmLxH9abGbqqvrcBmDPRE+xo1/fRIY/cD6ArQgM/VvBpTJGhZXOfTAdIZA
-	pIiVGFRRkCw1Gv+b4rhyE59F9U6ri9KYtLwxKFwosLt/DLkJnsqq2UccvaMo/Ze9bPjtyG
-	7fpIrd88F1aHqPC760RtFrLdjxdxl9XYPse+4vqScmc7mPP6gW8ob6/h4k5fyt9IJCcLLC
-	r8OvEUJ16sU3N5QRoG7PdxCuI7GQB15lBI++/nV8YPFRezmbrBMX6rEGJxOBhA==
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=2gtqNlx/WsnInoEEg5ohVEynPC/Kc7s2Lw7tPAfJGqM=;
+	b=cCQzMruTlpfBoaQG0nWrX+e7sfPyAgMMxaavkH5m5A+FT7ZB0bwxK11DHstMobZtLFc+VO
+	FDNP/1H7X33P2WhE7p0qhEl+vzgnylLaEOoJTEFCw94S8ol7imFkjIjeKHwP8un0on8MCo
+	FJ/06S+g4MrEwJanWDp735vJF4kFroyFQvpIImyUueDDEUNNCx9aTgMe36IAXEqWTsHTvf
+	jGTtHFiNeisiK4YukaR+4FQAVOvoI6zCnMF0RKaj1CG5tlsf+tk7P1rSiPEnk/G50t+fs1
+	14dHOTRBRf1czXpJL2ZE3Hb0r4fuF0xX+M2pQuncWiwIDilTrcatw6WLAeLj1g==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795510568; a=rsa-sha256;
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795510684; a=rsa-sha256;
 	cv=none;
-	b=MtIr91ZJsTPJZCzqbFcKuS7WaEN8Hk67iDu3A7+mRKArH+KrXJkNAKluEtfoOH2PyFH1Ij
-	qeH+wXKnuP/Mj35Sojt/JhTz+UVCpcpXiygeDKXBWQZftG/I3OXuENGVrJDfP415/pYDKr
-	bAEuDCo79gLuztiHoG2pCqPhtceLosOhJzJmO/Rndn++XsJN9lzCnjqiiwUhdQa8L2QNIx
-	e9F/qIjvNzJFglNktysWuJxEMnKqfS6OgCN3/BqB56lAFC3tqpnAXUTL697DN3ay+y4uRB
-	T579UGieH5CjJsl+NyrYXo9F4ySkbWPKjX60hATUvEufOL7RsLRamI3l9WaFJg==
-Date: Tue, 24 Nov 2026 09:56:07 +0100
+	b=C6YCX+xGVLdn9SD8ySJl2tvOkdhTWPlq+aYNBq9ub7xWAlvFejjgV2z/aPfiyQkp7d3TiF
+	LrxsUokfdvPISlnDFcBcjgUIn1W2fXqgKqv0r+OH+tmFIMKKA1qjT9Zh/gTEQRcBxwRvd4
+	o41W3iJI26LJ7ty/Yf9u6vd+TXAdVaSL/rslqJrxL3CIQ+jhR4/KjRJgVMBR+ltO73Sq78
+	5+xp3M+nNZshi25ijMKhq+M4rk9xlVbU0WCGmHUll2SeWx+zxaG1CLeou3Uq/Y599Lh6Xe
+	NMmOlmmtlefng6RaVm1vN1H3RrKNvdCqPaZk+wyIaAroZsWsKKG349C1Q1+/BQ==
 From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH net 0/11] pull-request: can 2026-11-17
-Message-ID: <20261124-armored-mindful-kingfisher-b20baf-mkl@pengutronix.de>
-References: <20261117220818.1142581-1-mkl@pengutronix.de>
- <f29308ea-4493-4146-bb28-506522040ce8@hartkopp.net>
- <20261119-gifted-tapir-of-courtesy-408880-mkl@pengutronix.de>
- <f0270895-8e97-4d6a-b5cb-6da6ab5c1ac5@hartkopp.net>
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net,
+	kuba@kernel.org,
+	linux-can@vger.kernel.org,
+	kernel@pengutronix.de
+Subject: [PATCH net 0/12] pull-request: can 2026-11-24
+Date: Tue, 24 Nov 2026 09:51:27 +0100
+Message-ID: <20261124085757.1093632-1-mkl@pengutronix.de>
+X-Mailer: git-send-email 2.53.0
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,51 +88,71 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="pckmg73u4yljhyrn"
-Content-Disposition: inline
-In-Reply-To: <f0270895-8e97-4d6a-b5cb-6da6ab5c1ac5@hartkopp.net>
+Content-Type: text/plain; charset=utf8
+Content-Transfer-Encoding: 8bit
 
+Hello netdev-team,
 
---pckmg73u4yljhyrn
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH net 0/11] pull-request: can 2026-11-17
-MIME-Version: 1.0
+this is a pull request of 12 patches for net/main.
 
-On 24.11.2026 09:54:08, Oliver Hartkopp wrote:
-> > make it so
-> >
-> If it works for you, I would appreciate it if you could send the updated
-> pull request today, so that I can address the feedback expected from the
-> sashiko-bot.
+The first 7 patches are by Oliver Hartkopp and avoid RTNL stalls in
+CAN_RAW, CAN_ISOTP and CAN_BCM protocols and fix CAN_ISOTP issues.
 
-tags/linux-can-fixes-for-7.4-20261124 is already pushed, just writing
-the summary.
+Followed by 3 patches are by Zhu Ling that fix problems with the CAN
+netlink handling.
 
-> My updated patches have been already reviewed and answered here:
->
-> https://lore.kernel.org/linux-can/20261120-can-bcmlock-memcg-v7-0-f6b84f5=
-257b1@hartkopp.net/
+A patch by my fixes a kernel memory information leak over USB in the
+gs_usb driver.
 
+Uwe Kleine-König contributes a patch to the flexcan driver to fix
+probing for m68k/coldfire.
+
+regards,
 Marc
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+====
 
---pckmg73u4yljhyrn
-Content-Type: application/pgp-signature; name="signature.asc"
+The following changes since commit 4392bb809812ac79449cd0cf1f5e00469ee102d1:
 
------BEGIN PGP SIGNATURE-----
+  Merge branch 'ionic-fix-tx-stalls-on-tso-skbs-larger-than-the-tx-ring' (2026-11-23 18:00:45 -0800)
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawVRJQAKCRDMOmT6rpmt
-0owLAP0e2Lk11PxSdbJmuY+JWcesa41zRyswKz8A5pPE/AglLwD8CNJiwEAU8h7g
-jGX1Ezxq6/x7J/sUwtXKGFnMwh3hhAg=
-=QLTP
------END PGP SIGNATURE-----
+are available in the Git repository at:
 
---pckmg73u4yljhyrn--
+  git://git.kernel.org/pub/scm/linux/kernel/git/mkl/linux-can.git tags/linux-can-fixes-for-7.4-20261124
+
+for you to fetch changes up to 8691992932377570ec79cbeb2ce5f24748bfe698:
+
+  can: flexcan: Fix probing for m68k/coldfire (2026-11-24 09:38:46 +0100)
+
+----------------------------------------------------------------
+linux-can-fixes-for-7.4-20261124
+
+----------------------------------------------------------------
+Marc Kleine-Budde (2):
+      Merge patch series "can: avoid RTNL stalls and fix CAN_ISOTP and netlink issues"
+      can: gs_usb: gs_can_start_xmit(): don't leak uninitialized memory over USB
+
+Oliver Hartkopp (7):
+      can: bcm: copy the CAN frames outside of lock_sock()
+      can: bcm: do not remove the procfs entry in bcm_notify()
+      can: raw: use a private mutex instead of lock_sock()
+      can: isotp: use a private mutex instead of lock_sock()
+      can: bcm: use a private mutex instead of lock_sock()
+      can: isotp: always start the rx timeout in ISOTP_WAIT_DATA state
+      can: isotp: reject socket options while a transfer is active
+
+Uwe Kleine-König (The Capable Hub) (1):
+      can: flexcan: Fix probing for m68k/coldfire
+
+Zhu Ling (3):
+      can: netlink: fix static FD-NON-ISO mode validation
+      can: netlink: fix IFLA_CAN_BITRATE_MAX attribute sizing
+      can: netlink: fix CAN XL PWM attribute sizing
+
+ drivers/net/can/dev/netlink.c          |  22 +++++--
+ drivers/net/can/flexcan/flexcan-core.c |  12 +++-
+ drivers/net/can/usb/gs_usb.c           |   2 +-
+ net/can/bcm.c                          | 114 +++++++++++++++++++++++----------
+ net/can/isotp.c                        |  81 ++++++++++++++---------
+ net/can/raw.c                          |  41 ++++++------
+ 6 files changed, 181 insertions(+), 91 deletions(-)
