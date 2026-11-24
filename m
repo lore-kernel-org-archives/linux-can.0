@@ -1,59 +1,98 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=209.85.128.53
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795512668;
-	b=g3IilPqZScjtUDP3MJhPvSRZOzehspxW6++pe/xYs2UgLNwLmTEAN1Z/W+soyi4fIpbl
-	 bt7w5h/uzjogvoyGoeFEAN2EYN6ZhXoejNCdZAbQUkFWOByqj3TnciHTox6mZ9vx1roM9
-	 Y82/2npSQpIMcegPymhy8eft9oBfZK81T0tD0t2cjz0b7GNE9vhrCyNEvF+H5UyXCyBmU
-	 cCJRX1u9SexXfvw3/rNEDYEhGHBAlgnDN4EsDUOfmVLYjww0hashTEXoD/a0id4AsV8gf
-	 i1LE5Sh+gAXIjFgmlzuwESoolaln46MAu1yEinVEOoU5NVMciqRMcTWbxOHXUhuFStQ==
+	t=1795513510;
+	b=3CCbsaAb1bFM9MrLwPW57tJr2ACg3yTsBccbalUk5TYfgc9PDTp/7nwG90wdrO6jafdi
+	 NQWm4mC8lBrweDpwCPdbA27h7A20iBA0cBfOqNfcQgF8G5yvOqQuJ6aQ0fvsszCUYzX8q
+	 gySm+Dsn3vlQHphXliqi6kqvjQ/GQQJZrQCeausX6fWG97ZAFNJBJ/Fy6GqjPnXejeKE8
+	 9D/HB75kwEBMF51Tn41gcstioXLXuhcJPCCehqeJCQTknlR0GAZm1pMaZoRlUI83EgIeP
+	 yrFQqOo1tZXfM8UxKn4BjZ+bKMJSYPSKfSwn/KTNWmWPxcOUhMIkNiCZk3SmHeRtO7w==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795512668;
-	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
-	 In-Reply-To:References:X-sashiko-severity:Content-Type:
-	 Content-Transfer-Encoding:MIME-Version;
-	bh=zwpk2HtrDkk2RVyDBioMiVcOMH6ocx4IB03S8a23t8U=;
-	b=ZaSr8FeI8n8lVr64Yj89BBBGTNwT8NS1xphG9P84hlFSjUm5Lpoq9WXTQdaIhgzP7a0T
-	 972xuk6Aahhz2CNaGH+XxAByc6iIC8KsuyWwxNzK/vKMW4I1CAOMGnBmKrXuVgoaS6VDq
-	 1sPfP5uZGdb+iVym35z8vMDISR+d2jIM925Qbi0UUCFnRK8VaxWTbTWqjNdzecHw35lkQ
-	 KqvtdTqysYcmQxoFHv4IjddCpdAW0ok+C6On4cEZF0UeGItqSi4A6rLMyai+55+DGOy6f
-	 yLaDzU7pyU054JWEpq09aQ2SWVg7KgTf+e60jJhTPZcIHVdVTUY5/JUPc60i/9i3p7A==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795513510;
+	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
+	 Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To;
+	bh=KmJ6a4FbB34BvjQvtAwc0XL/QMaak02xhWPoP0gP7Y8=;
+	b=Qa1uU/s74N0GcT/4WMCI1GDnHWuirMYnzyonMNg7zyRM4OaycQhFqb3cbaJh9H8FHlxw
+	 knyivOkOX7Os/TOTY1d3e88kPu9vj7iDk7U387tqech6csrVfjPPFl3YlMlzBhedd2A05
+	 Y09pLWxrli1X1W5iCtzeluFnxM6XSwDEVJ+0MqokNfh9ga/kbas1j7Iue1zbcMi8sopA7
+	 /wgyN8lqtEChniGbgdXE4nRD+zl9s8Mv/fqJEUtptQy2gw8yYaFFl03627U6/1DsVQTo9
+	 wcBb9wD7sPjNrTnT5faaSLzjeWM0HQ1TmKUzP0+gBMVd86436siatvEwnE/jIWHBhpw==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CAI5xrfR;
-	arc=none smtp.remote-ip=100.103.45.18
-Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	dmarc=pass header.from=google.com;
+	spf=pass smtp.mailfrom=google.com;
+	dkim=pass header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b="buEzo/9Q";
+	arc=none smtp.remote-ip=209.85.128.53
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D18606A336;
-	Tue, 24 Nov 2026 09:31:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 351C060A3803
+	for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 09:45:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 351C060A3803
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CAI5xrfR
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38A4E1F000C6;
-	Tue, 24 Nov 2026 09:31:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795512667;
-	bh=zwpk2HtrDkk2RVyDBioMiVcOMH6ocx4IB03S8a23t8U=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=CAI5xrfR+gbCwZ3/uuRPQH9dqmDvykKXkEdj9A/Le0yo3/1NgdJ8i972Cac9sMEcp
-	 GKN9wyJ2YUrfJ7jndqMcs3hoKOaSmts5s7to7SPvRbZ0W8CT7XDOTtekqoMrPOXMLh
-	 F5qMla//Z/l4cRLY8G2L1HZaqmO/zlSQhVaMcBN82HWfT7ODtkVU25uHMt1Fk4m9kE
-	 lUhu1kILbqFSrT7eMDC/wxtT5UNVqF6WVQr7Ql6IinAMvUJJK5pUv+rRCWkchD35rS
-	 3owfeRbKGmuRs04FIIvDeFrD94F/23NB5Ob51MfANuvDeK+YWduOr0OYOR2gBzqJvL
-	 m4T9G3uuv6/WA==
-Subject: Re: [PATCH can-next v10 14/14] can: gs_usb:
- gs_usb_host_frame_header_valid(): drop CAN frames with invalid DLC
-From: netdev-bot+sashiko@kernel.org
-To: mkl@pengutronix.de
-Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
- max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
- linux-can@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
-Date: Tue, 24 Nov 2026 09:31:06 +0000
-Message-ID: <179551266677.3131.6488994858051921423@kernel.org>
-In-Reply-To: <20261122-gs_usb-fixes-v10-14-7c165c35d04a@pengutronix.de>
-References: <20261122-gs_usb-fixes-v10-14-7c165c35d04a@pengutronix.de>
-X-sashiko-severity: Medium
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.a=rsa-sha256 header.s=20260707 header.b=buEzo/9Q
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-4a9a8d6cea8so55004265e9.1
+        for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 01:45:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20260707; t=1795513506; x=1796118306; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:from:to:cc:subject
+         :date:message-id:reply-to:content-type;
+        bh=KmJ6a4FbB34BvjQvtAwc0XL/QMaak02xhWPoP0gP7Y8=;
+        b=buEzo/9QfUzHpM6Hz8l2Jwd9AEHCAvSj1kgLkQLJjtD4K8HPSAjEJDaEweyCfaPN/l
+         ZutWtFOBK0U8TbBdYP7FkMALlH94igD2KB8Puf+yY1rYPFLE8CvbkYiquAtsNq/Hc+Au
+         jgd4XNmz5fzS44dCpItJlads2kc57xE3IhKct7s2CnosKHic6F9169VEGw+oPmHCbNr2
+         g4/WKuA35hY8EArAm7Iuxcktf48QDvS9bdotyU6EfFMjF4oUUhrXcPA6U3xdYxXTzrkE
+         hAzToQ7kW7kVS4CtWJd381dhzLeldYsrJSOyYNH487X+u/Bl1jadBe/0AcUJD8GOuRoh
+         0IJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20260707; t=1795513506; x=1796118306;
+        h=in-reply-to:content-disposition:content-type:mime-version
+         :references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to
+         :content-type;
+        bh=KmJ6a4FbB34BvjQvtAwc0XL/QMaak02xhWPoP0gP7Y8=;
+        b=nAGPcwGJ75kg7VtRK4+Q23H5SViE5MwwB6eYoUzTHUUHBgEXdVBJI0Bq6dMxewxvOx
+         nMuM6wmami6xQn8iLSoPhJVztwaCj3tzYuQSoahCoGSrLjIqnsTRsz0JJsOTgqTE18sQ
+         MP4NnP2p5sc1QWc6oiHd/hcOv/cvh4/tbBi3PuxHUjSOhY/5qTAtryz4yOQl+YkLSWNf
+         HSot5XEJT6LzFk3mjo857OQW7hqRvlK0iqTh+obwh4YOmpGzQw7ExPijMItnnDZE40by
+         d/5XpC4c/0VBBfxRKJT79+IM0CJOUDwiN/WrZsOOa+kM6xogni2Cszzm4AnepNIR/2Ys
+         FVjQ==
+X-Forwarded-Encrypted: i=1; AL+hErH3gQlIxWKX+gSuOCLH9XqNYY+uQFYT/n+HbxitN5DNdmaJEvBh6bUv4XMTCA3aDCb3EWOovCdMsGA=@vger.kernel.org
+X-Gm-Message-State: APuU4Z/yXmfYFiaxBAgnzLwsnACoJgtac05gVcP8BhDLoCwFPIKR5SG/
+	Gw/8XOXGc+2fGsusAQXENXHNopeWWTAFyyZuV5MGLCc6dIGEJP0lyBeVRAOuVZzJL9yR9mVlsJR
+	9nRS8Auh+
+X-Gm-Gg: AZFdTZcXcvjOvBrRGX3eAvHeas0jOCbw422F2K0z9ofN9Kq1PP+kF704z2LHdYxQVzy
+	iX4mWP9wdsD8io/cAcilKI4TcDBsKBFSVkgaeG9CxYDEqcTiZvrgfi/HvIqdcNSqgImmKw2amHx
+	KpHt1/86L5W4s5eHLX9voclprHyeGQHx+PBALXfDgd1pf4a9aosCViH1Bj3ANpUdsYX3tBBo0Ko
+	o8cJoapQ/l4MdGmsEYTU/lT+gtiL2KJAPce2e/XrzHj+3E2oFBQ9jRnq+JoFdZWe/fPVKnhtlyd
+	rh4R5rIFhCDwwSlxBVykfyZoSVU6XwxeX7nD1J50bN+66bFY8FIPGwY3EGU/JCA5wyVjvKY1CED
+	oyX8Y6tojDwyqGhS6SP/bTkd3YI+xZ6N8y8Y+vzXHTAVtPAn48CMo0P3wNxKjtRZW8bqJxgg/Fx
+	Drx9y3ZQehDKAv30aMjChEawV75anCTnWSkqv/uj9GdBGuYiaI8MGh4WKXTMTGuAq/VCpx8oicL
+	zLfEAuseyAFHLngrJ+Zo21GMN2KDrUQUw7iXRERDk5hct+Q+dd0MpmKzKXu5YncJgGi3uQPYENw
+	OfEe/fB/fVPxRSUjQi7c+EABYI+pmYaARe2KxJ7PSljRdUooJz5W+/VdF0yKWtKqUQ==
+X-Received: by 2002:a05:600c:491e:b0:4bb:5f12:336a with SMTP id 5b1f17b1804b1-4bb8614f0d8mr232644425e9.10.1795513506004;
+        Tue, 24 Nov 2026 01:45:06 -0800 (PST)
+Received: from google.com (0.182.34.34.bc.googleusercontent.com. [34.34.182.0])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4ab6a67f204sm31372490f8f.21.2026.11.24.01.45.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Nov 2026 01:45:05 -0800 (PST)
+Date: Tue, 24 Nov 2026 09:45:02 +0000
+From: Vincent Donnefort <vdonnefort@google.com>
+To: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: Vincent Mailhol <mailhol@kernel.org>, Peter Fink <pfink@christ-es.de>,
+	Eric Evenchick <eric@evenchick.com>,
+	Maximilian Schneider <max@schneidersoft.net>,
+	Wolfgang Grandegger <wg@grandegger.com>, kernel@pengutronix.de,
+	linux-can@vger.kernel.org
+Subject: Re: [PATCH can-next v9 06/13] can: gs_usb: add support for context
+ analysis
+Message-ID: <awVcnlkUDarUx5Y7@google.com>
+References: <20261121-gs_usb-fixes-v9-0-db121d488945@pengutronix.de>
+ <20261121-gs_usb-fixes-v9-6-db121d488945@pengutronix.de>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -63,124 +102,34 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20261121-gs_usb-fixes-v9-6-db121d488945@pengutronix.de>
 
-Thank you for your contribution! Sashiko AI review found 2 potential
-issue(s) to consider.
+[...]
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 1
+> -static u64 gs_usb_timestamp_read(struct cyclecounter *cc) __must_hold(&dev->tc_lock)
+> +static u64 gs_usb_timestamp_read(struct cyclecounter *cc)
+> +	__must_hold(&container_of(cc, struct gs_usb, cc)->tc_lock)
+>  {
+>  	struct gs_usb *parent = container_of(cc, struct gs_usb, cc);
+>  	u32 timestamp = 0;
+> @@ -1037,7 +1040,7 @@ static int gs_can_open(struct net_device *netdev)
+>  		if (parent->flags & GS_USB_PARENT_FLAGS_HW_TIMESTAMP) {
+>  			rc = gs_usb_timestamp_start(parent);
+>  			if (rc) {
+> -				if (rc == -ENODEV) {
+> +				if (rc == -ENODEV)
 
-If you believe none of the issues are legitimate, please reply to each
-issue of Medium severity or higher and explain why the AI is wrong.
-If any of them are legitimate and you plan to respin, please let patchwork
-know by including "pw-bot: cr" as a separate line at the end of your reply
-(one such reply per series is enough).
+Could this make the series non-bisectable? 
 
-- [Medium] In gs_usb_host_frame_header_valid()
-  (drivers/net/can/usb/gs_usb.c), an RX CAN error frame (CAN_ERR_FLAG…
-- [Low] The commit "can: gs_usb: gs_usb_host_frame_header_valid(): drop
-  CAN frames with invalid DLC" fixes a user-visible bug that comes from…
-
---
-
-can: gs_usb: gs_usb_host_frame_header_valid(): drop CAN frames with invalid DLC
-
-This commit adds a check to gs_usb_host_frame_header_valid() that drops
-received CAN frames with a DLC above 0xf. It updates the rx error
-counters, logs a rate-limited error and resubmits the URB.
-
-Closes: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77@pengutronix.de
-
-> According to the respective CAN standards, the maximum DLC length for
-> CAN-CC and CAN-FD frames is 0xf. The code in driver assumes that this limit
-> has been verified.
->
-> Drop CAN frames with DLC > 0xf, print a error message and resubmit the URB.
-
-[Severity: Low]
-Should this patch have a Fixes: tag and Cc: stable? The commit message
-also doesn't say what goes wrong without the check.
-
-Before this patch, gs_usb_receive_bulk_callback() passed the raw device
-DLC to the helper unchecked:
-
-    can_frame_set_cc_len(cf, hf->can_dlc, dev->can.ctrlmode);
-
-The helper in include/linux/can/length.h assumes the range has already
-been checked:
-
-    /* the caller already ensured that dlc is a value from 0 .. 15 */
-    if (ctrlmode & CAN_CTRLMODE_CC_LEN8_DLC && dlc > CAN_MAX_DLEN)
-        cf->len8_dlc = dlc;
-
-With CAN_CTRLMODE_CC_LEN8_DLC enabled, a USB device sending can_dlc
-0x10..0xff gives userspace a struct can_frame with len8_dlc above
-CAN_MAX_RAW_DLC. For CAN-FD, can_fd_dlc2len() masks the DLC with 0x0F, so
-a DLC of 0x1X is accepted with a different payload length.
-
-gs_make_candev() has advertised CAN_CTRLMODE_CC_LEN8_DLC since commit
-4c01fc87675e ("can: drivers: add len8_dlc support for various CAN
-adapters"). That commit looks like a reasonable Fixes: target.
-
-Other gs_usb fixes in the same series carry Fixes: and Cc: stable, for
-example "can: gs_usb: gs_usb_receive_bulk_callback(): add missing call to
-can_rx_offload_irq_finish". Could this one get the same tags, plus a
-sentence on the user-visible effect?
-
-> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index 7229d002b938a..5e8ea308fabf5 100644
-> --- a/drivers/net/can/usb/gs_usb.c
-> +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -668,6 +668,20 @@ static bool gs_usb_host_frame_header_valid(const struct gs_can *dev,
->  		}
->  	}
+>  					netif_device_detach(netdev);
 >  
-> +	/* we can check for max CAN-CC and CAN-FD DLC at the same time, they are both 0xf */
-> +	BUILD_BUG_ON(CAN_MAX_RAW_DLC != CANFD_MAX_DLC);
-> +	if (header->can_dlc > CAN_MAX_RAW_DLC) {
-> +		stats->rx_errors++;
-> +		stats->rx_length_errors++;
-
-[Severity: Medium]
-Can a single error frame be counted twice here?
-
-Take an RX frame with CAN_ERR_FLAG set in can_id and can_dlc in 16..255.
-The existing error-frame block earlier in
-gs_usb_host_frame_header_valid() already counts it and keeps going
-instead of returning:
-
-    if (header->can_id & cpu_to_le32(CAN_ERR_FLAG)) {
-        if (header->can_dlc != CAN_ERR_DLC) {
-            stats->rx_errors++;
-            stats->rx_length_errors++;
-            ...
-            valid = false;
-        }
-
-This new check then runs for the same frame and increments rx_errors and
-rx_length_errors again. It also logs a second error message.
-
-gs_usb_get_rx_data_length() drops exactly one frame here, but both
-counters go up by 2. If CAN_RTR_FLAG is also set, rx_errors goes up
-by 3.
-
-include/uapi/linux/if_link.h defines rx_length_errors as "Number of
-packets dropped due to invalid length", so this would over-count.
-
-Would it work to make the new range check an else branch of the
-error-frame DLC check? Another option is to update the counters once at
-the end of the function when valid is false.
-
-> +
-> +		if (net_ratelimit())
-> +			netdev_err(netdev,
-> +				   "out of range DLC (can_dlc=%u, max_can_dlc=%u)\n",
-> +				   header->can_dlc, CAN_MAX_RAW_DLC);
-> +
-> +		valid = false;
-> +	}
-> +
->  	return valid;
->  }
+>  				goto out_can_rx_offload_disable;
+> 
+> -- 
+> 2.53.0
+> 
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261122-gs_usb-fixes-v10-0-7c165c35d04a%40pengutronix.de
+Vincent
