@@ -1,87 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795524396;
-	b=CPbnkXZs6D7EwlF/QC/VFTXyv5qM9suaXsJ4ctiP8552VKuAwkEVc0/ccS0X4tq39Ua4
-	 LSBsbgUg+M+CoTJqRUHbIba2IMmztO/yLfsmQe/wpcJxBTdhEGnO5dWSXOJvEt91JC4j6
-	 ticXRCp5wvqFWyJOZlyaQYcg35NlwyRgtdo1XQFzDgVu5blWpoWweFY7P0QQRu9CPlpeW
-	 vANEYW+Wyn704bHcf0HaKqDsy+v5k2oMRhm5n6v5zLjASjFh199ug79UpFvXqBuV3hLGm
-	 OPZYkttO4nFIFl3cN7YD5ORDzQaqgZO59nTZT41zFuXIKCp9f31FX+M71pcJRjQ762g==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795524396;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=PrE/2EutqnuvtKyH9pmay9A73YFzmvHWuTlKzL38kgM=;
-	b=doNE7vrh75OaSCL+XtWwdRIXik9yp0HNwZIw8Kif+EYBM5KOwloKL5GrOHxb+yswj49D
-	 Rh3f9BlDBENKceB+RJzaAUg/qyHFASkQu4hixB86uwqBOms5Gb958AY1JndYZel2vC/1w
-	 6376nPHfe7OlC3tXFuWhWELq2fehVqaRri6RcM/1hcZcBVFwlgysZjyq+RFqjLR8xtj9v
-	 m++YcJw3utxpPDsHNhA15XsV/5FFDJp7KYqKEAiI+ZOIa8vSlp1KZV1DkQBZpbj7gvjcv
-	 KOku5WSBAelBLM1O6HLmCRZ3Q5oQ2OWa+uwYUqZDJIk3rQ56eSu7/AB2MuxLJOoJDHw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=HvVwzEGz;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795531270;
+	b=UYLnMCGiGy8J+y2adlSqi7Afik3+xdHEv/w7r/FYPesyLu0IXSHZ0OTAEtMg0p04kCyl
+	 8TYREEOir60zq1/5fIwhubItAm1YWyInsR8GFshFgC4AGJa46BN3urbQyUScmvx8Oqrf0
+	 aO7YUIUcTaNoF7UzYN9cM9MiDldgAi7nprBZi+uRJm2Wo/VtbJbqVGPFgJHVZrxB9Cd+k
+	 SiG7jAuoNWMKIOGRDM0cqBGvbSB+uoFOV05tZbzBfX0K7yJQrvDhhnXv+LVpk21lEpuBc
+	 2XP72ibr/f8WTmnG8ZfWQC0xFV439/TMxQ0fJmci8sKxsOQCQ0N1VHXRVemv2sy979A==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795531270;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=q4aixxSA4YbX+AKyocTUx+s1rBXdCvRgd5mhuqNcLf4=;
+	b=CbHEqS+Gn+kV+kp+/5bMcE/jeWPXC1pTTl7wNxHmbTng6aysVTCEjIhkm3tI5vNppbS9
+	 +ecRkTjkq6gmdnzXQf1AtsD5RoiqSxEURO8AlIoobdQHgdcUt3y+pJxNX6P1BP3iJtEUD
+	 qG/JW623HlyIiL6Qphym8UYw3qXb7k8Lm7yzzDlVBZK85ubWxiKorCV+dz/iafJjmqSVh
+	 WZq+llokntOSasm59nnuT1vSWqCrMc94kKsvm8H1xB9X6ihrBVSB5swYv78PD9u5xB0du
+	 WgCxIH38/34+tBd50ri8Y7EIznfr5vYVT2axZeCPOvC7PzC6lFNXO7P5K21ZSnGLWHw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=h0NnDrGy;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49D41606A322;
-	Tue, 24 Nov 2026 12:46:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 49D41606A322
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87335606A31E;
+	Tue, 24 Nov 2026 14:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=HvVwzEGz
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 1591B2001A0;
-	Tue, 24 Nov 2026 13:46:33 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795524393;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PrE/2EutqnuvtKyH9pmay9A73YFzmvHWuTlKzL38kgM=;
-	b=HvVwzEGzR/eV4scS6pIaYOYgBpz3BCQzFz3h6F/bBN4U2Jv1QXzOSCdGcfH9abrnXJQCxq
-	uXP9N9V5srusRQrV8zK6zp0eLbba9G6yHMSMj8OcVe+vKcouxwJ/ltAWV2IdUSlP+MG/0p
-	qtVHa/eLKbsWbAIXYM+xDRZ4cz3wW7yb2TAV9IvXwog67OZEvis7WKy0JDpb3kCwiCSsoK
-	2YERZfUax4hsMZdMBxJFuxqn6o1UTYIA2rE7YIFwso80zyYlfAwRqvTpR9mfLA/n6NAOsh
-	6AbDWCn11P3+Ql49TRdTufBBlhPwP5pC20YVtn+E/BdNL4hKEaWMUv1ZA6I3OQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795524393;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PrE/2EutqnuvtKyH9pmay9A73YFzmvHWuTlKzL38kgM=;
-	b=HWF1Ob8DVxs2rp1O7E5VktcBufJAdmiaJRVd07LMOkPPCGpTC3hANMs6TeQUvYKJPu0D1C
-	Fh6J0bAEZF7wNdfXSiKBJxV0KTbhjHRHmAaC+iNE433STyvTMV9Oq30EmiIMbCMf0jHmRi
-	58Qnk8wwEEdLj27tfKY0vXTEhTeGMo4zQ3HO135Ip2Kix73Lr4mZy39pVuGVUUf4VmxL5V
-	NGOxr23BJvLZzFRtdaN+MG5k823P09Px6X7nQOkFTamXOLTQJ7lTa4JoHykPgBvdzzqqsr
-	fLMLfbTL/7R2ENsn3XHnURmhmJK3nhh3tLh95q10YtT2KcY7YlwYq+TydobGRQ==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795524393; a=rsa-sha256;
-	cv=none;
-	b=N5ctTLONOLEapJFTG4NHceOG7MGQi8v0fsk6Myu2CvORGIRBj1owFEVd8Woi6IRtymbaim
-	SubjJHrFXzJQmWEDDZgBkJV1AtnB5OKlc6NI89E+gC7knEiXgnNk0Kv9W+MBCfpaLfdXHz
-	ssgQtSAP+gjsjkrR1XDywvzcx4VhMC/+vQkPeZmh+8TEIC7g21HapChAdB6nSJF2amguaE
-	KyCpRisO2eB/tSJE78/kd8rQMreZPLaeWAO4V0r4Q9suQYh4mas7Wet9qD0W918YvgeqOv
-	u3O4ZZDpd2rasU9EYJcIzpbdw2bsrlhWaj0woSkFltDxDu2/7/40zEsdGEDGXw==
-Date: Tue, 24 Nov 2026 13:46:32 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Kendall Willis <k-willis@ti.com>
-Cc: Markus Schneider-Pargmann <msp@baylibre.com>, 
-	Vincent Mailhol <mailhol@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzk+dt@kernel.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Chandrasekar Ramakrishnan <rcsekar@samsung.com>, s-kochidanadu@ti.com, a-kaur@ti.com, s-tripathi1@ti.com, 
-	vishalm@ti.com, linux-can@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Krzysztof Kozlowski <krzysztof.kozlowski@oss.qualcomm.com>
-Subject: Re: [PATCH v9 0/2] can: m_can: introduce ti,am62-mcan compatible for
- out-of-band wakeup
-Message-ID: <20261124-maroon-taipan-of-cookies-2d9113-mkl@pengutronix.de>
-References: <20261117-temp-v9-0-1d094ff918c6@ti.com>
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=h0NnDrGy
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 27BAF1F000C0;
+	Tue, 24 Nov 2026 14:41:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795531269;
+	bh=q4aixxSA4YbX+AKyocTUx+s1rBXdCvRgd5mhuqNcLf4=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=h0NnDrGyCWmdpe+8fZjohb5qyZj9Ta5CecJ4+LBfz7rH2vlFnB7IlpQosDH14XyE9
+	 IMtsi20dEaEhEst/d6Pfm7p63Vddhxr0ZnWPfoiJfS6iOHmPQV0tg6Yxi3he28oYn5
+	 bs6VtNWo27+jYXN/VifsGmf9pzl90O2zc4INw2tutIWxQ5+FMMyY/2SApVEEg7tgKZ
+	 Q+X4bDbHtimFiiJadVW+ZWVrx+VxfW6f/ww5zEbxleehpuxpxVl1pVnDQi8Ntpchkj
+	 ud/hp5PGJl1jrjiFfOOU+DcbkbN7uUOezhC7kEvkZL9pTuZ3esn9t5Ug449hNCA1nV
+	 dWFwcXbVnkJAg==
+Subject: Re: [PATCH net] can: j1939: do not pass a NULL session skb to the
+ socket layer
+From: netdev-bot+sashiko@kernel.org
+To: piyus@iiitd.ac.in
+Cc: robin@protonic.nl, o.rempel@pengutronix.de, socketcan@hartkopp.net,
+ mkl@pengutronix.de, linux-can@vger.kernel.org, netdev@vger.kernel.org,
+ kernel@pengutronix.de, linux-kernel@vger.kernel.org, kapil@presceralabs.ai,
+ stable@vger.kernel.org, kuba@kernel.org
+Date: Tue, 24 Nov 2026 14:41:08 +0000
+Message-ID: <179553126874.3135.14817947057284289051@kernel.org>
+In-Reply-To: <20261123143625.4021586-2-piyus@iiitd.ac.in>
+References: <20261123143625.4021586-2-piyus@iiitd.ac.in>
+X-sashiko-severity: Medium
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -91,57 +64,151 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ygwwdgt7z67h2i6w"
-Content-Disposition: inline
-In-Reply-To: <20261117-temp-v9-0-1d094ff918c6@ti.com>
 
+Thank you for your contribution! Sashiko AI review found 2 potential
+issue(s) to consider.
 
---ygwwdgt7z67h2i6w
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v9 0/2] can: m_can: introduce ti,am62-mcan compatible for
- out-of-band wakeup
-MIME-Version: 1.0
+Critical: 0 · High: 0 · Medium: 1 · Low: 1
 
-On 17.11.2026 15:22:13, Kendall Willis wrote:
-> This series introduces the "ti,am62-mcan" compatible which adds support
-> for out-of-band wakeup capability in m_can devices.
->
-> A corresponding DTS series enabling this feature on TI K3 AM62 family
-> of devices has been submitted separately:
-> "arm64: dts: ti: use ti,am62-mcan compatible for m_can devices" [1]
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-This series looks good, but it depends on Markus' work. But LLM based
-review has found some issues ranked medium.
+- [Medium] The commit message gives the wrong cause for the NULL, and the
+  real cause is not fixed.
+- [Low] When se_skb is NULL, the new branch in j1939_session_completed()
+  still ends the receive session as a success.
 
-| https://sashiko.dev/#/patchset/20261016-v7-3-topic-mcan-suspend-fix-fix-v=
-2-0-7efa2b172cce@baylibre.com
-| https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261016-v7-3-topic-m=
-can-suspend-fix-fix-v2-0-7efa2b172cce@baylibre.com
+--
 
-Without any comments by the author, Upstream will not take any patches
-with "medium" open issues.
+can: j1939: do not pass a NULL session skb to the socket layer
 
-regards,
-Marc
+This patch adds a NULL check on the skb returned by
+j1939_session_skb_get() in j1939_session_completed(). A receive session
+that completes without a matching skb no longer passes NULL to
+j1939_sk_recv(). The session is still deactivated as before.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+> j1939_session_skb_get() returns the skb covering the session's current
+> offset, or NULL when the queue holds none, and j1939_sk_recv_one() then
+> dereferences it on its first statement:
 
---ygwwdgt7z67h2i6w
-Content-Type: application/pgp-signature; name="signature.asc"
+[ ... ]
 
------BEGIN PGP SIGNATURE-----
+> A peer reaches this by completing a transport session that has no data
+> queued - an EOMA for a connection whose data packets never arrived:
 
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawWHJgAKCRDMOmT6rpmt
-0mZDAP4+xP661BQH3gc8cnY01JgJSp7Gu4QLt4YaenIUCqmWEAEAhwDjEIyQY/Zl
-5udjh/5pvJWBiQYFlAp2vKaX6ZzDkgU=
-=gMnn
------END PGP SIGNATURE-----
+[ ... ]
 
---ygwwdgt7z67h2i6w--
+> Test the skb before using it, as the two other callers of the getter in
+> this file already do (j1939_session_tx_dat() returns -ENOBUFS, and
+> j1939_xtp_rx_dat_one() warns and cancels the session).
+
+[Severity: Medium]
+Is this the actual trigger?  For a receive session, the queue does not
+seem able to be empty while the session is alive.
+
+j1939_xtp_rx_rts_session_new()->j1939_session_fresh_new()->
+j1939_session_new() queues one skb:
+
+net/can/j1939/transport.c:j1939_session_new() {
+    ...
+	skb_queue_head_init(&session->skb_queue);
+	skb_queue_tail(&session->skb_queue, skb_get(skb));
+    ...
+}
+
+j1939_session_fresh_new() then sizes that skb to the full message:
+
+	/* alloc data area */
+	skb_put_zero(skb, size);
+
+Only j1939_session_skb_drop_old() and j1939_session_destroy() remove skbs
+from the queue. drop_old() returns early when fewer than two are queued.
+
+j1939_session_skb_get() looks up the skb by the DPO window, not by
+offset 0:
+
+	offset_start = session->pkt.dpo * 7;
+	return j1939_session_skb_get_by_offset(session, offset_start);
+
+So for a receive session it returns NULL only when pkt.dpo * 7 is at or
+past total_message_size.
+
+For a receive session, pkt.dpo is only written in j1939_xtp_rx_dpo_one().
+That function stores the 24-bit value from the peer without checking it
+against pkt.total:
+
+	/* transmitted without problems */
+	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
+
+j1939_xtp_rx_dat_one() does reject packet > session->pkt.total before it
+does its lookup.
+
+That means the splat needs an ETP RTS, then an ETP DPO with an
+out-of-range offset, then an EOMA. An EOMA alone with dpo == 0 finds the
+zero-filled skb. It then delivers zero or partly filled data to the
+matching sockets, both before and after this patch.
+
+Could the commit message describe the DPO trigger instead?
+
+Would it also make sense to fix the cause? j1939_xtp_rx_dpo_one() could
+reject or cancel the session when the DPO is >= pkt.total. Another option
+is to fetch the RX message at offset 0 in j1939_session_completed(). The
+NULL check would then stay as a second guard.
+
+One more point: j1939_session_tx_dat() and j1939_xtp_rx_dat_one() both
+call j1939_session_skb_get_by_offset(), not j1939_session_skb_get(). The
+only other caller of j1939_session_skb_get() appears to be
+j1939_simple_txnext().
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..af54e6a6bd714 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1243,9 +1243,11 @@ static void j1939_session_completed(struct j1939_session *session)
+>  
+>  	if (!session->transmission) {
+>  		se_skb = j1939_session_skb_get(session);
+> -		/* distribute among j1939 receivers */
+> -		j1939_sk_recv(session->priv, se_skb);
+> -		consume_skb(se_skb);
+> +		if (se_skb) {
+> +			/* distribute among j1939 receivers */
+> +			j1939_sk_recv(session->priv, se_skb);
+> +			consume_skb(se_skb);
+> +		}
+>  	}
+>  
+>  	j1939_session_deactivate_activate_next(session);
+
+[Severity: Low]
+When se_skb is NULL, the receive session still ends as a success. Is
+user space told anything at all?
+
+j1939_session_deactivate_locked() sets session->state to
+J1939_SESSION_DONE and leaves session->err at 0. j1939_session_destroy()
+only queues an abort for a receive session when err is set:
+
+	} else if (session->err) {
+			j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
+	}
+
+Sockets using the error queue have already seen J1939_ERRQUEUE_RX_RTS and
+J1939_ERRQUEUE_RX_DPO for this session. After that they get neither the
+data nor J1939_ERRQUEUE_RX_ABORT.
+
+The peer gets no abort frame either, because j1939_session_cancel() is
+never called on this path.
+
+j1939_xtp_rx_dat_one() handles a NULL lookup differently. It jumps to
+out_session_cancel, which sets err, sends an abort, and later queues
+RX_ABORT.
+
+The commit message says cancelling was left out on purpose. Could it also
+mention that error-queue users are left with a transfer that never
+completes or aborts?
+
+-- 
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261123143625.4021586-2-piyus%40iiitd.ac.in
