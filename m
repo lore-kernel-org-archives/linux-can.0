@@ -1,56 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795512658;
-	b=jDBY4aHwOoNbAQ47hM9GrARoIQYfL548hBv67HLF8LLfh+Bi/jnbk0SHS60yygT/XCPv
-	 g0FASwRynngt5CzpIYnTN72r6U31lQ5TB9EdPv6xRfLYsnCbjY4NYVcttcZluEQWsQ9b3
-	 lfV/+yo6E1iUpxrtEF1jrTRtJGTVv9MvIkQFTHCjZYUUJ4VLdIYXqaAOEQ4xPQscqYaCi
-	 hxMAn7CBnKWlZLlf3SC0Vm/3EImakDmv/wNPqCb6hjXT09kY6xylV0O6G1opnxL700XjD
-	 elVzNUU/GvvQgRlOba4MvPfW41iwgskIPb+G9teIXmNPPk8hMc6YgoucgcLG7kfx70A==
+	t=1795512659;
+	b=B0j7ycjByRkNd9jx12qsmO4gUvQiJH6otokgtSLSJfXnpPEXLPDvrIl5rzpNh4gATYLc
+	 lV+lAy8KiLPRey4oZ/BK922lVunxTuD2o1ZHYEtKhhFTfZgdW7GAwX80CFe2/RkZTlNfz
+	 a4JLYd2II2XS7JfDYvVL+NlnHmENsXTsYwDnhGo7Y1NCWXkNqsnSw+3722AMseKODI42n
+	 G9sfbUA23UwvElEtRYPtQuBMU9wMIvSa+Tc/3nxJNjqGJhhbZ8fbZxEG6WJGtnFwKEll7
+	 SRRROdxvpAwd0aHpkTztjPD2+FBQLFl/nnPH480hOs5/2aUROT5b1sY8aL4InksK7sA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795512658;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795512659;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=iTs39YH9PNBDOek8s4iU8xJg1bbhYqQXgN9zsraxmvU=;
-	b=QdDL2E85bhf92gAVgFLaEdSPmHGt7OH4xqrlWaMP8m5t1Kh4MZ1FGwi/X5tejCwJE4J3
-	 pFA7L5TkVLkBT8F1FuVOQqzOBv+I4N+aI3mhb8Eqxe2aguVXcbYgVGeFQGArDleSbdtyj
-	 P8S77Gvd3V5wAYLhd2pxfIEhtlijwC2uPsiWX8URxZ5zIuVMgYV820Ln5GNAgpPX0Qe9+
-	 /4Jdmj7bnyzHl4p8OvM3oWBif6GAzq42PLfpf8Hj8eYkzr3ftDrN2TrCF7sft3GjnSA7Y
-	 n9K3LkCsI1ri6pG3rzQPyGliAWNjpVkmqHmaqa7mTn34ZNNH8PaZO2G0CX0WcfskRnQ==
+	bh=O8a6g5QhV9k5cJH5ydZd3gAgrZOeyFEhq+VUTsANy2E=;
+	b=bjLcqOs+etzt9+j69Q7dl+KKMoNZUwmzoFoQQokfjCTItpKx2Svu+akEWXJhXK1KjPdd
+	 NsNVLdN4uWRZkpIevlQtD8jjrHIfndJyY1wPJ3OVNI6hXS1EWHVzAN/OdtSr6Mfjy5kkb
+	 D5J6PveOe3UESaKrn2OQ2iYoQi6T8jxHIwVAz85NQbo2IebusbzDyjCEJzxq7ZSxbR7Yf
+	 uDLOw3wIpfpb+3bMB7qin/LX142hffEw3d8iCducN8KBk9pNnW38PVm90qRXMBgVJPB55
+	 7KaVRz8Duinppc+mJFGAQfgtZn0GNq2KGVP6ysGJRF+EQfEkQCieWdZO9E3+Zv+w/ng==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GEb3Gwg9;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=neELXo5s;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B47E606A683;
-	Tue, 24 Nov 2026 09:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF2B606A32A;
+	Tue, 24 Nov 2026 09:30:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GEb3Gwg9
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 13A681F000EE;
-	Tue, 24 Nov 2026 09:30:57 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=neELXo5s
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A405A1F000E6;
+	Tue, 24 Nov 2026 09:30:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795512657;
-	bh=iTs39YH9PNBDOek8s4iU8xJg1bbhYqQXgN9zsraxmvU=;
+	s=k20260515; t=1795512659;
+	bh=O8a6g5QhV9k5cJH5ydZd3gAgrZOeyFEhq+VUTsANy2E=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=GEb3Gwg9BrZ4w+QwD0bE3ju0zj1SdBOjSWHzH00TeY96P/UTlgxhYi49KGBMJ5+3Q
-	 5lfsAe1Apw8bmbY2kvHp2A57LscdTZfVPwhb7DkF6Gul/uzAOes9wRaYQbcoLYE8pR
-	 USDctOrnn2/W+qYLp3Xwld1YgC23Kf4PjahbIrGJwPbkcwORNBrn4fQoEbZv8Ul6uC
-	 dapVMYBd9LMUWwBcioVuODv7vHq/MKBFJ9wqMNwiR7gnD9+tEBPfTjSJBXAVb0jhZ4
-	 pUOcsp12+iuj0l/0D8K63Ls/PFEX6kTOO1+tzmjmSRLADBSzryj2AeMBB2TlUR7bPF
-	 kcIhNENhPh0MA==
-Subject: Re: [PATCH can-next v10 05/14] can: gs_usb: fix hardware timestamp
- state for mixed channels
+	b=neELXo5smmln9BSULr6bIggpxkJdrw0ziYmTfNyoxicF+RJ9olWIwhBSuvbz8HdOw
+	 Vza44OZ0+pjfsQh2bz+GXda5WCTWvw0a3UhGP3+lT4bns9CsrDK1OGOG3C4KVRE009
+	 UD8/U1DpEYbNEZZJT5W/rqpdSs5mjwNB2btCzyd4wshFQ5uazc31bEzrfDxmwEL8tG
+	 CbYV4UHL22APDF6JKOyy8OiomrdGnAAZVCW5Zs78qQdHMgod+lzMdJ3PIIsUg4cBZv
+	 X0orF5A2XyZcwPrg7t7deB5HyPbvVUcA8wVQi2ZEn1KSRdNt2I7ssLm0bgcgRqdg4E
+	 qcjvcRJdOjNNQ==
+Subject: Re: [PATCH can-next v10 08/14] can: gs_usb:
+ gs_usb_receive_bulk_callback(): use dev_info() to print re-submit info
+ messages
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
  max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
  linux-can@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
-Date: Tue, 24 Nov 2026 09:30:56 +0000
-Message-ID: <179551265661.3131.9121195539625576936@kernel.org>
-In-Reply-To: <20261122-gs_usb-fixes-v10-5-7c165c35d04a@pengutronix.de>
-References: <20261122-gs_usb-fixes-v10-5-7c165c35d04a@pengutronix.de>
+Date: Tue, 24 Nov 2026 09:30:58 +0000
+Message-ID: <179551265819.3131.8321640293465934935@kernel.org>
+In-Reply-To: <20261122-gs_usb-fixes-v10-8-7c165c35d04a@pengutronix.de>
+References: <20261122-gs_usb-fixes-v10-8-7c165c35d04a@pengutronix.de>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -70,71 +71,95 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The commit message does not say what actually goes wrong before
-  this fix.
+- [Low] The commit fixes a defect that a specific earlier commit
+  introduced, but it has no Fixes: tag.
+- [Low] The commit message does not match the code.
 
 --
 
-can: gs_usb: fix hardware timestamp state for mixed channels
+can: gs_usb: gs_usb_receive_bulk_callback(): use dev_info() to print re-submit info messages
 
-This patch moves the HW timestamp setup (cyclecounter and delayed work
-init) into gs_usb_probe(). The setup now runs if any channel advertises
-GS_CAN_FEATURE_HW_TIMESTAMP. Start and stop are keyed on a new
-parent->flags bit rather than on the feature flags of the first channel
-opened or the last channel closed.
+This commit changes the IN URB re-submit failure path in
+gs_usb_receive_bulk_callback() to use dev_info_ratelimited() on the
+parent USB device instead of netdev_info(). With this change the message
+names the affected device even when no network device has been
+identified yet. It also drops the NULL initializer of the local netdev
+variable.
 
-Closes: https://sashiko.dev/#/bug/linux-b39360f9-6cd8-4f47-83bb-f0f78331f308
-Closes: https://sashiko.dev/#/bug/linux-5f8ecd4e-344e-4ceb-9b46-886f4942a5f6
+Closes: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20260729102802.505168-1-mkl@pengutronix.de
 
-> Currently both the initialization and shutdown of the HW timestamping
-> infrastructure is tied to the flags of the first channel opened
-> respectively last channel closed. This leads to problems if the first
-> channel opened doesn't have the timestamping feature, but the second
-> channel has. In this case the timestamping is never properly initialized.
+> diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
+> index 308daa2645ada..75adec495e657 100644
+> --- a/drivers/net/can/usb/gs_usb.c
+> +++ b/drivers/net/can/usb/gs_usb.c
+
+[ ... ]
+
+> @@ -819,9 +819,10 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+>  			if (parent->canch[rc])
+>  				netif_device_detach(parent->canch[rc]->netdev);
+>  		}
+> -	} else if (rc != -ESHUTDOWN && net_ratelimit()) {
+> -		netdev_info(netdev, "failed to re-submit IN URB: %pe\n",
+> -			    ERR_PTR(rc));
+> +	} else if (rc != -ESHUTDOWN) {
+> +		dev_info_ratelimited(&parent->udev->dev,
+> +				     "failed to re-submit IN URB: %pe\n",
+> +				     ERR_PTR(rc));
 
 [Severity: Low]
-This isn't a bug, but could the commit message say what actually goes
-wrong before this fix? "Leads to problems" and "never properly
-initialized" don't tell a stable reader how serious the fixed bugs are.
+The commit message says:
 
-Both orderings look like memory-safety bugs in the old code.
+    Replace netdev_info() with dev_info_ratelimited() to output the affected
+    USB device, and also rate limit the number of messages to prevent log
+    flooding.
 
-In the first case, a channel without HW timestamps opens first and a
-channel with HW timestamps opens second. gs_usb_timestamp_init() never
-runs, so parent->tc.cc stays NULL and tc_lock is never initialized. An
-RX or echo frame on the second channel still passes the
-dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP check and ends up in:
+Is the "also rate limit" part accurate? The old code was already rate
+limited by the net_ratelimit() check in the else-if condition.
 
-gs_usb_set_timestamp()
-  gs_usb_skb_set_timestamp()
-    timecounter_cyc2time()
+What actually changes is the rate limit state. The old code used the
+global net_ratelimit_state, which all networking messages share. The new
+code uses the per call site state that dev_info_ratelimited() defines.
 
-timecounter_cyc2time() reads tc->cc->mask. Isn't that a NULL pointer
-dereference in URB completion context?
+There are two smaller mismatches. The subject says "use dev_info()", but
+the code calls dev_info_ratelimited(). The commit message also doesn't
+mention that the netdev = NULL initializer was removed.
 
-In the second case, a channel with HW timestamps opens first, so the
-timestamp state is initialized and the delayed work is scheduled. Then
-a channel without HW timestamps opens, the first channel closes, and
-the second channel closes last.
+The removal looks safe at this commit. The short read check jumps to
+resubmit_urb before netdev = dev->netdev is assigned, but the code it
+reaches no longer reads netdev.
 
-The old gs_can_close() checked only the last channel's dev->feature, so
-gs_usb_timestamp_stop() was never called:
+Could the commit message be updated to describe these changes?
 
-	if (dev->feature & GS_CAN_FEATURE_HW_TIMESTAMP)
-		gs_usb_timestamp_stop(parent);
+[Severity: Low]
+This patch finishes a fix for a problem that an earlier commit
+introduced, but it has no Fixes: tag.
 
-gs_usb_timestamp_work() re-arms itself unconditionally, and the old
-gs_usb_disconnect() calls kfree(parent) without cancelling the work.
-Wouldn't the delayed work embedded in parent then run after parent has
-been freed?
+Commit 79a6d1bfe114 ("can: gs_usb: gs_usb_receive_bulk_callback():
+unanchor URL on usb_submit_urb() error") added the netdev_info(netdev, ...)
+call on this path. That call can be reached from the short read check:
 
-In the same scenario, re-opening the first channel calls
-spin_lock_init() and INIT_DELAYED_WORK() again while the work is still
-pending.
+	minimum_length = sizeof(hf->header);
+	if (urb->actual_length < minimum_length) {
+		dev_err_ratelimited(&parent->udev->dev, ...);
 
-The code changes appear to fix all of these. Would it be worth naming
-the NULL pointer oops and the delayed work use-after-free in the commit
-message?
+		goto resubmit_urb;
+	}
+
+That jump happens before netdev = dev->netdev is assigned. If
+usb_submit_urb() then fails with something other than -ENODEV or
+-ESHUTDOWN, the message is printed without a valid netdev.
+
+Commit 494fc029f662 ("can: gs_usb: gs_usb_receive_bulk_callback(): fix
+error message") carried Fixes: 79a6d1bfe114. It only set netdev to NULL,
+so the message prints "(NULL net_device)" and does not name the device.
+
+Should this patch carry Fixes: 494fc029f662 (or Fixes: 79a6d1bfe114)?
+That would let trees that took those commits find this follow-up.
+
+>  	}
+>  }
+>
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261122-gs_usb-fixes-v10-0-7c165c35d04a%40pengutronix.de
