@@ -1,56 +1,56 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795512666;
-	b=rYaUtfVhZ1j0R0P//7Fd0ePY4fzX59Srw5bOgn012YxdMFNFalkJ43npA+xr7iCZ5hN4
-	 DSnGzsf+OTVSLQvxez32defYiJnp290zs2V5A/G4rihUsJ0NlV+tSul+ren2b7C8DhnPc
-	 9fWpo6fJgazXsePcqzaphkJhM+RMzxrcdN74ZrMgYofHhmAMoQOrMIisUsyl1ZV0TvCZu
-	 BUijLSFoF+JPsAdwE8q3XxR1O/AOGoPYjKRmcyNcgU9UOACg1q8uXtMbYxg6pvFeM/zxb
-	 Lu5/4F3vcfYManHJRM1PiaqXVuH7TdxQNf5SW1QUu0dXKvvWCUTNqUdTPHlk/g17l6g==
+	t=1795512661;
+	b=eTy5lxJvG2BQa+05A5QaXJcXCS/+rYCpRUZlq/GSqCPHNOUh41vS+GXN7vs/0P2WMdXw
+	 VSpTzWd5pUAuolDdmJTWy/L85FGmvQfTK+9Z4GruesyJVnUCqYhBvTyoEpiJSxMvailWE
+	 Z2es4KOqX4BbQHlGy69nAIajtIyb0w89YMNgV+Bro1bKNg64TbsNrvoKUk/f8h6p5VOFR
+	 P4y3gw84/m755YvEE5cb3muQgz9Kr4xalOz6Jum3yVCu4H7AoNHS5bB2QdTgblwYi0yzx
+	 RXfTnalLykVLlt8NjdTjUfX7IkemsZ/4leSfAFuk5lV8dmg+H+IedBSfZAybFfqSfjw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795512666;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795512661;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=U/HNWif1ZVECeK3JYpem65ii+B67CFXrmyP8vaDY9lY=;
-	b=1jo1OK8Fn4Lbz+kQz2RwDPeJSEoZ3Pgyth8DNtRfSgTFmChcH+C1GwwnJ/9/2tAkJ6GS
-	 fAsUtrCWVg1UB58FHIwp+BHjCpoNFglyISJOZ8BXbvZ3GN5mwXljHbVMCkU95zmGbpSEM
-	 1qLm8P7r2vhf1Ee4eYf37jk0wry5JzYDYrfv+DhW5agPhC/W39EwL2TYX4AyzO4C5nUjd
-	 LQDrEMnxUbFbFdrtT5IVWUj2VDoAg9b9uICUELKQ8KStKmv20E3SxBAgjW+T1fDlFrQC6
-	 yzl1vYEybT/AZO7aquleHhj7swcI/NnE55AAMhjzmomCr5irtOBprLncdp0tRADYnMw==
+	bh=czr2NgLQec8c2t82MWxyebebRxRKRhT0v09ygt+K2IE=;
+	b=fsV4nYjnB1+lkp5UJXfkKyEwMez6jt3SWM9UuCd/BDnGQuiztkWBYxkKCgc4irbQu+lx
+	 p0wzz6wCkZfKW27tMA5QzZfGdjVMXb2KSmWH3aiDQCSsjWd7sBOuYirJvHyH001wzgQpe
+	 EfSHMnJMpwQW0mambIgYjwhatZNRfZ055u7ag3yuPIQfdCUoWjXCrVBcGB5eZ42ZEFtnH
+	 UkMZUYBmwzyRLOLysNWW5jYTl+RRQYpnD3saqzgzU2bE4DcFSHdT8tk+hCJTcFqxhks+S
+	 HHUSTOczU/sZz2vOuHrLCeI/ZDd8aB9iiGgcPt5IdPciE8VRl+5N+mUbD28GTAjwKdA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="f3/CJm6u";
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MssYBrxM;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47234606A68F;
-	Tue, 24 Nov 2026 09:31:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 672EC606A687;
+	Tue, 24 Nov 2026 09:31:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=f3/CJm6u
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8727C1F000C6;
-	Tue, 24 Nov 2026 09:31:05 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=MssYBrxM
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 579361F000EC;
+	Tue, 24 Nov 2026 09:31:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795512666;
-	bh=U/HNWif1ZVECeK3JYpem65ii+B67CFXrmyP8vaDY9lY=;
+	s=k20260515; t=1795512660;
+	bh=czr2NgLQec8c2t82MWxyebebRxRKRhT0v09ygt+K2IE=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=f3/CJm6uOD0E0Rpou9IthYh6bIvFVB2GTOOTgL248PjV8F18DW/fsT0ojbM2IkWP2
-	 g5b+EKFyyouivhC3UEkY1MaLG7Hotu8+yB6iQfKGat52XC5/enBg4yjSIrl8I2+CNq
-	 Wc3yqjw+B3XmgY6t8NbVDG08DgXbkWbOYh0E0jGncb9ZA3sLtLH6PYXR71N3/Y7fGV
-	 LRbtACsGxLK56rSH+wZOw7oo9Z2+i+SkW3dKfDJU82/IOlENRfLJtiFo+doyp1hF+b
-	 nPATVf35eVim+zLDc8PVTydp8s1OQZGWKLcLXJ9Xt81jTdgzzI/OSjBknVOu2fk9J7
-	 IG1GJJbPK+ImA==
-Subject: Re: [PATCH can-next v10 13/14] can: gs_usb:
- gs_usb_host_frame_header_valid(): drop invalid CAN error frames
+	b=MssYBrxMMfn4OvF++ExgouQ8j0l1vzUrCSTACFH2IpVix/pwALfUu4L6i772AFr2u
+	 lhAY9DZIuQk4+B4EZIoH1S02o0e4Wp0K2S6BipV8tTrz5qCDBNYbRJNZqf5dsb9+cN
+	 77UnLh6k4lqkrHyTCFUCqLMcAU/YN1bflQvY9TKymKdNgewUo0sHbdARWTaTK0Bfif
+	 eVk92HVJj2eoYlzPR7efcuNCnrpYewemBu1OrsWjtU2EC2FNf3soZoSa5P6mDnFVyH
+	 0dslA0+ORonK4zWJwNI6Gkdl2CNITD9JDT6lg2uTMAN6pB/tzQvLTSY3+5kbt4Q2jh
+	 EvHvjWpxZ6hmg==
+Subject: Re: [PATCH can-next v10 09/14] can: gs_usb: gs_usb_get_gs_can():
+ introduce new function to consolidate validation of struct gs_can
 From: netdev-bot+sashiko@kernel.org
 To: mkl@pengutronix.de
 Cc: mailhol@kernel.org, pfink@christ-es.de, eric@evenchick.com,
  max@schneidersoft.net, wg@grandegger.com, kernel@pengutronix.de,
  linux-can@vger.kernel.org, stable@vger.kernel.org, kuba@kernel.org
-Date: Tue, 24 Nov 2026 09:31:05 +0000
-Message-ID: <179551266509.3131.3496151929213632849@kernel.org>
-In-Reply-To: <20261122-gs_usb-fixes-v10-13-7c165c35d04a@pengutronix.de>
-References: <20261122-gs_usb-fixes-v10-13-7c165c35d04a@pengutronix.de>
+Date: Tue, 24 Nov 2026 09:30:59 +0000
+Message-ID: <179551265988.3131.9960814686983174068@kernel.org>
+In-Reply-To: <20261122-gs_usb-fixes-v10-9-7c165c35d04a@pengutronix.de>
+References: <20261122-gs_usb-fixes-v10-9-7c165c35d04a@pengutronix.de>
 X-sashiko-severity: Medium
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -64,10 +64,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 4 potential
+Thank you for your contribution! Sashiko AI review found 1 potential
 issue(s) to consider.
 
-Critical: 0 · High: 0 · Medium: 1 · Low: 3
+Critical: 0 · High: 0 · Medium: 1 · Low: 0
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -75,204 +75,149 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [Medium] gs_usb_host_frame_header_valid()
-  (drivers/net/can/usb/gs_usb.c) now rejects every received CAN error…
-- [Low] The patch is titled "drop invalid CAN error frames" and checks
-  only DLC and RTR.
-- [Low] In gs_usb_host_frame_header_valid(), the new DLC check (line 648)
-  and RTR check (line 660) are independent if-blocks.
-- [Low] When the new checks reject an RX error frame,
-  gs_usb_receive_bulk_callback() goes from the data_length < 0 check…
+- [Medium] This patch quietly changes how gs_usb_receive_bulk_callback()
+  handles a frame for a channel whose netdev is not present.
 
 --
 
-can: gs_usb: gs_usb_host_frame_header_valid(): drop invalid CAN error frames
+can: gs_usb: gs_usb_get_gs_can(): introduce new function to consolidate validation of struct gs_can
 
-This commit adds checks to gs_usb_host_frame_header_valid() for received
-CAN error frames. They must have a length of CAN_ERR_DLC and must not have
-the RTR flag set. Frames that fail are reported with a rate limited error
-message, and the URB is resubmitted without delivering the frame.
-
-Closes: https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261004-gs_usb-cleanups-and-fixes-v1-0-7b4b06244a77@pengutronix.de
+This commit moves the decoding and validation of struct gs_can from the
+host frame header into a new helper, gs_usb_get_gs_can(). The helper
+returns the gs_can pointer on success, or NULL on error. A fatal flag
+tells the caller whether to detach the device or resubmit the URB.
 
 > diff --git a/drivers/net/can/usb/gs_usb.c b/drivers/net/can/usb/gs_usb.c
-> index b345ab34a200a..7229d002b938a 100644
+> index 75adec495e657..9078460aebcaa 100644
 > --- a/drivers/net/can/usb/gs_usb.c
 > +++ b/drivers/net/can/usb/gs_usb.c
-> @@ -639,6 +639,35 @@ static bool gs_usb_host_frame_header_valid(const struct gs_can *dev,
->  		valid = false;
->  	}
+
+[ ... ]
+
+> @@ -651,6 +651,43 @@ gs_usb_get_minimum_rx_length(const struct gs_can *dev, const struct gs_host_fram
+>  	return minimum_length;
+>  }
 >  
-> +	if (!(header->echo_id == GS_HOST_FRAME_ECHO_ID_RX))
-> +		return valid;
+> +static struct gs_can *
+> +gs_usb_get_gs_can(const struct gs_usb *parent,
+> +		  const struct gs_host_frame_header *header, u32 actual_length,
+> +		  bool *fatal)
+> +{
+
+[ ... ]
+
+> +	struct gs_can *dev = parent->canch[header->channel];
+> +	const struct net_device *netdev = dev->netdev;
 > +
-> +	/* checks for RX'ed (non-echo) CAN frames */
+> +	if (!netif_device_present(netdev)) {
+> +		*fatal = true;
 > +
-> +	if (header->can_id & cpu_to_le32(CAN_ERR_FLAG)) {
-> +		if (header->can_dlc != CAN_ERR_DLC) {
-> +			stats->rx_errors++;
-> +			stats->rx_length_errors++;
-> +
-> +			if (net_ratelimit())
-> +				netdev_err(netdev,
-> +					   "invalid DLC in CAN error frame (can_dlc=%u, exptect_can_dlc=%u)\n",
-> +					   header->can_dlc, CAN_ERR_DLC);
-> +
-> +			valid = false;
-> +		}
-
-[Severity: Medium]
-Can dropping the whole frame here lose controller state transitions?
-
-When this check fails, gs_usb_get_rx_data_length() returns -EINVAL, and
-gs_usb_receive_bulk_callback() jumps straight to resubmit_urb. That also
-skips the gs_update_state() call:
-
-drivers/net/can/usb/gs_usb.c:gs_usb_receive_bulk_callback() {
-    ...
-	data_length = gs_usb_get_rx_data_length(dev, hf, urb->actual_length);
-	if (data_length < 0)
-		goto resubmit_urb;
-    ...
-			/* ERROR frames tell us information about the controller */
-			if (le32_to_cpu(hf->can_id) & CAN_ERR_FLAG)
-				gs_update_state(dev, cf);
-    ...
-}
-
-gs_update_state() is the only runtime code that updates dev->can.state and
-the bus_off, restarts, error_warning and error_passive counters. Its
-bus-off and restart branches look only at cf->can_id:
-
-drivers/net/can/usb/gs_usb.c:gs_update_state() {
-	if (cf->can_id & CAN_ERR_RESTARTED) {
-		dev->can.state = CAN_STATE_ERROR_ACTIVE;
-		can_stats->restarts++;
-	} else if (cf->can_id & CAN_ERR_BUSOFF) {
-		dev->can.state = CAN_STATE_BUS_OFF;
-		can_stats->bus_off++;
-    ...
-}
-
-A bus-off or restart frame with a short DLC carried everything the driver
-needed, but it is now discarded. If firmware sends such a frame, would
-dev->can.state stay ERROR_ACTIVE or ERROR_WARNING while the controller is
-actually bus-off? User space would also never see the event.
-
-Nothing appears to correct the state later. gs_usb_get_state() is only
-reached through do_get_berr_counter, the driver sets no do_get_state, and
-gs_usb_can_get_berr_counter() ignores the polled state.
-
-Short frames were not a memory safety problem before this patch.
-alloc_can_skb() zeroes the can_frame and memcpy() copies only data_length
-bytes, so data[1] reads as 0.
-
-Would it be better to repair the frame instead? Setting len to CAN_ERR_DLC
-and clearing CAN_RTR_FLAG, with a rate limited warning, would give user
-space well formed frames without losing the state transition. The same
-applies to the RTR check below.
-
-It is not confirmed that any deployed gs_usb firmware (candleLight, CANtact
-Pro, cannectivity, the original Geschwister Schneider firmware) sends error
-frames with a DLC other than 8. The commit message also does not say that
-state changes carried only in can_id are dropped as well.
-
-> +
-> +		if (header->can_id & cpu_to_le32(CAN_RTR_FLAG)) {
-> +			stats->rx_errors++;
-
-[Severity: Low]
-Is a single frame counted twice in rx_errors here?
-
-The DLC check above and this RTR check are independent, and neither
-returns. An RX error frame with CAN_ERR_FLAG | CAN_RTR_FLAG and can_dlc != 8
-therefore adds 2 to rx_errors. include/uapi/linux/if_link.h describes
-rx_errors as the "Total number of bad packets received on this network
-device".
-
-The next patch in the series ("can: gs_usb:
-gs_usb_host_frame_header_valid(): drop CAN frames with invalid DLC") adds a
-third independent block for can_dlc > CAN_MAX_RAW_DLC. That block also
-increments rx_errors and rx_length_errors. At the end of the series, an
-error frame with can_dlc > 15 and RTR set would add 3 to rx_errors and 2 to
-rx_length_errors.
-
-Could the counter be incremented once per rejected frame instead? For
-example, gs_usb_get_rx_data_length() could do it when
-gs_usb_host_frame_header_valid() returns false.
-
-> +
-> +			if (net_ratelimit())
-> +				netdev_err(netdev,
-> +					   "invalid RTR flag in CAN error frame\n");
-> +
-> +			valid = false;
-> +		}
+> +		return NULL;
 > +	}
 
-[Severity: Low]
-Should these checks also reject error frames that have GS_CAN_FLAG_FD set
-in header->flags?
+[Severity: Medium]
+Is this a deliberate behaviour change? Before this patch, the
+!netif_device_present() case did a plain return in
+gs_usb_receive_bulk_callback(). It dropped that one URB without
+resubmitting it, and it left the other channels alone:
 
-An RX error frame with GS_CAN_FLAG_FD (and optionally BRS or ESI) set and
-can_dlc == 8 still passes here. gs_usb_receive_bulk_callback() then takes
-the FD branch:
+-	if (!netif_device_present(netdev))
+-		return;
 
-drivers/net/can/usb/gs_usb.c:gs_usb_receive_bulk_callback() {
-    ...
-		if (hf->flags & GS_CAN_FLAG_FD) {
-			skb = alloc_canfd_skb(netdev, &cfd);
-			...
-			cfd->can_id = le32_to_cpu(hf->can_id);
-			cfd->len = data_length;
-			if (hf->flags & GS_CAN_FLAG_BRS)
-				cfd->flags |= CANFD_BRS;
-			if (hf->flags & GS_CAN_FLAG_ESI)
-				cfd->flags |= CANFD_ESI;
-    ...
-}
+With *fatal = true, the caller now jumps to device_detach. That label
+detaches every channel on the adapter:
 
-The resulting canfd_frame keeps CAN_ERR_FLAG. gs_update_state() is only
-called in the classic branch, so the driver state ignores this frame.
+device_detach:
+		for (rc = 0; rc < parent->channel_cnt; rc++) {
+			if (parent->canch[rc])
+				netif_device_detach(parent->canch[rc]->netdev);
+		}
 
-can_rcv_filter() in net/can/af_can.c delivers any frame with CAN_ERR_FLAG
-to RX_ERR subscribers. Sockets with CAN_RAW_FD_FRAMES enabled would
-therefore receive the error frame as a struct canfd_frame.
+A netdev can be not-present while the USB device is still attached.
+gs_usb_probe() fills parent->canch[] for all channels first. It then
+calls register_candev() one channel at a time:
 
-SocketCAN error frames are always classic struct can_frame. This looks
-like another kind of invalid error frame that, going by its subject, the
-patch is meant to drop. The behaviour predates this patch, but it falls
-within what the patch sets out to cover.
+	for (i = 0; i < icount; i++) {
+		struct gs_can *dev = parent->canch[i];
+
+		rc = register_candev(dev->netdev);
+
+So channel 0 can be opened before channel 1 is registered, and
+gs_can_open() submits the shared bulk-IN URBs. If the device then sends
+a frame tagged with the unregistered channel, would that now detach the
+running channel 0 as well?
+
+Once channel 0 is detached, its later RX frames also hit the fatal
+path and the URBs are never resubmitted. TX queues stop, and reopening
+fails with -ENODEV. gs_usb.c never calls netif_device_attach(), so the
+channels appear to stay detached until the device is re-probed.
+
+The other detach sites in this file only detach the affected channel's
+netdev on -ENODEV, for example in gs_can_start_xmit():
+
+		if (rc == -ENODEV) {
+			netif_device_detach(netdev);
+
+A single bool also can't express the old third outcome: drop the URB,
+don't resubmit, don't detach.
+
+The commit message says:
+
+    If fatal is
+    true, detach the device, otherwise re-submit the URB.
+
+It doesn't mention that a case which used to just drop the URB now
+detaches every channel. If this change is intended, could the commit
+message say so? Otherwise, could the old drop-only behaviour be kept for
+the not-present case?
+
+This behaviour looks the same at the end of the series. The final
+gs_usb_get_gs_can() still sets *fatal for !netif_device_present(), and
+probe still registers the channels in sequence.
 
 > +
-> +	return valid;
->  }
+> +	if (!netif_running(netdev))
+> +		return NULL;
+> +
+> +	return dev;
+> +}
 
-[Severity: Low]
-When the new checks reject an RX error frame,
-gs_usb_receive_bulk_callback() goes straight to resubmit_urb and skips the
-overflow handling:
+[ ... ]
 
-drivers/net/can/usb/gs_usb.c:gs_usb_receive_bulk_callback() {
-    ...
-check_overflow:
-	if (hf->flags & GS_CAN_FLAG_OVERFLOW) {
-		stats->rx_over_errors++;
-		stats->rx_errors++;
-    ...
-}
+> @@ -678,30 +716,17 @@ static void gs_usb_receive_bulk_callback(struct urb *urb)
+>  		return;
+>  	}
+>  
+> -	minimum_length = sizeof(hf->header);
+> -	if (urb->actual_length < minimum_length) {
+> -		dev_err_ratelimited(&parent->udev->dev,
+> -				    "short read (actual_length=%u, minimum_length=%u)\n",
+> -				    urb->actual_length, minimum_length);
+> +	dev = gs_usb_get_gs_can(parent, &hf->header, urb->actual_length, &fatal);
+> +	if (!dev) {
+> +		if (fatal)
+> +			goto device_detach;
+>  
+>  		goto resubmit_urb;
+>  	}
+>  
+> -	/* device reports out of range channel id */
+> -	if (hf->channel >= parent->channel_cnt)
+> -		goto device_detach;
+> -
+> -	dev = parent->canch[hf->channel];
+> -
+>  	netdev = dev->netdev;
+>  	stats = &netdev->stats;
+>  
+> -	if (!netif_device_present(netdev))
+> -		return;
+> -
+> -	if (!netif_running(netdev))
+> -		goto resubmit_urb;
+> -
 
-Is it intended that a GS_CAN_FLAG_OVERFLOW bit in a rejected error frame
-is lost? In that case rx_over_errors is not counted and no
-CAN_ERR_CRTL_RX_OVERFLOW error frame is generated.
-
-The flags byte does not depend on can_dlc or the RTR bit, and
-gs_usb_get_gs_can() has already confirmed that the full header was
-received.
-
-Earlier validation failures (out of range echo_id, short read) already
-skip overflow handling this way. This patch adds new cases that reach the
-same path.
+[ ... ]
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261122-gs_usb-fixes-v10-0-7c165c35d04a%40pengutronix.de
