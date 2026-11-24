@@ -1,91 +1,84 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.25
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795510457;
-	b=wyFMH0wlJ/tAZW++tPqaiTJXcmZOoH7DdvsZkzXPPSc6WPEuN8vifDdx5B2K3xcnXmqz
-	 km46LTl3V1MPgUyLYLuS2dRDIEDkCjHO3aiIxtKbd7ACmyr9HJ/1SQL4dJ0jopOeybHEa
-	 gJKgPyYlo1jRtbLp4icEwiMecx/ThMlnWXYF07xDGdqEZskjQa6fIJQwhuvP/zUIhxOOS
-	 ExJmLyu1jb1U4dx8vK3Xrp+07fKFQ5I/VPs7bN14dzaiEToWAxIM6r2Ttngf0fe5kBt+0
-	 sRK2U04q21LIYp5uZCgla18y/UNoZJOVrY0OiJud4IoisGbc2eF+PuV4pka/C4as0cA==
+	t=1795510571;
+	b=q5vYzi+TFho2Gh6ffYXxFW/Iy+7+HiIMqqEydQeHjqj4Fr2QDrs6vFhjWGmeNYVYTdTl
+	 bV0ZZvoZ+Bpfjm983iIWWj8XvP0ZwY9Trm7+Xje9P4jHgW6WFZRvpJhSxvhVfUhkxByAy
+	 xJGajtSzzB5rRhSOX/pGJWSqW5GO/mBuoePL7Yw8OAzgmiSt3h8kpnjwCbDV8jskYoVyw
+	 VmW1eUahYxzUYQnLNj960KoLQoeAjv4EJOd4QNTKty4qjEIseycDG5+BoLtfXtP2fnV78
+	 oDuWVLdhBNylW+2zu5nB8mD4NHjsaae7wf0FrIkQvPI3C7r9KxXVPo1OdV2ymZAq1Yg==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795510457;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
-	b=OEPDaqkr/l5ZaCT/SNk2Xtlt9VsAaX+sHRGqUS/qAsc+s+iJX3T1+iN5OuErYr3uUQEO
-	 txlP04/4gcR7I4TyNeya89qx4AN97pcLb/vELqn1vkkbEMupP7y+ttJN4QGv/8mARou4P
-	 Gws2s/Tm4RFTdPuIFmsa7buoPezNZarMWzX7NipJ2JP4HXCNZesm5nKd/2M0eu/c4CvSr
-	 t0WboMPNDmGyocBcdxR1sw5CleLqSSb+9Ut1x52bjmQgclUqkT7FEzRDJtOyWOP2YSk3b
-	 K/4BTPuzSKM5DgFEFV8u/VaVJgs5lXOCC09vCsnDx/lb2cFmkI06Oo8F7dt0g+iqzFA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795510571;
+	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
+	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
+	 In-Reply-To;
+	bh=SxlfCHNWvAAq7S9xZKu6jqg0lSAcBds85hY+rySU/rw=;
+	b=cvtB0E9oCjskoHkIvUXs30aTu/ayrhxVpyAwffwFGEpDx9vNLIu9WsomjrXXzEH0orX/
+	 0BZR8yk6LWimp42uymOGGb3IMGNDA0UzQ712rvve31+Xq0PK8AW9mtzX9kepwxWktiaNj
+	 uAtasVxMW0ma1vK8ZzXWFtEFSzszQy4+qKqICDZld1norCOg2Bg3Ep9m15UHet84HopXp
+	 OmrTzbqb0dY2ok1wf1VjNadhfRB123+l6AaMXvC+ZZzgf7dvODFrMf2DgL3Vlf0ximUIN
+	 dheqrzSlGddGSWfnissY5bmkUrqWzZSfrYXhh1HK6w038GBDzNlB1lFO3j77My0jkUA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=HLbucOis;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=+VxbI9WM;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.25
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [85.215.255.25])
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=diK5UnCw;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB666606A321
-	for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 08:54:16 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org CB666606A321
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A6B606A327
+	for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 08:56:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 59A6B606A327
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=HLbucOis;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=+VxbI9WM
-ARC-Seal: i=1; a=rsa-sha256; t=1795510448; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=JyLXk7ewwNfeTSPIRFks2R/donXw3uWpnDraflQQYMa7yFPDKDNNNLg8OPW2Me1Oyq
-    Ajt0aAaQaafKMwZqE9Amn+5BsV4cJPvTBhg1pmhij3sQkJECSq0+ZOsYsCZMPzPBt9QA
-    uOIByQ5LDDOR8eieVqVfuQC7MzDWUDQhuITp42mF+vwNSGAVUH4pNohUdtaxHIfKSUFu
-    /w1IIKZy6jPs4MX987bpkU12XlIuLRYqb4ZU/4Y5NSnp2Cc7ji5tyY7dgNlJhpSbfUsq
-    k7ebbIAKJsbgfSvxRBq4mUJcjANCeXOFb+oyPWvAsiJKpGs/HblXTFGr4i8ChOqXDW6J
-    ikxg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795510448;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
-    b=UfmwOkVWCMpugdz+4/WeQ8+p+Tl8cRBF8Z53P0jh7KA9Etps32IOQx7cT5exNZxwo7
-    d7Qms3qGs8C+vp/3Hiv1YxKOdahabt+axwdM43zGLL9/fdkSBc2ppxeTtVpEjI10tDDh
-    H5/VnsZXrFoay80XLNPp7KX0u+bj7IEVeMREIBzOYswVGAcWhzmmdIXP2oI/vt1AA+bh
-    v7dMlljRB8DptH1Bmp9aChdK8mEP4OsndG5r0Y/vaceLBsUziYQmCbWfEyUjMfORgUcQ
-    tKnvcll5IeLXrjI9bfbRlmIB7Z844QYzVKLDTzCI+SFMmREzBvT8QUXE4D4LOJSo8W/n
-    381w==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795510448;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
-    b=HLbucOisrvFcpXJR9QepNOn0sdBFeiemsXn0BEHp2YjA2DN6e1pJdjrMenfxNk97Ix
-    6m+XLFV8FuvlEGFt5tFFGMuweIdlqsrcIv62SACKCZOVzOi1Jgsm1PZHp7ZN/IZWi2HZ
-    HxxYPrdvK0+YJrvSL2Umr5IC2FFxWKK0GEUz1OIM2326QuDVEAROt6sAMDLpVTE7G6FW
-    XDepVut+U4hKmrwHPZzGxMuya/Dr9ZsVwpAXoNTB/PoCtuB1Z3Wh53Z+3J/fjgGDM+PE
-    0uMP6hptEIaGHaAIY3vud5B2Pjz4AQSTDoN63qjVgauTmaHJfO+hkj/Idk6SU9bc5uor
-    T5pA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795510448;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=BkiqNFJ1f4nMWpGXOtHzVrT03iXQGGM9m4D4fspgoGM=;
-    b=+VxbI9WM8bCUwC4rb/uV43r+IxZG4S/3McJ/3kDWuWa5FZR5ZsPZjibD7H4JtQkttB
-    jHJblAKirT14cLTAxMAw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AO8s8gS1
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Tue, 24 Nov 2026 09:54:08 +0100 (CET)
-Message-ID: <f0270895-8e97-4d6a-b5cb-6da6ab5c1ac5@hartkopp.net>
-Date: Tue, 24 Nov 2026 09:54:08 +0100
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=diK5UnCw
+Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
+	(Authenticated sender: mkl@pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 207CE200037;
+	Tue, 24 Nov 2026 09:56:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1795510568;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxlfCHNWvAAq7S9xZKu6jqg0lSAcBds85hY+rySU/rw=;
+	b=diK5UnCw7BsdwiAPWRx7muv03cHfxcw968kNLW8ZX8ft8ROEUHw3UpBclr2OSD+6LK1v5i
+	5rD9B9rF94MDTuJKVMJgkQ5nBH92mCnpcOy2qHeenVNKnLQOpr8kbNSAoknXDzGHAE66OT
+	vvqJhnQJu69d0z8D1vcp3x0xYVXjqFzQafQxN6p9MU1AS0GfrBQpn1/kr5NB48xihpVXtw
+	XT3ex3zhYbIXOdPFTGo0r4+sFusK52BjxaSvozzMvvTb5yqXcEoV3GoxiJyeKwwtVY6k52
+	BKyU7kvdNuuifxEddaPMy7kyCGGQzEGcGCWYfK1jMItsz1dD3wZ08JuyP2ceNw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1795510568;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxlfCHNWvAAq7S9xZKu6jqg0lSAcBds85hY+rySU/rw=;
+	b=EjJ7MsCFk+rS43yYSmcYx6yO6Yc1ebyrNcTDrkuqg5oW6TFH5thRLV7qZjmNqo62uf7icJ
+	BSSwPwIEoKHYJmLxH9abGbqqvrcBmDPRE+xo1/fRIY/cD6ArQgM/VvBpTJGhZXOfTAdIZA
+	pIiVGFRRkCw1Gv+b4rhyE59F9U6ri9KYtLwxKFwosLt/DLkJnsqq2UccvaMo/Ze9bPjtyG
+	7fpIrd88F1aHqPC760RtFrLdjxdxl9XYPse+4vqScmc7mPP6gW8ob6/h4k5fyt9IJCcLLC
+	r8OvEUJ16sU3N5QRoG7PdxCuI7GQB15lBI++/nV8YPFRezmbrBMX6rEGJxOBhA==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795510568; a=rsa-sha256;
+	cv=none;
+	b=MtIr91ZJsTPJZCzqbFcKuS7WaEN8Hk67iDu3A7+mRKArH+KrXJkNAKluEtfoOH2PyFH1Ij
+	qeH+wXKnuP/Mj35Sojt/JhTz+UVCpcpXiygeDKXBWQZftG/I3OXuENGVrJDfP415/pYDKr
+	bAEuDCo79gLuztiHoG2pCqPhtceLosOhJzJmO/Rndn++XsJN9lzCnjqiiwUhdQa8L2QNIx
+	e9F/qIjvNzJFglNktysWuJxEMnKqfS6OgCN3/BqB56lAFC3tqpnAXUTL697DN3ay+y4uRB
+	T579UGieH5CjJsl+NyrYXo9F4ySkbWPKjX60hATUvEufOL7RsLRamI3l9WaFJg==
+Date: Tue, 24 Nov 2026 09:56:07 +0100
+From: Marc Kleine-Budde <mkl@pengutronix.de>
+To: Oliver Hartkopp <socketcan@hartkopp.net>
+Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
+Subject: Re: [PATCH net 0/11] pull-request: can 2026-11-17
+Message-ID: <20261124-armored-mindful-kingfisher-b20baf-mkl@pengutronix.de>
+References: <20261117220818.1142581-1-mkl@pengutronix.de>
+ <f29308ea-4493-4146-bb28-506522040ce8@hartkopp.net>
+ <20261119-gifted-tapir-of-courtesy-408880-mkl@pengutronix.de>
+ <f0270895-8e97-4d6a-b5cb-6da6ab5c1ac5@hartkopp.net>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,39 +88,51 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="pckmg73u4yljhyrn"
+Content-Disposition: inline
+In-Reply-To: <f0270895-8e97-4d6a-b5cb-6da6ab5c1ac5@hartkopp.net>
+
+
+--pckmg73u4yljhyrn
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH net 0/11] pull-request: can 2026-11-17
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: linux-can@vger.kernel.org, kernel@pengutronix.de
-References: <20261117220818.1142581-1-mkl@pengutronix.de>
- <f29308ea-4493-4146-bb28-506522040ce8@hartkopp.net>
- <20261119-gifted-tapir-of-courtesy-408880-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261119-gifted-tapir-of-courtesy-408880-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
 
-Hi Marc,
+On 24.11.2026 09:54:08, Oliver Hartkopp wrote:
+> > make it so
+> >
+> If it works for you, I would appreciate it if you could send the updated
+> pull request today, so that I can address the feedback expected from the
+> sashiko-bot.
 
-On 19.11.26 18:32, Marc Kleine-Budde wrote:
-> On 19.11.2026 17:53:14, Oliver Hartkopp wrote:
->> unfortunately we did not make it into the net-PR for -rc4.
->>
->> Do you want me to re-spin my series to address the Sashiko remarks and
->> commit rewordings for this PR?
->>
->> If so I would answer one of the reviews with a pw bot cr tag.
-> 
-> make it so
-> 
-If it works for you, I would appreciate it if you could send the updated 
-pull request today, so that I can address the feedback expected from the 
-sashiko-bot.
+tags/linux-can-fixes-for-7.4-20261124 is already pushed, just writing
+the summary.
 
-My updated patches have been already reviewed and answered here:
+> My updated patches have been already reviewed and answered here:
+>
+> https://lore.kernel.org/linux-can/20261120-can-bcmlock-memcg-v7-0-f6b84f5=
+257b1@hartkopp.net/
 
-https://lore.kernel.org/linux-can/20261120-can-bcmlock-memcg-v7-0-f6b84f5257b1@hartkopp.net/
+Marc
 
-Best regards,
-Oliver
+--=20
+Pengutronix e.K.                 | Marc Kleine-Budde          |
+Embedded Linux                   | https://www.pengutronix.de |
+Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
+Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
+
+--pckmg73u4yljhyrn
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawVRJQAKCRDMOmT6rpmt
+0owLAP0e2Lk11PxSdbJmuY+JWcesa41zRyswKz8A5pPE/AglLwD8CNJiwEAU8h7g
+jGX1Ezxq6/x7J/sUwtXKGFnMwh3hhAg=
+=QLTP
+-----END PGP SIGNATURE-----
+
+--pckmg73u4yljhyrn--
