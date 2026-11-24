@@ -1,100 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=74.125.82.173
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795544296;
-	b=2OvHeLCRu0UYAhCTpioN5aIqpmWwNoPEq6QS0G1oyVKhs0QgQ/KNnkMD1c+PN+xZlmgQ
-	 nYpDYgzkqNAJ7asFiaY6vnmwlQxXg+SxuY8VOkQZNuDGO4rnvtHqOMP501+PBc9zxjx5F
-	 +Y9VFWhHQNgl22eQs7Zhy7hfYMnZENtUI8aH/MyIUSJyQhfGCV0mzY6xR+aX+eqG/yMZb
-	 lLLkVKHw6T6wCyJB8r/Cpn5qL7jPkyLPaK1hN+znz7fDATQMM3sbtZxxHT8e0v8tuBIg+
-	 ng9wPcvsSjYWOnsNiNeNW8ie6vD4VEhBhw9zu/fcud2p3la7hew0EK4VH1fw5nstZFQ==
+	t=1795558483;
+	b=DPsmh7z/JIS0sPe3r6yqeEUOKUx86eIPqx1Cv4TIYpI0BzS0zIs4D8cbb0lZM05TKRwh
+	 aKeOuqIvKvM/K0K2ivjc63BVPhGvB6zhLcl+gHCZKeUlVhFeMXtQsjQDCgJvuLEA17Haj
+	 tYUzRzSJjjcUpex+D+n8rMFZWYChkfI/bXuztXd5+CPbItp0o+6i/nqKHkF6WCn8m21Nq
+	 AhAK0H/62ts5gfe3wLbO+86mHkV+iuhPZBBmYZeHRRPiykg45h7hNQQYLkbOfujrFCgIa
+	 RZmv/CdPyYUDNJimRW/Dw7D0OW3G3jDKt/LOQMS0CvLzAmd/V1hI44N+a0TaKkm3fsw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795544296;
-	h=DMARC-Filter:Received:DKIM-Signature:X-Google-DKIM-Signature:
-	 X-Forwarded-Encrypted:X-Gm-Message-State:X-Gm-Gg:X-Received:Received:
-	 From:To:Cc:Subject:Date:Message-Id:X-Mailer:MIME-Version:
-	 Content-Transfer-Encoding;
-	bh=U4RlhrfBwPHzP90Zy/c+f9A3RL0rfHp6IuDLrwxdd3U=;
-	b=5MMtIWiTHGfBT5UfZiXQmQjwUu7N151jR6am/LuAnLxcnAanMLseiTjBR/aNp7uIQZDW
-	 76ZIEX8ilv2H4BbCBxwoYDT81Q+LYbWV05MxFFcJbX6wwttpYb69nNJkyXTc7QHjV0RdY
-	 OJ3qGafTaPL9W6/bQFRgXXhPKR4JLP7Gh50RSx6otpQPXafC2ln9d+7jICyZyMFQ2Zlmi
-	 3BQEEm7pUzl8poUWRllinbfp4ijzWPBxQJxk5ubU/261mbF6yb0mbUndl4TAjODmDklhh
-	 tynvk9afa5SYc394cVlmst3Xm49Wm+PMcsi/gTvGY9Cq0Pof/58TXGV9dE0KAb+qHQA==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795558483;
+	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
+	 In-Reply-To:References:X-sashiko-severity:Content-Type:
+	 Content-Transfer-Encoding:MIME-Version;
+	bh=bMF4ZZDGyUJAXrolZjC1+tfiI4CiFAo8Cfg/FTkVIFc=;
+	b=Rsl2t9lY6POkJIC73cy5ti0BvxyvOTd+goBceSW0OMadlaj1b+5WA210HQlRSLJO7nhf
+	 Yof3a77yPUkyZ6Ra4s/EICDk01MnW4ws2y36AxmlTgej7hd1qXkGOcHYhgFJm+9s/lcLY
+	 6m+Ny36Buj89BJhcadaEqVJWo+W1vQa7Y46qCuHK24v395fuOKBLQI6ILrlu+I5exijyM
+	 DZWr1vwYQBbZFe9ggV7Kx+4M9LPMET11cV+o1AydYA/Df1GGw2gzec91uAFlwco9blQCA
+	 +v9QWz5pDk4FoeLIs8JicinwntFsTQ4RE662/ijSD5zD1oXzxWaLHHbKbHlVO2Nx8zA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=none header.from=iiitd.ac.in;
-	spf=pass smtp.mailfrom=iiitd.ac.in;
-	dkim=pass header.d=iiitd.ac.in header.i=@iiitd.ac.in header.a=rsa-sha256 header.s=google header.b=MYFZ+lJn;
-	arc=none smtp.remote-ip=74.125.82.173
-Received: from mail-dy1-f173.google.com (mail-dy1-f173.google.com [74.125.82.173])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HbrnSlUZ;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61987606A68C
-	for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 18:18:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 61987606A68C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iiitd.ac.in
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iiitd.ac.in
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7EEF606A31E;
+	Tue, 24 Nov 2026 22:14:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iiitd.ac.in header.i=@iiitd.ac.in header.a=rsa-sha256 header.s=google header.b=MYFZ+lJn
-Received: by mail-dy1-f173.google.com with SMTP id 5a478bee46e88-380c28f9e35so6008417eec.1
-        for <linux-can@vger.kernel.org>; Tue, 24 Nov 2026 10:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iiitd.ac.in; s=google; t=1795544285; x=1796149085; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to:content-type;
-        bh=U4RlhrfBwPHzP90Zy/c+f9A3RL0rfHp6IuDLrwxdd3U=;
-        b=MYFZ+lJncBIycrG649o7p47c79ddDWNQ8TMatBbsZsH0MbbgPPDqbgNBrEerTWsDh1
-         XIEVPzIs+WVAPMbarmykJT6/DVrANteAlya407ZUl5GM5udcCxwfu92Z7UCyWCsigD8D
-         RNMqyYouLThLWGLxw1KiVYKGRoKrs8Ed+urrE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20260707; t=1795544285; x=1796149085;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to:content-type;
-        bh=U4RlhrfBwPHzP90Zy/c+f9A3RL0rfHp6IuDLrwxdd3U=;
-        b=uTNRRFSkyqYSJOcxnAW8hCWFWLoaSmp5+2S4FZlpPYw5/EwHK/1AxiFAWABEhbP+VO
-         YScygitPjcOKZNRULDKVEIyqlgSx5rZ861BYJO7uBZPjMyQfMWhXvnWJHSImtvtUQuyv
-         7uog4KqOn4PlchZWQrzdziJUGSh5oRvG9WZVpH0nEeJv4oUiqSFK3385HKgLi7g1tOUL
-         b2hs1KLCJ9HRviB/Yh7tuDh6yvsV91hC2MmYBBnRfwJZmNraOpl3snGSpqkGOFKunI+7
-         MKVTGBnLgAh5tZNWvbfqQMPU7zJyXWlIhdZvXarOH82Jy5kkJmrL8wmlX3hZNTykSOJy
-         /0Yg==
-X-Forwarded-Encrypted: i=1; AL+hErEZ3GvycIEJdrVVPCqV6dpR7QB56Fj2H2/nZlz3IsQB/0KzO6NtyOOfQBXZ/sJ5TYBZZxef12rF9+I=@vger.kernel.org
-X-Gm-Message-State: APuU4Z9h2RXTms6KPFqkLLEPAHedQoCVojN34kAtIKaqS+35TjN5bYfM
-	QDdh1P+RUZWypCIgryuiePfGBaYmyKSbR0jRV4Nyg5j92kHuuJ9OELEP2VKIvM3x484=
-X-Gm-Gg: AZFdTZc3DBDAAt2fdBCm1YhUVhPAJk2h1xGfAPvBvKeNFLZn6bfEOzpTJN2gki9+nkp
-	K6zpyl9GmvPZxvQfYAmGbSOodGEhi1TgBN6NyscgeSqxxsQGK3SgQXY2Apa+Wbnhp8/yUwQbu/H
-	EGlQGkls9mJMefRGJR/kVo3nyIcs9eCahQEsj3y+u+uWi1nhvvXg82wW/j9C+nHuKMe/L2wx1wo
-	ItiaHKkyWZpKI3+mw9ua7QXfHa5RdkzJdGWUPJExyBUcqyMlvdlu55CAWBA009ALI6SIMw2Fk4T
-	LZ3t4z8HWvv/clCp7c6abi42sd878aQVWyB5ZyNxktd7In4KPtVWGvOpJt8slV6sOsOCRt4FfCI
-	nkgnyI7vlxeDYvZYJxX2S78jsRPsRJVDPNmTfaL3uaw04l/vahqqypBfw0+mFIEEB0PlmMi49sF
-	FyN8nEX0amID0xqeKC14cUIX5YOANw8KmQGbDvi/Hb8MesL6DkCf2wkSvUdLZOa9GGByub9UMqk
-	VTLfUo+saAfkwvSGJHdSAMmSWjBzNaYxnI7fDwdHvIkH1g9ZXMVxw6YE55FyzQ9WsO16Az+07wB
-	T/MSkZInlVe7oV1QAWUFEFSM8UZjCwGZsTcUwWTn2wdmuZ3PAAeaxehGdV5swzKKQF25vK37sUw
-	ZkFL7gy/gDvzdFlzIfiXKa4dPgBsHRSo3DyyiJAP+lEKzsk0T1yXH+wkePw/Js/PwL3wTQIRmiL
-	r83JBAOAu/MAc=
-X-Received: by 2002:a05:7301:dd8e:b0:386:6c8e:b4f7 with SMTP id 5a478bee46e88-3866c8ebd4bmr14565993eec.12.1795544284928;
-        Tue, 24 Nov 2026 10:18:04 -0800 (PST)
-Received: from iiitd-S2600STB.iiitd.edu.in ([103.25.231.160])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-3866f299d0bsm39138429eec.19.2026.11.24.10.18.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2026 10:18:04 -0800 (PST)
-From: Piyus Kedia <piyus@iiitd.ac.in>
-To: Robin van der Gracht <robin@protonic.nl>,
-	Oleksij Rempel <o.rempel@pengutronix.de>,
-	Oliver Hartkopp <socketcan@hartkopp.net>,
-	Marc Kleine-Budde <mkl@pengutronix.de>,
-	linux-can@vger.kernel.org,
-	netdev@vger.kernel.org
-Cc: kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org,
-	Kapil Vaswani <kapil@presceralabs.ai>,
-	davem@davemloft.net,
-	edumazet@google.com,
-	kuba@kernel.org,
-	pabeni@redhat.com,
-	stable@vger.kernel.org
-Subject: [PATCH net v2] can: j1939: reject an out-of-range data packet offset
-Date: Tue, 24 Nov 2026 23:47:57 +0530
-Message-Id: <20261124181757.638280-1-piyus@iiitd.ac.in>
-X-Mailer: git-send-email 2.34.1
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=HbrnSlUZ
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 598771F000C6;
+	Tue, 24 Nov 2026 22:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795558482;
+	bh=bMF4ZZDGyUJAXrolZjC1+tfiI4CiFAo8Cfg/FTkVIFc=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References;
+	b=HbrnSlUZOuDW52qve1H9AahgnCSYzuqvIBYI9GCYsUrj/Vz+SjyrvlPt7usdoOz55
+	 H6z83S4Lm9OmaQodyRJOrF/SQmeD5w0/RHfueFv5c0LEMBE14zETQg4PGWzKqq9xWe
+	 f3IxVSsCBEqRihYPDT/W3SLcV/5yijJSai9j7Vn7TApxeQXHRf5fLa8JRIYCAJ/oJ7
+	 TbyRILTUtybJe1K17o75Ylfdp/OUm/RdCpxvrCGRdjVpjMDw/uGq6XnF9UZyKZjjXw
+	 0aP/ZkGTuTGfglTTsfTqLtha47g3cxmIoFLk9S2KN0sVwWwRfq4q9LEEjKsf2HH/Vx
+	 SI6KCMfSkxhyA==
+Subject: Re: [PATCH net v4] can: dev: reject unusable bit-timing constants
+From: netdev-bot+sashiko@kernel.org
+To: 25031212351@stu.xidian.edu.cn
+Cc: mkl@pengutronix.de, mailhol@kernel.org, socketcan@hartkopp.net,
+ linux-can@vger.kernel.org, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org, byu@xidian.edu.cn, wencheng@xidian.edu.cn,
+ kuba@kernel.org
+Date: Tue, 24 Nov 2026 22:14:41 +0000
+Message-ID: <179555848191.3131.5345246106199936359@kernel.org>
+In-Reply-To: <20261123093809.5154-1-25031212351@stu.xidian.edu.cn>
+References: <20261123093809.5154-1-25031212351@stu.xidian.edu.cn>
+X-sashiko-severity: High
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -104,191 +63,264 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-j1939_session_completed() passes the skb from j1939_session_skb_get() to
-j1939_sk_recv(), which dereferences it on its first statement:
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
 
-	se_skb = j1939_session_skb_get(session);
-	/* distribute among j1939 receivers */
-	j1939_sk_recv(session->priv, se_skb);
+Critical: 0 · High: 1 (2) · Medium: 0 · Low: 2
 
-For a receive session that getter cannot fail by itself:
-j1939_session_new()
-queues one skb and j1939_session_fresh_new() sizes it to the whole message
-with skb_put_zero(), and only j1939_session_skb_drop_old() and
-j1939_session_destroy() ever remove one.  What makes it return NULL is
-where
-it looks:
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
 
-	offset_start = session->pkt.dpo * 7;
-	return j1939_session_skb_get_by_offset(session, offset_start);
+- [High] A device can still crash the kernel with a divide error, which
+  is what this patch says it prevents.
+- [Low] register_candev() only rejects a zero clock frequency when
+  priv->bittiming_const is set: `if (priv->bittiming_const &&…
+- [Low] The patch adds a new rejection criterion: CAN_MAX_BIT_TIME_TQ =
+  1024, so registration fails if tseg1_max + tseg2_max + CAN_SYNC_SEG >…
 
-pkt.dpo is the ETP Data Packet Offset, and for a receive session the only
-thing that writes it is j1939_xtp_rx_dpo_one(), which stores the peer's
-24-bit value without comparing it to anything:
+Pre-existing issues:
+- [High] This problem wasn't introduced by this patch, but can_calc_pwm()
+  can still divide by zero (modulo) when priv->xl.data_bittiming was…
+- [High] This problem wasn't introduced by this patch, but
+  can_calc_bittiming() computes `brp = priv->clock.freq / (tsegall *…
 
-	/* transmitted without problems */
-	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
+--
 
-So a peer can name a window past the end of the message, and the lookup at
-dpo * 7 then finds nothing.  An ETP RTS, an ETP DPO with an offset at or
-beyond pkt.total, and an EOMA reach the NULL dereference:
+can: dev: reject unusable bit-timing constants
 
-  j1939_xtp_rx_eoma()
-    j1939_xtp_rx_eoma_one()
-      j1939_session_completed()
-        j1939_sk_recv()
-          j1939_sk_recv_one()            <- skb->len on a NULL skb
+This patch extends can_bittiming_const_valid() with several new checks.
+It requires tseg1, tseg2 and brp min/max values that are consistent,
+rejects brp_inc = 0, caps the bit time at 1024 TQ, and adds
+can_pwm_const_valid() for the CAN XL PWM constants. register_candev() now
+rejects a zero clock frequency when CAN-CC constants are present, and it
+requires CAN-CC constants for CAN-FD.
 
-An out-of-range offset has no other legitimate effect either: every data
-packet that follows is rejected by the "packet > session->pkt.total" test
-in
-j1939_xtp_rx_dat_one(), which computes packet from the same dpo, so the
-session can never complete with data.
+> diff --git a/drivers/net/can/dev/dev.c b/drivers/net/can/dev/dev.c
+> index 769745e22a3c7..9325406ff1a82 100644
+> --- a/drivers/net/can/dev/dev.c
+> +++ b/drivers/net/can/dev/dev.c
 
-Reject it where it arrives, and cancel the session as
-j1939_xtp_rx_dat_one() does for a packet number it cannot place.  The
-session's own data packets are already checked against pkt.total; this is
-the same check for the offset they are counted from.
+[ ... ]
 
-Look the received message up at offset 0 in j1939_session_completed() as
-well.  The DPO window is where the next data packet belongs, not where the
-message starts, and at completion it is the whole message that goes to the
-sockets - for a receive session that is the single skb at offset 0, so the
-lookup cannot fail there.  The NULL test stays as a second guard: if it
-ever fires now, the queue has lost an skb that this file never removes
-while the session is alive, which would be a kernel bug and not something
-a peer did.
+> @@ -595,15 +596,54 @@ static int can_get_termination(struct net_device *ndev)
+>  	return 0;
+>  }
+>  
+> +/* Upper bound for the bit time in time quanta. The bit times of the
+> + * currently supported CAN controllers are well below it, the limit keeps the
+> + * time segment scan in can_calc_bittiming() bounded.
+> + */
+> +#define CAN_MAX_BIT_TIME_TQ 1024
+> +
+>  static bool
+>  can_bittiming_const_valid(const struct can_bittiming_const *btc)
+>  {
 
-What that guard does NOT do is tell anyone.  The session is deactivated
-with session->err still 0, so j1939_session_destroy() queues no
-J1939_ERRQUEUE_RX_ABORT and a socket watching the error queue, having
-already seen RX_RTS and RX_DPO, hears nothing more; no abort frame goes to
-the peer either.  That is deliberate: setting session->err here would write
-a field that __j1939_session_cancel() writes under
-active_session_list_lock, and the path is no longer reachable from the wire
-once the offset is checked above.
+[ ... ]
 
-Found by AI-driven fuzzing built on top of syzkaller, and reproduced on
-mainline 7.4-rc3 and 7.3.1 with a 61-line program over two sockets: KASAN
-reports a NULL pointer dereference in j1939_sk_recv_one().  The ETP DPO
-trigger above is the one in that reproducer; an EOMA alone, with dpo still
-0, finds the zero-filled skb and delivers it, which is a separate question
-about partly-filled receive buffers and not a memory-safety one.
+> +	if (!btc->brp_min || btc->brp_min > btc->brp_max || !btc->brp_inc)
+> +		return false;
 
-Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-Cc: stable@vger.kernel.org
-Signed-off-by: Kapil Vaswani <kapil@presceralabs.ai>
-Signed-off-by: Piyus Kedia <piyus@iiitd.ac.in>
----
-Link: https://lore.kernel.org/all/179553126874.3135.14817947057284289051@kernel.org/
+[Severity: High]
+Can a USB device still trigger a divide error by reporting a very large
+brp_max? This check only compares brp_max against brp_min, and gs_usb and
+ucan copy the value straight from the device:
 
-That link is the review this version answers, which is a reply inside the
-thread of the posting it supersedes:
+drivers/net/can/usb/gs_usb.c:gs_make_candev() {
+    ...
+	dev->bt_const.brp_max = le32_to_cpu(bt_const.brp_max);
+    ...
+}
 
-  [PATCH net] can: j1939: do not pass a NULL session skb to the socket layer
+For example, these values pass all of the new checks (bit_time is 24):
 
-The message-id of that mail is not recorded here - the send script writes no
-log - so lore's thread view beside the review is where to find it.
+  tseg1 1..15, tseg2 1..8, sjw_max 1
+  brp 1..0xFFFFFFFF, brp_inc 1
+  80 MHz clock
 
-Changes in v2, all from the review of v1:
+A CAP_NET_ADMIN user can then send IFLA_CAN_BITTIMING with these values:
 
- - v1 described the wrong trigger.  It said "an EOMA for a connection whose
-   data packets never arrived", and the review showed why that cannot be it:
-   j1939_session_new() queues one skb, j1939_session_fresh_new() sizes it to
-   the whole message with skb_put_zero(), and nothing removes it while the
-   session lives, so the queue is never empty for a receive session.  What
-   fails is the lookup, because j1939_session_skb_get() looks at
-   pkt.dpo * 7 and pkt.dpo is whatever the peer's last ETP DPO carried.  The
-   reproducer sends exactly that - an ETP RTS, an ETP DPO with offsets of
-   0xffffff, 0x100000, 0x010000 and 0x001000, then an EOMA - and its own
-   comments say so; the analysis simply did not reach the commit message.
+  tq = 3355443200
+  prop_seg = 1, phase_seg1 = 6, phase_seg2 = 8, sjw = 1
 
- - v2 fixes the cause instead of only the symptom, which is what the review
-   asked.  j1939_xtp_rx_dpo_one() now rejects an offset that is not below
-   pkt.total and cancels the session, the same way j1939_xtp_rx_dat_one()
-   handles a packet number it cannot place.  The data packets of a session
-   were already checked against pkt.total; this is the same check for the
-   offset they are counted from.
+can_fixup_bittiming() computes brp = 2^28, which is inside
+[brp_min, brp_max], and then does:
 
- - j1939_session_completed() now looks the message up at offset 0 rather
-   than through the DPO window, the review's other suggestion.  For a
-   receive session that is the single skb covering the whole message, so the
-   lookup cannot fail, and the NULL test stays only as a second guard.
+drivers/net/can/dev/bittiming.c:can_fixup_bittiming() {
+    ...
+	bt->bitrate = priv->clock.freq / (bt->brp * can_bit_time(bt));
+    ...
+}
 
- - v1's commit message claimed "the two other callers of the getter in this
-   file already do" test the result, naming j1939_session_tx_dat() and
-   j1939_xtp_rx_dat_one().  Both call j1939_session_skb_get_by_offset(), not
-   j1939_session_skb_get(); the only other caller of the latter is
-   j1939_simple_txnext(), which does test it.  That sentence is gone.
+2^28 * 16 wraps to 0 in unsigned int. This happens before the
+bitrate_max check in can_changelink().
 
- - The commit message now says what the guard does not do: the session is
-   deactivated with session->err still 0, so no J1939_ERRQUEUE_RX_ABORT is
-   queued and no abort frame is sent, which the review asked to have stated.
+can_calc_bittiming() uses the same kind of 32-bit product as a divisor:
 
-Measured, and not: the NULL dereference was reproduced on mainline 7.4-rc3
-and on 7.3.1 by the 61-line program in this series' report thread, and the
-KASAN splat is in j1939_sk_recv_one().  With v2 the same program is refused
-at the DPO - the session is cancelled before an EOMA can complete it - and
-no splat follows.  Both hunks are compile-tested; checkpatch --strict
-reports nothing.  We have no second CAN interface here, so only the vcan
-loopback path was exercised.
----
- net/can/j1939/transport.c | 26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+	bitrate = priv->clock.freq / (brp * tsegall);
 
-diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-index 8fcfd13e5e6f..225467843e42 100644
---- a/net/can/j1939/transport.c
-+++ b/net/can/j1939/transport.c
-@@ -1242,10 +1242,15 @@ static void j1939_session_completed(struct j1939_session *session)
- 	struct sk_buff *se_skb;
- 
- 	if (!session->transmission) {
--		se_skb = j1939_session_skb_get(session);
--		/* distribute among j1939 receivers */
--		j1939_sk_recv(session->priv, se_skb);
--		consume_skb(se_skb);
-+		/* the whole message, not the window the peer's last DPO
-+		 * happened to name
-+		 */
-+		se_skb = j1939_session_skb_get_by_offset(session, 0);
-+		if (se_skb) {
-+			/* distribute among j1939 receivers */
-+			j1939_sk_recv(session->priv, se_skb);
-+			consume_skb(se_skb);
-+		}
- 	}
- 
- 	j1939_session_deactivate_activate_next(session);
-@@ -1823,14 +1828,25 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
- 				 struct sk_buff *skb)
- {
- 	const u8 *dat = skb->data;
-+	unsigned int dpo;
- 
- 	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
- 		return;
- 
- 	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
- 
-+	dpo = j1939_etp_ctl_to_packet(dat);
-+	if (dpo >= session->pkt.total) {
-+		netdev_info(session->priv->ndev,
-+			    "%s: 0x%p: data packet offset %u is not below the %u packet(s) of this session\n",
-+			    __func__, session, dpo, session->pkt.total);
-+		j1939_session_timers_cancel(session);
-+		j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
-+		return;
-+	}
-+
- 	/* transmitted without problems */
--	session->pkt.dpo = j1939_etp_ctl_to_packet(skb->data);
-+	session->pkt.dpo = dpo;
- 	session->last_cmd = dat[0];
- 	j1939_tp_set_rxtimeout(session, 750);
- 
+So does can_bit_time_tqmin(), which can_calc_pwm() calls. gs_usb also takes
+the FD dbrp_max from the device.
+
+The v4 changelog says the brp_max * bit time limit was dropped because
+"the multiplication is fixed separately". I could not find such a fix in
+the tree, and the commit message only sets aside the tsegall * bitrate
+overflow.
+
+Could a bound like (u64)btc->brp_max * bit_time <= U32_MAX be added back?
+In-tree drivers all have small brp_max values.
+
+> +
+> +	bit_time = (u64)btc->tseg1_max + btc->tseg2_max + CAN_SYNC_SEG;
+> +	if (bit_time > CAN_MAX_BIT_TIME_TQ)
+> +		return false;
+
+[Severity: Low]
+This isn't a bug, but the commit message does not mention this new limit.
+Registration now fails for any device with a bit time above 1024 TQ.
+
+The cap also stops the loop bounds in can_calc_bittiming() from wrapping:
+
+	for (tseg = (btc->tseg1_max + btc->tseg2_max) * 2 + 1;
+	     tseg >= (btc->tseg1_min + btc->tseg2_min) * 2; tseg--) {
+
+Without the cap, tseg1_min = tseg2_min = 2^31 makes the lower bound wrap
+to 0, and the loop never ends while RTNL is held.
+
+Since this is tagged for stable, could the commit message describe the
+new limit and the hang it prevents? No in-tree driver appears to be
+affected. The largest bit time I found is kvaser_pciefd at 545 TQ.
+
+> +
+> +	return true;
+> +}
+> +
+> +static bool
+> +can_pwm_const_valid(const struct can_pwm_const *pwm_const)
+> +{
+
+[ ... ]
+
+> +	/* can_calc_pwm() divides by the shortest PWM symbol. */
+> +	if (check_add_overflow(pwm_const->pwms_min, pwm_const->pwml_min,
+> +			       &shortest_symbol) || !shortest_symbol)
+> +		return false;
+
+[Severity: High]
+This is a pre-existing issue and was not introduced by this patch.
+can_calc_pwm() has a second unguarded division, which depends on device
+state rather than on the constants:
+
+drivers/net/can/dev/calc_bittiming.c:can_calc_pwm() {
+    ...
+	for (pwm_per_bit = DIV_ROUND_UP(xl_ns, CAN_PWM_NS_MAX);
+	     pwm_per_bit <= pwm_per_bit_max; pwm_per_bit++)
+		if (xl_tqmin % pwm_per_bit == 0)
+			break;
+    ...
+}
+
+If priv->xl.data_bittiming was never set, xl_tqmin, xl_ns and
+pwm_per_bit_max are all 0. The loop then computes 0 % 0.
+
+Can that state be reached? can_ctrlmode_changelink() commits
+CAN_CTRLMODE_XL | CAN_CTRLMODE_XL_TMS before any bittiming is validated:
+
+	priv->ctrlmode &= ~cm->mask;
+	priv->ctrlmode |= maskedflags;
+
+Suppose the CC bittiming step or can_dbt_changelink() then fails in the
+same request, for example with tq and bitrate both set, or with an XL data
+bitrate above bitrate_max. XL_TMS stays set and xl.data_bittiming stays
+zero.
+
+A later changelink that carries only IFLA_CAN_RESTART_MS reaches
+can_pwm_changelink(). It has no PWM attribute, so it calls:
+
+	if (!pwm_nla)
+		return can_calc_pwm(dev, extack);
+
+dummy_can advertises XL and XL_TMS and sets xl.pwm_const, so a
+CAP_NET_ADMIN user appears to be able to reach this path in-tree.
+
+> +
+>  	return true;
+>  }
+>  
+> @@ -632,8 +672,26 @@ int register_candev(struct net_device *dev)
+>  	    (priv->bittiming_const || priv->fd.data_bittiming_const))
+>  		return -EINVAL;
+>  
+> -	if (!can_bittiming_const_valid(priv->bittiming_const) ||
+> -	    !can_bittiming_const_valid(priv->fd.data_bittiming_const))
+> +	/* Validate CAN clock and CAN-CC bittiming */
+> +	if (priv->bittiming_const &&
+> +	    (!priv->clock.freq ||
+> +	     !can_bittiming_const_valid(priv->bittiming_const)))
+> +		return -EINVAL;
+
+[Severity: High]
+This is a pre-existing issue and was not introduced by this patch. The
+commit message calls it a separate problem, but it is still reachable in
+the calculation this patch hardens:
+
+drivers/net/can/dev/calc_bittiming.c:can_calc_bittiming() {
+    ...
+		brp = priv->clock.freq / (tsegall * bt->bitrate) + tseg % 2;
+    ...
+}
+
+bt->bitrate comes straight from IFLA_CAN_BITTIMING, and nothing bounds it
+first. can_validate_bittiming() only checks sample_point, and
+can_changelink() checks bitrate_max only after can_get_bittiming()
+returns.
+
+With tq = 0 and bitrate = 2^28, any tsegall that is a multiple of 16
+wraps the product to 0. sja1000 (tsegall 3..25) and dummy_can both reach
+tsegall = 16 without breaking out of the loop early. bitrate = 2^31 does
+the same for any even tsegall.
+
+A single changelink from a CAP_NET_ADMIN user can hit this on any device
+with bittiming_const, with no special hardware. Is a fix planned to land
+together with this one?
+
+> +
+> +	/* For CAN-FD:
+> +	 * Ensure CAN-CC bittiming and validate CAN-FD bittiming
+> +	 */
+> +	if (priv->fd.data_bittiming_const &&
+> +	    (!priv->bittiming_const ||
+> +	     !can_bittiming_const_valid(priv->fd.data_bittiming_const)))
+> +		return -EINVAL;
+> +
+> +	/* For CAN XL: validate CAN XL bittiming and PWM constants */
+> +	if (priv->xl.data_bittiming_const &&
+> +	    !can_bittiming_const_valid(priv->xl.data_bittiming_const))
+> +		return -EINVAL;
+> +
+> +	if (priv->xl.pwm_const && !can_pwm_const_valid(priv->xl.pwm_const))
+>  		return -EINVAL;
+
+[Severity: Low]
+Should the XL branches also require priv->bittiming_const, as the FD branch
+does? The zero clock.freq check only runs when bittiming_const is set. The
+"either fixed bit rates or bit timing const" check above also ignores
+xl.data_bittiming_const.
+
+A driver that registers xl.data_bittiming_const or xl.pwm_const without CC
+constants, and with clock.freq == 0, would pass these checks. It would then
+divide by zero in can_calc_bittiming():
+
+	do_div(v64, priv->clock.freq);
+
+It would also divide by zero in can_calc_pwm() through can_tqmin_to_ns().
+
+The only in-tree XL driver today is dummy_can, and it sets both
+bittiming_const and clock.freq, so this is latent for now.
+
 -- 
-2.34.1
-
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261123093809.5154-1-25031212351%40stu.xidian.edu.cn
