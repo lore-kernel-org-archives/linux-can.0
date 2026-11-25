@@ -1,91 +1,60 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.52
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795615882;
-	b=q2PqwMUNZLD/HSnLioue2Xrn3+GixzR6VDByJMLTgtBh2MotIRHWW8JLrCcd4hiODv1F
-	 9BCBU3CmqlkOmVfQ2VrygoJGGhIF6zh/4ip3dKJhd+bID8jPrJPWFVPfGpylHi4GiLuuF
-	 esYlwqSuz1ZO/EEQXIaIZvfb+RjuJWWRg5p1ZLDZq0JeSbJvire1mMJiKzidiNLCpKWYl
-	 mn9eTRf8uWvETQ/Iz1BcIVJtYFLU1SVRZO+yVkW1hHN3O8StufqtDdMesi0fwK/n/1Qci
-	 G01upeArGiQZ3UIq3Escho/UJZfIlmMuq6iEcUv82TdjApsb4R3WOb1uqUtpKYtbMYA==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795615882;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=GOI4XUcInlwlj/yKAuRWPheNsNrEL0lu0d2jyhaTLrw=;
-	b=M8g7tvK4zZQY0w78qBgOJlmEimJwaMh6cqwubWe+NxjqpVzJxKpRA8RMvk3np0PbDMtv
-	 YfU14FK3wHF5hktquhOocsZmcuH5AU3FAoJ1j+Xbl9p3UIQyv5Q0NcEPI5EB9A0r6c98o
-	 Hp7baJtMyZxQZ+yjcEvXn8UZfSctK4mxMeIj2/5vLxEDHalWr4skg3ImbwJt8tku9HTn7
-	 7rYcJxkVwInxcPCaznl2v38s5mvPwC6tU8lksFcpyTASZe+3ADtjsgW4wD+OHTU4oBv4l
-	 dVQ1SBVSzUFD61D/pl3RVSdeDjaqCQ4RlzCM/LqeYJ5w6c6cpnTA+EFgzvXSucRSTEQ==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=GCxszM0i;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=lUEVA81y;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.52
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.52])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=109.224.244.20
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795616169;
+	b=qplFMrBEY1OxAHJNm9LQEHWszxjUcSSoRxKUASENeFtcgrSqTpqYc6gJ723kcrfGQB0l
+	 Q/mvhTrOPiORY6r12jgy7Z7tWeCwjRbgsh4OCLL1i5UJPQ8wrHu9yIuh429qQsGhpco/C
+	 XQw0VOaMM8EdJUUyEcpXIcZNUSReAzw7pVGXXiVEtfoR8wuAaTW75Pe0nonGw5eLk62Zn
+	 wglOBtS0pUV4P8+z6+v+VPz6Yi6N74Tg6ZSjTGwecNf7OWKKrNyM+yyhjPwwv4OKDLmP0
+	 Rfn6BOaCcw2Q/ZM4y/PBS22DPqsLR9Jna0sC+EPaCpTr5eD4k40wXNIwqimygscSFHw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795616169;
+	h=DMARC-Filter:DKIM-Signature:Date:To:From:Cc:Subject:Message-ID:
+	 In-Reply-To:References:Feedback-ID:X-Pm-Message-ID:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	bh=mMaVZ5dFPhI7ea1hZPLNuaqG6WnMEb7dPu4JlaIOODg=;
+	b=RhlTXQ0kYACzZkECkSuVXTSAb2sv4/gwFAetlRqp8wdIpiP3gz7ZJuTyzeORwDMHf4/y
+	 NF4oMwL+jf6+HGlwU8T73eLK6b1zyIGj43ksTt32IyJr9Ez5jiYnWzyfRgTTidEHFHR7m
+	 vRUEpLvRB+KkClczQOUUvwk7oCSF8C4fnsV8kpmF7JS7NfTwruGuqkIx8AvDge2tHhvG/
+	 iClL/eI03BTLBzRZWcs3rHRRfz7MJjnJdKZGgskdVOECffkcCGzRwa0IEwbtdi8WcNIxP
+	 cCJR82ziaZVX399SevIIMuGqwVDThaa8ArwCGhxChxy/lkSQ4xRUFAYiyxJ/WNuVwiQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=becholey.ch;
+	spf=pass smtp.mailfrom=becholey.ch;
+	dkim=pass header.d=becholey.ch header.i=@becholey.ch header.a=rsa-sha256 header.s=protonmail2 header.b=UtVJlH3R;
+	arc=none smtp.remote-ip=109.224.244.20
+Received: from mail-24420.protonmail.ch (mail-24420.protonmail.ch [109.224.244.20])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC31606A68E;
-	Wed, 25 Nov 2026 14:11:20 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 0FC31606A68E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FC7606A31E
+	for <linux-can@vger.kernel.org>; Wed, 25 Nov 2026 14:16:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 80FC7606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=becholey.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=becholey.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=GCxszM0i;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=lUEVA81y
-ARC-Seal: i=1; a=rsa-sha256; t=1795615875; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=YPqfqNPwHdchRqWNLp9+np4h6olf22ag6CwhHpy/AthGQ5NeHsy5uJ8jqR72G0SGxN
-    47/jAyTuvgYPws2x8+QRWpuLivI5ntFjgQxGcA+6ud/sj8JxBN+nyJew66DNJWtlrMGh
-    8ZmmQKKPUfJvbzNEJMsMLIroQb8Ft+/oum7k/1BSCX54i1ZSYdHXlPiiIXMLJedjSuIu
-    deQfsL/D1R66mz7+V4m5vpPXztp9p0fOnYMPiwjZFseluXNUSWTVnbpwdsiMDmebtQH2
-    UBRm0RJvJOSd0e9lAeTY6hi4p1RxXfzfH3z8jptgqrEBoGzlAuQJqyQgWbvlZBCDkRTx
-    u6Ng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795615875;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=GOI4XUcInlwlj/yKAuRWPheNsNrEL0lu0d2jyhaTLrw=;
-    b=k5bImQBDtMRhcxV56Fb4yq0nvg81HoQKQicDW5Z2pmGE5WBoAuPqP16j6VFyXyZzug
-    F9iivtd+NuRoMAdo3RToe2ZdOI1NjOP3OtqHn31y5Td6G/0CVo2TaIdBOi5HMjtsTSgA
-    QwuFZXEMvZK1i4gmK5ewSQGQDQO0DHYRnUThhZhHM/UPnWsyJZWkD596FXnBpsSx+B80
-    IpIvHItU4MW56uA+lGHI471e9I1uCtVsndLcbENOlp6h9hUrWyiwWafijKfO2v3BvwNK
-    KQHq7tzIAlNSpqx637h4XKLCNJ64Z65MdtORv1Al2tZl+b39ow6Kst8b1HDl15YiT5if
-    iR9g==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795615875;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=GOI4XUcInlwlj/yKAuRWPheNsNrEL0lu0d2jyhaTLrw=;
-    b=GCxszM0iLix2Oe+mwPU5REdaBKH3DRz8gRYa+bSF0iSBK1GLkBomQKRp/x7yGCpqqv
-    EwNnq1Sc3jxkthORQDsWIh43dmqF6O5vX3CMhRo0d4bF9i69FnPrnabVfo2VhV5Vg+oH
-    nTRiOTOrVPqhofozhrM2H0ugJvvAk7VhaFoKLdy5QteJmz908JP9ROt5U55VUDyXoynX
-    QlvwJt+VLcFNb0UlVIMO3QjGLZKysTe1zgwyWSHeMVG2fKTWVWpyF3tG5xFMbB3Sr9+t
-    pgXHHbAhhFvC/YElSfnehvEyVEnFRdf2+Q4UVOScfwAskNc5X89qlwlxHJIgPtADxRUl
-    T3rQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795615875;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=GOI4XUcInlwlj/yKAuRWPheNsNrEL0lu0d2jyhaTLrw=;
-    b=lUEVA81yFhsxoGeZbImLI7VMKzcSOpi4CRGmgLDp066QMrpBQaz3VerzLOYEEoDjU3
-    puheeCGvKEbJBEuyl4Cw==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tRkI16oOSW1Ti/f4Kp38="
-Received: from [192.168.20.237]
-    by smtp.strato.de (RZmta 55.6.3 SBL|AUTH)
-    with ESMTPSA id Kfdf2a2APEBDnDG
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Wed, 25 Nov 2026 15:11:13 +0100 (CET)
-Message-ID: <a582ed1d-67c6-461e-b82d-4fa13f31888d@hartkopp.net>
-Date: Wed, 25 Nov 2026 15:11:08 +0100
+	dkim=pass (2048-bit key, unprotected) header.d=becholey.ch header.i=@becholey.ch header.a=rsa-sha256 header.s=protonmail2 header.b=UtVJlH3R
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=becholey.ch;
+	s=protonmail2; t=1795616163; x=1795875363;
+	bh=mMaVZ5dFPhI7ea1hZPLNuaqG6WnMEb7dPu4JlaIOODg=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=UtVJlH3R74vREbXn9+g8M8hIK6cFDjImNsEdSvxcF76Bw2g6OAQVShQSyKJtQUu/W
+	 +g/40aWbG1dwdgp5VIx9KP9KkFtl0vL+OBQo8kzCojnlUxLmG11ZuFIsM8COY3U2VR
+	 PIxwOLR4YL3I9eyMn4gZ1ZdyVLSGQafResZqxBcio/XC1Wm1aVoyuVAi6UAlVI7sGj
+	 OmyiC0w6ac25LryNxF58f0X8agv29mbJ8G1YSyMf9FxBPLj6oHfXwQK3ADPeajErE/
+	 hRqeTc/ZwDyDe7tewS78K2ceuEFZv0TwYIWz/l3Prly83bzPQGEHfhOFuYRcOjag95
+	 yMQCa0L6rvXaw==
+Date: Wed, 25 Nov 2026 14:16:00 +0000
+To: Pavel Skripkin <paskripkin@gmail.com>
+From: Alexandre Becholey <alex@becholey.ch>
+Cc: Yasushi SHOJI <yashi@spacecubics.com>, Marc Kleine-Budde <mkl@pengutronix.de>, Vincent Mailhol <mailhol@kernel.org>, stable@vger.kernel.org, linux-can@vger.kernel.org
+Subject: Re: [PATCH] can: mcba_usb: Fix double free of RX buffers in mcba_urb_unlink()
+Message-ID: <YzORDJ6g27PstCrzykJe0VfFOAHc6ldlm4jPwzG-5fc3mrb79JxuFpIgDcpjPGdlj9W4NkXSq42xWNr-FqPDOjq-hrcGqRAxp3i12qFUtks=@becholey.ch>
+In-Reply-To: <5205f6b8-66a7-4869-bc94-1c8831b1ec24@gmail.com>
+References: <20261119085329.539894-1-alex@becholey.ch> <5205f6b8-66a7-4869-bc94-1c8831b1ec24@gmail.com>
+Feedback-ID: 60743817:user:proton
+X-Pm-Message-ID: f2583886a52e5b187f5cc1f9705cc2b546cffb38
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -95,69 +64,105 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH net 01/12] can: bcm: copy the CAN frames outside of
- lock_sock()
-To: Marc Kleine-Budde <mkl@pengutronix.de>, netdev-bot+sinfo@kernel.org
-Cc: netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
- linux-can@vger.kernel.org, kernel@pengutronix.de, stable@vger.kernel.org
-References: <20261124085757.1093632-1-mkl@pengutronix.de>
- <20261124085757.1093632-2-mkl@pengutronix.de>
- <179551104023.3294.3966794215800671203@kernel.org>
- <20261125-lavender-pig-of-imagination-fe91b5-mkl@pengutronix.de>
-Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <20261125-lavender-pig-of-imagination-fe91b5-mkl@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+Hi Pavel,
 
+On Sunday, November 22nd, 2026 at 10:51 AM, Pavel Skripkin <paskripkin@gmai=
+l.com> wrote:
 
-On 25.11.26 15:01, Marc Kleine-Budde wrote:
-> On 24.11.2026 09:04:00, netdev-bot+sinfo@kernel.org wrote:
->> This is an automated message. This series looks like a fix, but its
->> commit messages seem to be missing some information:
->>
->>   - How the issue was discovered, e.g. hit in production, hit during
->>     development, syzbot report, manual code inspection, LLM or static
->>     analysis tool scan.
-> 
-> The issues in the CAN protocols BCM, RAW and ISOTP fixed in patches
-> #1...#7 were found by LLM review. They can lead to block the RTNL by an
-> unprivileged user, but have not been observed in the wild.
+> Hi Alexandre,
+>=20
+> Alexandre Becholey <alex@becholey.ch> says:
+> > mcba_urb_unlink() frees the RX buffers but leaves the stale pointers in
+> > priv->rxbuf[]. It runs from both mcba_usb_close() and
+> > mcba_usb_disconnect(), so once the interface has been up, the buffers
+> > are freed twice: on unplug after "ip link set can0 down", on unplug
+> > while can0 is up, or on a second up/down cycle. No special device
+> > behaviour is needed; on a host controller without DMA the double
+> > usb_free_coherent() is a double kfree().
+> >
+>=20
+> Sounds reasonable.
+>=20
+> I wonder, tho, did you test on real HW or used emulated one via usb gadge=
+ts?
 
-Just a nitpick: We had no user feedback on those now solved RTNL lags.
-But to check the implementations of these patches, some locking stress 
-tests were created that proved we had a problem here.
+Emulated on a raw-gadget program on dummy_hcd that behaves like the
+adapter. I don't have a real hardware to test with.
 
-Best regards,
-Oliver
+>=20
+> What caught my eye is that mcba_usb_open() never reallocates URBs closed
+> in mcba_usb_close(). So I'd expect device to not work properly after
+> second "ip link set can0 up".
 
-> 
-> Patch #8 fixes problem with configuration of certain classes of older
-> CAN-FD hardware, found by LLM, not observed in the wild.
-> 
-> Patches #9...10 fix problems with the netlink attribute sizing, found by
-> LLM, not observed in the wild.
-> 
-> Patch #11 fixes a information leak of up to 8 bytes of kernel memory to
-> out USB URBs, found by LLM.
-> 
-> Patch #12 fixes a probe failure on of a driver on m68k/coldfire, found
-> by human review, not observed in the wild.
-> 
->>   - Whether the issue was actually triggered, or is only theoretical
->>     (e.g. found by LLM and not proven at runtime). If it was triggered
->>     please include the symptoms, like the stack trace or kernel messages.
->>
->> Please do not repost the series just to address the above. Instead,
->> reply to this email with the missing information, so that reviewers
->> can take it into account.
->>
->> *IMPORTANT*: If you do repost (for other reasons) - please include
->> the relevant info in the cover letter or commit messages.
-> 
-> regards,
-> Marc
-> 
+Indeed "still works" only meant that the second "ip link set can0 up"
+succeeds. After down/up the adapter no longer receives. It seems that
+has been the case since the driver was added (51f3baad7de9) and this
+patch does not change it.
 
+>=20
+> Maybe it shouldn't close them at the first place?
+
+That would fix both: if mcba_usb_close() only kills the TX URBs, the
+RX URBs keep running across down/up, as they already do before the
+first up, and mcba_usb_disconnect() becomes the only place that frees
+the RX buffers, so the double free goes away as well. The other way is
+to set up RX in mcba_usb_open() and free it in mcba_usb_close() only.
+However, the firmware version requests sent at probe rely on RX running.
+
+Would you prefer a v2 that keeps the RX URBs running in close (fixing
+both issues), or this minimal fix for stable and the RX restart as a
+separate patch?
+
+>=20
+>  > Clear each rxbuf[] pointer after freeing it, which makes the
+> function> safe to call twice again, as it was before commit 91c02557174b
+> ("can:
+> > mcba_usb: fix memory leak in mcba_usb").
+> >
+> > The bug was found, and the reproducer and this fix were written, by AI
+> > agents (Claude Mythos and Claude Opus models). The analysis and the
+> > patch were reviewed by a human.
+> >
+> > Fixes: 91c02557174b ("can: mcba_usb: fix memory leak in mcba_usb")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Alexandre Becholey <alex@becholey.ch>
+> > ---
+> > An emulated adapter on dummy_hcd: "ip link set can0 up/down", then
+> > unplug, gives a KASAN double-free in hcd_buffer_free() on v7.3.1 and
+> > master 9d66f26fefac; the two other sequences as well. All clean with
+> > the fix, and a second "ip link set up" still works.
+> > Reproducer available on request.
+> >
+> >   drivers/net/can/usb/mcba_usb.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/net/can/usb/mcba_usb.c b/drivers/net/can/usb/mcba_=
+usb.c
+> > index 04170326dc7e..b40b323da9d3 100644
+> > --- a/drivers/net/can/usb/mcba_usb.c
+> > +++ b/drivers/net/can/usb/mcba_usb.c
+> > @@ -718,9 +718,11 @@ static void mcba_urb_unlink(struct mcba_priv *priv=
+)
+> >
+> >   =09usb_kill_anchored_urbs(&priv->rx_submitted);
+> >
+> > -=09for (i =3D 0; i < MCBA_MAX_RX_URBS; ++i)
+> > +=09for (i =3D 0; i < MCBA_MAX_RX_URBS; ++i) {
+> >   =09=09usb_free_coherent(priv->udev, MCBA_USB_RX_BUFF_SIZE,
+> >   =09=09=09=09  priv->rxbuf[i], priv->rxbuf_dma[i]);
+> > +=09=09priv->rxbuf[i] =3D NULL;
+> > +=09}
+> >
+> >   =09usb_kill_anchored_urbs(&priv->tx_submitted);
+> >   }
+>=20
+>=20
+> With regards,
+> Pavel Skripkin
+>=20
+
+Kind regards,
+Alexandre
