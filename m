@@ -1,55 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795630370;
-	b=LH4xXDxrPk3w3CppOidb3tJOOGZDvRAIm8OqKNRr4ppaepYDdw1ludPZ/gp9iGDVOB8b
-	 tMgWMwAxsS/HWfgbiJeQM7Tw0edNe0LxFJdPXcH0fYpoh4V82hnTryt3cm7iVKlta7jUY
-	 +KG6t71ZP3r85DIRSEgvLw8Auyfe9v4bu64MqdP09be5Zbj1nL7b0xzz3GN3GY5wWjT4Q
-	 I3ddMgx+jynEbH3NeF1sk7+Kf/hP/dFl3Q7QvDH/VV+b2qWMA8abJ2+yNZ/BfadOdwI43
-	 8fc9y3u/qVeO8e4G1Vom2/KV8OA8DR0pm+WXj5TKJUYgiHJvRGpg/SYd/ik04iWqroQ==
+	t=1795630697;
+	b=g2S56YNnynu2xvgFkoT6In53MLslMHEYTm7zWA5yD/uEfwpaLyG9z+GLicJ7VYAP3br/
+	 KlON1ZA+D0Kw0VEvh9NkK7NLz3TjKgGAC50Qsnyu80hSJyniszJHbru3nQQmx4ebSSJQD
+	 /8tE5DEJA37baH9GuIHGdfHvYV2SKA31XmE23CO6d6v2HZ4FrS7MXHEGRYdVSlTOc3xmM
+	 JmaFQ2qF24TwYxvVXxjWUxcd7J2NwYgsSbTzngwQXCmHLpJI3gzGbSlfrhY0m/jYSrI0/
+	 i/qWTEGVIYDvHNL6P8wX9EaF08nnKOPoa2Ia5OHtpTfrbc0fR0XFo+79Xig+R2NmkLg==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795630370;
-	h=Received:DKIM-Signature:Received:X-Forwarded-Encrypted:
-	 X-Gm-Message-State:X-Received:MIME-Version:References:In-Reply-To:
-	 From:Date:X-Gmail-Original-Message-ID:X-Gm-Features:Message-ID:
-	 Subject:To:Cc:Content-Type:Content-Transfer-Encoding;
-	bh=4jTbRTZRitaWiCSV09T/AEZ1U865c63Eb8AZUxy/ufw=;
-	b=dGHDwn3ILBCR4NGtjxFdF95AozdAEwpItng0lFcizjdVq24ejBTCMZOPrXl08iKdMPDZ
-	 7I015lBM8nWoEKB/myoM50u3fAOCYoyjG2n0OVnqmFUOXeYVOacNq5cKwym/p6Rcuwmkt
-	 VganTwZ3Wkh2xVjYkWW+jFeO1BDHPSrmhYcg5F/ZyyHjlsHBAVGLNqVxTwLf8ge7vq7FI
-	 yKV31+8Vm8zwY+3bVdUZsdi74WvLz04gfMYZmzLul66906+4NEHGaBcne4ybVnRKSew0f
-	 50mNk/nnsn8SL8+mjKqOF9M+P6iWV36mRsT97/nBpfC8tfoydGgQbd/b/8l9WaJr1uw==
+	a=rsa-sha256; c=relaxed/relaxed; t=1795630697;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=xXWFbqmp3LDYv+b4hPYuWyvSUNv3Gb3/UfHgOu30yYo=;
+	b=dpgdxEem6smYzTs3CEhiJ0JOquDipgvx5kEXljMmVeEVwrZDSUgIkZSyQ9N6TiMvGH20
+	 9cO3iugGCllii8N1aguH723YFjh+B1BVyxOoQh+4VqemgDLgKzABI2LhGc2xlwsaxk+w7
+	 39ttGT8VVpB7ff7tW/iPOwvMTcvZvzwoiEaP1vIFycWpMqRaUdSQ4XBme9kUjYEKBZye5
+	 6eUjc/eBg6IQuEP4Z6e7TOqU8z+WiibTGGXgNmv0j1WuUvWqT1FmnhTOzAVfSQvvNNzxT
+	 0oGpFGBpBMcnWUYvQTMwNR6+go/mvQbZ5dxGJmhwg2u7BuCumHJMEywElyAfK4wZLEA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=E1vZt4bz;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b="XF/DynUT";
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B54D606A331
-	for <linux-can@vger.kernel.org>; Wed, 25 Nov 2026 18:12:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC31C606A33F
+	for <linux-can@vger.kernel.org>; Wed, 25 Nov 2026 18:18:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=E1vZt4bz
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C61461F000EE
-	for <linux-can@vger.kernel.org>; Wed, 25 Nov 2026 18:12:49 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=XF/DynUT
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4C36A1F000EB;
+	Wed, 25 Nov 2026 18:18:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795630369;
-	bh=4jTbRTZRitaWiCSV09T/AEZ1U865c63Eb8AZUxy/ufw=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc;
-	b=E1vZt4bz0JhSxEtEeTI7AoUtNANPm+CYHwBUNqhHgFr/iJU34ypA4gyvEobRGVVWG
-	 9sNy2Kp4eRirU984KbHPbBQwRxAMBw0cF1sENozuKbbGNZb/O50pacgvRU6EFJnoFB
-	 e0663LxDQsaZnwh8If5SheyJM/1JF5a1ioNQQWnt8O1SqtINZLxt7JmM8TIBcYnl70
-	 fj0eds0EpB+nRqjdBY8K3MX2wK2PshqxZbTAerzI0E9u/sPsDPNFFX/ITT7JCW9mrz
-	 FhC37POqO+y8cdgD/Fld0E0zttEIf8yVuZhvk+yS4l1Nym+PDNrT+ZV1zf/lgrACLN
-	 IfMhEfOT1UEmA==
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-5bfa65c8617so3833214e87.0
-        for <linux-can@vger.kernel.org>; Wed, 25 Nov 2026 10:12:49 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AL+hErE1G1OZbaSJmtrsmbuWBABze+/vMCSpAoYppFukTxzwwsyop65wp8isEHotjnjTR1r75EDuYVSj3DA=@vger.kernel.org
-X-Gm-Message-State: APuU4Z858LJsf4SUNSBLYj+t6opE+i3FVBgGvIBUJfGFVA+3whMjLV85
-	rVw9+oY4a7MXpi4aK7PIm1zIxb0HRegXGoYb4GTLUH75k4vRqrvZxmNrRpNrf6n9DSLsOjX0L+G
-	SvPZBAik706oOFFcXP+zkd2wBeOYOtug=
-X-Received: by 2002:a05:6512:b86:b0:5bf:ce24:2d20 with SMTP id
- 2adb3069b0e04-5c1bc7bc30bmr5709392e87.22.1795630368568; Wed, 25 Nov 2026
- 10:12:48 -0800 (PST)
+	s=k20260515; t=1795630697;
+	bh=xXWFbqmp3LDYv+b4hPYuWyvSUNv3Gb3/UfHgOu30yYo=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=XF/DynUT+4pzAW12EQwkhjOjrQ/yG5LsqHh4N4Rgc/f28JlMF4H94Xv9Fs1g3sz+j
+	 k1HscaL9JGj8L/dFNWwMydGg3dlkimuOdDuBsePMHJTNMf2OncnCVCpP64Td81fpe6
+	 6KspqjcIFwYvao/muea49JGPOdZ3WLu4KSGLc4fRBSnXTuUaDSQCKe6xfmRNG8N99c
+	 79weeqxCWcNrAp7c6LQUbIaZeQL1fGnarVHixYEBV9rMw+Mbs5KJ+Tv8ypuG7Es2li
+	 EQXC3+AU+xHwSD+9KPG4JcHIeW/6mdY1hKuRviI1Kz2S07Tj9zMon55a8PVKsXxvpU
+	 NuZ5XBZ5Bfg0Q==
+Message-ID: <sashiko-outbox-233959@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net v2] can: j1939: reject an out-of-range data packet
+ offset
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Piyus Kedia" <piyus@iiitd.ac.in>, linux-can@vger.kernel.org
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261124181757.638280-1-piyus@iiitd.ac.in>
+References: <20261124181757.638280-1-piyus@iiitd.ac.in>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Wed, 25 Nov 2026 18:18:16 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -58,37 +60,119 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-References: <20261106230746.21954-1-wahrenst@gmx.net> <20261106230746.21954-4-wahrenst@gmx.net>
-In-Reply-To: <20261106230746.21954-4-wahrenst@gmx.net>
-From: Linus Walleij <linusw@kernel.org>
-Date: Wed, 25 Nov 2026 19:12:35 +0100
-X-Gmail-Original-Message-ID: <CAD++jLn3Se-NzQDMatXN__8+xFQUjVr2DJbigjFfy=PE20266w@mail.gmail.com>
-X-Gm-Features: Aa3M54rzEawPDtXAOeD0tX6yiM-y94vFsxRv9P0IIXZxjhuCad4qET9fZgXDR1Y
-Message-ID: <CAD++jLn3Se-NzQDMatXN__8+xFQUjVr2DJbigjFfy=PE20266w@mail.gmail.com>
-Subject: Re: [PATCH 3/5] dt-bindings: gpio: mxs: Allow gpio-line-names to be set
-To: Stefan Wahren <wahrenst@gmx.net>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzk+dt@kernel.org>, 
-	Conor Dooley <conor+dt@kernel.org>, Bartosz Golaszewski <brgl@kernel.org>, Frank Li <Frank.Li@nxp.com>, 
-	Vinod Koul <vkoul@kernel.org>, Marc Kleine-Budde <mkl@pengutronix.de>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Vincent Mailhol <mailhol@kernel.org>, 
-	Sascha Hauer <s.hauer@pengutronix.de>, kernel@pengutronix.de, 
-	Fabio Estevam <festevam@gmail.com>, Manivannan Sadhasivam <mani@kernel.org>, devicetree@vger.kernel.org, 
-	imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
-	linux-gpio@vger.kernel.org, linux-can@vger.kernel.org, 
-	linux-phy@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sat, Nov 7, 2026 at 12:08=E2=80=AFAM Stefan Wahren <wahrenst@gmx.net> wr=
-ote:
+Thank you for your contribution! Sashiko AI review found 2 potential
+issues to consider:
+- [High] can: j1939: session leak in j1939_xtp_rx_dpo_one() on repeated
+  invalid DPO
+- [Medium] can: j1939: aborted session completed in
+  j1939_session_completed() on EOMA
+--
 
-> Describe common "gpio-line-names" property to allow DTs to
-> specify names for GPIO lines.
->
-> Signed-off-by: Stefan Wahren <wahrenst@gmx.net>
+commit e965a3918b3f2f0306bb887a70504c5f042637e7
+Author: Piyus Kedia <piyus@iiitd.ac.in>
 
-Reviewed-by: Linus Walleij <linusw@kernel.org>
+can: j1939: reject an out-of-range data packet offset
 
-Yours,
-Linus Walleij
+This commit rejects out-of-range ETP data packet offsets in
+j1939_xtp_rx_dpo_one() and looks up the completed receive message skb at
+offset 0 in j1939_session_completed().
+
+Link: https://lore.kernel.org/all/179553126874.3135.14817947057284289051@ke=
+rnel.org/
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..225467843e428 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+> @@ -1242,10 +1242,15 @@ static void j1939_session_completed(struct j1939_=
+session *session)
+>  	struct sk_buff *se_skb;
+> =20
+>  	if (!session->transmission) {
+> -		se_skb =3D j1939_session_skb_get(session);
+> -		/* distribute among j1939 receivers */
+> -		j1939_sk_recv(session->priv, se_skb);
+> -		consume_skb(se_skb);
+> +		/* the whole message, not the window the peer's last DPO
+> +		 * happened to name
+> +		 */
+> +		se_skb =3D j1939_session_skb_get_by_offset(session, 0);
+> +		if (se_skb) {
+> +			/* distribute among j1939 receivers */
+> +			j1939_sk_recv(session->priv, se_skb);
+> +			consume_skb(se_skb);
+> +		}
+>  	}
+> =20
+>  	j1939_session_deactivate_activate_next(session);
+
+[Severity: Medium]
+Can an incoming EOMA frame still complete a receive session that
+j1939_xtp_rx_dpo_one() already cancelled?
+
+After j1939_session_cancel() transitions the session to
+J1939_SESSION_WAITING_ABORT and queues J1939_ERRQUEUE_RX_ABORT, the
+session stays on priv->active_session_list until the abort frame or the
+500 ms rxtimer deactivates it.  If an EOMA frame arrives during that
+window, j1939_xtp_rx_eoma() finds the session and calls
+j1939_xtp_rx_eoma_one() -> j1939_session_completed() without checking
+session->state or session->err.  Because j1939_session_completed() now
+fetches offset 0 instead of pkt.dpo * 7, it delivers the aborted
+session's skb to receiving sockets via j1939_sk_recv() and queues a
+second J1939_ERRQUEUE_RX_ABORT when the session is destroyed.
+
+> @@ -1823,14 +1828,25 @@ static void j1939_xtp_rx_dpo_one(struct j1939_ses=
+sion *session,
+>  				 struct sk_buff *skb)
+>  {
+>  	const u8 *dat =3D skb->data;
+> +	unsigned int dpo;
+> =20
+>  	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+>  		return;
+> =20
+>  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+> =20
+> +	dpo =3D j1939_etp_ctl_to_packet(dat);
+> +	if (dpo >=3D session->pkt.total) {
+> +		netdev_info(session->priv->ndev,
+> +			    "%s: 0x%p: data packet offset %u is not below the %u packet(s) of=
+ this session\n",
+> +			    __func__, session, dpo, session->pkt.total);
+> +		j1939_session_timers_cancel(session);
+> +		j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
+> +		return;
+> +	}
+
+[Severity: High]
+Does a second out-of-range DPO frame leak the session and its netdev
+references?
+
+On the first invalid DPO, j1939_session_cancel() sets session->state to
+J1939_SESSION_WAITING_ABORT and starts the 500 ms rxtimer:
+
+net/can/j1939/transport.c:j1939_session_cancel() {
+	if (session->state >=3D J1939_SESSION_ACTIVE &&
+	    session->state < J1939_SESSION_WAITING_ABORT) {
+		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
+		__j1939_session_cancel(session, err);
+	}
+}
+
+If a second invalid DPO arrives while the session is still in
+J1939_SESSION_WAITING_ABORT (for example, when the peer source address is
+not local so the looped-back abort frame is not received locally, or when
+back-to-back DPO frames are already queued), j1939_session_timers_cancel()
+cancels the 500 ms rxtimer and j1939_session_cancel() does not restart it.
+The session then stays on priv->active_session_list with no running
+timers, leaking the session, its receive skb, and its netdev_hold()
+references so unregister_netdevice() hangs after the socket closes.
+
+Should this check for J1939_SESSION_WAITING_ABORT and call
+j1939_session_deactivate_activate_next(session), the same way
+j1939_xtp_rx_rts_session_active() does?
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261124181757.6382=
+80-1-piyus@iiitd.ac.in?part=3D1
