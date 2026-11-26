@@ -1,44 +1,44 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795704378;
-	b=h3oYKBNRi7KY0rJ+G+Tj69SqisYdR0KTNo44x0nRx7yfdarvoQj3EKD/Xu0A7rUUQpQ8
-	 U+xzmSCpx0U2Bw1aAHW6yB+k+jzeEFMUMlGCKJuwATPFC3trgc2NhD9DRJzIJo2UEvmH5
-	 +/gP2FEJrZpbwpJvHviR2ARELT5mRLhgTVGkmUdTA/XZ2GFPyw3ZHAuPJ2cCFhKq3hsdp
-	 DLFNnmnA7tPcfe2FpcmuxfunHATwcAROIKGQTn229jg4snv4M3Am21kuKWehAAOXRrqO4
-	 4zLBNQl7rVPCmDy+3Z43BD6gP1tO+jOFtCNpoYHjIdwv1Qhfa5FOq4Br6zLgEUeCdqw==
+	t=1795704385;
+	b=mYVplE2hXBM/EKmWkeqU9EsoLz+U7uDmM3ffCkLKJqpWyZY02mG0UGil5OG+BXrTlksL
+	 msFqnBd+X8SFp9tXLLG2TCZYZgsQbD3Aut/XgtUUdpyrooGu5wmjw9/0B8qlPdwBNmCVN
+	 lTFaEZGhMgFMfFwJti9HsA+2NeaOA7dEmi5fhfBEVOEzLavx7vQp9xs7YkJvjKKTZnjTQ
+	 Czz2pX/I5RpiGFla+U61tlZ/DdWNsHYbOaBa5ws0QWlUbM1xmaeOdJZnodU76KjXTL51y
+	 p9MRd6z6n7chC/X8zPi9f29miezuTqbDo7WzkLkSbtF/LOCGCy5Lh2x4wXWcT6xakBA==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795704378;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795704385;
 	h=Received:DKIM-Signature:From:To:Cc:Subject:Date:Message-ID:X-Mailer:
-	 MIME-Version:Content-Transfer-Encoding;
-	bh=FQqYJqwtBrP6h9ufZuOBMWa2CJjZkqf6/Q6UP5ZZSYo=;
-	b=kObkQoKBxT/e7x9gQujNKSJ/5Db2O3qQJX55pYynDsU5stHRL19GIKxB25+9Pb2epn+M
-	 OTOIUInieis4/K6+wzToh5ggYT5Kp0DXt3FKKi5Cx1kfn2pixfJOYJr5wfrETJD9GxyGP
-	 aGXjXGWg8aeE0g2haLFEuUqAeytZD8r72Ou6aZpnW/xq71SI87qyxKiZZUZ+XE881Ik6N
-	 eH6+XB28i5UlwWsRzZb6I6Kj0Tuk3cAdcrpRgzpdnlmlBevmZo6yLwLVB8pNWdTGnMgcB
-	 pH45Out/I651XMwnMdwE1aMya/ssgqB+Q0ooG+fFUeYfLKmIFtz7rRw41x8M4keiQlw==
+	 In-Reply-To:References:MIME-Version:Content-Transfer-Encoding;
+	bh=43DT+0N/KHuXPvPZTfHEASKIKf7hWu21oag5oHhyoOk=;
+	b=kP4Xhtu+xyZgYY7jskpyhtriregStFsgcP2bUjFOW0AH+PbLdS32THaYTaYL5UfQSyZX
+	 k6ahaoGL8k0GUsRLNcsP5abh6EA+fZoaQoxxHs0X/TnHx9GlJLqgh7PgCvQ+q37K2gyUE
+	 6cFugjqp4NOgsvmvSrn9oRykQfqgP+SDpaCyxRUOJ8pWh6UiSOmQBrr1Pi0TiY4a7q9A+
+	 qM9EJ7NieA2e18iShTcaiqRMfNSlEZwFenaRs+OPypR8xpUfSvNfzQhWbv+tHV6Nc56in
+	 nT9FI9TN126hJ7chbdpT/0105ghfeGedspgdL/Ktm9dU5wRxcL7XOMsx8htbgexYuWg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=W4lEEzGm;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EGCGQ5Sc;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531C6606A321;
-	Thu, 26 Nov 2026 14:46:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23C22606A32D;
+	Thu, 26 Nov 2026 14:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=W4lEEzGm
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 390BB1F000C6;
-	Thu, 26 Nov 2026 14:46:15 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=EGCGQ5Sc
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 12C881F000CF;
+	Thu, 26 Nov 2026 14:46:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795704378;
-	bh=FQqYJqwtBrP6h9ufZuOBMWa2CJjZkqf6/Q6UP5ZZSYo=;
-	h=From:To:Cc:Subject:Date;
-	b=W4lEEzGmFvg7p7zf8qNUuB16MRSJ2bsA92X0kKu9U7Q6n5JA9cGJeEJs15r0MU118
-	 wtYlscmBCGZZoWzhuN3fq0kzm7vS5QhCOXMlop5WXm3qgju08tGVRHf5tZwMgqCbVr
-	 dVFqimnITuu6qXT2+BarE9LzO8hWiuUonvsp4V2P3biP+9wITMTWCu0R2MFwU77ZjB
-	 akU4lxUZb1EbR0pEenQceDCSFV7OH+uhPKoVICghqafMwBr3nf39nB2q/q4TYMiIVP
-	 722+uGX8iEucFmHo3iy6aJ+URvO19hh8cUUxg8B8NPpXmlvyjxox0JG1Tk2zYubYY8
-	 a2dmD6i7QnLpw==
+	s=k20260515; t=1795704384;
+	bh=43DT+0N/KHuXPvPZTfHEASKIKf7hWu21oag5oHhyoOk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=EGCGQ5ScCVdNB5z3+0xzzA/v+ct3jbi9ETJEQUj/cL0L9d64uql1mOtZiWJqjcS8a
+	 wKjO12rNMwnMIhPSDnuUPXzAkXv9LVdZU/cAqoTQ/nuatk1iI0tk5LSknDw0zVj9Qq
+	 XZhseBV4IPh2bGhyR4F1nSIR+xpRJatOjd5hiXUQhAab26bM0gISrB0emIjiK2uLVT
+	 Q5C6VAOqjgVvx0Sqq/RBHccXNvBh5zPpoiceU5adZhCHVKOfCypIDyt5o1+hxYw4bY
+	 mbpTxReuC2hmQJwxvdocKKp9Vui1l4f73venXnj9u+wcj3Iy/gmfwePjuibNHliRBi
+	 1SzYqs1JZcU9g==
 From: Geert Uytterhoeven <geert@kernel.org>
 To: Marc Kleine-Budde <mkl@pengutronix.de>,
 	Vincent Mailhol <mailhol@kernel.org>,
@@ -54,10 +54,12 @@ Cc: linux-can@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-renesas-soc@vger.kernel.org,
 	Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2 0/4] can: rcar_canfd: Add R-Car X5H support
-Date: Thu, 26 Nov 2026 15:46:05 +0100
-Message-ID: <cover.1795703576.git.geert+renesas@glider.be>
+Subject: [PATCH v2 2/4] can: rcar_canfd: Add Runtime PM support
+Date: Thu, 26 Nov 2026 15:46:07 +0100
+Message-ID: <557fa8a4776e0ee7d6c566b825771075db46b276.1795703576.git.geert+renesas@glider.be>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <cover.1795703576.git.geert+renesas@glider.be>
+References: <cover.1795703576.git.geert+renesas@glider.be>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -71,48 +73,85 @@ Content-Transfer-Encoding: 8bit
 
 From: Geert Uytterhoeven <geert+renesas@glider.be>
 
-	Hi all,
+On R-Car X5H, the CAN-FD module is part of a power domain.  This means
+Runtime PM must be used to make sure the domain is powered when needed.
+The CAN-FD module is part of a Clock Domain on all supported SoCs.
+Hence remove explicit management of the functional clock, as this is
+handled automatically by Runtime PM.
 
-This patch series adds support for the CAN-FD interfaces on the Renesas
-R-Car X5H SoC to the R-Car CAN-FD driver:
-  1. The first RFC patch documents support for CAN-FD on R-Car X5H,
-  2. Patches 2-4 add driver support for CAN-FD on R-Car X5H.
+Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+---
+v2:
+  - Add Reviewed-by.
+---
+ drivers/net/can/rcar/rcar_canfd.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-Changes compared to v1[1]:
-  - Drop platform integration patches not intended for the CAN tree,
-  - Improve RFC question,
-  - Add Reviewed-by,
-  - Update new user.
-
-CAN-FD channels 1 to 6 and 12 to 15 have been tested on the Ironhide
-development board using canfdtest and an oscilloscope.
-
-Thanks for your comments!
-
-[1] "[PATCH 0/9] arm64: renesas: r8a78000: Add PWM support"
-                        (yeah, wrong component ^^^, sorry for that)
-    https://lore.kernel.org/cover.1793278754.git.geert+renesas@glider.be
-
-Geert Uytterhoeven (4):
-  [RFC] dt-bindings: can: renesas,rcar-canfd: Document R-Car X5H support
-  can: rcar_canfd: Add Runtime PM support
-  can: rcar_canfd: Make clkp local
-  can: rcar_canfd: Add support for R-Car Gen5
-
- .../bindings/net/can/renesas,rcar-canfd.yaml  | 84 +++++++++++++++++++
- drivers/net/can/rcar/rcar_canfd.c             | 47 ++++++++---
- 2 files changed, 120 insertions(+), 11 deletions(-)
-
+diff --git a/drivers/net/can/rcar/rcar_canfd.c b/drivers/net/can/rcar/rcar_canfd.c
+index 1040803936f56cea..c57c5252e38572df 100644
+--- a/drivers/net/can/rcar/rcar_canfd.c
++++ b/drivers/net/can/rcar/rcar_canfd.c
+@@ -37,6 +37,7 @@
+ #include <linux/of.h>
+ #include <linux/phy/phy.h>
+ #include <linux/platform_device.h>
++#include <linux/pm_runtime.h>
+ #include <linux/reset.h>
+ #include <linux/types.h>
+ 
+@@ -2059,9 +2060,9 @@ static int rcar_canfd_global_init(struct rcar_canfd_global *gpriv)
+ 	int err;
+ 
+ 	/* Enable peripheral clock for register access */
+-	err = clk_prepare_enable(gpriv->clkp);
++	err = pm_runtime_resume_and_get(dev);
+ 	if (err) {
+-		dev_err(dev, "failed to enable peripheral clock: %pe\n",
++		dev_err(dev, "pm_runtime_resume_and_get() failed: %pe\n",
+ 			ERR_PTR(err));
+ 		return err;
+ 	}
+@@ -2071,7 +2072,7 @@ static int rcar_canfd_global_init(struct rcar_canfd_global *gpriv)
+ 	if (err) {
+ 		dev_err(dev,
+ 			"failed to enable RAM clock, error %d\n", err);
+-		goto fail_clk;
++		goto fail_rpm;
+ 	}
+ 
+ 	err = reset_control_reset(gpriv->rstc1);
+@@ -2129,8 +2130,8 @@ static int rcar_canfd_global_init(struct rcar_canfd_global *gpriv)
+ 	reset_control_assert(gpriv->rstc1);
+ fail_ram_clk:
+ 	clk_disable_unprepare(gpriv->clk_ram);
+-fail_clk:
+-	clk_disable_unprepare(gpriv->clkp);
++fail_rpm:
++	pm_runtime_put(dev);
+ 	return err;
+ }
+ 
+@@ -2148,7 +2149,7 @@ static void rcar_canfd_global_deinit(struct rcar_canfd_global *gpriv, bool full)
+ 	reset_control_assert(gpriv->rstc2);
+ 	reset_control_assert(gpriv->rstc1);
+ 	clk_disable_unprepare(gpriv->clk_ram);
+-	clk_disable_unprepare(gpriv->clkp);
++	pm_runtime_put(&gpriv->pdev->dev);
+ }
+ 
+ static int rcar_canfd_probe(struct platform_device *pdev)
+@@ -2319,6 +2320,10 @@ static int rcar_canfd_probe(struct platform_device *pdev)
+ 		}
+ 	}
+ 
++	err = devm_pm_runtime_enable(dev);
++	if (err)
++		goto fail_dev;
++
+ 	err = rcar_canfd_global_init(gpriv);
+ 	if (err)
+ 		goto fail_mode;
 -- 
 2.43.0
 
-Gr{oetje,eeting}s,
-
-						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-							    -- Linus Torvalds
