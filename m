@@ -1,93 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.53
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795727160;
-	b=HJNZH/Mm8w/IZ84TybcirZwK3MRyMkPwukEwsjBWhGOEV++TnLEd0ypolImyp0XjonK3
-	 BLj4HJ/KTVhJknO5af/ntwdwASLHYp7qgVX6qwcnMzD/FAea9/6wBePqqZXHWICpv/+6K
-	 890f+5x6Y0vaU8um8kxn4W4dlmL1H+f43LFzK8pEDCVib0H1QLcFLHAX30EfRq4sq9v1G
-	 MtAbkuM07fs8q1B0lxVJrYo8BEGMfuk0EZTcRofLsF8tA95Nq6X85eUvo4xzTsirO43Mu
-	 Os35yQzGvDwAn++CTx/xkJp3/P7dMURwv99VzOUQ9sjYHAlIKedvGZ5NDDMd6SYcr8w==
+	b=X28asFujcck1dSMyPdmwShi7t8gF1c2GyFn5ls1cB7ljn053U+0U8KRSJv90G8cIQ1pJ
+	 KSPFM+bDOOp3J77kVXHTbp+kwsgxg8390keN7Ge4q/teftilb3r86FPRBTRQdTEYvBiZI
+	 XcM2J1WU/LpOxNSLJ4Y3STn2r0T8JwLSkbZOGbJ2c93BGeAsMRiiCRkgYwk8xwFrZMLeE
+	 5qA9CLFHIk6ehTpxlvVYSbH/ZgJVs40EnFoinRjDy+RRwZCBiCfKbnxaNtVP7BFmGvWE5
+	 sEZe8niXltkw/73RfxYPmU+dsZDp7Ezrr4z2H3WRgoBk2tJL6a4nf+EmwZ3PUvoDMhA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795727160;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=VepJBwLws/yWoWYTP5xY2ET529UhpZOCf/pL4SI/nUo=;
-	b=k6CLGuemu+xRVVmyyZyN01WX15pFlRdo3X+NhqPcy4GH0QejEycFB2O/Ssz2zDu3Tk1k
-	 SU9Lk/eKqI3H84NFEy5zcdE1Qpo5qTKwbSSpBcu89B1NKipIYC6ZCvQmAq5HNcOyDwODe
-	 JgZxsgdLCx5DtBrK2HkQap5XX3k0jWCiujJvePymhhpMFfBzTn+cls2aRm7+6Ov3Fbtg1
-	 Kakd9fYPHIR6Lg3g04Od72z41G3Th1PgGIL5QUpaQHclhb9GHvnIo6dEpiMI6ojQVILdQ
-	 rMNu1QvDDTpcmYsBquobu4kvg9KDsaWpQHZp4UPo1z1nlUxieOafyQfMhsYAMLs0YAA==
+	bh=qbIT+/PtnlcqyUgHc1ohzRfyiRRDJs7QtTzw388UAIA=;
+	b=QRPaTF18GXpKEvk8cySbNqiLngEKyg8KHbXIlPU0WQO17Yy4z0OTKrX7HfkBSMI8T/tj
+	 cvNpUpmSDtXSHXsH/vBZFe8/vPwHduI5d/CAwktxHPazrDPCZI66uotcLL7oBD6PVNDut
+	 gLPPyp36pqPHChycmhsoIaTdD4G6kr+KxZnOwOm1L6bejOjovoFPQIx/nVSCrFuC9QBUm
+	 oyQgPsWv5+Nyv3zp7Pixj0EwMp92ujTNGz5XNwwrCb1k1NM/iDDNCnTKaG4idk2qlK+fy
+	 NDE5Ou3OZkUzc3lqz2R+gGfxyrukwZLv5Oav8KF5n/wcMrMWbvmDtU73jhnKCgyvFDg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=o5C2ff3T;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mE0YsBd6;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.164
-Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [81.169.146.164])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=FSGvXAXz;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Tc8jjhT6;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.53
+Received: from mo4-p01-ob.smtp.rzone.de (mo4-p01-ob.smtp.rzone.de [85.215.255.53])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A7F9606A32C
-	for <linux-can@vger.kernel.org>; Thu, 26 Nov 2026 21:05:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 9A7F9606A32C
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E569B606A31C
+	for <linux-can@vger.kernel.org>; Thu, 26 Nov 2026 21:05:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org E569B606A31C
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=o5C2ff3T;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mE0YsBd6
-ARC-Seal: i=1; a=rsa-sha256; t=1795727151; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=FSGvXAXz;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=Tc8jjhT6
+ARC-Seal: i=1; a=rsa-sha256; t=1795727150; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=qiw9xX4y7mx7az6Pn8ou4Z31PPI1gEG7ydD4OHnrjvmZf5Xbo5E//3TVvMnZ4VTo7K
-    mLsZL5KMJIIEQF6TejEsSGJJRPU057UN2Es5AKE4sDD/8TmhFiDYaaP67Z3XiJACq1/x
-    7dECMmIIx1htkdUhRx7+Gk5OlyjBLJJ0WmNWxYTgSlP280KQG2ZWcOPWvdOGAQR6KhAf
-    w4uTSrzGWZPXbIkmKUrn8ynthq/eeKW/F4rT2hj2dJnXYL85Yk6rR+FCnnjMKlLqQOGA
-    FJWintDVoDboszLjJx8PyB2c/haRuy8rxL+SjA1hcEVYWpROfpQ2Qa0vXkShY/wicddf
-    QYZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727151;
+    b=j4g0OQhM7NsSzesdc99rJKX6Ha2zSG8vW68O88RMyaZJVlgqAyYFpQ0nlt764Jcjrj
+    ol40ALN1t+64Zhvkl4bDaoEwzcuDfJmxyLSS7V557GKABC57yInlKUsFBT4NyIL34m1h
+    HNPIqSXhH3N4J6K60w7PIIdwBlE61rk/Bz41UXgIgeWsgZenmPPbbb5yltdRZKBjfpSE
+    epzHjpek8Q6y8OmEyVRd9HHbJC3zHYQK5WXZPaeWPzATMjXW4JNljmj/puxc/C2pSwPO
+    /HD+ZKMBnNdnzChNNaQZ/k8Sb/XdGvX994mFLJi+6DQLUMJzOL7NyVOJemkGK9I0Zczy
+    veGA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727150;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=VepJBwLws/yWoWYTP5xY2ET529UhpZOCf/pL4SI/nUo=;
-    b=BmGcJFl3z9oiIi6T+HAEvuSwNLVv1mvTTqIfjPTLVwB2OvXdiidLv07j3JSgkKfZgq
-    HP/ctrjzAgv9ebJ+VM6OLnoHVJQb6+e8MK5ARKnGGM+rZMiEBFwSz9q33ecwyaX8g8/g
-    qcMbwD8m4hgOzoRNSHnAuU45kqIKQkcKwxTH9e8B2dkt5CVRc9KGBEDM8tjRgZHchr1r
-    1YsLM/wb3suzWhPnPbwjtXDsfVNfq3PoIER4C67r9LvtihaOaBaYdXyBJS4PcMoTNlwQ
-    HV5TJDELbmJzUiQ0kCcr+jc6IVBAUZGbjvHf0zXV4Y6Ejsnxbmz3s9jI05XwxDxOWHwK
-    qABA==
+    bh=qbIT+/PtnlcqyUgHc1ohzRfyiRRDJs7QtTzw388UAIA=;
+    b=mDAYqZdBllidCVhH8aKTf4jX/dyIZP2MxaP4P2WzNjmK9UMQ7enjFzk9iZN1FQt6WI
+    eloRpEIn5AgX+RO2TBterreEEi9TqjqVrgE/ResiK7tgpr8bD2K8SLksDTv7dl61Ip3I
+    L9FtTqgqWOCQv1iPo49Ak9LpDaWAMPN6Q059V7UlJA1soZb4Wj42pVC/G6XKR0qJJrHO
+    /Kq+3wQhbSyGbfizJvW81XhXAJtmp2KJvy1gPyd295zELqryU77fzH1o5Iw+px56+bGZ
+    nq8s2yZs65JukL0YMk/ws99jdz9m6/h3ovqYhSZGKr/u/sYvZpshzB0hrbNikfIBbXik
+    /RbA==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo01
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727151;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727150;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=VepJBwLws/yWoWYTP5xY2ET529UhpZOCf/pL4SI/nUo=;
-    b=o5C2ff3Ty3bxeX0OHnt1zF1EfCJvF8ZQfVCqiaYGPwV7Sf1v0hgvpi04Szf7Pt0zNy
-    T3ZEcYwWBE/ovFx6jtYb5Yj5SS5cIQgEVPDK4WxMnVKcXhjG3HVm+7JcWrtcwXgbfibp
-    sIRj2e8EW++4zcqtvOD1SxbSVv1fDFx3NlaZg954x1blUM04Rgdz/dHU4Ng+7ULHFTqt
-    Uj2xZH9jfNWwkmzYbthdeYhTLZP8tV+eJuFLWvNKdCp9RiLSPOz7A544YvCxA8TBolyZ
-    NJ5eiT/9KYYp4FJ9gvRmrj0p+gUt7tS5q77mo6CPFh08TEoiXXCnmsZnAB/9ZwV6sUgH
-    CCqg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795727151;
+    bh=qbIT+/PtnlcqyUgHc1ohzRfyiRRDJs7QtTzw388UAIA=;
+    b=FSGvXAXzbsyAxxY1Wun98Xox/fKuSwhEiH/WZQ2D4RdNb3IY/YU2o6GfT9kkMdniKT
+    Uu5IJTd3N92AuDztoPVk0zZyzjoG5e4kAiPgVpwaFZZikfUkaNzE8cKE1e7QwEDDzlXU
+    cuYuVpYNhB6icZxzBL6ue2ly2bNgqdI9LFhiNAdeN56klBhvnaEwxn+UyX89ro0h6MKY
+    wKzPwDi5lzK9j4WDkysOY6IjxblXv91ynk+jFHSOcHXhsrV+2NO19YsXQC+eMozAp39q
+    m21xcCG0o9zqOQlup/7kstqMtCQkndaIBUzgWJ8nsGC7Z/6gfFZMV4893Q9FHvm2i7C4
+    plyg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795727150;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=VepJBwLws/yWoWYTP5xY2ET529UhpZOCf/pL4SI/nUo=;
-    b=mE0YsBd6W28f7W2Lu+MAkA++VfjhIxffc2SSkdfqYDEBdNjDFKrJHcuJQm2iUlqeDZ
-    hZ62AOSMBWDhZ5q7UtDw==
+    bh=qbIT+/PtnlcqyUgHc1ohzRfyiRRDJs7QtTzw388UAIA=;
+    b=Tc8jjhT6dp0R6bA+KhkWvSCU4qHmwM9ClwEfJoOzvcNuWgBYJPWhptxM47DeaOD0BL
+    JR5ddo8ogWBLovDP0kAg==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [127.0.1.1]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AQL5ptUb
+    with ESMTPSA id Kfdf2a2AQL5otUX
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Thu, 26 Nov 2026 22:05:51 +0100 (CET)
+    Thu, 26 Nov 2026 22:05:50 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Thu, 26 Nov 2026 22:05:47 +0100
-Subject: [PATCH can-next 05/22] can: isotp: add the frame transmission time
- to the protocol timeouts
+Date: Thu, 26 Nov 2026 22:05:43 +0100
+Subject: [PATCH can-next 01/22] can: raw: read socket options under
+ conf_lock in raw_getsockopt()
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,109 +99,198 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261126-getsockopt-memcg-isotp-v1-5-681ef8d8c2c9@hartkopp.net>
+Message-Id: <20261126-getsockopt-memcg-isotp-v1-1-681ef8d8c2c9@hartkopp.net>
 References: <20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9@hartkopp.net>
 In-Reply-To: <20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
- Wentian Ye <yewentian395@gmail.com>, 
  Oliver Hartkopp <socketcan@hartkopp.net>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795727150; l=3825;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795727150; l=5179;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=qDAD/JNlwgT6khMCc6TjDTkjlsakdBN0QqsPX/wNr3g=;
- b=CvfBNslWXFJYsJntTrHUBJvHdxWqy6rE03XkkUQaXCQmp3Q8GFUToJewiZsB3bdzMxyr2QMwE
- v8FZL9qP/YtCOL/cUfsezFKzFKg5RUhPYsLxmwLAIvurI/tS1UI7sNi
+ bh=UHPXtlOnOrh414o47THYmq92p/a2vqXaCXk/5ALPRqs=;
+ b=QReqTv7KyN1D7lN6hjQTOVbkpKMsXpOf2XXoyeFzo+2h/ZH099Xu+cVSykd7E/wiS97eyIWjt
+ /ggjHrA1fUEAKiyczgCZEawaKjf58Tf15tSfNXQ0uyAkajhWLWTGiyY
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-The frame_txtime element of struct can_isotp_options is documented as
-the frame transmission time (N_As/N_Ar). It is added to the gap between
-the consecutive frames in the tx path, but it is missing when the
-timeouts are started after the transmission of a CAN frame:
+raw_getsockopt() only takes conf_lock for CAN_RAW_FILTER. All other
+CAN_RAW socket options are read without the mutex, while
+raw_setsockopt() updates them under conf_lock. CAN_RAW_XL_VCID_OPTS is
+even copied to user space directly from the socket, so a concurrent
+setsockopt() can lead to a mix of old and new values.
 
-- isotp_send_fc() starts the rx timeout for the next consecutive frame
-  without the transmission time of the flow control frame (N_Ar)
-- isotp_sendmsg() starts the timeout for the first flow control frame
-  without the transmission time of the first frame (N_As)
+Read the option values under conf_lock into a local variable and copy
+them to user space after mutex_unlock(), like raw_setsockopt() does it
+in the other direction. So no user space access happens while the
+mutex is held and a stalled copy can not block raw_notify() under RTNL.
 
-Add so->frame_txtime to both timeouts to comply with the documentation
-in isotp.h. The local echo timeout for single frames and first frames
-without flow control uses the same timer start in isotp_sendmsg() and
-gets the frame transmission time as well, which has no effect. As the
-value now extends the protocol timeouts, reject frame_txtime values
-above 100 ms with -EINVAL before the options are applied.
+CAN_RAW_FILTER is handled in front of the switch statement, as it takes
+the mutex on its own for the duplication of the filters. Its code is
+not changed.
 
-There is no separate check for N_As/N_Ar timeouts, as the transmission
-time of a CAN frame has no real world effect compared to the protocol
-timeouts of one and two seconds.
+The socket options have been read without a lock before commit
+"can: raw: use a private mutex instead of lock_sock()" as well, so this
+is no fix. As the only visible change, a failing copy to user space for
+CAN_RAW_XL_VCID_OPTS now returns the clamped option length together
+with -EFAULT, like the other socket options.
 
-Reported-by: Wentian Ye <yewentian395@gmail.com>
-Closes: https://lore.kernel.org/linux-can/eb5e9618-3dbf-42cb-a635-752ff9fbcb99@hartkopp.net/
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/isotp.c | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
+ net/can/raw.c | 64 ++++++++++++++++++++++++++++++-----------------------------
+ 1 file changed, 33 insertions(+), 31 deletions(-)
 
-diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 7be3d9322ad1..197dc7bdb6ec 100644
---- a/net/can/isotp.c
-+++ b/net/can/isotp.c
-@@ -125,10 +125,11 @@ MODULE_PARM_DESC(max_pdu_size, "maximum isotp pdu size (default "
- #define ISOTP_FC_WT 1		/* wait */
- #define ISOTP_FC_OVFLW 2	/* overflow */
+diff --git a/net/can/raw.c b/net/can/raw.c
+index b69eaadc5e93..cf1770432dad 100644
+--- a/net/can/raw.c
++++ b/net/can/raw.c
+@@ -101,11 +101,11 @@ struct raw_sock {
+ 	can_err_mask_t err_mask;
+ 	int count;                 /* number of active filters */
+ 	struct can_filter dfilter; /* default/single filter */
+ 	struct can_filter *filter; /* pointer to filter(s) */
+ 	struct uniqframe __percpu *uniq;
+-	struct mutex conf_lock; /* protects bind, filters and setsockopt */
++	struct mutex conf_lock; /* protects bind, filters and sockopts */
+ };
  
- #define ISOTP_FC_TIMEOUT 1	/* 1 sec */
- #define ISOTP_ECHO_TIMEOUT 2	/* 2 secs */
-+#define ISOTP_MAX_FRAME_TXTIME_NS (100 * NSEC_PER_MSEC) /* max N_Ar/N_As */
+ static LIST_HEAD(raw_notifier_list);
+ static DEFINE_SPINLOCK(raw_notifier_lock);
+ static struct raw_sock *raw_busy_notifier;
+@@ -817,24 +817,26 @@ static int raw_setsockopt(struct socket *sock, int level, int optname,
+ static int raw_getsockopt(struct socket *sock, int level, int optname,
+ 			  sockopt_t *opt)
+ {
+ 	struct sock *sk = sock->sk;
+ 	struct raw_sock *ro = raw_sk(sk);
+-	int flag;
++	union {
++		can_err_mask_t err_mask;
++		int flag;
++		struct can_raw_vcid_options vcid_opts;
++	} val;
+ 	int len;
+-	void *val;
++	int err = 0;
  
- /* so->tx_result[so->tx_gen % ISOTP_TX_RESULT_SLOTS] holds the packed value
-  * (err << ISOTP_TX_RESULT_GEN_BITS | gen) for each tx generation slot, so it
-  * can be handled with a single READ_ONCE()/WRITE_ONCE() access.
-  */
-@@ -347,11 +348,12 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
+ 	if (level != SOL_CAN_RAW)
+ 		return -EINVAL;
+ 	len = opt->optlen;
+ 	if (len < 0)
+ 		return -EINVAL;
  
- 	/* reset last CF frame rx timestamp for rx stmin enforcement */
- 	so->lastrxcf_tstamp = ktime_set(0, 0);
+-	switch (optname) {
+-	case CAN_RAW_FILTER: {
++	if (optname == CAN_RAW_FILTER) {
+ 		struct can_filter *filter = NULL;
+-		int err = 0;
  
- 	/* start rx timeout watchdog */
--	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
-+	hrtimer_start(&so->rxtimer,
-+		      ktime_set(ISOTP_FC_TIMEOUT, so->frame_txtime),
- 		      HRTIMER_MODE_REL_SOFT);
+ 		mutex_lock(&ro->conf_lock);
+ 		if (ro->count > 0) {
+ 			int fsize = ro->count * sizeof(struct can_filter);
+ 
+@@ -864,76 +866,76 @@ static int raw_getsockopt(struct socket *sock, int level, int optname,
+ 
+ 		if (!err)
+ 			opt->optlen = len;
+ 		return err;
+ 	}
++
++	/* Read the option value under ro->conf_lock and copy it to user
++	 * space after mutex_unlock(), see raw_setsockopt().
++	 */
++	mutex_lock(&ro->conf_lock);
++
++	switch (optname) {
+ 	case CAN_RAW_ERR_FILTER:
+ 		if (len > sizeof(can_err_mask_t))
+ 			len = sizeof(can_err_mask_t);
+-		val = &ro->err_mask;
++		val.err_mask = ro->err_mask;
+ 		break;
+ 
+ 	case CAN_RAW_LOOPBACK:
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+-		flag = ro->loopback;
+-		val = &flag;
++		val.flag = ro->loopback;
+ 		break;
+ 
+ 	case CAN_RAW_RECV_OWN_MSGS:
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+-		flag = ro->recv_own_msgs;
+-		val = &flag;
++		val.flag = ro->recv_own_msgs;
+ 		break;
+ 
+ 	case CAN_RAW_FD_FRAMES:
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+-		flag = ro->fd_frames;
+-		val = &flag;
++		val.flag = ro->fd_frames;
+ 		break;
+ 
+ 	case CAN_RAW_XL_FRAMES:
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+-		flag = ro->xl_frames;
+-		val = &flag;
++		val.flag = ro->xl_frames;
+ 		break;
+ 
+-	case CAN_RAW_XL_VCID_OPTS: {
+-		int err = 0;
+-
++	case CAN_RAW_XL_VCID_OPTS:
+ 		/* user space buffer to small for VCID opts? */
+ 		if (len < sizeof(ro->raw_vcid_opts)) {
+ 			/* return -ERANGE and needed space in optlen */
+ 			err = -ERANGE;
+ 			opt->optlen = sizeof(ro->raw_vcid_opts);
+ 		} else {
+-			if (len > sizeof(ro->raw_vcid_opts))
+-				len = sizeof(ro->raw_vcid_opts);
+-			if (copy_to_iter(&ro->raw_vcid_opts, len,
+-					 &opt->iter_out) != len)
+-				err = -EFAULT;
++			len = sizeof(ro->raw_vcid_opts);
++			val.vcid_opts = ro->raw_vcid_opts;
+ 		}
+-		if (!err)
+-			opt->optlen = len;
+-		return err;
+-	}
++		break;
++
+ 	case CAN_RAW_JOIN_FILTERS:
+ 		if (len > sizeof(int))
+ 			len = sizeof(int);
+-		flag = ro->join_filters;
+-		val = &flag;
++		val.flag = ro->join_filters;
+ 		break;
+ 
+ 	default:
+-		return -ENOPROTOOPT;
++		err = -ENOPROTOOPT;
+ 	}
+ 
++	mutex_unlock(&ro->conf_lock);
++
++	if (err)
++		return err;
++
+ 	opt->optlen = len;
+-	if (copy_to_iter(val, len, &opt->iter_out) != len)
++	if (copy_to_iter(&val, len, &opt->iter_out) != len)
+ 		return -EFAULT;
  	return 0;
  }
  
- static void isotp_rcv_skb(struct sk_buff *skb, struct sock *sk)
-@@ -1331,11 +1333,11 @@ static int isotp_sendmsg(struct socket *sock, struct msghdr *msg, size_t size)
- 		wake_up_interruptible(&so->wait);
- 		return -EADDRNOTAVAIL;
- 	}
- 	/* WAIT_FIRST_FC for standard FF, else stays ISOTP_SENDING */
- 	WRITE_ONCE(so->tx.state, new_state);
--	hrtimer_start(tx_hrt, ktime_set(hrtimer_sec, 0),
-+	hrtimer_start(tx_hrt, ktime_set(hrtimer_sec, so->frame_txtime),
- 		      HRTIMER_MODE_REL_SOFT);
- 	spin_unlock_bh(&so->rx_lock);
- 
- 	/* send the first or only CAN frame */
- 	cf->flags = so->ll.tx_flags;
-@@ -1749,10 +1751,15 @@ static int isotp_setsockopt_locked(struct socket *sock, int optname,
- 
- 		/* only one broadcast flag at a time */
- 		if (hweight32(opt->flags & ISOTP_ALL_BC_FLAGS) > 1)
- 			return -EINVAL;
- 
-+		/* limit the frame transmission time (N_As/N_Ar) */
-+		if (opt->frame_txtime != CAN_ISOTP_FRAME_TXTIME_ZERO &&
-+		    opt->frame_txtime > ISOTP_MAX_FRAME_TXTIME_NS)
-+			return -EINVAL;
-+
- 		memcpy(&so->opt, opt, sizeof(*opt));
- 
- 		/* no separate rx_ext_address is given => use ext_address */
- 		if (!(so->opt.flags & CAN_ISOTP_RX_EXT_ADDR))
- 			so->opt.rx_ext_address = so->opt.ext_address;
+ static void raw_put_canxl_vcid(struct raw_sock *ro, struct sk_buff *skb)
 
 -- 
 2.53.0
