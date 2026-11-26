@@ -1,58 +1,78 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795682151;
-	b=LQDM3YYYtBCPtRUIdf/oydHU1FFc8aZwB7ZPNnMfWqfX9Wulh2S010DkFsgput2pzhuN
-	 enupagxD9mljqo4+tK6aPtNfuD5HvaSOZWLGYs4m5aTSQMUHd1abb2QYXG/O4ytecx29E
-	 GQiQ/R4+nLiJxMcUgQmraADXsZkV6TiPHJP39uO3S2qcsilK/b3xb4KosUTrC+srFwAcO
-	 hj+EEwWczswX8R1sHvX915h/7c6sqgJYVhRp4BQb/bSWRNIiZgPM3ifkPYkA/Et3EOuwg
-	 b6UYjk8DiY0kSD+PcITtOGMzeBcJqskfk5P3WrTyR2amPk4mcyaAiP9AeJ7DSW/B6aw==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795682151;
-	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
-	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
-	bh=mvvYspxkHaEnDdWCxiNARmqZM3t9M2asb+D/ao1UIq0=;
-	b=lOWYDo3hYWZaMeBMNlkE1rrso7lvDIwRM2T7z1RfciwnDfw1GSGdyBPrLbu+iNmbh9vC
-	 hl3w93iRRLtKfXTweVPSKxPhiN9w17g403QmOaMhyABDEcgB0KGuUXnDEuMaK4c9vDBvN
-	 G7HyTUcW65ysBODUhVc3yck37WheKduIYjHljrpi7A9LiYYhUdOwtbAai6mxsdHf1K3sB
-	 MjTfZabOOaKga80TAtH7zuCOksWdwR4+wxlCURVQ1NFXGxj2+q8GZQVSIz7fXedYPIt/w
-	 GBThHy9CRgkMQwtdqvHs8iunqfAFb8I+ILgk/qaasqHyffOIFoLb+B9sMipHZUz38FA==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CyEPnwm1;
-	arc=none smtp.remote-ip=100.103.45.18
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795683689;
+	b=yOt4VXJD9hqRqg05l9t29/dv0PkBi0E91RNHQfVqCIRZBFBFKwoXYCM75cpkxpxE426I
+	 e+j07h3mTd1yy9DVwZoSozmVRQMkbwewcZOeA7yb162ZFWLAeFwaxGdTOPscgG4tnv6tK
+	 ZSQz0BJ1Vx2Cmm6+yQS4mrGyum5e23ehhh7eROmVXhY67tErVYvnsKfdOixfqqdih2rF2
+	 nUj33jXf7mSssazrx9R4sqzHU0vzwu/ampaUpyJHqKWt5BiO5MhGiM5h6aY8ZEkb9Okxk
+	 fIM3uSlBFdirxcOcxHFCo/4S8fejG27X4Lgjd+I0UjUxhe1Pou0fsWeFAsdK7nKfyVQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795683689;
+	h=Received:DKIM-Signature:Received:From:Date:Subject:MIME-Version:
+	 Content-Type:Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=JY6p82Euc2Wh5gjzBsclmn88zO2bmUfG5Wr6Ptzhv4c=;
+	b=QJokb0ljXLi+iAczNn6yS9uCEFb8tDq0LJJH23eqroN4Jyr8lMivMUB2prx03IRBgakb
+	 Y0FtDNJjYkR4HXuWDO8K41CU6ohOBrbmzki6FPepcST+fJ4l6fxUmdILiehqCTWiMFbwn
+	 Cl4HiWGpIcShrmEpNKn8NrNI+9YY4zvgpryVQmI6PfJWI6+9xvDUEsZN5DZhN0qLNML6V
+	 GG4UIPZKFKM3DNHlVplFikgDu0HT2H/nFuixeiYXbYgL8pDy5UmMDX+XCTHmQuGY1tLOA
+	 Lm5fQ4S3c4v+tKt6XFsyZ/Tc1CKkIlwyXrGW7C/p4wteSPzu7q7XPBKtTOceWoNEL8w==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eA4ONhlT;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9066A606A31C
-	for <linux-can@vger.kernel.org>; Thu, 26 Nov 2026 08:35:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3221F606A31E;
+	Thu, 26 Nov 2026 09:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CyEPnwm1
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 974B31F000C6;
-	Thu, 26 Nov 2026 08:35:50 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=eA4ONhlT
+Authentication-Results: smtp.kernel.org; arc=none smtp.remote-ip=100.80.115.77
+ARC-Seal: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256; cv=none;
+	t=1795683688;
+	b=zmzMet2QA17YE+yWVKzrgLYQ+cDpDlxAzVr1BMiN8MVyPufZuBfOjl1D5+9XC25ZAiYM
+	 c8KbbvIz2ugXWdK6tLw8Xypl54XIMojsN5fg8YM/yqOup1t2+BiLG5BWwukEr47CH6ZyP
+	 QPc6oOPp9UnS1EdAdtr1heHa5SDa8YvjQVGU9NYSkD0bPZV+7Lj445/p6AqWiinqZBvzG
+	 XqaBWrWlnTMCbIsiylPgvMtJh72rs7xWEmVFro4K8zXiaHR+2qB/pSQ2ES3YBm/MiORIF
+	 2r0UbzQS4SrMS25g7CKkJuKMB2sZMX6CcuwMFcVKqUAxE52IAwV9jW2icPD/E2DzW3Q==
+ARC-Message-Signature: i=1; d=kernel.org; s=arc20260519; a=rsa-sha256;
+	c=relaxed/relaxed; t=1795683688;
+	h=DKIM-Signature:Received:From:Date:Subject:MIME-Version:Content-Type:
+	 Message-Id:References:In-Reply-To:To:Cc:X-Mailer:
+	 X-Developer-Signature:X-Developer-Key:X-Endpoint-Received:
+	 X-Original-From:Reply-To:Content-Transfer-Encoding;
+	bh=JY6p82Euc2Wh5gjzBsclmn88zO2bmUfG5Wr6Ptzhv4c=;
+	b=fRVOEuhuL+HIGm0nJk1H9Mi/G9CkhT1S8KtPyI7pPHYwGirw7SGurbuS8UtfXy6W8Lic
+	 CaM8Ley8nFvQOuP6MHY+QDMznpysoK3wvzkqIzSQQxv6Askb4tdoIV8Ah6uaILOTA+p4T
+	 kLepVz0w9Z3/t3PYw2Cg9h8q5Bn3zh3nKg7A7pAHEa6MT+oqFb28L+EsIu8+OfW73qZwF
+	 jzlMwYxXC6VS3V4HqnezZ+hR9emLRqU+gmk46vz+PpGSbwfblQKtjkuPqO4+dqpDcavH9
+	 w3bXEKoHZqoR9JWRfv7mfovXBI3Zdz57x49ECn+QdK2RwobpREYvrOaI8pHovKT6hoA==
+ARC-Authentication-Results: i=1; smtp.kernel.org; 
+	arc=none smtp.remote-ip=100.80.115.77
+Received: from lkml.kernel.org (nexus.subspace.kernel.org [100.80.115.77])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by smtp.kernel.org (Postfix) with ESMTPS id 708271F000C6;
+	Thu, 26 Nov 2026 09:01:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795682150;
-	bh=mvvYspxkHaEnDdWCxiNARmqZM3t9M2asb+D/ao1UIq0=;
-	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
-	b=CyEPnwm1guup5aqHo/oyhvgetIp0TPVPzb1wpWfysXNRo+enl/8HhyzLOtN/9Z0Kq
-	 HRLoY5nP1Z7QlS5Y58UDOUxRQaSHZ66YTwrKVSo+A0LubVmHrwf4RGgeC16BjKUuK2
-	 6wB5WBDSCREtKKb+WIOd9m39jC/iNwlKXkO+bXvPHQQ07IVWSivDaOcNuURp2GTnqG
-	 /9E1LVmRoFnwGuvd5PVMDrkVKStoDV5zV0rnJb07TfGOqwesumdM1agtV+iJDYmoAK
-	 VlugUfaba0++9FN05BDPwUyXp/x4647dZ3AkJA8KrDiBoCc1HQglG4nLyjF7xpk8Kc
-	 AddTkL+cZWh4A==
-Message-ID: <sashiko-outbox-235040@kernel.org>
-From: sashiko-bot@kernel.org
-Subject: Re: [PATCH RESEND v4] can: j1939: cancel all pending ECUs on device
- stop
-Reply-To: sashiko-reviews@lists.linux.dev
-To: "Dmitry Antipov" <dmantipov@yandex.ru>
-Cc: linux-can@vger.kernel.org, "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver
- Hartkopp" <socketcan@hartkopp.net>, "Vincent Mailhol" <mailhol@kernel.org>, "Oleksij
- Rempel" <o.rempel@pengutronix.de>
-In-Reply-To: <20261126082257.491041-1-dmantipov@yandex.ru>
-References: <20261126082257.491041-1-dmantipov@yandex.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Date: Thu, 26 Nov 2026 08:35:50 +0000
+	s=k20260515; t=1795683688;
+	bh=JY6p82Euc2Wh5gjzBsclmn88zO2bmUfG5Wr6Ptzhv4c=;
+	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To;
+	b=eA4ONhlTf4L/io0fxoksjs1TUOgt/2CC9d8Xd+L3MO9kQzDkq0UCpaR+eCIw7YFXg
+	 NoEao2UkVcRwUDMXU4U4NykbLha5XKQAhdBpXJyZ4+b9tM5AwSMSlnL8s78q4xlh+6
+	 lrV1bhZzbhM1iKEL7lJ9F6I+6eCXE9wk4fvrn9BRboorbo9j9FSHv88KndFgQ9BZGL
+	 JfIJOpcgFb/Escy1HTSie4oZoBmNKZ4LDyEL/ATHidaqUbUltmUD1FnqbMcsqnRx8e
+	 mex6iZqm7fz3Hu5hvnU6WN+sukxu0LRMq5xXn7zKwCG61PXarfogdauw16egI2bfhu
+	 h+Fh51a7Od2Gw==
+Received: from nexus.subspace.kernel.org (localhost [IPv6:::1])
+	by lkml.kernel.org (Postfix) with ESMTP id 015914D316;
+	Thu, 26 Nov 2026 09:01:20 +0000 (UTC)
+From: =?utf-8?q?St=C3=A9phane_Grosjean_via_B4_Relay?= <devnull+s.grosjean.peak-system.fr@kernel.org>
+Date: Thu, 26 Nov 2026 10:01:03 +0100
+Subject: [PATCH v9 02/14] can: peak_usb: harden PCAN-USB message validation
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -61,121 +81,104 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Message-Id: <20261126-canfd_check_channel_idx-v9-2-abe0099b4585@peak-system.fr>
+References: <20261126-canfd_check_channel_idx-v9-0-abe0099b4585@peak-system.fr>
+In-Reply-To: <20261126-canfd_check_channel_idx-v9-0-abe0099b4585@peak-system.fr>
+To: Marc Kleine-Budde <mkl@pengutronix.de>, 
+ Vincent Mailhol <mailhol@kernel.org>, 
+ Wolfgang Grandegger <wg@grandegger.com>, 
+ =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>, 
+ Dan Carpenter <error27@gmail.com>, Lukas Magel <lukas.magel@posteo.net>
+Cc: linux-can@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Tristan Madani <tristmd@gmail.com>, 
+ Joas Antonio dos Santos <joasantonio108@gmail.com>, stable@vger.kernel.org
+X-Mailer: b4 0.14.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795683678; l=2405;
+ i=s.grosjean@peak-system.fr; s=20261020; h=from:subject:message-id;
+ bh=nJ7r4maIQTeLSa3pRZIZ0YyDiADbSzZnNaU9saNBCGE=;
+ b=+29/II4CIFTsdQrDreWOrgG//Icer5V63pBkccWOuUvlQAhroe3zQbSY9Qnl8mSkvcmwyB4E8
+ K2t5sLkwdoaDIR30PY9ZprQe0nr39BSlAGCaYPNdAJ8Hi8a5r4RJ3Kk
+X-Developer-Key: i=s.grosjean@peak-system.fr; a=ed25519;
+ pk=bP7QV2zvvAKAfConZlUOGKGEcXL64SNUpVUm++Ai+/c=
+X-Endpoint-Received: by B4 Relay for s.grosjean@peak-system.fr/20261020
+ with auth_id=1250
+X-Original-From: =?utf-8?q?St=C3=A9phane_Grosjean?= <s.grosjean@peak-system.fr>
+Reply-To: s.grosjean@peak-system.fr
+Content-Transfer-Encoding: 8bit
 
-Thank you for your contribution! Sashiko AI review found 3 potential
-issues to consider:
-- [Critical] can: j1939: refcount underflow and UAF in
-  j1939_ecu_cancel_all()
-- [High] can: j1939: premature j1939_ecu_cancel_all() in
-  j1939_netdev_stop()
-- [Medium] can: j1939: ECU leak in j1939_ecu_cancel_all() on in-flight
-  ac_timer
---
+From: Stéphane Grosjean <s.grosjean@peak-system.fr>
 
-commit 93803049529a18174c52d42d8612110310952b12
-Author: Dmitry Antipov <dmantipov@yandex.ru>
+Add boundary checks when parsing PCAN-USB messages and reject
+malformed buffers whose contents would otherwise lead to accesses
+outside the received USB data area.
 
-can: j1939: cancel all pending ECUs on device stop
+This prevents potential out-of-bounds memory accesses caused by
+corrupted or malicious device messages.
 
-This commit adds j1939_ecu_cancel_all() and calls it from
-j1939_netdev_stop() to cancel pending ECU address-claim timers and drop
-their ECU references.
+Fixes: 46be265d3388 ("can: usb: PEAK-System Technik PCAN-USB specific part")
+Cc: stable@vger.kernel.org
+Signed-off-by: Stéphane Grosjean <s.grosjean@peak-system.fr>
+---
+ drivers/net/can/usb/peak_usb/pcan_usb.c | 26 ++++++++++++++++++--------
+ 1 file changed, 18 insertions(+), 8 deletions(-)
 
-> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
-> index cdc3c0a719379..0b5232b536051 100644
-> --- a/net/can/j1939/bus.c
-> +++ b/net/can/j1939/bus.c
-> @@ -96,6 +96,17 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
->  	write_unlock_bh(&ecu->priv->lock);
->  }
-> =20
-> +void j1939_ecu_cancel_all(struct j1939_priv *priv)
-> +{
-> +	struct j1939_ecu *ecu, *tmp;
-> +
-> +	write_lock_bh(&priv->lock);
-> +	list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
-> +		if (hrtimer_try_to_cancel(&ecu->ac_timer) !=3D -1)
-> +			j1939_ecu_put(ecu);
-> +	write_unlock_bh(&priv->lock);
-> +}
-> +
+diff --git a/drivers/net/can/usb/peak_usb/pcan_usb.c b/drivers/net/can/usb/peak_usb/pcan_usb.c
+index 785224e00c4e..f79b651ab4a7 100644
+--- a/drivers/net/can/usb/peak_usb/pcan_usb.c
++++ b/drivers/net/can/usb/peak_usb/pcan_usb.c
+@@ -558,6 +558,8 @@ static int pcan_usb_handle_bus_evt(struct pcan_usb_msg_context *mc, u8 ir)
+ 	switch (ir) {
+ 	case PCAN_USB_ERR_CNT_DEC:
+ 	case PCAN_USB_ERR_CNT_INC:
++		if ((mc->ptr + 3) > mc->end)
++			return -EINVAL;
+ 
+ 		/* save rx/tx error counters from in the device context */
+ 		pdev->bec.rxerr = mc->ptr[1];
+@@ -696,8 +698,11 @@ static int pcan_usb_decode_data(struct pcan_usb_msg_context *mc, u8 status_len)
+ 		mc->ptr += rec_len;
+ 
+ 		/* Ignore next byte (client private id) if SRR bit is set */
+-		if (can_id_flags & PCAN_USB_TX_SRR)
++		if (can_id_flags & PCAN_USB_TX_SRR) {
++			if ((mc->ptr + 1) > mc->end)
++				goto decode_failed;
+ 			mc->ptr++;
++		}
+ 
+ 		/* update statistics */
+ 		mc->netdev->stats.rx_bytes += cf->len;
+@@ -733,14 +738,19 @@ static int pcan_usb_decode_msg(struct peak_usb_device *dev, u8 *ibuf, u32 lbuf)
+ 	int err;
+ 
+ 	for (err = 0; mc.rec_idx < mc.rec_cnt && !err; mc.rec_idx++) {
+-		u8 sl = *mc.ptr++;
+-
+-		/* handle status and error frames here */
+-		if (sl & PCAN_USB_STATUSLEN_INTERNAL) {
+-			err = pcan_usb_decode_status(&mc, sl);
+-		/* handle normal can frames here */
++		/* check if status_len byte can be read next */
++		if (mc.ptr >= mc.end) {
++			err = -EINVAL;
+ 		} else {
+-			err = pcan_usb_decode_data(&mc, sl);
++			u8 sl = *mc.ptr++;
++
++			/* handle status and error frames here */
++			if (sl & PCAN_USB_STATUSLEN_INTERNAL) {
++				err = pcan_usb_decode_status(&mc, sl);
++			/* handle normal can frames here */
++			} else {
++				err = pcan_usb_decode_data(&mc, sl);
++			}
+ 		}
+ 	}
+ 
 
-[Severity: Critical]
-Does checking hrtimer_try_to_cancel(&ecu->ac_timer) !=3D -1 drop an unowned
-reference on ecu when ac_timer is inactive?
+-- 
+2.53.0
 
-hrtimer_try_to_cancel() returns 1 when an active timer is cancelled, 0
-when the timer is not active, and -1 when the callback is running.  For
-an ECU whose ac_timer is not active (for example, an ECU that has already
-completed address claiming and is mapped in priv->ents[ecu->addr].ecu, or
-a local ECU whose timer was never started), hrtimer_try_to_cancel()
-returns 0 and j1939_ecu_cancel_all() drops a reference that ac_timer does
-not hold.  When the mapped reference in priv->ents[] was the only
-remaining reference, this frees ecu before __j1939_rx_release() ->
-j1939_ecu_unmap_all() dereferences priv->ents[i].ecu, causing a
-use-after-free and refcount underflow.
 
-Should this check hrtimer_try_to_cancel(&ecu->ac_timer) =3D=3D 1 instead?
-
-[Severity: Medium]
-Can an in-flight j1939_ecu_timer_handler() still map and leak ecu when
-hrtimer_try_to_cancel() returns -1?
-
-CPU0                                  CPU1
-j1939_netdev_stop()
-  j1939_ecu_cancel_all()
-    write_lock_bh(&priv->lock)
-                                      j1939_ecu_timer_handler()
-                                        write_lock_bh(&priv->lock)
-    hrtimer_try_to_cancel() -> -1
-    write_unlock_bh(&priv->lock)
-  __j1939_rx_release()
-    j1939_ecu_unmap_all()
-                                        j1939_ecu_map_locked(ecu)
-                                          j1939_ecu_get(ecu)  <-- leaked
-                                        j1939_ecu_put(ecu)
-
-When ac_timer expires on CPU1 while CPU0 holds priv->lock,
-hrtimer_try_to_cancel() returns -1 and j1939_ecu_timer_handler() waits on
-priv->lock.  If j1939_ecu_unmap_all() runs before CPU1 acquires
-priv->lock, j1939_ecu_timer_handler() subsequently maps ecu into
-priv->ents[ecu->addr].ecu and takes a new reference that is never
-unmapped, leaking ecu, priv, and their net_device references.
-
-[ ... ]
-
-> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
-> index d9384cf0e356f..4b62da9fd96dc 100644
-> --- a/net/can/j1939/main.c
-> +++ b/net/can/j1939/main.c
-> @@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_devi=
-ce *ndev)
-> =20
->  void j1939_netdev_stop(struct j1939_priv *priv)
->  {
-> +	j1939_ecu_cancel_all(priv);
->  	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
->  	j1939_priv_put(priv);
->  }
-
-[Severity: High]
-Should j1939_ecu_cancel_all() be called inside __j1939_rx_release() after
-j1939_can_rx_unregister() rather than unconditionally in
-j1939_netdev_stop()?
-
-All J1939 sockets bound to the same net_device share a single struct
-j1939_priv, and each socket release calls j1939_netdev_stop().  Running
-j1939_ecu_cancel_all() when priv->rx_kref > 1 cancels pending
-address-claim timers for other active sockets on the same interface,
-leaving their ECUs unmapped so later NAME-based sends fail with
--EADDRNOTAVAIL.
-
-Even when the last socket closes, calling j1939_ecu_cancel_all() before
-__j1939_rx_release() calls j1939_can_rx_unregister() leaves a window where
-incoming Address Claim frames in j1939_can_recv() can start a new
-ac_timer after j1939_ecu_cancel_all() has already returned.
-
---=20
-Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261126082257.4910=
-41-1-dmantipov@yandex.ru?part=3D1
