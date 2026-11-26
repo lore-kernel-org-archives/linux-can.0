@@ -1,93 +1,93 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.84
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795727160;
-	b=0fjoGnK4gqywclYBOjBKN0fwupsN0SNMFsIg27ZrxrkcQb4K3xLeJd0gzaHxgzvbH21D
-	 P5hBS6lmG1G2OGWuLQH/DtUvm40JEiaEj8XOdd0heShk+L6+JTX/AtQe+xj9ZgfiDNVSn
-	 xtxey/8LaN1XGGfp8brkZZmkEcegr1tp6GZdI8PiomBFg2tseH2wnAzG+Om0wC6ASpsVy
-	 41dD4GmcH7kavztNVuXsM1Rtscmn83Xv4punJ1AWlX4Gwp45I7Iqyjtc01TEllKfY0Qgg
-	 aFTVd1D66qBvAtxWhaAt347gjiRK4hJtzq+fNlXzVx7O0dGwFIzkQVOjVVXTtXCP35Q==
+	b=jMmAlMZLTklJmRVhh91qxAGSw66YM8arJPj1DceEm66C7YGRJAZ5214x40EfGbMxKY19
+	 vOdePvUIcRnDuf4kCFaJDHsvVvPA1TIMTiq9yvFmemkIwUCGYAeyeCgk2nkk9ZVBb2lrC
+	 K3p0H734qlnoTTwTnpJ2OrI2u2SGsHZrA1sQuYFKn/Xwr5TJz3ncQFkyYc00E7mdk7o4H
+	 nowXu0iWAR/UV3vaxHE7cQ3xg5RbMEG8LM0qiKRYgBfMd8U7tviohIk6tJnwhlRtUF31P
+	 bQOnHNdMkIAeiZX/QnMj04OjTa53Ty+bcrkQ9fVtcM+FmM11hfo4RcS/Rbv6+Ojd8IA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795727160;
 	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
 	 Received:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 X-Mailer:X-Developer-Signature:X-Developer-Key;
-	bh=H0G29LsxxAiyW2AtC8cyfpT3eyLOuJdbWi76VfpcCt4=;
-	b=P/8MTee+L+DC+7AC2BgSfQc3+V419z/2mUiw/+UIfewAekIJC9ZYln5JtkI57fRtTZwQ
-	 QxmguoxcXd76k3IQLdzQ3UFOQB4jnpTblUAh4JzOnHwnLyciH7czxQlod5Nc8RNFeupt3
-	 Npitlfksx5hqn7iAJuE6jvJ+12T9t7qENFO0d3pc/pVdXfKX6j2lN7fRRKI8QqWhXUelh
-	 qCnTgY17m3y257XohedijqILTn8zLgVMDhpVr24pvTLGNC/A3kpuU+10CYCCDJ+bA/slX
-	 Coza3CkGIcK9SFrktgE0tiECwhQNCW0mNq4mdoF7Tsnqg7OggHh2Vby37ZW90DfSmgQ==
+	bh=2UKIomvh2QNtF9HDUo0jX15r+I2waRga+9Ukiz1lBIo=;
+	b=InXbShpXNmmqorGRIn/qem7L3RaPQr69ypV51YNv6bsWRVPRPifp9qM1oxpo6W1csmUx
+	 gk7NNKyarT9uege7vOKwSfhH+QWBiUgL6vfqGljDjk62m60mH4IIUa1kcejsVxZ2M+Qjy
+	 LCmRJbp5M5HfCFqOGK0eGB3L8PWghVh3eglpWfge/ovNk1ql0aiJPixLwJxE7nwUyEFrm
+	 H1ciF8iSICa00xe7d4VwnrAOWuUDJinwXSqXhLlfVNo3K6MApvEI9EaAS/U72x7T8JVoo
+	 xOMIsSjsqz/cfEuCCfdOff12o6i6w5+7SrStFGAvKX3tSvsNZpv8/pV4Sp5x7VZVFJg==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=pass header.from=hartkopp.net;
 	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oBFmdsID;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=0A8NGa+F;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.81
-Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.81])
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=gtoI0JdK;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=EstqUuFx;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=85.215.255.84
+Received: from mo4-p02-ob.smtp.rzone.de (mo4-p02-ob.smtp.rzone.de [85.215.255.84])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC8A606A326
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 863A5606A327
 	for <linux-can@vger.kernel.org>; Thu, 26 Nov 2026 21:05:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 6CC8A606A326
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 863A5606A327
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=oBFmdsID;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=0A8NGa+F
-ARC-Seal: i=1; a=rsa-sha256; t=1795727152; cv=none;
+	dkim=pass (2048-bit key) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=gtoI0JdK;
+	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=EstqUuFx
+ARC-Seal: i=1; a=rsa-sha256; t=1795727151; cv=none;
     d=strato.com; s=strato-dkim-0002;
-    b=kEWhEsexfsS4jAAQMzYz90j3n0Dej/KRmNMabjIbk3h+477OXZB8oHaqjjijPSUk1m
-    tjx1+OhVIqQ6Kl4XEj0wtzMCShDuPjH8+L53NfQTljxjvIVY7oKhHalaA874MzQC20pY
-    aNUBbI3hj4h7lJ2Y7NRJQq8rbQfRDvIFgo8pVbc9dHmYO35xoaRILuSoSAhnkly0T03X
-    TQ+gLJIDLGHCaH6U+HHrVKxH6Fl781FYPXmMRC8BWfbN7+MnqPNC9xfkNnhhtAfdj8QT
-    3PkbPUP9ZiHBQw7pfKvSetaEXh6/FIXiBPrj28+p8BB+368ei7R8M3D4bdbs7EgmmE/r
-    2wxw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727152;
+    b=Yi84tF3FXN4wdynNfBmUnQ9gciv4LvxaGy8JitPV89ylIV1Ca5f4CD6O7N/1lFlokX
+    Ccb7ADHmtirYo5Hx7HgWQJmwv/l2wxmnfHE/EmHfSXXOm3M+snvzIYtW6p9bG2UPT8UQ
+    zOXyOaQu0tOd+l+u/wzjeG1zJvbvpniZnsUGbyh10nHyI4VPTI6i7HzQL8dYkljQcKNE
+    IAdpne7NmZCBu5R5sAi/mhcqzBJCk0pw3VILY0yC3jPkmVuLDi+ZhVUsHg9VRuiNOrWO
+    rXH8zkDKRaSInp8TZqf7lLxyRmPA+FXVP7Ebvr5zlFBXijFDmIZJxQRdNuy/Lu/z5DtV
+    iWhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727151;
     s=strato-dkim-0002; d=strato.com;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=H0G29LsxxAiyW2AtC8cyfpT3eyLOuJdbWi76VfpcCt4=;
-    b=MABC63QzUQQWxAaIe4o8YjZsQWfTPUGeGDcx0bhYHy2Vt7zHMEzZ0KtPWToy+jOPoJ
-    qROcGp8e3XIxjwd5lFjWDaXI6NZmAi8B1+Xtl+R4tbEjmlnx1KmOX9rBMxtMEiVctZ8y
-    A/WQ8t1YcsYU5ZxRmXom6Z7rIZFF4rEDnrmfxn/VPwuXl61I7KLv3Q0X1ZVsjBRkqLUI
-    Mlsj8/5rCJXno4zFXa6W38yPpYQklEottsBt0ODjmInLl4EXsFX7Ed51xnL2xPR/aCNN
-    imsvDrcIMpV7xSzmN11UYGlkSMjOoi/ad1tOknoAB+ZbTU/Xn/tLzmIYjPEriwDI4wLW
-    yGEQ==
+    bh=2UKIomvh2QNtF9HDUo0jX15r+I2waRga+9Ukiz1lBIo=;
+    b=YyA4Kf7NGRxhIF+2vnCmRdmKTvbDenymIn4ezkLQ6nM/QypQ5O5olfIbKc1CssJKEY
+    IbTkJ9NSIf5g/usMj7EtwWAqXnwtwfcLOkEV+haEfaxTuUJlgKlSfI3kr/OJybHYGfpV
+    grmj5JjczoJPY4itz2kbwofXa41pl/e8Evi5JJz15cY8bkyKAoGpFaHLT6Wt/qgioSIt
+    yGl9EEcfJKe8ZWZLBRmQDRQgzHADCHghjLxuyveZ2lZQ88B/Y6834Y3IMUGs1Uw9DJ4a
+    iFEtXzySart2vpnBivsAe6bW24u19WVPr6MxwijBfj2HJTZtVlk0XSwZL4P+3q0NYuQe
+    TfoQ==
 ARC-Authentication-Results: i=1; strato.com;
     arc=none;
     dkim=none
 X-RZG-CLASS-ID: mo02
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727152;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795727151;
     s=strato-dkim-0002; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=H0G29LsxxAiyW2AtC8cyfpT3eyLOuJdbWi76VfpcCt4=;
-    b=oBFmdsIDmGO+Ob5sO+2ynADIIRA517lTVr1ZRKMw8MPTQ7gZcLpwrQDZvbHSjYDGOX
-    qcBsySx6CpKYQ1qFydfCL189zQwJk8i2bamKeyD0EDedu/5qe0Das2RbtPv8nESBgfGm
-    WGTlCuMXRNf/FbKg19MOBwGGxwBIJ9IZVUq+jXwIILhA3kcsxTwNAcXYDrFMoQPFqjMw
-    prNOdnujYfbKyqFKPaYDtUwDzypf4f6fms0EZX8sgt4ATdSPEZvVBQL2H+yb8WF25HNK
-    owii6puAxKbfJn8Yb8zMn9IzwcxLtnOhULyyEHT5OFGL71KzyP8AkmPdLSnCgxfAoUlf
-    Z2NA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795727152;
+    bh=2UKIomvh2QNtF9HDUo0jX15r+I2waRga+9Ukiz1lBIo=;
+    b=gtoI0JdKHzdK2n5kXMsOzVOD7s+nyKpI4J9pQP1Rrs8AOHRDoYAgZVQCtP0CWMzSAO
+    L17J8TFch96X2BY4g7eKFIEZ4ZrWaiLsXFjgPWpbRNH6xHGLM3tDZum/6aLJEnPk4AFg
+    m506KouAs16AemE34NAfl2fEpumX7G68RIm2HQegf+lgU9/swTzHrMFEmN390UPtB8Da
+    p10E5OfGnLDe9VU4gI3DQRGzB/sEemCtU+kFj5cozZ9FKyMA9pu4pIblGRFa3U1qm7Hy
+    LpsuEnxDep1HcTiXPvYHUmaeYJao7CT4Pq09SC+L2MKgZlf2s0ge0adxt4cNIFyO2a5v
+    s/bQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795727151;
     s=strato-dkim-0003; d=hartkopp.net;
     h=Cc:To:In-Reply-To:References:Message-Id:Subject:Date:From:Cc:Date:
     From:Subject:Sender;
-    bh=H0G29LsxxAiyW2AtC8cyfpT3eyLOuJdbWi76VfpcCt4=;
-    b=0A8NGa+FexlESscga0R6h7F4mwjmEUCgqwBtVMbrWJYdI5Ro27KL+QyJQUoIkCZNHA
-    BNxlcQ7XzOyca9ooySBw==
+    bh=2UKIomvh2QNtF9HDUo0jX15r+I2waRga+9Ukiz1lBIo=;
+    b=EstqUuFxVeV9GK9T2Bj6YwRMX9Y+71vohztnntUbQs1AkQkZ1M4t7Cb7+KXQ+62qlK
+    riHhJKmEPuw7HheMuoCA==
 X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
 Received: from [127.0.1.1]
     by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2AQL5qtUj
+    with ESMTPSA id Kfdf2a2AQL5ptUe
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
 	(Client did not present a certificate);
-    Thu, 26 Nov 2026 22:05:52 +0100 (CET)
+    Thu, 26 Nov 2026 22:05:51 +0100 (CET)
 From: Oliver Hartkopp <socketcan@hartkopp.net>
-Date: Thu, 26 Nov 2026 22:05:55 +0100
-Subject: [PATCH can-next 13/22] can: isotp: do not send FC.OVFLW in listen
- mode
+Date: Thu, 26 Nov 2026 22:05:50 +0100
+Subject: [PATCH can-next 08/22] can: isotp: reject CAN_ISOTP_CHK_PAD_DATA
+ without CAN_ISOTP_RX_PADDING
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -99,83 +99,56 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261126-getsockopt-memcg-isotp-v1-13-681ef8d8c2c9@hartkopp.net>
+Message-Id: <20261126-getsockopt-memcg-isotp-v1-8-681ef8d8c2c9@hartkopp.net>
 References: <20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9@hartkopp.net>
 In-Reply-To: <20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9@hartkopp.net>
 To: linux-can@vger.kernel.org
 Cc: Marc Kleine-Budde <mkl@pengutronix.de>, 
  Oliver Hartkopp <socketcan@hartkopp.net>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1795727150; l=2000;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1795727150; l=1469;
  i=socketcan@hartkopp.net; s=20260128; h=from:subject:message-id;
- bh=+kqdJwPFWFMNy/YuCtSo8wNnpSQvx5euX3Jn8OnWlgI=;
- b=pRlD1/KEDw2Sr+xZOsikZb1XxFtTBb5K2EQmkkve9DO+2HqxOBP3PU3Ostr1OPa0QxMR/Wp5M
- KuOFJKcWYbGChYhQayKF1Zdagp2nqsxlp3nvEHPsiWwNbBAxr1HIpwP
+ bh=10ZxO4RXRJjdgoh7tWhhGUhN5nxmUKRP0opFYqpvdx4=;
+ b=Es03kB0AlX7XRWJKVcxgLKMxxV83FDD4Bv1dM2OjDAltSZ1qXs/+o2KybMRdqmVE28vJHatJZ
+ KOeUPWTI204CC27flcjfi+gRC5PXBJKvsI+0rLFHOrk7MFyww82ZhgV
 X-Developer-Key: i=socketcan@hartkopp.net; a=ed25519;
  pk=/gU/7/wBqak3kTsTeFbCCqUi9dnh+1i6ITEkfPj/BvU=
 
-isotp_rcv_ff() sends a FC with overflow status when the FF_DL exceeds
-the receive buffer without checking CAN_ISOTP_LISTEN_MODE. So a
-listening socket sends a FC on the bus, which can abort the transfer
-between other nodes using the same CAN IDs.
+CAN_ISOTP_CHK_PAD_DATA checks the padding bytes of received frames
+against the rxpad_content, which is only defined together with
+CAN_ISOTP_RX_PADDING. Without CAN_ISOTP_RX_PADDING check_pad() fails
+for every frame, so that no PDU can be received and every FC aborts the
+transmission with EBADMSG.
 
-Move the listen mode check from the callers into isotp_send_fc() before
-any state changes to cover all FC frames.
+Reject CAN_ISOTP_CHK_PAD_DATA without CAN_ISOTP_RX_PADDING with -EINVAL
+before the options are applied. CAN_ISOTP_CHK_PAD_LEN without
+CAN_ISOTP_RX_PADDING still checks for the optimized frame length.
 
 Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 ---
- net/can/isotp.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ net/can/isotp.c | 5 +++++
+ 1 file changed, 5 insertions(+)
 
 diff --git a/net/can/isotp.c b/net/can/isotp.c
-index 8ae314fe68d2..f6801c18172c 100644
+index 6471c0ef319a..0af1a689fdd3 100644
 --- a/net/can/isotp.c
 +++ b/net/can/isotp.c
-@@ -293,10 +293,14 @@ static int isotp_send_fc(struct sock *sk, int ae, u8 flowstatus)
- 	struct can_skb_ext *csx;
- 	struct canfd_frame *ncf;
- 	struct isotp_sock *so = isotp_sk(sk);
- 	int can_send_ret;
+@@ -1756,10 +1756,15 @@ static int isotp_setsockopt_locked(struct socket *sock, int optname,
+ 		/* limit the frame transmission time (N_As/N_Ar) */
+ 		if (opt->frame_txtime != CAN_ISOTP_FRAME_TXTIME_ZERO &&
+ 		    opt->frame_txtime > ISOTP_MAX_FRAME_TXTIME_NS)
+ 			return -EINVAL;
  
-+	/* no creation of flow control frames in listen mode */
-+	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
-+		return 0;
++		/* the padding content check needs the rx padding content */
++		if ((opt->flags & CAN_ISOTP_CHK_PAD_DATA) &&
++		    !(opt->flags & CAN_ISOTP_RX_PADDING))
++			return -EINVAL;
 +
- 	nskb = alloc_skb(so->ll.mtu, gfp_any());
- 	if (!nskb)
- 		return 1;
+ 		memcpy(&so->opt, opt, sizeof(*opt));
  
- 	csx = can_skb_ext_add(nskb);
-@@ -650,14 +654,10 @@ static int isotp_rcv_ff(struct sock *sk, struct canfd_frame *cf, int ae)
- 
- 	/* start rx timeout, isotp_send_fc() restarts it */
- 	hrtimer_start(&so->rxtimer, ktime_set(ISOTP_FC_TIMEOUT, 0),
- 		      HRTIMER_MODE_REL_SOFT);
- 
--	/* no creation of flow control frames */
--	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
--		return 0;
--
- 	/* send our first FC frame */
- 	isotp_send_fc(sk, ae, ISOTP_FC_CTS);
- 	return 0;
- }
- 
-@@ -753,14 +753,10 @@ static int isotp_rcv_cf(struct sock *sk, struct canfd_frame *cf, int ae,
- 
- 	/* perform blocksize handling, if enabled */
- 	if (!so->rxfc.bs || ++so->rx.bs < so->rxfc.bs)
- 		return 0;
- 
--	/* no creation of flow control frames */
--	if (so->opt.flags & CAN_ISOTP_LISTEN_MODE)
--		return 0;
--
- 	/* we reached the specified blocksize so->rxfc.bs */
- 	isotp_send_fc(sk, ae, ISOTP_FC_CTS);
- 	return 0;
- }
- 
+ 		/* no separate rx_ext_address is given => use ext_address */
+ 		if (!(so->opt.flags & CAN_ISOTP_RX_EXT_ADDR))
+ 			so->opt.rx_ext_address = so->opt.ext_address;
 
 -- 
 2.53.0
