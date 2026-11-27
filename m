@@ -1,155 +1,57 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.75.80
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795781399;
-	b=G3VmSNjQaDskg+2AQquD9q+YD8nPikhSsxrOmPc2EhNwQMd8MscDDbjATz2WoKG625hw
-	 ZfUs4y6+5FMX5NC/3wOcKpJMhBoDLQa1Y0Oj7TDE4Khmv3AnWer8XkBcKcf+XQtuQV9HU
-	 Uqjt3r9rSgdgk8cDVImMmu6W/5wCs01A2l+UGB9l6ZRfUhO8cUBpM9ekQCLtpp5r6S45D
-	 SPb8kt/y6zuhuTJ/QqRzJ3ljIpBMlqas32FEsYu+zDiSy7VlU9sN7M+s7E9zZU8BprcIW
-	 of2sNvHffrOrHv1s/VjF3OiiTDoYD/PKmweNg01vLNujJ4MGWo/6iuuHPSgi02WRt6g==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795781399;
-	h=DMARC-Filter:DKIM-Signature:Received:Received:From:To:CC:Subject:
-	 Thread-Topic:Thread-Index:Date:Message-ID:References:In-Reply-To:
-	 Accept-Language:Content-Language:X-MS-Has-Attach:X-MS-TNEF-Correlator:
-	 x-ms-traffictypediagnostic:x-ms-publictraffictype:client-request-id:
-	 request-id:x-ms-exchange-senderadcheck:x-ms-exchange-antispam-relay:
-	 x-microsoft-antispam:x-microsoft-antispam-message-info:
-	 x-forefront-antispam-report:
-	 x-ms-exchange-antispam-messagedata-chunkcount:
-	 x-ms-exchange-antispam-messagedata-0:Content-Type:Content-ID:
-	 Content-Transfer-Encoding:MIME-Version:X-OriginatorOrg:
-	 X-MS-Exchange-CrossTenant-AuthAs:X-MS-Exchange-CrossTenant-AuthSource:
-	 X-MS-Exchange-CrossTenant-Network-Message-Id:
-	 X-MS-Exchange-CrossTenant-originalarrivaltime:
-	 X-MS-Exchange-CrossTenant-fromentityheader:
-	 X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
-	 X-MS-Exchange-CrossTenant-userprincipalname:
-	 X-MS-Exchange-Transport-CrossTenantHeadersStamped;
-	bh=BllV/BR5dbZaNuynhCv7czLcrDKISb8Ua6EaXZY7nLw=;
-	b=zqFGxcpxXs+N23wALOJEiTFI9wr+4PFTt2ljqRe4KeFakYRIIoyUpfFTn/AyH4Hr8ZDo
-	 IzhgGcqJ/PI0pTEGSoQaryRx8iQP7N6weSBFaXHmfIpq7dieaguXEiQgTOFj58XlgJpsa
-	 Tl8JCfxFg0hbHOAhqXtfB+Duopls+OloCM2bVHLYxBnKytqGUVHq1DPZjBGincAKr3IjP
-	 KVW2pPsMSqwZ24P0knRQ2ll2HzrTtSqW3Ttv0yQ6hnO38sjGSI+K1RmUeRiGcyMVo/Ba0
-	 1TrjIT+z2Mh82+iS+xggh+pLY4q+KtFpoA1/QvLDWQhUaKnYo298ZGNFmK9IOm+SN2Q==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=amlogic.com;
-	spf=pass smtp.mailfrom=amlogic.com;
-	dkim=pass header.d=amlogic.com header.i=@amlogic.com header.a=rsa-sha256 header.s=selector1 header.b=f2oL5bQY;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=40.107.75.80
-Received: from OS8PR02CU002.outbound.protection.outlook.com (mail-japanwestazon11022080.outbound.protection.outlook.com [40.107.75.80])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795791840;
+	b=eSPDn6oblQTIic/YcydTPLHiqqaNGcaKXq9mxjZzSctjTvFdWINLCpqqT2JUJtoRXe+S
+	 FNnOOLRy25wa3Peno7OJDu1XDHTyVFArQigR8KQwTRaKz1O9alQUp1un58ynyKH3pnlFP
+	 D6OI2YxwNowe769QDNqOAweNPYN88mSYo0sr5QPPI4dV26Sx+MQAvnf4JnlSs0pxsrAwn
+	 0PTesztBs3gwuYp3VxTP4mnB+PRl9e1sOlMNHq2pYbymCR6cWXpK7Qmmh7nM13XBsUeI1
+	 53lgjgijfNEI2oAxpqMZJKvhUBwLuq5OzTMDSC4Qo6MH6G+/YhQxBXBeQR20ETSxnIQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795791840;
+	h=Received:DKIM-Signature:Message-ID:From:Subject:Reply-To:To:Cc:
+	 In-Reply-To:References:Content-Type:Content-Transfer-Encoding:Date;
+	bh=d7AwnLP3KBSWaNF33NQKZMexxXU+SW59ZjGJ/o6MX9o=;
+	b=BdwMtbCqiPBasJv4cVZxyDsCaktDs7q1bqb6+BHtbMRWEErmq60AISZ5163PWDfW2HmO
+	 6dMu7M7QCTpoYYv7jSpLGtJNEHRdetqund4rSSjS+Dm4TqZp0REBqFmPX8Z8alQcpBepm
+	 XU9lCezGYeplutlRv0teBMcWiEBgMSO3uGZzrZADCtyK/i239t5luQQPUAsz3e18zx6UE
+	 HokJBcTMMUMk4evvP+8cxhHtJtNSZT0eox8GdYcDzZfBWA+39Dq7ihc0+WTzQLonREkAu
+	 Pt9DHB0ypUMHu+MIYD6SmHDYXj/dVyyRNAfbGGaRdYAHCEzDZvwLANW2QPWwA2Oy6pg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P26jFS04;
+	arc=none smtp.remote-ip=100.103.45.18
+Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (secp384r1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CED1606A31E;
-	Fri, 27 Nov 2026 12:09:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 5CED1606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amlogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amlogic.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B72A606A31C
+	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 15:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=amlogic.com header.i=@amlogic.com header.a=rsa-sha256 header.s=selector1 header.b=f2oL5bQY
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eQ2kR1ZHwdd17Xz6D+J1xnXx2LTfeGc03HoCfyIqSgSzp4DtWhxQesaQ3cBzTm4S3rDJ5KWJ3vc+c9GcjSod+V7qfEj3dJ6NtbGh5zqWG8OYYFfewdhxyS9A4Z3Iuilp1WZ1rq+e7OFN/QwyWhsLQSSQeVZrzfXtJU8ksslvNMMm9JFMOUoAgYy6qmbs2fRn7anWZboM8KnfoQi3KxUZtfM7QVhcNAYf8vdCaeyemdfd1dpsISLELgZUGEXd+qWGdr8MO2mlXV/MmEEUDAtQmgfMmaMNyiPaw2EHSadGiIfFXW1eS5gUIeiu0T+rmiygr2kQmWFkkULPNtZQ3OgIPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BllV/BR5dbZaNuynhCv7czLcrDKISb8Ua6EaXZY7nLw=;
- b=OZHa9eLR4aeK4rKcvObE6W7m/IfWCUbSl/MhbvmcQWcjUCljj3g8hUm4A+QyKPMda2Y5mYqwFcivyFedzRR5lQ/DEBEhWEcpUiU8pjf/bzFv8WZhT0BEzVWODc28JHdRT55eg05n0K5K50/Ii0ptkz+ljAbV88NrIQerua1qbTkIBL0A2nfvDO8SjflIbsmGOll5tAcuOh6VA2mw313La6ahTx7huGr7i0BQYfyr3aL8Xy2ps7Oi+0o8ucrBRmqC3JaJA6BdhM3Wov6e/WYNJKIM1Rvq1Mk4WwtEUoK8U8WShIw1NMu+BJxusM0MWQ/n44o5fUZsyQyaygB32NA0SQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
- dkim=pass header.d=amlogic.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BllV/BR5dbZaNuynhCv7czLcrDKISb8Ua6EaXZY7nLw=;
- b=f2oL5bQY6vCD7r3GCP2hefTJxUxgQ+fThimIPDLIIx7vX8SC4XGiZODAaY6+AErXDh8DhDBNIPcM/n9xG89QIG28OZ4kchOEjExs3LTUWjqO0brvuUVBE5kjT4wknO3xUDKR7WXVL7aBSAROdME/p9NKL+jsjF7kTZX0f7cFjE/uyUb9O62A2yl8yTZFap9LOn71fi24oPLSNIgCxH+M78nQVhIdtnFkoCKGJ7AXthEaTCi+cvUiU8Lsy1l6gzT1kJ4hTXZxx/jpyBYfiaGbUJwj9xd1ezn/t6jbsiL7TIHIe4+iRIieC39uJL2Fmfy5pqNJaXaNM3SWpyPkNxM5xw==
-Received: from KUXPR03MB9689.apcprd03.prod.outlook.com (2603:1096:d10:5b::12)
- by SE3PR03MB9489.apcprd03.prod.outlook.com with HTTP via P2P; Fri, 27 Nov
- 2026 12:09:55 +0000
-Received: from KUXPR03MB9689.apcprd03.prod.outlook.com
- ([fe80::dd25:455d:8d52:bc12]) by KUXPR03MB9689.apcprd03.prod.outlook.com
- ([fe80::dd25:455d:8d52:bc12%6]) with mapi id 15.21.0662.007; Fri, 27 Nov 2026
- 12:09:54 +0000
-From: Zelong Dong <Zelong.Dong@amlogic.com>
-To: Marc Kleine-Budde <mkl@pengutronix.de>
-CC: Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman
-	<khilman@baylibre.com>, Rob Herring <robh@kernel.org>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Jerome Brunet <jbrunet@baylibre.com>,
-	Vincent Mailhol <mailhol@kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-amlogic@lists.infradead.org"
-	<linux-amlogic@lists.infradead.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-can@vger.kernel.org"
-	<linux-can@vger.kernel.org>
-Subject: Re: [PATCH 0/3] can: amlogic: add support for Amlogic A9 CAN-FD
- controller
-Thread-Topic: [PATCH 0/3] can: amlogic: add support for Amlogic A9 CAN-FD
- controller
-Thread-Index: AQHdeMZagdxxTxakm0mrN3rBKukIW7c2nwcAgAs/sYA=
-Date: Fri, 27 Nov 2026 12:09:54 +0000
-Message-ID: <6dd79fd6-1504-42f7-9600-d915162acf53@amlogic.com>
-References: <20261120080820.3340646-1-zelong.dong@amlogic.com>
- <20261120-positive-strong-rooster-bb80bf-mkl@pengutronix.de>
-In-Reply-To: <20261120-positive-strong-rooster-bb80bf-mkl@pengutronix.de>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-traffictypediagnostic: KUXPR03MB9689:EE_|SE3PR03MB9489:EE_
-x-ms-publictraffictype: Email
-client-request-id: bb2e7103-eea6-47ac-b7b1-e7f2acd99d58
-request-id: eedca984-dfa6-40af-3451-08df4c7f5901
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam:
- BCL:0;ARA:13230040|7416014|366016|376014|1800799024|4143699003|11063799006|22082099003|18002099003|10067099003|56012099006|261026121527099003;
-x-microsoft-antispam-message-info:
- UYDHg87ahKcU71mLIBV1Bd+JApeTB75nHgljDBGgSoIooke0SffTReHJiNwjKYsbbinYnEHP5/9qhVCF3Q/pCIR/3LcPZRTqgmIv6kUTYWMrikp6OV1Ot1TMU5pnR7FJ26mVmpWa8YVuLM9if9Ts2zGok0pDtZSZ5h2paP2WokeTfWRfmYLJNvYBxRPyR1LXDSf+MbUfDeMUogyHtcDiYAeaT1gO9/N/+UOeYwR/T9gvPP8RnUk+mUCwRu0UO4o4VqTa8IkZGb67Ht5I+zTW1EWADVZK3KKrbdp7D7tHZTO7Et4nbXBBX1nrgcJvjXCXVRy1RCEaPQAgutlOkeBdy/8gC1Crah2CfYlhlMXOREFphkcxDD0qLY+VZvgYS0ltKTBpin0ZuTDDPo+hRfztNqTgtwm1fMblyR+7wenbY1nxzHjtg/Wd4R2RpHGNnqI/2oAJNZrUdCqgdV/ZX2b0U1LoVPRR68zwXPo0rqYzhss2ndDdoS55ajGPR3m2lZcCI1S3ErbKotViZMQd5ZFXr1RxI1f5QxMaXXYik9RRSbCb5gpp7DccSfUakr+TtqOG8SdM3/SPlnKX/ylMrGlnNrqKypxzrlU9sir4KydG2mrXxM2UHo3YFnc2rW3m5TNAQbcdrj+HeRmpr0BguL1rjYiC+dgqoi7OI8huB5KAPe8=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(376014)(1800799024)(4143699003)(11063799006)(22082099003)(18002099003)(10067099003)(56012099006)(261026121527099003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?UWh2UUd5cWRwN2FMelpIRlJiYm1XUU1LeDdTVkhGaFlLY0t6N2tFZWl2Mnhr?=
- =?utf-8?B?aXRRY24xbXFJQnkvY29qbGtOV04wanlrTDBLdjlJUVNqS2E1cEJZR3BIZERi?=
- =?utf-8?B?b0IzdEhtdG4vTHVneXRDZzBnU09ERzNjcU5PZTBaNXlMMkozZENTNzRHUkFi?=
- =?utf-8?B?MngxU2d0dWNYdXVINjNzN1B0OVNuL1R5WHB4M1VBaWpCQk5ONmZTbkZhN2JF?=
- =?utf-8?B?SkQvY2lVWmhobzVFeE0wYTRiWmx6Q2dSaUtVWVhKVGNGNnBWK3JMTmR5ajQv?=
- =?utf-8?B?ZjUxMFVrV3FZb2JlOGdrVzYzYUh0bkZLVEZrdUI4OVcwUG1nU0grS0hoSE9p?=
- =?utf-8?B?YnUxeW5sTHpyeDVDZjJzdFFRMTdHMW9zNy9DZm96ZmpBQU5rU2tIcUZVeWs0?=
- =?utf-8?B?cDhhc0o0VG9PYis1NVZ1S0FHM0ptL2xtRXhxU1NBc3hZUjMycWViMTRXWGkr?=
- =?utf-8?B?aGJFemR4bHBNTjJtSkkvcE1BUGJxTzE5UjRlSUx2Z3NKVmY0VEc4OXFSYlNh?=
- =?utf-8?B?ZkplUDFmVGpwQkc5aFBBcXJjcTdBQkNXY3FJOXZVMmt1c1pyTnhSdGpzdjlD?=
- =?utf-8?B?RHkrbFNqTlhGRVN3YkNrUm5IL0VUMzF5THJXR0NJQTM4Y0k0dHdtSUV1VWJP?=
- =?utf-8?B?ck5DN1IwaG1TRTJrUmw4NWFTeDNncExHdE1obkRPWnZMVWJBL3dzYVFRMmJW?=
- =?utf-8?B?cjgwcUNUaGd4Z1NYaXJYN2k0bkptTUJKdXZ5OVlCUG1vRlo2ZWw1emQ3RGxE?=
- =?utf-8?B?YUNzclR6cVJia1pTVGdvbzhtSlZ5a1p3UnNsYjIvZDAwMHNVOC9EdkRYR1c5?=
- =?utf-8?B?RExYbFk3Z21ENTFCeko1MXFGTGVtWldoOEpramNpQUdic1F0TzBBNUJXNGNh?=
- =?utf-8?B?UWtvTjZ3d3I3Vkk0cFdDaWJpSHV0U1EwYUVrcHhBeUJCM3lBOURLdVlYS3I1?=
- =?utf-8?B?bXRQUHVYWDJ4b3daNVpCamhuYk9ZREdtUktLd04wcDRNcTRDUXRlYm10cGd0?=
- =?utf-8?B?UlVsMFVwKzBITndxRVl2Y3UrLzdTb0RocWlyWFhMN01HT0VvQ3gzZjFVUGpj?=
- =?utf-8?B?M3hmREpKRHBLWEZwMEhoTzRoakdUUlpvMWdldWptb1FoUnRBZTBBMzZFMnVM?=
- =?utf-8?B?R2tZd0hiMnFseWdDblVveGN2T0ZDVWh1ZE9CbWJ3dHRpNU1sTmR1RUpkKzA0?=
- =?utf-8?B?cXdDVkhKOUhzTGllRzJwVVphMk5oRlhaYnovT1l4YnkvTXNFWFhZcWRrZ0E5?=
- =?utf-8?B?L2hDMnUyd0xzMStoR2NoTHJoY2VIRER3cG41WGlaT25aZFVvQ0ZqZnNrRGlx?=
- =?utf-8?B?S3VYOTF5MGFHbk1zVVlpQ1A3K0JRdmZhUDAxS0loTFA4ZzdUM2xzVFF6QVpS?=
- =?utf-8?B?QWluODhHS29BWlpkejRPR3laeWRtdUNkUHhJK1BBYUV5MFo0MndsSHByRE9i?=
- =?utf-8?B?eCtPWHhISnBQNGMrUmoxTElQNlFudDlTT3VJNlVFc2dPR2xYSnVYdWRad2I5?=
- =?utf-8?B?WUhpRXhKRndRZE1LY0hzenRyZHRxOGFoVXM4eFk0aU84djhkYityRm0xRlM2?=
- =?utf-8?B?MXkrYlpzOFA1SUF4K0EvTktjT2tGSTA5THpKMlYwYTMrS3RlNllud0k4c2dY?=
- =?utf-8?B?MmN1SllnQnpMSG5rMG1RUzRBbGo4NUtiVXkzZkt0Nm9tbVMydXdTRC96RDRz?=
- =?utf-8?B?bHJmQ3Awd0k3aDVvMmJ1Nitab2ZFcFpQZUxEemZ6ZkdpUVoxdks1RCtQbDMv?=
- =?utf-8?B?bGJ1WGt6RExsN3M3SVhLMjlrYVhheklMZ1I1Q2RuT3JmMGllMjU5ay9ubTJB?=
- =?utf-8?B?Qk84ajQ2U1RVM0Q1azFsRDM4MktPNXZmZERPR3dPY1BTTTdCVyszd0JMWlJC?=
- =?utf-8?B?V1NuTjFSMlNtNWM5ZjBKWndXWUtrR2VNMVBGODl4cnlNN3NQZE55SnNReGVi?=
- =?utf-8?B?RXAra3JINDNOd3JBelFRTTc2VjUzeDR6SXdSdy8wd1F2d2RVREZBcGhzUU9L?=
- =?utf-8?B?VkVOZVFFQk1oSU9mMEVIUDR4T0NrQ2hWa05zMDRVcVJibVBSejUrRjRmdm5t?=
- =?utf-8?B?VGpIc1gxc0x5WTFHU0R5MTNJVm0vemdwVk14a0J3MWZQUFNzRGMzN0w1Z2pt?=
- =?utf-8?B?NmxoU1ZWRTlsQndaOVB4YVNnbUZCZUhEUTkzWEdYQlpjUDQyTzNCL0lUNUhz?=
- =?utf-8?B?WkpsblFJdHhKMWpaUjVobXZZdlRWRjBjS2h3UWRYbUpWQzg1WHI2TGgxVC9m?=
- =?utf-8?B?cjhYNEp4ZTlsOG5MUkEyTmRENUZ6Q3dZNkFXa3Q4N256YnZBN3dHK2hxTmQ1?=
- =?utf-8?B?NHYzdHYvenViK0Y4SWpubjYyZ2RrTUpaV1ZiK2VFU3lUd2Q1dSs0QT09?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <C99B8A57BE6B294485A4A66413949DB5@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=P26jFS04
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9541B1F0089C;
+	Fri, 27 Nov 2026 15:03:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
+	s=k20260515; t=1795791839;
+	bh=d7AwnLP3KBSWaNF33NQKZMexxXU+SW59ZjGJ/o6MX9o=;
+	h=From:Subject:Reply-To:To:Cc:In-Reply-To:References:Date;
+	b=P26jFS04WpOD6YMByaOAp2jquaE1Nh5xEyNNyJ+UYRKw2XkIV6v7NteqoCgfyABql
+	 Tb6NOiTaOilGDfB9TVPM2y0RyxmRxR7ODL9fe0Ub2Y2m4Os1UsfTFWyt6lBnLiNvKj
+	 HcuUxI1svh0UbRMDj6tMQlA2KoQBBEp4x7L2LPG9auAJ6bzEwCm6pBqSS3xRt05u2g
+	 0xehM+2N9UVR+HELa2B5r8jCuFRcW/D+HkNfvh69BiL+hA0vrGgd/5kBB70r6dmhvH
+	 TxSVQb7xH/LqDXeGAbIrITgsuTwNn0fHMxpY68E8/MQeCXMjlwbA66v8v+S0Gj2BOL
+	 xhM38puYYMIUA==
+Message-ID: <sashiko-outbox-237670@kernel.org>
+From: sashiko-bot@kernel.org
+Subject: Re: [PATCH net v3] can: j1939: reject an out-of-range data packet
+ offset
+Reply-To: sashiko-reviews@lists.linux.dev
+To: "Piyus Kedia" <piyus@iiitd.ac.in>, linux-can@vger.kernel.org
+Cc: "Marc Kleine-Budde" <mkl@pengutronix.de>, "Oliver Hartkopp" <socketcan@hartkopp.net>, "Vincent
+ Mailhol" <mailhol@kernel.org>, "Oleksij Rempel" <o.rempel@pengutronix.de>
+In-Reply-To: <20261126150339.2110025-1-piyus@iiitd.ac.in>
+References: <20261126150339.2110025-1-piyus@iiitd.ac.in>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Date: Fri, 27 Nov 2026 15:03:59 +0000
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -158,50 +60,230 @@ List-Subscribe: <mailto:linux-can+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
-MIME-Version: 1.0
-X-OriginatorOrg: amlogic.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: KUXPR03MB9689.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: eedca984-dfa6-40af-3451-08df4c7f5901
-X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Nov 2026 12:09:54.7584
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 58LjOwuXZ+uRnCtJHuz9YCT7YaKCp2Mg7p3YerPoMaJswhjdOGmN/ieOZZ3/ezzVcs4x01bsGcmRYh6+RRiLbg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SE3PR03MB9489
 
-WWVzLCBBOSBDQU4gQnVzIENvbnRyb2xsZXIgaXMgYmFzZSBvbiBGbGV4Q0FOLCBidXQgc29tZSBy
-ZWdpc3RlcnMgYXJlIA0KYXBwZW5kZWQsIGFuZCBub3QgZm9yIE5YUCBjaGlwLA0KDQojZGVmaW5l
-IENBTl9WRVJTSU9OIMKgIMKgIMKgIMKgIMKgMHgzODAwDQojZGVmaW5lIENBTl9UT1BfQ1RSTMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDB4MzgwNA0KI2RlZmluZSBD
-QU5fRE1BX0NGR8KgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgz
-ODA4DQojZGVmaW5lIENBTl9UTVRJS19DRkfCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoDB4MzgwQw0KI2RlZmluZSBDQU5fVFdSQVBfSU5UX0NMUsKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgzODEwDQogwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLyogMHgzODE0IC0g
-MHgzODE4ICovDQojZGVmaW5lIENBTl9USU1FU1RBTVDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoDB4MzgxQw0KI2RlZmluZSBDQU5fV0FSTl9JTlRfU1RTwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMHgzODIwDQojZGVmaW5lIENBTl9NQl9JTlRfU1RT
-MMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgzODI0DQojZGVmaW5lIENB
-Tl9NQl9JTlRfU1RTMcKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMHgzODI4
-DQojZGVmaW5lIENBTl9NQl9JTlRfU1RTMsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgMHgzODJDDQojZGVmaW5lIENBTl9NQl9JTlRfU1RTM8KgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgMHgzODMwDQojZGVmaW5lIENBTl9TVFNfUkVHwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAweDM4MzQNCiNkZWZpbmUgQ0FOX0VDQ19F
-UlJfQUREUsKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDB4MzgzOA0KDQpJbiBt
-eSBvcGluaW9uLCBGbGV4Q0FOIGRyaXZlciBpcyBvbmx5IGZvciBOWFAgY2hpcC4NCkRvIHlvdSB0
-aGluayBJIHNob3VsZMKgIHVwZGF0ZSBGbGV4Q0FOIGRyaXZlciByYXRoZXIgdGhhbiBhIG5ldyBk
-cml2ZXI/DQoNCuWcqCAyMDI2LzExLzIwIDE2OjIyLCBNYXJjIEtsZWluZS1CdWRkZSDlhpnpgZM6
-DQo+IE9uIDIwLjExLjIwMjYgMTY6MDg6MTcsIHplbG9uZyBkb25nIHdyb3RlOg0KPj4gRnJvbTog
-WmVsb25nIERvbmcgPHplbG9uZy5kb25nQGFtbG9naWMuY29tPg0KPj4NCj4+IFRoaXMgc2VyaWVz
-IGFkZHMgc3VwcG9ydCBmb3IgdGhlIENBTi1GRCBjb250cm9sbGVyIGZvdW5kIG9uIHRoZQ0KPj4g
-QW1sb2dpYyBBOSBTb0MgZmFtaWx5Lg0KPj4NCj4+IFRoZSBjb250cm9sbGVyIHN1cHBvcnRzIGNs
-YXNzaWMgQ0FOIGFuZCBDQU4tRkQuIFRoZQ0KPj4gZHJpdmVyIHVzZXMgdGhlIGdlbmVyaWMgUlgg
-b2ZmbG9hZCBpbmZyYXN0cnVjdHVyZSB3aXRoIGhhcmR3YXJlDQo+PiB0aW1lc3RhbXBzLCByZXBv
-cnRzIGJ1cyBlcnJvcnMgdGhyb3VnaCB0aGUgQ0FOIGJlcnIgY291bnRlciwgYW5kDQo+PiBpbXBs
-ZW1lbnRzIHN1c3BlbmQvcmVzdW1lIHN1cHBvcnQuDQo+IEhhdmUgeW91IGhhZCBhIGxvb2sgYXQg
-dGhlIGZsZXhjYW4gZHJpdmVyPyBUaGUgcmVnaXN0ZXIgbGF5b3V0IG9mIHRoZSBJUA0KPiBjb3Jl
-IChhbmQgcGFydHMgb2YgeW91ciBkcml2ZXIpIGxvb2tzIGxpa2UgdGhleSB3ZXJlIGhlYXZpbHkg
-aW5zcGlyZWQgYnkNCj4gaXQuDQo+DQo+IENhbiB5b3Ugc3VtbWFyaXplIHdoeSB5b3UgcmVxdWly
-ZSBhIHNlcGFyYXRlIGRyaXZlcj8NCj4NCj4gcmVnYXJkcywNCj4gTWFyYw0KPg0KDQo=
+Thank you for your contribution! Sashiko AI review found 6 potential
+issues to consider:
+- [High] can: j1939: session leak on ETP.DT after bad DPO in
+  j1939_xtp_rx_dpo_one()
+- [Medium] can: j1939: unlocked was_dying check in
+  j1939_xtp_rx_dpo_one() leaks session
+- [Medium] can: j1939: j1939_xtp_rx_dpo_one() and rx_dat_one() accept
+  aborted sessions
+- [Medium] can: j1939: duplicate RX_ABORT and wrong abort code in
+  j1939_xtp_rx_dpo_one()
+- [Medium] can: j1939: unlocked state check before timer cancel in
+  j1939_xtp_rx_eoma_one()
+- [Low] can: j1939: commit message misstates NULL skb copy and omits
+  EOMA state check
+--
+
+commit 42dc0f1ef825e9a1fb806f7836041c2eaa69424c
+Author: Piyus Kedia <piyus@iiitd.ac.in>
+
+can: j1939: reject an out-of-range data packet offset
+
+This commit rejects out-of-range ETP data packet offsets in
+j1939_xtp_rx_dpo_one(), ignores EOMA on cancelled sessions in
+j1939_xtp_rx_eoma_one(), and looks up the completed receive skb at offset 0
+in j1939_session_completed().
+
+Link: https://lore.kernel.org/all/179553126874.3135.14817947057284289051@ke=
+rnel.org/
+
+> j1939_session_skb_get_by_offset() then looks for a buffered skb at
+> pkt.dpo * 7, and j1939_xtp_rx_dat_one() copies into the session's skb at
+> that offset.  An offset past the session's packet count has no skb behind
+> it, so the lookup returns NULL and the copy and the completion run on it.
+>
+> Reject an offset that is not below session->pkt.total, and look the
+> completed receive message up at offset 0 rather than at whatever window
+> the peer's last DPO named.
+
+[Severity: Low]
+Does the commit message accurately describe what happens when
+j1939_session_skb_get_by_offset() returns NULL, and should it also mention
+the state check in j1939_xtp_rx_eoma_one()?
+
+j1939_xtp_rx_dat_one() already checks for a NULL se_skb and jumps to
+out_session_cancel before copying, so only j1939_session_completed() ran on
+a NULL skb.  Also, the new J1939_SESSION_WAITING_ABORT guard in
+j1939_xtp_rx_eoma_one() and the second-DPO deactivation are only described
+below the "---" tearline, which git am strips.
+
+> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
+> index 8fcfd13e5e6f8..54e7ae9a88c3e 100644
+> --- a/net/can/j1939/transport.c
+> +++ b/net/can/j1939/transport.c
+[ ... ]
+> @@ -1418,6 +1423,18 @@ j1939_xtp_rx_eoma_one(struct j1939_session *sessio=
+n, struct sk_buff *skb)
+> =20
+>  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+> =20
+> +	if (session->state >=3D J1939_SESSION_WAITING_ABORT) {
+> +		/* This session has been cancelled and is waiting for its abort
+> +		 * to go out.  Completing it here would hand its data to the
+> +		 * receiving sockets and queue a second RX_ABORT, so leave it to
+> +		 * the abort path.
+> +		 */
+> +		netdev_info(session->priv->ndev,
+> +			    "%s: 0x%p: EOMA on a cancelled session\n",
+> +			    __func__, session);
+> +		return;
+> +	}
+> +
+>  	session->pkt.tx_acked =3D session->pkt.total;
+>  	j1939_session_timers_cancel(session);
+>  	/* transmitted without problems */
+
+[Severity: Medium]
+Can j1939_tp_rxtimer() race with this unlocked session->state check before
+j1939_session_timers_cancel() cancels rxtimer?
+
+CPU0                                  CPU1
+j1939_xtp_rx_eoma_one()
+  if (session->state >=3D
+      J1939_SESSION_WAITING_ABORT)
+                                      j1939_tp_rxtimer()
+                                        j1939_session_list_lock()
+                                        hrtimer_start(&session->rxtimer, ..=
+.)
+                                        __j1939_session_cancel()
+                                          session->state =3D
+                                            J1939_SESSION_WAITING_ABORT;
+                                        j1939_session_list_unlock()
+                                        j1939_sk_errqueue(..., RX_ABORT)
+  j1939_session_timers_cancel()
+  j1939_session_completed()  <-- delivers aborted data and queues 2nd RX_AB=
+ORT
+
+If rxtimer expires on CPU1 between the state check and
+j1939_session_timers_cancel(), CPU0 cancels the 500 ms abort timer and calls
+j1939_session_completed(), handing the cancelled session's skb at offset 0
+to receiving sockets and queueing a second J1939_ERRQUEUE_RX_ABORT when
+j1939_session_destroy() sees session->err set.
+
+> @@ -1823,14 +1840,36 @@ static void j1939_xtp_rx_dpo_one(struct j1939_ses=
+sion *session,
+>  				 struct sk_buff *skb)
+>  {
+>  	const u8 *dat =3D skb->data;
+> +	unsigned int dpo;
+> =20
+>  	if (j1939_xtp_rx_cmd_bad_pgn(session, skb))
+>  		return;
+> =20
+>  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
+> =20
+> +	dpo =3D j1939_etp_ctl_to_packet(dat);
+> +	if (dpo >=3D session->pkt.total) {
+> +		bool was_dying =3D session->state >=3D J1939_SESSION_WAITING_ABORT;
+> +
+> +		netdev_info(session->priv->ndev,
+> +			    "%s: 0x%p: data packet offset %u is not below the %u packet(s) of=
+ this session\n",
+> +			    __func__, session, dpo, session->pkt.total);
+> +		j1939_session_timers_cancel(session);
+> +		j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
+> +		if (was_dying)
+> +			/* The cancel above is a no-op once the state is
+> +			 * WAITING_ABORT, so it does not restart the timeout
+> +			 * this function just cancelled.  Deactivate instead,
+> +			 * as j1939_xtp_rx_rts_session_active() does, or the
+> +			 * session stays on the active list with no timers and
+> +			 * holds its skb and netdev references for good.
+> +			 */
+> +			j1939_session_deactivate_activate_next(session);
+> +		return;
+> +	}
+
+[Severity: High]
+Does an ETP.DT data frame arriving right after a rejected out-of-range DPO
+still leak the session?
+
+In ETP, the sender transmits ETP.DT packets immediately after ETP.CM_DPO
+without waiting for an acknowledgment.  When the first out-of-range DPO is
+rejected here, session->state becomes J1939_SESSION_WAITING_ABORT with a
+500 ms rxtimer, and the function returns before setting session->last_cmd to
+J1939_ETP_CMD_DPO.  When the following ETP.DT packet arrives in
+j1939_xtp_rx_dat_one(), switch (session->last_cmd) hits default and jumps to
+out_session_cancel:
+
+net/can/j1939/transport.c:j1939_xtp_rx_dat_one() {
+	...
+ out_session_cancel:
+	kfree_skb(se_skb);
+	j1939_session_timers_cancel(session);
+	j1939_session_cancel(session, abort);
+	j1939_session_put(session);
+}
+
+j1939_session_timers_cancel() cancels the 500 ms abort timer, and
+j1939_session_cancel() does not restart it because session->state is already
+J1939_SESSION_WAITING_ABORT.  The session stays on
+priv->active_session_list with no timers, leaking its queued skb and netdev
+reference and causing unregister_netdevice() to hang once the socket closes.
+
+[Severity: Medium]
+Can sampling was_dying without active_session_list_lock before
+j1939_session_timers_cancel() also leak the session if rxtimer fires
+concurrently?
+
+CPU0                                  CPU1
+j1939_xtp_rx_dpo_one()
+  was_dying =3D session->state >=3D
+    J1939_SESSION_WAITING_ABORT;
+  /* false */
+  netdev_info(...)
+                                      j1939_tp_rxtimer()
+                                        j1939_session_list_lock()
+                                        hrtimer_start(&session->rxtimer, ..=
+.)
+                                        __j1939_session_cancel()
+                                          session->state =3D
+                                            J1939_SESSION_WAITING_ABORT;
+                                        j1939_session_list_unlock()
+  j1939_session_timers_cancel()
+  j1939_session_cancel()
+  if (was_dying) /* false */  <-- skips deactivate, session leaked
+
+CPU0 cancels the 500 ms abort timer started by CPU1, j1939_session_cancel()
+does not re-arm it because the state is now J1939_SESSION_WAITING_ABORT, and
+the stale was_dying value skips j1939_session_deactivate_activate_next().
+
+[Severity: Medium]
+Does calling j1939_session_cancel() when was_dying is true queue a duplicate
+J1939_ERRQUEUE_RX_ABORT, and should the abort reason be
+J1939_XTP_ABORT_BAD_EDPO_OFFSET instead of J1939_XTP_ABORT_FAULT?
+
+In j1939_session_cancel(), j1939_sk_errqueue(session,
+J1939_ERRQUEUE_RX_ABORT) runs outside the session->state <
+J1939_SESSION_WAITING_ABORT check, so calling j1939_session_cancel() when
+was_dying is true emits an extra RX_ABORT before j1939_session_destroy()
+emits another.  Also, transport.c defines J1939_XTP_ABORT_BAD_EDPO_OFFSET
+(12, "Bad EDPO offset") specifically for an invalid ETP.CM_DPO offset,
+whereas J1939_XTP_ABORT_FAULT (5) is for exceeding the retransmit limit.
+
+> +
+>  	/* transmitted without problems */
+> -	session->pkt.dpo =3D j1939_etp_ctl_to_packet(skb->data);
+> +	session->pkt.dpo =3D dpo;
+>  	session->last_cmd =3D dat[0];
+>  	j1939_tp_set_rxtimeout(session, 750);
+
+[Severity: Medium]
+Should j1939_xtp_rx_dpo_one() and j1939_xtp_rx_dat_one() reject frames when
+session->state >=3D J1939_SESSION_WAITING_ABORT, just as
+j1939_xtp_rx_eoma_one() now does?
+
+If a peer sends an in-range DPO during the 500 ms abort window,
+j1939_xtp_rx_dpo_one() updates session->pkt.dpo and session->last_cmd,
+extends rxtimer to 750 ms, and queues J1939_ERRQUEUE_RX_DPO after RX_ABORT.
+Subsequent data packets in j1939_xtp_rx_dat_one() then write into the
+cancelled session's skb and can schedule txtimer to transmit CTS or EOMA for
+the aborted session, or call j1939_session_completed() directly on a final
+BAM packet and deliver the aborted message at offset 0.
+
+--=20
+Sashiko AI review =C2=B7 https://sashiko.dev/#/patchset/20261126150339.2110=
+025-1-piyus@iiitd.ac.in?part=3D1
