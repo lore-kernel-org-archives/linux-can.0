@@ -1,86 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795778389;
-	b=MgJQhN6zt9KLm+OEuqMt1rZZhz47QXJy1eDEXreeMbT+1kXW1h5yqOnwKyYhsUO59bMl
-	 Eb9GiTaNKPhKrXfjcOhi+xnBpxSewEV97Bxq6Aeb6/hsFqH5dlGhCM4DGubDEuvN65ae1
-	 RFauyjkDe+rUtJSktldi7ZR50GiPbHv7NAyB3uFM3o/fjovRtSegrSa58+fYUT5Edj5A0
-	 SNjeNXetLRaUL/LraDvm8ixGu4I+4JyfS0FeJAz/hMmyC6lKMOklJ7lYmvIHXQwzBndNf
-	 CF5etP/1406N8B0CVKQhE2/Gjx2Atc7XoJ+IwJtifZylTVXaC19qHYaQZ2uaIVUHiVQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795778389;
-	h=DMARC-Filter:Received:DKIM-Signature:Received:Date:From:To:Cc:
-	 Subject:Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To;
-	bh=rRork88nwVcPoZLZ8YOGPPsgLg0KW2kZByQIjPw7eqA=;
-	b=xr3EyH2f3/hFWbaKQ5i7HmBhUiVRSPk5f/iTbRTCULXwibqOgjUL8maG9kiZy7ysYYCx
-	 OjkOEhEjPwoH9yVUKx8K8DxnQNhfGf3DHl5zvmYoKT3o0Q0gBIRckE7vHgAyCTuvSaqqn
-	 ApwKgy7XwwsuXttBCfYo17f5wCpYyTWoLSCs6zLdN68S/Mze+SQ+bynTqvNCK6YfyT3m5
-	 jbKQtjvOcZOfp3NsP4YCcz8XrSlWIEab87+85XeK4385ryGy8bUKCAvQFfB1KzvCE18rN
-	 Re12A0V9T+n1nZvnUH41IcRbJLuqCxlea91lKkg1ssXGJSkg98NXVWaGJaux0MIZxfA==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GZeDJ47k;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795779289;
+	b=J8qYOTccXNYEtFMm3kL2y0voAY9Ykri/b5zZXqdYFCfFU5fXAaU/ZmQ9mn+jrOXa79mb
+	 fC6nwuIekO8SXgwQpCk5Ngk1XruNGS1YmhbaFHThMUQ2KBiKSZVboHDT9uWKF2qdr25hs
+	 K1ZBdVbNqPFE9r5eRrv+FSKO1o70mh5EzgcGYRu5sBX3LalOGFZ5KO7ZMj5pza+OEd83/
+	 b/xkVOF5blri2upfr8eIlVTbMQHULkOJ/LPMhzAhuJGgIPMoD4wAOmmTP0/5QFxakWoVI
+	 Tc93UQIi5f2tcbQU89iuvYVEVU8Ta3z9hImVjBqhHIQ5MqIkNyXAVqnNUQSYJutnXTg==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795779289;
+	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-Anti-Virus-Server:
+	 X-Virus-Status;
+	bh=SZj86gxIiVs29Md6IT0R6WLIXiHy6gT1OGtgNLOe3b8=;
+	b=n1VvZDr9x9TcoLV1VPT57195lqW5kBhoW9+xvU2ALGca2UPuI6WPbKhrz7E9RfdcsKaz
+	 2iWGD+cWBBhuV+BQc3BZ7elhK32mZRcEuVaxjh2ExqZehZeHVUJnGyiM/+YXJpUC12Qzp
+	 3VAmEa4emc5z70ZoPYZb7mx6xwGUrEwt+dKvq5eRK6Gk7ybbd9PFT3Knf63bP6gdpa872
+	 FiS/ixk3ndqwg/HpNqKG0/4aKWu1gKQSyQxOgBgMlQqsWSfKjDkkhZnnWG9WkJBNQi/dH
+	 RbRyYpx1bJ3HV28WLRTug+CgHErNd/jWoE4z/wTIim7G8h93F0MnT2a/ayMZu+Dfjzg==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=I-love.SAKURA.ne.jp;
+	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
+	arc=none smtp.remote-ip=202.181.97.72
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843D4606A31E;
-	Fri, 27 Nov 2026 11:19:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 843D4606A31E
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GZeDJ47k
-Received: from ptx.office.stw.pengutronix.de (ptx.office.stw.4.pengutronix.de [10.9.0.3])
-	(Authenticated sender: relay-from-ptx.office.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9A6D32058CE;
-	Fri, 27 Nov 2026 12:19:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795778386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rRork88nwVcPoZLZ8YOGPPsgLg0KW2kZByQIjPw7eqA=;
-	b=GZeDJ47kB2nbC0ZjqBXm1F5FDJG9PuuSfDNNJYrIEz8Vt5sJw86f59AgJrLpzqgYwj75E+
-	U+Xtfx44mpPPbb9pV9ABCFnNM1RhI3IFnV092/BdlJqG1oIVPUrHaUkg0OHiCJVjbV0xRg
-	pdW6hC01CXu/lbPXu+/j1NMQc/j05rLdVqqpnG05EoptVdhgVY8wc18HR0rMFkbeNdQbbH
-	O4xpAHDiHM8RPwMsnL8d7ppgjZ8FuXcjLFI5GGyUCkk6eZgVskd1y54V/pQinWW4darjtL
-	8PpfXn5Ivc6FGTRB11aiQ8WtYBGufB1gLGtZ/dcvfeiBMFYJPx8ecU1SjdcTfQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795778386;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rRork88nwVcPoZLZ8YOGPPsgLg0KW2kZByQIjPw7eqA=;
-	b=EYd1BEl9s3PL36MDS4nqYHQocch6KfVbbqC0tDjlPBp78vG/3/WFKXWRbhGwAoXPoGgExh
-	jcloKECu8H6g8D6PtI5IXXh0eTbkrVxbyPNkZyIOKJt0tCHhVeXVsSY75hsoJSkTEhIiZs
-	kMbO9bFsbrzxG0K0u4zZTFpaaOSSvghz9ToZard0MnxQ2fQT3HiZH3IYvcYb885ovAG6xP
-	H/HMqHS5EBPAJzNQm65QdXuNFUFKt6jruvC54qBa0KQROhF6pdgnB2zVBAV0HCc+I50dnJ
-	GZ9QMztdR989+xfLvEBgjzROlE0wkU4fr9iHv/lgLu76CE8lru674InBe8dcRA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=relay-from-ptx.office.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795778386; a=rsa-sha256;
-	cv=none;
-	b=MoZI2zEqVMdN2h5RaVJb/Nkot/DcqzJRXpdrWZkQ/tS+dzoTAtwNkeiv5eg+s/RSTLdlqs
-	Hp8XW9p/2aV92fmThC5CzFsgtefQUPDGrnnmUb8zptVwJVnaLc4G1/ytpoVRTrJd78oYPf
-	69+TvSXOS5Kx7K/v0TEH43kqZg/be4WtSghx8N4dNwszSjdqM3espRb8iF3PdV4dimJFku
-	CpvHP6v8NnkIuNkHjcToo1uHhU0dAk05SWU/WdW4BDq+sLR75iNYxctbh9qFCxtF589/MI
-	4GJcTrRMIuiBr84FqbyKzK6rdzaPLD6OE9MoCCKll7qkPf6YzIsdJ3du8NRowg==
-Received: by ptx.office.stw.pengutronix.de (Postfix, from userid 1058)
-	id 7D9371BF7BF; Fri, 27 Nov 2026 12:19:46 +0100 (CET)
-Date: Fri, 27 Nov 2026 12:19:46 +0100
-From: Oleksij Rempel <o.rempel@pengutronix.de>
-To: Hui Peng <benquike@gmail.com>
-Cc: robin@protonic.nl, mkl@pengutronix.de, mailhol@kernel.org,
-	kernel@pengutronix.de, socketcan@hartkopp.net,
-	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] can: j1939: return 0 instead of user value in
- j1939_sk_setsockopt_flag()
-Message-ID: <awlnUrAP4PGtg4OO@pengutronix.de>
-References: <20260919213632.3313825-1-benquike@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58BF2606A31C
+	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 11:34:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 58BF2606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6ARBY2C1066097;
+	Fri, 27 Nov 2026 20:34:02 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6ARBY268066093
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 27 Nov 2026 20:34:02 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <9c6075f2-5dff-4ede-bd15-48de2fe2e2a5@I-love.SAKURA.ne.jp>
+Date: Fri, 27 Nov 2026 20:34:01 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -90,35 +51,74 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20260919213632.3313825-1-benquike@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH can] can: j1939: don't drop the last ECU reference without
+ priv->lock
+To: Oleksij Rempel <o.rempel@pengutronix.de>, sashiko-reviews@lists.linux.dev,
+        Patrick Dahlke <me@patrickdahlke.com>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Vincent Mailhol <mailhol@kernel.org>
+References: <20261015-j1939-ecu-release-lock-v1-1-39dcb8a0f2f9@patrickdahlke.com>
+ <sashiko-outbox-172364@kernel.org> <awlhvDKawNFb96WV@pengutronix.de>
+Content-Language: en-US
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <awlhvDKawNFb96WV@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Anti-Virus-Server: fsav111.rs.sakura.ne.jp
+X-Virus-Status: clean
 
-Hi Hui,
+On 2026/11/27 19:55, Oleksij Rempel wrote:
+> Hi Patrick,
+> 
+> thank you for the patch and the careful testing, and sorry for the
+> long silence.
+> 
+> On Thu, Oct 15, 2026 at 06:47:20AM +0000, sashiko-bot@kernel.org wrote:
+>>> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+>>> index cdc3c0a719379..ec8ee0f980fb4 100644
+>>> --- a/net/can/j1939/bus.c
+>>> +++ b/net/can/j1939/bus.c
+>>> @@ -19,6 +19,11 @@ static void __j1939_ecu_release(struct kref *kref)
+>>>  	struct j1939_ecu *ecu = container_of(kref, struct j1939_ecu, kref);
+>>>  	struct j1939_priv *priv = ecu->priv;
+>>>
+>>> +	/* priv->ecus is protected by priv->lock, so the last reference
+>>> +	 * must only be dropped with priv->lock held for writing.
+>>> +	 */
+>>> +	lockdep_assert_held_write(&priv->lock);
+>>> +
+>>>  	list_del(&ecu->list);
+>>>  	netdev_put(priv->ndev, &ecu->priv_dev_tracker);
+>>>  	kfree(ecu);
+>>>  	j1939_priv_put(priv);
+>>>  }
+>>
+>> [Severity: High]
+>> Does enforcing this pattern cause a use-after-free of priv->lock?
+>>
+>> If j1939_priv_put() drops the last reference to priv, it will free
+>> priv while
+>> priv->lock is still held by the caller of j1939_ecu_put().
+> [...]
+>> Can this use-after-free be avoided by taking an explicit reference to
+>> priv
+>> before dropping the ECU, or deferring j1939_priv_put() outside the
+>> lock?
+> 
+> This looks valid to me. Tetsuo is already working on that part in his
+> series:
+> https://lore.kernel.org/all/98c16a74-5ea7-476e-ab36-c98fb77b6be4@I-love.SAKURA.ne.jp/
+> 
+> Tetsuo, for your information: if I read it right, this patch addresses
+> the same list corruption as "Problem 3" in your v15 1/3, in a different
+> way.
 
-thank you, and sorry for the long silence.
+Yes, this patch tries to address the same list corruption. But my patch
+also addresses UAF of the timer, by deferring to WQ context and calling
+hrtimer_cancel().
 
-On Sat, Sep 19, 2026 at 09:36:32PM +0000, Hui Peng wrote:
-> In `j1939_sk_setsockopt_flag()`, after copying the integer option value
-> `tmp` from userspace and updating `jsk->state`, the function returns
-> `tmp` instead of `0`.
->
-> If a caller passes a negative integer (e.g., `-1`) to enable
-> `SO_J1939_BROADCAST` or `SO_J1939_PROMISC`, `if (tmp)` sets `jsk->state
-> |= flag` and then returns the negative value as an error code from
-> `setsockopt()`. If a caller passes a positive non-zero integer (e.g.,
-> `1`), `setsockopt()` violates POSIX by returning `1` instead of `0`.
->
-> Return `0` on success in `j1939_sk_setsockopt_flag()`.
->
-> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Assisted-by: LLM
-> Signed-off-by: Hui Peng <benquike@gmail.com>
-
-Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
-For next time: CAN patches go to linux-can and the CAN maintainers
-only, please do not send them to netdev.
-
-Regards,
-Oleksij
+> 
+> Regards,
+> Oleksij
