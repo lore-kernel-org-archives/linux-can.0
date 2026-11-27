@@ -1,87 +1,54 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795777501;
-	b=FM2GV+gGUa/wnSdHHe80yf9V8iTVLPEFRhAzfqiL2Z/+6hqHiw7Eijdlqy3BHu1gLihR
-	 YzSj4Fr4gGLejD7Fhd+Eq4TgIsopPhsVOhqj0V3MdqVZ82eY9wPB87rzis0gvlj1eet8R
-	 x2YKNCq1lnlLOC8t9BRmsCa/XZSDU+dfT3sSty17SizlGenHd1YGFp1tRXV3CWTqpuFBw
-	 SfSqZjdEINfTpZ43gMmFyq1/aya934FW0FpPw8UDIDsaWKh7LGak9+OG+KfSw5z5zd0WX
-	 5bRt05+adMm9LfG5SUIOlcrbuknR3ooZcYXUrJA3KpRCTPWPRMDAiCisV68vqtnA0Ew==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795777501;
-	h=DMARC-Filter:Received:DKIM-Signature:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To;
-	bh=BaxP2WBnGq+zPWEWfbHrMHGpcGr1/uX+HjXVQ7FgtSo=;
-	b=OKvQCTf2jN8E9QfTfJ6U83IXNNLB20mZjqZI6Wphk3zvSfqvOy+U9q3vqvrKZNdtKztK
-	 35EvIvOSQ6DPt+XKtNDpMcbkCqll5KEYU3iBRMo4Jf2cT92OrLJ7CO/lD6AS4tedJBQqF
-	 k00vn7ZWD6uD14EMvswFI16F7DpIPOClwN39UoQS1TAyWc7ZrNdnGPcnYgDihzK8Paxeq
-	 ik7D/tye77f/91Hf8jX0Wq1XDHAUSj1JQRMT1v2UW+c4Lcz7mxXWj/zEMXiZguMXk8qBJ
-	 xMUMByMYGZRLPNSVKBk0uz8v14Ihj77dR6u0rk31EeD91fJasjSC4/W3+enurlNcHnw==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=none header.from=pengutronix.de;
-	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NnR6S1op;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
-Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=93.77.172.86
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795777962;
+	b=qr9a5jkbtkOjHFvKGDCZCmicXhRTP+O8KRFaonlBXm6/bKV+C1UyExUT7olCE2dgIMsA
+	 MRpo4J5MHohPqpLyiWugLXZJ3bAmOpyYdGrvzwcRdKLW63LKcGom7JButYBSKCMYu1YF7
+	 IsjUFKYvoczyB5aKU9OL8ytAZ3nuzG07opkFnrFY73l3GOOQNOFLA4ik5HsjvfGFYn5nY
+	 uPDTDt+4JiJhcdjgrb3RQiiGI04WSoklM94xFj0fP4HU9OmEsjMdx5t203SwLaNOMCGec
+	 DY6fcwXROtYvywXBSCS/FotQXCjNuUMT71nAfmJsgp5HeJUcyCFe9Y3bzGbwvuNa6MQ==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795777962;
+	h=DMARC-Filter:Received:Received:X-Yandex-Fwd:DKIM-Signature:
+	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:References:
+	 Content-Language:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding;
+	bh=UNYOinv1kAjb+s6KJVsKvxox6IAHN35g5+UoNO/+/1E=;
+	b=ZN+2BtyR65FqzNoc+TdZp8TOq7RCFLvcxtjCRdkNav3cUphHqDF21no2sqpq0199XTzB
+	 dW2RyCJX/sSztxOo4YBpxaDbh9rIKysM95QJ3Nbfu5drbrb5oDB15UAUF3JSzie+YfU9D
+	 mZNw1ThqcIezc5K2fkpzsxTNh/KXhiySBUqKenFOCicmtiJI2WAc3rjG5m+BL9EmagCfT
+	 VXqXA5a6V54nZrMrQrlPU+PH3iNIbSjyG6trdgxmylGxwDhksYg0dzObhAIMPNEXjONGC
+	 Sfg0A/Dbc2Hjd5ijOQy8bz2e4T4U8huXPDv/Uy9jgA4KvjEedjNVTUnzrI8acdaK2lw==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=yandex.ru;
+	spf=pass smtp.mailfrom=yandex.ru;
+	dkim=pass header.d=yandex.ru header.i=@yandex.ru header.a=rsa-sha256 header.s=mail header.b=MbNFYihS;
+	arc=none smtp.remote-ip=93.77.172.86
+Received: from forward501e.mail.yandex.net (forward501e.mail.yandex.net [93.77.172.86])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1))
+	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2891606A330
-	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 11:04:59 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org F2891606A330
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5C6606A31C
+	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 11:12:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF5C6606A31C
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=NnR6S1op
-Received: from pengutronix.de (ptz.office.stw.pengutronix.de [IPv6:2a0a:edc0:0:900:1d::77])
-	(Authenticated sender: mkl@pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id A2B4D205A87;
-	Fri, 27 Nov 2026 12:04:57 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795777497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BaxP2WBnGq+zPWEWfbHrMHGpcGr1/uX+HjXVQ7FgtSo=;
-	b=NnR6S1opkruu385yPYtUmHod5ZHDVcf8GXF3+FeCaX1yIQW14g+Mo8AtAijNAszIF0QyzS
-	Do5vvqg9Nz0YAL1QQpDOsZa3PdjnmaUX5eq7wjClQ62bJlWb2pnwsjISeDDTV0Z1SH5aWr
-	WQWbvlHZ5LOS+8WtN2SCyjaFrN+HrGD6Ua//MmKPBE+9vI5f1hw9QoEaYw0EVDIw5lfTZ0
-	8560a1dEvc8Xo2HIltWAcTkCBdcB2PemW/3vBE8SznrVmJp6EOvIBF61hcDcRGylg8e5ht
-	qw4Si6zyj9WT5ueApGG2yVmJpqMfquSIbSefz2zQv0l4ddfH08LTHAL+5/t1/Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
-	s=20260414; t=1795777497;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=BaxP2WBnGq+zPWEWfbHrMHGpcGr1/uX+HjXVQ7FgtSo=;
-	b=HacQ1ciG6uteWHEq80egL0ExvxkFr5Km863coMqfV9s1FTwB7wEi7Hnc3Wo69tVrpDxoxo
-	W2wm8VOa0DduYwEycc/ZX/IAz5AQmaLiecOAcdKEN9kO3zkDXiWaOviFqZkxqUcpvTkNd1
-	VNKlYDdAUOstJRyDlnODj60ml8hDAOfD7o3iPp0is+iXpPPO9REsKMblJuJqOF+Nm8CXBg
-	/IuZsghwviGTe4EMQTvneK3oiIgHeM5ViLGI59IYHXvcKka1iaGZ/rJ6IoQaFUX1We1ZS/
-	B+71KVm0IznXejLNdMG6q95lXkAy8PL1PFlmR2f92VLfs4exKCbe5fY+itPkAA==
-ARC-Authentication-Results: i=1;
-	ORIGINATING;
-	auth=pass smtp.auth=mkl@pengutronix.de smtp.mailfrom=mkl@pengutronix.de
-ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795777497; a=rsa-sha256;
-	cv=none;
-	b=TyYT5Fx+69qWiUc3c5MeQJ71w0kvtTe6PzgFfpB4XiCLfD5uwOEgfimc5tHH+JBKnf5NaY
-	+ctfP3I9/yGICUkf9GtBV05um09I3DNT79varUxUmhcSFJlU4gzUcAORVTlqyQ1vqQuY1T
-	d05eHjU18mKGVBSxjhtdXOyzaYiWE0MebOJWAfq4ZH9K7naaeq9VWqYoR4PQ7LGJ0tEq0/
-	JbWGshdYYQt6ZGdVPyboGeK/1usvTcthAYAPZrcm5HSP9JTnVSXrhvVDa/QEO912Cw4pZw
-	ZW2a6ZUjbVHGVfEEbkfDVeOFoBlel5LSkhsKy4ykl+85ZeXMbjeYiiIAyO35Ww==
-Date: Fri, 27 Nov 2026 12:04:57 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Dmitry Antipov <dmantipov@yandex.ru>
-Cc: Oleksij Rempel <o.rempel@pengutronix.de>, 
-	Robin van der Gracht <robin@protonic.nl>, Oliver Hartkopp <socketcan@hartkopp.net>, 
-	linux-can@vger.kernel.org, lvc-project@linuxtesting.org, 
-	syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com, Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-Subject: Re: [PATCH RESEND v4] can: j1939: cancel all pending ECUs on device
- stop
-Message-ID: <20261127-healthy-impartial-curassow-355fb8-mkl@pengutronix.de>
-References: <20261126082257.491041-1-dmantipov@yandex.ru>
- <awlQJD0GXoDQQ65m@pengutronix.de>
- <6fc3db25-9bc6-47c1-9776-70a99100e6bb@yandex.ru>
+	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.a=rsa-sha256 header.s=mail header.b=MbNFYihS
+Received: from mail-nwsmtp-smtp-production-main-68 (mail-nwsmtp-smtp-production-main-68.yp-c.yandex.net)
+	by forward501e.mail.yandex.net (postfix) with ESMTPS id 321F6C016E;
+	Fri, 27 Nov 2026 14:12:33 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-68 with ESMTPSA id UChBv30l7Ko0-hOcojhuu;
+	Fri, 27 Nov 2026 14:12:32 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1795777952; bh=UNYOinv1kAjb+s6KJVsKvxox6IAHN35g5+UoNO/+/1E=;
+	h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
+	b=MbNFYihS9XpS7xc+9v3cc1/po+y1Sp8O1YMfzs9HwPJkB7TcLndmkftDqO144UWDd
+	 cNoBXoUSSaGRIZfI8Im4OZjLqr0N8kNJ9cFwQLy1TrWnmQRGG/RfQTp8sVH7cZ9Pc5
+	 gCuk9zdXrIW3aUvFoGmzKf88wWxsgaexzcsMRsaw=
+Authentication-Results: mail-nwsmtp-smtp-production-main-68; dkim=pass header.i=@yandex.ru
+Message-ID: <d0461ebb-994a-4c9b-8407-fdd091d5911b@yandex.ru>
+Date: Fri, 27 Nov 2026 14:12:29 +0300
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -91,60 +58,51 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="w3mqh7mxdfvibypr"
-Content-Disposition: inline
-In-Reply-To: <6fc3db25-9bc6-47c1-9776-70a99100e6bb@yandex.ru>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v15 2/3] can: j1939: fix "struct j1939_ecu" refcount leak
+To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+ linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+ Oleksij Rempel <o.rempel@pengutronix.de>,
+ Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+ Oliver Hartkopp <socketcan@hartkopp.net>
+References: <98c16a74-5ea7-476e-ab36-c98fb77b6be4@I-love.SAKURA.ne.jp>
+ <f778db47-a217-448e-9dbd-f1860afab00b@I-love.SAKURA.ne.jp>
+Content-Language: en-US
+From: Dmitry Antipov <dmantipov@yandex.ru>
+In-Reply-To: <f778db47-a217-448e-9dbd-f1860afab00b@I-love.SAKURA.ne.jp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 11/17/26 6:57 PM, Tetsuo Handa wrote:
 
---w3mqh7mxdfvibypr
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH RESEND v4] can: j1939: cancel all pending ECUs on device
- stop
-MIME-Version: 1.0
+> syzbot is reporting "struct j1939_ecu" refcount leak, for
+> 
+>    j1939_ecu_get(ecu);
+>    priv->ents[ecu->addr] = ecu;
+> 
+> in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
+> even after
+> 
+>    priv->ents[ecu->addr] = NULL;
+>    j1939_ecu_put(ecu);
+> 
+> in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
+> __j1939_rx_release() from j1939_netdev_stop() has completed.
+> 
+> Fix this problem by
+> 
+>    (1) preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start()
+>    (2) making j1939_ecu_map_locked() no-op
+> 
+> when a netdev which is associated with j1939_priv is no longer registered
+> (indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
+> __j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
+> 
+> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
+> Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
 
-On 27.11.2026 14:01:14, Dmitry Antipov wrote:
-> On 11/27/26 12:40 PM, Oleksij Rempel wrote:
->
-> > So I would not take this patch. Could you please test the whole v15
-> > series with your syzbot reproducer and reply there, ideally with a
-> > Tested-by? If v15 does not fix your leak, or I overlooked something,
-> > please let me know.
->
-> Yes, v15 fixes the leak reported at https://syzkaller.appspot.com/bug?ext=
-id=3D489e907b2a026a6f5fa0.
-> So feel free to add:
->
-> Tested-by: Dmitry Antipov <dmantipov@yandex.ru>
->
-> to patch 1 of v15. Most likely
->
-> Closes: https://syzkaller.appspot.com/bug?extid=3D489e907b2a026a6f5fa0
->
-> should be added as well.
-
-Please reply to the patch you want to add your tag to.
-
-regards,
-Marc
-
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---w3mqh7mxdfvibypr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSl+MghEFFAdY3pYJLMOmT6rpmt0gUCawlj1wAKCRDMOmT6rpmt
-0mMEAP91AHAjayBHc1Hoapr1CDEf3YJDbzvf5w6rzaWG+cwqTwEAi5crB/rwRtb8
-pWt4qMgFHqWeLnAuzKnYPS2FBEj6nw0=
-=OpkD
------END PGP SIGNATURE-----
-
---w3mqh7mxdfvibypr--
+Tested-by: Dmitry Antipov <dmantipov@yandex.ru>
+Closes: https://syzkaller.appspot.com/bug?extid=489e907b2a026a6f5fa0
