@@ -1,58 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795795459;
-	b=Rwt4i5FfeqbX0fbKK6cBuo6jIRcWMNxQo6SkkJIIeQNBSRzMDcjt0rlp10FnrVbrTAQ2
-	 C/A8CI+DAm91lohJ1tLEcPUUTDzPvdeOnOv6UDKPSRsvUSJRQl2XPyPSPQErFi1eKstjy
-	 +qo+zxOEnCTHxKUwQ7xgUE5eX5MHwD3/Z/aUnsBgyUdtQVWIwaLTWFPsnbt0qnNEIQrL/
-	 GkGYlDULjdLmxnrlVfwtJ9/Z66TEo+qOPfnNKzWT+MrXQQyAxiRXG3U0IROpKSm+MBnc9
-	 ur3+XR5PzbnsOGRgGb/hx6C1ath8cmjSyzo+XrRBto+HBGQEiOfPB3XbjcgEOtgvWBQ==
+	t=1795814460;
+	b=FY+34kou7pXxH56Ksl/P9OjRzudacYZDnIcNIT/plxLD5AeD24zr5RpzTjLg9UGT5Q98
+	 LRxjaDPEBVQs/ls4+UP+xfUSM4exKMlq1teWrn4xzTWSXaPkYebGvwHWofRnz/yyqBZ12
+	 QmWPTXmO+1JD+s20c+0zkEhPE1VNmR7d68+eR/P/+VKRUngdDFWWjiUZVaYqnVceXJ9T0
+	 FPR7Ns/ERE98Am57FPjSfzKekwHkNjeRMOYFy1cpRnNJgeZSltXfDzulBBwznamW2DZ1H
+	 YF4TR896S2q8NXT3+E4JJQ1ccCnksb7oq80Z+3w6SuXfry00Y0oyEdLbleyrVelZoaw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795795459;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795814460;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=8JIF4556REnzPGgIsVx9mFzE6WZEsCyWiN0cVXIRkOo=;
-	b=Ocyi+FS7b6gvgVgdt0oG0pNiprigDYlwUvHubInuHlkYitoix51XZTlz6GxImjnh4MSO
-	 iZpSqG+jVsKApRltD/v8jZete71CmmCCUmFM4lkRanQRjTGKH0aFNOnMHP9bFrNPbff2c
-	 xP/gJ4aJ+SC6Ncr24vLwV7YrURs7Q5vlGg89RYgIn+qgdH9k3K8iKU38ZUqcnosZhaeuS
-	 92vVtREY1ApBbLcBNdmPn+IonulTTJUvPPZWJkhnSOLpUg4BJUHKNB+P5rRc3Yx9F94Pn
-	 WFy30lAi1ICUmCn1rmVuCwKv65PKCHvQGAB1aPlxzIVqreu+aiVzKzIoh1O9oCDUCPQ==
+	bh=ly1apLr7OkWIDurB9d/lgQbHVHVg/Kqu260IAZP44BA=;
+	b=hDnA5kh1J3H4NIALytm2R6oW99gGdWaEabUTDCImH99bkfTXxXzlVyuqDy/K2B2NcwU6
+	 QH3xBG1RnYGeNFRiNFiVtW4criS6xbNnJ7f0PXPM+nJ4O1myj4sSMjuBWidcMvO41xQeW
+	 KxLgvcSmMOYwukKNDAVyCa3EDpkcyCMtFVFNTIjA3FQbdQTh6SjPohQfLXOGjNS9MBEYx
+	 DXijIQ4Jq9BxeWRMExEabyvDVxMChP3t/ecjnhxwRHmIOTi5tLmX5Dw9wTh3HtsHkqnbj
+	 bI3wTnqbUAPCsra7uJISSYjj7WXGSLTLkUFU54cvgG/Y7r9PclspcUPwuzTsbrjraLA==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GduA3EoZ;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hwyQOC3F;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8726A606A31E;
-	Fri, 27 Nov 2026 16:04:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D21C606A31C
+	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 21:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=GduA3EoZ
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 133CE1F00925;
-	Fri, 27 Nov 2026 16:04:18 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=hwyQOC3F
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A67A51F00899;
+	Fri, 27 Nov 2026 21:20:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795795458;
-	bh=8JIF4556REnzPGgIsVx9mFzE6WZEsCyWiN0cVXIRkOo=;
+	s=k20260515; t=1795814460;
+	bh=ly1apLr7OkWIDurB9d/lgQbHVHVg/Kqu260IAZP44BA=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=GduA3EoZ1ZOcoIoF3MmCCawrahTCpElIybzkT6ggVNtnkStHy6vszVlJdUhFEbhuW
-	 wHWX0qTdiHwCvpq8Isyx4dz9RdWRq2O3yqobrcm378aYEqLuo6QAi8A5cGqlDzER60
-	 K8QeqoAx92vJRDrBel2pKmBUryrKbYu7/xf5WALEDY/eMtZ5IEZf6vuTs7gFH1Y6iz
-	 mMIuSFgnGS17GUjqhJPRh5UAn1Evsqn6THoKVxY6BwS290RCaOUGtL5Bmd6ydMtaFb
-	 bw5IkLMLVpnso4vpEKSA8Z8i4ITO8X+ilekqwo2o4u33YmLDKXT2XlnoW8IRONViQs
-	 ogi50j+vqsnmw==
+	b=hwyQOC3F94vK++gkMWBaibhv+Cak7WK48c5PQhnbv4y2juLQkSvr0jjA9SYorAK13
+	 DLO8sJZmPEOGdlrjUtqStKfmKZzCVX3kJ38ZyGdhwO29btS9yGHPVCKMyCVWW7tYQU
+	 s4CKOJis90w6RxxQlEKItiprD3XqUBBPeSpwUvnq+3u9oljaZ72ldSIb2M0wTu0NTf
+	 B9CKEbDlCMSBEkb6Weffy78sEAHEvm+TZCeQE1FNvIshOqNeqJymrqQTwkDohFFF9j
+	 nNEVc4pRmCcZgF+TUPc6a8VO7jByunRGD9E3p3r7Xtymfrhn5ZUY8NTnhRR6JQPB8P
+	 clzcKbmG8YrQg==
 Subject:
- Re: [PATCH net v3] can: j1939: reject an out-of-range data packet offset
+ Re: [PATCH RESEND v4] can: j1939: cancel all pending ECUs on device stop
 From: netdev-bot+sashiko@kernel.org
-To: piyus@iiitd.ac.in
-Cc: robin@protonic.nl, o.rempel@pengutronix.de, mkl@pengutronix.de,
- socketcan@hartkopp.net, mailhol@kernel.org, linux-can@vger.kernel.org,
- kernel@pengutronix.de, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- kapil@presceralabs.ai, kuba@kernel.org
-Date: Fri, 27 Nov 2026 16:04:17 +0000
-Message-ID: <179579545761.3135.18369632186646303264@kernel.org>
-In-Reply-To: <20261126150339.2110025-1-piyus@iiitd.ac.in>
-References: <20261126150339.2110025-1-piyus@iiitd.ac.in>
-X-sashiko-severity: High
+To: dmantipov@yandex.ru
+Cc: robin@protonic.nl, o.rempel@pengutronix.de, socketcan@hartkopp.net,
+ mkl@pengutronix.de, linux-can@vger.kernel.org, lvc-project@linuxtesting.org,
+ syzbot+489e907b2a026a6f5fa0@syzkaller.appspotmail.com, kuba@kernel.org
+Date: Fri, 27 Nov 2026 21:20:59 +0000
+Message-ID: <179581445921.3131.2282726576035151270@kernel.org>
+In-Reply-To: <20261126082257.491041-1-dmantipov@yandex.ru>
+References: <20261126082257.491041-1-dmantipov@yandex.ru>
+X-sashiko-severity: Critical
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -65,10 +64,10 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found 7 potential
+Thank you for your contribution! Sashiko AI review found 4 potential
 issue(s) to consider.
 
-Critical: 0 · High: 1 · Medium: 2 · Low: 4
+Critical: 1 · High: 2 (1) · Medium: 0 · Low: 1
 
 If you believe none of the issues are legitimate, please reply to each
 issue of Medium severity or higher and explain why the AI is wrong.
@@ -76,303 +75,228 @@ If any of them are legitimate and you plan to respin, please let patchwork
 know by including "pw-bot: cr" as a separate line at the end of your reply
 (one such reply per series is enough).
 
-- [High] The v3 notes say the patch fixes a session leak, but it fixes
-  only one path into it, and the patch's own new cancel makes another…
-- [Medium] The new check in j1939_xtp_rx_eoma_one() stops a cancelled
-  session from being completed, but only on the EOMA path.
-- [Medium] j1939_xtp_rx_dpo_one() reads `was_dying = session->state >=
-  J1939_SESSION_WAITING_ABORT` (transport.c:1852) without the…
-- [Low] The new `session->state >= J1939_SESSION_WAITING_ABORT` check in
-  j1939_xtp_rx_eoma_one() (transport.c:1426) reads the state without…
-- [Low] Both new comments are wrong about RX_ABORT.
-- [Low] The changelog says that for an out-of-range offset "the lookup
-  returns NULL and the copy and the completion run on it".
-- [Low] The main changelog, above '---', describes only the DPO range
-  check and the offset-0 lookup.
+- [Critical] j1939_ecu_cancel_all() (net/can/j1939/bus.c:99-108) calls
+  j1939_ecu_put() whenever `hrtimer_try_to_cancel(&ecu->ac_timer) != -1`.
+- [High] The fix is incomplete: the claim timer can still map an ECU
+  after j1939_ecu_unmap_all(), so the ECU/priv/netdev leak the patch…
+- [High] The commit message says pending ECUs are cancelled "on device
+  stop", but j1939_ecu_cancel_all() runs unconditionally at the top of…
+- [Low] The ownership comment in j1939_ecu_timer_start() (bus.c:123-125)
+  says the timer's ECU reference "is held here and released in the…
+
+Pre-existing issues:
+- [High] This problem wasn't introduced by this patch, but it is the same
+  lock/timer inversion the patch says it avoids.
 
 --
 
-can: j1939: reject an out-of-range data packet offset
+can: j1939: cancel all pending ECUs on device stop
 
-This patch rejects an ETP DPO whose data packet offset is not below
-session->pkt.total. The session is cancelled, and it is deactivated if it
-was already waiting for its abort. The patch also makes
-j1939_session_completed() look the receive message up at offset 0, and
-makes j1939_xtp_rx_eoma_one() ignore an EOMA on a session in WAITING_ABORT.
+This patch adds j1939_ecu_cancel_all(). It walks priv->ecus under
+priv->lock, cancels each ECU's address-claim timer with
+hrtimer_try_to_cancel() and drops the ECU reference. It is called from
+j1939_netdev_stop() so that ECUs, and the j1939_priv they reference, are
+not left unfreed after the device is stopped.
 
-Link: https://lore.kernel.org/all/179553126874.3135.14817947057284289051@kernel.org/
+Closes: https://syzkaller.appspot.com/bug?extid=489e907b2a026a6f5fa0
 
-> j1939_session_skb_get_by_offset() then looks for a buffered skb at
-> pkt.dpo * 7, and j1939_xtp_rx_dat_one() copies into the session's skb at
-> that offset.  An offset past the session's packet count has no skb behind
-> it, so the lookup returns NULL and the copy and the completion run on it.
-
-[Severity: Low]
-Is the part about the copy accurate? j1939_xtp_rx_dat_one() already checks
-the bounds and checks for NULL before the memcpy:
-
-	se_skb = j1939_session_skb_get_by_offset(session, packet * 7);
-	if (!se_skb) {
-		netdev_warn(priv->ndev, "%s: 0x%p: no skb found\n", __func__,
-			    session);
-		goto out_session_cancel;
-	}
-
-The NULL only seems to reach the old j1939_session_completed(), which passed
-the result of j1939_session_skb_get() straight to j1939_sk_recv().
-
-Could the changelog also say how completion is reached after a bad DPO? That
-would be an EOMA with sa equal to our address, either the echo of our own
-EOMA or a spoofed one.
-
-> diff --git a/net/can/j1939/transport.c b/net/can/j1939/transport.c
-> index 8fcfd13e5e6f8..54e7ae9a88c3e 100644
-> --- a/net/can/j1939/transport.c
-> +++ b/net/can/j1939/transport.c
-> @@ -1242,10 +1242,15 @@ static void j1939_session_completed(struct j1939_session *session)
->  	struct sk_buff *se_skb;
+> diff --git a/net/can/j1939/bus.c b/net/can/j1939/bus.c
+> index cdc3c0a719379..0b5232b536051 100644
+> --- a/net/can/j1939/bus.c
+> +++ b/net/can/j1939/bus.c
+> @@ -96,6 +96,17 @@ void j1939_ecu_unmap(struct j1939_ecu *ecu)
+>  	write_unlock_bh(&ecu->priv->lock);
+>  }
 >  
->  	if (!session->transmission) {
-> -		se_skb = j1939_session_skb_get(session);
-> -		/* distribute among j1939 receivers */
-> -		j1939_sk_recv(session->priv, se_skb);
-> -		consume_skb(se_skb);
-> +		/* the whole message, not the window the peer's last DPO
-> +		 * happened to name
-> +		 */
-> +		se_skb = j1939_session_skb_get_by_offset(session, 0);
-> +		if (se_skb) {
-> +			/* distribute among j1939 receivers */
-> +			j1939_sk_recv(session->priv, se_skb);
-> +			consume_skb(se_skb);
-> +		}
->  	}
-
-[Severity: Medium]
-The EOMA hunk below stops a session in WAITING_ABORT from being completed.
-However, j1939_xtp_rx_dat_one() also calls j1939_session_completed(), and
-its BAM final branch has no state check:
-
-	if (final) {
-		j1939_session_timers_cancel(session);
-		j1939_session_completed(session);
-
-Can a cancelled BAM receive session still deliver its data here?
-
-Take a BAM followed by one malformed DAT (skb->len != 8) or one with a bad
-sequence number. That cancels the session: the state becomes WAITING_ABORT
-and J1939_ERRQUEUE_RX_ABORT is queued.
-
-j1939_xtp_rx_dat_one() never checks the state, and last_cmd (BAM or 0xff)
-still passes the last_cmd switch. So the in-order DATs that arrive inside
-the 500 ms abort window keep raising pkt.rx.
-
-When pkt.rx reaches pkt.total, the abort timer is cancelled and the message
-goes to j1939_sk_recv(). The sockets would see RX_ABORT, then the data, then
-another RX_ABORT from j1939_session_destroy().
-
-Would a state check in j1939_session_completed(), or under the list lock at
-deactivation, cover both callers?
-
-> @@ -1418,6 +1423,18 @@ j1939_xtp_rx_eoma_one(struct j1939_session *session, struct sk_buff *skb)
->  
->  	netdev_dbg(session->priv->ndev, "%s: 0x%p\n", __func__, session);
->  
-> +	if (session->state >= J1939_SESSION_WAITING_ABORT) {
-
-[Severity: Low]
-This check also applies to transmit sessions. Before this patch, a TX
-session in WAITING_ABORT that got the peer's EOMA was completed and
-deactivated at once. Now it waits for its abort echo or for the 500 ms
-abort timeout.
-
-The changelog above the '---' only describes the DPO range check and the
-offset-0 lookup. Two changes are explained only in the version notes, which
-git am drops: this EOMA check, and the forced deactivation on a second bad
-DPO. Could both be described in the permanent changelog?
-
-The version notes also say:
-
-  The delivery itself predates this series -
-  j1939_session_completed() always called j1939_sk_recv() - but v2 is
-  what made it reach a whole message, so the state test belongs here.
-
-Is that right? Before the series, j1939_session_skb_get() looked up offset
-pkt.dpo * 7. A receive session's skb_queue holds a single skb at offset 0
-sized total_message_size (see j1939_session_new()).
-
-So any in-range dpo, including 0, already returned the whole message. An
-EOMA on a session cancelled for any other reason already delivered it. That
-would make this hunk a separate fix that matters for stable on its own.
-
-> +		/* This session has been cancelled and is waiting for its abort
-> +		 * to go out.  Completing it here would hand its data to the
-> +		 * receiving sockets and queue a second RX_ABORT, so leave it to
-> +		 * the abort path.
-> +		 */
-> +		netdev_info(session->priv->ndev,
-> +			    "%s: 0x%p: EOMA on a cancelled session\n",
-> +			    __func__, session);
-> +		return;
-> +	}
+> +void j1939_ecu_cancel_all(struct j1939_priv *priv)
+> +{
+> +	struct j1939_ecu *ecu, *tmp;
 > +
->  	session->pkt.tx_acked = session->pkt.total;
->  	j1939_session_timers_cancel(session);
->  	/* transmitted without problems */
+> +	write_lock_bh(&priv->lock);
+> +	list_for_each_entry_safe(ecu, tmp, &priv->ecus, list)
+> +		if (hrtimer_try_to_cancel(&ecu->ac_timer) != -1)
+> +			j1939_ecu_put(ecu);
+
+[Severity: Critical]
+Can this drop a reference that the timer never held?
+
+hrtimer_try_to_cancel() returns 0 when the timer is not active. That is
+the case for an ECU whose claim timer was never armed or has already
+fired. The != -1 test handles 0 the same way as a successful cancel (1),
+so j1939_ecu_put() runs for every idle ECU on priv->ecus.
+
+The timer reference is only taken in j1939_ecu_timer_start():
+
+	j1939_ecu_get(ecu);
+
+	/* Schedule timer in 250 msec to commit address change. */
+	hrtimer_start(&ecu->ac_timer, ms_to_ktime(250),
+		      HRTIMER_MODE_REL_SOFT);
+
+The existing j1939_ecu_timer_cancel() only puts when an armed timer was
+actually removed:
+
+	if (hrtimer_cancel(&ecu->ac_timer))
+		j1939_ecu_put(ecu);
+
+For a remote ECU that has finished its address claim, the sequence is:
+
+j1939_ac_process()
+    j1939_ecu_create_locked()       kref = 1
+    j1939_ecu_timer_start()         kref = 2
+    out_ecu_put: j1939_ecu_put()    kref = 1
+
+j1939_ecu_timer_handler()  (250 ms later)
+    j1939_ecu_map_locked()          kref = 2, priv->ents[sa].ecu = ecu
+    j1939_ecu_put()                 kref = 1
+
+j1939_sk_release()  (any j1939 socket on that interface)
+    j1939_netdev_stop()
+        j1939_ecu_cancel_all()
+            hrtimer_try_to_cancel() returns 0
+            j1939_ecu_put()         kref = 0, kfree(ecu)
+
+At this point priv->ents[sa].ecu still points at the freed ECU.
+
+If that was the last socket, __j1939_rx_release()->j1939_ecu_unmap_all()
+calls j1939_ecu_unmap_locked() on it. That reads ecu->priv and ecu->addr
+from freed memory, puts the freed object a second time, and drops
+priv->kref an extra time.
+
+If other sockets keep the device alive, the next frame from that address
+goes through j1939_ac_recv()->j1939_ecu_get_by_addr(). That calls
+kref_get() on the freed ECU and then reads ecu->name.
+
+Local ECUs are hit the same way. Closing an unrelated socket can drop a
+reference owned by a bound socket's j1939_local_ecu_get() or by the ents[]
+mapping. The owner then gets a use-after-free later, or hits the
+WARN_ON_ONCE(!ecu) in j1939_local_ecu_put().
+
+Should this check be == 1 instead, to match j1939_ecu_timer_cancel()?
+
+> +	write_unlock_bh(&priv->lock);
+
+[Severity: High]
+Does this fully close the leak described in the commit message?
+
+j1939_ecu_cancel_all() runs at the top of j1939_netdev_stop(), while
+j1939_can_recv() is still registered. The RX handler is only unregistered
+later, in __j1939_rx_release():
+
+	j1939_can_rx_unregister(priv);
+	j1939_ecu_unmap_all(priv);
+	j1939_priv_set(priv->ndev, NULL);
+
+Once priv->lock is dropped here, a PGN_ADDRESS_CLAIMED frame can still
+reach j1939_ac_recv()->j1939_ac_process()->j1939_ecu_timer_start(). That
+arms a new claim timer with a new ECU reference. can_rx_unregister() also
+does not wait for receivers that are already running under RCU.
+
+When hrtimer_try_to_cancel() returns -1, the callback is already running
+and spinning on the priv->lock held here. In that case the ECU is skipped
+and nothing waits for the callback to finish.
+
+Either way, j1939_ecu_timer_handler() can run j1939_ecu_map_locked() after
+j1939_ecu_unmap_all(). That sets priv->ents[addr].ecu and takes a
+reference. Because priv has already been detached from the netdev, nothing
+unmaps it again. The ECU, its j1939_priv reference and the netdev_hold() in
+ecu->priv_dev_tracker are all leaked.
+
+Would it be better to kill the timers synchronously in the last-reference
+path, after the RX handler is unregistered and RCU readers have drained?
+
+> +}
+
+[Severity: High]
+This isn't a bug introduced by this patch, but the commit message gives
+the priv->lock vs. timer callback deadlock as the reason for using
+hrtimer_try_to_cancel() here. The same pattern is still present in
+j1939_ac_process(), which calls hrtimer_cancel() while holding priv->lock:
+
+net/can/j1939/address-claim.c:j1939_ac_process() {
+    ...
+	write_lock_bh(&priv->lock);
+    ...
+	/* cancel pending (previous) address claim */
+	j1939_ecu_timer_cancel(ecu);
+    ...
+}
+
+j1939_ecu_timer_cancel() calls hrtimer_cancel(), which loops until the
+callback has finished. j1939_ecu_timer_handler() starts with:
+
+	write_lock_bh(&priv->lock);
+
+CPU0 (NET_RX softirq)                 CPU1 (HRTIMER_SOFTIRQ)
+                                      j1939_ecu_timer_handler()
+j1939_ac_process()
+    write_lock_bh(&priv->lock)
+                                          write_lock_bh(&priv->lock)
+                                          <spins>
+    j1939_ecu_timer_cancel()
+        hrtimer_cancel()
+        <spins waiting for callback>
+
+To trigger this, a remote node sends an AC frame for the same NAME with a
+different address just as the previous 250 ms claim timer expires.
+
+Can either CPU make progress in this case?
 
 [Severity: Low]
-The state check above reads session->state without active_session_list_lock.
-What happens if j1939_tp_rxtimer() or j1939_tp_txtimer() cancels the session
-on another CPU after the check but before the
-j1939_session_timers_cancel() and j1939_session_completed() calls here?
+This isn't a bug, but the ownership comment in j1939_ecu_timer_start()
+still says:
 
-That cancel sets WAITING_ABORT, sends an abort and queues
-J1939_ERRQUEUE_RX_ABORT. This CPU then cancels the new abort timer and
-completes the session, so j1939_session_completed() still hands the message
-to the sockets.
+	/* The ECU is held here and released in the
+	 * j1939_ecu_timer_handler() or j1939_ecu_timer_cancel().
+	 */
 
-Does the check need to happen under the list lock, together with the state
-change (deactivating the session or marking it as completing)? The message
-would then be delivered only if that change succeeded.
-
-> @@ -1823,14 +1840,36 @@ static void j1939_xtp_rx_dpo_one(struct j1939_session *session,
+Should it also list j1939_ecu_cancel_all() as a release site?
 
 [ ... ]
 
-> +	dpo = j1939_etp_ctl_to_packet(dat);
-> +	if (dpo >= session->pkt.total) {
-> +		bool was_dying = session->state >= J1939_SESSION_WAITING_ABORT;
-
-[Severity: Medium]
-was_dying is read without the list lock and before the timers are
-cancelled. Can a timer callback move the session from ACTIVE to
-WAITING_ABORT in between?
-
-For example, j1939_tp_rxtimer() can fire on another CPU for the 750 ms DPO
-timeout or the 1250 ms CTS timeout. Under the lock it re-arms the same
-rxtimer:
-
-			j1939_session_get(session);
-			hrtimer_start(&session->rxtimer,
-				      ms_to_ktime(J1939_XTP_ABORT_TIMEOUT_MS),
-				      HRTIMER_MODE_REL_SOFT);
-			__j1939_session_cancel(session, J1939_XTP_ABORT_TIMEOUT);
-
-j1939_tp_txtimer() can do the same on errors, through j1939_session_cancel().
-
-Back here, j1939_session_rxtimer_cancel() waits for the callback and then
-cancels the abort timer it just armed. j1939_session_cancel() sees
-WAITING_ABORT and arms nothing. The stale was_dying == false then skips the
-deactivation.
-
-Would the receive session be left on the active list with no timer?
-
-The comment below cites j1939_xtp_rx_rts_session_active() as its model, and
-that function checks session->state after the cancel. Could this decision
-also be made after the cancel? For example, j1939_session_cancel() could
-report whether it armed the abort timer.
-
-> +
-> +		netdev_info(session->priv->ndev,
-> +			    "%s: 0x%p: data packet offset %u is not below the %u packet(s) of this session\n",
-> +			    __func__, session, dpo, session->pkt.total);
-> +		j1939_session_timers_cancel(session);
-> +		j1939_session_cancel(session, J1939_XTP_ABORT_FAULT);
-> +		if (was_dying)
-> +			/* The cancel above is a no-op once the state is
-> +			 * WAITING_ABORT, so it does not restart the timeout
-
-[Severity: Low]
-Is the cancel really a no-op here? j1939_session_cancel() queues RX_ABORT
-outside its state guard:
-
-	j1939_session_list_unlock(session->priv);
-
-	if (!session->sk)
-		j1939_sk_errqueue(session, J1939_ERRQUEUE_RX_ABORT);
-
-So on the was_dying path every matching socket gets another RX_ABORT.
-j1939_session_destroy() then queues one more, because session->err is set.
-
-The new comment in j1939_xtp_rx_eoma_one() has a similar problem:
-
-	 * to go out.  Completing it here would hand its data to the
-	 * receiving sockets and queue a second RX_ABORT, so leave it to
-	 * the abort path.
-
-The abort path also ends in j1939_session_destroy(). That function queues
-RX_ABORT whenever !transmission && session->err, on the completion path as
-well. Should both comments be corrected?
-
-> +			 * this function just cancelled.  Deactivate instead,
-> +			 * as j1939_xtp_rx_rts_session_active() does, or the
-> +			 * session stays on the active list with no timers and
-> +			 * holds its skb and netdev references for good.
-> +			 */
-> +			j1939_session_deactivate_activate_next(session);
-> +		return;
-> +	}
+> diff --git a/net/can/j1939/main.c b/net/can/j1939/main.c
+> index d9384cf0e356f..4b62da9fd96dc 100644
+> --- a/net/can/j1939/main.c
+> +++ b/net/can/j1939/main.c
+> @@ -306,6 +306,7 @@ struct j1939_priv *j1939_netdev_start(struct net_device *ndev)
+>  
+>  void j1939_netdev_stop(struct j1939_priv *priv)
+>  {
+> +	j1939_ecu_cancel_all(priv);
+>  	kref_put_mutex(&priv->rx_kref, __j1939_rx_release, &j1939_netdev_lock);
 
 [Severity: High]
-This covers a second bad DPO. j1939_xtp_rx_dat_one() runs the same sequence
-without any deactivation:
+Is this the right place for the cancel?
 
- out_session_cancel:
-	kfree_skb(se_skb);
-	j1939_session_timers_cancel(session);
-	j1939_session_cancel(session, abort);
-	j1939_session_put(session);
+j1939_netdev_stop() is called once per socket: from j1939_sk_bind() on
+failure, from j1939_sk_release(), and from the netdev notifier. The real
+device teardown only happens in __j1939_rx_release(), when the last
+rx_kref is dropped.
 
-j1939_xtp_rx_cts_one() does the same:
+As written, closing any single j1939 socket cancels every pending
+address-claim timer on the interface. That includes claims owned by other
+bound sockets and claims from remote ECUs seen on the bus.
 
- out_session_cancel:
-	j1939_session_timers_cancel(session);
-	j1939_session_cancel(session, err);
+j1939_ecu_map_locked() never runs for a cancelled claim, so the ECU keeps
+ecu->addr but has no priv->ents[] entry. j1939_name_to_addr() then returns
+J1939_IDLE_ADDR because j1939_ecu_is_mapped_locked() is false. Name-based
+senders on the remaining sockets fail with EADDRNOTAVAIL.
 
-Can the DAT path be reached right after this rejection? Take an ETP receive
-session after the echo of our own CTS, with last_cmd ==
-J1939_ETP_CMD_CTS:
+This does not recover when the peer repeats its claim. j1939_ac_process()
+skips re-arming the timer if the NAME and address match:
 
-j1939_xtp_rx_dpo_one()      /* dpo >= pkt.total */
-  j1939_session_cancel()    /* WAITING_ABORT, 500 ms timer armed,
-                               last_cmd unchanged */
-
-Then the peer sends its next DAT:
-
-j1939_xtp_rx_dat_one()
-  switch (session->last_cmd) -> default: goto out_session_cancel
-  j1939_session_timers_cancel()   /* kills the abort timer */
-  j1939_session_cancel()          /* already WAITING_ABORT, arms nothing */
-
-A malformed DAT (skb->len != 8) gets there as well.
-
-The echo of our own abort does not clean this up. It carries only
-J1939_ECU_LOCAL_SRC, so j1939_tp_cmd_recv() calls
-j1939_xtp_rx_abort(priv, skb, true). That only matches sessions with
-transmission == true.
-
-When the last bound socket closes, __j1939_rx_release() calls
-j1939_priv_set(ndev, NULL), and j1939_netdev_notify() can no longer find
-priv.
-
-Would the session then keep its skb, its priv reference and its
-netdev_hold() for good, with unregister_netdevice() waiting on it?
-
-The underlying sequence existed before this patch: two bad DATs also
-strand a session. The new DPO rejection makes it reachable with the
-follow-up frame a sender would normally send. j1939_session_cancel() is
-where the re-arm is skipped:
-
-	if (session->state >= J1939_SESSION_ACTIVE &&
-	    session->state < J1939_SESSION_WAITING_ABORT) {
-		j1939_tp_set_rxtimeout(session, J1939_XTP_ABORT_TIMEOUT_MS);
-		__j1939_session_cancel(session, err);
+	if (ecu && ecu->addr == skcb->addr.sa) {
+		...
+		goto out_ecu_put;
 	}
 
-Would it be better for j1939_session_cancel() itself to deactivate the
-session, or re-arm the abort timer, when the session is already in
-WAITING_ABORT? That would cover every caller and replace the was_dying
-special case here and the similar one in j1939_xtp_rx_rts_session_active().
+Should the cancellation move into __j1939_rx_release() instead?
+
+The subject says "cancel all pending ECUs on device stop", but the code
+runs the cancel on every socket stop, not only on device stop.
+
+>  	j1939_priv_put(priv);
+>  }
 
 -- 
-Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261126150339.2110025-1-piyus%40iiitd.ac.in
+Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261126082257.491041-1-dmantipov%40yandex.ru
