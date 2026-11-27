@@ -1,54 +1,86 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=93.77.172.86
-ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
-	t=1795777962;
-	b=qr9a5jkbtkOjHFvKGDCZCmicXhRTP+O8KRFaonlBXm6/bKV+C1UyExUT7olCE2dgIMsA
-	 MRpo4J5MHohPqpLyiWugLXZJ3bAmOpyYdGrvzwcRdKLW63LKcGom7JButYBSKCMYu1YF7
-	 IsjUFKYvoczyB5aKU9OL8ytAZ3nuzG07opkFnrFY73l3GOOQNOFLA4ik5HsjvfGFYn5nY
-	 uPDTDt+4JiJhcdjgrb3RQiiGI04WSoklM94xFj0fP4HU9OmEsjMdx5t203SwLaNOMCGec
-	 DY6fcwXROtYvywXBSCS/FotQXCjNuUMT71nAfmJsgp5HeJUcyCFe9Y3bzGbwvuNa6MQ==
-ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795777962;
-	h=DMARC-Filter:Received:Received:X-Yandex-Fwd:DKIM-Signature:
-	 Message-ID:Date:MIME-Version:User-Agent:Subject:To:References:
-	 Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=UNYOinv1kAjb+s6KJVsKvxox6IAHN35g5+UoNO/+/1E=;
-	b=ZN+2BtyR65FqzNoc+TdZp8TOq7RCFLvcxtjCRdkNav3cUphHqDF21no2sqpq0199XTzB
-	 dW2RyCJX/sSztxOo4YBpxaDbh9rIKysM95QJ3Nbfu5drbrb5oDB15UAUF3JSzie+YfU9D
-	 mZNw1ThqcIezc5K2fkpzsxTNh/KXhiySBUqKenFOCicmtiJI2WAc3rjG5m+BL9EmagCfT
-	 VXqXA5a6V54nZrMrQrlPU+PH3iNIbSjyG6trdgxmylGxwDhksYg0dzObhAIMPNEXjONGC
-	 Sfg0A/Dbc2Hjd5ijOQy8bz2e4T4U8huXPDv/Uy9jgA4KvjEedjNVTUnzrI8acdaK2lw==
-ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=yandex.ru;
-	spf=pass smtp.mailfrom=yandex.ru;
-	dkim=pass header.d=yandex.ru header.i=@yandex.ru header.a=rsa-sha256 header.s=mail header.b=MbNFYihS;
-	arc=none smtp.remote-ip=93.77.172.86
-Received: from forward501e.mail.yandex.net (forward501e.mail.yandex.net [93.77.172.86])
+Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
+	t=1795778389;
+	b=MgJQhN6zt9KLm+OEuqMt1rZZhz47QXJy1eDEXreeMbT+1kXW1h5yqOnwKyYhsUO59bMl
+	 Eb9GiTaNKPhKrXfjcOhi+xnBpxSewEV97Bxq6Aeb6/hsFqH5dlGhCM4DGubDEuvN65ae1
+	 RFauyjkDe+rUtJSktldi7ZR50GiPbHv7NAyB3uFM3o/fjovRtSegrSa58+fYUT5Edj5A0
+	 SNjeNXetLRaUL/LraDvm8ixGu4I+4JyfS0FeJAz/hMmyC6lKMOklJ7lYmvIHXQwzBndNf
+	 CF5etP/1406N8B0CVKQhE2/Gjx2Atc7XoJ+IwJtifZylTVXaC19qHYaQZ2uaIVUHiVQ==
+ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795778389;
+	h=DMARC-Filter:Received:DKIM-Signature:Received:Date:From:To:Cc:
+	 Subject:Message-ID:References:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To;
+	bh=rRork88nwVcPoZLZ8YOGPPsgLg0KW2kZByQIjPw7eqA=;
+	b=xr3EyH2f3/hFWbaKQ5i7HmBhUiVRSPk5f/iTbRTCULXwibqOgjUL8maG9kiZy7ysYYCx
+	 OjkOEhEjPwoH9yVUKx8K8DxnQNhfGf3DHl5zvmYoKT3o0Q0gBIRckE7vHgAyCTuvSaqqn
+	 ApwKgy7XwwsuXttBCfYo17f5wCpYyTWoLSCs6zLdN68S/Mze+SQ+bynTqvNCK6YfyT3m5
+	 jbKQtjvOcZOfp3NsP4YCcz8XrSlWIEab87+85XeK4385ryGy8bUKCAvQFfB1KzvCE18rN
+	 Re12A0V9T+n1nZvnUH41IcRbJLuqCxlea91lKkg1ssXGJSkg98NXVWaGJaux0MIZxfA==
+ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
+	dmarc=none header.from=pengutronix.de;
+	spf=pass smtp.mailfrom=pengutronix.de;
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GZeDJ47k;
+	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
+Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF5C6606A31C
-	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 11:12:40 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org AF5C6606A31C
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 843D4606A31E;
+	Fri, 27 Nov 2026 11:19:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 843D4606A31E
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.a=rsa-sha256 header.s=mail header.b=MbNFYihS
-Received: from mail-nwsmtp-smtp-production-main-68 (mail-nwsmtp-smtp-production-main-68.yp-c.yandex.net)
-	by forward501e.mail.yandex.net (postfix) with ESMTPS id 321F6C016E;
-	Fri, 27 Nov 2026 14:12:33 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-68 with ESMTPSA id UChBv30l7Ko0-hOcojhuu;
-	Fri, 27 Nov 2026 14:12:32 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1795777952; bh=UNYOinv1kAjb+s6KJVsKvxox6IAHN35g5+UoNO/+/1E=;
-	h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
-	b=MbNFYihS9XpS7xc+9v3cc1/po+y1Sp8O1YMfzs9HwPJkB7TcLndmkftDqO144UWDd
-	 cNoBXoUSSaGRIZfI8Im4OZjLqr0N8kNJ9cFwQLy1TrWnmQRGG/RfQTp8sVH7cZ9Pc5
-	 gCuk9zdXrIW3aUvFoGmzKf88wWxsgaexzcsMRsaw=
-Authentication-Results: mail-nwsmtp-smtp-production-main-68; dkim=pass header.i=@yandex.ru
-Message-ID: <d0461ebb-994a-4c9b-8407-fdd091d5911b@yandex.ru>
-Date: Fri, 27 Nov 2026 14:12:29 +0300
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=GZeDJ47k
+Received: from ptx.office.stw.pengutronix.de (ptx.office.stw.4.pengutronix.de [10.9.0.3])
+	(Authenticated sender: relay-from-ptx.office.stw.pengutronix.de)
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id 9A6D32058CE;
+	Fri, 27 Nov 2026 12:19:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1795778386;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rRork88nwVcPoZLZ8YOGPPsgLg0KW2kZByQIjPw7eqA=;
+	b=GZeDJ47kB2nbC0ZjqBXm1F5FDJG9PuuSfDNNJYrIEz8Vt5sJw86f59AgJrLpzqgYwj75E+
+	U+Xtfx44mpPPbb9pV9ABCFnNM1RhI3IFnV092/BdlJqG1oIVPUrHaUkg0OHiCJVjbV0xRg
+	pdW6hC01CXu/lbPXu+/j1NMQc/j05rLdVqqpnG05EoptVdhgVY8wc18HR0rMFkbeNdQbbH
+	O4xpAHDiHM8RPwMsnL8d7ppgjZ8FuXcjLFI5GGyUCkk6eZgVskd1y54V/pQinWW4darjtL
+	8PpfXn5Ivc6FGTRB11aiQ8WtYBGufB1gLGtZ/dcvfeiBMFYJPx8ecU1SjdcTfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
+	s=20260414; t=1795778386;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rRork88nwVcPoZLZ8YOGPPsgLg0KW2kZByQIjPw7eqA=;
+	b=EYd1BEl9s3PL36MDS4nqYHQocch6KfVbbqC0tDjlPBp78vG/3/WFKXWRbhGwAoXPoGgExh
+	jcloKECu8H6g8D6PtI5IXXh0eTbkrVxbyPNkZyIOKJt0tCHhVeXVsSY75hsoJSkTEhIiZs
+	kMbO9bFsbrzxG0K0u4zZTFpaaOSSvghz9ToZard0MnxQ2fQT3HiZH3IYvcYb885ovAG6xP
+	H/HMqHS5EBPAJzNQm65QdXuNFUFKt6jruvC54qBa0KQROhF6pdgnB2zVBAV0HCc+I50dnJ
+	GZ9QMztdR989+xfLvEBgjzROlE0wkU4fr9iHv/lgLu76CE8lru674InBe8dcRA==
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=relay-from-ptx.office.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
+ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795778386; a=rsa-sha256;
+	cv=none;
+	b=MoZI2zEqVMdN2h5RaVJb/Nkot/DcqzJRXpdrWZkQ/tS+dzoTAtwNkeiv5eg+s/RSTLdlqs
+	Hp8XW9p/2aV92fmThC5CzFsgtefQUPDGrnnmUb8zptVwJVnaLc4G1/ytpoVRTrJd78oYPf
+	69+TvSXOS5Kx7K/v0TEH43kqZg/be4WtSghx8N4dNwszSjdqM3espRb8iF3PdV4dimJFku
+	CpvHP6v8NnkIuNkHjcToo1uHhU0dAk05SWU/WdW4BDq+sLR75iNYxctbh9qFCxtF589/MI
+	4GJcTrRMIuiBr84FqbyKzK6rdzaPLD6OE9MoCCKll7qkPf6YzIsdJ3du8NRowg==
+Received: by ptx.office.stw.pengutronix.de (Postfix, from userid 1058)
+	id 7D9371BF7BF; Fri, 27 Nov 2026 12:19:46 +0100 (CET)
+Date: Fri, 27 Nov 2026 12:19:46 +0100
+From: Oleksij Rempel <o.rempel@pengutronix.de>
+To: Hui Peng <benquike@gmail.com>
+Cc: robin@protonic.nl, mkl@pengutronix.de, mailhol@kernel.org,
+	kernel@pengutronix.de, socketcan@hartkopp.net,
+	linux-can@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] can: j1939: return 0 instead of user value in
+ j1939_sk_setsockopt_flag()
+Message-ID: <awlnUrAP4PGtg4OO@pengutronix.de>
+References: <20260919213632.3313825-1-benquike@gmail.com>
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -58,51 +90,35 @@ List-Unsubscribe: <mailto:linux-can+unsubscribe@vger.kernel.org>
 List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v15 2/3] can: j1939: fix "struct j1939_ecu" refcount leak
-To: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
- linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
- Oleksij Rempel <o.rempel@pengutronix.de>,
- Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
- Oliver Hartkopp <socketcan@hartkopp.net>
-References: <98c16a74-5ea7-476e-ab36-c98fb77b6be4@I-love.SAKURA.ne.jp>
- <f778db47-a217-448e-9dbd-f1860afab00b@I-love.SAKURA.ne.jp>
-Content-Language: en-US
-From: Dmitry Antipov <dmantipov@yandex.ru>
-In-Reply-To: <f778db47-a217-448e-9dbd-f1860afab00b@I-love.SAKURA.ne.jp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20260919213632.3313825-1-benquike@gmail.com>
 
-On 11/17/26 6:57 PM, Tetsuo Handa wrote:
+Hi Hui,
 
-> syzbot is reporting "struct j1939_ecu" refcount leak, for
-> 
->    j1939_ecu_get(ecu);
->    priv->ents[ecu->addr] = ecu;
-> 
-> in j1939_ecu_map_locked() from j1939_ecu_timer_handler() can succeed
-> even after
-> 
->    priv->ents[ecu->addr] = NULL;
->    j1939_ecu_put(ecu);
-> 
-> in j1939_ecu_unmap_locked() from j1939_ecu_unmap_all() from
-> __j1939_rx_release() from j1939_netdev_stop() has completed.
-> 
-> Fix this problem by
-> 
->    (1) preventing ecu->ac_timer from re-arming in j1939_ecu_timer_start()
->    (2) making j1939_ecu_map_locked() no-op
-> 
-> when a netdev which is associated with j1939_priv is no longer registered
-> (indicated by ecu->priv->ndev->reg_state != NETREG_REGISTERED) or
-> __j1939_rx_release() was called (indicated by ecu->priv->rx_kref == 0).
-> 
-> Reported-by: syzbot+e2af46126e0644cbebdd@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=e2af46126e0644cbebdd
+thank you, and sorry for the long silence.
+
+On Sat, Sep 19, 2026 at 09:36:32PM +0000, Hui Peng wrote:
+> In `j1939_sk_setsockopt_flag()`, after copying the integer option value
+> `tmp` from userspace and updating `jsk->state`, the function returns
+> `tmp` instead of `0`.
+>
+> If a caller passes a negative integer (e.g., `-1`) to enable
+> `SO_J1939_BROADCAST` or `SO_J1939_PROMISC`, `if (tmp)` sets `jsk->state
+> |= flag` and then returns the negative value as an error code from
+> `setsockopt()`. If a caller passes a positive non-zero integer (e.g.,
+> `1`), `setsockopt()` violates POSIX by returning `1` instead of `0`.
+>
+> Return `0` on success in `j1939_sk_setsockopt_flag()`.
+>
 > Fixes: 9d71dd0c7009 ("can: add support of SAE J1939 protocol")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+> Assisted-by: LLM
+> Signed-off-by: Hui Peng <benquike@gmail.com>
 
-Tested-by: Dmitry Antipov <dmantipov@yandex.ru>
-Closes: https://syzkaller.appspot.com/bug?extid=489e907b2a026a6f5fa0
+Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
+
+For next time: CAN patches go to linux-can and the CAN maintainers
+only, please do not send them to netdev.
+
+Regards,
+Oleksij
