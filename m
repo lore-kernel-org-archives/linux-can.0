@@ -1,91 +1,47 @@
-Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.163
-ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
-	t=1795780734;
-	b=BjGpBr1KcsyR75lc7umvz0tQk5Ms425GIi6JP1cpp3kw/CfvgCE07FBXn4ZkKBb5qpKn
-	 piaL0SWriQbx4n7w7UVz+CgwTWyaXlEXg/kAfols+JdiYp5VDdxTGd8RVv+4tmL1fo8Ky
-	 xHjt/sMuyfJ85mLOwX2PlVWTVQhL0y+DsGKbkcbBjNM43m8lR2p0ZL3fIawSfNPn1p/I4
-	 pLtPphSrFsaGvoEXPtcuV3/qil7NvuUqVdnEbN0/oyuYCXzWf6MWroxuXfEI+ZdLNO+Hr
-	 hfYFikhN78DJU/V6GUVWiKEodK5iWrM4UZfrp254tkppb8Qj1YJ2u/0076OPji0V2fQ==
-ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
-	a=rsa-sha256; c=relaxed/relaxed; t=1795780734;
-	h=DMARC-Filter:X-RZG-CLASS-ID:DKIM-Signature:DKIM-Signature:X-RZG-AUTH:
-	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:To:Cc:
-	 References:Content-Language:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding;
-	bh=ZCUcpxHroGYyt5Yej2gqU4LjGQoCpUJTHrJ8Q7o1X4c=;
-	b=Yv5JEQnzEkWtlC8KSSQqL/fpBpwQaypDbFjc79Qr+zaWDIbqXl1tTH2wn74PNoNsYlah
-	 WFBtsnDyo2CQclXMq7Wt0FlRjfTi4jtF61UwlyDMTJgKfkfNJtsL3uH1lcP9C0D+jI0Sx
-	 4fhDqFjc+a6eBmb55ZaC9SNO9RI+G9tfLOHu1PU9BByg9edVX3V/+8efZRNNcwm7PbmRJ
-	 82tkuqAjbZLrxtCnVi0irmwa7EZrCsycJUQ5iaFKFfcG/HdIeVMEpmpBqa99yNv6gN9H6
-	 I7rTHKRbn8ym9jGuU9kkIJ1lYBw32eNB4zTB7eHXUv73hP2K9IF+n4Q3wMERXOXhWTg==
-ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
-	dmarc=pass header.from=hartkopp.net;
-	spf=fail smtp.mailfrom=hartkopp.net;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Go05xRkF;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mPdZYik8;
-	arc=pass header.oldest-pass=0 smtp.remote-ip=81.169.146.163
-Received: from mo4-p00-ob.smtp.rzone.de (mo4-p00-ob.smtp.rzone.de [81.169.146.163])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=202.181.97.72
+ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
+	t=1795780892;
+	b=2sZYiV8XTnSgbXfaYiDsoCYFB++EJZ4wmpApewEpTGCsVkMNUYEXe6Mcv3j/dUQ2/2MB
+	 30ecosNVUofcsAq5t9UsNeLmImXVH5N5pY31I8DOhbi0/61vraVJfEmMKEiSaNABjbPOd
+	 JxZ6BpDK185wcrScfpTDMe7wBV19ylcE1LCNWcGklgAjrhB2MC2uTSe4ODRC+udOgxCoj
+	 p98oeSHsUwjCDR8iaaL8P8HUSqmIi33xWtb1PSX8YZz9nWeR10fB6fylYNqePSM0e+Zv5
+	 Re9VprrO7H805fztqjWU6vdmoYkw3NVrw3coJQXt5zsTmhctrduqESerJY+24d/JOVw==
+ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
+	a=rsa-sha256; c=relaxed/relaxed; t=1795780892;
+	h=DMARC-Filter:Received:Received:Message-ID:Date:MIME-Version:
+	 User-Agent:Subject:To:Cc:References:Content-Language:From:In-Reply-To:
+	 Content-Type:Content-Transfer-Encoding:X-Virus-Status:
+	 X-Anti-Virus-Server;
+	bh=JynelqE7st3LG1E8iQ/bmHv6QRqGXbzYp/NsVThOAD4=;
+	b=jaGAwTZJtzsrLOUQZ5AXCcjkV3w8qpt8oJ4VEF+i01syDp32i20B65tAZHc36TkWadc3
+	 es2hevE3N4NYzziPY36FioRst7SsYsRyMWOCWso1Aee8zSHgYRU6mPxdxHn4OV28eyHC1
+	 3b8eyiyq8z7l7OmQdrqVWNsbvwMAVUXmE5fGgLK8UFBwX0eYH7TS7Zw0oenUshermKxUz
+	 56vTCaZj54Co4CPrPFYFnWmtOK+Pz9jX/O5lZ7FNXRSL60UK6Rfty4BymWaJWDSbPI/dP
+	 hjpjyIXTW6P0+ERjMqUIFaFTsbdiA2XGWfL2QNCF+7wG6ER6lOWBUclMl2wog+vn8bQ==
+ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
+	dmarc=pass header.from=I-love.SAKURA.ne.jp;
+	spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp;
+	arc=none smtp.remote-ip=202.181.97.72
+Received: from www262.sakura.ne.jp (www262.sakura.ne.jp [202.181.97.72])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 102E3606A327
-	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 11:58:52 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 102E3606A327
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=hartkopp.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key, unprotected) header.d=hartkopp.net header.i=@hartkopp.net header.a=rsa-sha256 header.s=strato-dkim-0002 header.b=Go05xRkF;
-	dkim=pass header.d=hartkopp.net header.i=@hartkopp.net header.a=ed25519-sha256 header.s=strato-dkim-0003 header.b=mPdZYik8
-ARC-Seal: i=1; a=rsa-sha256; t=1795780725; cv=none;
-    d=strato.com; s=strato-dkim-0002;
-    b=g5Sh2bTgRnP363stJBD1uPamND4SsDWKuYZi/mFZeqUWavgjuGo43WEPr+sxDIpV33
-    VsuXkjTXjvFUJiS5ULT9jNvuQKZcOG4c9TekoshaVBcQH/6y6BqThnZarD7bk3pMyI53
-    WAqQ43iTlkJo4O/5IZHm0IoM71r5x3sg0yPLZjoSNMd/SL44EXKqhbMnTHq9zlIcrwmI
-    PWvplLeDCsT5TONbaaOFk5bkMNc644d4ti1uckw/KfyMOpg9idHfPiiKSi3hW+JuCuJL
-    EuwsNgZKGHf9bwmDk+f3r8w6PLXmXW3e+gfIFU/ZHx7dC0JhYqSlnXezjkhucAyu/Iaw
-    CiDQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; t=1795780725;
-    s=strato-dkim-0002; d=strato.com;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ZCUcpxHroGYyt5Yej2gqU4LjGQoCpUJTHrJ8Q7o1X4c=;
-    b=CXZNMCayhH5jBrQTjC3HSbXeJxzCvs0TODCJiG/GtAYol4AAdJSJbDm90wh6BOdrnc
-    MtEFw+oIg/mi9Oq2MIjU9Fll69CDlO25QTNn5hID1vsioDUEMn+hxEIh3tDeXyKu28fd
-    HouNbT9lYRDOXUQF84JSO0yaM2H96/PsY6obIMN7W6GCZ7FWOrOWjMvpkMz4yFQbwWw7
-    zqlm9Rw7qsaIinPyuyS/fLX2aI6ORB5ki3WapOpOQ/rujgB13nphTojOwNiRz2lk3Kek
-    L1BlwUtMfc4GSnIDKMezMuiGXcfrGiFsvGzqnKsp6UdU10iAarrCFqeYKfVnP1C+uWU8
-    h5wA==
-ARC-Authentication-Results: i=1; strato.com;
-    arc=none;
-    dkim=none
-X-RZG-CLASS-ID: mo00
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1795780725;
-    s=strato-dkim-0002; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ZCUcpxHroGYyt5Yej2gqU4LjGQoCpUJTHrJ8Q7o1X4c=;
-    b=Go05xRkFaoilUwFiMt4UjMWZjbdXUBu4ovTr0BBGmkdoZCDd9k4UPzQlK1NbldCmA0
-    aYX8o5YBCnBvONJGMNKFfcLio4kMJn4AJgAAkS5ds4ogvVvdZ8cDHvXDTEGvAbIaLqX+
-    FtYyhP58jdfONZ8Yjl3c7os3dzL+VMOVXJKalpqx5f2rGZr783SWwFILww9NyJuZeD5t
-    moOMNwTLxBaq0yiVs1U34haLCEJXHHEg0Q0+x2Tp3Idq41XVijdTS6xOTne/9MvXPvYC
-    ZuiNDg+M7ohjLiU3OrIlo1mKWvA+LXcxPzLGl+S5pQVW46p46DGi979JXt2VeA+Zhy3Z
-    fT+A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; t=1795780724;
-    s=strato-dkim-0003; d=hartkopp.net;
-    h=In-Reply-To:From:References:Cc:To:Subject:Date:Message-ID:Cc:Date:
-    From:Subject:Sender;
-    bh=ZCUcpxHroGYyt5Yej2gqU4LjGQoCpUJTHrJ8Q7o1X4c=;
-    b=mPdZYik82Hu/37bXoaQ0VeFGf+mMbDOcM7gd5kCE+l6JNNRPaZ/fBU3BuOUGLj6COF
-    lCagsl7iGthw26PvagAQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjH4JKvMdQv2tTUsMrZpkO3Mw3lZ/t54cFxeEQ7s8bDup0Q=="
-Received: from [IPV6:2a00:6020:4a38:6810::989]
-    by smtp.strato.de (RZmta 55.6.3 AUTH)
-    with ESMTPSA id Kfdf2a2ARBwiwpF
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-	(Client did not present a certificate);
-    Fri, 27 Nov 2026 12:58:44 +0100 (CET)
-Message-ID: <6fdfe8ce-69cf-410b-9edb-1ce318d4b02e@hartkopp.net>
-Date: Fri, 27 Nov 2026 12:58:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 687D7606A321
+	for <linux-can@vger.kernel.org>; Fri, 27 Nov 2026 12:01:31 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 687D7606A321
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=I-love.SAKURA.ne.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=I-love.SAKURA.ne.jp
+Received: from www262.sakura.ne.jp (localhost [127.0.0.1])
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 6ARC1Dot002055;
+	Fri, 27 Nov 2026 21:01:13 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Received: from [192.168.1.6] (M106072072000.v4.enabler.ne.jp [106.72.72.0])
+	(authenticated bits=0)
+	by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 6ARC1Dpm002051
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+	Fri, 27 Nov 2026 21:01:13 +0900 (JST)
+	(envelope-from penguin-kernel@I-love.SAKURA.ne.jp)
+Message-ID: <54cf4887-18b8-4957-ad30-4f91232ee846@I-love.SAKURA.ne.jp>
+Date: Fri, 27 Nov 2026 21:01:12 +0900
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -96,39 +52,28 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH can-next 03/22] can: enable memcg accounting for user
- triggered allocations
+Subject: Re: [PATCH v15 0/3] can: j1939: make module more robust
 To: Oleksij Rempel <o.rempel@pengutronix.de>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-References: <20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9@hartkopp.net>
- <20261126-getsockopt-memcg-isotp-v1-3-681ef8d8c2c9@hartkopp.net>
- <d65925ac-364d-4fa6-adce-dfa4027ef509@hartkopp.net>
- <awluhW_a2C7mJa2b@pengutronix.de>
+Cc: linux-can@vger.kernel.org, Marc Kleine-Budde <mkl@pengutronix.de>,
+        Robin van der Gracht <robin@protonic.nl>, kernel@pengutronix.de,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+References: <98c16a74-5ea7-476e-ab36-c98fb77b6be4@I-love.SAKURA.ne.jp>
+ <db630610-dba5-4f5b-bd61-09d333132e34@I-love.SAKURA.ne.jp>
+ <awlAMlRxN4mly85w@pengutronix.de>
 Content-Language: en-US
-From: Oliver Hartkopp <socketcan@hartkopp.net>
-In-Reply-To: <awluhW_a2C7mJa2b@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+From: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+In-Reply-To: <awlAMlRxN4mly85w@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Virus-Status: clean
+X-Anti-Virus-Server: fsav415.rs.sakura.ne.jp
 
-On 27.11.26 12:50, Oleksij Rempel wrote:
+On 2026/11/27 17:32, Oleksij Rempel wrote:
+> About the delay: my mailbox is full of Sashiko reviews and new versions
+> of other patch sets, from many developers.
 
-> On Fri, Nov 27, 2026 at 11:08:17AM +0100, Oliver Hartkopp wrote:
->> Would it make sense to split this patch into a J1939 and a non-J1939
->> part and to post the J1939 memcg accounting when all J1939 fixes have
->> hit the mainline tree?
-> 
-> Thank you for thinking about it. As far as I can see, there is no need
-> to split it. The J1939 part only touches the j1939_priv allocation and
-> the SO_J1939_FILTER copy, and the pending J1939 fixes I know of do not
-> touch these lines. If a conflict shows up later, it should be easy to
-> resolve.
-> 
-> Acked-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> 
+Yes, that's why I don't want to try sending to relevant MLs before
+sashiko-bot@kernel.org gets pleased. I was using LKML with dot versioning.
 
-Great! Thanks!
-
-So let's see what Sashiko has to grumble whether I need to re-spin ;-)
-
-Best regards,
-Oliver
+I appreciate if there is a ML which sashiko-bot@kernel.org reviews
+but automated tooling (e.g. build bot) do not run. ;-)
