@@ -1,55 +1,55 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1795861220;
-	b=mjcBlARyqI2dU1dA/T98A5dAMgPXerVsDxTYLZ9ALQ4CH1OzwrhDtSJ76wyN3kEuX0YY
-	 djtV1ryhs4T+d/eeup8kQskNdvK4FcgrofJtQSviKknKQqfYMN4PGp6Sgrf4HkDAgb4ah
-	 JRurrYcs1ODH/XGTit+JD/XT2uUfV+LdIHyUPdMyLuLwLPNqdVGG8ndo3JyAt0Etc77VK
-	 YJhjgrVKAn6lj8MnQXw/kMsQSmvi+7XVSdXzibM1afeFdodP+ansR9JxRrTB/7iijzb2Y
-	 43z0ua6R6wL0SoGFUieOns4GkUqw5eFpBKAiQOiLhvmSP4xCU+EpvkAzHCeBYG4hVzg==
+	b=Mj3JczLEj5FwJTGpNEgduJss1AaAaVqkH3OTfqElbM/m1HjnLhQba4ORBpRgQB45b6Ls
+	 XORgJUKct/FB77E0eeYbE7nu+hDnUqjTvIZzGPkYBU0JrA/IEEO3ox0cSQ6mwE/eGqLag
+	 EHx23ARf1SC9UdDRyyGUBB/BXP+jMZsedJl2sLkphttDnMXTnsnxiXjZBdb4RFuc9tOYZ
+	 bw2fdh/r9wXEWksn+9vukqNjB6EkXIu7DtHAavuEJU/JYu5q34I8RU1CzbaJzVV4+Xqe0
+	 eiiDypZmEojhj9JDkxqVbKyk6sD2wtRmPwkVO0h7V8fq0OOH2LyAN5jHSbGFfyqiWFQ==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795861220;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=SeyQg306ofwt5p0A9SFDaJWEAIm2Jb2XXo3LWtfnqps=;
-	b=1fhQcX38RK4DRtpPWvveSo7URVeR3sbzdLKFng1/eAe33HWMxgsfZ71FBbEg9kGPkkL9
-	 hgPfGOqhA9NdGIFhe5AKgt4pvOTLm8W3gQsFR3Kl4b+hj9DoPomCfUHvegQBTAV3JK2Fl
-	 nRfFf3Rq0FQ8soqgE5Qf1hs6sMgC9itXpDtNmf8jTqIgLkBPcjBHncHEdsD20UC7Cg/Rl
-	 /YO15i7D57XWG7uA1JRah2an/zB8k0dQXHECiZTtXBTZtpCiC+4R828ZPfcth2fXFPKDZ
-	 Pk83ruiVpeQF8gE7+SJ6IsRNYBnOKEQIFUlu+OhA4SVUKWyFsFfTbbDK8SArsorAVfw==
+	bh=wW25UtAi9550o7VS4vHtatvoAygmSe0XQlRnDzFnZyQ=;
+	b=YuWvymuspPqUglfEFLZ0E+x8SEFHVXJSh9L9q/hhsZjT2j+Z6DlOGnsgAFlwOcn0IsGO
+	 MwxG7zXRRuPCszU/I7cxeXLKHTyzfiPcEVeAM9MVZg+V8HuerE/qA7HRMJsGoCXrXuD+a
+	 fJXrngjwUsxKaYxk2ohA8clAci4G3Dvdrx3eN7/aBfE94iyJemvs8loX7tj0IRvEEoMx9
+	 JKzF6OfMqqVIcq+O4vlDpjY4k6Q3r0mlTH0YeRXU2V75FCKzFPdBryU7APVnac9dgFB8x
+	 hNIHTsCLUu4qsgQ2aIok3KQXijKBy/PqJmbkeFKb6IqBFaDtrVbYGZAIL7SoiADjFiQ==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AvtRab6f;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=B96dCcfm;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3C68606A31C
-	for <linux-can@vger.kernel.org>; Sat, 28 Nov 2026 10:20:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF087606A31C
+	for <linux-can@vger.kernel.org>; Sat, 28 Nov 2026 10:20:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=AvtRab6f
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 24EA01F000C1;
-	Sat, 28 Nov 2026 10:20:19 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=B96dCcfm
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ABFC1F000C1;
+	Sat, 28 Nov 2026 10:20:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795861219;
-	bh=SeyQg306ofwt5p0A9SFDaJWEAIm2Jb2XXo3LWtfnqps=;
+	s=k20260515; t=1795861220;
+	bh=wW25UtAi9550o7VS4vHtatvoAygmSe0XQlRnDzFnZyQ=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=AvtRab6fJrh6qiO4XiOUaiIHocksPnsIIB8PH3UZECqaWdQ+iina3Vmhi7+/hdRor
-	 6hZjJIbRiqjcx6j5BcXo3jYJZojUyuSGL18TY4RoxcmieXzf4vzvBtG2Alpo96X81J
-	 Bzz8ZJDFmzn/TB1w4pEFCSEo5h19cF6UFZ3QsFo5Q+OlfAtLt2TRh7hpFMGqxJU87u
-	 AHpMW7c4RZNq0tYz4ZWsYp09SyjuFMCcGvEljFpjSWAe3zzusBK0BweK2m6LaKnTNp
-	 S5kH8FNAEMkaFBzEV0n8sFBsh8Enoy2oZLJZAZHOH8W9UASr9y8k6OBaBjfqABI3QX
-	 V4Ro9iTZrf7Hg==
-Subject: Re: [PATCH can-next 09/22] can: isotp: drop frames without N_PCI
+	b=B96dCcfmwticMLNg5d2iQKpoSJUBwtg/t9xZJQchVtZI+0Ehs3PvtOcrIZarMsX8T
+	 IzVkFTqMAnQAzPPlT067CjSADeDT7aNmW1WpE43A7aL7Y40sLLWBdYNxdSu8VtGP3f
+	 zgQ0D//xSTE3Az+0xZQwsq6V3l7nv7x5QofyeoEzrX1GSFqMGqW1DEiRVbP9U8vWDB
+	 klHZJXqy8ucLoBVzcsU6lAZ3lROppBxK/ssDbIEEsVBXATl/VbtenQ/P2anj926LLN
+	 OTaIjdxMc3wSIbzhRDWSOhn9gDyAxwG6kwC7j4xEQGem4tb/TM0DZWpD0fRq7g1H+Y
+	 ilsJIzKyvBA3w==
+Subject: Re: [PATCH can-next 11/22] can: isotp: check the minimum FF_DL
 From: netdev-bot+sashiko@kernel.org
 To: socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, sashiko-bot@kernel.org,
  zihanx@nebusec.ai, o.rempel@pengutronix.de, yewentian395@gmail.com,
  kuba@kernel.org
-Date: Sat, 28 Nov 2026 10:20:18 +0000
-Message-ID: <179586121870.3131.13230679488589682283@kernel.org>
-In-Reply-To: <20261126-getsockopt-memcg-isotp-v1-9-681ef8d8c2c9@hartkopp.net>
-References: <20261126-getsockopt-memcg-isotp-v1-9-681ef8d8c2c9@hartkopp.net>
+Date: Sat, 28 Nov 2026 10:20:19 +0000
+Message-ID: <179586121974.3131.16556762186745483612@kernel.org>
+In-Reply-To: <20261126-getsockopt-memcg-isotp-v1-11-681ef8d8c2c9@hartkopp.net>
+References: <20261126-getsockopt-memcg-isotp-v1-11-681ef8d8c2c9@hartkopp.net>
 X-sashiko-severity: Low
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -69,70 +69,69 @@ you want to address the nit picks below when you respin.
 
 Low priority / nit picks for your consideration:
 
-- [Low] The commit "can: isotp: drop frames without N_PCI" fixes a
-  receive-path defect that has existed since ISO-TP was added in commit…
+- [Low] The commit message for "can: isotp: check the minimum FF_DL"
+  describes the old receive check in isotp_rcv_ff() (net/can/isotp.c)…
+- [Low] "can: isotp: check the minimum FF_DL" fixes a receive-path
+  protocol bug in isotp_rcv_ff() (net/can/isotp.c) but has no Fixes: tag.
 
 --
 
-can: isotp: drop frames without N_PCI
+can: isotp: check the minimum FF_DL
 
-This commit adds a length check to isotp_rcv() in net/can/isotp.c. CAN
-frames whose data length is shorter than the address extension plus the
-N_PCI byte are now dropped. Before this, they were decoded from stale data
-beyond CAN_DL.
+This commit replaces the FF_DL lower bound check in isotp_rcv_ff() with a
+check against the maximum SF_DL for the sender LL_DL. A PDU that would fit
+into a SF is then no longer accepted as a FF, which matches what
+isotp_sendmsg() does on the tx path.
 
-> isotp_rcv() reads the address extension and the N_PCI without checking
-> the CAN frame data length. So frames with CAN_DL < ae + N_PCI_SZ are
-> processed with stale data beyond CAN_DL, e.g. as SF, CF or FC.
->
-> Drop these frames as they are no valid N_PDUs.
->
+> ISO 15765-2 requires FF_DL >= FF_DLmin: a PDU that fits into a SF must
+> not be segmented. The rx check only ensured that a CF is needed and
+> contained a SF_DL escape offset for LL_DL > 8 which is only required on
+> the tx side. So e.g. FF_DL 7 was accepted for LL_DL 8.
+
+[Severity: Low]
+Does this describe the old check accurately? This was the old check in
+isotp_rcv_ff() in net/can/isotp.c:
+
+    off = (so->rx.ll_dl > CAN_MAX_DLEN) ? 1 : 0;
+
+    if (so->rx.len + ae + off + ff_pci_sz < so->rx.ll_dl)
+        return 1;
+
+It only rejected FF_DL < LL_DL - ae - off - ff_pci_sz. That means it did
+not guarantee that a CF was needed.
+
+For CAN CC (LL_DL 8, ae 0, off 0, FF_PCI_SZ12), only FF_DL < 6 was
+rejected. FF_DL 6 was accepted even though the FF already carries all 6
+bytes.
+
+For CAN FD (LL_DL 64, ae 0, off 1), FF_DL 61 and 62 were accepted. The FF
+copy loop is bounded by ll_dl, not rx.len:
+
+    for (i = ae + ff_pci_sz; i < so->rx.ll_dl; i++)
+        so->rx.buf[so->rx.idx++] = cf->data[i];
+
+So for FF_DL 61 it copied 62 bytes and left rx.idx > rx.len.
+
+In both cases the receiver still moved to ISOTP_WAIT_DATA and sent FC CTS
+for a CF that a compliant sender never sends.
+
+Could the commit message say that the old check also accepted FFs whose
+whole FF_DL already fits into the FF? The FF_DL 7 at LL_DL 8 example
+understates what was accepted. The code change itself looks correct.
+
 > Signed-off-by: Oliver Hartkopp <socketcan@hartkopp.net>
 
 [Severity: Low]
-Should this patch carry a Fixes: tag?
+Should this have a Fixes: tag? Without this patch, kernels accept FFs below
+FF_DLmin in isotp_rcv_ff(). They then arm the rx timer and send FC CTS on
+the bus. ISO 15765-2 says such FFs should be ignored.
 
-The unchecked reads of cf->data[0] and cf->data[ae] in isotp_rcv() seem
-to date back to the original ISO-TP code:
+git blame shows that the replaced check and the off computation come from
+the original isotp commit, so this tag might fit:
 
 Fixes: e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol")
 
-Without the tag, stable backporting will probably miss this patch.
-
-Could the commit message also describe the concrete impact? CAN drivers
-zero-fill the frame data through alloc_can_skb()->skb_put_zero(). A DLC 0
-frame on the rx CAN ID therefore decodes as N_PCI_SF with SF_DL 0.
-
-isotp_rcv_sf() then resets the rx state before it checks the length:
-
-net/can/isotp.c:isotp_rcv_sf() {
-	...
-	hrtimer_cancel(&so->rxtimer);
-	WRITE_ONCE(so->rx.state, ISOTP_IDLE);
-
-	if (!len || len > cf->len - pcilen)
-		return 1;
-	...
-}
-
-So any node on the bus can silently abort a multi-frame reception that is
-in progress. The CFs that follow are ignored, and the application gets
-neither the PDU nor an error.
-
-The stale bytes may also be non-zero, for example when the frame comes from
-a local CAN_RAW or vcan sender. The frame can then be decoded as a CF,
-which uses up a sequence number. It can also be decoded as an FC, which
-aborts a transmission.
-
-A backport dependency may also be worth recording. The later commit
-"can: isotp: check the data length of the last CF" relies on this check:
-
-    isotp_rcv() ensures cf->len >= ae + N_PCI_SZ, so the payload size can
-    not underflow
-
-What happens if that commit is backported without this one? The signed
-value cf->len - ae - N_PCI_SZ could go negative. It is converted to
-unsigned in the comparison, so wouldn't that check then never fire?
+Without it, the stable trees won't pick this up.
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9%40hartkopp.net
