@@ -1,57 +1,57 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.remote-ip=100.103.45.18
 ARC-Seal: i=1; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=none;
 	t=1795861218;
-	b=lfYFJR2w59pYyYbHOwuOq+vRL1CkP1PDsudLUG3oS+PyxGD9fOmnCmlgLwORaYV8EJQ7
-	 2W6LxolyocdWS+anjQn5y0K1fWwBLJfY+6DXh1MhUkjoygv0rpVAWSD+3Yg4E/+tPN46m
-	 uXflqpvZRmSplIq1Fo7SDadVf3DZpSDcWUWp8FQPvZn9bUVhFtrS/Bi8kliy27Fa215C3
-	 0MFQ5egqMtYQsV/fjX9EiOvCmXS8SPwbKLsm3f8u7WQt+q9VKmdwk3HuHlnlPl5lzaiAI
-	 sNnga9xwkitx8Nghrmo6aDrKacUY0dCui8CWMcg4KfcdT9m5l5OASsfSDao0137BHTw==
+	b=po/5iZfbMTLbNGAN4sjhr/+UQT5m5aYFQbX9mq0897r56ZSZpPwQqMru9ylqvYwoir8v
+	 C15wrap13+xDbHKIh9sDVeElS1ACtk2NgC1leNUaSRkyMeGwWptiiC7CvRef6pNOXYKKk
+	 5r/2DdTzfhNl2D+ZNNOt8SfNo3wLu9Ryf0wzBorvG+chj4gmpsC9moQiQ2HEr/nvJHYxU
+	 hjw+6axl9GAUCSM8ub8iDfvrn6laCVZusvi23R2Nb0UUahbFaZgR2twUJTcZRP6NlM0Ek
+	 JIWzC/087yZmxf8utQB7UYDAeZDxW3bO8GTl/ZLZz68fayputPgguuAh4SPNjBGEHDw==
 ARC-Message-Signature: i=1; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795861218;
 	h=Received:DKIM-Signature:Subject:From:To:Cc:Date:Message-ID:
 	 In-Reply-To:References:X-sashiko-severity:Content-Type:
 	 Content-Transfer-Encoding:MIME-Version;
-	bh=e7B1U5F7w/67JdR8I4KeCJzbft3G8djvpAGFs0o63LM=;
-	b=pv75XfAA8aXYd9vex8i8qXOJ2WSy8i6C4nXPrvEry37bQJ5qFWIe3DzEBaN4VB/FplFP
-	 vhL04b4k6MgfUk3iU5B1bspREhztvdUQ4lYVWgXHzaVQxSbOcwVB8tLJ2J1v6BCWExMJ0
-	 7FZUc1CefQyxhq7Ze97Mvy5puInMm1SJl2lw3ly9pmxs996E9c/mox3HJh59D/u39yLAn
-	 Mbsd2gQmb6aP5XuFY3cX95CZ3BFMhnRjHlSZ5WwspH0ZQmOuis+IPLkKZp3FgWJS3ibW9
-	 xsXJpDC7yf6gbAEM8GiTlsOjpUOBeqK24MYLVCL2BQf/5zDGCcwCmfIC8GTL5S6ka+Q==
+	bh=CR1pqSLpqnCO65uIl7FZrJ4oQ4ct+HdZ64AbH9E3/ks=;
+	b=dP4ogpWUtlJ6xAbtlIEym1V0Gys39rCMsIIQcSO/FA/MDd63gNBaa/XuaRLmjNbYsV8u
+	 zyTjXYJn6dTvf6VjfF70SAjN4k7YOjlB7D0sQhCMD6LC67rAIxIYRcGecah5hROzUrZuc
+	 VOdFI5VL53DwSpAeLdMRt+rfd8fDuIGsYbGILUdB0h7w0lOoM5rau4JS0a7/qqtoV/Woh
+	 0dBk6FoGUcbj+q+kHEKQgYFZ4rh32pV8/inyIJCvi99EhHjzrbnL4UbCyAO/eXBRNrLI3
+	 BdynSHHkpI7XXLIfpgTU+TuZmYxbrNLP1eyoXDehXRf+sTRwsRp3uI6qlf5SZxpZZdg==
 ARC-Authentication-Results: i=1; smtp.subspace.kernel.org; 
-	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CFgt9y78;
+	dkim=pass header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U1OhCxZA;
 	arc=none smtp.remote-ip=100.103.45.18
 Received: from smtp.kernel.org (quasi.space.kernel.org [100.103.45.18])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDF55606A324
-	for <linux-can@vger.kernel.org>; Sat, 28 Nov 2026 10:20:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD200606A31F
+	for <linux-can@vger.kernel.org>; Sat, 28 Nov 2026 10:20:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=CFgt9y78
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C0F61F000C1;
-	Sat, 28 Nov 2026 10:20:17 +0000 (UTC)
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.a=rsa-sha256 header.s=k20260515 header.b=U1OhCxZA
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2429B1F000C1;
+	Sat, 28 Nov 2026 10:20:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kernel.org;
-	s=k20260515; t=1795861217;
-	bh=e7B1U5F7w/67JdR8I4KeCJzbft3G8djvpAGFs0o63LM=;
+	s=k20260515; t=1795861218;
+	bh=CR1pqSLpqnCO65uIl7FZrJ4oQ4ct+HdZ64AbH9E3/ks=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References;
-	b=CFgt9y78mc0pfhdUMwklPOaFHsFZv/EhzagE1yopFQZ0dFwqb2cidspaJe0diNEbS
-	 BEjHC6i4cCKlijMaySF7hAJUxIwF5xqohtWsYGU6nkevx9CxzhZlcn+3eLcwQtE96J
-	 py272ShDeq7bV4qTB9yHA7BTfua3mmDFxaUxk4WchOzvDqRt8xlxCzYSZcq+pGmCAn
-	 6R8aUoZ5GQhvSHzvByAGKa8xKFL7qL1zlQ21p5TBoTAfarcNdO802EpY++I5ZCOLY1
-	 T1OeXzCKClbaHbWmBunudkKcvhpxb3vkKx/4EtfgdtLX3V3HoKRoRAOrdPFksUJuTF
-	 tlz8VtgM+JZ2w==
-Subject: Re: [PATCH can-next 06/22] can: isotp: check the CAN FD tx_flags in
- CAN_ISOTP_LL_OPTS
+	b=U1OhCxZA8DBDDwahpMdJxZv0r0IqdcjedLtcqPPgcl2l8rv82lu/oQZ6SEBcxn84V
+	 KRw64w5jw+fzxoLyfDUsQKOXlvgfrhYfHRk8SofuBBgf/d1XcxCZzXbjqqPf9JQs7i
+	 dKJ8ydr7Y/CKQ9rFrLmPESvJDh0baEOWf2C0zY/UV59TViFDCWw8FIX3D5c6qJ7fRK
+	 Myuk2qVHJnkwriwu/Kdr2g2yrbZ6ou86CcxKRtHvdjoi52jR7Rayf2henCljR+9twe
+	 RZ4Xdww1cLn4aBmbd9N1ZcLdWOO8MXL+HyeHnSdNcpHFTV/UaCONpHwMNNa+JYXmJ+
+	 1amtQcJCwLOkg==
+Subject: Re: [PATCH can-next 08/22] can: isotp: reject CAN_ISOTP_CHK_PAD_DATA
+ without CAN_ISOTP_RX_PADDING
 From: netdev-bot+sashiko@kernel.org
 To: socketcan@hartkopp.net
 Cc: linux-can@vger.kernel.org, mkl@pengutronix.de, sashiko-bot@kernel.org,
  zihanx@nebusec.ai, o.rempel@pengutronix.de, yewentian395@gmail.com,
  kuba@kernel.org
-Date: Sat, 28 Nov 2026 10:20:16 +0000
-Message-ID: <179586121665.3131.3927877862728730062@kernel.org>
-In-Reply-To: <20261126-getsockopt-memcg-isotp-v1-6-681ef8d8c2c9@hartkopp.net>
-References: <20261126-getsockopt-memcg-isotp-v1-6-681ef8d8c2c9@hartkopp.net>
-X-sashiko-severity: Low
+Date: Sat, 28 Nov 2026 10:20:17 +0000
+Message-ID: <179586121772.3131.5988598798132812374@kernel.org>
+In-Reply-To: <20261126-getsockopt-memcg-isotp-v1-8-681ef8d8c2c9@hartkopp.net>
+References: <20261126-getsockopt-memcg-isotp-v1-8-681ef8d8c2c9@hartkopp.net>
+X-sashiko-severity: High
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Mailing-List: linux-can@vger.kernel.org
@@ -64,79 +64,133 @@ List-Owner: <mailto:linux-can+owner@vger.kernel.org>
 Precedence: list
 MIME-Version: 1.0
 
-Thank you for your contribution! Sashiko AI review found more severe
-issue(s) in other patches of this series. This mail is only an FYI, in case
-you want to address the nit picks below when you respin.
+Thank you for your contribution! Sashiko AI review found 3 potential
+issue(s) to consider.
 
-Low priority / nit picks for your consideration:
+Critical: 0 · High: 1 · Medium: 1 · Low: 1
 
-- [Low] The patch narrows the accepted CAN FD tx_flags values in
-  isotp_setsockopt_locked() (net/can/isotp.c:1803-1806) to…
-- [Low] The commit message describes the old behaviour as a defect ("any
-  value was accepted, so that CANFD_ESI and undefined flags were sent in…
+If you believe none of the issues are legitimate, please reply to each
+issue of Medium severity or higher and explain why the AI is wrong.
+If any of them are legitimate and you plan to respin, please let patchwork
+know by including "pw-bot: cr" as a separate line at the end of your reply
+(one such reply per series is enough).
+
+- [High] The new check in isotp_setsockopt_locked()
+  (net/can/isotp.c:1761-1764) is too broad.
+- [Medium] Documentation/networking/iso15765-2.rst (lines 176-178)
+  documents the UAPI semantics of CAN_ISOTP_CHK_PAD_DATA as: 'check…
+- [Low] In check_pad() (net/can/isotp.c:420-427), the branch commented
+  '/* no valid test against empty value => ignore frame */ return 1;'…
 
 --
 
-can: isotp: check the CAN FD tx_flags in CAN_ISOTP_LL_OPTS
+can: isotp: reject CAN_ISOTP_CHK_PAD_DATA without CAN_ISOTP_RX_PADDING
 
-This commit restricts the tx_flags accepted by setsockopt(CAN_ISOTP_LL_OPTS)
-for CAN FD sockets to CANFD_BRS and CANFD_FDF. Any other bit, including
-CANFD_ESI, is now rejected with -EINVAL. Previously any value was accepted
-and copied into the flags of the generated CAN FD frames.
-
-> The tx_flags of struct can_isotp_ll_options are set into the flags of
-> the created CAN FD frames. For CAN CC they have to be zero but for CAN
-> FD any value was accepted, so that CANFD_ESI and undefined flags were
-> sent in the CAN FD frames.
-
-[Severity: Low]
-This wording presents the old behaviour as a defect, but there is no
-Fixes: tag. The unchecked CAN FD path in isotp_setsockopt_locked() dates
-back to e057dd3fc20f ("can: add ISO 15765-2:2016 transport protocol").
-
-A Fixes: tag is probably not the right answer here, though. It would invite
-stable backports of a change that rejects setsockopt() input that used to
-be valid. Drivers such as mcp251xfd (ESIGM) and vcan also honour CANFD_ESI
-when userspace requests it.
-
-Could the commit message state clearly whether this is a bug fix or an
-intentional tightening of the uAPI?
+With this patch, setsockopt(CAN_ISOTP_OPTS) returns -EINVAL when
+CAN_ISOTP_CHK_PAD_DATA is set without CAN_ISOTP_RX_PADDING. The check
+runs before the options are copied into so->opt. The goal is to avoid a
+configuration in which check_pad() fails for every received frame.
 
 > diff --git a/net/can/isotp.c b/net/can/isotp.c
-> index 197dc7bdb6ec0..6ec7b10d7136d 100644
+> index 6471c0ef319a4..0af1a689fdd38 100644
 > --- a/net/can/isotp.c
 > +++ b/net/can/isotp.c
-> @@ -1800,6 +1800,11 @@ static int isotp_setsockopt_locked(struct socket *sock, int optname,
->  		    (ll->tx_dl > CAN_MAX_DLEN || ll->tx_flags != 0))
+> @@ -1758,6 +1758,11 @@ static int isotp_setsockopt_locked(struct socket *sock, int optname,
+>  		    opt->frame_txtime > ISOTP_MAX_FRAME_TXTIME_NS)
 >  			return -EINVAL;
 >  
-> +		/* only CANFD_BRS (and the CANFD_FDF marker) for CAN FD frames */
-> +		if (ll->mtu == CANFD_MTU &&
-> +		    (ll->tx_flags & ~(CANFD_BRS | CANFD_FDF)))
+> +		/* the padding content check needs the rx padding content */
+> +		if ((opt->flags & CAN_ISOTP_CHK_PAD_DATA) &&
+> +		    !(opt->flags & CAN_ISOTP_RX_PADDING))
 > +			return -EINVAL;
-> +
+
+[Severity: High]
+
+Does this also reject CAN_ISOTP_CHK_PAD_LEN | CAN_ISOTP_CHK_PAD_DATA
+without CAN_ISOTP_RX_PADDING? That combination works before this patch.
+
+When RX_PADDING is clear, check_pad() tests CHK_PAD_LEN first. It never
+gets to the content check:
+
+net/can/isotp.c:check_pad() {
+	/* no RX_PADDING value => check length of optimized frame length */
+	if (!(so->opt.flags & CAN_ISOTP_RX_PADDING)) {
+		if (so->opt.flags & CAN_ISOTP_CHK_PAD_LEN)
+			return check_optimized(cf, start_index);
+
+		/* no valid test against empty value => ignore frame */
+		return 1;
+	}
+	...
+}
+
+Only CHK_PAD_DATA without CHK_PAD_LEN reaches the return 1. This means
+the following statement in the commit message does not hold for the
+LEN|DATA combination:
+
+  Without CAN_ISOTP_RX_PADDING check_pad() fails for every frame, so that
+  no PDU can be received and every FC aborts the transmission with
+  EBADMSG.
+
+The new check returns before memcpy(&so->opt, ...). As a result, every
+other option in the same call is discarded too: ext_address,
+rx_ext_address, txpad_content, frame_txtime and the remaining flags. An
+application that ignores the setsockopt() return value would then keep
+running on the default options without noticing.
+
+A "check all padding" mode in userspace tools could produce LEN|DATA
+without RX padding. As far as I understand, can-utils -P a is one
+example, though I have not verified this.
+
+Would a narrower condition close the broken case without rejecting the
+working one? Something like:
+
+	if ((opt->flags & CAN_ISOTP_CHK_PAD_DATA) &&
+	    !(opt->flags & (CAN_ISOTP_RX_PADDING | CAN_ISOTP_CHK_PAD_LEN)))
+		return -EINVAL;
+
+Fixing check_pad() itself would also work.
+
+[Severity: Medium]
+
+Documentation/networking/iso15765-2.rst describes the flag like this:
+
+  * CAN_ISOTP_CHK_PAD_DATA: check padding bytes on the received frames
+    against rxpad_content; if CAN_ISOTP_RX_PADDING is not specified,
+    this flag is ignored.
+
+After this patch the flag is no longer ignored, and setsockopt() returns
+-EINVAL instead. The documentation is not updated in this patch.
+
+The documented behaviour points to a different fix: check_pad() could
+ignore CHK_PAD_DATA when RX_PADDING is clear, by returning 0 in that
+branch instead of 1. Would that be closer to the existing UAPI contract?
+
+If rejecting the flag is the intended semantics, should
+iso15765-2.rst be updated to match?
 
 [Severity: Low]
-Should the uAPI documentation be updated along with this new restriction?
 
-Documentation/networking/iso15765-2.rst still describes tx_flags as an
-open set of frame flags:
+This isn't a bug, but with this validation in place the "ignore frame"
+return 1 branch in check_pad() can no longer be reached.
 
-  * tx_flags: flags set into struct canfd_frame.flags at frame creation.
-    Only applies to CAN FD traffic (i.e.: mtu = CANFD_MTU).
+All callers (isotp_rcv_fc(), isotp_rcv_sf(), isotp_rcv_ff(),
+isotp_rcv_cf()) call check_pad() only when ISOTP_CHECK_PADDING is set.
+so->opt.flags is written in two places only: isotp_init() sets it to
+CAN_ISOTP_DEFAULT_FLAGS, and the memcpy() below copies it after this new
+check.
 
-The comment in include/uapi/linux/can/isotp.h for struct
-can_isotp_ll_options is similar:
+The comment in that branch also says "ignore frame". The code actually
+reports a failed check, which drops the frame or aborts the transmission
+with EBADMSG.
 
-	__u8  tx_flags;		/* set into struct canfd_frame.flags	*/
-				/* at frame creation: e.g. CANFD_BRS	*/
+Could the comment be updated, or the branch removed or reworded to say
+that setsockopt() prevents this state?
 
-Neither one says that only CANFD_BRS and CANFD_FDF are accepted, or that
-other bits such as CANFD_ESI now return -EINVAL.
-
->  		memcpy(&so->ll, ll, sizeof(*ll));
+> +
+>  		memcpy(&so->opt, opt, sizeof(*opt));
 >  
->  		/* set ll_dl for tx path to similar place as for rx */
+>  		/* no separate rx_ext_address is given => use ext_address */
 
 -- 
 Sashiko AI review · https://netdev-ai.bots.linux.dev/sashiko/#/patchset/20261126-getsockopt-memcg-isotp-v1-0-681ef8d8c2c9%40hartkopp.net
