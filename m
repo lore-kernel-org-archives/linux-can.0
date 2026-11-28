@@ -1,41 +1,41 @@
 Authentication-Results: smtp.subspace.kernel.org; arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 ARC-Seal: i=2; d=subspace.kernel.org; s=arc20261015; a=rsa-sha256; cv=pass;
 	t=1795869657;
-	b=BJyClY1Z33jLDG+X3YvGgQzzar0fLKiTwvEXn0USlEv/gFS1E2xU+YI32xQ9lCERgnBe
-	 cg8HilLIYQgToMmZw6g1Uz8/up5yQh+QBhrR7FFOJqkoIWM+zObAuUQRO/c+hso0TT9IE
-	 5otJCKnAOPhXRJK0SWQjx0FHCyJYhj25+2FdssmUx1FllRBOAhXYFUEz6ALwucA95tCgo
-	 kEgctB4v8dn9nUebgB4Fg6VEXyzcUlO9F+UGhXmPgs70Nif2KgMGAyyW1wBztD+4jOIND
-	 2QC0ZIZo7zdxgxtOlWt241Mfj6xuzRPpz9oaGL3PmRYacjiefMMlxkvZmqZ5XFmrn9A==
+	b=kDaygZIosMLJ8VjIh0mmuVZ7RVedp++bVHFsVqv7203No3BWKa2TbU1C/OejO6BYf4I5
+	 1uc83z3+PPcrHjpAQQVQkqOXSCyIPZKNzWGx/JeDDv6a9/6ynZVsGOufP+GJLaZBv8prl
+	 Ip3M5R7l/yb28dFl+B5KJQEcxgWcUJHiQ1TL9G6enjr5LwAOuksUquSo8Y9vfjyY/WAe9
+	 u5mRG+M+5tlosj3/BbUL6uF5wz70R9K+on+wjKioJ3dBB2xuhTRZ7qPm6m4vBcjpJyzSn
+	 DhO3/+fnwYkdObAfNOnkR5kTQJonndnhUZm6DUWbjmNHYB2W5EK2DlIX+sh8okZmeQA==
 ARC-Message-Signature: i=2; d=subspace.kernel.org; s=arc20261015;
 	a=rsa-sha256; c=relaxed/relaxed; t=1795869657;
 	h=DMARC-Filter:Received:DKIM-Signature:Received:From:Date:Subject:
 	 MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:
 	 References:In-Reply-To:To:Cc:X-Mailer;
-	bh=I/uhWVjX0DNLKqwXCIrIDTah86Frhyn1hPSWea0VFSI=;
-	b=4UoYa2GLCwgdoU9T3v+KYdOJwbfxjLTNFTzWjdTV7vuCF3MSeai7wG6JxDSka1ROjuvF
-	 MYyojBPvnaUgyU6FxkabkbhzjvG+ZNhtjK2D2gfIOD6LXQUYXEFMt7BioXtq1PAWUjUTe
-	 y/8aFXNDTLctEI+Q9/SpVjluUKSGnnIOJeCU4vHAdoAOX7mfy66MGHZSlzXEaDy2aENHi
-	 ZfymsLqlurBt23ARyU56/9KfK6BxHHqeZyOGoTw/lwLdwbDVs6nOmhwtNqO1GNEATyvhg
-	 PWyTqSFxiTR3EPurL4N4UnF84fA0xdsVfiaP4YzLZxxgPb2GnjV+iPYMOuweT94MpBw==
+	bh=W6qflxXbE2JH81f0EWPGRxEtAeBh1QNpuKHq/YUiTyw=;
+	b=qlEK82HMvSa5nutWhWVqGS/qKklPx8ob3l7+/J+vA2m5lV50RPxt5ywZxUnQW3KpYVUI
+	 GIP5d42bQErNn1adagpwsQkaJOa7BiEnc7JIBLp5JXoI7gT44vLdkOSKiA3U5ffZL/21U
+	 m/BJbBLoWwFgkqqf80++MEa7lATsmmnz3iJvXgAZ02rkBLZ12+rxEAptoSeQ7dN0lNkUO
+	 cnPxdjzxPR/CElYt5wpfxCjRQiY+HSzJFQfZWOwrYpVTOCqCgkClc8VCy+OFrIetzXThz
+	 IB1UjYSOvedE5fWecawFTN1O7aHF9IhZOrA7FzevL+6kJF+yugkWTP6bngdm4VA7CUA==
 ARC-Authentication-Results: i=2; smtp.subspace.kernel.org; 
 	dmarc=none header.from=pengutronix.de;
 	spf=pass smtp.mailfrom=pengutronix.de;
-	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b="P4/0Aevg";
+	dkim=pass header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PzVeX4Lz;
 	arc=pass header.oldest-pass=0 smtp.remote-ip=185.203.200.13
 Received: from mx1.white.stw.pengutronix.de (mx1.white.stw.pengutronix.de [185.203.200.13])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (prime256v1))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02B7D606A326;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02C1C606A689;
 	Sat, 28 Nov 2026 12:40:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 02B7D606A326
+DMARC-Filter: OpenDMARC Filter v1.4.2 smtp.subspace.kernel.org 02C1C606A689
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=P4/0Aevg
-Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.4.pengutronix.de [10.17.1.12])
+	dkim=pass (2048-bit key) header.d=pengutronix.de header.i=@pengutronix.de header.a=rsa-sha256 header.s=20260414 header.b=PzVeX4Lz
+Received: from dude04.red.stw.pengutronix.de (dude04.red.stw.pengutronix.de [IPv6:2a0a:edc0:0:1101:1d::ac])
 	(Authenticated sender: relay-from-dude04.red.stw.pengutronix.de)
-	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id BD5B4205AE5;
+	by mx1.white.stw.pengutronix.de (Postfix) with ESMTPSA id B50E3205A98;
 	Sat, 28 Nov 2026 13:40:44 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1795869644;
@@ -43,40 +43,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=I/uhWVjX0DNLKqwXCIrIDTah86Frhyn1hPSWea0VFSI=;
-	b=P4/0AevgNWHBMUc2qSivUeb8sq+wg6xildOzXz/bVFwleONHM4ypncrRJvNbB+RFCVLtKR
-	v/vs0fQcZkhNtO3yt3OvTbcpsHTAnx2z92flTX+u74QWtRz3woIK5RdBxGmd9cZFBAz0KA
-	9d1mwsxKkNWrmRA3uC29XUOeB4ownVa9TbT2OzKbrOB7nP+hK+fC3WhkuIi+ZW9q3AmTWy
-	1D8/rQvI6tJWRdfp6ci0ZdJAWx0Eic8VH4iL6aSIB0xuiPO/pyMBIgyluoOibxhhWJQu32
-	RiEKwSWy3vKYq4js3mOQ4lkiP8RYA1Dsu397pJoagDbxkpMPgfy85eEXX5Cakw==
+	bh=W6qflxXbE2JH81f0EWPGRxEtAeBh1QNpuKHq/YUiTyw=;
+	b=PzVeX4Lzan16pelnYfksmD0lpegG+F8HX6oVtsBlXLvmgmt55If13vZ0Yv05mmRy4QlGEZ
+	hGXIb35cmebrvu9L2Lty3IOHa3qLFbWOHnbL0sOyvHv3aO56usxJw0WdP2maZusHTcUv3a
+	4jAQmZ0+K8M98DEtdwZiS3twdjln9L+R6zPXY+gLCbAajk3EWpM/F1aFC/30/WX2tX+CoD
+	H/mPOSNiCwl7pjhUxdUn6z2sVWkF/077k9Uc0IQQ1ca0CQplogIdGUQCKFM3GZHSKqSJ3q
+	IBknjY2seQuoAbKmSAJ98RXtg14ToGeouS92f1JTnHYLyNvzADXkaJ/RoH43qw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=pengutronix.de;
 	s=20260414; t=1795869644;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=I/uhWVjX0DNLKqwXCIrIDTah86Frhyn1hPSWea0VFSI=;
-	b=VbejK/hYvAZmr87AUoh4u7R1eWzBzhmqUnfco11vA+DtBrpBKGOgBqUCj/x/NnGyWqmyIy
-	eo+71+ZWt1OobyIk7/8HfFV7DwJVe5XvG6xY2tA0uEaopo6ThXPZBbaxgG0n6gQqXu1xwu
-	xnTYBj9+j3akV05yCr6rsWB67yXdquNovb3CBkVHLRdA0cdyMCHdrF94Vig1S8RuZSk3xg
-	hiAqUQR+hfTwDNywYUY+KPZw2j1MIVb07gwEWmdY8TZY/1i6w1ePWrh0fBS7dsESaOKcFO
-	89hiOkRbH7zwoY0kvcNsiE5fYvg3vgnh1YtUv9h8Sa5c97P2ttEhpSxnIjNZtw==
+	bh=W6qflxXbE2JH81f0EWPGRxEtAeBh1QNpuKHq/YUiTyw=;
+	b=enQEZlcTFlJfqs+8Wf//IYfCn4BKUWNd9+99V03pWmr1ddnYgxMNuVodi8ME9jZwqGqlJj
+	8WaZ5g59SPGjGHz9dU+nO1aHUFfqnTWkHTyote1yBExlGT0+7F1Fm+ZA7WZGB/DIPxI9KJ
+	yqIv9GLxYQbwrxfVa/at67J+HqYqjQuk7ZhVuuIHOAeDm6HwJ01WzaHC1ut/DchP977ZQ/
+	aaiFo0vt4e0Jtlgck6QgpSgnXPlZ7uqcFeX/tK2Zcn+PCeggjNVc/ergQ3hKmDyNYfHlwr
+	YspJB4r+YuHbdJrISFudeo9WlQ+esWg7G6Lcc2DfrcohHGbhzNovM+cFzJisdA==
 ARC-Authentication-Results: i=1;
 	ORIGINATING;
 	auth=pass smtp.auth=relay-from-dude04.red.stw.pengutronix.de smtp.mailfrom=ore@pengutronix.de
 ARC-Seal: i=1; s=20260414; d=pengutronix.de; t=1795869644; a=rsa-sha256;
 	cv=none;
-	b=LaJz5YyT6glCk8uvwf91D4OWw8kQLkNLfK/VfNer/OXIwQi4wBPyy+uAFnW3EMbSN0Xacm
-	8HKP3XLIlUwHCJverjDo6D5yjpmqLPYiyrgIgu861Fm13t01sc1MwWHxAy9SRcYN57hSDP
-	LwnFUVuCpcjr/0681D0cVNZKwVvevduJZK60WMKWLkLhsWkMinkLZiRsHXrwNqTTn15wxp
-	W56e0X0hGnGmdVKXA4X+ERk4e5AS2+s+DlJACymrK+VVkdLAikKhfaL6n6fbtHWDtnDMIp
-	4NinK/bkywkjgFV7I1tAUK2be05qMFDoy13eR6vd+M/aB49pLj6ZtibqwIFtUA==
+	b=dX/FiElEf7Lry+Xrocy0UTF8tEOsiyM16OG6UI1uDNkHbtjDTq0xZOEz5HrcKW5JroipMN
+	mw0jn/ykBBe39Gmjqo+fcBOvGtl+SRG51sZ2U9AOJIlf1aC8gdJRUeiW0pGg2/CPUDs8iY
+	NKQHKRd0E/vPbSYE4y/yNKmU1mIXFOfdGc2umXgMnRbsgymZ3NXuO3vV+lGxpd2KwdmUcV
+	K4MAUAuvMcDoTgJIMmCPipxFCfRt5XGCpaDlH9FHnEQWUnyr0aPEtQezvBLR2DOdkmEZ2E
+	gW2YWCE2LskEnEuSnCm/MUOXekmK3PBrXC9PFaC4bykdQL7cgpHAKdH4m1jFBQ==
 Received: by dude04.red.stw.pengutronix.de (Postfix, from userid 1058)
-	id 98A1F381DA6; Sat, 28 Nov 2026 13:40:44 +0100 (CET)
+	id 93156380CB7; Sat, 28 Nov 2026 13:40:44 +0100 (CET)
 From: Oleksij Rempel <o.rempel@pengutronix.de>
-Date: Sat, 28 Nov 2026 13:40:47 +0100
-Subject: [PATCH can-next v6 6/9] selftests: can: add J1939 wire-format
- tests against CAN_RAW
+Date: Sat, 28 Nov 2026 13:40:44 +0100
+Subject: [PATCH can-next v6 3/9] selftests: can: add J1939 base functional
+ tests
 X-Mailing-List: linux-can@vger.kernel.org
 List-Id: <linux-can.vger.kernel.org>
 List-Post: <mailto:linux-can@vger.kernel.org>
@@ -88,7 +88,7 @@ Precedence: list
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20261128-j1939-selftests-v6-6-a9dc9140dee6@pengutronix.de>
+Message-Id: <20261128-j1939-selftests-v6-3-a9dc9140dee6@pengutronix.de>
 References: <20261128-j1939-selftests-v6-0-a9dc9140dee6@pengutronix.de>
 In-Reply-To: <20261128-j1939-selftests-v6-0-a9dc9140dee6@pengutronix.de>
 To: Robin van der Gracht <robin@protonic.nl>, 
@@ -103,307 +103,421 @@ Cc: kernel@pengutronix.de, linux-can@vger.kernel.org,
  Oleksij Rempel <o.rempel@pengutronix.de>
 X-Mailer: b4 0.14.2
 
-Check J1939 single frames against a CAN_RAW socket in both directions,
-for PDU1 and PDU2, both with the DP bit set: the CAN id and payload of a
-J1939 send, and the payload, source address and PGN that the J1939
-socket gets for an injected frame.
+Add a functional selftest for the SAE J1939 socket interface. It sends
+between CAN_J1939 sockets over a vcan interface and checks payload
+integrity for single frame, TP and ETP sizes, the boundaries between
+them, and single-frame and BAM broadcast. A single-frame broadcast
+reaches a receiver only with SO_BROADCAST.
 
-The base test sends between two J1939 sockets, so a CAN id encoding bug
-and a matching decoding bug in the kernel cancel out there. CAN_RAW does
-not use the J1939 code, so it checks each direction on its own.
+Enable CONFIG_CAN_J1939, CONFIG_CAN_RAW and CONFIG_CAN_GW in the test
+config: CAN_RAW for the CAN_RAW peer of the later tests, CAN_GW for the
+gateway that j1939_lib.sh sets up. This test opens no CAN_RAW socket and
+skips only without CAN_J1939.
 
 Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 ---
-Q (sashiko): does the test check the priority of a received frame, or
-the SCM_J1939_PRIO cmsg?
-A: Neither. It checks the priority of sent frames only; the cmsg
-metadata of received messages is not tested.
-
-Q (sashiko): can the TX tests see a frame from another node?
-A: No. j1939_lib.sh runs them only on vcan interfaces it creates, so
-the only frames there are the test's own. Without J1939_SHARED_IF=1 it
-creates two and links them with CAN gateway rules that do not change
-frames.
-
 Changes in v6:
-- print why a helper failed, as test_j1939_base does
-- shorten the SA/PGN mismatch message, so it fits on its print line
+- pass J1939_NEEDS_NONE instead of 0 to j1939_test_main()
+- coding style: declare flags apart from its use, add braces
 
 Changes in v5:
 - No changes.
 
 Changes in v4:
-- pass J1939_NEEDS_RAW to j1939_test_main()
-- pass J1939_OPEN_* flags to the helpers instead of a bool
-- zero the source address that the RX check reads
+- add CONFIG_CAN_GW to config, for the gateway of j1939_lib.sh
+- set J1939_NO_PEER=1 in the wrapper, this test needs no CAN_RAW peer
+- do not skip without CAN_RAW, this test opens no CAN_RAW socket; the v2
+  note that every test needs CAN_RAW was wrong (sashiko, Chaosheng Qu)
+- add recv_none_ok(), which also fails on a socket error, and use it for
+  the negative receive check
+- give the broadcast sent after SO_BROADCAST is set its own payload, so a
+  late first frame cannot pass as the second one
 
 Changes in v3:
-- the @bcast comments say that @bcast opens the socket with SO_BROADCAST
-  (sashiko)
-- assert that the addresses are two different unicast ones and that the
-  PGNs are valid, with the DP bit set and PS 0 for PDU1
-- set the DP bit in the PDU2 PGN too
-- clarify the @pgn comment and the RX mismatch log
+- use the 200 ms maximum packet gap of the spec, per packet, in the
+  receive timeout of a BAM message (sashiko)
+- add a test that a single-frame broadcast reaches a receiver only
+  with SO_BROADCAST
+- assert that PGN_PDU1 has PS 0, that both PGNs are valid, and that
+  SA_TX and SA_RX are two different unicast addresses
+- rebuild the tests when clock-helpers.h changes
+- link j1939_helpers.c into the J1939 test binaries
 
 Changes in v2:
 - drop the Assisted-by trailer; the cover letter says how an LLM was used
 - wrap at 80 columns and fix the checkpatch warnings (Marc)
-- name all constants, avoid casts, return bool from helpers named
-  *_ok() and fill test payloads with fill_pattern()
-- check that a sent frame is an extended data frame (sashiko, Marc)
-- check the full PGN of a sent frame (sashiko); use a PDU1 PGN with DP
-  set
-- check the source address and PGN of a received frame (sashiko)
-- say in the commit message what CAN_RAW checks that the base test
-  cannot (sashiko)
-- keep the Makefile and .gitignore lists sorted; the wrapper no longer
-  sets J1939_TEST_PROG
+- name the message sizes and add static asserts for them
+- return bool from helpers named *_ok()
+- sort the Makefile lists, config and .gitignore; derive TEST_GEN_FILES
+  from TEST_PROGS
+- add CONFIG_CAN_RAW to config here, not in the opts patch: every test
+  needs it
+- the wrapper no longer sets J1939_TEST_PROG
+- say why a round trip failed instead of printing a stale errno
+  (sashiko)
+- say that size_boundaries checks only the payload, not the transport
+  (sashiko)
 ---
  tools/testing/selftests/net/can/.gitignore         |   1 +
- tools/testing/selftests/net/can/Makefile           |   1 +
- tools/testing/selftests/net/can/test_j1939_wire.c  | 202 +++++++++++++++++++++
- tools/testing/selftests/net/can/test_j1939_wire.sh |   4 +
- 4 files changed, 208 insertions(+)
+ tools/testing/selftests/net/can/Makefile           |  14 +-
+ tools/testing/selftests/net/can/config             |   3 +
+ tools/testing/selftests/net/can/j1939_helpers.c    |  11 +
+ tools/testing/selftests/net/can/j1939_helpers.h    |   8 +
+ tools/testing/selftests/net/can/test_j1939_base.c  | 241 +++++++++++++++++++++
+ tools/testing/selftests/net/can/test_j1939_base.sh |   7 +
+ 7 files changed, 283 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/net/can/.gitignore b/tools/testing/selftests/net/can/.gitignore
-index 1a6e89cdceb4a337648ca1062a6095c0168b76d4..6c6b18a9deda7f4a7c2b4ef9fbbc980a5b36811b 100644
+index 30cd8b40d0f885fdf8c3855d231c9d3ec7c7c112..e566019425c84f362d9cb0dffc5e733dc90a4ce1 100644
 --- a/tools/testing/selftests/net/can/.gitignore
 +++ b/tools/testing/selftests/net/can/.gitignore
-@@ -3,4 +3,5 @@ j1939_gw
- test_j1939_addr
- test_j1939_base
- test_j1939_opts
-+test_j1939_wire
+@@ -1,3 +1,4 @@
+ # SPDX-License-Identifier: GPL-2.0-only
+ j1939_gw
++test_j1939_base
  test_raw_filter
 diff --git a/tools/testing/selftests/net/can/Makefile b/tools/testing/selftests/net/can/Makefile
-index 1d036194738842062fa25fb5ade95100f07d0167..61bb4d60577d563b88117ac7a53bb3e0ae498fb6 100644
+index 7f16586006104652c9872008d3eec860416486ed..fffc58e1de5893aac14f3d75df06ecf06a488b82 100644
 --- a/tools/testing/selftests/net/can/Makefile
 +++ b/tools/testing/selftests/net/can/Makefile
-@@ -10,6 +10,7 @@ TEST_PROGS := \
- 	test_j1939_addr.sh \
- 	test_j1939_base.sh \
- 	test_j1939_opts.sh \
-+	test_j1939_wire.sh \
- 	test_raw_filter.sh \
- # end of TEST_PROGS
+@@ -4,14 +4,24 @@ top_srcdir = ../../../../..
  
-diff --git a/tools/testing/selftests/net/can/test_j1939_wire.c b/tools/testing/selftests/net/can/test_j1939_wire.c
+ CFLAGS += -Wall -Wl,--no-as-needed -O2 -g -I$(top_srcdir)/usr/include $(KHDR_INCLUDES)
+ 
+-TEST_PROGS := test_raw_filter.sh
++LOCAL_HDRS := j1939_helpers.h j1939_tests.h ../../clock-helpers.h
++
++TEST_PROGS := \
++	test_j1939_base.sh \
++	test_raw_filter.sh \
++# end of TEST_PROGS
+ 
+ TEST_FILES := j1939_lib.sh
+ 
+ TEST_INCLUDES := ../lib.sh $(wildcard ../lib/sh/*.sh)
+ 
+-TEST_GEN_FILES := test_raw_filter
++# each .sh in TEST_PROGS runs the binary of the same name
++TEST_GEN_FILES := $(TEST_PROGS:.sh=)
++
+ # sets up the CAN gateway for j1939_lib.sh
+ TEST_GEN_FILES += j1939_gw
+ 
+ include ../../lib.mk
++
++# the J1939 tests link the shared helper code
++$(filter $(OUTPUT)/test_j1939_%,$(TEST_GEN_FILES)): j1939_helpers.c
+diff --git a/tools/testing/selftests/net/can/config b/tools/testing/selftests/net/can/config
+index 188f7979667097071401f84cc8e81d17f838af85..e124727f63b6464742ef0723cd748c10f3b96ff1 100644
+--- a/tools/testing/selftests/net/can/config
++++ b/tools/testing/selftests/net/can/config
+@@ -1,3 +1,6 @@
+ CONFIG_CAN=m
+ CONFIG_CAN_DEV=m
++CONFIG_CAN_GW=m
++CONFIG_CAN_J1939=m
++CONFIG_CAN_RAW=m
+ CONFIG_CAN_VCAN=m
+diff --git a/tools/testing/selftests/net/can/j1939_helpers.c b/tools/testing/selftests/net/can/j1939_helpers.c
+index 5aefd0e61a54b316508a68c045a7ab84bc3fdd90..539702520a9215831bb6136ac29b36a3a92363ab 100644
+--- a/tools/testing/selftests/net/can/j1939_helpers.c
++++ b/tools/testing/selftests/net/can/j1939_helpers.c
+@@ -243,6 +243,17 @@ static ssize_t recv_timeout(int s, void *buf, size_t len, int timeout_ms)
+ 	return recv(s, buf, len, 0);
+ }
+ 
++bool recv_none_ok(int s)
++{
++	struct pollfd pfd = { .fd = s, .events = POLLIN };
++	uint8_t drop;
++
++	if (poll(&pfd, 1, J1939_NEG_RECV_TIMEOUT_MS) == 0)
++		return true;
++	recv(s, &drop, sizeof(drop), MSG_DONTWAIT);
++	return false;
++}
++
+ bool recvfrom_verify_ok(int s, const void *want, size_t len, int timeout_ms,
+ 			struct sockaddr_can *src)
+ {
+diff --git a/tools/testing/selftests/net/can/j1939_helpers.h b/tools/testing/selftests/net/can/j1939_helpers.h
+index 13a458cab51a6d9f35d764fb768c70da29bf02a0..2716ca68f3b8283625bdd6c36c596e31ba8ae6b1 100644
+--- a/tools/testing/selftests/net/can/j1939_helpers.h
++++ b/tools/testing/selftests/net/can/j1939_helpers.h
+@@ -199,6 +199,14 @@ int open_raw_rcvbuf(int rcvbuf);
+ /* open_raw_rcvbuf() with the default receive buffer. */
+ int open_raw(void);
+ 
++/*
++ * Return true if poll() on s times out after J1939_NEG_RECV_TIMEOUT_MS.
++ * Otherwise (a message, a socket error or a poll() failure) do one recv()
++ * with MSG_DONTWAIT and return false. That recv() drops a waiting message
++ * or clears a pending socket error.
++ */
++bool recv_none_ok(int s);
++
+ /*
+  * recvfrom() one message on s within timeout_ms, check that it is the len
+  * bytes in want, and return the sender in *src unless src is NULL. The buffer
+diff --git a/tools/testing/selftests/net/can/test_j1939_base.c b/tools/testing/selftests/net/can/test_j1939_base.c
 new file mode 100644
-index 0000000000000000000000000000000000000000..3c13ca68fc97450b07b6994e3fa95bc574eb1793
+index 0000000000000000000000000000000000000000..6e3e103cd9b3e96fd9785e66c45a5f9a4d0e5cae
 --- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_wire.c
-@@ -0,0 +1,202 @@
++++ b/tools/testing/selftests/net/can/test_j1939_base.c
+@@ -0,0 +1,241 @@
 +// SPDX-License-Identifier: (GPL-2.0-only OR BSD-3-Clause)
 +/*
-+ * J1939 wire-format selftests: a J1939 socket against CAN_RAW.
++ * J1939 base functional selftests.
 + *
-+ * Run by test_j1939_wire.sh, see j1939_tests.h.
++ * Send between SOCK_DGRAM/CAN_J1939 sockets over a vcan interface and verify
++ * payload integrity across the transport-size transitions:
++ * a single frame (PDU1), Transport Protocol, Extended Transport Protocol, the
++ * exact boundaries between them, and single-frame and BAM broadcast (PDU2).
++ *
++ * Run by test_j1939_base.sh, see j1939_tests.h.
 + */
 +#include <errno.h>
 +
 +#include "j1939_tests.h"
 +
 +/* arbitrary addresses and PGNs, within the asserts below */
-+#define SA_LOCAL		0x90	/* the J1939 socket under test */
-+#define SA_PEER			0x20	/* the CAN_RAW peer */
-+/* a destination-specific and a broadcast PGN, both with DP set */
-+#define PGN_PDU1		(J1939_PGN_DP | 0x0ab00)
-+#define PGN_PDU2		(J1939_PGN_DP | 0x0feee)
++#define SA_TX			0x80
++#define SA_RX			0x90
++#define PGN_PDU1		0x0ab00	/* destination specific */
++#define PGN_PDU2		0x0feee	/* broadcast */
 +_Static_assert(J1939_IS_PDU1(PGN_PDU1) && !J1939_IS_PDU1(PGN_PDU2),
 +	       "PGN_PDU1 must be PDU1 and PGN_PDU2 must be PDU2");
-+_Static_assert((PGN_PDU1 & J1939_PGN_DP) && (PGN_PDU2 & J1939_PGN_DP),
-+	       "both PGNs must have the DP bit set");
 +_Static_assert((PGN_PDU1 & UINT8_MAX) == 0,
 +	       "the kernel rejects a PDU1 PGN whose PS byte is not 0");
 +_Static_assert(PGN_PDU1 <= J1939_PGN_MAX && PGN_PDU2 <= J1939_PGN_MAX,
 +	       "PGN_PDU1 and PGN_PDU2 must be valid PGNs");
-+_Static_assert((SA_LOCAL != SA_PEER) &&
-+	       (SA_LOCAL <= J1939_MAX_UNICAST_ADDR) &&
-+	       (SA_PEER <= J1939_MAX_UNICAST_ADDR),
-+	       "SA_LOCAL and SA_PEER must be two different unicast addresses");
++_Static_assert(SA_TX != SA_RX && SA_TX <= J1939_MAX_UNICAST_ADDR &&
++	       SA_RX <= J1939_MAX_UNICAST_ADDR,
++	       "SA_TX and SA_RX must be two different unicast addresses");
 +
-+#define PRIO			J1939_PRIO_DEFAULT
++/* An arbitrary TP size inside the TP range, and one that needs ETP. */
++#define TP_SIZE			128
++#define ETP_SIZE		2000
++_Static_assert(TP_SIZE > J1939_SF_MAX_SIZE, "TP_SIZE must need TP");
++_Static_assert(TP_SIZE < J1939_TP_MAX_SIZE, "TP_SIZE must fit TP");
++_Static_assert(ETP_SIZE > J1939_TP_MAX_SIZE, "ETP_SIZE must need ETP");
 +
-+FIXTURE(j1939_wire)
++/*
++ * Longest gap the spec allows before a BAM data packet (SAE J1939-21:2001
++ * section 5.12.3). The kernel waits 50 ms, see j1939_session_tx_rts() and
++ * j1939_session_tx_dat().
++ */
++#define BAM_PKT_GAP_MAX_MS	200
++
++FIXTURE(j1939_base)
 +{
 +	int ifindex;
-+	int j1939;
-+	int raw;
++	int tx;
++	int rx;
++	int rx_no_bcast;	/* a receiver without SO_BROADCAST */
++	bool bcast;
 +};
 +
-+FIXTURE_SETUP(j1939_wire)
++FIXTURE_SETUP(j1939_base)
 +{
-+	self->j1939 = -1;
-+	self->raw = -1;
-+
++	self->tx = -1;
++	self->rx = -1;
++	self->rx_no_bcast = -1;
 +	J1939_SETUP_IFINDEX(self);
-+
-+	J1939_SETUP_RAW(self, J1939_RAW_RCVBUF_DEFAULT);
 +}
 +
-+FIXTURE_TEARDOWN(j1939_wire)
++FIXTURE_TEARDOWN(j1939_base)
 +{
-+	if (self->j1939 >= 0)
-+		close(self->j1939);
-+	if (self->raw >= 0)
-+		close(self->raw);
++	if (self->tx >= 0)
++		close(self->tx);
++	if (self->rx >= 0)
++		close(self->rx);
++	if (self->rx_no_bcast >= 0)
++		close(self->rx_no_bcast);
 +}
 +
 +/*
-+ * Inject one CAN frame from the raw peer and check that the J1939 socket
-+ * receives the same CAN_MAX_DLEN-byte payload, from SA_PEER and with PGN pgn.
-+ * Opens the J1939 RX socket into self->j1939 (the fixture teardown closes it).
-+ * open_flags are the J1939_OPEN_* flags of the socket. pgn is the PGN of the
-+ * injected frame and the one the socket binds to; da is the frame's
-+ * destination.
++ * Set up a receiver bound to (rx_addr, pgn) and a sender bound to SA_TX and
++ * connected to (tx_dst, pgn). Any pair opened by a previous call is closed
++ * first. bcast opens both sockets with J1939_OPEN_BCAST, for the PDU2 and BAM
++ * tests.
 + */
-+static bool rx_single_frame_ok(FIXTURE_DATA(j1939_wire) *self, int open_flags,
-+			       pgn_t pgn, uint8_t da,
-+			       const uint8_t payload[CAN_MAX_DLEN])
++static bool pair_up_ok(FIXTURE_DATA(j1939_base) *self, uint8_t rx_addr,
++		       uint8_t tx_dst, pgn_t pgn, bool bcast)
 +{
-+	struct sockaddr_can src = {};
++	int flags;
 +
-+	self->j1939 = j1939_open_flags(self->ifindex, J1939_NO_NAME, SA_LOCAL,
-+				       pgn, open_flags);
-+	if (self->j1939 < 0) {
-+		fprintf(stderr, "# open failed: %d\n", errno);
++	flags = bcast ? J1939_OPEN_BCAST : J1939_OPEN_NONE;
++	self->bcast = bcast;
++	if (self->tx >= 0) {
++		close(self->tx);
++		self->tx = -1;
++	}
++	if (self->rx >= 0) {
++		close(self->rx);
++		self->rx = -1;
++	}
++
++	self->rx = j1939_open_flags(self->ifindex, J1939_NO_NAME, rx_addr, pgn,
++				    flags);
++	if (self->rx < 0) {
++		fprintf(stderr, "# open rx failed: %d\n", errno);
 +		return false;
 +	}
 +
-+	if (!send_raw8_ok(self->raw, PRIO, pgn, da, SA_PEER, payload)) {
-+		fprintf(stderr, "# raw send failed: %d\n", errno);
++	self->tx = j1939_open_flags(self->ifindex, J1939_NO_NAME, SA_TX,
++				    J1939_NO_PGN, flags);
++	if (self->tx < 0) {
++		fprintf(stderr, "# open tx failed: %d\n", errno);
 +		return false;
 +	}
 +
-+	if (!recvfrom_verify_ok(self->j1939, payload, CAN_MAX_DLEN,
-+				J1939_RECV_TIMEOUT_MS, &src)) {
-+		fprintf(stderr, "# payload missing or not the one sent\n");
++	if (!j1939_connect_ok(self->tx, self->ifindex, tx_dst, pgn)) {
++		fprintf(stderr, "# connect tx failed: %d\n", errno);
 +		return false;
 +	}
 +
-+	if (src.can_addr.j1939.addr != SA_PEER ||
-+	    src.can_addr.j1939.pgn != pgn) {
-+		fprintf(stderr, "# SA/PGN 0x%02x/0x%05x, want 0x%02x/0x%05x\n",
-+			src.can_addr.j1939.addr, src.can_addr.j1939.pgn,
-+			SA_PEER, pgn);
-+		return false;
-+	}
 +	return true;
 +}
 +
 +/*
-+ * Send one CAN_MAX_DLEN-byte payload from the J1939 socket to the raw peer and
-+ * return the CAN frame seen on the wire via *frame, so each caller can assert
-+ * the id fields it cares about. Opens the J1939 TX socket into self->j1939
-+ * (the fixture teardown closes it) and connects it to (da, pgn);
-+ * open_flags are its J1939_OPEN_* flags.
++ * Send a deterministic payload of the given size on tx and verify it is
++ * received byte for byte on rx.
 + */
-+static bool tx_to_raw_send_recv_ok(FIXTURE_DATA(j1939_wire) *self,
-+				   int open_flags, pgn_t pgn, uint8_t da,
-+				   const uint8_t payload[CAN_MAX_DLEN],
-+				   struct can_frame *frame)
++static bool roundtrip_ok(FIXTURE_DATA(j1939_base) *self, size_t size)
 +{
-+	self->j1939 = j1939_open_flags(self->ifindex, J1939_NO_NAME, SA_LOCAL,
-+				       J1939_NO_PGN, open_flags);
-+	if (self->j1939 < 0) {
-+		fprintf(stderr, "# open failed: %d\n", errno);
++	int timeout_ms = J1939_RECV_TIMEOUT_MS;
++	uint8_t *tx_buf;
++	bool ok;
++
++	/* a BAM message arrives only after all its packet gaps */
++	if (self->bcast && size > J1939_SF_MAX_SIZE)
++		timeout_ms += J1939_NUM_PKTS(size) * BAM_PKT_GAP_MAX_MS;
++
++	tx_buf = malloc(size);
++	if (!tx_buf) {
++		fprintf(stderr, "# alloc failed\n");
 +		return false;
 +	}
++	fill_pattern(tx_buf, size);
 +
-+	if (!j1939_connect_ok(self->j1939, self->ifindex, da, pgn)) {
-+		fprintf(stderr, "# connect failed: %d\n", errno);
-+		return false;
++	errno = 0;
++	ok = send_recv_verify_ok(self->tx, self->rx, tx_buf, size, timeout_ms);
++	if (!ok) {
++		fprintf(stderr, "# round-trip failed at size %zu: %s\n", size,
++			errno ? strerror(errno) : "no or wrong data");
 +	}
 +
-+	if (!send_all_ok(self->j1939, payload, CAN_MAX_DLEN)) {
-+		fprintf(stderr, "# send failed: %d\n", errno);
-+		return false;
++	free(tx_buf);
++	return ok;
++}
++
++/* Largest single frame, unicast PDU1. */
++TEST_F(j1939_base, single_frame_pdu1)
++{
++	ASSERT_TRUE(pair_up_ok(self, SA_RX, SA_RX, PGN_PDU1, false));
++	EXPECT_TRUE(roundtrip_ok(self, J1939_SF_MAX_SIZE));
++}
++
++/* Transport Protocol, unicast. */
++TEST_F(j1939_base, tp_roundtrip)
++{
++	ASSERT_TRUE(pair_up_ok(self, SA_RX, SA_RX, PGN_PDU1, false));
++	EXPECT_TRUE(roundtrip_ok(self, TP_SIZE));
++}
++
++/* Extended Transport Protocol, unicast. */
++TEST_F(j1939_base, etp_roundtrip)
++{
++	ASSERT_TRUE(pair_up_ok(self, SA_RX, SA_RX, PGN_PDU1, false));
++	EXPECT_TRUE(roundtrip_ok(self, ETP_SIZE));
++}
++
++/*
++ * Sizes on both sides of the single frame / TP and TP / ETP limits. Only the
++ * payload is checked here, not which transport carried it.
++ */
++TEST_F(j1939_base, size_boundaries)
++{
++	static const size_t sizes[] = {
++		J1939_SF_MAX_SIZE, J1939_SF_MAX_SIZE + 1,
++		J1939_TP_MAX_SIZE, J1939_TP_MAX_SIZE + 1,
++	};
++	size_t k;
++
++	for (k = 0; k < ARRAY_SIZE(sizes); k++) {
++		ASSERT_TRUE(pair_up_ok(self, SA_RX, SA_RX, PGN_PDU1, false));
++		EXPECT_TRUE(roundtrip_ok(self, sizes[k]))
++			TH_LOG("failed at boundary size %zu", sizes[k]);
 +	}
-+
-+	if (!recv_frame_ok(self->raw, frame, J1939_RECV_TIMEOUT_MS)) {
-+		fprintf(stderr, "# no frame on the raw socket\n");
-+		return false;
-+	}
-+	return true;
 +}
 +
-+/* J1939 TX -> CAN_RAW: destination-specific (PDU1) single frame. */
-+TEST_F(j1939_wire, tx_pdu1_to_raw)
++/* Single-frame broadcast, PDU2. */
++TEST_F(j1939_base, single_frame_broadcast_pdu2)
 +{
-+	uint8_t payload[CAN_MAX_DLEN];
-+	struct can_frame frame;
-+
-+	fill_pattern(payload, sizeof(payload));
-+	ASSERT_TRUE(tx_to_raw_send_recv_ok(self, J1939_OPEN_NONE, PGN_PDU1,
-+					   SA_PEER, payload, &frame));
-+	ASSERT_TRUE(j1939_is_data_frame(frame.can_id))
-+		TH_LOG("CAN id 0x%08x is not a 29-bit data frame",
-+		       frame.can_id);
-+
-+	EXPECT_EQ(j1939_id_prio(frame.can_id), PRIO);
-+	EXPECT_EQ(j1939_id_sa(frame.can_id), SA_LOCAL);
-+	EXPECT_EQ(j1939_id_ps(frame.can_id), SA_PEER);
-+	/* PGN, with the PS (the destination) masked off */
-+	EXPECT_EQ(j1939_id_pgn(frame.can_id) & J1939_PGN_PDU1_MAX, PGN_PDU1);
-+
-+	ASSERT_EQ(frame.can_dlc, sizeof(payload));
-+	EXPECT_EQ(memcmp(frame.data, payload, sizeof(payload)), 0);
++	ASSERT_TRUE(pair_up_ok(self, SA_RX, J1939_NO_ADDR, PGN_PDU2, true));
++	EXPECT_TRUE(roundtrip_ok(self, J1939_SF_MAX_SIZE));
 +}
 +
-+/* CAN_RAW -> J1939 RX: destination-specific (PDU1) single frame. */
-+TEST_F(j1939_wire, rx_pdu1_from_raw)
++/* BAM (broadcast transport). */
++TEST_F(j1939_base, bam_broadcast)
 +{
-+	uint8_t payload[CAN_MAX_DLEN];
-+
-+	fill_pattern(payload, sizeof(payload));
-+	ASSERT_TRUE(rx_single_frame_ok(self, J1939_OPEN_NONE, PGN_PDU1,
-+				       SA_LOCAL, payload));
++	ASSERT_TRUE(pair_up_ok(self, SA_RX, J1939_NO_ADDR, PGN_PDU2, true));
++	EXPECT_TRUE(roundtrip_ok(self, TP_SIZE));
 +}
 +
-+/* J1939 TX -> CAN_RAW: broadcast (PDU2) single frame. */
-+TEST_F(j1939_wire, tx_pdu2_to_raw)
++/* A single-frame broadcast reaches only a receiver with SO_BROADCAST. */
++TEST_F(j1939_base, bcast_needs_so_broadcast)
 +{
-+	uint8_t payload[CAN_MAX_DLEN];
-+	struct can_frame frame;
++	uint8_t second_buf[J1939_SF_MAX_SIZE];
++	uint8_t tx_buf[J1939_SF_MAX_SIZE];
++	int enable = 1;
 +
-+	fill_pattern(payload, sizeof(payload));
-+	ASSERT_TRUE(tx_to_raw_send_recv_ok(self, J1939_OPEN_BCAST, PGN_PDU2,
-+					   J1939_NO_ADDR, payload, &frame));
-+	ASSERT_TRUE(j1939_is_data_frame(frame.can_id))
-+		TH_LOG("CAN id 0x%08x is not a 29-bit data frame",
-+		       frame.can_id);
++	fill_pattern(tx_buf, sizeof(tx_buf));
++	memcpy(second_buf, tx_buf, sizeof(second_buf));
++	second_buf[0] ^= UINT8_MAX;
 +
-+	EXPECT_EQ(j1939_id_prio(frame.can_id), PRIO);
-+	EXPECT_EQ(j1939_id_sa(frame.can_id), SA_LOCAL);
-+	EXPECT_EQ(j1939_id_pgn(frame.can_id), PGN_PDU2);
++	ASSERT_TRUE(pair_up_ok(self, SA_RX, J1939_NO_ADDR, PGN_PDU2, true));
++	self->rx_no_bcast = j1939_open(self->ifindex, SA_RX, PGN_PDU2);
++	ASSERT_GE(self->rx_no_bcast, 0)
++		TH_LOG("open rx_no_bcast failed: %d", errno);
 +
-+	ASSERT_EQ(frame.can_dlc, sizeof(payload));
-+	EXPECT_EQ(memcmp(frame.data, payload, sizeof(payload)), 0);
-+}
++	/* the receiver with SO_BROADCAST shows that the frame went out */
++	ASSERT_TRUE(send_recv_verify_ok(self->tx, self->rx, tx_buf,
++					sizeof(tx_buf), J1939_RECV_TIMEOUT_MS));
++	EXPECT_TRUE(recv_none_ok(self->rx_no_bcast))
++		TH_LOG("a receiver without SO_BROADCAST got a frame or error");
 +
-+/* CAN_RAW -> J1939 RX: broadcast (PDU2) single frame. */
-+TEST_F(j1939_wire, rx_pdu2_from_raw)
-+{
-+	uint8_t payload[CAN_MAX_DLEN];
-+
-+	fill_pattern(payload, sizeof(payload));
-+	ASSERT_TRUE(rx_single_frame_ok(self, J1939_OPEN_BCAST, PGN_PDU2,
-+				       J1939_NO_ADDR, payload));
++	/*
++	 * Set SO_BROADCAST and send a second frame. It must arrive now.
++	 * That shows the first frame was dropped for the missing flag,
++	 * not for another reason. The second frame has its own payload,
++	 * so a late first frame cannot be mistaken for it.
++	 */
++	ASSERT_EQ(setsockopt(self->rx_no_bcast, SOL_SOCKET, SO_BROADCAST,
++			     &enable, sizeof(enable)), 0);
++	EXPECT_TRUE(send_recv_verify_ok(self->tx, self->rx_no_bcast,
++					second_buf, sizeof(second_buf),
++					J1939_RECV_TIMEOUT_MS))
++		TH_LOG("second broadcast missing or not the expected payload");
 +}
 +
 +int main(int argc, char **argv)
 +{
-+	return j1939_test_main(argc, argv, J1939_NEEDS_RAW);
++	return j1939_test_main(argc, argv, J1939_NEEDS_NONE);
 +}
-diff --git a/tools/testing/selftests/net/can/test_j1939_wire.sh b/tools/testing/selftests/net/can/test_j1939_wire.sh
+diff --git a/tools/testing/selftests/net/can/test_j1939_base.sh b/tools/testing/selftests/net/can/test_j1939_base.sh
 new file mode 100755
-index 0000000000000000000000000000000000000000..61f65365ec568f928b58bc4f892f97e9ec887027
+index 0000000000000000000000000000000000000000..dd19cd469651a7b48a799f1d1337041972f2be14
 --- /dev/null
-+++ b/tools/testing/selftests/net/can/test_j1939_wire.sh
-@@ -0,0 +1,4 @@
++++ b/tools/testing/selftests/net/can/test_j1939_base.sh
+@@ -0,0 +1,7 @@
 +#!/bin/bash
 +# SPDX-License-Identifier: GPL-2.0
 +
++# test_j1939_base opens no CAN_RAW socket
++# shellcheck disable=SC2034 # read by j1939_lib.sh
++J1939_NO_PEER=1
 +source "$(dirname "$0")/j1939_lib.sh"
 
 -- 
